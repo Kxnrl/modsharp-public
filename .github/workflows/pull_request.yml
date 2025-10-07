@@ -228,3 +228,59 @@ jobs:
           path: ./build
           if-no-files-found: error
           retention-days: 3
+
+  extensions:
+    runs-on: ubuntu-latest
+    steps:
+      # TimeZone
+      - name: Set Timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "Asia/Shanghai"
+          timezoneMacos: "Asia/Shanghai"
+          timezoneWindows: "China Standard Time"
+
+      # CheckOut
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 99999
+
+      # Check Git
+      - name: Check Git
+        shell: bash
+        run: |
+          DATETIME=$(date +"%Y/%m/%d %H:%M:%S")
+          COMMIT_VERSION=$(git rev-list --count HEAD)
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo $DATETIME
+          echo $COMMIT_VERSION
+          echo "GITCOMMIT=$COMMIT_VERSION" >> $GITHUB_ENV
+          echo "GITDATE=$DATETIME" >> $GITHUB_ENV
+          echo "GITHASH=$COMMIT_HASH" >> $GITHUB_ENV
+
+      # .NET
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # Build Sharp.Extensions
+      - name: Build Sharp.Extensions
+        shell: bash
+        env:
+          GITCOMMIT: ${{env.GITCOMMIT}}
+        run: |
+          dotnet publish Sharp.Extensions/GameEventManager/Sharp.Extensions.GameEventManager.csproj -f net9.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Extensions.GameEventManager -p:VersionSuffix=${{env.GITCOMMIT}}
+
+      # Upload
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        with:
+          name: ModSharp-pr#{{env.PR_NUMBER}}-extensions
+          path: ./build
+          if-no-files-found: error
+          retention-days: 3
