@@ -34,7 +34,7 @@ public static class DependencyInjection
         => services.AddSingleton(shared)
                    .AddSingleton<GameEventManager>()
                    .AddSingleton<IGameEventManager, GameEventManager>(x => x.GetRequiredService<GameEventManager>())
-                   .AddSingleton<ILoadable, GameEventManager>(x => x.GetRequiredService<GameEventManager>());
+                   .AddSingleton<ISharpExtension, GameEventManager>(x => x.GetRequiredService<GameEventManager>());
 
     /// <summary>
     ///     Add GameEventManager to the service collection. <br />
@@ -54,6 +54,6 @@ public static class DependencyInjection
 
         return services.AddSingleton<GameEventManager>()
                        .AddSingleton<IGameEventManager, GameEventManager>(x => x.GetRequiredService<GameEventManager>())
-                       .AddSingleton<ILoadable, GameEventManager>(x => x.GetRequiredService<GameEventManager>());
+                       .AddSingleton<ISharpExtension, GameEventManager>(x => x.GetRequiredService<GameEventManager>());
     }
 }

@@ -26,26 +26,26 @@ namespace Sharp.Shared.Abstractions;
 ///     This interface use only for Extensions package. <br />
 ///     <remark>if you want to inherit this, you need to know what you are doing.</remark>
 /// </summary>
-public interface ILoadable
+public interface ISharpExtension
 {
     void Load();
 
     void Shutdown();
 }
 
-public static class LoadableExtensions
+public static class SharpExtensionExtensions
 {
-    public static void LoadAllLoadable(this IServiceProvider services)
+    public static void LoadAllSharpExtension(this IServiceProvider services)
     {
-        foreach (var loadable in services.GetServices<ILoadable>())
+        foreach (var loadable in services.GetServices<ISharpExtension>())
         {
             loadable.Load();
         }
     }
 
-    public static void ShutdownAllLoadable(this IServiceProvider services)
+    public static void ShutdownAllSharpExtension(this IServiceProvider services)
     {
-        foreach (var loadable in services.GetServices<ILoadable>())
+        foreach (var loadable in services.GetServices<ISharpExtension>())
         {
             loadable.Shutdown();
         }

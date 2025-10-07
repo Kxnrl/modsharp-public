@@ -29,7 +29,7 @@ using Sharp.Shared.Objects;
 
 namespace Sharp.Extensions.GameEventManager;
 
-internal class GameEventManager : IGameEventManager, ILoadable, IEventListener
+internal class GameEventManager : IGameEventManager, ISharpExtension, IEventListener
 {
     private readonly ILogger<GameEventManager> _logger;
     private readonly IEventManager             _manager;
