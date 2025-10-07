@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Sharp.Shared.Abstractions;
 
 public interface ILoadable
@@ -24,4 +26,23 @@ public interface ILoadable
     void Load();
 
     void Shutdown();
+}
+
+public static class LoadableExtensions
+{
+    public static void LoadAllLoadable(this ServiceProvider services)
+    {
+        foreach (var loadable in services.GetServices<ILoadable>())
+        {
+            loadable.Load();
+        }
+    }
+
+    public static void ShutdownAllLoadable(this ServiceProvider services)
+    {
+        foreach (var loadable in services.GetServices<ILoadable>())
+        {
+            loadable.Shutdown();
+        }
+    }
 }
