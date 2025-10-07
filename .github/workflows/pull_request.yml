@@ -272,7 +272,7 @@ jobs:
         env:
           GITCOMMIT: ${{env.GITCOMMIT}}
         run: |
-          dotnet publish Sharp.Extensions/GameEventManager/Sharp.Extensions.GameEventManager.csproj -f net9.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Extensions.GameEventManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Extensions/GameEventManager/src/Sharp.Extensions.GameEventManager.csproj -f net9.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Extensions.GameEventManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       # Upload
       - name: Upload artifact

@@ -119,9 +119,9 @@ internal class GameEventManager : IGameEventManager, ILoadable, IEventListener
             {
                 ((IGameEventManager.DelegateOnEventFired) callback).Invoke(e);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError(e, "An error occurred while calling listener::FireGameEvent");
+                _logger.LogError(ex, "An error occurred while calling listener::FireGameEvent");
             }
         }
     }
