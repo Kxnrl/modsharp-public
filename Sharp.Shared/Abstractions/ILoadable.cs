@@ -17,10 +17,15 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Sharp.Shared.Abstractions;
 
+/// <summary>
+///     This interface use only for Extensions package. <br />
+///     <remark>if you want to inherit this, you need to know what you are doing.</remark>
+/// </summary>
 public interface ILoadable
 {
     void Load();
@@ -30,7 +35,7 @@ public interface ILoadable
 
 public static class LoadableExtensions
 {
-    public static void LoadAllLoadable(this ServiceProvider services)
+    public static void LoadAllLoadable(this IServiceProvider services)
     {
         foreach (var loadable in services.GetServices<ILoadable>())
         {
@@ -38,7 +43,7 @@ public static class LoadableExtensions
         }
     }
 
-    public static void ShutdownAllLoadable(this ServiceProvider services)
+    public static void ShutdownAllLoadable(this IServiceProvider services)
     {
         foreach (var loadable in services.GetServices<ILoadable>())
         {
