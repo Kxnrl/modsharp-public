@@ -3,7 +3,7 @@ name: Pull Request Build
 on: [pull_request]
 
 jobs:
-  windows-build:
+  windows:
     runs-on: windows-2022
 
     steps:
@@ -120,7 +120,7 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-  linux-build:
+  linux:
     runs-on: ubuntu-latest
     container:
       image: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
