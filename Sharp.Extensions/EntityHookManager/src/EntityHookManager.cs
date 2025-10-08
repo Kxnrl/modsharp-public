@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Sharp.Shared;
 using Sharp.Shared.Abstractions;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
@@ -46,10 +47,10 @@ internal class EntityHookManager : IEntityHookManager, ISharpExtension, IEntityL
     private readonly Dictionary<string, Dictionary<string, OutputDelegate?>> _outputHook;
     private readonly Dictionary<string, Dictionary<string, InputDelegate?>>  _inputHook;
 
-    public EntityHookManager(ILogger<EntityHookManager> logger, IEntityManager manager)
+    public EntityHookManager(ILogger<EntityHookManager> logger, ISharedSystem shared)
     {
         _logger  = logger;
-        _manager = manager;
+        _manager = shared.GetEntityManager();
 
         _createdEvent = new Dictionary<string, EventDelegate?>(StringComparer.OrdinalIgnoreCase);
         _spawnedEvent = new Dictionary<string, EventDelegate?>(StringComparer.OrdinalIgnoreCase);
