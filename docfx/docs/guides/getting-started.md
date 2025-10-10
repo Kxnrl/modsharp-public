@@ -1,4 +1,4 @@
-# Getting Started
+# 入门
 ## 前言
 
 本文将引导你完成 ModSharp 在全新安装的 CS2 服务器上的部署流程。
