@@ -104,6 +104,16 @@ public class Example : IModSharpModule
 ```
 
 其中：
+
+```cs
+public class Example : IModSharpModule
+```
+
+插件入口必须继承`IModSharpModule`，且一个插件中有且只能有一个类继承该接口，否则将会导致各种非预期行为。
+
+> [!NOTE]
+> 如果你一个solution中有多个插件，请将它们置于不同的插件包中，否则出现什么问题都不要觉得奇怪。
+
 ```cs
     public Example(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? configuration, bool hotReload)
     {
