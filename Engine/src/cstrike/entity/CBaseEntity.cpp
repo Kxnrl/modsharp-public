@@ -240,7 +240,7 @@ void CBaseEntity::StopSound(const char* pszSound)
 
 int64_t CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo* info)
 {
-    return address::server::CBaseEntity_DispatchTraceAttack(this, info);
+    return address::server::CBaseEntity_DispatchTraceAttack(this, info, nullptr);
 }
 
 void CBaseEntity::SetGroundEntity(CBaseEntity* pGround, void* pPhysicsBody)
