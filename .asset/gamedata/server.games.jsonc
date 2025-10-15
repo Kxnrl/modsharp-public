@@ -796,45 +796,45 @@
   },
   "VFuncs": {
     "CBaseEntity::ChangeTeam": {
-      "linux": 105,
-      "windows": 106 // 48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B F9 48 8B DA 48 8B 89
+      "linux": 108,
+      "windows": 109 // 48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 41 56 48 83 EC ? 0F B6 B1 3C 03 00 00
     },
     "CBaseEntity::CollisionRulesChanged": {
-      "linux": 188,
-      "windows": 189
-    },
-    "CBaseEntity::EndTouch": {
-      "linux": 151,
-      "windows": 152 // 40 57 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B FA 48 8B 48 ? 48 85 C9 74 ? 48 89 5C 24 ? E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 48 8B 10 48 8B C8 FF 92 ? ? ? ? 84 C0 74 ? 4C 8B 03 48 8B D7 48 8B CB 41 FF 90 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC 48 85 D2
-    },
-    "CBaseEntity::Event_Killed": {
-      "linux": 130,
-      "windows": 131
-    },
-    "CBaseEntity::GetCenter": {
-      "linux": 90,
-      "windows": 91 // 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B FA 48 8B D9 FF 90 ? ? ? ? 48 8B CB 48 85 C0
-    },
-    "CBaseEntity::GetEyeAngles": {
-      "linux": 190,
+      "linux": 191,
       "windows": 191
     },
+    "CBaseEntity::EndTouch": {
+      "linux": 153,
+      "windows": 155 // 40 57 48 83 EC ? 48 8B 81 70 02 00 00 48 8B FA 48 8B 48 38 48 85 C9 74 ? 48 89 5C 24 30 E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 48 8B 10 48 8B C8 FF 92 E0 04 00 00 84 C0 74 ? 4C 8B 03 48 8B D7 48 8B CB 41 FF 90 D8 04 00 00
+    },
+    "CBaseEntity::Event_Killed": {
+      "linux": 132,
+      "windows": 133
+    },
+    "CBaseEntity::GetCenter": {
+      "linux": 95,
+      "windows": 94 // 48 89 5C 24 08 57 48 83 EC ? 48 8B 01 48 8B FA 48 8B D9 FF 90 58 02 00 00
+    },
+    "CBaseEntity::GetEyeAngles": {
+      "linux": 192,
+      "windows": 193
+    },
     "CBaseEntity::GetEyePosition": {
-      "linux": 189,
-      "windows": 190
+      "linux": 191,
+      "windows": 192
     },
     "CBaseEntity::IsPlayerController": {
-      "linux": 172,
-      "windows": 173
+      "linux": 174,
+      "windows": 175
     },
     "CBaseEntity::IsPlayerPawn": {
-      "linux": 171,
-      "windows": 172
+      "linux": 173,
+      "windows": 174
     },
     // 搜字符串 "item_pickup_failed", 往上有一个 != 0x8000 的判断，后面的vfunc call就是
     "CBaseEntity::IsWeapon": {
-      "linux": 179,
-      "windows": 180
+      "linux": 181,
+      "windows": 182
     },
     "CBaseEntity::Precache": {
       "linux": 5,
@@ -842,15 +842,15 @@
     },
     "CBaseEntity::SetOwner": {
       "linux": 49,
-      "windows": 50 // 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 44 8B 89
+      "windows": 50 // 48 89 6C 24 10 48 89 74 24 18 57 48 83 EC ? 48 8B 01 48 8B F2
     },
     "CBaseEntity::Spawn": {
       "linux": 7,
       "windows": 6
     },
     "CBaseEntity::StartTouch": {
-      "linux": 149,
-      "windows": 150 // 40 57 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B FA 48 8B 48 ? 48 85 C9 74 ? 48 89 5C 24 ? E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 48 8B 10 48 8B C8 FF 92 ? ? ? ? 84 C0 74 ? 4C 8B 03 48 8B D7 48 8B CB 41 FF 90 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC 40 57
+      "linux": 152,
+      "windows": 153 // 40 57 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B FA 48 8B 48 ? 48 85 C9 74 ? 48 89 5C 24 ? E8 ? ? ? ? 48 8B D8 48 85 C0 74 ? 48 8B 10 48 8B C8 FF 92 ? ? ? ? 84 C0 74 ? 4C 8B 03 48 8B D7 48 8B CB 41 FF 90 ? ? ? ? 48 8B 5C 24 ? 48 83 C4 ? 5F C3 CC CC CC CC CC CC CC CC CC CC 40 57
     },
     "CBaseEntity::StateChanged": {
       "linux": 26,
@@ -858,41 +858,41 @@
     },
     // 搜 "can't teleport object (%s) as it has a parent (%s)!" 往上调用的vfunc就是
     "CBaseEntity::Teleport": {
-      "linux": 164,
-      "windows": 165
+      "linux": 167,
+      "windows": 168
     },
     "CBaseEntity::Touch": {
-      "linux": 150,
-      "windows": 151 // 48 89 5C 24 ? 57 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B FA 48 8B D9 48 85 C0 74 ? FF D0 48 8B 83
+      "linux": 153,
+      "windows": 154 // 48 89 5C 24 ? 57 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B FA 48 8B D9 48 85 C0 74 ? FF D0 48 8B 83
     },
     "CBaseEntity::Use": {
-      "linux": 146,
-      "windows": 147 // 40 53 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B DA 48 85 C0
+      "linux": 148,
+      "windows": 150 // 40 53 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B DA 48 85 C0
     },
     "CBasePlayerController::CanHearAndReadChatFrom": {
-      "linux": 265,
-      "windows": 264 // 48 83 EC ? 8B 81 ? ? ? ? 4C 8B C9
+      "linux": 267,
+      "windows": 266 // 48 83 EC ? 8B 81 ? ? ? ? 4C 8B C9
     },
     // 搜 "disconnect\n"，被引用的函数的上一级就是
     "CBasePlayerController::RoundRespawn": {
-      "linux": 277,
-      "windows": 275 // 48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B D9 0F 29 7C 24
+      "linux": 279,
+      "windows": 277 // 48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B D9 0F 29 7C 24
     },
     "CBasePlayerPawn::CommitSuicide": {
-      "linux": 408,
-      "windows": 408 // 48 89 5C 24 10 48 89 74 24 18 57 48 81 EC ? ? ? ? 48 8B 01
+      "linux": 410,
+      "windows": 408 // 48 89 5C 24 10 48 89 74 24 18 57 48 81 EC ? ? ? ? 48 8B 01 41 0F B6 F8
     },
     "CBaseTrigger::PassesTriggerFilters": {
-      "linux": 270,
-      "windows": 269 // 48 89 5C 24 10 56 48 83 EC ? 48 8B DA 48 8B F1 8B 91 58 03 00 00
+      "linux": 272,
+      "windows": 271 // 48 89 5C 24 10 56 48 83 EC ? 48 8B DA 48 8B F1 8B 91 58 03 00 00
     },
     "CBaseWeapon::Deploy": {
-      "linux": 337,
-      "windows": 338 // 48 89 5C 24 08 57 48 83 EC ? F3 0F 10 81 8C 0F 00 00
+      "linux": 339,
+      "windows": 339 // 48 89 5C 24 08 57 48 83 EC ? F3 0F 10 81 7C 0F 00 00
     },
     "CBaseWeapon::Holster": {
-      "linux": 338,
-      "windows": 339
+      "linux": 340,
+      "windows": 340
     },
     "CCSPlayer_ItemServices::GiveNamedItem": {
       "linux": 19,
@@ -928,20 +928,20 @@
       "windows": 8
     },
     "CCSPlayerPawn::PlayerPostThink": {
-      "linux": 375,
-      "windows": 374 // 48 8B C4 55 53 56 57 41 54 48 8D 68 C8
+      "linux": 377,
+      "windows": 375 // 48 8B C4 55 53 56 57 41 54 48 8D 68 C8
     },
     "CCSPlayerPawn::PlayerPreThink": {
-      "linux": 374,
-      "windows": 373 // 40 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 48 8B F9
+      "linux": 376,
+      "windows": 374 // 40 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 48 8B F9
     },
     // str 'Invalid Steam Logon Delayed: Kicking client [U:1:%d] %s\n'
     "CCSPlayerPawn::PlayerSpawn": {
-      "linux": 371,
-      "windows": 370
+      "linux": 373,
+      "windows": 371
     },
     "CCSPlayerPawnBase::IsPlayer": {
-      "linux": 427,
+      "linux": 429,
       "windows": 426
     },
     "CEntityInstance::GetDynamicBinding": {
@@ -949,20 +949,20 @@
       "windows": 42
     },
     "CGameRulesGameSystem::FrameUpdatePostEntityThink": {
-      "linux": 30,
-      "windows": 30
+      "linux": 31,
+      "windows": 31
     },
     "CGameRulesGameSystem::FrameUpdatePreEntityThink": {
-      "linux": 29,
-      "windows": 29
+      "linux": 30,
+      "windows": 30
     },
     "CGameRulesGameSystem::GameActivate": {
       "linux": 8,
       "windows": 8
     },
     "CGameRulesGameSystem::GameDeactivate": {
-      "linux": 11,
-      "windows": 11
+      "linux": 12,
+      "windows": 12
     },
     "CGameRulesGameSystem::GameInit": {
       "linux": 3,
@@ -981,16 +981,16 @@
       "windows": 4
     },
     "CGameRulesGameSystem::OnPostSpawnGroupLoad": {
-      "linux": 15,
-      "windows": 15
+      "linux": 16,
+      "windows": 16
     },
     "CGameRulesGameSystem::OnPrecacheResource": {
       "linux": 7,
       "windows": 7
     },
     "CGameRulesGameSystem::OnServerGamePostSimulate": {
-      "linux": 37,
-      "windows": 37
+      "linux": 36,
+      "windows": 36
     },
     "CGameSceneNode::GetSkeletonInstance": {
       "linux": 9,

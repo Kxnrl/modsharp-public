@@ -32,8 +32,8 @@
     },
     // server.dll -> xref 'sv_phys_stop_at_collision' 最上面的 __fastcall
     "CVPhys2World::GetTouchingList": {
-      "linux": 122,
-      "windows": 122
+      "linux": 120,
+      "windows": 120
     },
     "IGameEventSystem::PostEventAbstract": {
       "linux": 15,
@@ -53,8 +53,8 @@
     // 往上拉有个 (*(unsigned int (__fastcall **)(uintptr_t, __int64))(*(_QWORD *)a1 + offset))(a1, a2) == 3的
     // offset / 8 就是 index
     "IResourceSystem::GetResourceStatus": {
-      "linux": 53,
-      "windows": 55
+      "linux": 48,
+      "windows": 50
     }
   }
 }
