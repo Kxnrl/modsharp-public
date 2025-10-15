@@ -23,6 +23,7 @@
 #include "definitions.h"
 
 #include "cstrike/type/CRecipientFilter.h"
+#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EmitSound.h"
 
 class CUtlString;
