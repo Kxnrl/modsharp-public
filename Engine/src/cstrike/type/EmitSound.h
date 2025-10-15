@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,13 +20,10 @@
 #ifndef CSTRIKE_TYPE_EMITSOUND_H
 #define CSTRIKE_TYPE_EMITSOUND_H
 
-#include "cstrike/type/CHashKey.h"
 #include "cstrike/type/CUtlLeanVector.h"
-#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Vector.h"
 #include "cstrike/type/Vector2D.h"
 
-#include <cstddef>
 #include <cstdint>
 
 constexpr int PITCH_NORM = 100; // non-pitch shifted
@@ -227,22 +224,23 @@ enum class SoundFlags_t
 
 struct EmitSound_t
 {
-    char*  m_pSoundName;    // 0x0
-    Vector m_veSoundOrigin; // 0x8
-    float  m_flVolume;      // 0x14
-    float  m_flSoundTime;   // 0x18
+    const char* m_pSoundName;    // 0x0
+    Vector      m_veSoundOrigin; // 0x8
+    float       m_flVolume;      // 0x14
+    float       m_flSoundTime;   // 0x18
 private:
-    char pad_1c[0x4];
+    [[maybe_unused]] uint8_t m_pad_0x1c[0x4];
 
 public:
     uint32_t m_nForceGuid; // 0x20
 private:
-    char pad_24[0x4];
+    [[maybe_unused]] uint8_t m_pad_0x24[0x4];
 
 public:
     int16_t m_nPitch; // 0x28
-    uint8_t m_nflags; // 0x2a
+    uint8_t m_nFlags; // 0x2a
 }; // Size: 0x2b
+static_assert(sizeof(EmitSound_t) == 48);
 
 enum SOFieldDataType_t : std::int8_t
 {
@@ -337,7 +335,7 @@ private:
     Vector2D m_vecValue;
 };
 
-struct CSosFieldDataFloat3 final : CSosFieldData 
+struct CSosFieldDataFloat3 final : CSosFieldData
 {
     explicit CSosFieldDataFloat3(const Vector& value) noexcept
     {

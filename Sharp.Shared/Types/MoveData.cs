@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types.Tier;
@@ -71,10 +70,6 @@ public struct MoveData
 
     [FieldOffset(0x11c)]
     public float ClientMaxSpeed;
-
-    [FieldOffset(0x124)]
-    [Obsolete("用InAir")]
-    public bool OnGround;
 
     [FieldOffset(0x124)]
     public bool InAir;

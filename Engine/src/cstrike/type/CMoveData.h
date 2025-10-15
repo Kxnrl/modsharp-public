@@ -81,7 +81,7 @@ public:
     Vector   m_vecVelocity;             // 0x38
     Vector   m_vecAngles;               // 0x44
 private:
-    uint8_t pad_50[0x10];
+    [[maybe_unused]] uint8_t m_pad_0x50[0x10];
 
 public:
     CUtlVector<SubtickMove>   m_SubtickMoves;       // 0x60
@@ -89,7 +89,7 @@ public:
     bool                      m_bHasSubtickInputs;  // 0x90
 
 private:
-    uint8_t pad_91[0x7];
+    [[maybe_unused]] uint8_t m_pad_0x91[0x7];
 
 public:
     CUtlVector<touchlist_t> m_TouchList;               // 0x98
@@ -102,7 +102,7 @@ public:
     float                   m_flFullMoveEndFraction;   // 0xe0
 
 private:
-    uint8_t pad[4]; // 0xe4
+    [[maybe_unused]] uint8_t m_pad_0xe4[4]; // 0xe4
 
 public:
     Vector m_outWishVel;           // 0xe8
@@ -116,7 +116,7 @@ public:
     bool   m_bGameCodeMovedPlayer; // 0x125
 
 private:
-    char pad_126[0xa];
+    [[maybe_unused]] uint8_t m_pad_0x126[0xa];
 
 }; // Size: 0x130
 #pragma pack(pop)
