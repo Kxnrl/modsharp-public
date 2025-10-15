@@ -43,8 +43,10 @@ enum class TakeDamageFlags_t : uint64_t
     DFLAG_FORCEREDUCEARMOR_DMG         = 1 << 11, // 0x800
     DFLAG_SUPPRESS_INTERRUPT_FLINCH    = 1 << 12, // 0x1000
     DFLAG_IGNORE_DESTRUCTIBLE_PARTS    = 1 << 13, // 0x2000
-    DFLAG_IGNORE_ARMOR                 = 1 << 14, // 0x4000
-    DFLAG_SUPPRESS_UTILREMOVE          = 1 << 15, // 0x8000
+    DFLAG_SUPPRESS_BREAKABLES          = 1 << 14, // 0x4000
+    DFLAG_FORCE_PHYSICS_FORCE          = 1 << 15, // 0x8000
+    DFLAG_IGNORE_ARMOR                 = 1 << 16, // 0x10000
+    DFLAG_SUPPRESS_UTILREMOVE          = 1 << 17, // 0x20000
 };
 
 enum class DamageTypes_t : int32_t
