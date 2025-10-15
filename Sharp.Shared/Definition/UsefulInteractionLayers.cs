@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -18,7 +18,6 @@
  */
 
 using Sharp.Shared.Enums;
-using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Definition;
 
@@ -75,52 +74,4 @@ public static class UsefulInteractionLayers
                                                | InteractionLayers.Sky
                                                | InteractionLayers.WorldGeometry
                                                | InteractionLayers.Slime;
-
-    public static bool EnableBulletIgnore(this IBaseEntity entity)
-    {
-        var collection = entity.GetCollisionProperty();
-
-        if (collection is null)
-        {
-            return false;
-        }
-
-        var attribute = collection.CollisionAttribute;
-
-        attribute.InteractsAs |= InteractionLayers.BulletIgnore;
-
-        entity.CollisionRulesChanged();
-
-        return attribute.InteractsAs.HasFlag(InteractionLayers.BulletIgnore);
-    }
-
-    public static bool IsBulletIgnoreEnabled(this IBaseEntity entity)
-    {
-        var collection = entity.GetCollisionProperty();
-
-        if (collection is null)
-        {
-            return false;
-        }
-
-        var attribute = collection.CollisionAttribute;
-
-        return attribute.InteractsAs.HasFlag(InteractionLayers.BulletIgnore);
-    }
-
-    public static void DisableBulletIgnore(this IBaseEntity entity)
-    {
-        var collection = entity.GetCollisionProperty();
-
-        if (collection is null)
-        {
-            return;
-        }
-
-        var attribute = collection.CollisionAttribute;
-
-        attribute.InteractsAs &= ~InteractionLayers.BulletIgnore;
-
-        entity.CollisionRulesChanged();
-    }
 }
