@@ -227,61 +227,22 @@ enum class SoundFlags_t
 
 struct EmitSound_t
 {
-    EmitSound_t() :
-        m_nChannel(SoundChannel_t::AUTO),
-        m_pSoundName(nullptr),
-        m_flVolume(1),
-        m_SoundLevel(SoundLevel_t::SoundLevel_None),
-        m_nFlags(0),
-        m_nPitch(PITCH_NORM),
-        m_pOrigin(nullptr),
-        m_flSoundTime(0.0f),
-        m_pflSoundDuration(nullptr),
-        m_bEmitCloseCaption(true),
-        m_bWarnOnMissingCloseCaption(false),
-        m_bWarnOnDirectWaveReference(false),
-        m_nSpeakerEntity(-1),
-        m_UtlVecSoundOrigin(),
-        m_nForceGuid(0),
-        m_SpeakerGender(SoundGender_t::NONE)
-    {
-    }
-    SoundChannel_t     m_nChannel;
-    const char*        m_pSoundName;
-    float              m_flVolume;
-    SoundLevel_t       m_SoundLevel;
-    int                m_nFlags;
-    int                m_nPitch;
-    const Vector*      m_pOrigin;
-    float              m_flSoundTime;
-    float*             m_pflSoundDuration;
-    bool               m_bEmitCloseCaption;
-    bool               m_bWarnOnMissingCloseCaption;
-    bool               m_bWarnOnDirectWaveReference;
-    int32_t            m_nSpeakerEntity;
-    CUtlVector<Vector> m_UtlVecSoundOrigin;
-    SoundEventGuid_t   m_nForceGuid;
-    SoundGender_t      m_SpeakerGender;
-};
-static_assert(sizeof(EmitSound_t) == 0x60);
-#ifdef PLATFORM_WINDOWS
-static_assert(offsetof(EmitSound_t, m_nChannel) == 0x0);
-static_assert(offsetof(EmitSound_t, m_pSoundName) == 0x8);
-static_assert(offsetof(EmitSound_t, m_flVolume) == 0x10);
-static_assert(offsetof(EmitSound_t, m_SoundLevel) == 0x14);
-static_assert(offsetof(EmitSound_t, m_nFlags) == 0x18);
-static_assert(offsetof(EmitSound_t, m_nPitch) == 0x1C);
-static_assert(offsetof(EmitSound_t, m_pOrigin) == 0x20);
-static_assert(offsetof(EmitSound_t, m_flSoundTime) == 0x28);
-static_assert(offsetof(EmitSound_t, m_pflSoundDuration) == 0x30);
-static_assert(offsetof(EmitSound_t, m_bEmitCloseCaption) == 0x38);
-static_assert(offsetof(EmitSound_t, m_bWarnOnMissingCloseCaption) == 0x39);
-static_assert(offsetof(EmitSound_t, m_bWarnOnDirectWaveReference) == 0x3A);
-static_assert(offsetof(EmitSound_t, m_nSpeakerEntity) == 0x3C);
-static_assert(offsetof(EmitSound_t, m_UtlVecSoundOrigin) == 0x40);
-static_assert(offsetof(EmitSound_t, m_nForceGuid) == 0x58);
-static_assert(offsetof(EmitSound_t, m_SpeakerGender) == 0x5C);
-#endif
+    char*  m_pSoundName;    // 0x0
+    Vector m_veSoundOrigin; // 0x8
+    float  m_flVolume;      // 0x14
+    float  m_flSoundTime;   // 0x18
+private:
+    char pad_1c[0x4];
+
+public:
+    uint32_t m_nForceGuid; // 0x20
+private:
+    char pad_24[0x4];
+
+public:
+    int16_t m_nPitch; // 0x28
+    uint8_t m_nflags; // 0x2a
+}; // Size: 0x2b
 
 enum SOFieldDataType_t : std::int8_t
 {
