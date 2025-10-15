@@ -189,7 +189,7 @@ public:
     template <typename T>
     inline T GetValue()
     {
-        return *reinterpret_cast<T*>(reinterpret_cast<intptr_t>(this) + 0x48);
+        return *reinterpret_cast<T*>(reinterpret_cast<intptr_t>(this) + 0x50);
     }
 
 protected:

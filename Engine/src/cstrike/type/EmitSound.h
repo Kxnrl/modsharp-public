@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,13 +20,10 @@
 #ifndef CSTRIKE_TYPE_EMITSOUND_H
 #define CSTRIKE_TYPE_EMITSOUND_H
 
-#include "cstrike/type/CHashKey.h"
 #include "cstrike/type/CUtlLeanVector.h"
-#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Vector.h"
 #include "cstrike/type/Vector2D.h"
 
-#include <cstddef>
 #include <cstdint>
 
 constexpr int PITCH_NORM = 100; // non-pitch shifted
@@ -227,61 +224,23 @@ enum class SoundFlags_t
 
 struct EmitSound_t
 {
-    EmitSound_t() :
-        m_nChannel(SoundChannel_t::AUTO),
-        m_pSoundName(nullptr),
-        m_flVolume(1),
-        m_SoundLevel(SoundLevel_t::SoundLevel_None),
-        m_nFlags(0),
-        m_nPitch(PITCH_NORM),
-        m_pOrigin(nullptr),
-        m_flSoundTime(0.0f),
-        m_pflSoundDuration(nullptr),
-        m_bEmitCloseCaption(true),
-        m_bWarnOnMissingCloseCaption(false),
-        m_bWarnOnDirectWaveReference(false),
-        m_nSpeakerEntity(-1),
-        m_UtlVecSoundOrigin(),
-        m_nForceGuid(0),
-        m_SpeakerGender(SoundGender_t::NONE)
-    {
-    }
-    SoundChannel_t     m_nChannel;
-    const char*        m_pSoundName;
-    float              m_flVolume;
-    SoundLevel_t       m_SoundLevel;
-    int                m_nFlags;
-    int                m_nPitch;
-    const Vector*      m_pOrigin;
-    float              m_flSoundTime;
-    float*             m_pflSoundDuration;
-    bool               m_bEmitCloseCaption;
-    bool               m_bWarnOnMissingCloseCaption;
-    bool               m_bWarnOnDirectWaveReference;
-    int32_t            m_nSpeakerEntity;
-    CUtlVector<Vector> m_UtlVecSoundOrigin;
-    SoundEventGuid_t   m_nForceGuid;
-    SoundGender_t      m_SpeakerGender;
-};
-static_assert(sizeof(EmitSound_t) == 0x60);
-#ifdef PLATFORM_WINDOWS
-static_assert(offsetof(EmitSound_t, m_nChannel) == 0x0);
-static_assert(offsetof(EmitSound_t, m_pSoundName) == 0x8);
-static_assert(offsetof(EmitSound_t, m_flVolume) == 0x10);
-static_assert(offsetof(EmitSound_t, m_SoundLevel) == 0x14);
-static_assert(offsetof(EmitSound_t, m_nFlags) == 0x18);
-static_assert(offsetof(EmitSound_t, m_nPitch) == 0x1C);
-static_assert(offsetof(EmitSound_t, m_pOrigin) == 0x20);
-static_assert(offsetof(EmitSound_t, m_flSoundTime) == 0x28);
-static_assert(offsetof(EmitSound_t, m_pflSoundDuration) == 0x30);
-static_assert(offsetof(EmitSound_t, m_bEmitCloseCaption) == 0x38);
-static_assert(offsetof(EmitSound_t, m_bWarnOnMissingCloseCaption) == 0x39);
-static_assert(offsetof(EmitSound_t, m_bWarnOnDirectWaveReference) == 0x3A);
-static_assert(offsetof(EmitSound_t, m_nSpeakerEntity) == 0x3C);
-static_assert(offsetof(EmitSound_t, m_UtlVecSoundOrigin) == 0x40);
-static_assert(offsetof(EmitSound_t, m_nForceGuid) == 0x58);
-static_assert(offsetof(EmitSound_t, m_SpeakerGender) == 0x5C);
-#endif
+    const char* m_pSoundName;    // 0x0
+    Vector      m_veSoundOrigin; // 0x8
+    float       m_flVolume;      // 0x14
+    float       m_flSoundTime;   // 0x18
+private:
+    [[maybe_unused]] uint8_t m_pad_0x1c[0x4];
+
+public:
+    uint32_t m_nForceGuid; // 0x20
+private:
+    [[maybe_unused]] uint8_t m_pad_0x24[0x4];
+
+public:
+    int16_t m_nPitch; // 0x28
+    uint8_t m_nFlags; // 0x2a
+}; // Size: 0x2b
+static_assert(sizeof(EmitSound_t) == 48);
 
 enum SOFieldDataType_t : std::int8_t
 {
@@ -376,7 +335,7 @@ private:
     Vector2D m_vecValue;
 };
 
-struct CSosFieldDataFloat3 final : CSosFieldData 
+struct CSosFieldDataFloat3 final : CSosFieldData
 {
     explicit CSosFieldDataFloat3(const Vector& value) noexcept
     {

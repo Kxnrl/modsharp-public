@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -30,14 +30,14 @@ internal class PlayerKilledPreForward : ForwardType<PlayerKilledForwardParams, P
     public PlayerKilledPreForward(ILoggerFactory factory) : base(factory)
         => Bridges.Forwards.Player.OnPlayerKilledPre += CCSPlayerPawn_PlayerKilledPre;
 
-    private void CCSPlayerPawn_PlayerKilledPre(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrInfo)
+    private void CCSPlayerPawn_PlayerKilledPre(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrResult)
     {
         if (!IsForwardInvokeRequired())
         {
             return;
         }
 
-        var param = new PlayerKilledForwardParams(false, ptrClient, ptrController, ptrPawn, ptrInfo);
+        var param = new PlayerKilledForwardParams(false, ptrClient, ptrController, ptrPawn, ptrResult);
         InvokeForward(param);
         param.MarkAsDisposed();
     }
@@ -48,14 +48,14 @@ internal class PlayerKilledPostForward : ForwardType<PlayerKilledForwardParams, 
     public PlayerKilledPostForward(ILoggerFactory factory) : base(factory)
         => Bridges.Forwards.Player.OnPlayerKilledPost += CCSPlayerPawn_PlayerKilledPost;
 
-    private void CCSPlayerPawn_PlayerKilledPost(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrInfo)
+    private void CCSPlayerPawn_PlayerKilledPost(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrResult)
     {
         if (!IsForwardInvokeRequired())
         {
             return;
         }
 
-        var param = new PlayerKilledForwardParams(true, ptrClient, ptrController, ptrPawn, ptrInfo);
+        var param = new PlayerKilledForwardParams(true, ptrClient, ptrController, ptrPawn, ptrResult);
         InvokeForward(param);
         param.MarkAsDisposed();
     }
@@ -63,31 +63,23 @@ internal class PlayerKilledPostForward : ForwardType<PlayerKilledForwardParams, 
 
 internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParams, IPlayerKilledForwardParams
 {
-    private readonly TakeDamageResult* _ptrInfo;
+    private readonly TakeDamageResult* _ptrResult;
 
-    public PlayerKilledForwardParams(bool postHook, nint client, nint controller, nint pawn, nint infoPtr) : base(postHook,
+    public PlayerKilledForwardParams(bool postHook, nint client, nint controller, nint pawn, nint result) : base(postHook,
         client,
         controller,
         pawn)
-        => _ptrInfo = (TakeDamageResult*) infoPtr;
+        => _ptrResult = (TakeDamageResult*) result;
 
-    public TakeDamageInfo* Info
+    public TakeDamageInfo* Info => Result->OriginatingInfo;
+
+    public TakeDamageResult* Result
     {
         get
         {
             CheckDisposed();
 
-            return _ptrInfo->OriginatingInfo;
-        }
-    }
-
-    private TakeDamageResult* Result
-    {
-        get
-        {
-            CheckDisposed();
-
-            return _ptrInfo;
+            return _ptrResult;
         }
     }
 
@@ -142,7 +134,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->DamageForce = value;
+            _ptrResult->OriginatingInfo->DamageForce = value;
         }
     }
 
@@ -153,7 +145,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->DamagePosition = value;
+            _ptrResult->OriginatingInfo->DamagePosition = value;
         }
     }
 
@@ -164,7 +156,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->ReportedPosition = value;
+            _ptrResult->OriginatingInfo->ReportedPosition = value;
         }
     }
 
@@ -175,7 +167,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->DamageDirection = value;
+            _ptrResult->OriginatingInfo->DamageDirection = value;
         }
     }
 
@@ -186,7 +178,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->Inflictor = value;
+            _ptrResult->OriginatingInfo->Inflictor = value;
         }
     }
 
@@ -197,7 +189,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->Attacker = value;
+            _ptrResult->OriginatingInfo->Attacker = value;
         }
     }
 
@@ -208,7 +200,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->Ability = value;
+            _ptrResult->OriginatingInfo->Ability = value;
         }
     }
 
@@ -219,7 +211,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->Damage = value;
+            _ptrResult->OriginatingInfo->Damage = value;
         }
     }
 
@@ -230,7 +222,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->DamageType = value;
+            _ptrResult->OriginatingInfo->DamageType = value;
         }
     }
 
@@ -241,7 +233,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->DamageCustom = value;
+            _ptrResult->OriginatingInfo->DamageCustom = value;
         }
     }
 
@@ -252,7 +244,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->AmmoType = value;
+            _ptrResult->OriginatingInfo->AmmoType = value;
         }
     }
 
@@ -263,7 +255,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->OriginalDamage = value;
+            _ptrResult->OriginatingInfo->OriginalDamage = value;
         }
     }
 
@@ -274,7 +266,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->ShouldBleed = value;
+            _ptrResult->OriginatingInfo->ShouldBleed = value;
         }
     }
 
@@ -285,7 +277,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->ShouldSpark = value;
+            _ptrResult->OriginatingInfo->ShouldSpark = value;
         }
     }
 
@@ -296,7 +288,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->TakeDamageFlags = value;
+            _ptrResult->OriginatingInfo->TakeDamageFlags = value;
         }
     }
 
@@ -307,7 +299,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->NumObjectsPenetrated = value;
+            _ptrResult->OriginatingInfo->NumObjectsPenetrated = value;
         }
     }
 
@@ -318,7 +310,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->InTakeDamageFlow = value;
+            _ptrResult->OriginatingInfo->InTakeDamageFlow = value;
         }
     }
 
@@ -329,7 +321,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->IsPawn = value;
+            _ptrResult->OriginatingInfo->IsPawn = value;
         }
     }
 
@@ -340,7 +332,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->IsWorld = value;
+            _ptrResult->OriginatingInfo->IsWorld = value;
         }
     }
 
@@ -351,7 +343,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->AttackerPlayerSlot = value;
+            _ptrResult->OriginatingInfo->AttackerPlayerSlot = value;
         }
     }
 
@@ -362,7 +354,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->AttackerPawnHandle = value;
+            _ptrResult->OriginatingInfo->AttackerPawnHandle = value;
         }
     }
 
@@ -373,7 +365,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->TeamChecked = value;
+            _ptrResult->OriginatingInfo->TeamChecked = value;
         }
     }
 
@@ -384,7 +376,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         {
             CheckDisposed();
             CheckEditable();
-            _ptrInfo->OriginatingInfo->Team = value;
+            _ptrResult->OriginatingInfo->Team = value;
         }
     }
 
@@ -401,12 +393,12 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
 
     public int DamageTaken
     {
-        get => Result->DamageTaken;
+        get => Result->DamageDealt;
         set
         {
             CheckDisposed();
             CheckEditable();
-            Result->DamageTaken = value;
+            Result->DamageDealt = value;
         }
     }
 
@@ -423,23 +415,12 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
 
     public int TotalledDamageTaken
     {
-        get => Result->TotalledDamageTaken;
+        get => Result->TotalledDamageDealt;
         set
         {
             CheckDisposed();
             CheckEditable();
-            Result->TotalledDamageTaken = value;
-        }
-    }
-
-    public int TotalledDamageAbsorbed
-    {
-        get => Result->TotalledDamageAbsorbed;
-        set
-        {
-            CheckDisposed();
-            CheckEditable();
-            Result->TotalledDamageAbsorbed = value;
+            Result->TotalledDamageDealt = value;
         }
     }
 }

@@ -30,7 +30,7 @@ internal static class Player
 
     public delegate void DelegatePlayerThink(nint ptrClient, nint ptrController, nint ptrPawn);
 
-    public delegate void DelegatePlayerKilled(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrInfo);
+    public delegate void DelegatePlayerKilled(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrResult);
 
     public delegate EHookAction DelegatePlayerRunCommandPre(nint ptrClient,
         nint                                                     ptrController,
@@ -133,12 +133,12 @@ internal static class Player
         => OnPlayerPostThink?.Invoke(ptrClient, ptrController, ptrPawn);
 
     [UnmanagedCallersOnly]
-    public static void OnPlayerKilledPreExport(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrInfo)
-        => OnPlayerKilledPre?.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo);
+    public static void OnPlayerKilledPreExport(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrResult)
+        => OnPlayerKilledPre?.Invoke(ptrClient, ptrController, ptrPawn, ptrResult);
 
     [UnmanagedCallersOnly]
-    public static void OnPlayerKilledPostExport(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrInfo)
-        => OnPlayerKilledPost?.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo);
+    public static void OnPlayerKilledPostExport(nint ptrClient, nint ptrController, nint ptrPawn, nint ptrResult)
+        => OnPlayerKilledPost?.Invoke(ptrClient, ptrController, ptrPawn, ptrResult);
 
     [UnmanagedCallersOnly]
     public static EHookAction OnPlayerRunCommandPreExport(nint ptrClient,

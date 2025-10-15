@@ -43,8 +43,10 @@ enum class TakeDamageFlags_t : uint64_t
     DFLAG_FORCEREDUCEARMOR_DMG         = 1 << 11, // 0x800
     DFLAG_SUPPRESS_INTERRUPT_FLINCH    = 1 << 12, // 0x1000
     DFLAG_IGNORE_DESTRUCTIBLE_PARTS    = 1 << 13, // 0x2000
-    DFLAG_IGNORE_ARMOR                 = 1 << 14, // 0x4000
-    DFLAG_SUPPRESS_UTILREMOVE          = 1 << 15, // 0x8000
+    DFLAG_SUPPRESS_BREAKABLES          = 1 << 14, // 0x4000
+    DFLAG_FORCE_PHYSICS_FORCE          = 1 << 15, // 0x8000
+    DFLAG_IGNORE_ARMOR                 = 1 << 16, // 0x10000
+    DFLAG_SUPPRESS_UTILREMOVE          = 1 << 17, // 0x20000
 };
 
 enum class DamageTypes_t : int32_t
@@ -134,14 +136,14 @@ public:
     bool  m_bShouldSpark;     // 0x65 | 101
 
 private:
-    [[maybe_unused]] uint8_t m_nUnknown1[0x2]; // 0x66
+    [[maybe_unused]] uint8_t m_nUnknown1[0x2]{}; // 0x66
 
 public:
     CGameTrace*       m_pTrace;       // 0x68 | 104
     TakeDamageFlags_t m_nDamageFlags; // 0x70 | 112
 
 private:
-    [[maybe_unused]] uint8_t m_sDamageSourceName[0x8]; // 0x78 | 120
+    [[maybe_unused]] uint8_t m_sDamageSourceName[0x8]{}; // 0x78 | 120
 
 public:
     HitGroup_t     m_iHitGroupId;                        // 0x80 | 128
@@ -150,10 +152,14 @@ public:
     ShootInfo_t    m_ShootInfo;                          // 0x9c | 140
     void*          m_hScriptInstance;                    // 0xe8 | 232
     AttackerInfo_t m_AttackerInfo;                       // 0xf0 | 240
-    bool           m_bInTakeDamageFlow;                  // 0x104 | 260
+private:
+    [[maybe_unused]] uint8_t m_nUnknown2[0x1C]{}; // 0x104 | 260
+
+public:
+    bool m_bInTakeDamageFlow; // 0x120 | 288
 
 private:
-    [[maybe_unused]] int32_t m_nUnknown2; // 0x108 | 264
+    [[maybe_unused]] int32_t m_nUnknown3; // 0x124 | 292
 
 public:
     [[nodiscard]] bool HasTakeDamageFlags(TakeDamageFlags_t flags) const
@@ -163,12 +169,13 @@ public:
         return (currentFlags & flagToCheck) != 0;
     }
 };
-static_assert(sizeof(CTakeDamageInfo) == 272);
+static_assert(sizeof(CTakeDamageInfo) == 296);
 #ifdef PLATFORM_WINDOWS
 static_assert(offsetof(CTakeDamageInfo, m_flOriginalDamage) == 96);
 static_assert(offsetof(CTakeDamageInfo, m_pTrace) == 104);
 static_assert(offsetof(CTakeDamageInfo, m_hScriptInstance) == 232);
 static_assert(offsetof(CTakeDamageInfo, m_AttackerInfo) == 240);
+static_assert(offsetof(CTakeDamageInfo, m_bInTakeDamageFlow) == 288);
 #endif
 
 #endif

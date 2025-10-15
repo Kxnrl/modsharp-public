@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types.Tier;
@@ -54,29 +53,25 @@ public struct MoveData
     [FieldOffset(0x44)]
     public Vector Angles;
 
-    [FieldOffset(0x50)]
+    [FieldOffset(0x60)]
     public CUtlVector<SubTickMove> SubTickMoves;
 
-    [FieldOffset(0x68)]
+    [FieldOffset(0x78)]
     public CUtlVector<SubTickAttack> SubTickAttacks;
 
-    [FieldOffset(0xb8)]
+    [FieldOffset(0xc8)]
     public Vector AbsOrigin;
 
-    [FieldOffset(0xd8)]
+    [FieldOffset(0xe8)]
     public Vector OutWishVel;
 
-    [FieldOffset(0x108)]
+    [FieldOffset(0x118)]
     public float MaxSpeed;
 
-    [FieldOffset(0x10c)]
+    [FieldOffset(0x11c)]
     public float ClientMaxSpeed;
 
-    [FieldOffset(0x114)]
-    [Obsolete("用InAir")]
-    public bool OnGround;
-
-    [FieldOffset(0x114)]
+    [FieldOffset(0x124)]
     public bool InAir;
 }
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,7 +21,7 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.HookParams;
 
-public interface IEntityDispatchTraceAttackHookParams : IFunctionParams, ITakeDamageInfoParams
+public interface IEntityDispatchTraceAttackHookParams : IFunctionParams, ITakeDamageInfoParams, ITakeDamageResultParams
 {
     IBaseEntity Entity { get; }
 }

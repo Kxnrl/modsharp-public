@@ -76,7 +76,7 @@ BeginMemberHookScope(CSoundEmitterSystem)
 
         char soundName[128];
         StrCopyFast(soundName, sizeof(soundName), pSound->m_pSoundName);
-        auto channel         = static_cast<int32_t>(pSound->m_nChannel);
+        auto channel         = 0; // todo: remove
         auto volume          = pSound->m_flVolume;
         auto changeRecipient = false;
         auto recipients      = pFilter->GetRecipients();
@@ -95,7 +95,6 @@ BeginMemberHookScope(CSoundEmitterSystem)
 #endif
         }
         case EHookAction::ChangeParamReturnDefault: {
-            pSound->m_nChannel   = static_cast<SoundChannel_t>(channel);
             pSound->m_flVolume   = volume;
             pSound->m_pSoundName = soundName;
             if (changeRecipient)

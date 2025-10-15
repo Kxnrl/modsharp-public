@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -34,14 +34,14 @@ internal class EntityDispatchTraceAttackHook
         Bridges.Forwards.Extern.DamageProcessor.OnEntityDispatchTraceAttackPost += CBaseEntity_DispatchTraceAttackPost;
     }
 
-    private EHookAction CBaseEntity_DispatchTraceAttackPre(nint ptrEntity, nint ptrInfo)
+    private EHookAction CBaseEntity_DispatchTraceAttackPre(nint ptrEntity, nint ptrInfo, nint ptrResult)
     {
         if (!IsHookInvokeRequired(false))
         {
             return EHookAction.Ignored;
         }
 
-        var param  = new EntityDispatchTraceAttackFunctionParams(false, ptrEntity, ptrInfo);
+        var param  = new EntityDispatchTraceAttackFunctionParams(false, ptrEntity, ptrInfo, ptrResult);
         var result = InvokeHookPre(param);
 
         param.MarkAsDisposed();
@@ -51,16 +51,16 @@ internal class EntityDispatchTraceAttackHook
 
     private void CBaseEntity_DispatchTraceAttackPost(nint ptrEntity,
         nint                                              ptrInfo,
-        EHookAction                                       action,
-        long                                              damageToHealth)
+        nint                                              ptrResult,
+        EHookAction                                       action)
     {
         if (!IsHookInvokeRequired(true))
         {
             return;
         }
 
-        var param  = new EntityDispatchTraceAttackFunctionParams(false, ptrEntity, ptrInfo);
-        var result = new HookReturnValue<long>(action, damageToHealth);
+        var param  = new EntityDispatchTraceAttackFunctionParams(false, ptrEntity, ptrInfo, ptrResult);
+        var result = new HookReturnValue<long>(action, ptrResult == nint.Zero ? 0 : param.HealthLost);
 
         InvokeHookPost(param, result);
 
@@ -74,10 +74,14 @@ internal class EntityDispatchTraceAttackHook
 internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFunctionParams,
     IEntityDispatchTraceAttackHookParams
 {
-    private readonly TakeDamageInfo* _ptrInfo;
+    private readonly TakeDamageInfo*   _ptrInfo;
+    private readonly TakeDamageResult* _ptrResult;
 
-    public EntityDispatchTraceAttackFunctionParams(bool postHook, nint entity, nint info) : base(postHook, entity)
-        => _ptrInfo = (TakeDamageInfo*) info;
+    public EntityDispatchTraceAttackFunctionParams(bool postHook, nint entity, nint info, nint result) : base(postHook, entity)
+    {
+        _ptrInfo   = (TakeDamageInfo*) info;
+        _ptrResult = (TakeDamageResult*) result;
+    }
 
     public TakeDamageInfo* Info
     {
@@ -383,6 +387,76 @@ internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFun
             CheckDisposed();
             CheckEditable();
             _ptrInfo->Team = value;
+        }
+    }
+
+    public TakeDamageResult* Result
+    {
+        get
+        {
+            CheckDisposed();
+
+            return _ptrResult;
+        }
+    }
+
+    public int HealthLost
+    {
+        get => Result->HealthLost;
+        set
+        {
+            CheckEditable();
+            Result->HealthLost = value;
+        }
+    }
+
+    public int DamageDealt
+    {
+        get => Result->HealthLost;
+        set
+        {
+            CheckEditable();
+            Result->HealthLost = value;
+        }
+    }
+
+    public float PreModifiedDamage
+    {
+        get => Result->PreModifiedDamage;
+        set
+        {
+            CheckEditable();
+            Result->PreModifiedDamage = value;
+        }
+    }
+
+    public int TotalledHealthLost
+    {
+        get => Result->TotalledHealthLost;
+        set
+        {
+            CheckEditable();
+            Result->TotalledHealthLost = value;
+        }
+    }
+
+    public int TotalledDamageDealt
+    {
+        get => Result->TotalledDamageDealt;
+        set
+        {
+            CheckEditable();
+            Result->TotalledDamageDealt = value;
+        }
+    }
+
+    public bool WasDamageSuppressed
+    {
+        get => Result->WasDamageSuppressed;
+        set
+        {
+            CheckEditable();
+            Result->WasDamageSuppressed = value;
         }
     }
 }

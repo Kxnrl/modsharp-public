@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -39,6 +39,8 @@ public enum TakeDamageFlags : ulong
     ForceReduceArmorDamage     = 1 << 11, // 0x800
     SuppressInterruptFlinch    = 1 << 12, // 0x1000
     IgnoreDestructibleParts    = 1 << 13, // 0x2000
-    IgnoreArmor                = 1 << 14, // 0x4000
-    SuppressUtilRemove         = 1 << 15, // 0x8000
+    SuppressBreakables         = 1 << 14, // 0x4000
+    ForcePhysicsForce          = 1 << 15, // 0x8000
+    IgnoreArmor                = 1 << 16, // 0x10000
+    SuppressUtilRemove         = 1 << 17, // 0x20000
 }

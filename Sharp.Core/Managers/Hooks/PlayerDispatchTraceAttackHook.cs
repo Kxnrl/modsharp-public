@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -37,14 +37,15 @@ internal class PlayerDispatchTraceAttackHook
     private EHookAction CCSPlayerPawn_DispatchTraceAttackPre(nint ptrClient,
         nint                                                      ptrController,
         nint                                                      ptrPawn,
-        nint                                                      ptrInfo)
+        nint                                                      ptrInfo,
+        nint                                                      ptrResult)
     {
         if (!IsHookInvokeRequired(false))
         {
             return EHookAction.Ignored;
         }
 
-        var param  = new PlayerDispatchTraceAttackHookParams(false, ptrClient, ptrController, ptrPawn, ptrInfo);
+        var param  = new PlayerDispatchTraceAttackHookParams(false, ptrClient, ptrController, ptrPawn, ptrInfo, ptrResult);
         var result = InvokeHookPre(param);
         param.MarkAsDisposed();
 
@@ -55,16 +56,16 @@ internal class PlayerDispatchTraceAttackHook
         nint                                                ptrController,
         nint                                                ptrPawn,
         nint                                                ptrInfo,
-        EHookAction                                         action,
-        long                                                damageToHealth)
+        nint                                                ptrResult,
+        EHookAction                                         action)
     {
         if (!IsHookInvokeRequired(true))
         {
             return;
         }
 
-        var param  = new PlayerDispatchTraceAttackHookParams(true, ptrClient, ptrController, ptrPawn, ptrInfo);
-        var result = new HookReturnValue<long>(action, damageToHealth);
+        var param  = new PlayerDispatchTraceAttackHookParams(true, ptrClient, ptrController, ptrPawn, ptrInfo, ptrResult);
+        var result = new HookReturnValue<long>(action, param.HealthLost);
 
         InvokeHookPost(param, result);
         param.MarkAsDisposed();
@@ -77,14 +78,18 @@ internal class PlayerDispatchTraceAttackHook
 internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFunctionParams,
     IPlayerDispatchTraceAttackHookParams
 {
-    private readonly TakeDamageInfo* _ptrInfo;
+    private readonly TakeDamageInfo*   _ptrInfo;
+    private readonly TakeDamageResult* _ptrResult;
 
-    public PlayerDispatchTraceAttackHookParams(bool postHook, nint client, nint controller, nint pawn, nint info) : base(
-        postHook,
-        client,
-        controller,
-        pawn)
-        => _ptrInfo = (TakeDamageInfo*) info;
+    public PlayerDispatchTraceAttackHookParams(bool postHook, nint client, nint controller, nint pawn, nint info, nint result) :
+        base(postHook,
+             client,
+             controller,
+             pawn)
+    {
+        _ptrInfo   = (TakeDamageInfo*) info;
+        _ptrResult = (TakeDamageResult*) result;
+    }
 
     public TakeDamageInfo* Info
     {
@@ -390,6 +395,76 @@ internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFun
             CheckDisposed();
             CheckEditable();
             _ptrInfo->Team = value;
+        }
+    }
+
+    public TakeDamageResult* Result
+    {
+        get
+        {
+            CheckDisposed();
+
+            return _ptrResult;
+        }
+    }
+
+    public int HealthLost
+    {
+        get => Result->HealthLost;
+        set
+        {
+            CheckEditable();
+            Result->HealthLost = value;
+        }
+    }
+
+    public int DamageDealt
+    {
+        get => Result->HealthLost;
+        set
+        {
+            CheckEditable();
+            Result->HealthLost = value;
+        }
+    }
+
+    public float PreModifiedDamage
+    {
+        get => Result->PreModifiedDamage;
+        set
+        {
+            CheckEditable();
+            Result->PreModifiedDamage = value;
+        }
+    }
+
+    public int TotalledHealthLost
+    {
+        get => Result->TotalledHealthLost;
+        set
+        {
+            CheckEditable();
+            Result->TotalledHealthLost = value;
+        }
+    }
+
+    public int TotalledDamageDealt
+    {
+        get => Result->TotalledDamageDealt;
+        set
+        {
+            CheckEditable();
+            Result->TotalledDamageDealt = value;
+        }
+    }
+
+    public bool WasDamageSuppressed
+    {
+        get => Result->WasDamageSuppressed;
+        set
+        {
+            CheckEditable();
+            Result->WasDamageSuppressed = value;
         }
     }
 }

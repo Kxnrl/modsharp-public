@@ -175,10 +175,10 @@ private:
     struct HashBucket_t
     {
     private:
-        [[maybe_unused]] uint8_t pad0[0x18];
+        [[maybe_unused]] uint8_t pad0[0x8];
 
 #ifndef PLATFORM_WINDOWS
-        [[maybe_unused]] uint8_t pad18[0x8];
+        [[maybe_unused]] uint8_t pad8[0x30];
 #endif
     public:
         HashFixedData_t* pFirst;

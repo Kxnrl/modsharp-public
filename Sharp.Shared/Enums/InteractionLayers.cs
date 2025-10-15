@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -65,5 +65,4 @@ public enum InteractionLayers : ulong
     CStrikeMonster       = 1UL << 37, // 0x2000000000
     CStrikeUnUseLayer    = 1UL << 38, // 0x4000000000
     CStrikeProjectile    = 1UL << 39, // 0x8000000000
-    BulletIgnore         = 1UL << 40, // 0x10000000000
 }

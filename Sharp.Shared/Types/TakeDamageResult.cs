@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -31,14 +31,17 @@ public unsafe struct TakeDamageResult
     public int HealthLost;
 
     [FieldOffset(12)]
-    public int DamageTaken;
+    public int DamageDealt;
 
     [FieldOffset(16)]
-    public int TotalledHealthLost;
+    public float PreModifiedDamage;
 
     [FieldOffset(20)]
-    public int TotalledDamageTaken;
+    public int TotalledHealthLost;
 
     [FieldOffset(24)]
-    public int TotalledDamageAbsorbed;
+    public int TotalledDamageDealt;
+
+    [FieldOffset(28)]
+    public bool WasDamageSuppressed;
 }

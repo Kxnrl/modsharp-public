@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -140,7 +140,7 @@ using CBaseEntity_DispatchSpawn_t                         = void (*)(CBaseEntity
 using CBaseEntity_SetGroundEntity_t                       = void (*)(CBaseEntity*, CBaseEntity*, void*);
 using CBaseEntity_EmitSoundFilter_t                       = void (*)(CBaseEntity*, SndOpEventGuid_t*, IRecipientFilter* filter, const char*, float, Vector*);
 using CBaseEntity_StopSound_t                             = void (*)(CBaseEntity*, const char*);
-using CBaseEntity_DispatchTraceAttack_t                   = int64_t (*)(CBaseEntity*, const CTakeDamageInfo*);
+using CBaseEntity_DispatchTraceAttack_t                   = int64_t (*)(CBaseEntity*, const CTakeDamageInfo*, void*);
 using CBasePlayerController_SwitchSteam_t                 = void (*)(CBasePlayerController*, CStrikeTeam_t team);
 using CBasePlayerController_CheckPawn_t                   = void (*)(CBasePlayerController*);
 using CBasePlayerController_SetPawn_t                     = void (*)(CBasePlayerController*, CCSPlayerPawn* pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4);
@@ -189,7 +189,7 @@ using CBaseModelEntity_GetBoneTransform_t             = void (*)(CBaseModelEntit
 using CBaseModelEntity_SetModelScale_t                = void (*)(CBaseModelEntity*, float);
 using CBaseModelEntity_SetCollisionBounds_t           = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
 using CPaintKit_UsesLegacyModel_t                     = bool (*)(const char*);
-using CGamePhysicsQueryInterface_TraceShape_t = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
+using CGamePhysicsQueryInterface_TraceShape_t         = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
 #ifdef PLATFORM_WINDOWS
 using StudioModel_LookupAttachment_t = int32_t (*)(void*, int32_t*, const char*);
 #else
@@ -201,9 +201,9 @@ using SoundOpGameSystem_SetSoundEventParamString_t = void (*)(SoundOpGameSystem*
 #else
 using SoundOpGameSystem_SetSoundEventParamString_t = void (*)(SoundOpGameSystem*, const IRecipientFilter*, const char*, CSosFieldData*, int16_t, bool, SndOpEventGuid_t, int32_t);
 #endif
-using SoundOpGameSystem_StopSoundEvent_t         = void (*)(SoundOpGameSystem*, SndOpEventGuid_t*);
-using SoundOpGameSystem_StopSoundEventFilter_t   = void (*)(SoundOpGameSystem*, IRecipientFilter*, SndOpEventGuid_t*);
-using CCollisionProperty_SetSolid_t              = void (*)(CCollisionProperty*, uint8_t);
+using SoundOpGameSystem_StopSoundEvent_t       = void (*)(SoundOpGameSystem*, SndOpEventGuid_t*);
+using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SndOpEventGuid_t*);
+using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
 using CCSPlayer_MovementServices_TracePlayerBBox_t = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
 using CTraceFilterPlayerMovementCS_ctor_t          = void (*)(CTraceFilter& filter, CEntityInstance* handleEntity, uint64_t interactWith, uint8_t collisionGroup);

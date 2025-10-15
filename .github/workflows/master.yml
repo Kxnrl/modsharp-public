@@ -175,9 +175,9 @@ jobs:
         run: |
           PATH="/usr/lib/gcc-14/bin:$PATH"
 
-      - name: Install Clang19
+      - name: Install Clang16
         run: |
-          apt update && apt install -y clang-19
+          apt update && apt install -y clang-16
 
       # TimeZone
       - name: Set Timezone
@@ -253,12 +253,12 @@ jobs:
       # Build Loader
       - name: Build Loader
         run: |
-          cd Loader && cmake -P cmkr.cmake && cmake -B build -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cd Loader && cmake -P cmkr.cmake && cmake -B build -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
 
       # Build Engine
       - name: Build Engine
         run: |
-          cd Engine && cmake -P cmkr.cmake && cmake -B build  -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cd Engine && cmake -P cmkr.cmake && cmake -B build  -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
 
       # Build Sharp.Core
       - name: Build Sharp.Core
