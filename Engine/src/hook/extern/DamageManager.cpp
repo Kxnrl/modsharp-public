@@ -32,10 +32,10 @@
 
 BeginMemberHookScope(CBaseEntity)
 {
-    DeclareMemberDetourHook(DispatchTraceAttack, int64_t, (CBaseEntity * pEntity, const CTakeDamageInfo* pInfo))
+    DeclareMemberDetourHook(DispatchTraceAttack, int64_t, (CBaseEntity * pEntity, const CTakeDamageInfo* pInfo, void* a3))
     {
         if (CBaseEntity::InBypassHook())
-            return DispatchTraceAttack(pEntity, pInfo);
+            return DispatchTraceAttack(pEntity, pInfo, a3);
 
         CCSPlayerPawn*       pPlayer;
         CCSPlayerController* pController;
@@ -57,7 +57,7 @@ BeginMemberHookScope(CBaseEntity)
             {
                 FatalError("Not impl yet");
             }
-            const auto result = DispatchTraceAttack(pEntity, pInfo);
+            const auto result = DispatchTraceAttack(pEntity, pInfo, a3);
             forwards::OnPlayerDispatchTraceAttackPost->Invoke(pClient, pController, pPlayer, pInfo, action, result);
             return result;
         }
@@ -72,7 +72,7 @@ BeginMemberHookScope(CBaseEntity)
         {
             FatalError("Not impl yet");
         }
-        const auto result = DispatchTraceAttack(pEntity, pInfo);
+        const auto result = DispatchTraceAttack(pEntity, pInfo, a3);
         forwards::OnEntityDispatchTraceAttackPost->Invoke(pEntity, pInfo, action, result);
         return result;
     }
