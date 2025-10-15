@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -27,21 +27,22 @@ internal static class DamageProcessor
     public delegate EHookAction DelegatePlayerDispatchTraceAttackPre(nint ptrClient,
         nint                                                              ptrController,
         nint                                                              ptrPawn,
-        nint                                                              ptrInfo);
+        nint                                                              ptrInfo,
+        nint                                                              ptrResult);
 
     public delegate void DelegatePlayerDispatchTraceAttackPost(nint ptrClient,
         nint                                                        ptrController,
         nint                                                        ptrPawn,
         nint                                                        ptrInfo,
-        EHookAction                                                 action,
-        long                                                        damageToHealth);
+        nint                                                        ptrResult,
+        EHookAction                                                 action);
 
-    public delegate EHookAction DelegateEntityDispatchTraceAttackPre(nint ptrEntity, nint ptrInfo);
+    public delegate EHookAction DelegateEntityDispatchTraceAttackPre(nint ptrEntity, nint ptrInfo, nint ptrResult);
 
     public delegate void DelegateEntityDispatchTraceAttackPost(nint ptrEntity,
         nint                                                        ptrInfo,
-        EHookAction                                                 action,
-        long                                                        damageToHealth);
+        nint                                                        ptrResult,
+        EHookAction                                                 action);
 
     public static event DelegatePlayerDispatchTraceAttackPre?  OnPlayerDispatchTraceAttackPre;
     public static event DelegateEntityDispatchTraceAttackPre?  OnEntityDispatchTraceAttackPre;
@@ -52,25 +53,26 @@ internal static class DamageProcessor
     public static EHookAction OnPlayerDispatchTraceAttackPreExport(nint ptrClient,
         nint                                                            ptrController,
         nint                                                            ptrPawn,
-        nint                                                            ptrInfo)
+        nint                                                            ptrInfo,
+        nint                                                            ptrResult)
     {
         if (OnPlayerDispatchTraceAttackPre is null)
         {
             return EHookAction.Ignored;
         }
 
-        return OnPlayerDispatchTraceAttackPre.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo);
+        return OnPlayerDispatchTraceAttackPre.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo, ptrResult);
     }
 
     [UnmanagedCallersOnly]
-    public static EHookAction OnEntityDispatchTraceAttackPreExport(nint ptrEntity, nint ptrInfo)
+    public static EHookAction OnEntityDispatchTraceAttackPreExport(nint ptrEntity, nint ptrInfo, nint ptrResult)
     {
         if (OnEntityDispatchTraceAttackPre is null)
         {
             return EHookAction.Ignored;
         }
 
-        return OnEntityDispatchTraceAttackPre.Invoke(ptrEntity, ptrInfo);
+        return OnEntityDispatchTraceAttackPre.Invoke(ptrEntity, ptrInfo, ptrResult);
     }
 
     [UnmanagedCallersOnly]
@@ -78,14 +80,14 @@ internal static class DamageProcessor
         nint                                                      ptrController,
         nint                                                      ptrPawn,
         nint                                                      ptrInfo,
-        EHookAction                                               action,
-        long                                                      damageToHealth)
-        => OnPlayerDispatchTraceAttackPost?.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo, action, damageToHealth);
+        nint                                                      ptrResult,
+        EHookAction                                               action)
+        => OnPlayerDispatchTraceAttackPost?.Invoke(ptrClient, ptrController, ptrPawn, ptrInfo, ptrResult, action);
 
     [UnmanagedCallersOnly]
     public static void OnEntityDispatchTraceAttackPostExport(nint ptrEntity,
         nint                                                      ptrInfo,
-        EHookAction                                               action,
-        long                                                      damageToHealth)
-        => OnEntityDispatchTraceAttackPost?.Invoke(ptrEntity, ptrInfo, action, damageToHealth);
+        nint                                                      ptrResult,
+        EHookAction                                               action)
+        => OnEntityDispatchTraceAttackPost?.Invoke(ptrEntity, ptrInfo, ptrResult, action);
 }

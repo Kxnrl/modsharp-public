@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -19,4 +19,7 @@
 
 namespace Sharp.Shared.HookParams;
 
-public interface IPlayerDispatchTraceAttackHookParams : IFunctionParams, IPlayerPawnFunctionParams, ITakeDamageInfoParams;
+public interface IPlayerDispatchTraceAttackHookParams : IFunctionParams,
+    IPlayerPawnFunctionParams,
+    ITakeDamageInfoParams,
+    ITakeDamageResultParams;

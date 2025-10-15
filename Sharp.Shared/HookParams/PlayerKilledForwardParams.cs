@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,10 +17,14 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Shared.Types;
+
 namespace Sharp.Shared.HookParams;
 
-public interface IPlayerKilledForwardParams : IFunctionParams, IPlayerPawnFunctionParams, ITakeDamageInfoParams
+public unsafe interface IPlayerKilledForwardParams : IFunctionParams, IPlayerPawnFunctionParams, ITakeDamageInfoParams
 {
+    TakeDamageResult* Result { get; }
+
     int HealthLost { get; set; }
 
     int DamageTaken { get; set; }
@@ -28,6 +32,4 @@ public interface IPlayerKilledForwardParams : IFunctionParams, IPlayerPawnFuncti
     int TotalledHealthLost { get; set; }
 
     int TotalledDamageTaken { get; set; }
-
-    int TotalledDamageAbsorbed { get; set; }
 }

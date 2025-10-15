@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -110,6 +110,18 @@ public unsafe interface ITakeDamageInfoParams
     CEntityHandle<IPlayerPawn> AttackerPawnHandle { get; set; }
     int                        TeamChecked        { get; set; }
     int                        Team               { get; set; }
+}
+
+public unsafe interface ITakeDamageResultParams
+{
+    TakeDamageResult* Result { get; }
+
+    int   HealthLost          { get; set; }
+    int   DamageDealt         { get; set; }
+    float PreModifiedDamage   { get; set; }
+    int   TotalledHealthLost  { get; set; }
+    int   TotalledDamageDealt { get; set; }
+    bool  WasDamageSuppressed { get; set; }
 }
 
 public unsafe interface IFireBulletsInfoParams

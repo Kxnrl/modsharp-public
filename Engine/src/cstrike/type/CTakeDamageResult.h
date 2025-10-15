@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,18 +20,44 @@
 #ifndef CSTRIKE_TYPE_DAMAGE_RESULT_H
 #define CSTRIKE_TYPE_DAMAGE_RESULT_H
 
-#include <cstdint>
+#include "cstrike/type/CTakeDamageInfo.h"
 
-class CTakeDamageInfo;
+#include <cstdint>
 
 struct CTakeDamageResult
 {
     CTakeDamageInfo* m_pOriginatingInfo;
     int32_t          m_nHealthLost;
-    int32_t          m_nDamageTaken;
+    int32_t          m_nDamageDealt;
+    float            m_flPreModifiedDamage;
     int32_t          m_nTotalledHealthLost;
-    int32_t          m_nTotalledDamageTaken;
-    float            m_flTotalledDamageAbsorbed;
+    int32_t          m_nTotalledDamageDealt;
+    bool             m_bWasDamageSuppressed;
+
+    void CopyFrom(CTakeDamageInfo* pInfo)
+    {
+        m_pOriginatingInfo     = pInfo;
+        m_nHealthLost          = static_cast<int32_t>(pInfo->m_flDamage);
+        m_nDamageDealt         = static_cast<int32_t>(pInfo->m_flDamage);
+        m_flPreModifiedDamage  = pInfo->m_flDamage;
+        m_nTotalledHealthLost  = static_cast<int32_t>(pInfo->m_flDamage);
+        m_nTotalledDamageDealt = static_cast<int32_t>(pInfo->m_flDamage);
+        m_bWasDamageSuppressed = false;
+    }
+
+    CTakeDamageResult() = delete;
+
+    constexpr CTakeDamageResult(float damage) :
+        m_pOriginatingInfo(nullptr),
+        m_nHealthLost(static_cast<int32_t>(damage)),
+        m_nDamageDealt(static_cast<int32_t>(damage)),
+        m_flPreModifiedDamage(damage),
+        m_nTotalledHealthLost(static_cast<int32_t>(damage)),
+        m_nTotalledDamageDealt(static_cast<int32_t>(damage)),
+        m_bWasDamageSuppressed(false)
+    {
+    }
 };
+static_assert(sizeof(CTakeDamageResult) == 32);
 
 #endif

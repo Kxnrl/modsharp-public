@@ -171,10 +171,10 @@ DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void,
 DECLARE_FORWARD(Extern.PointServerCommand, OnPointServerCommand, EHookAction, FORWARD_ARG(CBaseEntity*, const char*));
 
 // DamageManager
-DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*));
-DECLARE_FORWARD(Extern.DamageProcessor, OnEntityDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CBaseEntity*, const CTakeDamageInfo*));
-DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*, EHookAction, int64_t));
-DECLARE_FORWARD(Extern.DamageProcessor, OnEntityDispatchTraceAttackPost, void, FORWARD_ARG(CBaseEntity*, const CTakeDamageInfo*, EHookAction, int64_t));
+DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*, const CTakeDamageResult*));
+DECLARE_FORWARD(Extern.DamageProcessor, OnEntityDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CBaseEntity*, const CTakeDamageInfo*, const CTakeDamageResult*));
+DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*, const CTakeDamageResult*, EHookAction));
+DECLARE_FORWARD(Extern.DamageProcessor, OnEntityDispatchTraceAttackPost, void, FORWARD_ARG(CBaseEntity*, const CTakeDamageInfo*, const CTakeDamageResult*, EHookAction));
 } // namespace forwards
 
 #endif

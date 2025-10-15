@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -126,7 +126,7 @@ public unsafe struct TakeDamageInfo
 
     /* End */
 
-    [FieldOffset(260)]
+    [FieldOffset(288)]
     public bool InTakeDamageFlow;
 
     private static readonly CEntityHandle<IBaseEntity> InvalidEntityHandle = new (uint.MaxValue);
