@@ -418,6 +418,16 @@ internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFun
         }
     }
 
+    public int HealthBefore
+    {
+        get => Result->HealthBefore;
+        set
+        {
+            CheckEditable();
+            Result->HealthBefore = value;
+        }
+    }
+
     public int DamageDealt
     {
         get => Result->HealthLost;

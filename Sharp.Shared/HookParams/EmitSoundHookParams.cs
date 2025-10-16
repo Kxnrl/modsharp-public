@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Units;
 
@@ -26,13 +27,16 @@ public interface IEmitSoundHookParams : IFunctionParams
 {
     EntityIndex     EntityIndex { get; }
     string          SoundName   { get; }
-    SoundChannel    Channel     { get; }
     float           Volume      { get; }
     NetworkReceiver Receivers   { get; }
     bool            Changed     { get; }
 
+    [Obsolete("Valve removed channel at 1.41.1.3, we will remove it in 2.1")]
+    SoundChannel Channel { get; }
+
     void SetSoundName(string soundName);
 
+    [Obsolete("Valve removed channel at 1.41.1.3, we will remove it in 2.1")]
     void SetChannel(SoundChannel channel);
 
     void SetVolume(float volume);

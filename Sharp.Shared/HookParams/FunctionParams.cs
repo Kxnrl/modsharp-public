@@ -117,6 +117,7 @@ public unsafe interface ITakeDamageResultParams
     TakeDamageResult* Result { get; }
 
     int   HealthLost          { get; set; }
+    int   HealthBefore        { get; set; }
     int   DamageDealt         { get; set; }
     float PreModifiedDamage   { get; set; }
     int   TotalledHealthLost  { get; set; }

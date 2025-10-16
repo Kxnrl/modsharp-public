@@ -410,6 +410,16 @@ internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFun
         }
     }
 
+    public int HealthBefore
+    {
+        get => Result->HealthBefore;
+        set
+        {
+            CheckEditable();
+            Result->HealthBefore = value;
+        }
+    }
+
     public int DamageDealt
     {
         get => Result->HealthLost;

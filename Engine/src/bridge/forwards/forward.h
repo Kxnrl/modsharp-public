@@ -81,8 +81,8 @@ DECLARE_FORWARD(Game, OnPrintStatus, EHookAction, FORWARD_ARG(CServerSideClient*
 DECLARE_FORWARD(Game, OnRoundRestart, void);
 DECLARE_FORWARD(Game, OnRoundRestarted, void);
 DECLARE_FORWARD(Game, OnConsoleSay, ECommandAction, FORWARD_ARG(const char*));
-DECLARE_FORWARD(Game, OnEmitSound, EHookAction, FORWARD_ARG(EntityIndex_t, char*, int*, float*, uint64_t*, bool*));
-DECLARE_FORWARD(Game, OnEmitSoundPost, void, FORWARD_ARG(EntityIndex_t, const char*, int, float, uint64_t, bool, EHookAction, int64_t));
+DECLARE_FORWARD(Game, OnEmitSound, EHookAction, FORWARD_ARG(EntityIndex_t, char*, float*, uint64_t*, bool*));
+DECLARE_FORWARD(Game, OnEmitSoundPost, void, FORWARD_ARG(EntityIndex_t, const char*, float, uint64_t, bool, EHookAction, int64_t));
 DECLARE_FORWARD(Game, OnEmitMusicPost, void, FORWARD_ARG(EntityIndex_t, const char*, float, uint64_t, int64_t));
 DECLARE_FORWARD(Game, OnSoundEvent, EHookAction, FORWARD_ARG(EntityIndex_t, const char*, float, uint64_t*, bool*));
 DECLARE_FORWARD(Game, OnSoundEventPost, void, FORWARD_ARG(EntityIndex_t, const char*, float, uint64_t, bool, EHookAction, int64_t));

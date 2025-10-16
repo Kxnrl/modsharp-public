@@ -66,22 +66,20 @@ BeginMemberHookScope(CSoundEmitterSystem)
 #endif
 
 #ifdef SOUND_HOOK_ASSERT
-        LOG("EmitSound ->\n%12s: %d\n%12s: %s\n%12s: %d\n%12s: %f\n%12s: %d",
+        LOG("EmitSound ->\n%12s: %d\n%12s: %s\n%12s: %f\n%12s: %d",
             "Entity", entityIndex,
             "Sound", pSound->m_pSoundName,
-            "Channel", pSound->m_nChannel,
             "Volume", pSound->m_flVolume,
             "Receivers", pFilter->GetRecipientCount());
 #endif
 
         char soundName[128];
         StrCopyFast(soundName, sizeof(soundName), pSound->m_pSoundName);
-        auto channel         = 0; // todo: remove
         auto volume          = pSound->m_flVolume;
         auto changeRecipient = false;
         auto recipients      = pFilter->GetRecipients();
 
-        const auto action = forwards::OnEmitSound->Invoke(entityIndex, soundName, &channel, &volume, &recipients, &changeRecipient);
+        const auto action = forwards::OnEmitSound->Invoke(entityIndex, soundName, &volume, &recipients, &changeRecipient);
 
         switch (action)
         {
@@ -118,12 +116,12 @@ BeginMemberHookScope(CSoundEmitterSystem)
         s_bInSoundEmitter = false;
 
         const auto guid = pInfo->m_nSndOpEventGuid;
-        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, channel, volume, pFilter->GetRecipients(), changeRecipient, action, guid);
+        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, volume, pFilter->GetRecipients(), changeRecipient, action, guid);
 #else
         s_bInSoundEmitter = true;
         const auto result = EmitSound(pThis, pFilter, entityIndex, pSound);
         s_bInSoundEmitter = false;
-        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, channel, volume, pFilter->GetRecipients(), changeRecipient, action, result->m_nSndOpEventGuid);
+        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, volume, pFilter->GetRecipients(), changeRecipient, action, result->m_nSndOpEventGuid);
         return result;
 #endif
     }

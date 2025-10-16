@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -35,7 +35,6 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
 
     private EHookAction CSoundEmitterSystem_EmitSound(int entity,
         ref string                                        sound,
-        ref SoundChannel                                  channel,
         ref float                                         volume,
         ref ulong                                         receivers,
         ref bool                                          changeReceiver,
@@ -46,11 +45,10 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
             return EHookAction.Ignored;
         }
 
-        var param  = new EmitSoundHookParams(false, entity, sound, channel, volume, receivers, changeReceiver);
+        var param  = new EmitSoundHookParams(false, entity, sound, volume, receivers, changeReceiver);
         var result = InvokeHookPre(param);
 
         sound          = param.SoundName;
-        channel        = param.Channel;
         volume         = param.Volume;
         changeReceiver = param.Changed;
         receivers      = param.Receivers.AsPrimitive();
@@ -61,7 +59,6 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
 
     private void CSoundEmitterSystem_EmitSoundPost(int entity,
         string                                         sound,
-        SoundChannel                                   channel,
         float                                          volume,
         ulong                                          receivers,
         bool                                           changeReceiver,
@@ -73,7 +70,7 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
             return;
         }
 
-        var param = new EmitSoundHookParams(true, entity, sound, channel, volume, receivers, changeReceiver);
+        var param = new EmitSoundHookParams(true, entity, sound, volume, receivers, changeReceiver);
 
         InvokeHookPost(param, new HookReturnValue<SoundOpEventGuid>(action, guid));
 
@@ -89,14 +86,12 @@ internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams
     public EmitSoundHookParams(bool postHook,
         EntityIndex                 entityIndex,
         string                      soundName,
-        SoundChannel                channel,
         float                       volume,
         ulong                       receivers,
         bool                        changed) : base(postHook)
     {
         EntityIndex = entityIndex;
         SoundName   = soundName;
-        Channel     = channel;
         Volume      = volume;
         Changed     = changed;
         Receivers   = receivers;
@@ -104,7 +99,7 @@ internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams
 
     public EntityIndex     EntityIndex   { get; }
     public string          SoundName     { get; private set; }
-    public SoundChannel    Channel       { get; private set; }
+    public SoundChannel    Channel       => SoundChannel.Auto;
     public float           Volume        { get; private set; }
     public NetworkReceiver Receivers     { get; private set; }
     public bool            Changed       { get; private set; }
@@ -122,7 +117,8 @@ internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams
     {
         CheckDisposed();
         CheckEditable();
-        Channel = channel;
+
+        // do nothing
     }
 
     public void SetVolume(float volume)
