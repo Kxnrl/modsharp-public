@@ -22,7 +22,7 @@ namespace Sharp.Shared;
 /// <summary>
 ///     Module Interface <br />
 ///     <remarks>the constructor must be</remarks>
-///     <code>public YourModule(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)</code>
+///     <code>public YourModule(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)</code>
 /// </summary>
 public interface IModSharpModule
 {
