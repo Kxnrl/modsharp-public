@@ -53,19 +53,24 @@
   </PropertyGroup>
 
 +  <ItemGroup>
-+    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.15" PrivateAssets="all" />
++    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
 +  </ItemGroup>
 
 </Project>
 
 ```
 
+> [!TIP]
+>
+> 在`Version`字段中使用``*``则为始终解析为最新版本  
+> 如果需要显式指定版本号，请使用具体版本号，例如``Version="2.0.20"``
+
 到现在为止，你就已经可以给ModSharp写模块了。
 
 > [!IMPORTANT]
 >
-> 1. `ModSharp.Sharp.Shared`可以加上``PrivateAssets="all"``标签，这样可以防止你在Publish时自动复制该文件。
-> 2. 需要设置`AssemblyName`，否则可能会出现依赖加载不上的情况。该项的字段就和项目同名即可，我们的项目名是**Example**，所以该项填入的是`Example`，你实际开发的时候自行调整即可。
+> 1. `ModSharp.Sharp.Shared`可以加上``PrivateAssets="all"``标签，这样可以防止你在Publish时自动复制`Sharp.Shared.dll`。  
+> 2. `AssemblyName`为必需字段，否则会出现依赖加载不上的情况。该项的字段就和项目同名即可，我们的项目名是**Example**，所以该项填入的是`Example`，你实际开发的时候自行调整即可。
 
 ## Hello, World
 
