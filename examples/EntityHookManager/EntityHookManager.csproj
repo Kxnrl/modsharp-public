@@ -5,8 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	
 	<ItemGroup>
+		<PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="2.0.20" />
 		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
 	</ItemGroup>
 </Project>

@@ -10,5 +10,23 @@
 - name: Client Listener
   href: client-listener.md
 
+- name: Entity Listener
+  href: entity-listener.md
+
+- name: Event Listener
+  href: event-listener.md
+
+- name: Game Listener
+  href: game-listener.md
+
+- name: Steam Listener
+  href: steam-listener.md
+
+- name: Entity Hook Manager
+  href: entity-hook-manager.md
+
+- name: Game Event Manager
+  href: game-event-manager.md
+
 - name: Sharp Extensions
   href: sharp-extensions.md

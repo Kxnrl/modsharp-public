@@ -6,6 +6,7 @@ using Sharp.Shared.Objects;
 
 namespace ClientListener;
 
+// ReSharper disable once UnusedMember.Global
 internal class ClientListener : IModSharpModule, IClientListener
 {
     private readonly ISharedSystem _sharedSystem;

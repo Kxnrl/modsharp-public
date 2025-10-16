@@ -8,7 +8,7 @@ namespace DependencyInjection;
 // [UsedImplicitly]
 // Recommend you use this comment.
 // ReSharper disable once UnusedMember.Global
-public class DependencyInjection : IModSharpModule
+internal class DependencyInjection : IModSharpModule
 {
     private readonly IServiceProvider _provider;
     public DependencyInjection(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)

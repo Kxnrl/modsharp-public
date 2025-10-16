@@ -8,7 +8,7 @@ using Sharp.Shared.Abstractions;
 namespace SharpExtensions;
 
 // ReSharper disable once UnusedMember.Global
-public class SharpExtensions : IModSharpModule
+internal class SharpExtensions : IModSharpModule
 {
     private readonly IServiceProvider _provider;
 
