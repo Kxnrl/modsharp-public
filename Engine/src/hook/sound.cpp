@@ -66,10 +66,9 @@ BeginMemberHookScope(CSoundEmitterSystem)
 #endif
 
 #ifdef SOUND_HOOK_ASSERT
-        LOG("EmitSound ->\n%12s: %d\n%12s: %s\n%12s: %d\n%12s: %f\n%12s: %d",
+        LOG("EmitSound ->\n%12s: %d\n%12s: %s\n%12s: %f\n%12s: %d",
             "Entity", entityIndex,
             "Sound", pSound->m_pSoundName,
-            "Channel", pSound->m_nChannel,
             "Volume", pSound->m_flVolume,
             "Receivers", pFilter->GetRecipientCount());
 #endif
@@ -122,7 +121,7 @@ BeginMemberHookScope(CSoundEmitterSystem)
         s_bInSoundEmitter = true;
         const auto result = EmitSound(pThis, pFilter, entityIndex, pSound);
         s_bInSoundEmitter = false;
-        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, channel, volume, pFilter->GetRecipients(), changeRecipient, action, result->m_nSndOpEventGuid);
+        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, volume, pFilter->GetRecipients(), changeRecipient, action, result->m_nSndOpEventGuid);
         return result;
 #endif
     }
