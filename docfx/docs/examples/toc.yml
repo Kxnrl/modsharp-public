@@ -9,3 +9,6 @@
 
 - name: Client Listener
   href: client-listener.md
+
+- name: Sharp Extensions
+  href: sharp-extensions.md

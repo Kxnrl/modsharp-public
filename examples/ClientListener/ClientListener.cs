@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
+using Sharp.Shared.Objects;
 
 namespace ClientListener;
 
@@ -31,6 +33,10 @@ internal class ClientListener : IModSharpModule, IClientListener
         // otherwise you will get fucked after reloaded.
         _sharedSystem.GetClientManager().RemoveClientListener(this);
     }
+
+    public string DisplayName => "Client Listener Example";
+    public string DisplayAuthor => "ModSharp Dev Team";
+
 
     public bool OnClientPreAdminCheck(IGameClient client)
     {
