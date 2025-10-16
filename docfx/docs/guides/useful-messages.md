@@ -24,7 +24,7 @@
 - ...
 - ``OnGameDeactivate``
 - ``OnGamePreShutdown``
-- ``OnGameShutdown``
+- ``OnGameShutdown``: sv/globals/GameRules is null here
 
 以上均包含在`IGameListner`中。
 如何使用？
@@ -41,9 +41,10 @@ class GameListener : IGameListener
         _bridge = bridge;
     }
 
+    // 显式调用是方便你在实现多个Listener时解决冲突问题
     int IGameListener.ListenerVersion => IGameListener.ApiVersion;
 
-    int ListenerPriority => 0;
+    int IGameListener.ListenerPriority => 0;
 
     public void OnServerActivate()
     {
