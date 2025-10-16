@@ -10,7 +10,7 @@
           ]
         }
       ],
-      "dest": "api"
+      "output": "api"
     },
     {
       "src": [
@@ -21,7 +21,7 @@
           ]
         }
       ],
-      "dest": "api-extensions"
+      "output": "api-extensions"
     }
   ],
   "build": {
