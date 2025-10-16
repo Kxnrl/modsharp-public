@@ -11,6 +11,17 @@
         }
       ],
       "dest": "api"
+    },
+    {
+      "src": [
+        {
+          "src": "../Sharp.Extensions",
+          "files": [
+            "**/*.csproj"
+          ]
+        }
+      ],
+      "dest": "api-extensions"
     }
   ],
   "build": {
