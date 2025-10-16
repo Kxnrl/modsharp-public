@@ -2,3 +2,6 @@ items:
   - name: Guides
     href: guides/toc.yml
     expanded: true
+  - name: Examples
+    href: examples/toc.yml
+    expanded: true
