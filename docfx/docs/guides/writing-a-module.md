@@ -175,8 +175,16 @@ public class Example : IModSharpModule
 > 2. 请使用大驼峰
 > 3. 模块路径加载规则为`{CS2}/game/sharp/modules/{Module}/{Module}.dll`，请确保你模块包路径和对应的dll文件同名，否则也是无法加载的！
 
+讲那么多你肯定比较懵，不如看图：
+
+![看图](../../images/module-deploy-to.png)
+
 ## 启动CS2
 
 到这里就没什么好说的了，当你启动以后你应该能在服务端控制台看到`Hello World!`字样，到这里我们的入门模块就编写完成了。
 
+![看图](../../images/hello-world.png)
+
 你可以在启动后输入`ms modules`查询模块列表。
+
+![看图](../../images/ms-modules.png)

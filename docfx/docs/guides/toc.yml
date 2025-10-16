@@ -6,3 +6,6 @@
 
 - name: 迁移指南
   href: migration-guide.md
+
+- name: 重新加载模块
+  href: reload-module.md
