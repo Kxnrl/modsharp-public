@@ -163,8 +163,10 @@ public class Example : IModSharpModule
 请注意，`dotnet publish`的路径，必须放置到`{CS2}/game/sharp/modules/{你的模块名，绝大多数情况下为你的dll名}`
 > 本教程为 `{CS2}/game/sharp/modules/Example`
 
-当打包完成后，你的dll路径应当是`{CS2}/game/sharp/modules/Example/Example.dll`
-当打包完成后，你的deps路径应当是`{CS2}/game/sharp/modules/Example/Example.deps.json`
+当打包完成后:
+
+- dll 路径应当是`{CS2}/game/sharp/modules/Example/Example.dll`
+- deps路径应当是`{CS2}/game/sharp/modules/Example/Example.deps.json`
 
 > [!NOTE]
 > 模块路径请注意如下要点：

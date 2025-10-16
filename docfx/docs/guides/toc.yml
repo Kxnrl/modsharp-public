@@ -3,4 +3,6 @@
 
 - name: Writing a Module
   href: writing-a-module.md
-  
+
+- name: Useful Messages
+  href: useful-messages.md

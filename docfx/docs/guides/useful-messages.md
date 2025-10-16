@@ -26,7 +26,7 @@
 以上均包含在`IGameListner`中。
 如何使用？
 > [!NOTE]
-> 我们会预先注册一个辅助类`InterfaceBridge`来包装`ISharedSystem`中常用的工具接口
+> 我们通常会预先注册一个辅助类`InterfaceBridge`来包装`ISharedSystem`中常用的工具接口
 
 ```cs
 class GameListener : IGameListener 
