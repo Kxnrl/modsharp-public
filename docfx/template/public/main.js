@@ -9,6 +9,11 @@ export default {
       icon: 'github',
       href: 'https://github.com/Kxnrl/modsharp-public',
       title: 'GitHub'
-    }
+    },
+    {
+      icon: "discord",
+      href: "https://discord.gg/wKarAjHm2G",
+      title: "Community",
+    },
   ]
 }
