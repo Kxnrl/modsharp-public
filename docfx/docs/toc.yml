@@ -2,9 +2,9 @@ items:
   - name: 指南
     href: guides/toc.yml
     expanded: true
-  - name: 示例
-    href: examples/toc.yml
-    expanded: true
   - name: 特性
     href: features/toc.yml
+    expanded: true
+  - name: 示例
+    href: examples/toc.yml
     expanded: true
