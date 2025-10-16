@@ -7,6 +7,9 @@
 - name: Command
   href: command.md
 
+- name: Net Message
+  href: net-message.md
+
 - name: Client Listener
   href: client-listener.md
 
@@ -22,11 +25,11 @@
 - name: Steam Listener
   href: steam-listener.md
 
+- name: Sharp Extensions
+  href: sharp-extensions.md
+
 - name: Entity Hook Manager
   href: entity-hook-manager.md
 
 - name: Game Event Manager
   href: game-event-manager.md
-
-- name: Sharp Extensions
-  href: sharp-extensions.md

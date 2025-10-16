@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
+using Sharp.Shared.Objects;
 
 namespace CVar;
 
@@ -17,12 +18,19 @@ internal class CVar : IModSharpModule
         _sharedSystem = sharedSystem;
     }
 
+
     public bool Init()
     {
         // That's it. Very easy.
         _sharedSystem.GetConVarManager().CreateConVar("my_cvar", 0, "This is my cvar.");
+        if (_sharedSystem.GetConVarManager().FindConVar("sv_cheats") is { } cheats)
+        {
+            cheats.SetString("1");
+        }
         return true;
     }
+
+
 
     public void Shutdown()
     {
