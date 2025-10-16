@@ -10,15 +10,9 @@ namespace ClientListener;
 internal class ClientListener : IModSharpModule, IClientListener
 {
     private readonly ISharedSystem _sharedSystem;
-    public ClientListener(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
-    {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
 
-        _sharedSystem = sharedSystem;
-    }
+    public ClientListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+        => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
@@ -84,6 +78,6 @@ internal class ClientListener : IModSharpModule, IClientListener
     // 不用管，你就直接照着例子写就行
     int IClientListener.ListenerVersion => IClientListener.ApiVersion;
 
-    // 优先级，数字越大优先级越高，绝大多数情况下你随便设这个数就行
+    // 优先级，数字越大优先级越高，大多数情况下直接使用0
     int IClientListener.ListenerPriority => 0;
 }

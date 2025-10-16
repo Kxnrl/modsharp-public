@@ -16,12 +16,9 @@ internal class GameEventManager : IModSharpModule
 {
     private readonly IServiceProvider _provider;
     private readonly IGameEventManager _gameEventManager;
-    public GameEventManager(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
+
+    public GameEventManager(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
         services.AddGameEventManager();

@@ -11,15 +11,8 @@ internal class SteamListener : IModSharpModule, ISteamListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public SteamListener(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
-    {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
-
-        _sharedSystem = sharedSystem;
-    }
+    public SteamListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+        => _sharedSystem = sharedSystem;
 
     public bool Init()
     {

@@ -10,15 +10,9 @@ namespace NetMessage;
 internal class NetMsg : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
-    public NetMsg(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
-    {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
 
-        _sharedSystem = sharedSystem;
-    }
+    public NetMsg(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+        => _sharedSystem = sharedSystem;
 
     public bool Init()
     {

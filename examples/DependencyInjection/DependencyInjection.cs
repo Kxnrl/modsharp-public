@@ -11,12 +11,9 @@ namespace DependencyInjection;
 internal class DependencyInjection : IModSharpModule
 {
     private readonly IServiceProvider _provider;
-    public DependencyInjection(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
+
+    public DependencyInjection(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
         _provider = services.BuildServiceProvider();

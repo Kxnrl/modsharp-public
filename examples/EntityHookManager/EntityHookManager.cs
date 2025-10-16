@@ -14,12 +14,9 @@ internal class EntityHookManager : IModSharpModule
 {
     private readonly IServiceProvider _provider;
     private readonly IEntityHookManager _entityHookManager;
-    public EntityHookManager(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
+
+    public EntityHookManager(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
         services.AddEntityHookManager();

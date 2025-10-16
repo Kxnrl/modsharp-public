@@ -2,22 +2,15 @@
 using Sharp.Shared;
 using Sharp.Shared.Objects;
 
-namespace CVar;
+namespace ConVar;
 
 // ReSharper disable once UnusedMember.Global
-internal class CVar : IModSharpModule
+internal class ConVar : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
-    public CVar(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
-    {
-        ArgumentNullException.ThrowIfNull(dllPath);
-        ArgumentNullException.ThrowIfNull(sharpPath);
-        ArgumentNullException.ThrowIfNull(version);
-        ArgumentNullException.ThrowIfNull(coreConfiguration);
 
-        _sharedSystem = sharedSystem;
-    }
-
+    public ConVar(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+        => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
