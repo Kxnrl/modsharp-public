@@ -1,4 +1,7 @@
-﻿namespace HelloWorld;
+using Microsoft.Extensions.Configuration;
+using Sharp.Shared;
+
+namespace HelloWorld;
 
 // ReSharper disable once UnusedMember.Global
 internal class HelloWorld : IModSharpModule

@@ -1,4 +1,7 @@
-﻿namespace Command;
+﻿using Microsoft.Extensions.Configuration;
+using Sharp.Shared;
+
+namespace Command;
 
 // ReSharper disable once UnusedMember.Global
 internal class Command : IModSharpModule

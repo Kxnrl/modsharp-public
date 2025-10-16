@@ -1,4 +1,7 @@
-﻿namespace CVar;
+﻿using Microsoft.Extensions.Configuration;
+using Sharp.Shared;
+
+namespace CVar;
 
 // ReSharper disable once UnusedMember.Global
 internal class CVar : IModSharpModule
