@@ -2,7 +2,7 @@
 
 本教程将演示如何使用Client Listener。
 
-`ClientListener.csproj`
+ClientListener.csproj
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -17,7 +17,7 @@
 </Project>
 ```
 
-`ClientListener.cs`
+ClientListener.cs
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
