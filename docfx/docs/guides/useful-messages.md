@@ -6,8 +6,11 @@
 
 一句话概括:
 
-- `OnMapStart`: `OnServerActivate` | `OnGameActivate`，选哪个都行，看你的实际需求
-- `OnMapEnd`: `OnGameShutdown`
+- `OnLevelInit` → ``OnGameInit``
+- `OnMapInit` → ``OnGamePostInit``
+- `OnMapStart` → ``OnGameActivate``
+- `OnConfigsExecuted` → ``OnServerActivate``
+- `OnMapEnd` → ``OnGameDeactivate``
 
 执行顺序:
 
