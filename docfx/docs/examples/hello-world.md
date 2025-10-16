@@ -46,5 +46,4 @@ public sealed class HelloWorld : IModSharpModule
     public string DisplayName   => "Hello World";
     public string DisplayAuthor => "ModSharp dev team";
 }
-
 ```

@@ -10,7 +10,9 @@
           ]
         }
       ],
-      "output": "api"
+      "output": "api",
+      "namespaceLayout": "nested",
+      "memberLayout": "separatePages"
     },
     {
       "src": [
@@ -21,7 +23,9 @@
           ]
         }
       ],
-      "output": "api-extensions"
+      "output": "api-extensions",
+      "namespaceLayout": "nested",
+      "memberLayout": "separatePages"
     }
   ],
   "build": {
@@ -49,11 +53,18 @@
       "template"
     ],
     "globalMetadata": {
-      "_appName": "ModSharp Documentation",
-      "_appTitle": "ModSharp Documentation",
-      "_disableNewTab": true,
-      "_enableNewTab": true,
+      "_appName": "ModSharp",
+      "_appTitle": "ModSharp",
+      "_disableNewTab": false,
+      "_disableBreadcrumb": false,
+      "_disableToc": false,
+      "_disableAffix": false,
+      "_disableNextArticle": true,
       "_enableSearch": true,
+      "_lang": "zh-cn",
+      "_appLogoPath": "images/icon.svg",
+      "_appFaviconPath": "images/icon.svg",
+      "_appFooter": "<span>ModSharp by <a href=\"https://github.com/SourceSharp\">ModSharp dev Team</a>. Doc made with <a href=\"https://dotnet.github.io/docfx\">docfx</a></span>",
       "pdf": false
     }
   }

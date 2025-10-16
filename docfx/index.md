@@ -5,33 +5,31 @@ title: ModSharp
 description: Modern Source 2 Modding Solution.
 ---
 
-# ModSharp
-
-现代Source 2 Modding解决方案
-
-## 文档
-
-参阅顶栏获得进一步的信息.
-
-This document is in Chinese.
-
-For other languages, please use your browser's translation or a translation plugin.
-
-## 社群
-
-- [Discord](https://discord.gg/wKarAjHm2G)
-
-## 下载
-
-- [Github Release](https://github.com/Kxnrl/modsharp-public/releases)
-
-## 作者
-
-- [Kxnrl](https://github.com/Kxnrl)
-- [BoneTM](https://github.com/BoneTM)
-- [laper32](https://github.com/laper32)
-- [Nukoooo](https://github.com/Nukoooo)
-
-## 版权
-
-本项目于AGPL-3.0，额外条款查阅[LICENSE](https://github.com/Kxnrl/modsharp-public/raw/refs/heads/master/LICENSE)以了解详情。
+<div class="center-fixed text-center">
+  <img src="images/modsharp.svg" height="300" width="300" />
+  <h1>ModSharp</h1>
+  <div>
+    <div>现代Source 2 Modding解决方案.</div>
+    <div>Modern Source 2 Modding Solution.</div>
+  </div>
+  <div class="my-4">
+    <a
+      href="https://github.com/Kxnrl/modsharp-public/releases"
+      target="_blank"
+      ><img
+        alt="Release"
+        src="https://img.shields.io/github/v/release/Kxnrl/modsharp-public?style=for-the-badge&label=Release"
+    /></a>
+    <a
+      href="https://www.nuget.org/packages/ModSharp.Sharp.Shared/"
+      target="_blank"
+      ><img
+        alt="NuGet"
+        src="https://img.shields.io/nuget/v/ModSharp.Sharp.Shared?style=for-the-badge&label=NuGet"
+    /></a>
+  </div>
+  <div class="my-4">
+    <a href="docs/guides/getting-started.md" class="btn btn-outline-success"
+      >Getting Started</a>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.center-fixed {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 600px;
+  /* min-height: 720px;
+  max-height: 100vh; */
+  overflow-y: auto;
+  z-index: 10;
+}
+
+main {
+  min-height: 568px !important;
+}
