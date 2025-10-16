@@ -75,8 +75,6 @@
 在新建Class library的时候，.NET会自动生成一个`Class1.cs`文件，我们就地取材，直接把这个文件改个名吧，就叫`Example.cs`，这个文件就是我们的模块入口文件。
 
 然后向里面写入如下内容：
-> [!NOTE]
-> 直接覆盖！
 
 ```cs
 using Microsoft.Extensions.Configuration;
@@ -149,7 +147,7 @@ public class Example : IModSharpModule
 - DisplayName为你模块显示名，这个任意取
 - DisplayAuthor为模块作者，显示用，这个任意取
 
-[!NOTE]
+> [!NOTE]
 > 这两项将会在`ms modules`中作为表明模块身份而出现。
 
 ## 编译，安装
