@@ -37,7 +37,6 @@ internal class ClientListener : IModSharpModule, IClientListener
     public string DisplayName => "Client Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
-
     public bool OnClientPreAdminCheck(IGameClient client)
     {
         _sharedSystem.GetModSharp().LogMessage($"[OnClientPreAdminCheck] {client.Name} ({client.SteamId})");
