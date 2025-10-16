@@ -2,24 +2,25 @@
 
 本教程将演示如何使用GameEventManager扩展。
 
-GameEventManager.csproj
+GameEventManagerExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>GameEventManagerExample</AssemblyName>
   </PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="2.0.20" />
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+    <PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="*" />
+  </ItemGroup>
 </Project>
-
 ```
 
-GameEventManager.cs
+GameEventManagerExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,16 +32,15 @@ using Sharp.Shared.GameEvents;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace GameEventManager;
+namespace GameEventManagerExample;
 
-// ReSharper disable once UnusedMember.Global
 // 不要和GameEventManager混淆！这里只是example叫这个名字方便你理解！
-internal class GameEventManager : IModSharpModule
+public sealed class GameEventManagerExample : IModSharpModule
 {
     private readonly IServiceProvider _provider;
     private readonly IGameEventManager _gameEventManager;
 
-    public GameEventManager(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public GameEventManagerExample(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
@@ -57,7 +57,6 @@ internal class GameEventManager : IModSharpModule
         _gameEventManager.HookEvent("player_changename", OnPlayerChangeName);
         _gameEventManager.ListenEvent("cs_intermission", OnIntermission);
         _gameEventManager.HookEvent("player_death", OnPlayerDeath);
-
 
         return true;
     }
@@ -120,7 +119,7 @@ internal class GameEventManager : IModSharpModule
         }
     }
 
-    public string DisplayName => "GameEventManager Example";
+    public string DisplayName  => "GameEventManager Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
 ```

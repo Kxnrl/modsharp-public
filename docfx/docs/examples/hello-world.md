@@ -3,30 +3,30 @@
 该示例演示了如何编写最简单的插件。
 
 HelloWorld.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>HelloWorld</AssemblyName>
   </PropertyGroup>
-  
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false"/>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
   </ItemGroup>
 </Project>
 ```
 
 HelloWorld.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 
 namespace HelloWorld;
 
-// ReSharper disable once UnusedMember.Global
-internal class HelloWorld : IModSharpModule
+public sealed class HelloWorld : IModSharpModule
 {
     public HelloWorld(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
@@ -43,7 +43,7 @@ internal class HelloWorld : IModSharpModule
         Console.WriteLine("Byebye World!");
     }
 
-    public string DisplayName => "Hello World";
+    public string DisplayName   => "Hello World";
     public string DisplayAuthor => "ModSharp dev team";
 }
 

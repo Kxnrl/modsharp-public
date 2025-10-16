@@ -2,22 +2,24 @@
 
 本教程将会演示如何使用SteamListener。
 
-SteamListener.csproj
+SteamListenerExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false"/>
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SteamListenerExample</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+  </ItemGroup>
 </Project>
 ```
 
-SteamListener.cs
+SteamListenerExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -25,10 +27,9 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Units;
 
-namespace SteamListener;
+namespace SteamListenerExample;
 
-// ReSharper disable once UnusedMember.Global
-internal class SteamListener : IModSharpModule, ISteamListener
+public sealed class SteamListener : IModSharpModule, ISteamListener
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -98,7 +99,7 @@ internal class SteamListener : IModSharpModule, ISteamListener
         Console.WriteLine($"[OnItemInstalled] publishedFileId={publishedFileId}");
     }
 
-    int ISteamListener.ListenerVersion => ISteamListener.ApiVersion;
+    int ISteamListener.ListenerVersion  => ISteamListener.ApiVersion;
     int ISteamListener.ListenerPriority => 0;
 }
 ```

@@ -2,32 +2,32 @@
 
 本教程将教你如何创建一个ConVar。
 
-ConVar.csproj
+ConVarExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>ConVarExample</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false"/>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
   </ItemGroup>
 </Project>
-
 ```
 
-ConVar.cs
+ConVarExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Objects;
 
-namespace ConVar;
+namespace ConVarExample;
 
-// ReSharper disable once UnusedMember.Global
-internal class ConVar : IModSharpModule
+public sealed class ConVar : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -37,21 +37,19 @@ internal class ConVar : IModSharpModule
     public bool Init()
     {
         // That's it. Very easy.
-        _sharedSystem.GetConVarManager().CreateConVar("my_cvar", 0, "This is my cvar.");
+        _sharedSystem.GetConVarManager().CreateConVar("my_cvar", 0, "This is my cvar.", ConVarFlags.Release);
         if (_sharedSystem.GetConVarManager().FindConVar("sv_cheats") is { } cheats)
         {
-            cheats.SetString("1");
+            cheats.Set(true);
         }
         return true;
     }
-
-
 
     public void Shutdown()
     {
     }
 
-    public string DisplayName => "CVar Example";
+    public string DisplayName   => "ConVar Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
 

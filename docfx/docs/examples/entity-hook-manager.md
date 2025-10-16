@@ -2,23 +2,25 @@
 
 本教程将演示如何使用EntityHookManager扩展。
 
-EntityHookManager.csproj
+EntityHookManagerExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="2.0.20" />
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>EntityHookManagerExample</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+    <PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="*" />
+  </ItemGroup>
 </Project>
 ```
 
-EntityHookManager.cs
+EntityHookManagerExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,8 +33,7 @@ using Sharp.Shared.Types;
 
 namespace EntityHookManager;
 
-// ReSharper disable once UnusedMember.Global
-internal class EntityHookManager : IModSharpModule
+public sealed class EntityHookManager : IModSharpModule
 {
     private readonly IServiceProvider _provider;
     private readonly IEntityHookManager _entityHookManager;
@@ -95,7 +96,7 @@ internal class EntityHookManager : IModSharpModule
         Console.WriteLine($"[OnFuncDoorOutputClose] classname={classname}, output={output}, entity={entity.Classname}, activator={activator?.Classname} delay={delay}, result={result}");
     }
 
-    public string DisplayName => "EntityHookManager Example";
+    public string DisplayName   => "EntityHookManager Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
 ```

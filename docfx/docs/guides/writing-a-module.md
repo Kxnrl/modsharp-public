@@ -84,7 +84,7 @@ using Sharp.Shared;
 
 namespace Example;
 
-public class Example : IModSharpModule
+public sealed class Example : IModSharpModule
 {
     public Example(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool)
     {

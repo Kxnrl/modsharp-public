@@ -2,22 +2,24 @@
 
 本教程将会教你如何发送一个Net Message。
 
-NetMessage.csproj
+NetMessageExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>NetMessageExample</AssemblyName>
   </PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+  </ItemGroup>
 </Project>
 ```
 
-NetMessage.cs
+NetMessageExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -25,10 +27,9 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace NetMessage;
+namespace NetMessageExample;
 
-// ReSharper disable once UnusedMember.Global
-internal class NetMsg : IModSharpModule
+public sealed class NetMsg : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -67,7 +68,14 @@ internal class NetMsg : IModSharpModule
             Param4 = string.Empty
         };
 
-        modSharp.SendNetMessage(new RecipientFilter([client.Slot]), nameof(CUserMessageSayText2), sayText2Msg);
+        // to special player
+        modSharp.SendNetMessage(new RecipientFilter(client), nameof(CUserMessageSayText2), sayText2Msg);
+
+        // to team
+        modSharp.SendNetMessage(new RecipientFilter(CStrikeTeam.CT), nameof(CUserMessageSayText2), sayText2Msg);
+
+        // to all
+        modSharp.SendNetMessage(default, nameof(CUserMessageSayText2), sayText2Msg);
 
         return ECommandAction.Stopped;
     }

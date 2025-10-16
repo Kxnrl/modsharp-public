@@ -2,23 +2,24 @@
 
 本教程将会演示如何创建指令，其中包含了纯服务端指令和客户端指令。
 
-Command.csproj
+CommandExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>CommandExample</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false"/>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
   </ItemGroup>
 </Project>
-
 ```
 
-Command.cs
+CommandExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -26,10 +27,9 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace Command;
+namespace CommandExample;
 
-// ReSharper disable once UnusedMember.Global
-internal class Command : IModSharpModule
+public sealed class Command : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
     
@@ -76,7 +76,7 @@ internal class Command : IModSharpModule
         return ECommandAction.Stopped;
     }
 
-    public string DisplayName => "Command Example";
+    public string DisplayName   => "Command Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
 ```

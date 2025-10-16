@@ -2,22 +2,24 @@
 
 本教程将会演示如何使用EventListener。
 
-EventListener.csproj
+EventListenerExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>EventListenerExample</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+  </ItemGroup>
 </Project>
 ```
 
-EventListener.cs
+EventListenerExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -27,8 +29,7 @@ using Sharp.Shared.Objects;
 
 namespace EventListener;
 
-// ReSharper disable once UnusedMember.Global
-internal class EventListener : IModSharpModule, IEventListener
+public sealed class EventListener : IModSharpModule, IEventListener
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -81,7 +82,7 @@ internal class EventListener : IModSharpModule, IEventListener
         return true;
     }
 
-    int IEventListener.ListenerVersion => IEventListener.ApiVersion;
+    int IEventListener.ListenerVersion  => IEventListener.ApiVersion;
     int IEventListener.ListenerPriority => 0;
 }
 ```

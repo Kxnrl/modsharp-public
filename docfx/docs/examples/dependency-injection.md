@@ -2,24 +2,24 @@
 
 本教程将演示如何使用Dependency Injection。
 
-DependencyInjection.csproj
+DependencyInjectionExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>DependencyInjectionExample</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+  </ItemGroup>
 </Project>
-
 ```
 
-DependencyInjection.cs
+DependencyInjectionExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,11 +27,7 @@ using Sharp.Shared;
 
 namespace DependencyInjection;
 
-// Or you can use this annotation if you have ReSharper.
-// [UsedImplicitly]
-// Recommend you use this comment.
-// ReSharper disable once UnusedMember.Global
-internal class DependencyInjection : IModSharpModule
+public sealed class DependencyInjection : IModSharpModule
 {
     private readonly IServiceProvider _provider;
 
@@ -39,6 +35,7 @@ internal class DependencyInjection : IModSharpModule
     {
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
+        services.AddSingleton(coreConfiguration);
         _provider = services.BuildServiceProvider();
     }
 
@@ -53,7 +50,7 @@ internal class DependencyInjection : IModSharpModule
     {
     }
 
-    public string DisplayName => "Dependency Injection Example";
+    public string DisplayName   => "Dependency Injection Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
 ```

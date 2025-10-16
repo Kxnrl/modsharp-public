@@ -2,23 +2,23 @@
 
 本教程将演示如何使用Client Listener。
 
-ClientListener.csproj
+ClientListenerExample.csproj
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>ClientListenerExample</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false"/>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
   </ItemGroup>
 </Project>
 ```
 
-ClientListener.cs
+ClientListenerExample.cs
 
 ```cs
 using Microsoft.Extensions.Configuration;
@@ -27,10 +27,9 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Objects;
 
-namespace ClientListener;
+namespace ClientListenerExample;
 
-// ReSharper disable once UnusedMember.Global
-internal class ClientListener : IModSharpModule, IClientListener
+public sealed class ClientListener : IModSharpModule, IClientListener
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -96,7 +95,6 @@ internal class ClientListener : IModSharpModule, IClientListener
         _sharedSystem.GetModSharp().LogMessage($"[OnClientSayCommand] {client.Name} ({client.SteamId}), teamOnly: {teamOnly}, isCommand: {isCommand}, commandName: {commandName}, message: {message}");
         return ECommandAction.Skipped;
     }
-
 
     // 不用管，你就直接照着例子写就行
     int IClientListener.ListenerVersion => IClientListener.ApiVersion;

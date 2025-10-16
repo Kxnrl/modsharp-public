@@ -2,23 +2,24 @@
 
 本教程将演示最简的Entity Listener用法。
 
-EntityListener.csproj
+EntityListenerExample.csproj
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyName>EntityListenerExample</AssemblyName>
   </PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="ModSharp.Sharp.Shared" Version="2.0.20" PrivateAssets="false" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+  </ItemGroup>
 </Project>
-
 ```
 
-EntityListener.cs
+EntityListenerExample.cs
+
 ```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -29,8 +30,7 @@ using Sharp.Shared.Types;
 
 namespace EntityListener;
 
-// ReSharper disable once UnusedMember.Global
-internal class EntityListener : IModSharpModule, IEntityListener
+public sealed class EntityListener : IModSharpModule, IEntityListener
 {
     private readonly ISharedSystem _sharedSystem;
     
@@ -110,10 +110,10 @@ internal class EntityListener : IModSharpModule, IEntityListener
         return EHookAction.Ignored;
     }
 
-    public string DisplayName => "Entity Listener Example";
+    public string DisplayName   => "Entity Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
-    int IEntityListener.ListenerVersion => IEntityListener.ApiVersion;
+    int IEntityListener.ListenerVersion  => IEntityListener.ApiVersion;
     int IEntityListener.ListenerPriority => 0;
 }
 ```
