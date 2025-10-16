@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - docfx
   workflow_dispatch:  
 
 permissions:
