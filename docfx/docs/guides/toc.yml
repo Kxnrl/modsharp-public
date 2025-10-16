@@ -1,8 +1,8 @@
-- name: Getting Started
+- name: 入门
   href: getting-started.md
 
-- name: Writing a Module
+- name: 编写插件
   href: writing-a-module.md
 
-- name: Useful Messages
-  href: useful-messages.md
+- name: 迁移指南
+  href: migration-guide.md

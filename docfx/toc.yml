@@ -1,6 +1,6 @@
-- name: Docs
+- name: 文档
   href: docs/
 - name: API
   href: api/
-- name: Extensions
+- name: 扩展包
   href: api-extensions/

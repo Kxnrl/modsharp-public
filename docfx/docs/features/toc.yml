@@ -1,11 +1,11 @@
 - name: ConVar
   href: convar.md
 
-- name: Command
+- name: 指令
   href: command.md
 
-- name: Listeners
+- name: 监听器
   href: listeners.md
 
-- name: Game Events
+- name: 游戏事件
   href: game-events.md
