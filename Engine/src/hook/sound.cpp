@@ -76,12 +76,11 @@ BeginMemberHookScope(CSoundEmitterSystem)
 
         char soundName[128];
         StrCopyFast(soundName, sizeof(soundName), pSound->m_pSoundName);
-        auto channel         = 0; // todo: remove
         auto volume          = pSound->m_flVolume;
         auto changeRecipient = false;
         auto recipients      = pFilter->GetRecipients();
 
-        const auto action = forwards::OnEmitSound->Invoke(entityIndex, soundName, &channel, &volume, &recipients, &changeRecipient);
+        const auto action = forwards::OnEmitSound->Invoke(entityIndex, soundName, &volume, &recipients, &changeRecipient);
 
         switch (action)
         {
@@ -118,7 +117,7 @@ BeginMemberHookScope(CSoundEmitterSystem)
         s_bInSoundEmitter = false;
 
         const auto guid = pInfo->m_nSndOpEventGuid;
-        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, channel, volume, pFilter->GetRecipients(), changeRecipient, action, guid);
+        forwards::OnEmitSoundPost->Invoke(entityIndex, soundName, volume, pFilter->GetRecipients(), changeRecipient, action, guid);
 #else
         s_bInSoundEmitter = true;
         const auto result = EmitSound(pThis, pFilter, entityIndex, pSound);

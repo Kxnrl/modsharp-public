@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -59,7 +59,6 @@ internal static unsafe class Game
 
     public delegate EHookAction DelegateOnEmitSound(int entity,
         ref string                                      sound,
-        ref SoundChannel                                channel,
         ref float                                       volume,
         ref ulong                                       receivers,
         ref bool                                        changeReceiver,
@@ -67,7 +66,6 @@ internal static unsafe class Game
 
     public delegate void DelegateOnEmitSoundPost(int entity,
         string                                       sound,
-        SoundChannel                                 channel,
         float                                        volume,
         ulong                                        receivers,
         bool                                         changeReceiver,
@@ -232,7 +230,6 @@ internal static unsafe class Game
     [UnmanagedCallersOnly]
     public static EHookAction OnEmitSoundExport(int entity,
         sbyte*                                      pSound,
-        int*                                        pChannel,
         float*                                      pVolume,
         ulong*                                      pReceivers,
         bool*                                       pChangeReceiver)
@@ -243,7 +240,6 @@ internal static unsafe class Game
         }
 
         var sound          = Utils.ReadString(pSound);
-        var channel        = (SoundChannel) (*pChannel);
         var volume         = *pVolume;
         var receivers      = *pReceivers;
         var changeReceiver = false;
@@ -251,7 +247,6 @@ internal static unsafe class Game
 
         var ret = OnEmitSound.Invoke(entity,
                                      ref sound,
-                                     ref channel,
                                      ref volume,
                                      ref receivers,
                                      ref changeReceiver,
@@ -265,7 +260,6 @@ internal static unsafe class Game
                 Utils.WriteString(pSound, 128, sound);
             }
 
-            *pChannel        = (int) channel;
             *pVolume         = volume;
             *pChangeReceiver = changeReceiver;
             *pReceivers      = receivers;
@@ -277,7 +271,6 @@ internal static unsafe class Game
     [UnmanagedCallersOnly]
     public static void OnEmitSoundPostExport(int entity,
         sbyte*                                   pSound,
-        SoundChannel                             channel,
         float                                    volume,
         ulong                                    receivers,
         bool                                     changeReceiver,
@@ -291,7 +284,7 @@ internal static unsafe class Game
 
         var sound = Utils.ReadString(pSound);
 
-        OnEmitSoundPost.Invoke(entity, sound, channel, volume, receivers, changeReceiver, action, guid);
+        OnEmitSoundPost.Invoke(entity, sound, volume, receivers, changeReceiver, action, guid);
     }
 
     [UnmanagedCallersOnly]
