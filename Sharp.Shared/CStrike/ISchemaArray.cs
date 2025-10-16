@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,16 +24,35 @@ namespace Sharp.Shared.CStrike;
 
 public interface ISchemaArray<T> : INativeObject where T : unmanaged
 {
+    /// <summary>
+    ///     数组大小
+    /// </summary>
     int Size { get; }
 
+    /// <summary>
+    ///     Indexer
+    /// </summary>
     T this[int index] { get; set; }
 
+    /// <summary>
+    ///     用<paramref name="index"></paramref>获取元素的引用 <br />
+    ///     <remarks>请使用<c>ref</c>关键字</remarks>
+    /// </summary>
     ref T GetRef(int index);
 
+    /// <summary>
+    ///     转换为 <see cref="IEnumerable{T}" /> 以使用 Linq/ZLinq
+    /// </summary>
     IEnumerator<T> AsEnumerable();
 
+    /// <summary>
+    ///     通常情况下你不需要使用它, 因为这是为<c>foreach</c>提供的0分配 <seealso cref="Enumerator" />
+    /// </summary>
     Enumerator GetEnumerator();
 
+    /// <summary>
+    ///     你不需要使用它
+    /// </summary>
     public struct Enumerator : IEnumerator<T>
     {
         private readonly ISchemaArray<T> _array;

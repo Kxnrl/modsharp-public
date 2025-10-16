@@ -460,6 +460,8 @@ public interface IModSharp
 
 #endregion
 
+#region Workshop
+
     /// <summary>
     ///     Add a workshop map to the server's map list
     /// </summary>
@@ -483,4 +485,6 @@ public interface IModSharp
     ///     List all workshop maps added to the server's map list
     /// </summary>
     List<(ulong PublishFileId, string Name)> ListWorkshopMaps();
+
+#endregion
 }

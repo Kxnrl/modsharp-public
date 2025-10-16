@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -25,29 +25,62 @@ namespace Sharp.Shared.Managers;
 
 public interface IFileManager
 {
+    /// <summary>
+    ///     获取Source2的文件系统接口指针
+    /// </summary>
     nint GetValveFileSystem();
 
+    /// <summary>
+    ///     检查文件是否存在 <br />
+    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    /// </summary>
     bool FileExists(string filename, string pathId = "GAME");
 
+    /// <summary>
+    ///     打开文件 <br />
+    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    /// </summary>
     IValveFile? OpenFile(string filename, string pathId = "GAME");
 
+    /// <summary>
+    ///     打开文件夹 <br />
+    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    /// </summary>
     IValveDirectory? OpenDirectory(string path, string pathId = "GAME");
 
+    /// <summary>
+    ///     添加路径到引擎文件系统的搜索路径
+    /// </summary>
     void AddSearchPath(string path, string pathId, int addType = 1, int priority = 0, int unknown = 0);
 
+    /// <summary>
+    ///     从引擎文件系统移除搜索路径
+    /// </summary>
     void RemoveSearchPath(string path, string pathId);
 }
 
 public interface IValveFile : INativeObject, IDisposable
 {
+    /// <summary>
+    ///     读
+    /// </summary>
     void Read(Span<byte> output);
 
+    /// <summary>
+    ///     写
+    /// </summary>
     void Write(ReadOnlySpan<byte> input);
 
+    /// <summary>
+    ///     文件大小
+    /// </summary>
     int Size();
 }
 
 public interface IValveDirectory : IDisposable
 {
+    /// <summary>
+    ///     迭代文件夹
+    /// </summary>
     IEnumerator<string> GetEnumerator();
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -103,11 +103,25 @@ public interface ISteamApi
     /// </summary>
     WorkshopItemState GetItemState(ulong sharedFileId);
 
+    /// <summary>
+    ///     获取下载的状态
+    /// </summary>
     bool GetItemDownloadInfo(ulong sharedFileId, out ulong bytesDownloaded, out ulong bytesTotal);
 
+    /// <summary>
+    ///     下载创意工坊的文件
+    /// </summary>
+    /// <returns></returns>
     bool DownloadItem(ulong sharedFileId, bool highPriority);
 
+    /// <summary>
+    ///     暂停下载
+    /// </summary>
     void SuspendDownloads(bool suspend);
 
+    /// <summary>
+    ///     获取Master上的公网Ip
+    /// </summary>
+    /// <returns></returns>
     uint GetPublicIP();
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,19 +23,44 @@ namespace Sharp.Shared;
 
 public interface ILibraryModule
 {
+    /// <summary>
+    ///     通过IDA Pattern找函数地址 (不唯一) <br />
+    ///     <remarks>该方法通常用于遍历地址</remarks>
+    /// </summary>
     nint FindPattern(string pattern, nint startAddress = 0);
 
+    /// <summary>
+    ///     查找虚表
+    /// </summary>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
+    /// <summary>
+    ///     从<b>.text</b>中查找函数地址
+    /// </summary>
     nint GetFunctionByName(string functionName);
 
+    /// <summary>
+    ///     通过IDA Pattern找函数地址 (唯一)
+    /// </summary>
     nint FindPatternExactly(string pattern);
 
+    /// <summary>
+    ///     查找Game VInterface
+    /// </summary>
     nint FindInterface(string interfaceName);
 
+    /// <summary>
+    ///     通过IDA Pattern找函数地址
+    /// </summary>
     List<nint> FindPatternMulti(string pattern);
 
+    /// <summary>
+    ///     查找string
+    /// </summary>
     nint FindString(string str);
 
+    /// <summary>
+    ///     查找指针
+    /// </summary>
     nint FindPtr(nint ptr);
 }

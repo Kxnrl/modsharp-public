@@ -24,7 +24,11 @@ namespace Sharp.Shared.Definition;
 public static class UsefulInteractionLayers
 {
     /// <summary>
-    ///     798721
+    ///     Copy from SwingOrStab in game code
+    ///     <br />
+    ///     <remarks>
+    ///         <b>798721</b>
+    ///     </remarks>
     /// </summary>
     public const InteractionLayers SwingOrStab = InteractionLayers.Solid
                                                  | InteractionLayers.Window
@@ -33,7 +37,11 @@ public static class UsefulInteractionLayers
                                                  | InteractionLayers.Npc;
 
     /// <summary>
-    ///     1847307
+    ///     Copy from FireBullets in game code
+    ///     <br />
+    ///     <remarks>
+    ///         <b>1847307</b>
+    ///     </remarks>
     /// </summary>
     public const InteractionLayers FireBullets = InteractionLayers.Solid
                                                  | InteractionLayers.HitBoxes
@@ -45,18 +53,11 @@ public static class UsefulInteractionLayers
                                                  | InteractionLayers.Debris;
 
     /// <summary>
-    ///     1847299
-    /// </summary>
-    public const InteractionLayers OpenSource2 = InteractionLayers.Solid
-                                                 | InteractionLayers.HitBoxes
-                                                 | InteractionLayers.Window
-                                                 | InteractionLayers.PassBullets
-                                                 | InteractionLayers.Player
-                                                 | InteractionLayers.Npc
-                                                 | InteractionLayers.Debris;
-
-    /// <summary>
-    ///     1839107
+    ///     Copy from ping in game code
+    ///     <br />
+    ///     <remarks>
+    ///         <b>1839107</b>
+    ///     </remarks>
     /// </summary>
     public const InteractionLayers PlayerPing = InteractionLayers.Solid
                                                 | InteractionLayers.HitBoxes
@@ -66,8 +67,9 @@ public static class UsefulInteractionLayers
                                                 | InteractionLayers.Debris;
 
     /// <summary>
-    ///     81931 <br />
-    ///     <remarks>0x1 | 0x2 | 0x8 | 0x4000 | 0x10000</remarks>
+    ///     Copy from Brush trace in game code
+    ///     <br />
+    ///     <remarks>0x1 | 0x2 | 0x8 | 0x4000 | 0x10000 = <b>81931</b></remarks>
     /// </summary>
     public const InteractionLayers BrushOnly = InteractionLayers.Solid
                                                | InteractionLayers.HitBoxes

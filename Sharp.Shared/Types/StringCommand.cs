@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -50,6 +50,11 @@ public readonly record struct StringCommand
 
     public string this[int index] => GetArg(index);
 
+    /// <summary>
+    ///     获取命令参数
+    /// </summary>
+    /// <param name="index">Arg Index, 从<b>1</b>开始</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" />出界</exception>
     public string GetArg(int index)
     {
         var readIndex = index - 1;
@@ -66,7 +71,9 @@ public readonly record struct StringCommand
     ///     获取命令参数
     /// </summary>
     /// <typeparam name="T">类型, 支持Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, String</typeparam>
-    /// <param name="index">Arg Index, 从1开始</param>
+    /// <param name="index">Arg Index, 从<b>1</b>开始</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" />出界</exception>
+    /// <exception cref="NotSupportedException">泛型T不受支持</exception>
     public T Get<T>(int index)
     {
         var readIndex = index - 1;
@@ -125,7 +132,9 @@ public readonly record struct StringCommand
     ///     获取命令参数
     /// </summary>
     /// <typeparam name="T">类型, 支持Int16, UInt16, Int32, UInt32, Int64, UInt64, Float</typeparam>
-    /// <param name="index">Arg Index, 从1开始</param>
+    /// <param name="index">Arg Index, 从<b>1</b>开始</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" />出界</exception>
+    /// <exception cref="NotSupportedException">泛型T不受支持</exception>
     public T? TryGet<T>(int index)
     {
         var readIndex = index - 1;
@@ -175,6 +184,12 @@ public readonly record struct StringCommand
         throw new NotSupportedException("type not support!");
     }
 
+    /// <summary>
+    ///     获取命令参数并自动解析Enum
+    /// </summary>
+    /// <param name="index">Arg Index, 从<b>1</b>开始</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" />出界</exception>
+    /// <exception cref="NotSupportedException">泛型T不受支持</exception>
     public T GetEnum<T>(int index) where T : Enum
     {
         var readIndex = index - 1;

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -133,6 +133,11 @@ public interface IGameClient : INativeObject
     bool IsValid { get; }
 
     /// <summary>
+    ///     Hltv?
+    /// </summary>
+    bool IsHltv { get; }
+
+    /// <summary>
     ///     网络存活时间 <br />
     ///     <remarks>对于玩家, 该值为进服到现在的时间 (换图不会重置)</remarks>
     ///     <br />
@@ -149,6 +154,4 @@ public interface IGameClient : INativeObject
     new int GetHashCode();
 
     new bool Equals(object? obj);
-
-    bool IsHltv { get; }
 }

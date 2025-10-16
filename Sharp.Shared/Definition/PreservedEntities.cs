@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -118,12 +118,21 @@ public static class PreservedEntities
         "point_pulse",
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    ///     判断当前实体是不是永久实体
+    /// </summary>
     public static bool IsPreservedEntity(this IBaseEntity entity)
         => Classnames.Contains(entity.Classname);
 
+    /// <summary>
+    ///     判断这个class是不是永久实体
+    /// </summary>
     public static bool IsPreservedEntity(string classname)
         => Classnames.Contains(classname);
 
+    /// <summary>
+    ///     获取永久实体列表
+    /// </summary>
     public static FrozenSet<string> GetPreservedEntities()
         => Classnames;
 }

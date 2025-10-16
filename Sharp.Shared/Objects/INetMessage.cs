@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,5 +23,8 @@ namespace Sharp.Shared.Objects;
 
 public interface INetMessage : INativeProtobuf
 {
+    /// <summary>
+    ///     消息ID
+    /// </summary>
     ProtobufNetMessageType MessageId { get; }
 }

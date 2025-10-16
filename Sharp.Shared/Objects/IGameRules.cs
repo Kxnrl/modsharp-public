@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -194,7 +194,15 @@ public interface IGameRules : ISchemaObject
     /// </summary>
     float GetMapRemainingTime();
 
+    /// <summary>
+    ///     m_nEndMatchMapGroupVoteTypes
+    /// </summary>
+    /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteTypes();
 
+    /// <summary>
+    ///     m_nEndMatchMapGroupVoteOptions
+    /// </summary>
+    /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteOptions();
 }

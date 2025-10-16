@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -48,7 +48,8 @@ public record SchemaField
 }
 
 /// <summary>
-///     不要修改此项, 除非你知道你在做什么
+///     如果你不知道你在做什么, 随便动这里的东西 <br />
+///     <remarks>手贱可能会导致意想不到的结果</remarks>
 /// </summary>
 public static class SharedGameObject
 {

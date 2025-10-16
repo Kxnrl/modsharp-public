@@ -32,7 +32,7 @@ public enum LifeState : byte
     Dying,
 
     /// <summary>
-    ///     嗝屁
+    ///     死了
     /// </summary>
     Dead,
 

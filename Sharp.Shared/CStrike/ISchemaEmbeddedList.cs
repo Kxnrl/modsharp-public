@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,14 +24,29 @@ namespace Sharp.Shared.CStrike;
 
 public interface ISchemaEmbeddedList<T> : INativeObject
 {
+    /// <summary>
+    ///     元素的数量
+    /// </summary>
     int Count { get; }
 
+    /// <summary>
+    ///     Indexer
+    /// </summary>
     T this[int index] { get; set; }
 
+    /// <summary>
+    ///     转换为 <see cref="IEnumerable{T}" /> 以使用 Linq/ZLinq
+    /// </summary>
     IEnumerator<T> AsEnumerable();
 
+    /// <summary>
+    ///     通常情况下你不需要使用它, 因为这是为<c>foreach</c>提供的0分配 <seealso cref="Enumerator" />
+    /// </summary>
     Enumerator GetEnumerator();
 
+    /// <summary>
+    ///     你不需要使用它
+    /// </summary>
     public struct Enumerator : IEnumerator<T>
     {
         private readonly ISchemaEmbeddedList<T> _list;

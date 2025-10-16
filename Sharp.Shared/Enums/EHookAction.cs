@@ -27,22 +27,22 @@ public enum EHookAction : byte
     Ignored,
 
     /// <summary>
-    ///     修改参数后调用原始Function -&gt; 原始返回值
+    ///     修改参数后调用原始Function → 原始返回值
     /// </summary>
     ChangeParamReturnDefault,
 
     /// <summary>
-    ///     修改参数后调用原始Function -&gt; 我们提供的返回值
+    ///     修改参数后调用原始Function → 我们提供的返回值
     /// </summary>
     ChangeParamReturnOverride,
 
     /// <summary>
-    ///     忽略参数后调用原始Function -&gt; 我们提供的返回值
+    ///     忽略参数后调用原始Function → 我们提供的返回值
     /// </summary>
     IgnoreParamReturnOverride,
 
     /// <summary>
-    ///     忽略原始Function, 使用我们提供的返回值
+    ///     忽略原始Function → 我们提供的返回值
     /// </summary>
     SkipCallReturnOverride,
 }

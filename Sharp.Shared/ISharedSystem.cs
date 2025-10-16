@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,33 +24,33 @@ namespace Sharp.Shared;
 
 public interface ISharedSystem
 {
-    public IEntityManager GetEntityManager();
+    IEntityManager GetEntityManager();
 
-    public IClientManager GetClientManager();
+    IClientManager GetClientManager();
 
-    public IEventManager GetEventManager();
+    IEventManager GetEventManager();
 
-    public IConVarManager GetConVarManager();
+    IConVarManager GetConVarManager();
 
-    public IHookManager GetHookManager();
+    IHookManager GetHookManager();
 
-    public IModSharp GetModSharp();
+    IModSharp GetModSharp();
 
-    public ILoggerFactory GetLoggerFactory();
+    ILoggerFactory GetLoggerFactory();
 
-    public ITransmitManager GetTransmitManager();
+    ITransmitManager GetTransmitManager();
 
-    public IFileManager GetFileManager();
+    IFileManager GetFileManager();
 
-    public ISchemaManager GetSchemaManager();
+    ISchemaManager GetSchemaManager();
 
-    public IEconItemManager GetEconItemManager();
+    IEconItemManager GetEconItemManager();
 
-    public ILibraryModuleManager GetLibraryModuleManager();
+    ILibraryModuleManager GetLibraryModuleManager();
 
-    public ISoundManager GetSoundManager();
+    ISoundManager GetSoundManager();
 
-    public IPhysicsQueryManager GetPhysicsQueryManager();
+    IPhysicsQueryManager GetPhysicsQueryManager();
 
-    public ISharpModuleManager GetSharpModuleManager();
+    ISharpModuleManager GetSharpModuleManager();
 }

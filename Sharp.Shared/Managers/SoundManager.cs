@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,26 +24,56 @@ namespace Sharp.Shared.Managers;
 
 public interface ISoundManager
 {
+    /// <summary>
+    ///     获取SoundEvent时长
+    /// </summary>
     float GetSoundDuration(string soundEvent);
 
+    /// <summary>
+    ///     发射SoundEvent
+    /// </summary>
     SoundOpEventGuid StartSoundEvent(string sound,
         IBaseEntity?                        entity = null,
         float?                              volume = null,
         RecipientFilter                     filter = default);
 
+    /// <summary>
+    ///     停止SoundEvent
+    /// </summary>
     void StopSoundEvent(SoundOpEventGuid guid);
 
+    /// <summary>
+    ///     停止SoundEvent
+    /// </summary>
     void StopSoundEvent(SoundOpEventGuid guid, RecipientFilter filter);
 
+    /// <summary>
+    ///     设置SoundEvent参数
+    /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, float value, RecipientFilter filter = default);
 
+    /// <summary>
+    ///     设置SoundEvent参数
+    /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, Vector value, RecipientFilter filter = default);
 
+    /// <summary>
+    ///     设置SoundEvent参数
+    /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, int value, RecipientFilter filter = default);
 
+    /// <summary>
+    ///     设置SoundEvent参数
+    /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, uint value, RecipientFilter filter = default);
 
+    /// <summary>
+    ///     设置SoundEvent参数
+    /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, ulong value, RecipientFilter filter = default);
 
+    /// <summary>
+    ///     判断SoundEvent是否有效
+    /// </summary>
     bool IsSoundEventValid(string soundEvent);
 }

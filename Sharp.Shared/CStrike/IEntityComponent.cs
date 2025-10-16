@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,8 +23,14 @@ namespace Sharp.Shared.CStrike;
 
 public interface IEntityComponent : ISchemaObject
 {
+    /// <summary>
+    ///     Schema Chain Offset
+    /// </summary>
     int ChainOffset { get; }
 
+    /// <summary>
+    ///     Schema Chain Entity
+    /// </summary>
     IBaseEntity? ChainEntity { get; }
 }
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -144,15 +144,30 @@ public interface IConVarManager
         string?                  helpString = null,
         ConVarFlags?             flags      = null);
 
+    /// <summary>
+    ///     创建一个控制台命令, 可以被客户端和服务器调用, 如果你想创建 <br />
+    ///     <remarks>
+    ///         高性能的, <br />
+    ///         只允许客户端执行的, <br />
+    ///         同时支持控制台和聊天窗口触发的<br />
+    ///         命令, 那么请使用 <see cref="IClientManager.InstallCommandCallback" />
+    ///     </remarks>
+    /// </summary>
     void CreateConsoleCommand(string                      name,
         Func<IGameClient?, StringCommand, ECommandAction> fn,
         string?                                           description = null,
         ConVarFlags?                                      flags       = null);
 
+    /// <summary>
+    ///     创建一个仅服务器控制台可用的命令
+    /// </summary>
     void CreateServerCommand(string         name,
         Func<StringCommand, ECommandAction> fn,
         string?                             description = null,
         ConVarFlags?                        flags       = null);
 
+    /// <summary>
+    ///     卸载时需要调用, 否则发生泄漏
+    /// </summary>
     bool ReleaseCommand(string name);
 }

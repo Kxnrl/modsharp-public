@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,6 +21,10 @@ using System.Runtime.InteropServices;
 
 namespace Sharp.Shared;
 
+/// <summary>
+///     如果你不知道你在做什么, 你就不要用这个 <br />
+///     <remarks>手贱可能会导致意想不到的结果</remarks>
+/// </summary>
 public static unsafe class MemoryAllocator
 {
     [DllImport("tier0", CallingConvention = CallingConvention.Cdecl)]

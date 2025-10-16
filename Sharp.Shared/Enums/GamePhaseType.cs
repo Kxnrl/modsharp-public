@@ -28,7 +28,7 @@ public enum GamePhase
 
     /// <summary>
     ///     不分上下半场的标准游戏 <br />
-    ///     <remarks>多用于mp_maxround为0时的游戏</remarks>
+    ///     <remarks>多用于<b>mp_maxround</b>为0时的游戏</remarks>
     /// </summary>
     PlayingStandard,
 

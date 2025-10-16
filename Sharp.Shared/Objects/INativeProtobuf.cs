@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,12 +24,26 @@ namespace Sharp.Shared.Objects;
 
 public interface INativeProtobuf : INativeObject
 {
+    /// <summary>
+    ///     消息名称
+    /// </summary>
+    /// <returns></returns>
     string GetName();
 
+    /// <summary>
+    ///     消息大小
+    /// </summary>
+    /// <returns></returns>
     ulong GetSize();
 
+    /// <summary>
+    ///     是否存在字段
+    /// </summary>
     bool HasField(string field);
 
+    /// <summary>
+    ///     获取Repeated字段的元素数量
+    /// </summary>
     int GetRepeatedFieldCount(string field);
 
     int? ReadInt32(string field, int repeatedIndex = -1);
@@ -92,13 +106,34 @@ public interface INativeProtobuf : INativeObject
 
     int AddBytes(string field, byte[] value);
 
+    /// <summary>
+    ///     读取嵌套的Message
+    /// </summary>
+    /// <returns></returns>
     INativeProtobuf? ReadMessage(string field, int repeatedIndex = -1);
 
+    /// <summary>
+    ///     添加新的message
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
     INativeProtobuf? AddMessage(string field);
 
+    /// <summary>
+    ///     删除Repeated中的字段
+    /// </summary>
+    /// <param name="field"></param>
+    /// <param name="repeatedIndex"></param>
+    /// <returns></returns>
     bool RemoveRepeatedFieldValue(string field, int repeatedIndex);
 
+    /// <summary>
+    ///     从其他<see cref="IMessage" />中复制数据并覆盖
+    /// </summary>
     bool CopyFromOtherMessage(IMessage message);
 
+    /// <summary>
+    ///     反序列化为C#可读的<see cref="IMessage{T}" />对象
+    /// </summary>
     T Deserialize<T>() where T : class, IMessage<T>, IMessage, new();
 }
