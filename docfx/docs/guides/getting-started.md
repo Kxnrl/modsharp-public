@@ -1,28 +1,35 @@
 # 入门
-## 前言
+
+### 前言
 
 本文将引导你完成 ModSharp 在全新安装的 CS2 服务器上的部署流程。
 
-## 名词定义
+### 名词定义
+
 为简化后续操作描述，先明确核心路径定义：​
+
 - **CS2 服务端目录**：{CS2}（后续所有步骤中，此符号均代表你的 CS2 服务器根目录）
 
-## 下载
+### 下载
+
 请前往 [action](https://github.com/Kxnrl/modsharp-public/actions) 一栏。
 
-## 检查环境
+### 检查环境
 
-1. 通用依赖：
+#### 1. 通用依赖
+
 - .NET 9
 
-2. 如果你是Windows用户，请确保你已经安装了如下内容：
+#### 2. 如果你是Windows用户，请确保你已经安装了如下内容
+
 - Visual Studio Redistributable
 
 > [!NOTE]
+>
 > - 如果你缺少Visual Studio Redistributable，你可以前往此处下载：[下载链接](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
 > - 如果你缺少.NET 9，前往此处下载：[下载链接](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
 
-3. 如果你是Linux用户
+#### 3. 如果你是Linux用户
 
 如你的运行环境是Docker，请使用Steam RT3镜像（参阅：registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest）
 > [!NOTE]
@@ -31,8 +38,10 @@
 请参阅[.NET下载页面](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)在镜像中安装.NET 9，此处不再赘述。
 
 如果你没有使用Docker，请自行[安装SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD)，并下载Steam RT3。
+
 > [!NOTE]
 > 示例Steam RT3安装教程：当你启动SteamCMD以后，依次运行如下指令
+>
 > - force_install_dir ~/steamrt
 > - login anonymous
 > - app_update 1628350 validate
@@ -41,9 +50,10 @@
 > 请注意，由于SteamRT3的限制，我们没办法使用系统的.NET。
 > 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
 
-## 修改`gameinfo.gi`
+### 修改`gameinfo.gi`
 
 请前往`{CS2}/game/csgo/gameinfo.gi`，做出如下修改：
+
 ```diff
     // ...Ignore
 	FileSystem
@@ -76,13 +86,16 @@
 
     // ...Ignore
 ```
+
 > [!NOTE]
 > 此处操作和你安装Metamod是一样的，只不过这里的路径由 `csgo/addons/metamod` 换成 `sharp`
 
-## 将sharp包放置在`{CS2}/game`目录下。
+### 将sharp包放置在`{CS2}/game`目录下
+
 > [!NOTE]
 > 示例结构
-> ```
+>
+> ```text
 > .
 > ├── bin
 > ├── core 
@@ -96,6 +109,6 @@
 > └── thirdpartylegalnotices.txt
 > ```
 
-## 启动服务器
+### 启动服务器
 
 启动服务器之后你还是没办法运行的，因为我们需要至少 **1** 个正常运行的插件才能让服务端正常运行。

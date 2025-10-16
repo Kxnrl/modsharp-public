@@ -1,10 +1,11 @@
 # 指令
 
 你只需要这样创建控制台指令就行
+
 ```cs
 
     private readonly ISharedSystem _sharedSystem;
-    public Command(ISharedSystem sharedSystem, string? dllPath, string? sharpPath, Version? version, IConfiguration? coreConfiguration, bool hotReload)
+    public Command(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
         // ...
         _sharedSystem = sharedSystem;
@@ -49,6 +50,5 @@
 
         return ECommandAction.Stopped;
     }
-
 
 ```
