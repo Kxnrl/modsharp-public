@@ -1,5 +1,5 @@
-- name: CVar
-  href: cvar.md
+- name: ConVar
+  href: convar.md
 
 - name: Command
   href: command.md
