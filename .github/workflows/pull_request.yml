@@ -42,7 +42,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.x
 
       # MSVC
       # 我也不知道为什么没屁用, 找不到msbuild
@@ -198,7 +198,7 @@ jobs:
       - name: Install .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.x
 
       # Prepare Build
       - name: Prepare Build
