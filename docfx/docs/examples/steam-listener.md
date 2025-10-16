@@ -1,4 +1,3 @@
-[!INCLUDE [SteamListener](../../../examples/SteamListener/README.md)]
-
+[!include [SteamListener](../../../examples/SteamListener/README.md)]
 
 [!code-csharp[SteamListener Example](../../../examples/SteamListener/SteamListener.cs)]

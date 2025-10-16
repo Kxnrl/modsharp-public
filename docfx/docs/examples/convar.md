@@ -1,3 +1,3 @@
-[!INCLUDE [CVar](../../../examples/CVar/README.md)]
+[!include [ConVar](../../../examples/ConVar/README.md)]
 
-[!code-csharp[CVar Example](../../../examples/CVar/CVar.cs)]
+[!code-csharp[ConVar Example](../../../examples/ConVar/ConVar.cs)]
