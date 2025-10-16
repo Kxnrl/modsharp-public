@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Size = 32)]
+[StructLayout(LayoutKind.Explicit, Size = 40)]
 public unsafe struct TakeDamageResult
 {
     [FieldOffset(0)]
@@ -31,17 +31,20 @@ public unsafe struct TakeDamageResult
     public int HealthLost;
 
     [FieldOffset(12)]
-    public int DamageDealt;
+    public int HealthBefore;
 
     [FieldOffset(16)]
-    public float PreModifiedDamage;
+    public int DamageDealt;
 
     [FieldOffset(20)]
-    public int TotalledHealthLost;
+    public float PreModifiedDamage;
 
     [FieldOffset(24)]
-    public int TotalledDamageDealt;
+    public int TotalledHealthLost;
 
     [FieldOffset(28)]
+    public int TotalledDamageDealt;
+
+    [FieldOffset(32)]
     public bool WasDamageSuppressed;
 }

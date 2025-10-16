@@ -391,6 +391,17 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
         }
     }
 
+    public int HealthBefore
+    {
+        get => Result->HealthBefore;
+        set
+        {
+            CheckDisposed();
+            CheckEditable();
+            Result->HealthBefore = value;
+        }
+    }
+
     public int DamageTaken
     {
         get => Result->DamageDealt;

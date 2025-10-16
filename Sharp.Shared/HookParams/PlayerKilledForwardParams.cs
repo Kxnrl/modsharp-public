@@ -25,7 +25,9 @@ public unsafe interface IPlayerKilledForwardParams : IFunctionParams, IPlayerPaw
 {
     TakeDamageResult* Result { get; }
 
-    int HealthLost { get; set; }
+    int HealthLost   { get; set; }
+
+    int HealthBefore { get; set; }
 
     int DamageTaken { get; set; }
 
