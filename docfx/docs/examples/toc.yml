@@ -1,8 +1,8 @@
 - name: Hello World
   href: hello-world.md
 
-- name: CVar
-  href: cvar.md
+- name: ConVar
+  href: convar.md
 
 - name: Command
   href: command.md
