@@ -1,7 +1,7 @@
 - name: 入门
   href: getting-started.md
 
-- name: 编写插件
+- name: 编写模块
   href: writing-a-module.md
 
 - name: 迁移指南
