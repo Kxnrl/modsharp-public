@@ -13,7 +13,7 @@
       "filter": "filterShared.yml",
       "output": "api",
       "namespaceLayout": "nested",
-      "memberLayout": "separatePages"
+      //"memberLayout": "separatePages"
     },
     {
       "src": [
@@ -27,7 +27,7 @@
       "filter": "filterExtensions.yml",
       "output": "api-extensions",
       "namespaceLayout": "nested",
-      "memberLayout": "separatePages"
+      //"memberLayout": "separatePages"
     }
   ],
   "build": {

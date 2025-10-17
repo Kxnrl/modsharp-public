@@ -9,3 +9,6 @@
 
 - name: 游戏事件
   href: game-events.md
+
+- name: 游戏实体
+  href: game-entities.md
