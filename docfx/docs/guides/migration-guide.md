@@ -44,3 +44,7 @@
 **ModSharp**中的游戏事件监听思路与SourceEngine相同。
 
 请查看 [游戏事件](../features/game-events.md)
+
+## Stripper
+
+使用该模块即可：[跳转连接](https://github.com/Kxnrl/StripperSharp)
