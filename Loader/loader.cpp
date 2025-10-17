@@ -212,6 +212,27 @@ private:
     LibModule m_pModule;
 } g_ModsharpModule;
 
+#ifndef PLATFORM_WINDOWS
+static void LoadBreakpad()
+{
+    char error[256];
+    auto handle = ms_LoadLibrary("../../sharp/bin/libbreakpad.so", error, sizeof(error));
+    if (!handle)
+    {
+        printf("Failed to load breakpad: %s\n", error);
+        return;
+    }
+
+    using fn = bool (*)();
+
+    auto func = reinterpret_cast<fn>(ms_GetSymbolAddress(handle, "InitBreakpad"));
+    if (!func())
+    {
+        printf("Failed to initialize breakpad\n");
+    }
+}
+#endif
+
 static void Source2Server_Shutdown(void* pThis)
 {
     printf("[Loader] Source2Server_Shutdown\n");
@@ -235,6 +256,10 @@ static void* Source2Server_Init(void* pThis, const char* pInterfaceName)
         printf("Failed to load modsharp module!\n");
         return ret;
     }
+
+#ifndef PLATFORM_WINDOWS
+    LoadBreakpad();
+#endif
 
     g_ModsharpModule.Init(engineFactory, serverFactory);
 
