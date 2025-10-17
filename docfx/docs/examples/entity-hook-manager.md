@@ -13,7 +13,7 @@ EntityHookManagerExample.csproj
     <AssemblyName>EntityHookManagerExample</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
     <PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="*" />
   </ItemGroup>
 </Project>

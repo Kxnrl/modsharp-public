@@ -69,7 +69,7 @@
 
 > [!IMPORTANT]
 >
-> 1. `ModSharp.Sharp.Shared`可以加上``PrivateAssets="all"``标签，这样可以防止你在Publish时自动复制`Sharp.Shared.dll`。  
+> 1. `ModSharp.Sharp.Shared`必须加上``PrivateAssets="all"``标签，因为我们需要防止你在Publish时自动复制`Sharp.Shared.dll`和其与之相关的所有dll。  
 > 2. `AssemblyName`为必需字段，否则会出现依赖加载不上的情况。该项的字段就和项目同名即可，我们的项目名是**Example**，所以该项填入的是`Example`，你实际开发的时候自行调整即可。
 
 ## Hello, World
@@ -86,7 +86,7 @@ namespace Example;
 
 public sealed class Example : IModSharpModule
 {
-    public Example(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool)
+    public Example(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool hotReload)
     {
 
     }
@@ -176,6 +176,10 @@ public class Example : IModSharpModule
 讲那么多你肯定比较懵，不如看图：
 
 ![看图](../../images/module-deploy-to.png)
+
+里面长这样：
+
+![看图](../../images/module-inner.png)
 
 ## 启动CS2
 

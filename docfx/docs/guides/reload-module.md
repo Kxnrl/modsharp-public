@@ -13,3 +13,5 @@
 > 你也可以用`{CS2}/game/sharp/modules/{你的模块}/{你的模块}`，依个人口味。
 
 这时候换图就可以了。
+
+![看图](../../images/reload-behaviour.png)

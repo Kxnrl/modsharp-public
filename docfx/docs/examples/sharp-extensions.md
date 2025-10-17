@@ -14,7 +14,7 @@ SharpExtensionsExample.csproj
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="*" />
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
     <PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="*" />
   </ItemGroup>
 </Project>

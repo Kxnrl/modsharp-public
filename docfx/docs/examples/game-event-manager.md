@@ -13,7 +13,7 @@ GameEventManagerExample.csproj
     <AssemblyName>GameEventManagerExample</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="false" />
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
     <PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="*" />
   </ItemGroup>
 </Project>
