@@ -68,15 +68,23 @@ public sealed class EventListener : IModSharpModule, IEventListener
         }
     }
 
-    // by default, Event hook implement isn't needed.
+    // 默认情况下HookFireEvent不需要实现
     public bool HookFireEvent(IGameEvent e, ref bool serverOnly)
     {
         if (e.Name.Equals("player_say", StringComparison.OrdinalIgnoreCase))
         {
             Console.WriteLine($"Blocked GameEvent fire: {e.Name}");
 
-            // block event
+            // 阻止事件发射
             return false;
+        }
+
+        if (e.Name.Equals("player_changename", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"Silence GameEvent: {e.Name}");
+
+            // 将事件设置为仅限服务器而不下发至客户端
+            serverOnly = true;
         }
 
         return true;
