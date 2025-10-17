@@ -10,6 +10,7 @@
           ]
         }
       ],
+      "filter": "filterShared.yml",
       "output": "api",
       "namespaceLayout": "nested",
       "memberLayout": "separatePages"
@@ -23,6 +24,7 @@
           ]
         }
       ],
+      "filter": "filterExtensions.yml",
       "output": "api-extensions",
       "namespaceLayout": "nested",
       "memberLayout": "separatePages"
