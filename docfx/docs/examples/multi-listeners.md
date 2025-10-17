@@ -63,7 +63,7 @@ public sealed class  MultiListener : IModSharpModule,
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
-    public string DisplayName => "Client Listener Example";
+    public string DisplayName => "Multiple Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
     int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
