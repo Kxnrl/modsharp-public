@@ -33,6 +33,14 @@
 
 ## Entity
 
-实体的保存和使用以及访问变量与CS#和SourceMod有很大的不同
+实体的保存和使用以及访问变量与CS#和SourceMod有很大的不同。
 
-请查看 [游戏实体](../features/game-entities.md) 
+请查看 [游戏实体](../features/game-entities.md)
+
+## Events
+
+事件的创建和访问与CS#和SourceMod类似，
+但游戏事件监听与CS#和SourceMod的监听方式不同，  
+**ModSharp**中的游戏事件监听思路与SourceEngine相同。
+
+请查看 [游戏事件](../features/game-events.md)
