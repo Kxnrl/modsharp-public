@@ -105,6 +105,10 @@
 > ├── csgo_imported 
 > ├── csgo_lv
 > ├── sharp
+> │   ├── bin
+> │   ├── configs
+> │   ├── core
+> │   └── gamedata
 > └── thirdpartylegalnotices.txt
 > ```
 
