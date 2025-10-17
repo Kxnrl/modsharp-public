@@ -102,3 +102,11 @@ pawn.SetNetVar("m_vecTotalBulletForce", new Vector()); // 设置为指定的值
 >
 > 当你传入的字段不存在时, 会立即抛出异常  
 > 当你传入的字段与class不匹配时, 会立即抛出异常  
+
+## 监听
+
+实体监听与CS#和SourceMod的监听方式不同，  
+**ModSharp**中的实体监听监听思路与SourceEngine相同。
+
+- 如果你想高度自定义，请参阅该示例：[EntityListener](../examples/entity-listener.md)
+- 如果你想简单粗暴当懒人，请参阅该示例：[EntityHookManager](../examples/entity-hook-manager.md)
