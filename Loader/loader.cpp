@@ -216,10 +216,10 @@ private:
 static void LoadBreakpad()
 {
     char error[256];
-    auto handle = ms_LoadLibrary("../../sharp/bin/libbreakpad.so", error, sizeof(error));
+    auto handle = ms_LoadLibrary("../../sharp/bin/libaccelerator.so", error, sizeof(error));
     if (!handle)
     {
-        printf("Failed to load breakpad: %s\n", error);
+        printf("Failed to load accelerator/breakpad: %s\n", error);
         return;
     }
 
