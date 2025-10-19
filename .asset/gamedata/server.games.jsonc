@@ -879,7 +879,7 @@
       "windows": 277 // 48 89 5C 24 ? 57 48 83 EC ? F3 0F 10 81 ? ? ? ? 48 8B D9 0F 29 7C 24
     },
     "CBasePlayerPawn::CommitSuicide": {
-      "linux": 409,
+      "linux": 408,
       "windows": 408 // 48 89 5C 24 10 48 89 74 24 18 57 48 81 EC ? ? ? ? 48 8B 01 41 0F B6 F8
     },
     "CBaseTrigger::PassesTriggerFilters": {
