@@ -1,0 +1,18 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  discord-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: GitHub Releases to Discord
+        uses: SethCohen/github-releases-to-discord@v1
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          color: "2327791"
+          content: "@everyone"
+          reduce_headings: false
