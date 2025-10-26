@@ -378,6 +378,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           overwrite_files: true
           prerelease: false
