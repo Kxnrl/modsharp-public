@@ -75,6 +75,21 @@ static bool IsFieldNetworked(const SchemaClassFieldData_t& field)
     return false;
 }
 
+static const char* GetFieldTypeName(const SchemaClassFieldData_t& field)
+{
+    constexpr auto type_override = MurmurHash2("MNetworkVarTypeOverride", MURMURHASH_SEED_MODSHARP);
+
+    for (int i = 0; i < field.m_nMetadataCount; i++)
+    {
+        auto& metadata = field.m_pMetadata[i];
+
+        if (type_override == MurmurHash2(field.m_pMetadata[i].m_name, MURMURHASH_SEED_MODSHARP))
+            return reinterpret_cast<CSchemaNetworkValue**>(metadata.m_value)[1]->m_sz_value;
+    }
+
+    return field.m_pszName;
+}
+
 int32_t schemas::FindChainOffset(const char* className)
 {
     char keyBuffer[256];
@@ -172,7 +187,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t* derived_schema_class, Schem
         const auto is_field_networked = IsFieldNetworked(field);
 
         auto new_field       = derived_schema_class->fields.AddToTailGetPtr();
-        new_field->type      = field.m_pType->m_pszTypeName;
+        new_field->type      = GetFieldTypeName(field);
         new_field->name      = field.m_pszName;
         new_field->offset    = field_offset;
         new_field->networked = is_field_networked;
