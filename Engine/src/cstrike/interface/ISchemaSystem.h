@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -60,7 +60,7 @@ private:
     void* vtable;
 
 public:
-    const char* m_pszTypeName;
+    const char*             m_pszTypeName;
     CSchemaSystemTypeScope* m_pTypeScope;
     SchemaTypeCategory_t    m_eTypeCategory;
 
@@ -134,13 +134,10 @@ private:
     const char*                m_pszName;
     const char*                m_pszModule;
     int32_t                    m_nSize;
-
     int16_t                    m_nNumFields;
     int16_t                    m_nStaticMetadataCount;
-
     int8_t                     m_nAlignOf;
     int8_t                     m_nNumBaseClasses;
-
     int16_t                    m_nMultipleInheritanceDepth;
     int16_t                    m_nSingleInheritanceDepth;
     SchemaClassFieldData_t*    m_pFields;
