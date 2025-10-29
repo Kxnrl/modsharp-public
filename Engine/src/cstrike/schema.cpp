@@ -75,21 +75,6 @@ static bool IsFieldNetworked(const SchemaClassFieldData_t& field)
     return false;
 }
 
-static const char* GetFieldTypeName(const SchemaClassFieldData_t& field)
-{
-    constexpr auto type_override = MurmurHash2("MNetworkVarTypeOverride", MURMURHASH_SEED_MODSHARP);
-
-    for (int i = 0; i < field.m_nMetadataCount; i++)
-    {
-        auto& metadata = field.m_pMetadata[i];
-
-        if (type_override == MurmurHash2(metadata.m_name, MURMURHASH_SEED_MODSHARP))
-            return reinterpret_cast<CSchemaNetworkValue**>(metadata.m_value)[1]->m_sz_value;
-    }
-
-    return field.m_pType->m_pszTypeName;
-}
-
 int32_t schemas::FindChainOffset(const char* className)
 {
     char keyBuffer[256];
@@ -155,11 +140,28 @@ void SetStructStateChanged(void* pEntity, uint32_t offset)
     CALL_VIRTUAL(void, 1, pEntity, &info);
 }
 
-static void BuildClassSchemaRecursive(SchemaClass_t* derived_schema_class, SchemaClassInfoData_t* current_class_info, std::unordered_set<std::string_view>& added_field_names)
+static void BuildClassSchemaRecursive(SchemaClass_t*                                derived_schema_class,
+                                      SchemaClassInfoData_t*                        current_class_info,
+                                      std::unordered_set<std::string_view>&         added_field_names,
+                                      std::unordered_map<std::string, const char*>& override_fields)
 {
+    std::string_view class_name = current_class_info->GetName();
     if (strcmp(derived_schema_class->name.Get(), current_class_info->GetName()) != 0)
     {
         derived_schema_class->baseClassList.AddToTail(new CUtlString(current_class_info->GetName()));
+    }
+
+    constexpr auto type_override = MurmurHash2("MNetworkVarTypeOverride", MURMURHASH_SEED_MODSHARP);
+
+    auto metadata = current_class_info->GetStaticMetadata();
+    for (int i = 0; i < current_class_info->GetMetadataSize(); i++)
+    {
+        auto& m = metadata[i];
+
+        if (MurmurHash2(m.m_name, MURMURHASH_SEED_MODSHARP) == type_override)
+        {
+            override_fields[reinterpret_cast<char**>(m.m_value)[0]] = reinterpret_cast<char**>(m.m_value)[1];
+        }
     }
 
     const auto* fields = current_class_info->GetFields();
@@ -187,7 +189,21 @@ static void BuildClassSchemaRecursive(SchemaClass_t* derived_schema_class, Schem
         const auto is_field_networked = IsFieldNetworked(field);
 
         auto new_field       = derived_schema_class->fields.AddToTailGetPtr();
-        new_field->type      = GetFieldTypeName(field);
+
+        auto it = override_fields.find(field_name.data());
+        if (it != override_fields.end())
+        {
+            new_field->type = it->second;
+            if (field.m_pType->m_eTypeCategory == SCHEMA_TYPE_POINTER)
+            {
+                new_field->type.Append("*");
+            }
+        }
+        else
+        {
+            new_field->type = field.m_pType->m_pszTypeName;
+        }
+
         new_field->name      = field.m_pszName;
         new_field->offset    = field_offset;
         new_field->networked = is_field_networked;
@@ -201,9 +217,12 @@ static void BuildClassSchemaRecursive(SchemaClass_t* derived_schema_class, Schem
         added_field_names.insert(field_name);
     }
 
-    if (auto* parent = current_class_info->GetParent())
+    auto base_class_count = current_class_info->GetBaseClassSize();
+    auto base_classes     = current_class_info->GetBaseClasses();
+    for (auto i = 0; i < base_class_count; i++)
     {
-        BuildClassSchemaRecursive(derived_schema_class, parent, added_field_names);
+        auto& base_class = base_classes[i];
+        BuildClassSchemaRecursive(derived_schema_class, base_class.m_pClass, added_field_names, override_fields);
     }
 }
 
@@ -243,8 +262,9 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
         g_SchemaList.AddToTail(schema_class);
 
         std::unordered_set<std::string_view> added_field_names;
+        std::unordered_map<std::string, const char*> override_fields{};
 
-        BuildClassSchemaRecursive(schema_class, class_info, added_field_names);
+        BuildClassSchemaRecursive(schema_class, class_info, added_field_names, override_fields);
     }
 }
 
