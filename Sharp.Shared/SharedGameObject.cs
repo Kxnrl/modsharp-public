@@ -19,6 +19,7 @@
 
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
 
 namespace Sharp.Shared;
@@ -33,10 +34,11 @@ public record SchemaClass
 
 public record SchemaClassField
 {
-    public required int    Offset    { get; init; }
-    public required bool   Networked { get; init; }
-    public required string Type      { get; init; }
-    public required bool   IsArray   { get; init; }
+    public required int                Offset    { get; init; }
+    public required bool               Networked { get; init; }
+    public required string             Type      { get; init; }
+    public required bool               IsArray   { get; init; }
+    public required SchemaTypeCategory Category  { get; init; }
 }
 
 public record SchemaField

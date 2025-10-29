@@ -39,6 +39,7 @@ using Sharp.Core.Helpers;
 using Sharp.Core.Managers;
 using Sharp.Core.Utilities;
 using Sharp.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
@@ -89,6 +90,9 @@ public static class Bootstrap
         [FieldOffset(20)]
         public bool Networked;
 
+        [FieldOffset(21)]
+        public SchemaTypeCategory Category;
+
         public string NameString => Name.Get();
 
         public string TypeString => Type.Get();
@@ -137,6 +141,7 @@ public static class Bootstrap
                                   Networked = field.Networked,
                                   Type      = type,
                                   IsArray   = isArray,
+                                  Category  = field.Category,
                               });
             }
 

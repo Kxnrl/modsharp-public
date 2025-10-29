@@ -45,6 +45,7 @@ struct SchemaClassField_t
     CUtlString type;
     int32_t    offset;
     bool       networked;
+    SchemaTypeCategory_t category;
 };
 
 struct SchemaClass_t
@@ -175,6 +176,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t* derived_schema_class, Schem
         new_field->name      = field.m_pszName;
         new_field->offset    = field_offset;
         new_field->networked = is_field_networked;
+        new_field->category  = field.m_pType->m_eTypeCategory;
 
         char key_buffer[512];
         snprintf(key_buffer, sizeof(key_buffer), "%s->%s", derived_schema_class->name.Get(), field.m_pszName);

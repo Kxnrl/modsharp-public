@@ -41,6 +41,19 @@ struct SchemaMetadataEntryData_t
     CSchemaNetworkValue* m_value;
 };
 
+// taken from https://github.com/alliedmodders/hl2sdk/blob/cs2/public/schemasystem/schematypes.h
+enum SchemaTypeCategory_t : uint8_t
+{
+    SCHEMA_TYPE_BUILTIN = 0,
+    SCHEMA_TYPE_POINTER,
+    SCHEMA_TYPE_BITFIELD,
+    SCHEMA_TYPE_FIXED_ARRAY,
+    SCHEMA_TYPE_ATOMIC,
+    SCHEMA_TYPE_DECLARED_CLASS,
+    SCHEMA_TYPE_DECLARED_ENUM,
+    SCHEMA_TYPE_INVALID,
+};
+
 struct SchemaType_t
 {
 private:
@@ -48,6 +61,8 @@ private:
 
 public:
     const char* m_pszTypeName;
+    CSchemaSystemTypeScope* m_pTypeScope;
+    SchemaTypeCategory_t    m_eTypeCategory;
 
     SchemaType_t() = delete;
 };
