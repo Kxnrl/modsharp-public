@@ -83,7 +83,7 @@ static const char* GetFieldTypeName(const SchemaClassFieldData_t& field)
     {
         auto& metadata = field.m_pMetadata[i];
 
-        if (type_override == MurmurHash2(field.m_pMetadata[i].m_name, MURMURHASH_SEED_MODSHARP))
+        if (type_override == MurmurHash2(metadata.m_name, MURMURHASH_SEED_MODSHARP))
             return reinterpret_cast<CSchemaNetworkValue**>(metadata.m_value)[1]->m_sz_value;
     }
 
