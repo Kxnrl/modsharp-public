@@ -87,7 +87,7 @@ static const char* GetFieldTypeName(const SchemaClassFieldData_t& field)
             return reinterpret_cast<CSchemaNetworkValue**>(metadata.m_value)[1]->m_sz_value;
     }
 
-    return field.m_pszName;
+    return field.m_pType->m_pszTypeName;
 }
 
 int32_t schemas::FindChainOffset(const char* className)
