@@ -1072,6 +1072,17 @@ internal partial class SharpCore : ISharpCore
         }
     }
 
+    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage
+    {
+        var bytes = data.ToByteArray();
+        var size  = bytes.Length;
+
+        fixed (byte* pBytes = bytes)
+        {
+            return Net.SendNetMessage(&filter, data.GetType().Name, pBytes, size);
+        }
+    }
+
     public void HookNetMessage(ProtobufNetMessageType msgId)
         => Net.HookNetMessage(msgId);
 
