@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,6 +21,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Utilities;
@@ -37,15 +38,19 @@ public static class SchemaSystem
         var schemaField = GetSchemaClassField(schemaClass, field);
 
         var arraySize     = 1;
-        var fieldTypeSpan = schemaField.Type.AsSpan();
 
-        var startPos = fieldTypeSpan.IndexOf('[');
-        var endPos   = fieldTypeSpan.IndexOf(']');
-
-        if (startPos > -1 && endPos > -1 && endPos > startPos)
+        if (schemaField.Category is SchemaTypeCategory.FixedArray)
         {
-            var arraySizeStr = fieldTypeSpan[(startPos + 1)..endPos];
-            arraySize = int.Parse(arraySizeStr);
+            var fieldTypeSpan = schemaField.Type.AsSpan();
+
+            var startPos = fieldTypeSpan.IndexOf('[');
+            var endPos   = fieldTypeSpan.IndexOf(']');
+
+            if (startPos > -1 && endPos > -1 && endPos > startPos)
+            {
+                var arraySizeStr = fieldTypeSpan[(startPos + 1)..endPos];
+                arraySize = int.Parse(arraySizeStr);
+            }
         }
 
         return new SchemaField

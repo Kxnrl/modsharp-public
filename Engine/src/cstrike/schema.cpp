@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -41,10 +41,10 @@
 // for coreclr
 struct SchemaClassField_t
 {
-    CUtlString name;
-    CUtlString type;
-    int32_t    offset;
-    bool       networked;
+    CUtlString           name;
+    CUtlString           type;
+    int32_t              offset;
+    bool                 networked;
     SchemaTypeCategory_t category;
 };
 
@@ -167,7 +167,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
     const auto* fields = current_class_info->GetFields();
     for (int i = 0; i < current_class_info->GetFieldsSize(); ++i)
     {
-        const auto& field = fields[i];
+        const auto&            field = fields[i];
         const std::string_view field_name(field.m_pszName);
 
         if (field_name == "__m_pChainEntity")
@@ -188,7 +188,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
 
         const auto is_field_networked = IsFieldNetworked(field);
 
-        auto new_field       = derived_schema_class->fields.AddToTailGetPtr();
+        auto new_field = derived_schema_class->fields.AddToTailGetPtr();
 
         auto it = override_fields.find(field_name.data());
         if (it != override_fields.end())
@@ -261,7 +261,7 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
         schema_class->baseClassList.AddToTail(new CUtlString(class_info->GetName()));
         g_SchemaList.AddToTail(schema_class);
 
-        std::unordered_set<std::string_view> added_field_names;
+        std::unordered_set<std::string_view>         added_field_names{};
         std::unordered_map<std::string, const char*> override_fields{};
 
         BuildClassSchemaRecursive(schema_class, class_info, added_field_names, override_fields);
