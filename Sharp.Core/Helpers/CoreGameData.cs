@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -33,6 +33,7 @@ internal sealed class GameClientGameData
     public required int FullyAuthenticated { get; init; }
     public required int DeltaTick          { get; init; }
     public required int IsHltv             { get; init; }
+    public required int ConVars            { get; init; }
 }
 
 internal sealed class CNetworkGameServerGameData
@@ -62,6 +63,7 @@ internal static class CoreGameData
             FullyAuthenticated = Core.GetOffset("CServerSideClient::m_FullyAuthenticated"),
             DeltaTick          = Core.GetOffset("CServerSideClient::m_nDeltaTick"),
             IsHltv             = Core.GetOffset("CServerSideClient::m_IsHLTV"),
+            ConVars            = Core.GetOffset("CServerSideClient::m_ConVars"),
         };
 
     private static CNetworkGameServerGameData? _cNetworkGameServerGameData;

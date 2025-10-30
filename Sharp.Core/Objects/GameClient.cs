@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -32,6 +32,8 @@ namespace Sharp.Core.Objects;
 
 internal partial class GameClient : NativeObject, IGameClient
 {
+    private KeyValues? _conVars;
+
     private GameClient(nint ptr) : base(ptr)
     {
         _defaultUserId  = ptr.GetUInt16(CoreGameData.GameClient.UserId);
@@ -39,23 +41,35 @@ internal partial class GameClient : NativeObject, IGameClient
         _defaultSteamId = ptr.GetUInt64(CoreGameData.GameClient.SteamId);
     }
 
+    protected override void OnDisposed()
+        => _conVars?.MarkAsDisposed();
+
     /// <summary>
     ///     输出到客户端控制台
     /// </summary>
     public void ConsolePrint(string message)
-        => Client.ConsolePrint(this, message);
+    {
+        CheckDisposed();
+        Client.ConsolePrint(this, message);
+    }
 
     /// <summary>
     ///     覆盖游戏内名字
     /// </summary>
     public void SetName(string name)
-        => Client.SetName(this, name);
+    {
+        CheckDisposed();
+        Client.SetName(this, name);
+    }
 
     /// <summary>
     ///     发生聊天消息
     /// </summary>
     public void SayChatMessage(bool teamOnly, string message)
-        => Client.SayChatMessage(this, teamOnly, message);
+    {
+        CheckDisposed();
+        Client.SayChatMessage(this, teamOnly, message);
+    }
 
     /// <summary>
     ///     读取客户端IP地址
@@ -63,6 +77,8 @@ internal partial class GameClient : NativeObject, IGameClient
     /// <returns></returns>
     public string? GetAddress(bool withPort)
     {
+        CheckDisposed();
+
         if (IsFakeClient)
         {
             return null;
@@ -92,28 +108,54 @@ internal partial class GameClient : NativeObject, IGameClient
     ///     获取客户端建立链接的时间
     /// </summary>
     public float GetTimeConnected()
-        => IsFakeClient ? (float) Bridges.Natives.Core.GetEngineTime() : Client.GetTimeConnected(this);
+    {
+        CheckDisposed();
+
+        return IsFakeClient ? (float) Bridges.Natives.Core.GetEngineTime() : Client.GetTimeConnected(this);
+    }
 
     /// <summary>
     ///     执行命令 (via Client/NetChannel)
     /// </summary>
     public void Command(string command)
-        => Client.ClientCommand(this, command);
+    {
+        CheckDisposed();
+
+        Client.ClientCommand(this, command);
+    }
 
     public void FakeCommand(string command)
-        => Client.FakeClientCommand(this, command);
+    {
+        CheckDisposed();
+        Client.FakeClientCommand(this, command);
+    }
 
     public void ExecuteStringCommand(string command)
-        => Client.ExecuteStringCommand(this, command);
+    {
+        CheckDisposed();
+        Client.ExecuteStringCommand(this, command);
+    }
 
     public void ForceFullUpdate()
-        => _this.WriteInt32(CoreGameData.GameClient.DeltaTick, -1);
+    {
+        CheckDisposed();
+        _this.WriteInt32(CoreGameData.GameClient.DeltaTick, -1);
+    }
 
     public string? GetConVarValue(string cvarName)
     {
+        CheckDisposed();
+
         var ptr = Client.GetConVarValue(this, cvarName);
 
         return ptr == nint.Zero ? null : Marshal.PtrToStringUTF8(ptr);
+    }
+
+    public IKeyValues? GetConVars()
+    {
+        CheckDisposed();
+
+        return _conVars ??= KeyValues.Create(GetConVars(_this));
     }
 
     // identity
@@ -180,4 +222,8 @@ internal partial class GameClient : NativeObject, IGameClient
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong GetSteamId(nint pointer)
         => pointer.GetUInt64(CoreGameData.GameClient.SteamId);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static nint GetConVars(nint pointer)
+        => pointer.GetObjectPtr(CoreGameData.GameClient.ConVars);
 }

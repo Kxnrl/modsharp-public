@@ -81,6 +81,11 @@ public interface IGameClient : INativeObject
     string? GetConVarValue(string cvarName);
 
     /// <summary>
+    ///     获取客户端ConVars KeyValues对象
+    /// </summary>
+    IKeyValues? GetConVars();
+
+    /// <summary>
     ///     客户端SignOn状态
     /// </summary>
     SignOnState SignOnState { get; }
@@ -133,11 +138,6 @@ public interface IGameClient : INativeObject
     bool IsValid { get; }
 
     /// <summary>
-    ///     Hltv?
-    /// </summary>
-    bool IsHltv { get; }
-
-    /// <summary>
     ///     网络存活时间 <br />
     ///     <remarks>对于玩家, 该值为进服到现在的时间 (换图不会重置)</remarks>
     ///     <br />
@@ -154,4 +154,6 @@ public interface IGameClient : INativeObject
     new int GetHashCode();
 
     new bool Equals(object? obj);
+
+    bool IsHltv { get; }
 }
