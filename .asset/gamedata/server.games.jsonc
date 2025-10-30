@@ -256,10 +256,7 @@
     "CCSPlayer_MovementServices::TracePlayerBBox": {
       "library": "server",
       "linux": "55 48 89 E5 41 57 49 89 FF 41 56 49 89 CE 41 55 49 89 D5",
-      "windows": {
-        "factory": "+1 r",
-        "signature": "E8 ? ? ? ? F3 0F 10 05 ? ? ? ? 0F 2F 45 ? 77 ? 44 38 75"
-      }
+      "windows": "4C 89 44 24 18 55 53 56 57 41 55 41 56 48 8D AC 24 F8 FE FF FF"
     },
     // cvar "sv_show_move_collisions"
     "CCSPlayer_MovementServices::WalkMove": {
@@ -491,7 +488,7 @@
     // 上面有一个传a2进去的函数，进去找 FindWeaponVDataByName(1, string);
     "FindWeaponVDataByName": {
       "library": "server",
-      "linux": "55 31 D2 48 89 E5 41 57 41 56 41 55 41 54 41 89 FC",
+      "linux": "55 31 D2 48 89 E5 41 56 41 55 41 54",
       "windows": "48 89 5C 24 ? 57 48 83 EC ? 33 FF 4C 8B CA 8B D9"
     },
     // str "gameeventmanager->Init()"
