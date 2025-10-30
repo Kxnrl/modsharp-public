@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -22,75 +22,76 @@ using Sharp.Core.CStrike;
 using Sharp.Core.Helpers;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
+using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Units;
 using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.Objects;
 
-internal partial class NetworkServer : NativeObject, INetworkServer
+internal sealed unsafe partial class NetworkServer : NativeObject, INetworkServer
 {
+    private readonly CUtlVector<nint>* _clients;
+
+    private NetworkServer(nint ptr) : base(ptr)
+        => _clients = (CUtlVector<nint>*) nint.Add(ptr, CoreGameData.CNetworkGameServer.VecClients);
+
     public int GetClientCount()
     {
         CheckDisposed();
 
-        return _this.GetInt32(CUtlVectorClientOffset);
+        return _clients->Size;
     }
 
-    public unsafe IGameClient? GetGameClient(PlayerSlot slot)
+    public IGameClient? GetGameClient(PlayerSlot slot)
+        => GameClient.Create(Bridges.Natives.Client.GetClientBySlot(slot));
+
+    public IGameClient? GetGameClient(UserID userId)
+        => GameClient.Create(Bridges.Natives.Client.GetClientByUserId(userId));
+
+    public IGameClient? GetGameClient(SteamID steamId)
+        => GameClient.Create(Bridges.Natives.Client.GetClientBySteamId(steamId));
+
+    public CUtlVector<nint>* GetGameClientPointers()
     {
         CheckDisposed();
 
-        var count = _this.GetInt32(CUtlVectorClientOffset);
-
-        if (slot > count)
-        {
-            return null;
-        }
-
-        var pVector = *(nint*) nint.Add(_this,   CUtlVectorClientOffset + 8).ToPointer();
-        var ptr     = *(nint*) nint.Add(pVector, slot.AsPrimitive() * 8).ToPointer();
-
-        return GameClient.Create(ptr);
+        return _clients;
     }
 
-    public unsafe IReadOnlyCollection<IGameClient> GetGameClients()
+    public IReadOnlyList<IGameClient> GetGameClients()
+        => GetGameClients(true);
+
+    public List<IGameClient> GetGameClients(bool connected, bool inGame = false)
     {
         CheckDisposed();
 
-        var count = _this.GetInt32(CUtlVectorClientOffset);
-        var list  = new List<IGameClient>(count);
+        var builder = new List<IGameClient>(_clients->Size);
 
-        var pVector = *(nint*) nint.Add(_this, CUtlVectorClientOffset + 8).ToPointer();
-
-        for (var index = 0; index < count; index++)
+        for (var index = _clients->Size - 1; index >= 0; index--)
         {
-            var actual = *(nint*) nint.Add(pVector, index * 8).ToPointer();
-            var client = GameClient.Create(actual);
+            var client = GameClient.Create(_clients->Element(index));
 
             if (client is null || client.SignOnState < SignOnState.Connected)
             {
                 continue;
             }
 
-            list.Add(client);
+            builder.Add(client);
         }
 
-        return list.AsReadOnly();
+        return builder;
     }
 
-    public unsafe int GetGameClientCount(bool fullyInGame = false)
+    public int GetGameClientCount(bool fullyInGame = false)
     {
         CheckDisposed();
 
         var count = 0;
-        var size  = _this.GetInt32(CUtlVectorClientOffset);
-        var req   = fullyInGame ? SignOnState.Full : SignOnState.Connected;
+        var state = fullyInGame ? SignOnState.Full : SignOnState.Connected;
 
-        var pVector = *(nint*) nint.Add(_this, CUtlVectorClientOffset + 8).ToPointer();
-
-        for (var index = 0; index < size; index++)
+        for (var index = _clients->Size - 1; index >= 0; index--)
         {
-            var actual = *(nint*) nint.Add(pVector, index * 8).ToPointer();
+            var actual = _clients->Element(index);
 
             if (actual == nint.Zero)
             {
@@ -99,7 +100,7 @@ internal partial class NetworkServer : NativeObject, INetworkServer
 
             var signOnState = (SignOnState) actual.GetInt32(CoreGameData.GameClient.SignonState);
 
-            if (signOnState < req)
+            if (signOnState < state)
             {
                 continue;
             }
@@ -109,6 +110,4 @@ internal partial class NetworkServer : NativeObject, INetworkServer
 
         return count;
     }
-
-    private static int CUtlVectorClientOffset => CoreGameData.CNetworkGameServer.VecClients;
 }

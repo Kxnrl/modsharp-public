@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using Sharp.Shared.CStrike;
+using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Units;
 
 namespace Sharp.Shared.Objects;
@@ -36,9 +37,30 @@ public interface INetworkServer : INativeObject
     IGameClient? GetGameClient(PlayerSlot slot);
 
     /// <summary>
+    ///     通过UserId获取IClient
+    /// </summary>
+    IGameClient? GetGameClient(UserID userId);
+
+    /// <summary>
+    ///     通过SteamId获取IClient
+    /// </summary>
+    IGameClient? GetGameClient(SteamID steamId);
+
+    /// <summary>
     ///     获取IClient池
     /// </summary>
-    IReadOnlyCollection<IGameClient> GetGameClients();
+    IReadOnlyList<IGameClient> GetGameClients();
+
+    /// <summary>
+    ///     获取IClient
+    /// </summary>
+    List<IGameClient> GetGameClients(bool connected, bool inGame = false);
+
+    /// <summary>
+    ///     获取sv->m_vecClients
+    /// </summary>
+    /// <returns></returns>
+    unsafe CUtlVector<nint>* GetGameClientPointers();
 
     /// <summary>
     ///     获取游戏内Client数量
