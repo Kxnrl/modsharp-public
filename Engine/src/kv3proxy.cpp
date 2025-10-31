@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,6 +23,8 @@
 #include "global.h"
 #include "strtool.h"
 
+#include "logging.h"
+
 #include "cstrike/interface/IFileSystem.h"
 #include "cstrike/type/CUtlBuffer.h"
 #include "cstrike/type/CUtlString.h"
@@ -35,7 +37,7 @@
 #define OPTIMIZE_LOAD_FROM_COMPILED_FILE
 
 #ifndef OPTIMIZE_LOAD_FROM_COMPILED_FILE
-#include <vector>
+#    include <vector>
 #endif
 
 static CSharpKeyValues3Helper s_CSharpKeyValues3Helper;
@@ -55,10 +57,13 @@ CSharpKeyValues3Helper*       g_pKeyValues3Helper = &s_CSharpKeyValues3Helper;
 
 KeyValues3* CSharpKeyValues3Helper::CreateKeyValues3(uint8_t type, uint8_t subType) const
 {
+    FLOG("CSharpKeyValues3Helper::CreateKeyValues3");
+
     return new KeyValues3(static_cast<KV3TypeEx_t>(type), static_cast<KV3SubType_t>(subType));
 }
 void CSharpKeyValues3Helper::DestroyKeyValues3(KeyValues3* kv) const
 {
+    FLOG("CSharpKeyValues3Helper::DestroyKeyValues3");
     delete kv;
 }
 
@@ -66,6 +71,8 @@ void CSharpKeyValues3Helper::DestroyKeyValues3(KeyValues3* kv) const
 
 bool CSharpKeyValues3Helper::LoadFromFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const
 {
+    FLOG("CSharpKeyValues3Helper::LoadFromFile");
+
     using load_from_file_fn    = bool (*)(KeyValues3*, CUtlString*, const char*, const char*, const KV3ID_t& format, uint32_t loadFlags);
     static auto load_from_file = g_pGameData->GetAddress<load_from_file_fn>("LoadKV3FromFileUtlString");
 
@@ -78,8 +85,11 @@ bool CSharpKeyValues3Helper::LoadFromFile(KeyValues3* kv, char* error, const cha
 
 bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const
 {
+    FLOG("CSharpKeyValues3Helper::LoadFromCompiledFile");
+
 #ifdef OPTIMIZE_LOAD_FROM_COMPILED_FILE
-    CUtlBuffer buffer{0, 0, CUtlBuffer::TEXT_BUFFER};
+    CUtlBuffer buffer;
+    FLOG("CSharpKeyValues3Helper::LoadFromCompiledFile [OPTIMIZE_LOAD_FROM_COMPILED_FILE] ReadFile");
 
     if (!g_pFullFileSystem->ReadFile(filename, pathId, buffer))
     {
@@ -87,12 +97,16 @@ bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, c
         return false;
     }
 
+    FLOG("CSharpKeyValues3Helper::LoadFromCompiledFile [OPTIMIZE_LOAD_FROM_COMPILED_FILE] Resource_FindBlockInfo");
+
     CResourceBlockInfo output{};
     if (!Resource_FindBlockInfo(static_cast<const ResourceFileHeader_t*>(buffer.Base()), g_ResourceBlockId_Data, output))
     {
         StrCopy(error, 256, "Failed to load resource");
         return false;
     }
+
+    FLOG("CSharpKeyValues3Helper::LoadFromCompiledFile [OPTIMIZE_LOAD_FROM_COMPILED_FILE] LoadFromBuffer");
 
     return LoadFromBuffer(kv, error, output.m_pBlockData, output.m_nSize, "");
 #else
@@ -111,6 +125,8 @@ bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, c
     g_pFullFileSystem->Read(buffer.data(), size, handle);
     g_pFullFileSystem->Close(handle);
 
+    FLOG("CSharpKeyValues3Helper::LoadFromCompiledFile Resource_FindBlockInfo");
+
     CResourceBlockInfo output{};
     if (!Resource_FindBlockInfo(reinterpret_cast<const ResourceFileHeader_t*>(buffer.data()), g_ResourceBlockId_Data, output))
     {
@@ -124,6 +140,8 @@ bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, c
 
 bool CSharpKeyValues3Helper::LoadFromBuffer(KeyValues3* kv, char* error, const char* input, int bufferSize, const char* kvName) const
 {
+    FLOG("CSharpKeyValues3Helper::LoadFromBuffer");
+
     CUtlBuffer buffer(input, bufferSize, CUtlBuffer::READ_ONLY);
     CUtlString buf;
 

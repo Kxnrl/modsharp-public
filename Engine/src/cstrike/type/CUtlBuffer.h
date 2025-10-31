@@ -65,10 +65,14 @@ private:
     void* m_PutOverflowFunc;
 
 #ifndef PLATFORM_WINDOWS
-    void* m_OverFlowFunc3;
+    void* m_OverFlowFunc4;
 #endif
 
     CByteswap m_Byteswap;
 };
+
+#ifndef PLATFORM_WINDOWS
+static_assert(offsetof(CUtlBuffer, m_Byteswap) == 72);
+#endif
 
 #endif
