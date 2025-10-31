@@ -32,7 +32,7 @@ public:
     CUtlBuffer(const CUtlBuffer&)            = delete;
     CUtlBuffer& operator=(const CUtlBuffer&) = delete;
 
-    MS_CLASS_IMPORT void GetString(char* pString, int nMaxChars = 0);
+    MS_CLASS_IMPORT void        GetString(char* pString, int nMaxChars = 0);
     MS_CLASS_IMPORT const void* PeekGet(int nMaxSize, int nOffset);
 
     int32_t TellPut() const
@@ -59,7 +59,14 @@ private:
     int32_t m_nOffset;
 
     void* m_GetOverflowFunc;
+#ifndef PLATFORM_WINDOWS
+    void* m_OverFlowFunc2;
+#endif
     void* m_PutOverflowFunc;
+
+#ifndef PLATFORM_WINDOWS
+    void* m_OverFlowFunc3;
+#endif
 
     CByteswap m_Byteswap;
 };
