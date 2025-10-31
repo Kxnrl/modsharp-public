@@ -21,6 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "kv3proxy.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -67,6 +68,16 @@ BeginMemberHookScope(CNetworkGameServer)
         g_pHookManager->Call_ServerActivate(HookType_Pre);
 
         const auto ret = ActiveServer(pServer);
+        auto       kv3 = g_pKeyValues3Helper->CreateKeyValues3();
+
+        char error[256];
+
+        if (g_pKeyValues3Helper->LoadFromCompiledFile(kv3, error, "soundevents/game_sounds_footsteps.vsndevts_c", "GAME"))
+        {
+            FLOG("Loaded");
+        }
+
+        g_pKeyValues3Helper->DestroyKeyValues3(kv3);
 
         g_pHookManager->Call_ServerActivate(HookType_Post);
 
