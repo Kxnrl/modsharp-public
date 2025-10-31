@@ -32,7 +32,11 @@
 #include "cstrike/type/Vector.h"
 #include "cstrike/type/matrix3x4.h"
 
+#define OPTIMIZE_LOAD_FROM_COMPILED_FILE
+
+#ifndef OPTIMIZE_LOAD_FROM_COMPILED_FILE
 #include <vector>
+#endif
 
 static CSharpKeyValues3Helper s_CSharpKeyValues3Helper;
 CSharpKeyValues3Helper*       g_pKeyValues3Helper = &s_CSharpKeyValues3Helper;
