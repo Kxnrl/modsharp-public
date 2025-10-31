@@ -153,7 +153,7 @@ jobs:
       - name: Install Linux packages
         run: |
           sudo apt update
-          sudo apt install -yq --no-install-recommends g++-multilib build-essential
+          sudo apt install -yq --no-install-recommends g++-multilib build-essential gcc-14-monolithic
 
       - name: Use GCC14
         run: |
@@ -162,7 +162,6 @@ jobs:
       - name: Install Clang16
         run: |
           apt update && apt install -y clang-16
-          ln -sf /usr/bin/clang-16 /usr/bin/clang && ln -sf /usr/bin/clang++-16 /usr/bin/clang++
 
       # TimeZone
       - name: Set Timezone
