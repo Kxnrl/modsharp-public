@@ -224,7 +224,7 @@ jobs:
       # Build Engine
       - name: Build Engine
         run: |
-          cd Engine && cmake -P cmkr.cmake && cmake -B build --toolchain=/usr/share/steamrt/cmake/gcc-14.txt -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cd Engine && cmake -P cmkr.cmake && cmake -B build -DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
 
       # Build Sharp.Core
       - name: Build Sharp.Core
