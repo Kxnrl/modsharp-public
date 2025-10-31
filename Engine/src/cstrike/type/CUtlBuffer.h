@@ -45,7 +45,6 @@ public:
         return m_Memory.Base();
     }
 
-private:
     CUtlLeanVector<uint8_t> m_Memory;
     int32_t                 m_Get;
     int32_t                 m_Put;
