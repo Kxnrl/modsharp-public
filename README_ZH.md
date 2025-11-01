@@ -1,6 +1,7 @@
 # ModSharp
 
-现代Source 2 Modding解决方案.
+现代Source 2 Modding解决方案,  
+2023年9月起已服务超过400万玩家.
 
 [![Release](https://img.shields.io/github/v/release/Kxnrl/modsharp-public?style=for-the-badge&label=Release)](https://github.com/Kxnrl/modsharp-public/releases/)
 [![NuGet](https://img.shields.io/nuget/v/ModSharp.Sharp.Shared?style=for-the-badge&label=NuGet)](https://www.nuget.org/packages/ModSharp.Sharp.Shared/)
