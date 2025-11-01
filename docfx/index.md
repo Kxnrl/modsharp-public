@@ -9,8 +9,8 @@ description: Modern Source 2 Modding Solution.
   <img src="images/modsharp.svg" height="300" width="300" />
   <h1>ModSharp</h1>
   <div>
-    <div>现代Source 2 Modding解决方案.</div>
-    <div>Modern Source 2 Modding Solution.</div>
+    <div>现代Source 2 Modding解决方案, 2023年9月起已服务超过400万玩家.</div>
+    <div>Modern Source 2 Modding Solution, services over than 4M players since Sep 2023.</div>
   </div>
   <div class="my-4">
     <a
