@@ -16,6 +16,8 @@ class CBufferString;
 class CUtlBuffer
 {
 public:
+    using UtlBufferOverflowFunc_t = bool (CUtlBuffer::*)(int nSize);
+
     enum BufferFlags_t : uint8_t
     {
         NONE               = 0,
@@ -52,8 +54,8 @@ public:
     int32_t m_nMaxPut;
     int32_t m_nOffset;
 
-    void* m_GetOverflowFunc;
-    void* m_PutOverflowFunc;
+    UtlBufferOverflowFunc_t m_GetOverflowFunc;
+    UtlBufferOverflowFunc_t m_PutOverflowFunc;
 
     CByteswap m_Byteswap;
 };
