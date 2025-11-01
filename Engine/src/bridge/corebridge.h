@@ -27,7 +27,6 @@ class CoreBridge
 public:
     class IFileSystem*                    FullFileSystem;
     class ISteamApiProxy*                 SteamApi;
-    class CSharpNetworkStringTableHelper* NetworkStringTableHelper;
     class CSharpKeyValuesHelper*          KeyValuesHelper;
     class IMemAlloc*                      MemAlloc;
     class CSharpKeyValues3Helper*         KeyValues3Helper;
