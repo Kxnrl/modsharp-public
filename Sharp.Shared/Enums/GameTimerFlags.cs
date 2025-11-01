@@ -56,7 +56,18 @@ public enum GameTimerFlags
     ForceCallBeforeShutdown = 1 << 4,
 
     /// <summary>
-    ///     停止前强制执行一次，只在调用 StopTimer 时生效
+    ///     在 Timer 被强制停止前强制执行一次
     /// </summary>
+    /// <remarks>
+    ///     仅在以下情况生效:
+    ///     <list type="bullet">
+    ///         <item>直接调用<see cref="IModSharp.StopTimer"/></item>
+    ///         <item>Flag里包含<see cref="GameTimerFlags.StopOnMapEnd"/>, 并在服务器更换地图时</item>
+    ///         <item>Flag里包含<see cref="GameTimerFlags.StopOnRoundEnd"/>, 并在回合结束时</item>
+    ///     </list>
+    ///     <para>
+    ///         重要提示：如果计时器是因其回调函数返回 <see cref="TimerAction.Stop"/> 而正常结束的, 则不会触发此强制执行.
+    ///     </para>
+    /// </remarks>
     ForceCallOnStop = 1 << 5,
 }
