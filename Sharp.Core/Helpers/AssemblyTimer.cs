@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -77,6 +77,9 @@ internal abstract class AssemblyTimer
 
         _lastCallTime = time;
     }
+
+    public void ForceRun()
+        => Run();
 
     protected abstract TimerAction Run();
 }

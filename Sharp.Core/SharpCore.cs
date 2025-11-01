@@ -230,6 +230,8 @@ internal partial class SharpCore : ISharpCore
 
     private void OnGameShutdown()
     {
+        ClearMapTimer();
+
         _gameRules?.MarkAsDisposed();
         _gameRules = null;
 
@@ -256,8 +258,6 @@ internal partial class SharpCore : ISharpCore
 
         _sv         = null;
         _globalVars = null;
-
-        ClearMapTimer();
     }
 
     private void OnGamePostInit()
@@ -360,6 +360,30 @@ internal partial class SharpCore : ISharpCore
 
     private void OnRoundRestart()
     {
+        // Stop timer only current round
+        {
+            var timers = _timers.Where(x => x.Value.Flags.HasFlag(GameTimerFlags.StopOnRoundEnd))
+                                .Select(x => x.Key)
+                                .ToArray();
+
+            for (var i = 0; i < timers.Length; i++)
+            {
+                var x = timers[i];
+
+                if (_timers.Remove(x, out var timer) && timer.Flags.HasFlag(GameTimerFlags.ForceCallOnStop))
+                {
+                    try
+                    {
+                        timer.ForceRun();
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
+                    }
+                }
+            }
+        }
+
         for (var i = 0; i < _gameListeners.Count; i++)
         {
             try
@@ -372,20 +396,6 @@ internal partial class SharpCore : ISharpCore
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnRoundRestart),
                                  _gameListeners[i].GetType().Name);
-            }
-        }
-
-        // Stop timer only current round
-        {
-            var timers = _timers.Where(x => x.Value.Flags.HasFlag(GameTimerFlags.StopOnRoundEnd))
-                                .Select(x => x.Key)
-                                .ToArray();
-
-            for (var i = 0; i < timers.Length; i++)
-            {
-                var x = timers[i];
-
-                _timers.Remove(x, out _);
             }
         }
     }
@@ -827,7 +837,19 @@ internal partial class SharpCore : ISharpCore
     }
 
     public void StopTimer(Guid uniqueId)
-        => _timers.Remove(uniqueId, out _);
+    {
+        if (_timers.Remove(uniqueId, out var timer) && timer.Flags.HasFlag(GameTimerFlags.ForceCallOnStop))
+        {
+            try
+            {
+                timer.ForceRun();
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
+            }
+        }
+    }
 
     public bool IsValidTimer(Guid uniqueId)
         => _timers.ContainsKey(uniqueId);
@@ -1455,12 +1477,12 @@ internal partial class SharpCore : ISharpCore
 
                 if (x.Flags.HasFlag(GameTimerFlags.ForceCallBeforeShutdown))
                 {
-                    x.RunThink(0x114514);
+                    x.ForceRun();
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An error occurred while timer elapsed.");
+                _logger.LogWarning(e, "An error occurred while timer shutdown.");
             }
         }
 
@@ -1498,7 +1520,17 @@ internal partial class SharpCore : ISharpCore
 
         for (var i = 0; i < timers.Length; i++)
         {
-            _timers.Remove(timers[i], out _);
+            if (_timers.Remove(timers[i], out var timer) && timer.Flags.HasFlag(GameTimerFlags.ForceCallOnStop))
+            {
+                try
+                {
+                    timer.ForceRun();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
+                }
+            }
         }
     }
 
@@ -1510,7 +1542,17 @@ internal partial class SharpCore : ISharpCore
 
         for (var i = 0; i < timers.Length; i++)
         {
-            _timers.Remove(timers[i], out _);
+            if (_timers.Remove(timers[i], out var timer) && timer.Flags.HasFlag(GameTimerFlags.ForceCallBeforeShutdown))
+            {
+                try
+                {
+                    timer.ForceRun();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
+                }
+            }
         }
     }
 

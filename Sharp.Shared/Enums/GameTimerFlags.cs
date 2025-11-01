@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -54,4 +54,9 @@ public enum GameTimerFlags
     ///     模块退出时强制执行一次
     /// </summary>
     ForceCallBeforeShutdown = 1 << 4,
+
+    /// <summary>
+    ///     停止前强制执行一次，只在调用 StopTimer 时生效
+    /// </summary>
+    ForceCallOnStop = 1 << 5,
 }
