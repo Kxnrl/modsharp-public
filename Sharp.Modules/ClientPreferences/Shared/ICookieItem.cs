@@ -23,15 +23,40 @@ namespace Sharp.Modules.ClientPreferences.Shared;
 
 public interface ICookieItem
 {
-    public CookieValueType Type { get; }
+    /// <summary>
+    ///     类型
+    /// </summary>
+    CookieValueType Type { get; }
 
+    /// <summary>
+    ///     取整数
+    /// </summary>
+    /// <exception cref="InvalidOperationException">类型不匹配</exception>
     long GetNumber();
 
+    /// <summary>
+    ///     取浮点数
+    /// </summary>
+    /// <exception cref="InvalidOperationException">类型不匹配</exception>
     double GetDouble();
 
+    /// <summary>
+    ///     取字符串
+    /// </summary>
+    /// <exception cref="InvalidOperationException">类型不匹配</exception>
     string GetString();
 
+    /// <summary>
+    ///     取整数并转换类型为你定义的枚举
+    /// </summary>
+    /// <typeparam name="T">自定义Enum</typeparam>
+    /// <exception cref="InvalidOperationException">类型不匹配</exception>
     T Get<T>() where T : Enum;
 
+    /// <summary>
+    ///     取字符串并反序列化为你定义的类型
+    /// </summary>
+    /// <typeparam name="T">自定义Object</typeparam>
+    /// <exception cref="InvalidOperationException">类型不匹配</exception>
     T GetObject<T>() where T : ISerializableCookieItem<T>;
 }

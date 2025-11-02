@@ -21,7 +21,18 @@ namespace Sharp.Modules.ClientPreferences.Shared;
 
 public enum CookieValueType
 {
+    /// <summary>
+    ///     整数
+    /// </summary>
     Number,
+
+    /// <summary>
+    ///     浮点数
+    /// </summary>
     Double,
+
+    /// <summary>
+    ///     字符串
+    /// </summary>
     String,
 }
