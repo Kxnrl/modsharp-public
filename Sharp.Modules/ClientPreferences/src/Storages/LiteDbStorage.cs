@@ -45,8 +45,15 @@ internal class LiteDbStorage : IStorage
 
     public void Shutdown()
     {
-        _ctSource.Cancel();
-        _database.Dispose();
+        try
+        {
+            _ctSource.Cancel();
+        }
+        finally
+        {
+            _database.Dispose();
+            _ctSource.Dispose();
+        }
     }
 
     public Task<CookieModel[]> LoadUserCookie(SteamID identity)

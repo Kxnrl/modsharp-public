@@ -132,8 +132,15 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
     public void Shutdown()
     {
-        _source.Cancel();
-        _driver.Shutdown();
+        try
+        {
+            _source.Cancel();
+        }
+        finally
+        {
+            _driver.Shutdown();
+            _source.Dispose();
+        }
     }
 
 #endregion
