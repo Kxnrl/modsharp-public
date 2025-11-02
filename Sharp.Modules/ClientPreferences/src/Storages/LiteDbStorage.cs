@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
@@ -50,7 +49,7 @@ internal class LiteDbStorage : IStorage
         _database.Dispose();
     }
 
-    public Task<List<CookieModel>> LoadUserCookie(SteamID identity)
+    public Task<CookieModel[]> LoadUserCookie(SteamID identity)
         => Task.Run(() =>
                     {
                         var id = (long) identity.AsPrimitive();
@@ -63,7 +62,7 @@ internal class LiteDbStorage : IStorage
                     },
                     _ctSource.Token);
 
-    public Task SaveUserCookie(SteamID identity, List<CookieModel> cookies)
+    public Task SaveUserCookie(SteamID identity, CookieModel[] cookies)
         => Task.Run(() =>
                     {
                         var id = (long) identity.AsPrimitive();
@@ -81,5 +80,5 @@ file class LiteCookieEntity
     [BsonId]
     public required ulong Identity { get; init; }
 
-    public required List<CookieModel> Body { get; init; }
+    public required CookieModel[] Body { get; init; }
 }

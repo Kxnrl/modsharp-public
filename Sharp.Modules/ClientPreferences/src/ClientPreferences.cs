@@ -35,6 +35,8 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.ClientPreferences.Core;
 
+// TODO AutoRetry
+
 public sealed class ClientPreferences : IModSharpModule, IClientListener, IClientPreference
 {
     public string DisplayName   => "ClientPrefs";
@@ -89,8 +91,6 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _driver = driver switch
         {
             StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString),
-
-            _ => throw new NotSupportedException($"Storage type {driver} is not supported"),
         };
 
         _loadCallbacks = [];

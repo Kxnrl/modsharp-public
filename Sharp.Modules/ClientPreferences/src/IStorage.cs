@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sharp.Modules.ClientPreferences.Core.Models;
 using Sharp.Shared.Units;
@@ -30,7 +29,7 @@ internal interface IStorage
 
     void Shutdown();
 
-    Task<List<CookieModel>> LoadUserCookie(SteamID identity);
+    Task<CookieModel[]> LoadUserCookie(SteamID identity);
 
-    Task SaveUserCookie(SteamID identity, List<CookieModel> cookies);
+    Task SaveUserCookie(SteamID identity, CookieModel[] cookies);
 }

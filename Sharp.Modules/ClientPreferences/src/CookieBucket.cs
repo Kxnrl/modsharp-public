@@ -60,7 +60,7 @@ internal class CookieBucket
         Dirty        = true;
     }
 
-    public List<CookieModel> GetModels()
+    public CookieModel[] GetModels()
         => [.. Cookies.Select(x => x.Value.Type switch
                   {
                       CookieValueType.Number => new CookieModel
