@@ -36,6 +36,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
       <ProjectReference Include="..\Shared\Sharp.Modules.ClientPreferences.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+      <PackageReference Include="StackExchange.Redis" Version="2.9.32" />
     </ItemGroup>
 
 </Project>

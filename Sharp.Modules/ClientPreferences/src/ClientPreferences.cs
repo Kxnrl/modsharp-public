@@ -91,6 +91,8 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _driver = driver switch
         {
             StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString),
+            StorageType.Resp   => new RespStorage(loggerFactory, source, connectionString),
+            _                  => throw new NotSupportedException($"Storage type {driver} is not supported"),
         };
 
         _loadCallbacks = [];
