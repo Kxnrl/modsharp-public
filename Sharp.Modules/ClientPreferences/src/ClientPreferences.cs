@@ -88,6 +88,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
         _driver = driver switch
         {
+            StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString),
 
             _ => throw new NotSupportedException($"Storage type {driver} is not supported"),
         };
@@ -110,7 +111,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         }
 
         _logger.LogWarning(
-            "Configuration changes detected. but we can't host reload the storage, if you really want to change the storage, ");
+            "Configuration changes detected. but we can't host reload the storage, if you really want to change the storage, please restart server.");
     }
 
 #region IModSharpModule
