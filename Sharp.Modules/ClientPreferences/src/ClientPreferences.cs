@@ -92,6 +92,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         {
             StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString),
             StorageType.Resp   => new RespStorage(loggerFactory, source, connectionString),
+            StorageType.MySql  => new MySqlStorage(loggerFactory, source, connectionString),
             _                  => throw new NotSupportedException($"Storage type {driver} is not supported"),
         };
 
