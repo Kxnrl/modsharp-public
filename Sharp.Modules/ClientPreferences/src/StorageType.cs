@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,7 +20,7 @@
 namespace Sharp.Modules.ClientPreferences.Core;
 
 internal enum StorageType
-{   
+{
     /// <summary>
     ///     LiteDB
     /// </summary>

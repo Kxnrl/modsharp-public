@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf.WellKnownTypes;
 using Sharp.Modules.ClientPreferences.Core.Models;
 using Sharp.Modules.ClientPreferences.Shared;
 
@@ -29,9 +28,7 @@ namespace Sharp.Modules.ClientPreferences.Core;
 internal class CookieBucket
 {
     private Dictionary<string, CookieItem> Cookies { get; }
-    public bool                           Dirty   { get; private set; }
-    
-
+    public  bool                           Dirty   { get; private set; }
 
     public CookieBucket(Dictionary<string, CookieItem> cookies)
     {
@@ -47,8 +44,8 @@ internal class CookieBucket
         }
 
         Dirty = true;
-        return true;
 
+        return true;
     }
 
     public CookieItem? Get(string key)
@@ -61,20 +58,23 @@ internal class CookieBucket
     }
 
     public CookieModel[] GetModels()
-        => [.. Cookies.Select(x => x.Value.Type switch
-                  {
-                      CookieValueType.Number => new CookieModel
-                      {
-                          Key = x.Key, Type = x.Value.Type, Number = x.Value.GetNumber(),
-                      },
-                      CookieValueType.Double => new CookieModel
-                      {
-                          Key = x.Key, Type = x.Value.Type, Double = x.Value.GetDouble(),
-                      },
-                      CookieValueType.String => new CookieModel
-                      {
-                          Key = x.Key, Type = x.Value.Type, String = x.Value.GetString(),
-                      },
-                      _ => throw new TypeAccessException($"Invalid cookie type {x.Value.Type}"),
-                  })];
+        =>
+        [
+            .. Cookies.Select(x => x.Value.Type switch
+            {
+                CookieValueType.Number => new CookieModel
+                {
+                    Key = x.Key, Type = x.Value.Type, Number = x.Value.GetNumber(),
+                },
+                CookieValueType.Double => new CookieModel
+                {
+                    Key = x.Key, Type = x.Value.Type, Double = x.Value.GetDouble(),
+                },
+                CookieValueType.String => new CookieModel
+                {
+                    Key = x.Key, Type = x.Value.Type, String = x.Value.GetString(),
+                },
+                _ => throw new TypeAccessException($"Invalid cookie type {x.Value.Type}"),
+            }),
+        ];
 }
