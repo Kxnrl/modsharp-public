@@ -19,12 +19,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.ClientPreferences.Core.Models;
 using Sharp.Modules.ClientPreferences.Core.Storages;
 using Sharp.Modules.ClientPreferences.Shared;
 using Sharp.Shared;
@@ -47,8 +45,8 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     private readonly IStorage                   _driver;
     private readonly CancellationTokenSource    _source;
 
-    private readonly List<Action<IGameClient>>          _loadCallbacks;
-    private readonly Dictionary<SteamID, CookieStorage> _cookieStorage;
+    private readonly List<Action<IGameClient>>         _loadCallbacks;
+    private readonly Dictionary<SteamID, CookieBucket> _cookieStorage;
 
     public ClientPreferences(ISharedSystem sharedSystem,
         string                             dllPath,
@@ -94,6 +92,8 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _source = source;
     }
 
+#region IModSharpModule
+
     public bool Init()
     {
         _modules.RegisterSharpModuleInterface(this, IClientPreference.Identity, this);
@@ -111,6 +111,10 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _source.Cancel();
         _driver.Shutdown();
     }
+
+#endregion
+
+#region IClientListener
 
     int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
     int IClientListener.ListenerPriority => 0;
@@ -162,7 +166,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
                                                      return;
                                                  }
 
-                                                 _cookieStorage[identity] = new CookieStorage(cookieMap);
+                                                 _cookieStorage[identity] = new CookieBucket(cookieMap);
 
                                                  foreach (var callback in _loadCallbacks)
                                                  {
@@ -209,55 +213,103 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
             return;
         }
 
-        Task.Run(() =>
-                 {
-                     var cookies = storage.Cookies.Select(x => x.Value.Type switch
-                                          {
-                                              CookieValueType.Number => new CookieModel
-                                              {
-                                                  Key = x.Key, Type = x.Value.Type, Number = x.Value.GetNumber(),
-                                              },
-                                              CookieValueType.Double => new CookieModel
-                                              {
-                                                  Key = x.Key, Type = x.Value.Type, Double = x.Value.GetDouble(),
-                                              },
-                                              CookieValueType.String => new CookieModel
-                                              {
-                                                  Key = x.Key, Type = x.Value.Type, String = x.Value.GetString(),
-                                              },
-                                              _ => throw new TypeAccessException($"Invalid cookie type {x.Value.Type}"),
-                                          })
-                                          .ToList();
-
-                     _driver.SaveUserCookie(identity, cookies);
-                 },
-                 _source.Token);
+        Task.Run(() => _driver.SaveUserCookie(identity, storage.GetModels()), _source.Token);
     }
+
+#endregion
+
+#region IClientPreference
 
     public void ListenOnLoad(Action<IGameClient> callback)
         => _loadCallbacks.Add(callback);
 
     public bool IsLoaded(SteamID identity)
-        => throw new NotImplementedException();
+        => identity.IsValidUserId()
+            ? _cookieStorage.ContainsKey(identity)
+            : throw new ArgumentException("Invalid SteamId", nameof(identity));
 
     public ICookieItem? GetCookie(SteamID identity, string key)
-        => throw new NotImplementedException();
+    {
+        if (!identity.IsValidUserId())
+        {
+            throw new ArgumentException("Invalid SteamId", nameof(identity));
+        }
+
+        return _cookieStorage.GetValueOrDefault(identity)?.Get(key);
+    }
 
     public bool DeleteCookie(SteamID identity, string key)
-        => throw new NotImplementedException();
+    {
+        if (!identity.IsValidUserId())
+        {
+            throw new ArgumentException("Invalid SteamId", nameof(identity));
+        }
+
+        return _cookieStorage.TryGetValue(identity, out var bucket) && bucket.Delete(key);
+    }
 
     public ICookieItem SetCookie(SteamID identity, string key, bool value)
         => SetCookie(identity, key, value ? 1L : 0L);
 
     public ICookieItem SetCookie(SteamID identity, string key, long value)
-        => throw new NotImplementedException();
+    {
+        if (!identity.IsValidUserId())
+        {
+            throw new ArgumentException("Invalid SteamId", nameof(identity));
+        }
+
+        if (!_cookieStorage.TryGetValue(identity, out var bucket))
+        {
+            throw new InvalidOperationException($"Client {identity} has not been loaded yet");
+        }
+
+        var item = new CookieItem(value);
+
+        bucket.Set(key, item);
+
+        return item;
+    }
 
     public ICookieItem SetCookie(SteamID identity, string key, double value)
-        => throw new NotImplementedException();
+    {
+        if (!identity.IsValidUserId())
+        {
+            throw new ArgumentException("Invalid SteamId", nameof(identity));
+        }
+
+        if (!_cookieStorage.TryGetValue(identity, out var bucket))
+        {
+            throw new InvalidOperationException($"Client {identity} has not been loaded yet");
+        }
+
+        var item = new CookieItem(value);
+
+        bucket.Set(key, item);
+
+        return item;
+    }
 
     public ICookieItem SetCookie(SteamID identity, string key, string value)
-        => throw new NotImplementedException();
+    {
+        if (!identity.IsValidUserId())
+        {
+            throw new ArgumentException("Invalid SteamId", nameof(identity));
+        }
+
+        if (!_cookieStorage.TryGetValue(identity, out var bucket))
+        {
+            throw new InvalidOperationException($"Client {identity} has not been loaded yet");
+        }
+
+        var item = new CookieItem(value);
+
+        bucket.Set(key, item);
+
+        return item;
+    }
 
     public ICookieItem SetCookie<T>(SteamID identity, string key, T value) where T : ISerializableCookieItem<T>
         => SetCookie(identity, key, value.Serialize());
+
+#endregion
 }

@@ -39,7 +39,7 @@ internal class CookieItem : ICookieItem
 
     public CookieItem(double value)
     {
-        // NOTE IsFinite 可以判断非Nan和非Infinity
+        // IsFinite 可以判断非Nan和非Infinity
         if (!double.IsFinite(value))
         {
             value = 0;
