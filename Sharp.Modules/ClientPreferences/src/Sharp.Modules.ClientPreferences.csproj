@@ -30,7 +30,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="LiteDB" Version="5.0.21" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+      <ProjectReference Include="..\Shared\Sharp.Modules.ClientPreferences.Shared.csproj" Private="false" ExcludeAssets="runtime" />
     </ItemGroup>
 
 </Project>

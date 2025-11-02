@@ -1,0 +1,263 @@
+/*
+ * ModSharp
+ * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
+ *
+ * This file is part of ModSharp.
+ * ModSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * ModSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Sharp.Modules.ClientPreferences.Core.Models;
+using Sharp.Modules.ClientPreferences.Core.Storages;
+using Sharp.Modules.ClientPreferences.Shared;
+using Sharp.Shared;
+using Sharp.Shared.Enums;
+using Sharp.Shared.Listeners;
+using Sharp.Shared.Managers;
+using Sharp.Shared.Objects;
+using Sharp.Shared.Units;
+
+namespace Sharp.Modules.ClientPreferences.Core;
+
+public sealed class ClientPreferences : IModSharpModule, IClientListener, IClientPreference
+{
+    public string DisplayName   => "ClientPrefs";
+    public string DisplayAuthor => "Kxnrl";
+
+    private readonly ILogger<ClientPreferences> _logger;
+    private readonly IModSharp                  _modSharp;
+    private readonly ISharpModuleManager        _modules;
+    private readonly IStorage                   _driver;
+    private readonly CancellationTokenSource    _source;
+
+    private readonly List<Action<IGameClient>>          _loadCallbacks;
+    private readonly Dictionary<SteamID, CookieStorage> _cookieStorage;
+
+    public ClientPreferences(ISharedSystem sharedSystem,
+        string                             dllPath,
+        string                             sharpPath,
+        Version                            version,
+        IConfiguration                     configuration,
+        bool                               hotReload)
+    {
+        var loggerFactory = sharedSystem.GetLoggerFactory();
+
+        _logger   = loggerFactory.CreateLogger<ClientPreferences>();
+        _modSharp = sharedSystem.GetModSharp();
+        _modules  = sharedSystem.GetSharpModuleManager();
+
+        var fillConnectionString = configuration.GetConnectionString("ClientPreferences")
+                                   ?? throw new KeyNotFoundException("Missing 'ClientPreferences' in connection string.");
+
+        var chunks
+            = fillConnectionString.Split("://", 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (chunks.Length != 2)
+        {
+            throw new System.IO.InvalidDataException("Missing type of driver in connection string");
+        }
+
+        if (!Enum.TryParse(chunks[0], true, out StorageType driver))
+        {
+            throw new System.IO.InvalidDataException("Invalid driver type in connection string.");
+        }
+
+        var connectionString = chunks[1];
+        var source           = new CancellationTokenSource();
+
+        _driver = driver switch
+        {
+
+            _ => throw new NotSupportedException($"Storage type {driver} is not supported"),
+        };
+
+        _loadCallbacks = [];
+        _cookieStorage = [];
+
+        _source = source;
+    }
+
+    public bool Init()
+    {
+        _modules.RegisterSharpModuleInterface(this, IClientPreference.Identity, this);
+
+        return true;
+    }
+
+    public void PostInit()
+    {
+        _driver.Init();
+    }
+
+    public void Shutdown()
+    {
+        _source.Cancel();
+        _driver.Shutdown();
+    }
+
+    int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
+    int IClientListener.ListenerPriority => 0;
+
+    public void OnClientPostAdminCheck(IGameClient client)
+    {
+        if (client.IsFakeClient || client.IsHltv)
+        {
+            return;
+        }
+
+        var identity = client.SteamId;
+
+        if (!identity.IsValidUserId())
+        {
+            return;
+        }
+
+        _modSharp.PushTimer(() =>
+                            {
+                                if (!client.IsValid)
+                                {
+                                    return;
+                                }
+
+                                Task.Run(async () =>
+                                         {
+                                             var cookies = await _driver.LoadUserCookie(identity);
+
+                                             var cookieMap = new Dictionary<string, CookieItem>();
+
+                                             foreach (var cookie in cookies)
+                                             {
+                                                 cookieMap[cookie.Key] = cookie.Type switch
+                                                 {
+                                                     CookieValueType.String => new CookieItem(cookie.String),
+                                                     CookieValueType.Number =>
+                                                         new CookieItem(cookie.Number.GetValueOrDefault()),
+                                                     CookieValueType.Double =>
+                                                         new CookieItem(cookie.Double.GetValueOrDefault()),
+                                                     _ => throw new NotSupportedException($"{cookie.Type} is not support"),
+                                                 };
+                                             }
+
+                                             _modSharp.InvokeAction(() =>
+                                             {
+                                                 if (!client.IsValid)
+                                                 {
+                                                     return;
+                                                 }
+
+                                                 _cookieStorage[identity] = new CookieStorage(cookieMap);
+
+                                                 foreach (var callback in _loadCallbacks)
+                                                 {
+                                                     try
+                                                     {
+                                                         callback.Invoke(client);
+                                                     }
+                                                     catch (Exception e)
+                                                     {
+                                                         _logger.LogError(e,
+                                                                          "An error occurred while calling OnCookieLoad for {s}",
+                                                                          identity);
+                                                     }
+                                                 }
+                                             });
+                                         },
+                                         _source.Token);
+                            },
+                            1,
+                            GameTimerFlags.StopOnMapEnd);
+    }
+
+    public void OnClientDisconnected(IGameClient client, NetworkDisconnectionReason reason)
+    {
+        if (client.IsFakeClient || client.IsHltv)
+        {
+            return;
+        }
+
+        var identity = client.SteamId;
+
+        if (!identity.IsValidUserId())
+        {
+            return;
+        }
+
+        if (!_cookieStorage.Remove(identity, out var storage))
+        {
+            return;
+        }
+
+        if (!storage.Dirty)
+        {
+            return;
+        }
+
+        Task.Run(() =>
+                 {
+                     var cookies = storage.Cookies.Select(x => x.Value.Type switch
+                                          {
+                                              CookieValueType.Number => new CookieModel
+                                              {
+                                                  Key = x.Key, Type = x.Value.Type, Number = x.Value.GetNumber(),
+                                              },
+                                              CookieValueType.Double => new CookieModel
+                                              {
+                                                  Key = x.Key, Type = x.Value.Type, Double = x.Value.GetDouble(),
+                                              },
+                                              CookieValueType.String => new CookieModel
+                                              {
+                                                  Key = x.Key, Type = x.Value.Type, String = x.Value.GetString(),
+                                              },
+                                              _ => throw new TypeAccessException($"Invalid cookie type {x.Value.Type}"),
+                                          })
+                                          .ToList();
+
+                     _driver.SaveUserCookie(identity, cookies);
+                 },
+                 _source.Token);
+    }
+
+    public void ListenOnLoad(Action<IGameClient> callback)
+        => _loadCallbacks.Add(callback);
+
+    public bool IsLoaded(SteamID identity)
+        => throw new NotImplementedException();
+
+    public ICookieItem? GetCookie(SteamID identity, string key)
+        => throw new NotImplementedException();
+
+    public bool DeleteCookie(SteamID identity, string key)
+        => throw new NotImplementedException();
+
+    public ICookieItem SetCookie(SteamID identity, string key, bool value)
+        => SetCookie(identity, key, value ? 1L : 0L);
+
+    public ICookieItem SetCookie(SteamID identity, string key, long value)
+        => throw new NotImplementedException();
+
+    public ICookieItem SetCookie(SteamID identity, string key, double value)
+        => throw new NotImplementedException();
+
+    public ICookieItem SetCookie(SteamID identity, string key, string value)
+        => throw new NotImplementedException();
+
+    public ICookieItem SetCookie<T>(SteamID identity, string key, T value) where T : ISerializableCookieItem<T>
+        => SetCookie(identity, key, value.Serialize());
+}

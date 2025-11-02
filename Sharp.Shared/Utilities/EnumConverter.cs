@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,15 +24,24 @@ namespace Sharp.Shared.Utilities;
 
 public static class EnumConverter<T>
 {
-    private static readonly Func<int, T> Converter;
+    private static readonly Func<int, T> Converter32;
+
+    private static readonly Func<long, T> Converter64;
 
     static EnumConverter()
     {
-        var parameter  = Expression.Parameter(typeof(int));
-        var conversion = Expression.Convert(parameter, typeof(T));
-        Converter = Expression.Lambda<Func<int, T>>(conversion, parameter).Compile();
+        var parameter32  = Expression.Parameter(typeof(int));
+        var conversion32 = Expression.Convert(parameter32, typeof(T));
+        Converter32 = Expression.Lambda<Func<int, T>>(conversion32, parameter32).Compile();
+
+        var parameter64  = Expression.Parameter(typeof(long));
+        var conversion64 = Expression.Convert(parameter64, typeof(T));
+        Converter64 = Expression.Lambda<Func<long, T>>(conversion64, parameter64).Compile();
     }
 
     public static T Convert(int value)
-        => Converter(value);
+        => Converter32(value);
+
+    public static T Convert(long value)
+        => Converter64(value);
 }
