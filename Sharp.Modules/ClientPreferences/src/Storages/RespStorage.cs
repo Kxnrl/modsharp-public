@@ -29,18 +29,18 @@ namespace Sharp.Modules.ClientPreferences.Core.Storages;
 
 internal class RespStorage : IStorage
 {
-    private readonly ILogger<LiteDbStorage>  _logger;
+    private readonly ILogger<RespStorage>    _logger;
     private readonly CancellationTokenSource _ctSource;
     private readonly ConfigurationOptions    _configuration;
 
-    private ConnectionMultiplexer? _database;
+    private volatile ConnectionMultiplexer? _database;
 
     public RespStorage(ILoggerFactory loggerFactory, CancellationTokenSource source, string connectionString)
     {
         var config = ConfigurationOptions.Parse(connectionString);
         config.LoggerFactory = loggerFactory;
 
-        _logger        = loggerFactory.CreateLogger<LiteDbStorage>();
+        _logger        = loggerFactory.CreateLogger<RespStorage>();
         _ctSource      = CancellationTokenSource.CreateLinkedTokenSource(source.Token);
         _configuration = config;
     }
@@ -49,14 +49,21 @@ internal class RespStorage : IStorage
         => Task.Run(async () => _database = await ConnectionMultiplexer.ConnectAsync(_configuration), _ctSource.Token);
 
     public void Shutdown()
-        => _database?.Dispose();
+    {
+        try
+        {
+            _ctSource.Cancel();
+        }
+        finally
+        {
+            _database?.Dispose();
+            _ctSource.Dispose();
+        }
+    }
 
     public async Task<CookieModel[]> LoadUserCookie(SteamID identity)
     {
-        if (_database?.GetDatabase() is not { } db)
-        {
-            throw new DatabaseUnavailableException("RESP unavailable");
-        }
+        var db = GetDatabase();
 
         if (await db.StringGetLeaseAsync(identity.ToString()) is not { } bytes)
         {
@@ -68,23 +75,24 @@ internal class RespStorage : IStorage
             var cookies = JsonSerializer.Deserialize<CookieModel[]>(bytes.Span)
                           ?? throw new JsonException("Invalid CookieModel[] json");
 
-            return cookies ?? [];
+            return cookies;
         }
         catch (JsonException)
         {
-            return [];
         }
+
+        return [];
     }
 
     public async Task SaveUserCookie(SteamID identity, CookieModel[] cookies)
     {
-        if (_database?.GetDatabase() is not { } db)
-        {
-            throw new DatabaseUnavailableException("RESP unavailable");
-        }
+        var db = GetDatabase();
 
         var bytes = JsonSerializer.Serialize(cookies);
 
         await db.StringSetAsync(identity.ToString(), bytes);
     }
+
+    private IDatabase GetDatabase()
+        => _database?.GetDatabase() ?? throw new DatabaseUnavailableException("RESP is unavailable");
 }
