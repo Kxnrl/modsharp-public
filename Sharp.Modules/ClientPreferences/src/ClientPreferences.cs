@@ -27,6 +27,7 @@ using Sharp.Modules.ClientPreferences.Core.Storages;
 using Sharp.Modules.ClientPreferences.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
+using Sharp.Shared.Helpers;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
@@ -43,7 +44,11 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     private readonly IModSharp                  _modSharp;
     private readonly ISharpModuleManager        _modules;
     private readonly IStorage                   _driver;
-    private readonly CancellationTokenSource    _source;
+    private readonly IConfiguration             _configuration;
+
+    private readonly CancellationTokenSource _source;
+    private readonly ConfigurationWatcher    _configurationWatcher;
+    private readonly string                  _connectionString;
 
     private readonly List<Action<IGameClient>>         _loadCallbacks;
     private readonly Dictionary<SteamID, CookieBucket> _cookieStorage;
@@ -57,9 +62,10 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger   = loggerFactory.CreateLogger<ClientPreferences>();
-        _modSharp = sharedSystem.GetModSharp();
-        _modules  = sharedSystem.GetSharpModuleManager();
+        _logger        = loggerFactory.CreateLogger<ClientPreferences>();
+        _modSharp      = sharedSystem.GetModSharp();
+        _modules       = sharedSystem.GetSharpModuleManager();
+        _configuration = configuration;
 
         var fillConnectionString = configuration.GetConnectionString("ClientPreferences")
                                    ?? throw new KeyNotFoundException("Missing 'ClientPreferences' in connection string.");
@@ -89,7 +95,22 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _loadCallbacks = [];
         _cookieStorage = [];
 
-        _source = source;
+        _source               = source;
+        _connectionString     = fillConnectionString;
+        _configurationWatcher = new ConfigurationWatcher(configuration, OnConfigReload, source.Token);
+    }
+
+    private void OnConfigReload()
+    {
+        var connectionString = _configuration.GetConnectionString("ClientPreferences") ?? string.Empty;
+
+        if (_connectionString.Equals(connectionString))
+        {
+            return;
+        }
+
+        _logger.LogWarning(
+            "Configuration changes detected. but we can't host reload the storage, if you really want to change the storage, ");
     }
 
 #region IModSharpModule
