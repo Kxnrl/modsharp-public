@@ -16,5 +16,5 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           color: "2327791"
-          content: "@everyone"
+          # content: "@everyone"
           reduce_headings: false
