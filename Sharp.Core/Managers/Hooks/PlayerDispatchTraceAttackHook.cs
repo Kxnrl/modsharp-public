@@ -65,7 +65,7 @@ internal class PlayerDispatchTraceAttackHook
         }
 
         var param  = new PlayerDispatchTraceAttackHookParams(true, ptrClient, ptrController, ptrPawn, ptrInfo, ptrResult);
-        var result = new HookReturnValue<long>(action, param.HealthLost);
+        var result = new HookReturnValue<long>(action, param.WasDamageSuppressed ? 0 : param.HealthLost);
 
         InvokeHookPost(param, result);
         param.MarkAsDisposed();

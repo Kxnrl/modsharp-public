@@ -59,8 +59,8 @@ internal class EntityDispatchTraceAttackHook
             return;
         }
 
-        var param  = new EntityDispatchTraceAttackFunctionParams(false, ptrEntity, ptrInfo, ptrResult);
-        var result = new HookReturnValue<long>(action, ptrResult == nint.Zero ? 0 : param.HealthLost);
+        var param  = new EntityDispatchTraceAttackFunctionParams(true, ptrEntity, ptrInfo, ptrResult);
+        var result = new HookReturnValue<long>(action, param.WasDamageSuppressed ? 0 : param.HealthLost);
 
         InvokeHookPost(param, result);
 

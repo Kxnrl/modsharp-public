@@ -39,6 +39,7 @@ BeginMemberHookScope(CBaseEntity)
             return DispatchTraceAttack(pEntity, pInfo, pResult);
 
         // maybe call in flow
+        // IDA::2025/10/30 server.i64
         CTakeDamageResult damageResult(0);
 
         if (pResult == nullptr)
