@@ -33,6 +33,8 @@
       href: entity-hook-manager.md
     - name: IGameEventManager
       href: game-event-manager.md
+    - name: ICommandManager
+      href: command-manager.md
 
 - name: Net Messages
   items:
