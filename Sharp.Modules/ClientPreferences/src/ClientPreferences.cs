@@ -35,8 +35,6 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.ClientPreferences.Core;
 
-// TODO AutoRetry
-
 public sealed class ClientPreferences : IModSharpModule, IClientListener, IClientPreference
 {
     public string DisplayName   => "ClientPrefs";
@@ -173,50 +171,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
                                     return;
                                 }
 
-                                Task.Run(async () =>
-                                         {
-                                             var cookies = await _driver.LoadUserCookie(identity);
-
-                                             var cookieMap = new Dictionary<string, CookieItem>();
-
-                                             foreach (var cookie in cookies)
-                                             {
-                                                 cookieMap[cookie.Key] = cookie.Type switch
-                                                 {
-                                                     CookieValueType.String => new CookieItem(cookie.String),
-                                                     CookieValueType.Number =>
-                                                         new CookieItem(cookie.Number.GetValueOrDefault()),
-                                                     CookieValueType.Double =>
-                                                         new CookieItem(cookie.Double.GetValueOrDefault()),
-                                                     _ => throw new NotSupportedException($"{cookie.Type} is not support"),
-                                                 };
-                                             }
-
-                                             _modSharp.InvokeAction(() =>
-                                             {
-                                                 if (!client.IsValid)
-                                                 {
-                                                     return;
-                                                 }
-
-                                                 _cookieStorage[identity] = new CookieBucket(cookieMap);
-
-                                                 foreach (var callback in _loadCallbacks)
-                                                 {
-                                                     try
-                                                     {
-                                                         callback.Invoke(client);
-                                                     }
-                                                     catch (Exception e)
-                                                     {
-                                                         _logger.LogError(e,
-                                                                          "An error occurred while calling OnCookieLoad for {s}",
-                                                                          identity);
-                                                     }
-                                                 }
-                                             });
-                                         },
-                                         _source.Token);
+                                Task.Run(() => LoadClient(client, identity), _source.Token);
                             },
                             1,
                             GameTimerFlags.StopOnMapEnd);
@@ -247,6 +202,72 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         }
 
         Task.Run(() => _driver.SaveUserCookie(identity, storage.GetModels()), _source.Token);
+    }
+
+    private async Task LoadClient(IGameClient client, SteamID identity)
+    {
+        const int maxRetries = 3;
+
+        for (var i = 1; i <= maxRetries; i++)
+        {
+            try
+            {
+                var cookies = await _driver.LoadUserCookie(identity);
+
+                var cookieMap = new Dictionary<string, CookieItem>();
+
+                foreach (var cookie in cookies)
+                {
+                    cookieMap[cookie.Key] = cookie.Type switch
+                    {
+                        CookieValueType.String => new CookieItem(cookie.String),
+                        CookieValueType.Number =>
+                            new CookieItem(cookie.Number.GetValueOrDefault()),
+                        CookieValueType.Double =>
+                            new CookieItem(cookie.Double.GetValueOrDefault()),
+                        _ => throw new NotSupportedException($"{cookie.Type} is not support"),
+                    };
+                }
+
+                _modSharp.InvokeAction(() => OnClientLoaded(client, identity, cookieMap));
+
+                break;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,
+                                 "An error occurred while loading cookies for {s}, attempt {i}/{m}",
+                                 identity,
+                                 i,
+                                 maxRetries);
+
+                await Task.Delay(TimeSpan.FromSeconds(1), _source.Token);
+            }
+        }
+    }
+
+    private void OnClientLoaded(IGameClient client, SteamID identity, Dictionary<string, CookieItem> cookies)
+    {
+        if (!client.IsValid)
+        {
+            return;
+        }
+
+        _cookieStorage[identity] = new CookieBucket(cookies);
+
+        foreach (var callback in _loadCallbacks)
+        {
+            try
+            {
+                callback.Invoke(client);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,
+                                 "An error occurred while calling OnCookieLoad for {s}",
+                                 identity);
+            }
+        }
     }
 
 #endregion
