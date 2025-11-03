@@ -63,7 +63,8 @@ internal class ClientManager : ICoreClientManager
     private readonly HashSet<char>                                             _publicTriggers;
     private readonly HashSet<char>                                             _silentTriggers;
 
-    private static int _sQueryCookie;
+    private static volatile bool _sReloadAdmin;
+    private static volatile int  _sQueryCookie;
 
     public ClientManager(ILogger<ClientManager> logger, IConfiguration configuration, IShutdownMonitor shutdown)
     {
@@ -344,6 +345,26 @@ internal class ClientManager : ICoreClientManager
             return;
         }
 
+        if (_sReloadAdmin)
+        {
+            for (var i = 0; i < _listeners.Count; i++)
+            {
+                try
+                {
+                    _listeners[i].OnAdminCacheReload();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e,
+                                     "An error occurred while calling listener<{s}> {name}",
+                                     "OnAdminCacheReload",
+                                     _listeners[i].GetType().Name);
+                }
+            }
+
+            _sReloadAdmin = false;
+        }
+
         if (_adminRunCheckQueue.Count == 0)
         {
             return;
@@ -559,6 +580,18 @@ internal class ClientManager : ICoreClientManager
         _queryConVarInfos.Add(_sQueryCookie, new QueryConVarInfo(name, client.SteamId, callback));
 
         return _sQueryCookie;
+    }
+
+    public void ReloadAdmins()
+    {
+        if (_sReloadAdmin)
+        {
+            return;
+        }
+
+        _sReloadAdmin = true;
+
+        _admins.Clear();
     }
 
     public IAdmin? FindAdmin(SteamID identity)

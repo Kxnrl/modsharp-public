@@ -98,6 +98,11 @@ public interface IClientManager
     int QueryConVar(IGameClient client, string name, Action<IGameClient, QueryConVarValueStatus, string, string> callback);
 
     /// <summary>
+    ///     清空Admins并重新触发OnAdminReload
+    /// </summary>
+    void ReloadAdmins();
+
+    /// <summary>
     ///     通过SteamID查找Admin
     /// </summary>
     IAdmin? FindAdmin(SteamID identity);

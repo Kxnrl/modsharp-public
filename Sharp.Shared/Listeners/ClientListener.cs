@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -38,7 +38,6 @@ public interface IClientListener
 
     /// <summary>
     ///     是否允许检查Admin
-    ///     <remarks>Bot不会调用此项</remarks>
     /// </summary>
     /// <returns>True = Block Check</returns>
     bool OnClientPreAdminCheck(IGameClient client)
@@ -70,4 +69,8 @@ public interface IClientListener
 
     ECommandAction OnClientSayCommand(IGameClient client, bool teamOnly, bool isCommand, string commandName, string message)
         => ECommandAction.Skipped;
+
+    void OnAdminCacheReload()
+    {
+    }
 }
