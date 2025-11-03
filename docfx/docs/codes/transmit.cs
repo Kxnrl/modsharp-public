@@ -119,6 +119,6 @@ public sealed class TransmitHook : IModSharpModule, IClientListener
         }
     }
 
-    public string DisplayName   => "NetMessage Hook Example";
+    public string DisplayName   => "Transmit Hook Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
