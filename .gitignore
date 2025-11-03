@@ -8,6 +8,7 @@ build
 docfx/_site
 docfx/api
 docfx/api-extensions
+docfx/api-modules
 
 # Rift
 .rift

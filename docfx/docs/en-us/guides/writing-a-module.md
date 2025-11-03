@@ -139,8 +139,8 @@ This is the class constructor. You must pass these parameters, otherwise the mod
     }
 ```
 
-- `Init()` is called when the module is initialized. It must be implemented. If you don't want to write much, you can simply `return true;`
-- `Shutdown()` is called when the module is unloaded. It must be implemented. If you don't want to write anything, you can leave it empty, i.e., an empty function with nothing inside.
+- `Init()` is called when the module is initialized. Must be implemented. If you don't want to write much, you can simply `return true;`
+- `Shutdown()` is called when the module is unloaded. Must be implemented. If you don't want to write anything, you can leave it empty, i.e., an empty function with nothing inside.
 
 ```cs
     public string DisplayName   => "Example";

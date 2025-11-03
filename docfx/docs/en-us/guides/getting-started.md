@@ -16,26 +16,23 @@ Please visit the [Release](https://github.com/Kxnrl/modsharp-public/releases) pa
 
 ## Check Environment
 
-### 1. Common Dependencies
+# [Windows](#tab/windows)
 
-- **.NET 9**
-
-### 2. For Windows Users, please ensure you have installed the following
-
-- **Visual Studio Redistributable**
+- **Visual Studio Redistributable** [Download Link](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+- **.NET 9** [Download Link](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 > [!TIP]
 >
-> - If you are missing Visual Studio Redistributable, you can download it here: [Download Link](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-> - If you are missing .NET 9 runtime, download it here: [Download Link](https://dotnet.microsoft.com/download/dotnet/9.0)
+> We recommend using Windows Server 2022 DataCenter or newer
 
-### 3. For Linux Users
+# [Linux](#tab/linux)
 
-If your runtime environment is Docker, please use the Steam RT3 image (see: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest)
+- **.NET 9** [Installation Guide](https://learn.microsoft.com/dotnet/core/install/linux)
+
+If you are running Docker, please use the Steam RT3 image (see: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest)
 > [!TIP]
-> Many Linux users use Pterodactyl panel, you can refer to: [1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
+> If you are using Pterodactyl panel, you can refer to: [1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
 
-Please refer to the [.NET Download Page](https://dotnet.microsoft.com/download/dotnet/9.0) to install .NET 9 in your image, which won't be detailed here.  
 If you are not using Docker, please [install SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD) yourself and download Steam RT3.
 
 > [!NOTE]
@@ -48,6 +45,8 @@ If you are not using Docker, please [install SteamCMD](https://developer.valveso
 > [!CAUTION]
 > Due to Steam RT3 limitations, we cannot use the system's .NET.  
 > Please download the .NET distribution package from the [.NET Download Page](https://dotnet.microsoft.com/download/dotnet/9.0) mentioned above and extract it to `{CS2}/game/sharp/runtime`.
+
+---
 
 ## Modify `gameinfo.gi`
 
@@ -116,4 +115,4 @@ Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
 
 ## Start the Server
 
-After starting the server, you still won't be able to run it because we need at least **1** properly running plugin for the server to function normally.
+After starting the server, you still won't be able to run it because we need at least **1** properly running module for the server to function normally.
