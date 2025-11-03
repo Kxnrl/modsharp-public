@@ -36,3 +36,6 @@
 
 - name: Multi Listeners
   href: multi-listeners.md
+
+- name: Sound Emitter
+  href: sound-emitter.md
