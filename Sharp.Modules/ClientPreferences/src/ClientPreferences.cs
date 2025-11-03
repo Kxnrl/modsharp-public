@@ -88,7 +88,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
         _driver = driver switch
         {
-            StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString),
+            StorageType.LiteDb => new LiteDbStorage(loggerFactory, source, connectionString, sharpPath),
             StorageType.Resp   => new RespStorage(loggerFactory, source, connectionString),
             StorageType.MySql  => new MySqlStorage(loggerFactory, source, connectionString),
             StorageType.Http   => new RestStorage(loggerFactory, source, connectionString),

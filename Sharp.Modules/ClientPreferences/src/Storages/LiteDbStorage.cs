@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using LiteDB;
@@ -32,10 +33,13 @@ internal class LiteDbStorage : IStorage
     private readonly LiteDatabase            _database;
     private readonly CancellationTokenSource _ctSource;
 
-    public LiteDbStorage(ILoggerFactory loggerFactory, CancellationTokenSource source, string connectionString)
+    public LiteDbStorage(ILoggerFactory loggerFactory,
+        CancellationTokenSource         source,
+        string                          connectionString,
+        string                          sharpPath)
     {
         _logger   = loggerFactory.CreateLogger<LiteDbStorage>();
-        _database = new LiteDatabase(connectionString);
+        _database = new LiteDatabase(connectionString.Replace("{sharp::data}", Path.Combine(sharpPath, "data")));
         _ctSource = CancellationTokenSource.CreateLinkedTokenSource(source.Token);
     }
 
