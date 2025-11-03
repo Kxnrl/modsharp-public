@@ -1,26 +1,3 @@
-# Dependency Injection
-
-本教程将演示如何使用Dependency Injection。
-
-DependencyInjectionExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>DependencyInjectionExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-DependencyInjectionExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Shared;
@@ -34,13 +11,18 @@ public sealed class DependencyInjection : IModSharpModule
     public DependencyInjection(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
     {
         var services = new ServiceCollection();
+
+        // add services you want to use via dependency injection here
         services.AddSingleton(sharedSystem);
         services.AddSingleton(coreConfiguration);
+
+        // build service provider
         _provider = services.BuildServiceProvider();
     }
 
     public bool Init()
     {
+        // resolve services what you need
         var sharedSystem = _provider.GetRequiredService<ISharedSystem>();
         sharedSystem.GetModSharp().LogMessage("Hello World!");
         return true;
@@ -53,4 +35,3 @@ public sealed class DependencyInjection : IModSharpModule
     public string DisplayName   => "Dependency Injection Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
-```

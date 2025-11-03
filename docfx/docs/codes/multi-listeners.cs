@@ -1,31 +1,3 @@
-# Multi Listeners
-
-本教程将演示如何在一个Module中同时实现多个Listener。
-
-> [!TIP]
->
-> 因为多个Listener中均包含``ListenerVersion``和``ListenerPriority``，  
-> 因此我们显式实现接口，即可区分每个Listener的优先级和版本
-
-MultiListenerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>MultiListenerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-MultiListenerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -38,7 +10,7 @@ public sealed class  MultiListener : IModSharpModule,
     IClientListener, 
     IEntityListener,
     IEventListener,
-    IGameListener,
+    IGameListener
 {
     private readonly ISharedSystem _sharedSystem;
 
@@ -47,6 +19,7 @@ public sealed class  MultiListener : IModSharpModule,
 
     public bool Init()
     {
+        // install listener
         _sharedSystem.GetClientManager().InstallClientListener(this);
         _sharedSystem.GetEntityManager().InstallEntityListener(this);
         _sharedSystem.GetEventManager().InstallEventListener(this);
@@ -57,6 +30,8 @@ public sealed class  MultiListener : IModSharpModule,
 
     public void Shutdown()
     {
+        // must uninstall the listener in Shutdown
+        // otherwise you will get fucked after reloaded.
         _sharedSystem.GetClientManager().RemoveClientListener(this);
         _sharedSystem.GetEntityManager().RemoveEntityListener(this);
         _sharedSystem.GetEventManager().RemoveEventListener(this);
@@ -66,6 +41,8 @@ public sealed class  MultiListener : IModSharpModule,
     public string DisplayName => "Multiple Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
+    // just write the ListenerVersion according to the example.
+    // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
     int IClientListener.ListenerPriority => 0;
     int IEntityListener.ListenerVersion  => IEntityListener.ApiVersion;
@@ -75,4 +52,3 @@ public sealed class  MultiListener : IModSharpModule,
     int IGameListener.ListenerVersion    => IGameListener.ApiVersion;
     int IGameListener.ListenerPriority   => 0;
 }
-```

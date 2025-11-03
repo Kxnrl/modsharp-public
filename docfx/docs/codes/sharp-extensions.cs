@@ -1,28 +1,3 @@
-# Sharp Extensions
-
-本教学将演示如何使用**ModSharp**扩展包。
-
-SharpExtensionsExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>SharpExtensionsExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="*" />
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-    <PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="*" />
-  </ItemGroup>
-</Project>
-```
-
-SharpExtensionsExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.EntityHookManager;
@@ -47,17 +22,20 @@ public sealed class SharpExtensions : IModSharpModule
     }
 
     public bool Init()
+        => true;
+
+    public void PostInit()
     {
+        // load all sharp extensions, otherwise they won't work.
         _provider.LoadAllSharpExtensions();
-        return true;
     }
 
     public void Shutdown()
     {
+        // shutdown all sharp extensions, otherwise you will get fucked after reloaded.
         _provider.ShutdownAllSharpExtensions();
     }
 
     public string DisplayName   => "Sharp Extensions Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
-```

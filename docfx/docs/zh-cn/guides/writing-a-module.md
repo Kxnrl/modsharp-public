@@ -175,19 +175,19 @@ public class Example : IModSharpModule
 
 讲那么多你肯定比较懵，不如看图：
 
-![看图](../../images/module-deploy-to.png)
+![看图](../../../images/module-deploy-to.png)
 
 里面长这样：
 
-![看图](../../images/module-inner.png)
+![看图](../../../images/module-inner.png)
 
 ## 启动CS2
 
 到这里就没什么好说的了，当你启动以后你应该能在服务端控制台看到`Hello World!`字样，  
 到这里我们的入门模块就编写完成了。
 
-![看图](../../images/hello-world.png)
+![看图](../../../images/hello-world.png)
 
 你可以在启动后输入`ms modules`查询模块列表。
 
-![看图](../../images/ms-modules.png)
+![看图](../../../images/ms-modules.png)

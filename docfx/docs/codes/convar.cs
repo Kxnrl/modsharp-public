@@ -1,26 +1,3 @@
-# ConVar
-
-本教程将教你如何创建一个ConVar。
-
-ConVarExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>ConVarExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-ConVarExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Objects;
@@ -52,5 +29,3 @@ public sealed class ConVar : IModSharpModule
     public string DisplayName   => "ConVar Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
-
-```

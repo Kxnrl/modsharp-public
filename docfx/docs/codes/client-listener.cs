@@ -1,26 +1,3 @@
-# Client Listener
-
-本教程将演示如何使用Client Listener。
-
-ClientListenerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>ClientListenerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-ClientListenerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -38,7 +15,7 @@ public sealed class ClientListener : IModSharpModule, IClientListener
 
     public bool Init()
     {
-        // Install listener, any class what inherits IClientListener can be a listener.
+        // install listener, any class what inherits IClientListener can be a listener.
         _sharedSystem.GetClientManager().InstallClientListener(this);
 
         return true;
@@ -46,13 +23,15 @@ public sealed class ClientListener : IModSharpModule, IClientListener
 
     public void Shutdown()
     {
-        // Must uninstall the listener in Shutdown
+        // must uninstall the listener in Shutdown
         // otherwise you will get fucked after reloaded.
         _sharedSystem.GetClientManager().RemoveClientListener(this);
     }
 
-    public string DisplayName => "Client Listener Example";
+    public string DisplayName   => "Client Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
+
+    // all callbacks are optional to implement, you can just implement what you need.
 
     public bool OnClientPreAdminCheck(IGameClient client)
     {
@@ -96,11 +75,9 @@ public sealed class ClientListener : IModSharpModule, IClientListener
         return ECommandAction.Skipped;
     }
 
-    // 不用管，你就直接照着例子写就行
+    // just write it according to the example.
     int IClientListener.ListenerVersion => IClientListener.ApiVersion;
 
-    // 优先级，数字越大优先级越高，大多数情况下直接使用0
+    // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IClientListener.ListenerPriority => 0;
 }
-
-```

@@ -1,26 +1,3 @@
-# EventListener
-
-本教程将会演示如何使用EventListener。
-
-EventListenerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>EventListenerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-EventListenerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.GameEvents;
@@ -38,26 +15,31 @@ public sealed class EventListener : IModSharpModule, IEventListener
 
     public bool Init()
     {
+        // install listener, any class what inherits IEventListener can be a listener.
         _sharedSystem.GetEventManager().InstallEventListener(this);
         return true;
     }
 
     public void Shutdown()
     {
+        // must uninstall the listener in Shutdown
+        // otherwise you will get fucked after reloaded.
         _sharedSystem.GetEventManager().RemoveEventListener(this);
     }
 
-    public string DisplayName => "EventListener Example";
+    public string DisplayName   => "EventListener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
     public void FireGameEvent(IGameEvent e)
     {
+        // use built-in event types for common events
         if (e is IEventPlayerDeath death)
         {
             var victim = death.VictimController?.PlayerName;
             var killer = death.KillerController?.PlayerName ?? "World";
             Console.WriteLine($"{victim} was killed by {killer}");
         }
+        // match other events by name
         else if (e.Name.Equals("player_spawn"))
         {
             Console.WriteLine($"Player slot[{e.GetInt("userid")}] spawned");
@@ -68,7 +50,8 @@ public sealed class EventListener : IModSharpModule, IEventListener
         }
     }
 
-    // 默认情况下HookFireEvent不需要实现
+    // it has default implementation that always returns true, 
+    // you don't need to implement it if you don't want to use it.
     public bool HookFireEvent(IGameEvent e, ref bool serverOnly)
     {
         if (e.Name.Equals("player_say", StringComparison.OrdinalIgnoreCase))
@@ -90,7 +73,8 @@ public sealed class EventListener : IModSharpModule, IEventListener
         return true;
     }
 
+    // just write it according to the example.
     int IEventListener.ListenerVersion  => IEventListener.ApiVersion;
+    // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IEventListener.ListenerPriority => 0;
 }
-```

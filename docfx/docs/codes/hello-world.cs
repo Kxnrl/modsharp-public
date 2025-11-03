@@ -1,26 +1,3 @@
-# Hello World
-
-该示例演示了如何编写最简单的插件。
-
-HelloWorld.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>HelloWorld</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-HelloWorld.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 
@@ -46,4 +23,3 @@ public sealed class HelloWorld : IModSharpModule
     public string DisplayName   => "Hello World";
     public string DisplayAuthor => "ModSharp dev team";
 }
-```

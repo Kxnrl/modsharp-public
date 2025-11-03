@@ -1,0 +1,9 @@
+### YamlMime:ManagedReference
+
+apiRules:
+- exclude:
+    uidRegex: System.Object
+    type: Type
+- exclude:
+    uidRegex: ^Sharp\.Modules\.*
+    type: Class

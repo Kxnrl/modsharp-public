@@ -1,15 +1,10 @@
 # ModSharp
 
 Modern Source 2 Modding Solution,  
-services over than 4M players since Sep 2023.
+services over than 4M+ players since Sep 2023.
 
 [![Release](https://img.shields.io/github/v/release/Kxnrl/modsharp-public?style=for-the-badge&label=Release)](https://github.com/Kxnrl/modsharp-public/releases/)
 [![NuGet](https://img.shields.io/nuget/v/ModSharp.Sharp.Shared?style=for-the-badge&label=NuGet)](https://www.nuget.org/packages/ModSharp.Sharp.Shared/)
-
-| Language | Link |
-|---:|:---|
-| English | English |
-| 简体中文 | [简体中文](./README_ZH.md) |
 
 ## Community
 

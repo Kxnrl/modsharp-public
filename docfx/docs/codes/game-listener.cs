@@ -1,26 +1,3 @@
-# Game Listener
-
-本教程将会演示如何使用GameListener。
-
-GameListenerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>GameListenerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-GameListenerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -37,17 +14,22 @@ public sealed class GameListener : IModSharpModule, IGameListener
 
     public bool Init()
     {
+        // install listener, any class what inherits IGameListener can be a listener.
         _sharedSystem.GetModSharp().InstallGameListener(this);
         return true;
     }
 
     public void Shutdown()
     {
+        // must uninstall the listener in Shutdown
+        // otherwise you will get fucked after reloaded.
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
     public string DisplayName => "GameListener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
+
+    // all callbacks are optional to implement, you can just implement what you need.
 
     // safe to get sv/globals
     public void OnServerInit()
@@ -68,7 +50,7 @@ public sealed class GameListener : IModSharpModule, IGameListener
 
     public void OnResourcePrecache()
     {
-        // 只有这里可以预加载资源！
+        // you only can precache resources in this callback!!!
         Console.WriteLine("[OnResourcePrecache] Precaching resources...");
         _sharedSystem.GetModSharp().PrecacheResource("models/foo/bar.vmdl");
     }
@@ -120,7 +102,8 @@ public sealed class GameListener : IModSharpModule, IGameListener
         return ECommandAction.Skipped;
     }
 
+    // just write it according to the example.
     int IGameListener.ListenerVersion  => IGameListener.ApiVersion;
+    // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IGameListener.ListenerPriority => 0;
 }
-```

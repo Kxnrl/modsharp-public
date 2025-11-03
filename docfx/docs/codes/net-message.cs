@@ -1,26 +1,3 @@
-# NetMessage
-
-本教程将会教你如何发送一个Net Message。
-
-NetMessageExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>NetMessageExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-NetMessageExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -45,6 +22,7 @@ public sealed class NetMsg : IModSharpModule
 
     public void Shutdown()
     {
+        // don't forget to remove the command callback
         _sharedSystem.GetClientManager().RemoveCommandCallback("sendnetmsg", OnCommandSendNetMsg);
     }
 
@@ -53,14 +31,12 @@ public sealed class NetMsg : IModSharpModule
     {
         var entityManager = _sharedSystem.GetEntityManager();
         var modSharp = _sharedSystem.GetModSharp();
-        if (entityManager.FindPlayerPawnBySlot(client.Slot) is not { } pawn)
-        {
-            return ECommandAction.Stopped;
-        }
+
+        // create protobuf message
         var sayText2Msg = new CUserMessageSayText2
         {
             Chat = true,
-            Entityindex = pawn.Index,
+            Entityindex = (int)client.Slot + 1,
             Messagename = "Dbg.NetMsg Invoked",
             Param1 = string.Empty,
             Param2 = string.Empty,
@@ -69,18 +45,18 @@ public sealed class NetMsg : IModSharpModule
         };
 
         // to special player
-        modSharp.SendNetMessage(new RecipientFilter(client), nameof(CUserMessageSayText2), sayText2Msg);
+        modSharp.SendNetMessage(new RecipientFilter(client), sayText2Msg);
 
         // to team
-        modSharp.SendNetMessage(new RecipientFilter(CStrikeTeam.CT), nameof(CUserMessageSayText2), sayText2Msg);
+        modSharp.SendNetMessage(new RecipientFilter(CStrikeTeam.CT), sayText2Msg);
 
         // to all
-        modSharp.SendNetMessage(default, nameof(CUserMessageSayText2), sayText2Msg);
+        modSharp.SendNetMessage(default, sayText2Msg);
 
+        // return stop to block 'unknown command' message in client console
         return ECommandAction.Stopped;
     }
 
-    public string DisplayName => "NetMsg Example";
+    public string DisplayName   => "NetMsg Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
-```

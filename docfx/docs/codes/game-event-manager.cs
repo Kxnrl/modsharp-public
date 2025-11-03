@@ -1,27 +1,3 @@
-# Game Event Manager
-
-本教程将演示如何使用GameEventManager扩展。
-
-GameEventManagerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>GameEventManagerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-    <PackageReference Include="ModSharp.Sharp.Extensions.GameEventManager" Version="*" />
-  </ItemGroup>
-</Project>
-```
-
-GameEventManagerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.GameEventManager;
@@ -34,7 +10,6 @@ using Sharp.Shared.Types;
 
 namespace GameEventManagerExample;
 
-// 不要和GameEventManager混淆！这里只是example叫这个名字方便你理解！
 public sealed class GameEventManagerExample : IModSharpModule
 {
     private readonly IServiceProvider _provider;
@@ -66,7 +41,7 @@ public sealed class GameEventManagerExample : IModSharpModule
         _provider.ShutdownAllSharpExtensions();
     }
 
-    // 我们现在的操作会直接屏蔽掉player_changename这个事件
+    // block player_changename event
     private HookReturnValue<bool> OnPlayerChangeName(IGameEvent ev, ref bool serverOnly)
     {
         // [[unlikely]] this should never happen
@@ -81,13 +56,14 @@ public sealed class GameEventManagerExample : IModSharpModule
         return new HookReturnValue<bool>(EHookAction.SkipCallReturnOverride);
     }
 
-    // 会监听cs_intermission
+    // listen cs_intermission event
     private void OnIntermission(IGameEvent e)
     {
        Console.WriteLine($"[OnIntermission] {e.Name}");
     }
 
-    // 会替换掉原先的player_death事件。
+    // this example will replace original player_death event with a modified one and broadcast it to all clients,
+    // the original event will be silenced to clients, only server will receive it.
     private HookReturnValue<bool> OnPlayerDeath(IGameEvent e, ref bool serverOnly)
     {
         IGameEvent? clone = null;
@@ -119,7 +95,6 @@ public sealed class GameEventManagerExample : IModSharpModule
         }
     }
 
-    public string DisplayName  => "GameEventManager Example";
+    public string DisplayName   => "GameEventManager Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
-```

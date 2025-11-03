@@ -1,27 +1,3 @@
-# Entity Hook Manager
-
-本教程将演示如何使用EntityHookManager扩展。
-
-EntityHookManagerExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>EntityHookManagerExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-    <PackageReference Include="ModSharp.Sharp.Extensions.EntityHookManager" Version="*" />
-  </ItemGroup>
-</Project>
-```
-
-EntityHookManagerExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.EntityHookManager;
@@ -50,18 +26,25 @@ public sealed class EntityHookManager : IModSharpModule
 
     public bool Init()
     {
+        // load the extension, otherwise hooks won't work.
         _provider.LoadAllSharpExtensions();
+        return true;
+    }
+
+    public void PostInit()
+    {
+        // install hooks/listeners here, it will automatically unhook/unlisten on Shutdown.
         _entityHookManager.HookEntityInput("func_door", "Close", OnFuncDoorInputClose);
         _entityHookManager.HookEntityOutput("func_door", "OnClose", OnFuncDoorOutputClose);
         _entityHookManager.ListenEntityCreate("cs_gamerules", OnCsGameRulesCreated);
         _entityHookManager.ListenEntityDelete("prop_dynamic", OnPropDynamicDeleted);
         _entityHookManager.ListenEntitySpawn("prop_dynamic", OnPropDynamicSpawned);
         _entityHookManager.ListenWeaponSpawn(OnWeaponSpawned);
-        return true;
     }
 
     public void Shutdown()
     {
+        // unload the extension, otherwise you will get fucked after reloaded.
         _provider.ShutdownAllSharpExtensions();
     }
 
@@ -99,4 +82,3 @@ public sealed class EntityHookManager : IModSharpModule
     public string DisplayName   => "EntityHookManager Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }
-```

@@ -1,6 +1,14 @@
-- name: 文档
-  href: docs/
+- name: 文档 / Doc
+  items:
+    - name: 中文
+      href: docs/zh-cn/
+    # - name: English
+    #   href: docs/en-us/
 - name: API
-  href: api/
-- name: 扩展包
-  href: api-extensions/
+  items:
+    - name: ModSharp
+      href: api/
+    - name: Extensions
+      href: api-extensions/
+    - name: Modules Interface
+      href: api-modules/

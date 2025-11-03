@@ -1,26 +1,3 @@
-# 指令
-
-本教程将会演示如何创建指令，其中包含了纯服务端指令和客户端指令。
-
-CommandExample.csproj
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AssemblyName>CommandExample</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-  </ItemGroup>
-</Project>
-```
-
-CommandExample.cs
-
-```cs
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -52,6 +29,8 @@ public sealed class Command : IModSharpModule
 
     public void Shutdown()
     {
+        // must release the command in Shutdown
+        // otherwise you will get fucked after reloaded.
         _sharedSystem.GetConVarManager().ReleaseCommand("ms_echo");
         _sharedSystem.GetClientManager().RemoveCommandCallback("hello", OnClientCommand);
     }
@@ -79,4 +58,3 @@ public sealed class Command : IModSharpModule
     public string DisplayName   => "Command Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
-```

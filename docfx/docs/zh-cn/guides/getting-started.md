@@ -26,8 +26,8 @@
 
 > [!TIP]
 >
-> - 如果你缺少Visual Studio Redistributable，你可以前往此处下载：[下载链接](https://learn.microsoft.com/zh-cn/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-> - 如果你缺少.NET 9，前往此处下载：[下载链接](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)
+> - 如果你缺少Visual Studio Redistributable，你可以前往此处下载：[下载链接](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+> - 如果你缺少.NET 9，前往此处下载：[下载链接](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ### 3. 如果你是Linux用户
 
