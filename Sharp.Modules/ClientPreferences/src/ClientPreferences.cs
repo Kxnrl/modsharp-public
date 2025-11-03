@@ -119,14 +119,11 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 #region IModSharpModule
 
     public bool Init()
-    {
-        _modules.RegisterSharpModuleInterface(this, IClientPreference.Identity, this);
-
-        return true;
-    }
+        => true;
 
     public void PostInit()
     {
+        _modules.RegisterSharpModuleInterface(this, IClientPreference.Identity, this);
         _driver.Init();
     }
 
