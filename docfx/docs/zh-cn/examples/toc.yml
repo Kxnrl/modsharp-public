@@ -37,7 +37,9 @@
 - name: Net Messages
   items:
     - name: Send net message
-      href: net-message.md
+      href: net-message-send.md
+    - name: Hook net message
+      href: net-message-hook.md
 
 - name: Sound System
   items:
