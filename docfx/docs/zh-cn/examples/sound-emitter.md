@@ -1,4 +1,4 @@
-# Sharp Extensions
+# Sound Emitter
 
 本教学将演示如何使用音频系统进行如下操作:
 

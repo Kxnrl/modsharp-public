@@ -1,4 +1,4 @@
-# Net Message
+# NetMessage Send
 
 This tutorial will teach you how to send a Net Message.
 
