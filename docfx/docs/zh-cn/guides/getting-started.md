@@ -16,26 +16,23 @@
 
 ## 检查环境
 
-### 1. 通用依赖
+# [Windows](#tab/windows)
 
-- **.NET 9**
-
-### 2. 如果你是Windows用户，请确保你已经安装了如下内容
-
-- **Visual Studio Redistributable**
+- **Visual Studio Redistributable** [下载链接](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
+- **.NET 9** [下载链接](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 > [!TIP]
 >
-> - 如果你缺少Visual Studio Redistributable，你可以前往此处下载：[下载链接](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-> - 如果你缺少.NET 9，前往此处下载：[下载链接](https://dotnet.microsoft.com/download/dotnet/9.0)
+> 推荐使用Windows Server 2022 DataCenter或更新版本
 
-### 3. 如果你是Linux用户
+# [Linux](#tab/linux)
 
-如你的运行环境是Docker，请使用Steam RT3镜像（参阅：registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest）
+- **.NET 9** [安装教程](https://learn.microsoft.com/dotnet/core/install/linux)
+
+如你的运行Docker，请使用Steam RT3镜像（参阅：registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest）
 > [!TIP]
-> 现在Linux用户应该有不少人用的是翼龙面板，你可以参阅：[1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
+> 如果你使用的是翼龙面板，你可以参阅：[1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
 
-请参阅[.NET下载页面](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)在镜像中安装.NET 9，此处不再赘述。  
 如果你没有使用Docker，请自行[安装SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD)，并下载Steam RT3。
 
 > [!NOTE]
@@ -47,7 +44,9 @@
 
 > [!CAUTION]
 > 由于SteamRT3的限制，我们没办法使用系统的.NET。  
-> 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/zh-cn/download/dotnet/9.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
+> 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/download/dotnet/9.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
+
+---
 
 ## 修改`gameinfo.gi`
 
