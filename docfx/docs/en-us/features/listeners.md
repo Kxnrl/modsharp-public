@@ -1,4 +1,3 @@
-````markdown
 # Listeners
 
 The current version has the following Listeners:
@@ -19,5 +18,3 @@ public void PostInit()
 public void Shutdown()
     => _modSharp.RemoveGameListener(this);
 ```
-
-````

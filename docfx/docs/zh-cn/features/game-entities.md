@@ -30,6 +30,8 @@ if (entity.IsValid())
 > 有些时候你也可以保存``CEntityHandle<T>``代替``IBaseEntity``  
 > 但是在使用的时候需要``IEntityManager.FindEntityByHandle``取回实体
 
+---
+
 **ModSharp**当然也支持直接从指针访问实体，但实体指针的有效性由你自己保证
 
 ```c#
@@ -61,6 +63,8 @@ if (_entityManager.FindEntityByHandle(handle) is { } find)
 }
 ```
 
+---
+
 ## 创建
 
 在SourceMod/CS#中，实体使用`CreateEntityByName`创建，并且``DispatchSpawn``生成，  
@@ -84,6 +88,8 @@ if (_entityManager.SpawnEntitySync<IBaseAnimGraph>("prop_dynamic", kv) is { } en
 
 ```
 
+---
+
 ## NetProps/Schemas
 
 与CS#导出所有的Schema成员不同，**ModSharp**只提供了部分成员导出，  
@@ -97,6 +103,8 @@ var bulletForce2 = _schemas.GetNetVar<Vector>(pawn, "CCSPlayerPawn", "m_vecTotal
 var bulletForce3 = _schemas.GetNetVar<Vector>(pawn, pawn.GetSchemaClassname(), "m_vecTotalBulletForce"); // 自动类 + 显式字段名
 pawn.SetNetVar("m_vecTotalBulletForce", new Vector()); // 设置为指定的值
 ```
+
+---
 
 > [!Caution]
 >

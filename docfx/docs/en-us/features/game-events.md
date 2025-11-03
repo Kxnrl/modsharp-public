@@ -1,5 +1,6 @@
-````markdown
 # Game Events
+
+*Game Events have been marked as* **Legacy** *in the Source 2 engine.*
 
 ## Creation
 
@@ -26,5 +27,3 @@ if (_eventManager.CreateEvent<IEventPlayerDeath>(false) is { } death)
 
 - If you want high customization, please refer to this example: [EventListener](../examples/event-listener.md)
 - If you want simple and easy lazy mode, please refer to this example: [GameEventManager](../examples/game-event-manager.md)
-
-````

@@ -1,4 +1,3 @@
-````markdown
 # Entity
 
 ## Storage and Usage
@@ -111,5 +110,3 @@ Entity listening is different from CS# and SourceMod listening methods,
 
 - If you want high customization, please refer to this example: [EntityListener](../examples/entity-listener.md)
 - If you want simple and easy lazy mode, please refer to this example: [EntityHookManager](../examples/entity-hook-manager.md)
-
-````

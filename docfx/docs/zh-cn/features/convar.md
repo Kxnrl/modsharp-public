@@ -4,6 +4,8 @@
 
 可通过示例项目了解如何操作**ConVar**，[跳转链接](../examples/convar.md)
 
+---
+
 ## 内置 ConVars
 
 | ConVar | 描述 | 默认值 | 范围 |
