@@ -1,5 +1,5 @@
-# Entity Hook Manager
+# Command Manager
 
-本教程将演示如何使用CommandManager扩展。
+This tutorial demonstrates how to use the CommandManager extension.
 
 [!code-csharp[CommandManagerExample.cs](../../codes/command-manager.cs)]
