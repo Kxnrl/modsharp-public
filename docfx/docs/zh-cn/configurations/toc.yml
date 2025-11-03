@@ -1,0 +1,4 @@
+- name: Core
+  href: core.md
+- name: Admin
+  href: admin.md

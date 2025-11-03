@@ -2,6 +2,9 @@ items:
   - name: Guides
     href: guides/toc.yml
     expanded: true
+  - name: Configurations
+    href: configurations/toc.yml
+    expanded: true
   - name: Features
     href: features/toc.yml
     expanded: true
