@@ -14,28 +14,37 @@
 
 执行顺序:
 
-- ``OnServerInit``: safe to get sv/globals
-- ``OnGameInit``: safe to get GameRules
+- ``OnServerInit``: 可以安全的访问 ``sv``/``globals``
+- ``OnGameInit``: 可以安全的访问 ``GameRules``
 - ``OnGamePostInit``
-- ``OnResourcePrecache``: safe to precache game resources
-- ``OnSpawnServer``: safe to execute .cfg
+- ``OnResourcePrecache``: 你只能在这里 ``PrecacheResource``
+- ``OnSpawnServer``: 从这里开始你可以加载*.cfg*
 - ``OnGameActivate``
 - ``OnServerActivate``
 - ...
 - ``OnGameDeactivate``
 - ``OnGamePreShutdown``
-- ``OnGameShutdown``: sv/globals/GameRules is null here
+- ``OnGameShutdown``: ``sv``/``globals``/``GameRules`` 从此以后不可用
 
 以上均包含在`IGameListner`中。
 
 > [!TIP]
+>
+> ``OnGameShutdown`` 作为当前地图的结束事件  
+> ``OnServerInit`` 作为地图启动时最开始的事件  
+> 往复循环  
+>
 > 如果想了解如何使用，请查看 [Game Listener 示例](../examples/game-listener.md) 了解完整的实现方式。
+
+---
 
 ## Entity
 
 实体的保存和使用以及访问变量与CS#和SourceMod有很大的不同。
 
 请查看 [游戏实体](../features/game-entities.md)
+
+---
 
 ## Events
 
@@ -44,6 +53,8 @@
 **ModSharp**中的游戏事件监听思路与SourceEngine相同。
 
 请查看 [游戏事件](../features/game-events.md)
+
+---
 
 ## Stripper
 

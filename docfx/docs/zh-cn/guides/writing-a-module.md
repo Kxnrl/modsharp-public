@@ -5,14 +5,15 @@
 如果你已经有了一定的开发经验，你可以直接：
 
 - 从模板创建：[Template](https://github.com/new?template_name=ModSharp-Module-Template&template_owner=SourceSharp)
-- Clone示例：[Example](https://github.com/SourceSharp/ModSharp-Module-Example)
+- 克隆示例：[Example](https://github.com/SourceSharp/ModSharp-Module-Example)
 
-如果你是萌新的话，那么。。。  
 下文我们将一步步介绍如何编写一个模块。
+
+---
 
 ## 环境准备
 
-当前版本的**ModSharp**使用的.NET版本是`9`，  
+当前版本的**ModSharp**使用的.NET版本是`9.x`，  
 请确保你的.NET SDK版本至少在这个版本之上，否则无法进行接下来的步骤。
 
 我们推荐你使用如下开发环境：
@@ -21,7 +22,7 @@
 - JetBrains Rider
 
 > [!NOTE]
-> 我们不是很推荐你用VS Code，原因是在你项目大了以后维护起来很痛苦。
+> 我们不推荐你用VS Code，原因是你在维护大型项目时非常痛苦。
 > 本文的主要使用IDE均为Visual Studio。
 
 我们将以「Example」作为示例项目名。  
@@ -30,13 +31,11 @@
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
 </Project>
 ```
 
@@ -47,7 +46,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 +    <AssemblyName>Example</AssemblyName>
   </PropertyGroup>
@@ -71,6 +70,8 @@
 >
 > 1. `ModSharp.Sharp.Shared`必须加上``PrivateAssets="all"``标签，因为我们需要防止你在Publish时自动复制`Sharp.Shared.dll`和其与之相关的所有dll。  
 > 2. `AssemblyName`为必需字段，否则会出现依赖加载不上的情况。该项的字段就和项目同名即可，我们的项目名是**Example**，所以该项填入的是`Example`，你实际开发的时候自行调整即可。
+
+---
 
 ## Hello, World
 
@@ -125,20 +126,18 @@ public class Example : IModSharpModule
     }
 ```
 
-其为类的构造函数，你必须传入这些参数，否则模块将会直接初始化失败。
+其为类的构造函数，你必须定义这些参数，否则模块将会直接初始化失败。
 
 ```cs
     public bool Init()
-    {
-        return true;
-    }
+        => true;
 
     public void Shutdown()
     {
     }
 ```
 
-- `Init()`在模块初始化时调用，必须实现，你如果不想写那么多可以直接`return true;`
+- `Init()`在模块初始化时调用，必须实现，你如果不想写那么多可以直接`=> true;`
 - `Shutdown()`为模块卸载时调用，必须实现，你如果不想写可以直接留空，即直接空函数，里面不写任何东西。
 
 ```cs
@@ -152,13 +151,15 @@ public class Example : IModSharpModule
 > [!NOTE]
 > 这两项将会在`ms modules`中作为表明模块身份而出现。
 
+---
+
 ## 编译，安装
 
 你可以参阅[Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/core/tutorials/publishing-with-visual-studio)  
 虽然说其为控制台应用，但所执行的步骤完全一致。  
 推荐使用`dotnet publish`。  
 
-请注意，`dotnet publish`的路径，必须放置到`{CS2}/game/sharp/modules/{你的模块名，绝大多数情况下为你的dll名}`
+请注意，`dotnet publish`的路径，必须放置到`{CS2}/game/sharp/modules/{你的模块名，即AssemblyName}`
 > 本教程为 `{CS2}/game/sharp/modules/Example`
 
 当打包完成后:
@@ -173,7 +174,7 @@ public class Example : IModSharpModule
 > 2. 请使用大驼峰
 > 3. 模块路径加载规则为`{CS2}/game/sharp/modules/{AssemblyName}/{AssemblyName}.deps.json`，请确保路径匹配！
 
-讲那么多你肯定比较懵，不如看图：
+如果你还不能很好的理解以上内容, 那就看图吧：
 
 ![看图](../../../images/module-deploy-to.png)
 
@@ -181,7 +182,9 @@ public class Example : IModSharpModule
 
 ![看图](../../../images/module-inner.png)
 
-## 启动CS2
+---
+
+## 启动服务端
 
 到这里就没什么好说的了，当你启动以后你应该能在服务端控制台看到`Hello World!`字样，  
 到这里我们的入门模块就编写完成了。

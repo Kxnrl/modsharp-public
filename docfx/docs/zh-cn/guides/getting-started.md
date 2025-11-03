@@ -14,6 +14,8 @@
 
 请前往 [Release](https://github.com/Kxnrl/modsharp-public/releases) 页面，下载最新版本即可。
 
+---
+
 ## 检查环境
 
 # [Windows](#tab/windows)
@@ -48,7 +50,9 @@
 
 ---
 
-## 修改`gameinfo.gi`
+---
+
+## 启动配置
 
 请前往`{CS2}/game/csgo/gameinfo.gi`，做出如下修改：
 
@@ -88,7 +92,11 @@
 > [!TIP]
 > 此处操作和你安装Metamod是一样的，只不过这里的路径由 `csgo/addons/metamod` 换成 `sharp`
 
-## 将sharp包放置在`{CS2}/game`目录下
+---
+
+## 安装ModSharp
+
+将sharp包放置在`{CS2}/game`目录下
 
 > [!NOTE]
 > 示例结构
@@ -112,6 +120,8 @@
 > │   └── shared
 > └── thirdpartylegalnotices.txt
 > ```
+
+---
 
 ## 启动服务器
 
