@@ -1,20 +1,25 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
-using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Objects;
 
 namespace MultiListenerExample;
 
-public sealed class  MultiListener : IModSharpModule, 
-    IClientListener, 
+public sealed class MultiListener : IModSharpModule,
+    IClientListener,
     IEntityListener,
     IEventListener,
     IGameListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public  MultiListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public MultiListener(ISharedSystem sharedSystem,
+        string                         dllPath,
+        string                         sharpPath,
+        Version                        version,
+        IConfiguration                 coreConfiguration,
+        bool                           hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
@@ -38,8 +43,14 @@ public sealed class  MultiListener : IModSharpModule,
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
-    public string DisplayName => "Multiple Listener Example";
+    public string DisplayName   => "Multiple Listener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
+
+    // implement listener methods below
+
+    public void FireGameEvent(IGameEvent @event)
+    {
+    }
 
     // just write the ListenerVersion according to the example.
     // the larger the number = the higher the priority; in most cases, 0 is used directly.
@@ -47,8 +58,8 @@ public sealed class  MultiListener : IModSharpModule,
     int IClientListener.ListenerPriority => 0;
     int IEntityListener.ListenerVersion  => IEntityListener.ApiVersion;
     int IEntityListener.ListenerPriority => 0;
-    int IEventListener.ListenerVersion   => IEventListener.ApiVersion;
-    int IEventListener.ListenerPriority  => 0;
-    int IGameListener.ListenerVersion    => IGameListener.ApiVersion;
-    int IGameListener.ListenerPriority   => 0;
+    int IEventListener. ListenerVersion  => IEventListener.ApiVersion;
+    int IEventListener. ListenerPriority => 0;
+    int IGameListener.  ListenerVersion  => IGameListener.ApiVersion;
+    int IGameListener.  ListenerPriority => 0;
 }

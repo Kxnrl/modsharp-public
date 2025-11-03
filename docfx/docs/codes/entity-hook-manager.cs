@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.EntityHookManager;
@@ -11,16 +12,21 @@ namespace EntityHookManager;
 
 public sealed class EntityHookManager : IModSharpModule
 {
-    private readonly IServiceProvider _provider;
+    private readonly IServiceProvider   _provider;
     private readonly IEntityHookManager _entityHookManager;
 
-    public EntityHookManager(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public EntityHookManager(ISharedSystem sharedSystem,
+        string                             dllPath,
+        string                             sharpPath,
+        Version                            version,
+        IConfiguration                     coreConfiguration,
+        bool                               hotReload)
     {
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
         services.AddEntityHookManager();
 
-        _provider = services.BuildServiceProvider();
+        _provider          = services.BuildServiceProvider();
         _entityHookManager = _provider.GetRequiredService<IEntityHookManager>();
     }
 
@@ -28,6 +34,7 @@ public sealed class EntityHookManager : IModSharpModule
     {
         // load the extension, otherwise hooks won't work.
         _provider.LoadAllSharpExtensions();
+
         return true;
     }
 
@@ -56,7 +63,6 @@ public sealed class EntityHookManager : IModSharpModule
     private void OnPropDynamicSpawned(string classname, IBaseEntity entity)
     {
         Console.WriteLine($"[OnPropDynamicSpawned] classname={classname}, entity={entity.Classname}");
-
     }
 
     private void OnPropDynamicDeleted(string classname, IBaseEntity entity)
@@ -69,16 +75,29 @@ public sealed class EntityHookManager : IModSharpModule
         Console.WriteLine($"[OnCsGameRulesCreated] classname={classname}, entity={entity.Classname}");
     }
 
-    private void OnFuncDoorInputClose(string classname, string input, in EntityVariant value, IBaseEntity entity, IBaseEntity? activator, IBaseEntity? caller, ref EHookAction result)
+    private void OnFuncDoorInputClose(string classname,
+        string                               input,
+        in EntityVariant                     value,
+        IBaseEntity                          entity,
+        IBaseEntity?                         activator,
+        IBaseEntity?                         caller,
+        ref EHookAction                      result)
     {
-        Console.WriteLine($"[OnFuncDoorInputClose] classname={classname}, input={input}, value={value.AutoCastString()}, entity={entity.Classname}, activator={activator?.Classname}, caller={caller?.Classname}, result={result}");
+        Console.WriteLine(
+            $"[OnFuncDoorInputClose] classname={classname}, input={input}, value={value.AutoCastString()}, entity={entity.Classname}, activator={activator?.Classname}, caller={caller?.Classname}, result={result}");
     }
 
-    private void OnFuncDoorOutputClose(string classname, string output, IBaseEntity entity, IBaseEntity? activator, float delay, ref EHookAction result)
+    private void OnFuncDoorOutputClose(string classname,
+        string                                output,
+        IBaseEntity                           entity,
+        IBaseEntity?                          activator,
+        float                                 delay,
+        ref EHookAction                       result)
     {
-        Console.WriteLine($"[OnFuncDoorOutputClose] classname={classname}, output={output}, entity={entity.Classname}, activator={activator?.Classname} delay={delay}, result={result}");
+        Console.WriteLine(
+            $"[OnFuncDoorOutputClose] classname={classname}, output={output}, entity={entity.Classname}, activator={activator?.Classname} delay={delay}, result={result}");
     }
 
-    public string DisplayName   => "EntityHookManager Example";
+    public string DisplayName => "EntityHookManager Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 }

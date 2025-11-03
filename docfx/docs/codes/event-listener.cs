@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.GameEvents;
@@ -10,13 +11,19 @@ public sealed class EventListener : IModSharpModule, IEventListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public EventListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public EventListener(ISharedSystem sharedSystem,
+        string                         dllPath,
+        string                         sharpPath,
+        Version                        version,
+        IConfiguration                 coreConfiguration,
+        bool                           hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
         // install listener, any class what inherits IEventListener can be a listener.
         _sharedSystem.GetEventManager().InstallEventListener(this);
+
         return true;
     }
 
@@ -39,6 +46,7 @@ public sealed class EventListener : IModSharpModule, IEventListener
             var killer = death.KillerController?.PlayerName ?? "World";
             Console.WriteLine($"{victim} was killed by {killer}");
         }
+
         // match other events by name
         else if (e.Name.Equals("player_spawn"))
         {
@@ -74,7 +82,8 @@ public sealed class EventListener : IModSharpModule, IEventListener
     }
 
     // just write it according to the example.
-    int IEventListener.ListenerVersion  => IEventListener.ApiVersion;
+    int IEventListener.ListenerVersion => IEventListener.ApiVersion;
+
     // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IEventListener.ListenerPriority => 0;
 }

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -9,21 +10,27 @@ namespace CommandExample;
 public sealed class Command : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
-    
-    public Command(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+
+    public Command(ISharedSystem sharedSystem,
+        string                   dllPath,
+        string                   sharpPath,
+        Version                  version,
+        IConfiguration           coreConfiguration,
+        bool                     hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
         // on server console only
         _sharedSystem.GetConVarManager()
-               .CreateServerCommand("ms_echo",
-                                    OnServerCommand,
-                                    "Command Description",
-                                    ConVarFlags.Release);
+                     .CreateServerCommand("ms_echo",
+                                          OnServerCommand,
+                                          "Command Description",
+                                          ConVarFlags.Release);
 
         // client chat/console
         _sharedSystem.GetClientManager().InstallCommandCallback("hello", OnClientCommand);
+
         return true;
     }
 

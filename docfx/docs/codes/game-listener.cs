@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -9,13 +10,19 @@ public sealed class GameListener : IModSharpModule, IGameListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public GameListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public GameListener(ISharedSystem sharedSystem,
+        string                        dllPath,
+        string                        sharpPath,
+        Version                       version,
+        IConfiguration                coreConfiguration,
+        bool                          hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
         // install listener, any class what inherits IGameListener can be a listener.
         _sharedSystem.GetModSharp().InstallGameListener(this);
+
         return true;
     }
 
@@ -26,7 +33,7 @@ public sealed class GameListener : IModSharpModule, IGameListener
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
-    public string DisplayName => "GameListener Example";
+    public string DisplayName   => "GameListener Example";
     public string DisplayAuthor => "ModSharp Dev Team";
 
     // all callbacks are optional to implement, you can just implement what you need.
@@ -99,11 +106,13 @@ public sealed class GameListener : IModSharpModule, IGameListener
     public ECommandAction ConsoleSay(string message)
     {
         Console.WriteLine($"[ConsoleSay] {message}");
+
         return ECommandAction.Skipped;
     }
 
     // just write it according to the example.
-    int IGameListener.ListenerVersion  => IGameListener.ApiVersion;
+    int IGameListener.ListenerVersion => IGameListener.ApiVersion;
+
     // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IGameListener.ListenerPriority => 0;
 }

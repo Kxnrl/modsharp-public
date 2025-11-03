@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Shared;
@@ -8,7 +9,12 @@ public sealed class DependencyInjection : IModSharpModule
 {
     private readonly IServiceProvider _provider;
 
-    public DependencyInjection(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public DependencyInjection(ISharedSystem sharedSystem,
+        string                               dllPath,
+        string                               sharpPath,
+        Version                              version,
+        IConfiguration                       coreConfiguration,
+        bool                                 hotReload)
     {
         var services = new ServiceCollection();
 
@@ -25,6 +31,7 @@ public sealed class DependencyInjection : IModSharpModule
         // resolve services what you need
         var sharedSystem = _provider.GetRequiredService<ISharedSystem>();
         sharedSystem.GetModSharp().LogMessage("Hello World!");
+
         return true;
     }
 

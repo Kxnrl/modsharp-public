@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -10,14 +11,20 @@ namespace EntityListener;
 public sealed class EntityListener : IModSharpModule, IEntityListener
 {
     private readonly ISharedSystem _sharedSystem;
-    
-    public EntityListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+
+    public EntityListener(ISharedSystem sharedSystem,
+        string                          dllPath,
+        string                          sharpPath,
+        Version                         version,
+        IConfiguration                  coreConfiguration,
+        bool                            hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
         // install listener, any class what inherits IEntityListener can be a listener.
         _sharedSystem.GetEntityManager().InstallEntityListener(this);
+
         return true;
     }
 
@@ -78,25 +85,27 @@ public sealed class EntityListener : IModSharpModule, IEntityListener
             return EHookAction.Ignored;
         }
 
-        Console.WriteLine($"[OnEntityFireOutput] {entity.Classname}, output={output}, activator={activator?.Classname}, delay={delay}");
-        
+        Console.WriteLine(
+            $"[OnEntityFireOutput] {entity.Classname}, output={output}, activator={activator?.Classname}, delay={delay}");
+
         // you can abort the output event here by returning EHookAction.SkipCallReturnOverride
-        
+
         return EHookAction.Ignored;
     }
 
     public EHookAction OnEntityAcceptInput(IBaseEntity entity,
-        string input,
-        in EntityVariant value,
-        IBaseEntity? activator,
-        IBaseEntity? caller)
+        string                                         input,
+        in EntityVariant                               value,
+        IBaseEntity?                                   activator,
+        IBaseEntity?                                   caller)
     {
         if (!entity.Classname.Equals("func_door", StringComparison.OrdinalIgnoreCase))
         {
             return EHookAction.Ignored;
         }
 
-        Console.WriteLine($"[OnEntityAcceptInput] {entity.Classname}, value={value.AutoCastString()}, activator={activator?.Classname}, caller={activator?.Classname}");
+        Console.WriteLine(
+            $"[OnEntityAcceptInput] {entity.Classname}, value={value.AutoCastString()}, activator={activator?.Classname}, caller={activator?.Classname}");
 
         // you can abort the input here by returning EHookAction.SkipCallReturnOverride
 
@@ -107,7 +116,8 @@ public sealed class EntityListener : IModSharpModule, IEntityListener
     public string DisplayAuthor => "ModSharp Dev Team";
 
     // just write it according to the example.
-    int IEntityListener.ListenerVersion  => IEntityListener.ApiVersion;
+    int IEntityListener.ListenerVersion => IEntityListener.ApiVersion;
+
     // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int IEntityListener.ListenerPriority => 0;
 }

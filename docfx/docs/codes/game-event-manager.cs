@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.GameEventManager;
@@ -12,16 +13,21 @@ namespace GameEventManagerExample;
 
 public sealed class GameEventManagerExample : IModSharpModule
 {
-    private readonly IServiceProvider _provider;
+    private readonly IServiceProvider  _provider;
     private readonly IGameEventManager _gameEventManager;
 
-    public GameEventManagerExample(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public GameEventManagerExample(ISharedSystem sharedSystem,
+        string                                   dllPath,
+        string                                   sharpPath,
+        Version                                  version,
+        IConfiguration                           coreConfiguration,
+        bool                                     hotReload)
     {
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
         services.AddGameEventManager();
 
-        _provider = services.BuildServiceProvider();
+        _provider         = services.BuildServiceProvider();
         _gameEventManager = _provider.GetRequiredService<IGameEventManager>();
     }
 
@@ -59,7 +65,7 @@ public sealed class GameEventManagerExample : IModSharpModule
     // listen cs_intermission event
     private void OnIntermission(IGameEvent e)
     {
-       Console.WriteLine($"[OnIntermission] {e.Name}");
+        Console.WriteLine($"[OnIntermission] {e.Name}");
     }
 
     // this example will replace original player_death event with a modified one and broadcast it to all clients,
@@ -67,7 +73,8 @@ public sealed class GameEventManagerExample : IModSharpModule
     private HookReturnValue<bool> OnPlayerDeath(IGameEvent e, ref bool serverOnly)
     {
         IGameEvent? clone = null;
-        var sv = _provider.GetRequiredService<ISharedSystem>().GetModSharp().GetIServer();
+        var         sv    = _provider.GetRequiredService<ISharedSystem>().GetModSharp().GetIServer();
+
         try
         {
             clone = _gameEventManager.CloneEvent(e)

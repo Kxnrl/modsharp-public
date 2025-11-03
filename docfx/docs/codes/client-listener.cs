@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -10,7 +11,12 @@ public sealed class ClientListener : IModSharpModule, IClientListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public ClientListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public ClientListener(ISharedSystem sharedSystem,
+        string                          dllPath,
+        string                          sharpPath,
+        Version                         version,
+        IConfiguration                  coreConfiguration,
+        bool                            hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
@@ -36,6 +42,7 @@ public sealed class ClientListener : IModSharpModule, IClientListener
     public bool OnClientPreAdminCheck(IGameClient client)
     {
         _sharedSystem.GetModSharp().LogMessage($"[OnClientPreAdminCheck] {client.Name} ({client.SteamId})");
+
         return false;
     }
 
@@ -69,9 +76,16 @@ public sealed class ClientListener : IModSharpModule, IClientListener
         _sharedSystem.GetModSharp().LogMessage($"[OnClientSettingChanged] {client.Name} ({client.SteamId})");
     }
 
-    public ECommandAction OnClientSayCommand(IGameClient client, bool teamOnly, bool isCommand, string commandName, string message)
+    public ECommandAction OnClientSayCommand(IGameClient client,
+        bool                                             teamOnly,
+        bool                                             isCommand,
+        string                                           commandName,
+        string                                           message)
     {
-        _sharedSystem.GetModSharp().LogMessage($"[OnClientSayCommand] {client.Name} ({client.SteamId}), teamOnly: {teamOnly}, isCommand: {isCommand}, commandName: {commandName}, message: {message}");
+        _sharedSystem.GetModSharp()
+                     .LogMessage(
+                         $"[OnClientSayCommand] {client.Name} ({client.SteamId}), teamOnly: {teamOnly}, isCommand: {isCommand}, commandName: {commandName}, message: {message}");
+
         return ECommandAction.Skipped;
     }
 

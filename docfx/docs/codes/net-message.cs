@@ -10,13 +10,19 @@ public sealed class NetMsg : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public NetMsg(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public NetMsg(ISharedSystem sharedSystem,
+        string                  dllPath,
+        string                  sharpPath,
+        Version                 version,
+        IConfiguration          coreConfiguration,
+        bool                    hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
     {
         // client chat/console
         _sharedSystem.GetClientManager().InstallCommandCallback("sendnetmsg", OnCommandSendNetMsg);
+
         return true;
     }
 
@@ -30,18 +36,18 @@ public sealed class NetMsg : IModSharpModule
     private ECommandAction OnCommandSendNetMsg(IGameClient client, StringCommand command)
     {
         var entityManager = _sharedSystem.GetEntityManager();
-        var modSharp = _sharedSystem.GetModSharp();
+        var modSharp      = _sharedSystem.GetModSharp();
 
         // create protobuf message
         var sayText2Msg = new CUserMessageSayText2
         {
-            Chat = true,
-            Entityindex = (int)client.Slot + 1,
+            Chat        = true,
+            Entityindex = client.ControllerIndex,
             Messagename = "Dbg.NetMsg Invoked",
-            Param1 = string.Empty,
-            Param2 = string.Empty,
-            Param3 = string.Empty,
-            Param4 = string.Empty
+            Param1      = string.Empty,
+            Param2      = string.Empty,
+            Param3      = string.Empty,
+            Param4      = string.Empty,
         };
 
         // to special player

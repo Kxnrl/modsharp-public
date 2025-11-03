@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -10,7 +11,12 @@ public sealed class SteamListener : IModSharpModule, ISteamListener
 {
     private readonly ISharedSystem _sharedSystem;
 
-    public SteamListener(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public SteamListener(ISharedSystem sharedSystem,
+        string                         dllPath,
+        string                         sharpPath,
+        Version                        version,
+        IConfiguration                 coreConfiguration,
+        bool                           hotReload)
         => _sharedSystem = sharedSystem;
 
     public bool Init()
@@ -36,7 +42,8 @@ public sealed class SteamListener : IModSharpModule, ISteamListener
     // callback from RequestUserGroupStatus
     public void OnGroupStatusResult(SteamID steamId, SteamID groupId, bool isMember, bool isOfficer)
     {
-        Console.WriteLine($"[OnGroupStatusResult] SteamId={steamId} GroupId={groupId} IsMember={isMember} IsOfficer={isOfficer}");
+        Console.WriteLine(
+            $"[OnGroupStatusResult] SteamId={steamId} GroupId={groupId} IsMember={isMember} IsOfficer={isOfficer}");
     }
 
     // on GC connected
@@ -70,7 +77,8 @@ public sealed class SteamListener : IModSharpModule, ISteamListener
     }
 
     // just write it according to the example.
-    int ISteamListener.ListenerVersion  => ISteamListener.ApiVersion;
+    int ISteamListener.ListenerVersion => ISteamListener.ApiVersion;
+
     // the larger the number = the higher the priority; in most cases, 0 is used directly.
     int ISteamListener.ListenerPriority => 0;
 }

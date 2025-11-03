@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sharp.Extensions.EntityHookManager;
@@ -11,7 +12,12 @@ public sealed class SharpExtensions : IModSharpModule
 {
     private readonly IServiceProvider _provider;
 
-    public SharpExtensions(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration coreConfiguration, bool hotReload)
+    public SharpExtensions(ISharedSystem sharedSystem,
+        string                           dllPath,
+        string                           sharpPath,
+        Version                          version,
+        IConfiguration                   coreConfiguration,
+        bool                             hotReload)
     {
         var services = new ServiceCollection();
         services.AddSingleton(sharedSystem);
