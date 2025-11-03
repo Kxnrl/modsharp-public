@@ -141,6 +141,7 @@ jobs:
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
@@ -261,6 +262,7 @@ jobs:
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
