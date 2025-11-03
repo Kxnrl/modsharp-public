@@ -39,13 +39,13 @@ internal class CookieModel
 
     [JsonPropertyName("s")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? String { get; set; }
+    public string? String { get; init; }
 
     [JsonPropertyName("n")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public long? Number { get; set; }
+    public long? Number { get; init; }
 
     [JsonPropertyName("d")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public double? Double { get; set; }
+    public double? Double { get; init; }
 }
