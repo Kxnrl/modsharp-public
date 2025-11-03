@@ -108,7 +108,9 @@
 > │   ├── bin
 > │   ├── configs
 > │   ├── core
-> │   └── gamedata
+> │   ├── gamedata
+> │   ├── modules
+> │   └── shared
 > └── thirdpartylegalnotices.txt
 > ```
 

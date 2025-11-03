@@ -1,4 +1,3 @@
-````markdown
 # Getting Started
 
 ## Foreword
@@ -9,7 +8,7 @@ This guide will walk you through deploying **ModSharp** on a fresh CS2 server in
 
 To simplify the following instructions, let's define the core path:
 
-- `{CS2}`: *Server directory* (In all subsequent steps, this symbol represents your CS2 server root directory)
+- `{CS2}`: *Server install directory* (In all subsequent steps, this symbol represents your CS2 server root directory)
 
 ## Download
 
@@ -28,13 +27,13 @@ Please visit the [Release](https://github.com/Kxnrl/modsharp-public/releases) pa
 > [!TIP]
 >
 > - If you are missing Visual Studio Redistributable, you can download it here: [Download Link](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-> - If you are missing .NET 9, download it here: [Download Link](https://dotnet.microsoft.com/download/dotnet/9.0)
+> - If you are missing .NET 9 runtime, download it here: [Download Link](https://dotnet.microsoft.com/download/dotnet/9.0)
 
 ### 3. For Linux Users
 
 If your runtime environment is Docker, please use the Steam RT3 image (see: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest)
 > [!TIP]
-> Many Linux users now use Pterodactyl panel, you can refer to: [1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
+> Many Linux users use Pterodactyl panel, you can refer to: [1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
 
 Please refer to the [.NET Download Page](https://dotnet.microsoft.com/download/dotnet/9.0) to install .NET 9 in your image, which won't be detailed here.  
 If you are not using Docker, please [install SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD) yourself and download Steam RT3.
@@ -109,12 +108,12 @@ Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
 > │   ├── bin
 > │   ├── configs
 > │   ├── core
-> │   └── gamedata
+> │   ├── gamedata
+> │   ├── modules
+> │   └── shared
 > └── thirdpartylegalnotices.txt
 > ```
 
 ## Start the Server
 
 After starting the server, you still won't be able to run it because we need at least **1** properly running plugin for the server to function normally.
-
-````
