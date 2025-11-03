@@ -8,12 +8,13 @@ If you already have some development experience, you can directly:
 - Create from template: [Template](https://github.com/new?template_name=ModSharp-Module-Template&template_owner=SourceSharp)
 - Clone example: [Example](https://github.com/SourceSharp/ModSharp-Module-Example)
 
-If you are a beginner, then...  
 Below we will introduce step by step how to write a module.
+
+---
 
 ## Environment Setup
 
-The current version of **ModSharp** uses .NET version `9`,  
+The current version of **ModSharp** uses .NET version `9.x`,  
 Please ensure your .NET SDK version is at least this version or higher, otherwise you cannot proceed with the following steps.
 
 We recommend using the following development environments:
@@ -22,7 +23,7 @@ We recommend using the following development environments:
 - JetBrains Rider
 
 > [!NOTE]
-> We don't really recommend using VS Code, because maintaining larger projects becomes painful.
+> We don't recommend using VS Code, because maintaining large projects becomes very painful.
 > This guide primarily uses Visual Studio as the IDE.
 
 We will use "Example" as the sample project name.  
@@ -31,13 +32,11 @@ After creating the project, you should be able to find **Example.csproj**, which
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
 </Project>
 ```
 
@@ -48,7 +47,7 @@ Add the following content to this file:
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 +    <AssemblyName>Example</AssemblyName>
   </PropertyGroup>
@@ -66,12 +65,14 @@ Add the following content to this file:
 > Using `*` in the `Version` field always resolves to the latest version  
 > If you need to explicitly specify a version number, use a specific version, for example `Version="2.0.20"`
 
-At this point, you can now write modules for ModSharp.
+At this point, you are ready to write modules for ModSharp.
 
 > [!IMPORTANT]
 >
 > 1. `ModSharp.Sharp.Shared` must have the `PrivateAssets="all"` tag because we need to prevent automatic copying of `Sharp.Shared.dll` and all its related dlls during Publish.  
-> 2. `AssemblyName` is a required field, otherwise dependency loading issues may occur. This field should match the project name. Our project name is **Example**, so we enter `Example`. Adjust accordingly during actual development.
+> 2. `AssemblyName` is a required field, otherwise dependency loading issues may occur. This field should be the same as the project name. Our project name is **Example**, so we enter `Example`. Adjust accordingly during actual development.
+
+---
 
 ## Hello, World
 
@@ -126,20 +127,18 @@ The module entry must inherit from `IModSharpModule`, and only one class in a mo
     }
 ```
 
-This is the class constructor. You must pass these parameters, otherwise the module will fail to initialize.
+This is the class constructor. You must define these parameters, otherwise the module will fail to initialize directly.
 
 ```cs
     public bool Init()
-    {
-        return true;
-    }
+        => true;
 
     public void Shutdown()
     {
     }
 ```
 
-- `Init()` is called when the module is initialized. Must be implemented. If you don't want to write much, you can simply `return true;`
+- `Init()` is called when the module is initialized. Must be implemented. If you don't want to write much, you can simply use `=> true;`
 - `Shutdown()` is called when the module is unloaded. Must be implemented. If you don't want to write anything, you can leave it empty, i.e., an empty function with nothing inside.
 
 ```cs
@@ -153,13 +152,15 @@ This is the class constructor. You must pass these parameters, otherwise the mod
 > [!NOTE]
 > These two items will appear in `ms modules` to identify the module.
 
+---
+
 ## Compile and Install
 
 You can refer to [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/core/tutorials/publishing-with-visual-studio)  
 Although it's for console applications, the steps are exactly the same.  
-We recommend using `dotnet publish`.
+We recommend using `dotnet publish`.  
 
-Please note that the `dotnet publish` path must be placed in `{CS2}/game/sharp/modules/{your module name, in most cases your dll name}`
+Please note that the `dotnet publish` path must be placed in `{CS2}/game/sharp/modules/{your module name, i.e., AssemblyName}`
 > In this tutorial: `{CS2}/game/sharp/modules/Example`
 
 After packaging is complete:
@@ -174,7 +175,7 @@ After packaging is complete:
 > 2. Use PascalCase
 > 3. Module path loading rule is `{CS2}/game/sharp/modules/{AssemblyName}/{AssemblyName}.deps.json`, make sure the paths match!
 
-Talking so much may be confusing, so let's look at a picture:
+If you still can't understand the above content well, let's look at pictures:
 
 ![See Image](../../../images/module-deploy-to.png)
 
@@ -182,7 +183,9 @@ Inside it looks like this:
 
 ![See Image](../../../images/module-inner.png)
 
-## Start CS2
+---
+
+## Start the Server
 
 There's nothing more to say here. After starting, you should see `Hello World!` in the server console.  
 At this point, our introductory module is complete.

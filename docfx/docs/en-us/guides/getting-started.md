@@ -48,7 +48,7 @@ If you are not using Docker, please [install SteamCMD](https://developer.valveso
 
 ---
 
-## Modify `gameinfo.gi`
+## Launch Configuration
 
 Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
 
@@ -88,7 +88,11 @@ Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
 > [!TIP]
 > This operation is the same as installing Metamod, except the path is changed from `csgo/addons/metamod` to `sharp`.
 
-## Place the sharp package in the `{CS2}/game` directory
+---
+
+## Install ModSharp
+
+Place the sharp package in the `{CS2}/game` directory
 
 > [!NOTE]
 > Example structure
@@ -112,6 +116,8 @@ Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
 > │   └── shared
 > └── thirdpartylegalnotices.txt
 > ```
+
+---
 
 ## Start the Server
 
