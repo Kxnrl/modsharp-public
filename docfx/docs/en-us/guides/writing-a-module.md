@@ -1,4 +1,3 @@
-````markdown
 # Writing a Module
 
 ## Project References
@@ -195,5 +194,3 @@ At this point, our introductory module is complete.
 You can enter `ms modules` after starting to query the module list.
 
 ![See Image](../../../images/ms-modules.png)
-
-````

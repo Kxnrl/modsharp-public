@@ -1,6 +1,6 @@
 # Getting Started
 
-## Foreword
+## Introduction
 
 This guide will walk you through deploying **ModSharp** on a fresh CS2 server installation.
 
@@ -60,7 +60,7 @@ Please go to `{CS2}/game/csgo/gameinfo.gi` and make the following modifications:
         {
             Game_LowViolence    csgo_lv // Perfect World content override
 
-+            Game    sharp
++           Game    sharp
 
             Game    csgo
             Game    csgo_imported
