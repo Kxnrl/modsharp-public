@@ -25,17 +25,6 @@
     - name: Multi Listeners in One Module
       href: multi-listeners.md
 
-- name: Extensions
-  items:
-    - name: Using Sharp Extensions
-      href: sharp-extensions.md
-    - name: IEntityHookManager
-      href: entity-hook-manager.md
-    - name: IGameEventManager
-      href: game-event-manager.md
-    - name: ICommandManager
-      href: command-manager.md
-
 - name: Net Messages
   items:
     - name: Send net message
@@ -54,3 +43,19 @@
   items:
     - name: Transmit Hook
       href: transmit.md
+
+- name: Extensions
+  items:
+    - name: Using Sharp Extensions
+      href: sharp-extensions.md
+    - name: IEntityHookManager
+      href: entity-hook-manager.md
+    - name: IGameEventManager
+      href: game-event-manager.md
+    - name: ICommandManager
+      href: command-manager.md
+
+- name: FirstParty Modules
+  items:
+    - name: Client Preferences
+      href: client-preferences.md

@@ -25,6 +25,25 @@
     - name: Multi Listeners in One Module
       href: multi-listeners.md
 
+- name: Net Messages
+  items:
+    - name: Send net message
+      href: net-message-send.md
+    - name: Hook net message
+      href: net-message-hook.md
+
+- name: Sound System
+  items:
+    - name: Sound Emitter
+      href: sound-emitter.md
+    - name: Sound Hook
+      href: sound-hook.md
+
+- name: Transmit
+  items:
+    - name: Transmit Hook
+      href: transmit.md
+
 - name: Extensions
   items:
     - name: Using Sharp Extensions
@@ -36,17 +55,7 @@
     - name: ICommandManager
       href: command-manager.md
 
-- name: Net Messages
+- name: FirstParty Modules
   items:
-    - name: Send net message
-      href: net-message-send.md
-
-- name: Sound System
-  items:
-    - name: Sound Emitter
-      href: sound-emitter.md
-
-- name: Transmit
-  items:
-    - name: Transmit Hook
-      href: transmit.md
+    - name: Client Preferences
+      href: client-preferences.md
