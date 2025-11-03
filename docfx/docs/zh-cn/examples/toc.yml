@@ -43,3 +43,5 @@
   items:
     - name: Sound Emitter
       href: sound-emitter.md
+    - name: Sound Hook
+      href: sound-hook.md
