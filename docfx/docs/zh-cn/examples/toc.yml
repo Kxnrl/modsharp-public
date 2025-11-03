@@ -7,35 +7,39 @@
 - name: Command
   href: command.md
 
-- name: Net Message
-  href: net-message.md
+- name: Dependency Injection
+  href: dependency-injection.md
 
-- name: Client Listener
-  href: client-listener.md
+- name: Listeners
+  items:
+    - name: IClientListener
+      href: client-listener.md
+    - name: IEntityListener
+      href: entity-listener.md
+    - name: IEventListener
+      href: event-listener.md
+    - name: IGameListener
+      href: game-listener.md
+    - name: ISteamListener
+      href: steam-listener.md
+    - name: Multi Listeners in One Module
+      href: multi-listeners.md
 
-- name: Entity Listener
-  href: entity-listener.md
+- name: Extensions
+  items:
+    - name: Using Sharp Extensions
+      href: sharp-extensions.md
+    - name: IEntityHookManager
+      href: entity-hook-manager.md
+    - name: IGameEventManager
+      href: game-event-manager.md
 
-- name: Event Listener
-  href: event-listener.md
+- name: Net Messages
+  items:
+    - name: Send net message
+      href: net-message.md
 
-- name: Game Listener
-  href: game-listener.md
-
-- name: Steam Listener
-  href: steam-listener.md
-
-- name: Sharp Extensions
-  href: sharp-extensions.md
-
-- name: Entity Hook Manager
-  href: entity-hook-manager.md
-
-- name: Game Event Manager
-  href: game-event-manager.md
-
-- name: Multi Listeners
-  href: multi-listeners.md
-
-- name: Sound Emitter
-  href: sound-emitter.md
+- name: Sound System
+  items:
+    - name: Sound Emitter
+      href: sound-emitter.md
