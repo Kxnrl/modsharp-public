@@ -146,7 +146,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
 #region ILocalizerManager
 
-    public void LoadLocaleFile(string name)
+    public void LoadLocaleFile(string name, bool suppressDuplicationWarnings = false)
     {
         var file = $"{name}.json";
         var path = Path.Combine(_localePath, file);
@@ -161,7 +161,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(text)
                    ?? throw new InvalidDataException($"Invalid locale file: {name}");
 
-        LoadLocaleFile(data);
+        LoadLocaleFile(data, suppressDuplicationWarnings);
     }
 
     public ILocalizer GetLocalizer(IGameClient client)
@@ -185,7 +185,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
 #endregion
 
-    private void LoadLocaleFile(Dictionary<string, Dictionary<string, string>> data)
+    private void LoadLocaleFile(Dictionary<string, Dictionary<string, string>> data, bool suppressDuplicationWarnings)
     {
         foreach (var (key, kv) in data)
         {
@@ -198,7 +198,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
                     continue;
                 }
 
-                if (locale.TryGetValue(key, out var old))
+                if (locale.TryGetValue(key, out var old) && !suppressDuplicationWarnings)
                 {
                     _logger.LogWarning(
                         "Duplicate localization key '{key}' in language '{lang}', override to [{value}] from [{old}]",
