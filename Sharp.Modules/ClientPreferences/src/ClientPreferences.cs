@@ -123,7 +123,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
     public void PostInit()
     {
-        _modules.RegisterSharpModuleInterface(this, IClientPreference.Identity, this);
+        _modules.RegisterSharpModuleInterface<IClientPreference>(this, IClientPreference.Identity, this);
         _driver.Init();
     }
 

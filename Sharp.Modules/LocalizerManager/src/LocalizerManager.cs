@@ -75,7 +75,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
     public void PostInit()
     {
-        _modules.RegisterSharpModuleInterface(this, ILocalizerManager.Identity, this);
+        _modules.RegisterSharpModuleInterface<ILocalizerManager>(this, ILocalizerManager.Identity, this);
     }
 
     public void Shutdown()
