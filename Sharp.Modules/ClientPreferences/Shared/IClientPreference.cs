@@ -28,9 +28,9 @@ public interface IClientPreference
     const string Identity = nameof(IClientPreference);
 
     /// <summary>
-    ///     监听加载事件
+    ///     监听加载事件, 需要你在Unload或取消监听时进行Dispose
     /// </summary>
-    void ListenOnLoad(Action<IGameClient> callback);
+    IDisposable ListenOnLoad(Action<IGameClient> callback);
 
     /// <summary>
     ///     检查是否已经加载数据

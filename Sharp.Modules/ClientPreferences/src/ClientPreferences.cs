@@ -271,8 +271,13 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
 #region IClientPreference
 
-    public void ListenOnLoad(Action<IGameClient> callback)
-        => _loadCallbacks.Add(callback);
+    public IDisposable ListenOnLoad(Action<IGameClient> callback)
+    {
+        _loadCallbacks.Add(callback);
+        var disposable = new DisposableCallback(this, callback);
+
+        return disposable;
+    }
 
     public bool IsLoaded(SteamID identity)
         => identity.IsValidUserId()
@@ -363,4 +368,21 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         => SetCookie(identity, key, value.Serialize());
 
 #endregion
+
+    private class DisposableCallback : IDisposable
+    {
+        private readonly ClientPreferences   _manager;
+        private readonly Action<IGameClient> _callback;
+
+        public DisposableCallback(ClientPreferences manager, Action<IGameClient> callback)
+        {
+            _manager  = manager;
+            _callback = callback;
+        }
+
+        public void Dispose()
+        {
+            _manager._loadCallbacks.Remove(_callback);
+        }
+    }
 }
