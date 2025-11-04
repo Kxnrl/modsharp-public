@@ -28,5 +28,5 @@ public interface ILocalizerManager
     /// <summary>
     ///     尝试获取客户端的本地化器
     /// </summary>
-    bool TryGetLocalizer(IGameClient client, [NotNullWhen(true)] ILocalizer? localizer);
+    bool TryGetLocalizer(IGameClient client, [NotNullWhen(true)] out ILocalizer? localizer);
 }

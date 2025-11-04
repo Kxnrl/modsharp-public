@@ -156,7 +156,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
             throw new FileNotFoundException("File not found", file);
         }
 
-        var text = File.ReadAllText(file, Encoding.UTF8);
+        var text = File.ReadAllText(path, Encoding.UTF8);
 
         var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(text)
                    ?? throw new InvalidDataException($"Invalid locale file: {name}");
@@ -169,7 +169,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
     public ILocalizer this[IGameClient client] => GetLocalizer(client);
 
-    public bool TryGetLocalizer(IGameClient client, [NotNullWhen(true)] ILocalizer? localizer)
+    public bool TryGetLocalizer(IGameClient client, [NotNullWhen(true)] out ILocalizer? localizer)
     {
         if (_localizers.TryGetValue(client.SteamId, out var value))
         {
