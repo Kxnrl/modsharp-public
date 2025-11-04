@@ -7,7 +7,7 @@ ModSharp核心配置
 ModSharp使用了`SeriLog`和`Microsoft.Extensions.Logging`作为日志框架,  
 在配置文件中我们为了简化配置, 重新定义了配置格式.
 
---
+---
 
 ### Template
 
