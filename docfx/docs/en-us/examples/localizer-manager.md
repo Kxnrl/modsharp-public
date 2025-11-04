@@ -1,30 +1,41 @@
-# Locale Translation
+# Internationalization (i18n)
 
-This tutorial will teach you how to use the translation system.
+This tutorial will teach you how to use the i18n system.
 
-Before you start, you need to register the translation file in `{CS2}/game/sharp/locales`. The file name used in this article is `locale-example`.
+Before you start, you need to create an i18n configuration file in `{CS2}/game/sharp/locales`. The file name used in this article is `locale-example`.
 > Therefore, the path of this tutorial is `{CS2}/game/sharp/locales/locale-example.json`.
 
-The translation text used in this tutorial is shown in the snippet below.
+The configuration used in this tutorial is shown in the snippet below.
 
 ```json
 {
   "Generic.HelloWorld": {
-    "zh-cn": "测试用例A",
-    "en-us": "Test case A"
+    "en-us": "Test case A",
+    "zh-cn": "测试用例A"
   },
-  "PhraseA.ParamA": {
-    "zh-cn": "参数A",
-    "en-us": "Param A"
+  "Hello": {
+    "en-us": "Param A",
+    "zh-cn": "参数A"
   },
-  "PhraseA": {
-    "zh-cn": "语句，参数A={0}",
-    "en-us": "Phrase, Param A={0}"
+  "World": {
+    "en-us": "Phrase, Param A={0}",
+    "zh-cn": "语句, 参数A={0}"
+  },
+  "Time": {
+    "en-us": "Time = {0:F2}",
+    "zh-cn": "时间 = {0:F6}"
+  },
+  "Date": {
+    "en-us": "Date is {0:d}",
+    "zh-cn": "日期: {0:yyyy/MM/dd HH:mm}"
   }
 }
 ```
 
 > [!NOTE]
-> For demonstration convenience, this article uses the CommandManager extension package.
+> For placeholder formats, please refer to:  
+>
+> - [Standard numeric format strings](https://learn.microsoft.com/dotnet/standard/base-types/standard-numeric-format-strings)
+> - [Standard date and time format strings](https://learn.microsoft.com/dotnet/standard/base-types/standard-date-and-time-format-strings)
 
 [!code-csharp[LocalizerExample.cs](../../codes/locale-example.cs)]
