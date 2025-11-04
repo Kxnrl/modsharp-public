@@ -16,6 +16,8 @@ public sealed class ClientPrefs : IModSharpModule
     private readonly IHookManager        _hooks;
     private readonly ISharpModuleManager _modules;
 
+    private readonly IDisposable _callback;
+
     public ClientPrefs(ISharedSystem sharedSystem,
         string                       dllPath,
         string                       sharpPath,
@@ -43,9 +45,13 @@ public sealed class ClientPrefs : IModSharpModule
     {
         // must remove the hooks/commands in Shutdown
         // otherwise you will get fucked after reloaded.
+
         _hooks.PlayerSpawnPost.RemoveForward(OnPlayerSpawned);
 
         _clients.RemoveCommandCallback("skin", OnSkinCommand);
+
+        // you must dispose the callback
+        _callback?.Dispose();
     }
 
     private void OnPlayerSpawned(IPlayerSpawnForwardParams param)
@@ -91,9 +97,20 @@ public sealed class ClientPrefs : IModSharpModule
         if (_cachedInterface?.Instance is null)
         {
             _cachedInterface = _modules.GetOptionalSharpModuleInterface<IClientPreference>(IClientPreference.Identity);
+
+            // set the listener of cookie load event
+            if (_cachedInterface?.Instance is null)
+            {
+                _callback = _cachedInterface?.Instance.ListenOnLoad(OnCookieLoad);
+            }
         }
 
         return _cachedInterface?.Instance;
+    }
+
+    private void OnCookieLoad(IGameClient client)
+    {
+        // you can get cookie and cache it here if you want
     }
 
     public string DisplayName   => "ClientPrefs Example";

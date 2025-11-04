@@ -68,7 +68,9 @@ public sealed class TransmitHook : IModSharpModule, IClientListener
 
                                    _transmits.AddEntityHooks(controller, true);
                                },
-                               5);
+                               5); 
+                               // hook player after 5 seconds to make sure all data is ready
+                               // the delay time can be adjusted according to your needs
 
     // just write it according to the example.
     int IClientListener.ListenerVersion => IClientListener.ApiVersion;
@@ -78,13 +80,16 @@ public sealed class TransmitHook : IModSharpModule, IClientListener
 
     private void Think()
     {
-        // hide teammate
+        // hide teammate logic here.
+        // why this use interval Think?
+        // because maybe some player change team / late join in game after game started,
+        // if your gamemode does not allow that, just call once on RoundRestarted is enough.
 
         var controllers = GetControllers().ToArray();
 
         foreach (var sender in controllers)
         {
-            if (_transmits.IsEntityHooked(sender))
+            if (!_transmits.IsEntityHooked(sender))
             {
                 continue;
             }
