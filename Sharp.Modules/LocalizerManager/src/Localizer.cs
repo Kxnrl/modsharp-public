@@ -18,10 +18,10 @@ internal class Localizer : ILocalizer
         _culture = culture;
     }
 
-    public string Format(string key, ReadOnlySpan<object?> param)
+    public string Format(string key, params ReadOnlySpan<object?> param)
         => string.Format(_culture, this[key], param);
 
-    public string FormatRaw(string key, ReadOnlySpan<object?> param)
+    public string FormatRaw(string key, params ReadOnlySpan<object?> param)
         => string.Format(this[key], param);
 
     public string this[string key] => TryGet(key) ?? throw new KeyNotFoundException($"Missing '{key}' in locale file");
