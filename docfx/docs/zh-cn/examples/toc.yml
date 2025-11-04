@@ -59,3 +59,5 @@
   items:
     - name: Client Preferences
       href: client-preferences.md
+    - name: Localizer Manager
+      href: localizer-manager.md

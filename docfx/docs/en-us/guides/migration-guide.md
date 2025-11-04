@@ -59,3 +59,13 @@ Please see [Game Events](../features/game-events.md)
 ## Stripper
 
 Use this module: [Jump Link](https://github.com/Kxnrl/StripperSharp)
+
+---
+
+## Workshop Addon
+
+Add launch option `-dual_addon {Your workshop subscription ID}`.
+
+> [!NOTE]
+> 1. Assume your subscription ID is 1234567890，then here it is`-dual_addon 1234567890`
+> 2. Currently we don't support multiple workshop subscription IDs. Optimize your resources.

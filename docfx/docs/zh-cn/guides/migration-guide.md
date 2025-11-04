@@ -59,3 +59,13 @@
 ## Stripper
 
 使用该模块即可：[跳转连接](https://github.com/Kxnrl/StripperSharp)
+
+--
+
+## 创意工坊订阅
+
+添加启动项`-dual_addon {你的创意工坊订阅ID}`即可。
+
+> [!NOTE]
+> 1. 假设你的订阅ID是1234567890，那么在这里就是`-dual_addon 1234567890`
+> 2. 目前我们不支持多个创意工坊订阅ID，建议优化你的资源包。
