@@ -13,7 +13,6 @@ public interface ILocalizer
     /// <summary>
     ///     格式化字符串 (<b>不</b>使用Culture属性作为区域性)
     /// </summary>
-    /// <returns></returns>
     string FormatRaw(string key, params ReadOnlySpan<object?> param);
 
     /// <summary>

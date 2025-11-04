@@ -20,6 +20,8 @@ has served over 4 million players since Sep 2023.
   <a href="https://github.com/Kxnrl/modsharp-public/releases/" style="width: 168px">Download</a>
   ·
   <a href="https://docs.modsharp.net/" style="width: 168px">Quick Start</a>
+  ·
+  <a href="https://discord.gg/wKarAjHm2G" style="width: 168px">Discord</a>
 </p>
 
 </div>
