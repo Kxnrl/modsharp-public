@@ -339,6 +339,7 @@ jobs:
           dotnet pack Sharp.Extensions/CommandManager/src/Sharp.Extensions.CommandManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Extensions/GameEventManager/src/Sharp.Extensions.GameEventManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Extensions/EntityHookManager/src/Sharp.Extensions.EntityHookManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Publish
         shell: bash

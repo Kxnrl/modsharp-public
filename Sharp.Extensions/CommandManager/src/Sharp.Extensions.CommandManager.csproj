@@ -17,7 +17,7 @@
         <SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
         <Copyright>©2025 Kxnrl</Copyright>
         <Authors>Kxnrl, BoneTM, laper32, Nukoooo</Authors>
-        <Description>Extension of ICommandManager for ModSharp.</Description>
+        <Description>Extension of Client/Server Commands for ModSharp.</Description>
         <PackageTags>ModSharp;CS2;</PackageTags>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/Kxnrl/ModSharp-public</RepositoryUrl>
