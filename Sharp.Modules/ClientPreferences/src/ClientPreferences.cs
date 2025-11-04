@@ -163,7 +163,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
         _modSharp.PushTimer(() =>
                             {
-                                if (!client.IsValid)
+                                if (!client.IsInGame)
                                 {
                                     return;
                                 }

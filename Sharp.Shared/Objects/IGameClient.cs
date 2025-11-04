@@ -138,6 +138,11 @@ public interface IGameClient : INativeObject
     bool IsValid { get; }
 
     /// <summary>
+    ///     当前指针的IClient已经在游戏中
+    /// </summary>
+    bool IsInGame => IsValid && SignOnState is SignOnState.Full;
+
+    /// <summary>
     ///     网络存活时间 <br />
     ///     <remarks>对于玩家, 该值为进服到现在的时间 (换图不会重置)</remarks>
     ///     <br />
