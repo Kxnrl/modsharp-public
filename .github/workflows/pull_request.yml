@@ -121,6 +121,7 @@ jobs:
           dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       # Build Sharp.Modules Shared Interface
       - name: Build Sharp.Modules Shared Interface
@@ -129,6 +130,7 @@ jobs:
           GITCOMMIT: ${{env.GITCOMMIT}}
         run: |
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net9.0 -r win-x64 --no-self-contained -c Debug --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       # Copy Assets
       - name: Copy Assets
@@ -263,6 +265,7 @@ jobs:
           dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       # Build Sharp.Modules Shared Interface
       - name: Build Sharp.Modules Shared Interface
@@ -271,6 +274,7 @@ jobs:
           GITCOMMIT: ${{env.GITCOMMIT}}
         run: |
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net9.0 -r linux-x64 --no-self-contained -c Debug --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       # Copy Assets
       - name: Copy Assets
