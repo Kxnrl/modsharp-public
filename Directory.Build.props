@@ -1,0 +1,38 @@
+<Project>
+
+    <PropertyGroup>
+
+        <!-- Assembly -->
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <LangVersion>13</LangVersion>
+        <Nullable>enable</Nullable>
+        <Copyright>©2025 Kxnrl</Copyright>
+        <Authors>Kxnrl, BoneTM, laper32, Nukoooo</Authors>
+
+        <!-- Version -->
+        <VersionPrefix>2.0</VersionPrefix>
+        <VersionSuffix>1</VersionSuffix>
+        <Version>$(VersionPrefix).$(VersionSuffix)</Version>
+        
+        <!-- NuGet -->
+        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/Kxnrl/ModSharp-public</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>ModSharp;CS2</PackageTags>
+        
+        <!-- Repository -->
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/Kxnrl/ModSharp-public</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
+
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="\" />
+        <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+        <EmbeddedResource Include="$(MSBuildThisFileDirectory)LICENSE" />
+    </ItemGroup>
+
+</Project>

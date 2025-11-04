@@ -2,32 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>13</LangVersion>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <Nullable>enable</Nullable>
         <AssemblyName>Sharp.Generator.Sdk</AssemblyName>
         <RootNamespace>Sharp.Generator.Sdk</RootNamespace>
-        <VersionPrefix>2.0</VersionPrefix>
-        <VersionSuffix>1</VersionSuffix>
-        <Version>$(VersionPrefix).$(VersionSuffix)</Version>
-        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/Kxnrl/ModSharp-public</PackageProjectUrl>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Description>Native Hook Code Generator for ModSharp.</Description>
         <IsRoslynComponent>true</IsRoslynComponent>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <DevelopmentDependency>true</DevelopmentDependency>
-        <IncludeSymbols>false</IncludeSymbols>
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-        <SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
-        <Copyright>©2025 Kxnrl</Copyright>
-        <Authors>Kxnrl, BoneTM, laper32, Nukoooo</Authors>
-        <Description>Native Hook Code Generator for ModSharp.</Description>
-        <PackageTags>ModSharp;CS2</PackageTags>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/Kxnrl/ModSharp-public</RepositoryUrl>
         <IsPackable>true</IsPackable>
-        <PackageId>ModSharp.$(AssemblyName)</PackageId>
-        <Title>ModSharp.$(AssemblyName)</Title>
     </PropertyGroup>
 
     <ItemGroup>

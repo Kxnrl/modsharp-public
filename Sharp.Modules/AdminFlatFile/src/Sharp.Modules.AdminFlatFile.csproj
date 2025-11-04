@@ -1,32 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <LangVersion>13</LangVersion>
-        <Nullable>enable</Nullable>
-        <AssemblyName>AdminFlatFile</AssemblyName>
+        <AssemblyName>Sharp.Modules.AdminFlatFile</AssemblyName>
         <RootNamespace>Sharp.Modules.AdminFlatFile</RootNamespace>
-        <VersionPrefix>2.0</VersionPrefix>
-        <VersionSuffix>1</VersionSuffix>
-        <Version>$(VersionPrefix).$(VersionSuffix)</Version>
-        <PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/Kxnrl/ModSharp-public</PackageProjectUrl>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <IncludeSymbols>false</IncludeSymbols>
-        <SourceControlInformationFeatureSupported>true</SourceControlInformationFeatureSupported>
-        <Copyright>©2025 Kxnrl</Copyright>
-        <Authors>Kxnrl, BoneTM, laper32, Nukoooo</Authors>
-        <Description>Admin Flat File features for CS2.</Description>
-        <PackageTags>ModSharp;CS2;</PackageTags>
-        <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/Kxnrl/ModSharp-public</RepositoryUrl>
+        <Description>Admin FlatFile Module for ModSharp.</Description>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <BaseOutputPath>../../../.build/Sharp.Modules/AdminFlatFile/</BaseOutputPath>
         <PlatformTarget>x64</PlatformTarget>
-        <PackageId>ModSharp.$(AssemblyName)</PackageId>
-        <Title>ModSharp.$(AssemblyName)</Title>
     </PropertyGroup>
 
     <ItemGroup>
