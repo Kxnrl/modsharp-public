@@ -66,9 +66,10 @@ class CMoveData
 public:
     CMoveData() = default;
 
-    uint8_t moveDataFlags; // 0x0
+    uint8_t m_nFlags; // 0x0
+
 private:
-    uint8_t pad_1[0x3];
+    uint8_t m_pad_0x1[0x3];
 
 public:
     uint32_t m_nPlayerHandle;           // 0x4
@@ -80,6 +81,7 @@ public:
     float    m_flUpMove;                // 0x34
     Vector   m_vecVelocity;             // 0x38
     Vector   m_vecAngles;               // 0x44
+
 private:
     [[maybe_unused]] uint8_t m_pad_0x50[0x10];
 
@@ -107,19 +109,17 @@ private:
 public:
     Vector m_outWishVel;           // 0xe8
     Vector m_vecOldAngles;         // 0xf4
-    Vector m_vecAccelPerSecond;    // 0x100
-    Vector m_vecInputRotated;      // 0x10c
-    float  m_flMaxSpeed;           // 0x118
-    float  m_flClientMaxSpeed;     // 0x11c
-    float  m_flSubtickFraction;    // 0x120
-    bool   m_bInAir;               // 0x124
-    bool   m_bGameCodeMovedPlayer; // 0x125
+    Vector m_vecInputRotated;      // 0x100
+    Vector m_vecAccel;             // 0x10c
+    Vector m_vecAccelPerSecond;    // 0x118
+    float  m_flMaxSpeed;           // 0x124
+    float  m_flClientMaxSpeed;     // 0x128
+    float  m_flSubtickFraction;    // 0x12c
+    bool   m_bInAir;               // 0x130
+    bool   m_bGameCodeMovedPlayer; // 0x131
 
-private:
-    [[maybe_unused]] uint8_t m_pad_0x126[0xa];
-
-}; // Size: 0x130
+}; // Size: 0x132
 #pragma pack(pop)
-static_assert(sizeof(CMoveData) == 0x130, "sizeof(CMoveData) != 0x130");
+static_assert(sizeof(CMoveData) == 0x132, "sizeof(CMoveData) != 0x132");
 
 #endif

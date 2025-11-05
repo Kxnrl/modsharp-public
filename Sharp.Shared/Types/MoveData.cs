@@ -23,7 +23,7 @@ using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x100)]
+[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x132)]
 public struct MoveData
 {
     [FieldOffset(0x0)]
@@ -65,13 +65,13 @@ public struct MoveData
     [FieldOffset(0xe8)]
     public Vector OutWishVel;
 
-    [FieldOffset(0x118)]
+    [FieldOffset(0x124)]
     public float MaxSpeed;
 
-    [FieldOffset(0x11c)]
+    [FieldOffset(0x118)]
     public float ClientMaxSpeed;
 
-    [FieldOffset(0x124)]
+    [FieldOffset(0x130)]
     public bool InAir;
 }
 
