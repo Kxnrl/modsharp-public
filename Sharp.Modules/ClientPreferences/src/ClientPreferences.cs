@@ -44,7 +44,8 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     private readonly IModSharp                  _modSharp;
     private readonly ISharpModuleManager        _modules;
     private readonly IStorage                   _driver;
-    private readonly IConfiguration             _configuration;
+    private readonly IConfiguration _configuration;
+    private readonly IClientManager _clientManager;
 
     private readonly CancellationTokenSource _source;
     private readonly ConfigurationWatcher    _configurationWatcher;
@@ -66,6 +67,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         _modSharp      = sharedSystem.GetModSharp();
         _modules       = sharedSystem.GetSharpModuleManager();
         _configuration = configuration;
+        _clientManager = sharedSystem.GetClientManager();
 
         var fillConnectionString = configuration.GetConnectionString("ClientPreferences")
                                    ?? throw new KeyNotFoundException("Missing 'ClientPreferences' in connection string.");
@@ -75,12 +77,12 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
 
         if (chunks.Length != 2)
         {
-            throw new System.IO.InvalidDataException("Missing type of driver in connection string");
+            throw new InvalidDataException("Missing type of driver in connection string");
         }
 
         if (!Enum.TryParse(chunks[0], true, out StorageType driver))
         {
-            throw new System.IO.InvalidDataException("Invalid driver type in connection string.");
+            throw new InvalidDataException("Invalid driver type in connection string.");
         }
 
         var connectionString = chunks[1];
@@ -125,6 +127,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     {
         _modules.RegisterSharpModuleInterface<IClientPreference>(this, IClientPreference.Identity, this);
         _driver.Init();
+        _clientManager.InstallClientListener(this);
     }
 
     public void Shutdown()
@@ -137,6 +140,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         {
             _driver.Shutdown();
             _source.Dispose();
+            _clientManager.RemoveClientListener(this);
         }
     }
 
