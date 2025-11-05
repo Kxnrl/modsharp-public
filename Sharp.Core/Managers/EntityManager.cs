@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -282,7 +282,7 @@ internal class EntityManager : ICoreEntityManager
         => BaseEntity.Create(Native.FindByIndex(index));
 
     public T MakeEntityFromPointer<T>(IntPtr entity) where T : class, IBaseEntity
-        => entity != nint.Zero ? BaseEntity.Create(entity)!.As<T>() : throw new InvalidOperationException("nullptr");
+        => BaseEntity.Create(entity)?.As<T>() ?? throw new InvalidOperationException("nullptr");
 
     public T? FindEntityByIndex<T>(EntityIndex index) where T : class, IBaseEntity
         => FindEntityByIndex(index) is not { } entity ? null : entity.As<T>();
@@ -377,6 +377,6 @@ internal class EntityManager : ICoreEntityManager
                                          flSticker4);
     }
 
-    public ITeamManager? GetGlobalCStrikeTeam(CStrikeTeam team)
-        => TeamManager.Create(Native.GetGlobalCStrikeTeam(team));
+    public IBaseTeam? GetGlobalCStrikeTeam(CStrikeTeam team)
+        => BaseTeam.Create(Native.GetGlobalCStrikeTeam(team));
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -166,7 +166,7 @@ public interface IEntityManager
         float                                 flSticker4);
 
     /// <summary>
-    ///     获取队伍管理器
+    ///     获取CCSTeam
     /// </summary>
-    ITeamManager? GetGlobalCStrikeTeam(CStrikeTeam team);
+    IBaseTeam? GetGlobalCStrikeTeam(CStrikeTeam team);
 }

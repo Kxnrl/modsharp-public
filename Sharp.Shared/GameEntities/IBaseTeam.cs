@@ -21,11 +21,36 @@ using Sharp.Shared.Attributes;
 
 namespace Sharp.Shared.GameEntities;
 
-[NetClass("CTeam")]
-public interface ITeamManager : IBaseEntity
+[NetClass("CCSTeam")]
+public interface IBaseTeam : IBaseEntity
 {
     /// <summary>
     ///     比分
     /// </summary>
     int Score { get; set; }
+
+    /// <summary>
+    /// Score of FirstHalf
+    /// </summary>
+    int ScoreFirstHalf { get; set; }
+
+    /// <summary>
+    /// Score of SecondHalf
+    /// </summary>
+    int ScoreSecondHalf { get; set; }
+
+    /// <summary>
+    /// Score of Overtime
+    /// </summary>
+    int ScoreOvertime { get; set; }
+
+    /// <summary>
+    /// m_iLastUpdateSentAt
+    /// </summary>
+    int LastUpdateSentAt { get; set; }
+
+    /// <summary>
+    /// m_flNextResourceTime
+    /// </summary>
+    float NextResourceTime { get; set; }
 }

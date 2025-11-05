@@ -23,12 +23,27 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Core.GameEntities;
 
-internal partial class TeamManager : BaseEntity, ITeamManager
+internal partial class BaseTeam : BaseEntity, IBaseTeam
 {
 #region Schemas
 
-    [NativeSchemaField("CTeam", "m_iScore", typeof(int))]
+    [NativeSchemaField("CCSTeam", "m_iScore", typeof(int))]
     private partial SchemaField GetScoreField();
+
+    [NativeSchemaField("CCSTeam", "m_scoreFirstHalf", typeof(int))]
+    private partial SchemaField GetScoreFirstHalfField();
+
+    [NativeSchemaField("CCSTeam", "m_scoreSecondHalf", typeof(int))]
+    private partial SchemaField GetScoreSecondHalfField();
+
+    [NativeSchemaField("CCSTeam", "m_scoreOvertime", typeof(int))]
+    private partial SchemaField GetScoreOvertimeField();
+
+    [NativeSchemaField("CCSTeam", "m_iLastUpdateSentAt", typeof(int))]
+    private partial SchemaField GetLastUpdateSentAtField();
+
+    [NativeSchemaField("CCSTeam", "m_flNextResourceTime", typeof(float))]
+    private partial SchemaField GetNextResourceTimeField(); 
 
 #endregion
 }
