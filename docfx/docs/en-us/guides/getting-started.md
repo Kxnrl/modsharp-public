@@ -121,4 +121,10 @@ Place the sharp package in the `{CS2}/game` directory
 
 ## Start the Server
 
-After starting the server, you still won't be able to run it because we need at least **1** properly running module for the server to function normally.
+When you see the output similar to the one shown in the figure below, the startup is complete.
+
+![看图](../../../images/activate-server.png)
+
+At this point, you can enter `ms` in the console. When you see the output similar to the one shown in the figure, it means you have completed the installation.
+
+![看图](../../../images/ms-output.png)
