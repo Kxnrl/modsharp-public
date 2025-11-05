@@ -8,6 +8,12 @@ using Sharp.Shared.Hooks;
 using Sharp.Shared.Types;
 using Sharp.Shared.Utilities;
 
+// HIGHLY RECOMMENDED: This attribute maximizes performance for game hooks and calling native functions.
+// It eliminates the overhead of the .NET marshalling layer during managed-to-native transitions,
+// allowing your C# code to be called by the game with near-native speed.
+// Learn more: https://learn.microsoft.com/en-us/dotnet/standard/native-interop/disabled-marshalling
+[assembly: DisableRuntimeMarshalling]
+
 namespace HookExample;
 
 public class HookExample : IModSharpModule
