@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -34,7 +34,7 @@ internal partial class MidFuncHook : NativeObject, IMidFuncHook
     public void Dispose()
         => Natives.Core.RemoveMidFuncHook(_this);
 
-    public IntPtr Trampoline => throw new NotImplementedException("YOU SHOULD NEVER CALL THIS WITH MidFuncHook");
+    public IntPtr Trampoline => throw new NotSupportedException("YOU SHOULD NEVER CALL THIS WITH MidFuncHook");
 
     public partial void Prepare(nint pTargetFn, nint pHookFn);
 

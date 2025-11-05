@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -72,6 +72,6 @@ internal class SchemaEmbeddedVector<TObject, TInterface> : NativeObject, ISchema
 
             return TObject.Create(ptr)!;
         }
-        set => throw new NotImplementedException();
+        set => throw new NotSupportedException("read-only.");
     }
 }
