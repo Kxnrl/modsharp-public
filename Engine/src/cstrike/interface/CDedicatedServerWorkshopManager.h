@@ -59,8 +59,8 @@ private:
     char                pad_68[0x8];
 
 public:
-    CUtlOrderedMap<uint64_t, RequestedMap_t*>    m_requestedMaps{};                  // 0x70
-    CUtlOrderedMap<uint64_t, WorkshopMapInfo_t*> m_mapLoadedWorkshopMaps{};          // 0x98
+    CUtlOrderedMap<uint64_t, RequestedMap_t*>    m_requestedMaps;                    // 0x70
+    CUtlOrderedMap<uint64_t, WorkshopMapInfo_t*> m_mapLoadedWorkshopMaps;            // 0x98
     CUtlOrderedMap<uint64_t, bool>               m_mapStatus;                        // 0xc0
     uint64_t                                     m_nRequestedSharedFileId;           // 0xe8
     uint64_t                                     m_nRequestedCollectionSharedFileId; // 0xf0
