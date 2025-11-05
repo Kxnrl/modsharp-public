@@ -91,7 +91,7 @@ public sealed class ClientPrefs : IModSharpModule
     private IModSharpModuleInterface<IClientPreference>? _cachedInterface;
 
     // this may have performance issue if you call it too frequently,
-    // the bast way is cache with 'OnAllModulesLoaded'/'OnLibraryConnected' and clear with 'OnLibraryDisconnect' manually
+    // the bast way is cache with 'OnAllModulesLoaded' and clear with 'Shutdown' manually
     private IClientPreference? GetInterface()
     {
         if (_cachedInterface?.Instance is null)
