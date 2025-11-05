@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -247,8 +247,6 @@ internal sealed class ModSharpModule
             _loader   = loader;
             _instance = instance;
 
-            onLoad(Name);
-
             State = ModuleLoadState.Running;
 
             try
@@ -259,6 +257,8 @@ internal sealed class ModSharpModule
             {
                 Printer.Error($"An error occurred in PostInit of {Name}", e);
             }
+
+            onLoad(Name);
         }
         catch
         {
