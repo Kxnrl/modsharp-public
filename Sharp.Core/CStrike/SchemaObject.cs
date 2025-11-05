@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,6 +21,7 @@ using System;
 using Sharp.Core.Helpers;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Types;
+using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Core.CStrike;
 
@@ -85,6 +86,32 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
     public string GetNetVarUtlSymbolLarge(string fieldName, ushort extraOffset = 0)
         => SchemaSystem.GetNetVarUtlSymbolLarge(_this, GetSchemaClassname(), fieldName, extraOffset);
 
+    public ref CUtlSymbolLarge GetNetVarUtlSymbolLargeRef(string fieldName, ushort extraOffset = 0)
+        => ref SchemaSystem.GetNetVarUtlSymbolLargeRef(_this, GetSchemaClassname(), fieldName, extraOffset);
+
+    public string GetNetVarUtlString(string fieldName, ushort extraOffset = 0)
+        => SchemaSystem.GetNetVarUtlString(_this, GetSchemaClassname(), fieldName, extraOffset);
+
+    public ref CUtlString GetNetVarUtlStringRef(string fieldName, ushort extraOffset = 0)
+        => ref SchemaSystem.GetNetVarUtlStringRef(_this, GetSchemaClassname(), fieldName, extraOffset);
+
+    public ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0) where T : unmanaged
+    {
+        var field   = SchemaSystem.GetSchemaField(GetSchemaClassname(), fieldName);
+        var pointer = nint.Add(_this, field.Offset + extraOffset);
+
+        return SchemaFixedArray<T>.Create(pointer, field, _this) ?? throw new ArgumentNullException(nameof(pointer));
+    }
+
+    public ISchemaList<T> GetSchemaList<T>(string fieldName, bool isStruct = false, ushort extraOffset = 0) where T : unmanaged
+    {
+        var field   = SchemaSystem.GetSchemaField(GetSchemaClassname(), fieldName);
+        var pointer = nint.Add(_this, field.Offset + extraOffset);
+
+        return SchemaUnmanagedVector<T>.Create(pointer, field, _this, isStruct)
+               ?? throw new ArgumentNullException(nameof(pointer));
+    }
+
     public void SetNetVar(string field, bool value, bool isStruct = false, ushort extraOffset = 0)
         => SchemaSystem.SetNetVarBool(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
 
@@ -120,6 +147,9 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
 
     public void SetNetVarUtlSymbolLarge(string field, string value, bool isStruct = false, ushort extraOffset = 0)
         => SchemaSystem.SetNetVarUtlSymbolLarge(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+
+    public void SetNetVarUtlString(string field, string value, bool isStruct = false, ushort extraOffset = 0)
+        => SchemaSystem.SetNetVarUtlString(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
 
     public bool FindNetVar(string field)
         => SchemaSystem.FindNetVar(GetSchemaClassname(), field);

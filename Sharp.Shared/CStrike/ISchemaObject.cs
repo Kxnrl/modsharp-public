@@ -19,6 +19,7 @@
 
 using System;
 using Sharp.Shared.Types;
+using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared.CStrike;
 
@@ -30,81 +31,108 @@ public interface ISchemaObject : INativeObject
     string GetSchemaClassname();
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     bool GetNetVar<T>(string fieldName, ushort extraOffset = 0, bool? _ = null)
         where T : IComparable<bool>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     byte GetNetVar<T>(string fieldName, ushort extraOffset = 0, byte? _ = null)
         where T : IComparable<byte>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     short GetNetVar<T>(string fieldName, ushort extraOffset = 0, short? _ = null)
         where T : IComparable<short>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     ushort GetNetVar<T>(string fieldName, ushort extraOffset = 0, ushort? _ = null)
         where T : IComparable<ushort>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     int GetNetVar<T>(string fieldName, ushort extraOffset = 0, int? _ = null)
         where T : IComparable<int>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     uint GetNetVar<T>(string fieldName, ushort extraOffset = 0, uint? _ = null)
         where T : IComparable<uint>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     long GetNetVar<T>(string fieldName, ushort extraOffset = 0, long? _ = null)
         where T : IComparable<long>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     ulong GetNetVar<T>(string fieldName, ushort extraOffset = 0, ulong? _ = null)
         where T : IComparable<ulong>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     float GetNetVar<T>(string fieldName, ushort extraOffset = 0, float? _ = null)
         where T : IComparable<float>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     nint GetNetVar<T>(string fieldName, ushort extraOffset = 0, nint? _ = null)
         where T : IComparable<nint>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     string GetNetVar<T>(string fieldName, ushort extraOffset = 0, string? _ = null)
         where T : IComparable<string>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     Vector GetNetVar<T>(string fieldName, ushort extraOffset = 0, Vector? _ = null)
         where T : IComparable<Vector>;
 
     /// <summary>
-    /// 获取Schema成员变量的值
+    ///     获取Schema成员变量的值
     /// </summary>
     string GetNetVarUtlSymbolLarge(string fieldName, ushort extraOffset = 0);
+
+    /// <summary>
+    ///     获取Schema成员变量的值
+    /// </summary>
+    ref CUtlSymbolLarge GetNetVarUtlSymbolLargeRef(string fieldName, ushort extraOffset = 0);
+
+    /// <summary>
+    ///     获取Schema成员变量的值
+    /// </summary>
+    string GetNetVarUtlString(string fieldName, ushort extraOffset = 0);
+
+    /// <summary>
+    ///     获取Schema成员变量的值 <br />
+    /// </summary>
+    ref CUtlString GetNetVarUtlStringRef(string fieldName, ushort extraOffset = 0);
+
+    /// <summary>
+    ///     获取Schema成员变量的值 <br />
+    /// </summary>
+    ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0)
+        where T : unmanaged;
+
+    /// <summary>
+    ///     获取Schema成员变量的值 <br />
+    /// </summary>
+    ISchemaList<T> GetSchemaList<T>(string fieldName, bool isStruct = false, ushort extraOffset = 0)
+        where T : unmanaged;
 
     /// <summary>
     ///     设置Schema成员的值 <br />
@@ -213,6 +241,14 @@ public interface ISchemaObject : INativeObject
     ///     </remarks>
     /// </summary>
     void SetNetVarUtlSymbolLarge(string field, string value, bool isStruct = false, ushort extraOffset = 0);
+
+    /// <summary>
+    ///     设置Schema成员的值 <br />
+    ///     <remarks>
+    ///         不需要在显式调用<seealso cref="NetworkStateChanged" /><br />
+    ///     </remarks>
+    /// </summary>
+    void SetNetVarUtlString(string field, string value, bool isStruct = false, ushort extraOffset = 0);
 
     /// <summary>
     ///     检查Schema成员变量是否存在<br />
