@@ -127,6 +127,10 @@ CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classna
             {
                 pKeyValues->SetString(item->Key, item->Value.szValue);
             }
+            else if (item->Value.type == KeyValuesVariantValueItemType_Pointer)
+            {
+                pKeyValues->SetPointer(item->Key, item->Value.pValue);
+            }
             else
             {
                 FatalError("Not support KeyValuesVariantValueItemType");

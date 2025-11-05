@@ -78,11 +78,13 @@ public:
     [[nodiscard]] int         GetInt(const CHashKey& key, int defaultValue = 0) const;
     [[nodiscard]] float       GetFloat(const CHashKey& key, float defaultValue = 0.0f) const;
     [[nodiscard]] const char* GetString(const CHashKey& key, const char* defaultValue = "") const;
+    [[nodiscard]] void*       GetPointer(const CHashKey& key, void* defaultValue = nullptr) const;
 
     void SetBool(const CHashKey& key, bool value, bool as_attribute = false);
     void SetInt(const CHashKey& key, int value, bool as_attribute = false);
     void SetFloat(const CHashKey& key, float value, bool as_attribute = false);
     void SetString(const CHashKey& key, const char* value, bool as_attribute = false);
+    void SetPointer(const CHashKey& key, void* value, bool as_attribute = false);
 
     [[nodiscard]] int GetNumConnectionDesc() const
     {

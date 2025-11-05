@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,8 +23,6 @@ using Sharp.Shared.GameEntities;
 using Sharp.Shared.Utilities;
 
 namespace Sharp.Shared.Types;
-
-// TODO 直接Alloc 游戏的GameTrace, 避免各种复制
 
 public readonly unsafe struct TraceResult
 {

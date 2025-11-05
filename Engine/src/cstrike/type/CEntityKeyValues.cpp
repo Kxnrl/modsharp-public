@@ -117,6 +117,12 @@ const char* CEntityKeyValues::GetString(const CHashKey& key, const char* default
     return kv ? kv->GetString() : defaultValue;
 }
 
+void* CEntityKeyValues::GetPointer(const CHashKey& key, void* defaultValue) const
+{
+    const auto kv = FindKeyValues(key);
+    return kv ? kv->GetPointer() : defaultValue;
+}
+
 void CEntityKeyValues::SetBool(const CHashKey& key, bool value, bool as_attribute)
 {
     if (auto kv = FindOrCreateKeyValues(key))
@@ -146,5 +152,13 @@ void CEntityKeyValues::SetString(const CHashKey& key, const char* value, bool as
     if (auto kv = FindOrCreateKeyValues(key))
     {
         SetString(kv, value);
+    }
+}
+
+void CEntityKeyValues::SetPointer(const CHashKey& key, void* value, bool as_attribute)
+{
+    if (auto kv = FindOrCreateKeyValues(key))
+    {
+        kv->SetPointer(value);
     }
 }

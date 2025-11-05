@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,7 +24,7 @@ using Sharp.Shared.Utilities;
 
 namespace Sharp.Shared.Types;
 
-// NOTE Explicit 因为强制编辑为union之后, 就不能简单的复制了
+// Explicit 因为强制编辑为union之后, 就不能简单的复制了
 // 直接复制会导致内存布局错误, 从而导致数据错误
 [StructLayout(LayoutKind.Explicit)]
 public ref struct EntityVariant

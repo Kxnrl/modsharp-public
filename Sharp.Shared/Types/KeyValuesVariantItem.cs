@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,31 +23,35 @@ using Sharp.Shared.Utilities;
 
 namespace Sharp.Shared.Types;
 
-internal enum KeyValuesVariantValueItemType : byte
+internal enum KeyValuesVariantValueItemType : uint
 {
     Bool,
     Int32,
     Float,
     String,
+    Pointer,
 }
 
-[StructLayout(LayoutKind.Explicit)]
+[StructLayout(LayoutKind.Explicit, Size = 264)]
 public unsafe struct KeyValuesVariantValueItem
 {
     [FieldOffset(0)]
     private KeyValuesVariantValueItemType _type;
 
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     private byte _bValue; // bool
 
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     private int _i32Value;
 
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     private float _flValue;
 
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     private fixed byte _szValue[KeyValuesVariantItem.MaxStringLength];
+
+    [FieldOffset(8)]
+    private nint _pValue;
 
     public static implicit operator KeyValuesVariantValueItem(int value)
         => new (value);
@@ -59,6 +63,9 @@ public unsafe struct KeyValuesVariantValueItem
         => new (value);
 
     public static implicit operator KeyValuesVariantValueItem(string value)
+        => new (value);
+
+    public static implicit operator KeyValuesVariantValueItem(nint value)
         => new (value);
 
     public KeyValuesVariantValueItem(bool value)
@@ -77,6 +84,12 @@ public unsafe struct KeyValuesVariantValueItem
     {
         _type    = KeyValuesVariantValueItemType.Float;
         _flValue = value;
+    }
+
+    public KeyValuesVariantValueItem(nint value)
+    {
+        _type   = KeyValuesVariantValueItemType.Pointer;
+        _pValue = value;
     }
 
     public KeyValuesVariantValueItem(string value)

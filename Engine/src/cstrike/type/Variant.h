@@ -148,6 +148,11 @@ public:
         flVal     = val;
         fieldType = FieldType_t::FIELD_FLOAT32;
     }
+    void SetPointer(void* val)
+    {
+        pVal      = reinterpret_cast<intptr_t>(val);
+        fieldType = FieldType_t::FIELD_CLASSPTR;
+    }
 
     [[nodiscard]] int         Int() const { return (fieldType == FieldType_t::FIELD_INT32) ? iVal : 0; }
     [[nodiscard]] bool        Bool() const { return (fieldType == FieldType_t::FIELD_BOOLEAN) ? bVal : false; }
@@ -228,12 +233,13 @@ public:
     int          nOutputID;
 };
 
-enum KeyValuesVariantValueItemType : uint8_t
+enum KeyValuesVariantValueItemType : uint32_t
 {
     KeyValuesVariantValueItemType_Bool,
     KeyValuesVariantValueItemType_Int32,
     KeyValuesVariantValueItemType_Float,
-    KeyValuesVariantValueItemType_String
+    KeyValuesVariantValueItemType_String,
+    KeyValuesVariantValueItemType_Pointer,
 };
 
 #define KEY_VALUES_VARIANT_VALUE_ITEM_MAX_STRING_LENGTH 256
@@ -246,6 +252,7 @@ struct KeyValuesVariantValueItem
         int32_t i32Value;
         float   flValue;
         char    szValue[KEY_VALUES_VARIANT_VALUE_ITEM_MAX_STRING_LENGTH];
+        void*   pValue;
     };
 
     // 如果是string确保 this alive
@@ -269,10 +276,14 @@ struct KeyValuesVariantValueItem
         {
             val.SetString(szValue);
         }
-
+        else if (type == KeyValuesVariantValueItemType_Pointer)
+        {
+            val.SetPointer(pValue);
+        }
         return val;
     }
 };
+static_assert(sizeof(KeyValuesVariantValueItem) == 264);
 
 struct KeyValuesVariantItem
 {
