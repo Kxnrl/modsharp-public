@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -255,7 +256,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         }
 
         _cookieStorage[identity] = new CookieBucket(cookies);
-
+        
         foreach (var callback in _loadCallbacks)
         {
             try
