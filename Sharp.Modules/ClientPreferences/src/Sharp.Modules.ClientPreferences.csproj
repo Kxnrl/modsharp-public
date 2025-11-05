@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyName>Sharp.Modules.ClientPreferences</AssemblyName>
+        <AssemblyName>ClientPreferences</AssemblyName>
         <RootNamespace>Sharp.Modules.ClientPreferences.Core</RootNamespace>
         <Description>Client Preferences Module for ModSharp.</Description>
         <EnableDynamicLoading>true</EnableDynamicLoading>

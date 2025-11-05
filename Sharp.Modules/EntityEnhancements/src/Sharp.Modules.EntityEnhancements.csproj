@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyName>Sharp.Modules.EntityEnhancements</AssemblyName>
+        <AssemblyName>EntityEnhancements</AssemblyName>
         <RootNamespace>Sharp.Modules.EntityEnhancements</RootNamespace>
         <Description>Entity Enhancements Module for ModSharp.</Description>
         <EnableDynamicLoading>true</EnableDynamicLoading>
