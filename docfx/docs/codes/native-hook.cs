@@ -148,6 +148,11 @@ public class HookExample : IModSharpModule
     [UnmanagedCallersOnly] // YOU MUST ADD THIS TO YOUR HOOKED FUNCTION
     private static unsafe void HookCCSPlayerPawnCollisionRulesChanged(nint @this)
     {
+        // NOTE: Returning early from this hook without calling the original function will
+        // prevent any other modules that hooked this function *after* this one from running.
+        // This breaks the hook chain and can cause compatibility issues, not recommended to
+        // do so in most cases, unless you are sure that users won't run into this type of issue.
+
         // Use the EntityManager to wrap the native pointer in a safe, usable C# object.
         if (_this._shared.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(@this) is not { IsValidEntity: true } entity)
         {
@@ -181,6 +186,11 @@ public class HookExample : IModSharpModule
     [UnmanagedCallersOnly] // YOU MUST ADD THIS TO YOUR HOOKED FUNCTION
     private static unsafe nint HookCreateEntityByName(byte* classNamePtr, int forcedIndex)
     {
+        // NOTE: Returning early from this hook without calling the original function will
+        // prevent any other modules that hooked this function *after* this one from running.
+        // This breaks the hook chain and can cause compatibility issues, not recommended to
+        // do so in most cases, unless you are sure that users won't run into this type of issue.
+
         // Convert the C-style string pointer to a C# string for easy comparison.
         var className = Utils.ReadString(classNamePtr);
 
