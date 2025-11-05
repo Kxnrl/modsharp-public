@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -32,9 +32,10 @@ public:
     // 这里用IGameClient Index
     CSingleRecipientFilter(PlayerSlot_t iRecipient, bool bReliable = true, bool bInitMessage = false)
     {
-        m_nRecipients  = 0;
-        m_bReliable    = bReliable;
-        m_bInitMessage = bInitMessage;
+        m_nRecipients                       = 0;
+        m_slotPlayerExcludedDueToPrediction = -1;
+        m_bReliable                         = bReliable;
+        m_bInitMessage                      = bInitMessage;
 
         AddRecipient(iRecipient);
     }
@@ -48,6 +49,11 @@ public:
     [[nodiscard]] NetworkReceiver_t* GetRecipientMask() const override
     {
         return const_cast<NetworkReceiver_t*>(&m_nRecipients);
+    }
+
+    [[nodiscard]] CPlayerSlot GetPredictedPlayerSlot() const override
+    {
+        return m_slotPlayerExcludedDueToPrediction;
     }
 
     void AddRecipient(PlayerSlot_t slot)
@@ -68,8 +74,10 @@ public:
 
 protected:
     NetworkReceiver_t m_nRecipients{};
+    int32_t           m_slotPlayerExcludedDueToPrediction{};
     bool              m_bReliable{};
-    bool              m_bInitMessage{};
+    uint8_t           m_bInitMessage{};
+    bool              m_bDoNotSuppressPrediction = false;
 };
 
 class CBroadcastRecipientFilter : public IRecipientFilter
@@ -77,16 +85,18 @@ class CBroadcastRecipientFilter : public IRecipientFilter
 public:
     CBroadcastRecipientFilter()
     {
-        m_nRecipients  = 0;
-        m_bReliable    = true;
-        m_bInitMessage = true;
+        m_nRecipients                       = 0;
+        m_slotPlayerExcludedDueToPrediction = -1;
+        m_bReliable                         = true;
+        m_bInitMessage                      = true;
     }
 
     CBroadcastRecipientFilter(bool bReliable, bool bInitMessage = false)
     {
-        m_nRecipients  = 0;
-        m_bReliable    = bReliable;
-        m_bInitMessage = bInitMessage;
+        m_nRecipients                       = 0;
+        m_slotPlayerExcludedDueToPrediction = -1;
+        m_bReliable                         = bReliable;
+        m_bInitMessage                      = bInitMessage;
     }
 
     CBroadcastRecipientFilter(NetworkReceiver_t receivers, bool bReliable = true, bool bInitMessage = false)
@@ -100,8 +110,9 @@ public:
             AddPlayers(receivers);
         }
 
-        m_bReliable    = bReliable;
-        m_bInitMessage = bInitMessage;
+        m_slotPlayerExcludedDueToPrediction = -1;
+        m_bReliable                         = bReliable;
+        m_bInitMessage                      = bInitMessage;
     }
 
     CBroadcastRecipientFilter(const RuntimeRecipientFilter* filter, bool bReliable = true, bool bInitMessage = false)
@@ -123,8 +134,9 @@ public:
             break;
         }
 
-        m_bReliable    = bReliable;
-        m_bInitMessage = bInitMessage;
+        m_slotPlayerExcludedDueToPrediction = -1;
+        m_bReliable                         = bReliable;
+        m_bInitMessage                      = bInitMessage;
     }
 
     ~CBroadcastRecipientFilter() override {}
@@ -136,6 +148,11 @@ public:
     [[nodiscard]] NetworkReceiver_t* GetRecipientMask() const override
     {
         return const_cast<NetworkReceiver_t*>(&m_nRecipients);
+    }
+
+    [[nodiscard]] CPlayerSlot GetPredictedPlayerSlot() const override
+    {
+        return m_slotPlayerExcludedDueToPrediction;
     }
 
     void AddRecipient(PlayerSlot_t slot)
@@ -178,8 +195,10 @@ public:
 
 protected:
     NetworkReceiver_t m_nRecipients{};
+    int32_t           m_slotPlayerExcludedDueToPrediction{};
     bool              m_bReliable{};
-    bool              m_bInitMessage{};
+    uint8_t           m_bInitMessage{};
+    bool              m_bDoNotSuppressPrediction = false;
 };
 
 #endif

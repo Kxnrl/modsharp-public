@@ -22,6 +22,8 @@
 
 #include "definitions.h"
 
+#include "cstrike/type/CPlayerSlot.h"
+
 #include <bit>
 
 class IRecipientFilter
@@ -32,7 +34,8 @@ public:
     [[nodiscard]] virtual bool IsReliable() const    = 0;
     [[nodiscard]] virtual bool IsInitMessage() const = 0;
 
-    [[nodiscard]] virtual NetworkReceiver_t* GetRecipientMask() const = 0;
+    [[nodiscard]] virtual NetworkReceiver_t* GetRecipientMask() const       = 0;
+    [[nodiscard]] virtual CPlayerSlot        GetPredictedPlayerSlot() const = 0;
 
     [[nodiscard]] inline NetworkReceiver_t GetRecipients() const { return *GetRecipientMask(); }
     [[nodiscard]] inline int               GetRecipientCount() const { return std::popcount(*GetRecipientMask()); }

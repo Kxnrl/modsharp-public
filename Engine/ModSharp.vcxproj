@@ -146,6 +146,7 @@
     <ClInclude Include="src\cstrike\type\CGameTrace.h" />
     <ClInclude Include="src\cstrike\type\CMemAllocAllocator.h" />
     <ClInclude Include="src\cstrike\type\CNetworkStateChangedFieldInfo.h" />
+    <ClInclude Include="src\cstrike\type\CPlayerSlot.h" />
     <ClInclude Include="src\cstrike\type\CTakeDamageResult.h" />
     <ClInclude Include="src\cstrike\type\CHostState.h" />
     <ClInclude Include="src\cstrike\type\CUtlRBTree.h" />
