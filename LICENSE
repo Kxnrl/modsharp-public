@@ -1,22 +1,53 @@
-Special Exception Notice for ModSharp
+ModSharp
+Copyright (C) 2023-2025 Kxnrl
 
-Notwithstanding the terms of the GNU Affero General Public License version 3 ,
-the original author grants the following special exceptions for this project:
+This software is licensed under the GNU Affero General Public License version 3
+(AGPL-3.0-or-later) with the following special exceptions:
 
-1. Linking Exception  
-  As a special exception, you are permitted to link the code of this
-  program (as well as its derivative works) with "Counter-Strike 2",
-  the "Source Engine 2" and any game or MOD that runs on software by
-  Valve Corporation. You must still comply with AGPLv3 for all other code.
+===============================================================================
+                    SPECIAL EXCEPTION NOTICE FOR MODSHARP
+===============================================================================
 
-2. Dual-Licensing Exception for Derivative Works  
-  As an additional special exception to the GNU AGPLv3, the original author
-  permits dual-licensing of DERIVATIVE WORKS ONLY (that is, ModSharp modules,
-  or any software built from the ModSharp SDK or files or Nuget Package)
-  under the GNU Affero General Public License version 3 "or any later version."
-  As such, you may choose for your derivative work(s) to be compatible
-  with the GNU Affero General Public License version 3 as long as it is also
-  compatible with the AGPLv3 (by using the "or any later version" clause).
+Notwithstanding the terms of the GNU Affero General Public License version 3,
+the copyright holder (Kxnrl) grants the following special exceptions:
+
+1. Linking Exception for Game Integration
+   As a special exception, you are permitted to link this program with
+   "Counter-Strike 2" and "Source Engine 2" by Valve Corporation, including
+   loading and executing the program within these game environments.
+   
+   This exception applies solely to the technical integration necessary for
+   the program to function as a game modification framework. You must still
+   comply with AGPL-3.0-or-later for all source code.
+
+2. Module Licensing Exception for Third-Party Developers
+   IMPORTANT DISTINCTION:
+   
+   a) CORE CODE (ModSharp Loader, Engine, Core, and Shared):
+      Any modifications to the ModSharp core codebase MUST be distributed
+      under AGPL-3.0-or-later. This includes any changes to the framework
+      itself, its runtime engine, loader, core libraries, generators, and
+      SDK infrastructure.
+      
+   b) THIRD-PARTY MODULES (Plugins/Extensions built using ModSharp SDK):
+      As a special exception, third-party developers creating NEW modules,
+      plugins, or extensions using the ModSharp SDK, NuGet packages, or
+      public APIs may choose to license their work under EITHER:
+      - GNU Affero General Public License version 3 or any later version, OR
+      - MIT License
+      
+      This exception applies ONLY to original works that interface with
+      ModSharp through its public API, SDK, or NuGet packages without
+      modifying the core framework code.
+      
+      This exception does NOT apply to:
+      - Modifications of ModSharp core components
+      - Derivative works that incorporate ModSharp core code
+      - Forks of the main ModSharp repository
+      
+   For clarity: If you are creating a standalone module that only interfaces
+   with ModSharp through its public API, you may choose MIT or AGPL-3.0+.
+   If you are modifying ModSharp itself, you must use AGPL-3.0+.
 
 -------------------------------------------------------------------------------
 
