@@ -22,8 +22,10 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
+using Sharp.Core.GameEntities;
 using Sharp.Core.Helpers;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
 using Sharp.Shared.Utilities;
@@ -42,7 +44,11 @@ internal partial class GameClient : NativeObject, IGameClient
     }
 
     protected override void OnDisposed()
-        => _conVars?.MarkAsDisposed();
+    {
+        base.OnDisposed();
+
+        _conVars?.MarkAsDisposed();
+    }
 
     /// <summary>
     ///     输出到客户端控制台
@@ -158,6 +164,19 @@ internal partial class GameClient : NativeObject, IGameClient
         return _conVars ??= KeyValues.Create(GetConVars(_this));
     }
 
+    public IPlayerController? GetPlayerController()
+    {
+        CheckDisposed();
+
+        return !IsInGame
+               || PlayerController.Create(Player.ControllerFindBySlot(Slot)) is not
+               {
+                   ConnectedState: PlayerConnectedState.PlayerConnected,
+               } controller
+            ? null
+            : controller;
+    }
+
     // identity
     private readonly ushort _defaultUserId;
     private readonly byte   _defaultSlot;
@@ -175,9 +194,14 @@ internal partial class GameClient : NativeObject, IGameClient
 
     public bool IsValid
         => !IsDisposed
-           && SignOnState is >= SignOnState.Connected and < SignOnState.ChangeLevel
-           && _defaultUserId == GetUserId(_this)
-           && _defaultSlot   == GetSlot(_this);
+           && _this          == Client.GetClientBySlot(_defaultSlot) // match slot
+           && _defaultUserId == GetUserId(_this)                     // default user not changed
+           && _defaultSlot   == GetSlot(_this)                       // default slot not changed
+           && SignOnState    >= SignOnState.Connected;
+
+    public bool IsConnected => IsValid && SignOnState < SignOnState.Challenge;
+
+    public bool IsInGame => IsValid && SignOnState is SignOnState.Full;
 
     public bool IsHltv => _this.GetBool(CoreGameData.GameClient.IsHltv);
 
@@ -204,12 +228,10 @@ internal partial class GameClient : NativeObject, IGameClient
 
     internal bool CheckMatchClient(nint pointer)
         => !IsDisposed
+           && _this           == pointer
            && _defaultSlot    == GetSlot(pointer)
            && _defaultUserId  == GetUserId(pointer)
-           && _defaultSteamId == GetSteamId(pointer)
-           && _defaultSlot    == GetSlot(_this)
-           && _defaultUserId  == GetUserId(_this)
-           && _defaultSteamId == GetSteamId(_this);
+           && _defaultSteamId == GetSteamId(pointer);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ushort GetUserId(nint pointer)

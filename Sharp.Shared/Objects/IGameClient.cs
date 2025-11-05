@@ -19,6 +19,7 @@
 
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Units;
 
 // ReSharper disable InconsistentNaming
@@ -86,6 +87,14 @@ public interface IGameClient : INativeObject
     IKeyValues? GetConVars();
 
     /// <summary>
+    ///     获取<see cref="IPlayerController" /> <br />
+    ///     <remarks>
+    ///         如果玩家不在服务器内, 哪怕是实体存在, 也会返回<c>null</c>
+    ///     </remarks>
+    /// </summary>
+    IPlayerController? GetPlayerController();
+
+    /// <summary>
     ///     客户端SignOn状态
     /// </summary>
     SignOnState SignOnState { get; }
@@ -95,6 +104,11 @@ public interface IGameClient : INativeObject
     ///     <remarks>Hltv / Bot</remarks>
     /// </summary>
     bool IsFakeClient { get; }
+
+    /// <summary>
+    ///     是否为Hltv
+    /// </summary>
+    bool IsHltv { get; }
 
     /// <summary>
     ///     UserId
@@ -138,9 +152,14 @@ public interface IGameClient : INativeObject
     bool IsValid { get; }
 
     /// <summary>
-    ///     当前指针的IClient已经在游戏中
+    ///     当前指针的IClient是否已连线
     /// </summary>
-    bool IsInGame => IsValid && SignOnState is SignOnState.Full;
+    bool IsConnected { get; }
+
+    /// <summary>
+    ///     当前指针的IClient是否已在游戏内
+    /// </summary>
+    bool IsInGame { get; }
 
     /// <summary>
     ///     网络存活时间 <br />
@@ -159,6 +178,4 @@ public interface IGameClient : INativeObject
     new int GetHashCode();
 
     new bool Equals(object? obj);
-
-    bool IsHltv { get; }
 }
