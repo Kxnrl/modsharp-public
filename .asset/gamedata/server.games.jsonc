@@ -261,8 +261,8 @@
     // cvar "sv_show_move_collisions"
     "CCSPlayer_MovementServices::WalkMove": {
       "library": "server",
-      "linux": "55 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D B5 ? ? ? ? 41 55 4C 8D BD",
-      "windows": "48 8B C4 48 89 70 10 48 89 78 18 55 41 56 41 57 48 8D A8 08 FE FF FF"
+      "linux": "55 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D BD ? ? ? ? 41 55 4C 8D B5",
+      "windows": "48 8B C4 48 89 70 ? 48 89 78 ? 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70"
     },
     // 实际上 ValidateLineOfSight
     // 但是CS2实际上不止检查LOS, 还检查VIS
