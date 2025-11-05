@@ -88,10 +88,31 @@ public sealed class ClientPrefs : IModSharpModule
         return ECommandAction.Stopped;
     }
 
+    private void OnCookieLoad(IGameClient client)
+    {
+        if (GetInterface() is not { } cp)
+        {
+            return;
+        }
+
+        // you can get cookie and cache it here if you want
+
+        if (cp.GetCookie(client.SteamId, "PlayerDefaultModel") is { } cookie)
+        {
+            // client have cookie
+            Console.WriteLine($"[ClientPrefs Example] Loaded default model: {cookie.GetString()}");
+        }
+        else
+        {
+            // you can also set default value
+            cp.SetCookie(client.SteamId, "PlayerDefaultModel", "foo/bar");
+        }
+    }
+
     private IModSharpModuleInterface<IClientPreference>? _cachedInterface;
 
     // this may have performance issue if you call it too frequently,
-    // the bast way is cache with 'OnAllModulesLoaded' and clear with 'Shutdown' manually
+
     private IClientPreference? GetInterface()
     {
         if (_cachedInterface?.Instance is null)
@@ -108,9 +129,48 @@ public sealed class ClientPrefs : IModSharpModule
         return _cachedInterface?.Instance;
     }
 
-    private void OnCookieLoad(IGameClient client)
+    // the bast way is cache with 'OnAllModulesLoaded'/'OnLibraryConnected' and clear with 'OnLibraryDisconnect' manually
+    // OnAllModulesLoaded called when after you have load and others modules are loaded, even you have reloaded.
+    // OnLibraryConnected called when a module is loaded and ready to provide an interface.
+    // OnLibraryDisconnect called when a module is unloaded and interface no longer available.
+    // see below:
+
+    // cache interface here
+    public void OnAllModulesLoaded()
     {
-        // you can get cookie and cache it here if you want
+        _cachedInterface = _modules.GetOptionalSharpModuleInterface<IClientPreference>(IClientPreference.Identity);
+
+        // set the listener of cookie load event
+        if (_cachedInterface?.Instance is { } instance)
+        {
+            _callback = instance.ListenOnLoad(OnCookieLoad);
+        }
+    }
+
+    // it will be called when ClientPreferences is loaded
+    public void OnLibraryConnected(string name)
+    {
+        // match name
+        if (name.Equals("ClientPreferences"))
+        {
+            _cachedInterface = _modules.GetRequiredSharpModuleInterface<IClientPreference>(IClientPreference.Identity);
+
+            // set the listener of cookie load event
+            if (_cachedInterface?.Instance is { } instance)
+            {
+                _callback = instance.ListenOnLoad(OnCookieLoad);
+            }
+        }
+    }
+
+    // it will be called when ClientPreferences is unloaded
+    public void OnLibraryDisconnect(string name)
+    {
+        // match name
+        if (name.Equals("ClientPreferences"))
+        {
+            _cachedInterface = null;
+        }
     }
 
     public string DisplayName   => "ClientPrefs Example";
