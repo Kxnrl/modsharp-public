@@ -8,6 +8,10 @@ using Sharp.Shared.Hooks;
 using Sharp.Shared.Types;
 using Sharp.Shared.Utilities;
 
+// in this example, we disable runtime marshaling
+// IMPORTANT: please check our document.
+[assembly: DisableRuntimeMarshalling]
+
 namespace HookExample;
 
 public class HookExample : IModSharpModule
