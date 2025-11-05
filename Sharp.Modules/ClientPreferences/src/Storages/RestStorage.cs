@@ -108,4 +108,3 @@ internal class RestStorage : IStorage
         Task Save(ulong identity, [Body] CookieModel[] cookies);
     }
 }
-

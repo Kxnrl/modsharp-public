@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <AssemblyName>Sharp.Modules.ClientPreferences</AssemblyName>
-        <RootNamespace>Sharp.Modules.ClientPreferences</RootNamespace>
+        <RootNamespace>Sharp.Modules.ClientPreferences.Core</RootNamespace>
         <Description>Client Preferences Module for ModSharp.</Description>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

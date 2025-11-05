@@ -18,8 +18,8 @@
  */
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -45,8 +45,8 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
     private readonly IModSharp                  _modSharp;
     private readonly ISharpModuleManager        _modules;
     private readonly IStorage                   _driver;
-    private readonly IConfiguration _configuration;
-    private readonly IClientManager _clientManager;
+    private readonly IConfiguration             _configuration;
+    private readonly IClientManager             _clientManager;
 
     private readonly CancellationTokenSource _source;
     private readonly ConfigurationWatcher    _configurationWatcher;
@@ -256,7 +256,7 @@ public sealed class ClientPreferences : IModSharpModule, IClientListener, IClien
         }
 
         _cookieStorage[identity] = new CookieBucket(cookies);
-        
+
         foreach (var callback in _loadCallbacks)
         {
             try
