@@ -6,7 +6,7 @@
 > Hook为高危操作，在使用前请确保函数的参数**数量**以及**类型**与游戏内一致，一旦出现任意形式的问题都可能会导致服务器崩溃！
 >
 > [!WARNING]
-> 出于性能最大化且代码一致性考虑，我们建议在禁用 ``RuntimeMarshalling`` 。如需了解更多请参阅 [文档](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
+> 出于性能最大化和代码一致性考虑，我们建议禁用 ``RuntimeMarshalling`` 。如需了解更多请参阅 [文档](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
 >
 > - 禁用此功能后，使用 `DllImport` 与 **unmanaged** 代码交互时，像 ``string`` 这样的 **managed** 类型将不再被自动转换，需要手动将其处理为 ``byte*`` 等 **unmanaged** 类型。
 >

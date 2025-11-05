@@ -9,7 +9,7 @@ using Sharp.Shared.Types;
 using Sharp.Shared.Utilities;
 
 // in this example, we disable runtime marshaling
-// IMPORTANT: please check our document.
+// IMPORTANT: please check our documentation.
 [assembly: DisableRuntimeMarshalling]
 
 namespace HookExample;

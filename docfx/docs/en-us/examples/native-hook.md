@@ -6,7 +6,7 @@ This tutorial will demonstrate how to use the HookManager to create a VMTHook an
 > Hooking is a high-risk operation. Before you begin, ensure that the parameter **count** and **type** of your function perfectly match the original one in the game. Any mismatch can, and likely will, cause the server to crash!
 >
 > [!WARNING]
-> For maximum performance and code consistency, we recommend disabling `RuntimeMarshalling`. For more information, please visit the [documentation](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
+> For better performance and code consistency, we recommend to disabe `RuntimeMarshalling`. For more information, please visit the [documentation](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
 >
 > - After disabling this feature, when using `DllImport` to interact with **unmanaged** code, **managed** types like `string` will no longer be automatically converted and need to be manually handled as **unmanaged** types like `byte*`.
 >
