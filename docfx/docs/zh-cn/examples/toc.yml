@@ -44,6 +44,11 @@
     - name: Transmit Hook
       href: transmit.md
 
+- name: Hooks
+  items:
+    - name: Native Hook
+      href: native-hook.md
+
 - name: Extensions
   items:
     - name: Using Sharp Extensions
