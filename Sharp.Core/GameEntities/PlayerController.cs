@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,12 +20,14 @@
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
+using Sharp.Core.Objects;
 using Sharp.Core.Utilities;
 using Sharp.Generator;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.GameObjects;
+using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Units;
@@ -40,13 +42,7 @@ internal partial class PlayerController : BaseEntity, IPlayerController
         string?                       param2 = null,
         string?                       param3 = null,
         string?                       param4 = null)
-        => Player.ControllerPrint(_this,
-                                  channel,
-                                  channel is HudPrintChannel.Chat && message[0] != '#' ? $" {message}" : message,
-                                  param1,
-                                  param2,
-                                  param3,
-                                  param4);
+        => Player.ControllerPrint(_this, channel, message, param1, param2, param3, param4);
 
     public float LaggedMovement
     {
@@ -81,11 +77,15 @@ internal partial class PlayerController : BaseEntity, IPlayerController
     public void SetPlayerPawn(IPlayerPawn pawn)
         => PlayerPawnHandle = pawn.Handle.As<IPlayerPawn>();
 
+    public IGameClient? GetGameClient()
+        => ConnectedState is not PlayerConnectedState.PlayerConnected
+            ? null
+            : GameClient.Create(Client.GetClientBySlot(PlayerSlot));
+
     public PlayerSlot PlayerSlot => (byte) (Index - 1);
 
     public void RefreshScoreBoardData()
     {
-        UpdaterCount++;
     }
 
     public unsafe SoundOpEventGuid EmitSoundClient(string sound, float? volume = null)

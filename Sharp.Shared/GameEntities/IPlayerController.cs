@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,6 +21,7 @@ using System;
 using Sharp.Shared.Attributes;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
+using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
@@ -32,25 +33,36 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     取得Controller对应的PlayerPawn
     /// </summary>
-    /// <returns>CCSPlayerPawn或CCSObserverPawn</returns>
+    /// <returns><c>CCSPlayerPawn</c>或<c>CCSObserverPawn</c></returns>
     IPlayerPawn? GetPawn();
 
     /// <summary>
     ///     取得Controller对应的PlayerPawn
     /// </summary>
-    /// <returns>CCSPlayerPawn</returns>
+    /// <returns>
+    ///     <c>CCSPlayerPawn</c>
+    /// </returns>
     IPlayerPawn? GetPlayerPawn();
 
     /// <summary>
     ///     取得Controller对应的ObserverPawn
     /// </summary>
-    /// <returns>CCSObserverPawn</returns>
+    /// <returns>
+    ///     <c>CCSObserverPawn</c>
+    /// </returns>
     IPlayerPawn? GetObserverPawn();
 
     /// <summary>
-    ///     设置PlayerPawn
+    ///     设置PlayerPawn <br />
+    ///     <remarks>你调用之前最好知道你在做什么</remarks>
     /// </summary>
     void SetPlayerPawn(IPlayerPawn pawn);
+
+    /// <summary>
+    ///     获取<see cref="IGameClient" /> <br />
+    ///     <remarks>如果玩家不在游戏内, 哪怕是实体存在, 也会返回<c>null</c></remarks>
+    /// </summary>
+    IGameClient? GetGameClient();
 
     /// <summary>
     ///     打印对应的消息 (HudMsg)
@@ -256,5 +268,6 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     刷新计分板
     /// </summary>
+    [Obsolete("Valve broken this, will remove in 2.1")]
     void RefreshScoreBoardData();
 }
