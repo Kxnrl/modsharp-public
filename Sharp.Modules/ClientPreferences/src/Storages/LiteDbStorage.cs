@@ -38,8 +38,11 @@ internal class LiteDbStorage : IStorage
         string                          connectionString,
         string                          sharpPath)
     {
+        var data = Path.Combine(sharpPath, "data");
+        Directory.CreateDirectory(data);
+
         _logger   = loggerFactory.CreateLogger<LiteDbStorage>();
-        _database = new LiteDatabase(connectionString.Replace("{sharp::data}", Path.Combine(sharpPath, "data")));
+        _database = new LiteDatabase(connectionString.Replace("{sharp::data}", data));
         _ctSource = CancellationTokenSource.CreateLinkedTokenSource(source.Token);
     }
 
