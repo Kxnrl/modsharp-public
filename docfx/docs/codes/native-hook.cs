@@ -14,7 +14,7 @@ using Sharp.Shared.Utilities;
 
 namespace HookExample;
 
-public class HookExample : IModSharpModule
+public sealed class HookExample : IModSharpModule
 {
     public string DisplayName   => "Hook Example";
     public string DisplayAuthor => "Modsharp dev team";
