@@ -67,6 +67,7 @@ public sealed class TraceWrapperExample : IModSharpModule
 
             ShowAimTarget(controller, pawn, type);
             ShowAimPosition(controller, pawn);
+            CheckStuck(controller, pawn);
         }
     }
 
@@ -180,5 +181,41 @@ public sealed class TraceWrapperExample : IModSharpModule
         var message = $"Position: {{ {position.X:F2}, {position.Y:F2}, {position.Z:F2} }}\nDistance: {distance:F2}";
 
         controller.Print(HudPrintChannel.Hint, message);
+    }
+
+    private void CheckStuck(IPlayerController controller, IPlayerPawn pawn)
+    {
+        if (pawn.GetCollisionProperty() is not { } cp)
+        {
+            return;
+        }
+
+        var hull     = new TraceShapeHull { Mins = cp.Mins, Maxs = cp.Maxs };
+        var position = pawn.GetAbsOrigin();
+
+        var trace = _traces.TraceShapeNoPlayers(new TraceShapeRay(hull),
+                                                position,
+                                                position,
+
+                                                // you can use other layers what you want
+                                                // it's came from movement game code.
+                                                InteractionLayers.Solid
+                                                | InteractionLayers.Sky
+                                                | InteractionLayers.PlayerClip
+                                                | InteractionLayers.WorldGeometry
+                                                | InteractionLayers.Slime
+                                                | InteractionLayers.Player
+                                                | InteractionLayers.PhysicsProp,
+                                                CollisionGroupType.Default,
+                                                TraceQueryFlag.All);
+
+        if (!trace.DidHit())
+        {
+            return;
+        }
+
+        controller.Print(HudPrintChannel.Chat, "You are stuck, femboy @Nuko will kill you.");
+
+        pawn.Slay(true);
     }
 }
