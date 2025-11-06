@@ -307,7 +307,8 @@ public static class Bootstrap
             var root = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                        ?? throw new InvalidOperationException("Root path is null!");
 
-            var configFile = Path.Combine(root, "..", "configs", "core.json");
+            var sharpRoot  = Path.Combine(root,      "..");
+            var configFile = Path.Combine(sharpRoot, "configs", "core.json");
 
             var configuration = new ConfigurationBuilder()
                                 .AddJsonFile(configFile, false, true)
@@ -333,7 +334,7 @@ public static class Bootstrap
 
             ap.Restart();
 
-            if (!Boot(serviceProvider, configuration))
+            if (!Boot(serviceProvider, sharpRoot))
             {
                 return 1;
             }
@@ -544,8 +545,42 @@ public static class Bootstrap
         services.GetRequiredService<ISharpCore>().InitMainThread();
     }
 
-    private static bool Boot(IServiceProvider services, IConfiguration _)
+    private static bool Boot(IServiceProvider services, string sharpPath)
     {
+        // create data folder
+        try
+        {
+            var data = Path.Combine(sharpPath, "data");
+
+            if (!Directory.Exists(data))
+            {
+                Directory.CreateDirectory(data);
+            }
+        }
+        catch (Exception e)
+        {
+            Printer.Error("Failed to create 'data' folder!", e);
+
+            return false;
+        }
+
+        // clean temp folder
+        try
+        {
+            var temp = Path.Combine(sharpPath, "temp");
+
+            if (Directory.Exists(temp))
+            {
+                Directory.Delete(temp, true);
+            }
+        }
+        catch (Exception e)
+        {
+            Printer.Error("Failed to clean 'temp' folder!", e);
+
+            return false;
+        }
+
         var manager = services.GetRequiredService<ICoreSharpModuleManager>();
 
         return manager.InitModules();
