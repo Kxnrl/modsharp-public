@@ -3,7 +3,7 @@
 This tutorial will demonstrate how to use the HookManager to create a VMTHook and DetourHook.
 
 > [!CAUTION]
-> Hooking is a high-risk operation. Before you begin, ensure that the parameter **count** and **type** of your function perfectly match the original one in the game. Any mismatch can, and likely will, cause the server to crash!
+> Hook is a high-risk operation. You **MUST** ensure the **number** and **type** of the function's parameters are consistent with those in the game. Any form of issue may cause your server crash!
 >
 > [!WARNING]
 > For better performance and code consistency, we recommend to disabe `RuntimeMarshalling`. For more information, please visit the [documentation](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
