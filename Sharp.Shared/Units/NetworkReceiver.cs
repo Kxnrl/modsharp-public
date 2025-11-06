@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -31,11 +31,19 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
     private const ulong BaseMagic = 1UL;
 
     public NetworkReceiver(IEnumerable<PlayerSlot> players)
-        => value = players.Aggregate<PlayerSlot, ulong>(0,
-                                                        (current, player) => current | (BaseMagic << player.AsPrimitive()));
+        => value = players.Aggregate<PlayerSlot, ulong>(0, (current, player) => current | (BaseMagic << player.AsPrimitive()));
+
+    public NetworkReceiver(IReadOnlyCollection<PlayerSlot> players)
+        => value = players.Aggregate<PlayerSlot, ulong>(0, (current, player) => current | (BaseMagic << player.AsPrimitive()));
 
     public bool IsEmpty()
         => value == 0;
+
+    public bool IsFull()
+        => value == ulong.MaxValue;
+
+    public int Count()
+        => BitOperations.PopCount(value);
 
     public bool HasClient(PlayerSlot slot)
         => (value & (BaseMagic << slot.AsPrimitive())) != 0;
@@ -57,11 +65,14 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
         }
     }
 
-    public int Count()
-        => BitOperations.PopCount(value);
+    public PlayerSlot[] GetClientsArray()
+        => Enumerable.Range(0, PlayerSlot.MaxPlayerCount.AsPrimitive())
+                     .Select(i => new PlayerSlot((byte) i))
+                     .Where(HasClient)
+                     .ToArray();
 
     public string DestructureTransform()
-        => $"{{ \"Value\": {value}, \"Receivers\": [{string.Join(',', GetClients().ToArray())}] }}";
+        => $"{{ \"Value\": {value}, \"Receivers\": [{string.Join(',', GetClients())}] }}";
 
     public Enumerator GetEnumerator()
         => new (value);

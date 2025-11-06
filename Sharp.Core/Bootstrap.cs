@@ -416,7 +416,7 @@ public static class Bootstrap
         }
 
         var loggerConfiguration = new LoggerConfiguration()
-                                  .Destructure.ByTransforming<SteamID>(x => x.AsPrimitive())
+                                  .Destructure.ByTransforming<SteamID>(x => x.DestructureTransform())
                                   .Destructure.ByTransforming<EntityIndex>(x => x.AsPrimitive())
                                   .Destructure.ByTransforming<PlayerSlot>(x => x.AsPrimitive())
                                   .Destructure.ByTransforming<UserID>(x => x.AsPrimitive())

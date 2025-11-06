@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -33,13 +33,16 @@ public partial struct SteamID
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsValidUserId()
-        => AsPrimitive() >= 76561197960265728;
+        => AccountType is SteamAccountType.Individual && value >= 76561197960265728;
 
-    public uint AccountId => (uint) (value & 0xFFFFFFFF);
+    public uint AccountId => (uint) unchecked(value & 0xFFFFFFFF);
 
-    public uint AccountInstance => (uint) ((value >> 32) & 0x000FFFFF);
+    public uint AccountInstance => (uint) unchecked((value >> 32) & 0x000FFFFF);
 
-    public SteamAccountType AccountType => (SteamAccountType) ((value >> 52) & 0xF);
+    public SteamAccountType AccountType => (SteamAccountType) unchecked((value >> 52) & 0xF);
 
-    public SteamUniverse Universe => (SteamUniverse) ((value >> 56) & 0xFF);
+    public SteamUniverse Universe => (SteamUniverse) unchecked((value >> 56) & 0xFF);
+
+    public string DestructureTransform()
+        => $"{{ \"Id\": {value}, \"Type\": {AccountType}, \"Universe\": {Universe} }}";
 }

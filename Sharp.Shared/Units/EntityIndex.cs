@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -18,6 +18,7 @@
  */
 
 using System.Runtime.CompilerServices;
+using Sharp.Shared.Objects;
 using UnitGenerator;
 
 namespace Sharp.Shared.Units;
@@ -32,11 +33,14 @@ public partial struct EntityIndex
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsNetworked()
-        => AsPrimitive() < 16384;
+        => value is >= 0 and < 16384;
 
     public static readonly EntityIndex WorldIndex   = 0;
     public static readonly EntityIndex InvalidIndex = -1;
 
-    public EntityIndex(PlayerSlot value)
-        => this.value = value.AsPrimitive() + 1;
+    public EntityIndex(PlayerSlot slot)
+        => value = slot.AsPrimitive() + 1;
+
+    public EntityIndex(IGameClient client)
+        => value = client.Slot.AsPrimitive() + 1;
 }

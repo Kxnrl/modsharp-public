@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using Sharp.Shared.GameEntities;
 using UnitGenerator;
 
 namespace Sharp.Shared.Units;
@@ -32,6 +34,21 @@ public partial struct PlayerSlot
 {
     public static readonly PlayerSlot MaxPlayerSlot = new (63);
 
-    public PlayerSlot(EntityIndex value)
-        => this.value = (byte) (value.AsPrimitive() - 1);
+    public static readonly PlayerSlot MaxPlayerCount = new (64);
+
+    public PlayerSlot(EntityIndex index)
+    {
+        if (index.AsPrimitive() is >= 64 or < 0)
+        {
+            throw new ArgumentException("Invalid player slot from EntityIndex");
+        }
+
+        value = (byte) (index.AsPrimitive() - 1);
+    }
+
+    public PlayerSlot(IPlayerController controller)
+        => value = controller.PlayerSlot.AsPrimitive();
+
+    public bool IsValid()
+        => value <= MaxPlayerSlot.AsPrimitive();
 }
