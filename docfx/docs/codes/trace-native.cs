@@ -10,21 +10,21 @@ using Sharp.Shared.Types;
 
 namespace TraceNativeExample;
 
-public sealed class TraceNative : IModSharpModule
+public sealed class TraceNativeExample : IModSharpModule
 {
-    public string DisplayName   => "Trace native example";
+    public string DisplayName   => "Trace (Native) example";
     public string DisplayAuthor => "Modsharp dev team";
 
     private readonly ISharedSystem _sharedSystem;
 
-    private static TraceNative _instance = null!;
+    private static TraceNativeExample _instance = null!;
 
-    public TraceNative(ISharedSystem  sharedSystem,
-                       string         dllPath,
-                       string         sharpPath,
-                       Version        version,
-                       IConfiguration coreConfiguration,
-                       bool           hotReload)
+    public TraceNativeExample(ISharedSystem sharedSystem,
+        string                              dllPath,
+        string                              sharpPath,
+        Version                             version,
+        IConfiguration                      coreConfiguration,
+        bool                                hotReload)
     {
         _sharedSystem = sharedSystem;
         _instance     = this;
@@ -41,6 +41,7 @@ public sealed class TraceNative : IModSharpModule
 
     public void Shutdown()
     {
+        // must uninstall the callbacks on shutdown
         _sharedSystem.GetClientManager().RemoveCommandCallback("trace_line",   OnCommandTraceLine);
         _sharedSystem.GetClientManager().RemoveCommandCallback("trace_custom", OnCommandTraceCustom);
     }
@@ -53,11 +54,11 @@ public sealed class TraceNative : IModSharpModule
             return ECommandAction.Handled;
         }
 
-        var eyeangles = pawn.GetEyeAngles();
+        var eyeAngles = pawn.GetEyeAngles();
 
         // we start from player's eye position
         var start     = pawn.GetEyePosition();
-        var direction = eyeangles.AnglesToVectorForward();
+        var direction = eyeAngles.AnglesToVectorForward();
 
         const float maxDistance = 4096.0f;
 
@@ -81,10 +82,11 @@ public sealed class TraceNative : IModSharpModule
 
         controller.Print(HudPrintChannel.Chat, $"Tracing {(filter == null ? "without" : "with")} ShouldHitPlayerOnCT filter");
 
-        var traceResult = _sharedSystem.GetPhysicsQueryManager().TraceLine(start,
-                                                                           end,
-                                                                           attribute,
-                                                                           filter);
+        var traceResult = _sharedSystem.GetPhysicsQueryManager()
+                                       .TraceLine(start,
+                                                  end,
+                                                  attribute,
+                                                  filter);
 
         if (traceResult.DidHit())
         {
@@ -112,11 +114,11 @@ public sealed class TraceNative : IModSharpModule
             return ECommandAction.Handled;
         }
 
-        var eyeangles = pawn.GetEyeAngles();
+        var eyeAngles = pawn.GetEyeAngles();
 
         // we start from player's eye position
         var start     = pawn.GetEyePosition();
-        var direction = eyeangles.AnglesToVectorForward();
+        var direction = eyeAngles.AnglesToVectorForward();
 
         const float maxDistance = 4096.0f;
 
@@ -147,8 +149,7 @@ public sealed class TraceNative : IModSharpModule
             m_nInteractsAs = InteractionLayers.Player | InteractionLayers.CStrikeTeam1,
 
             // hit game entities and static entities
-            m_nObjectSetMask = RnQueryObjectSet.All,
-
+            m_nObjectSetMask  = RnQueryObjectSet.All,
             m_nCollisionGroup = CollisionGroupType.ConditionallySolid,
 
             // if true, will hit solid geometry and entities
@@ -180,12 +181,8 @@ public sealed class TraceNative : IModSharpModule
         attribute.SetEntityToIgnore(pawn, index);
 
         // we create a hull shape here
-        // NOTE: if mins and maxs are identical the game will treat it as ShapeLine
-        var hull = new TraceShapeHull
-        {
-            Mins = new (-32, -32, -32),
-            Maxs = new (32, 32, 32),
-        };
+        // if mins and maxs are identical the game will treat it as ShapeLine
+        var hull = new TraceShapeHull { Mins = new Vector(-32, -32, -32), Maxs = new Vector(32, 32, 32) };
 
         // or you can create the following shapes
         /*
@@ -208,7 +205,8 @@ public sealed class TraceNative : IModSharpModule
 
         controller.Print(HudPrintChannel.Chat, $"Tracing {(filter == null ? "without" : "with")} ShouldHitPlayerOnCT filter");
 
-        var traceResult = _sharedSystem.GetPhysicsQueryManager().TraceShape(new (hull), start, end, attribute, filter);
+        var traceResult = _sharedSystem.GetPhysicsQueryManager()
+                                       .TraceShape(new TraceShapeRay(hull), start, end, attribute, filter);
 
         if (traceResult.DidHit())
         {

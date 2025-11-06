@@ -13,7 +13,7 @@ namespace TraceWrapperExample;
 public sealed class TraceWrapperExample : IModSharpModule
 {
     public string DisplayName   => "Trace (Wrapper) Example";
-    public string DisplayAuthor => "Kxnrl";
+    public string DisplayAuthor => "Modsharp dev team";
 
     private readonly IModSharp            _modSharp;
     private readonly IPhysicsQueryManager _traces;
