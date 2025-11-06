@@ -2,3 +2,5 @@
   href: core.md
 - name: Admin
   href: admin.md
+- name: Client Preferences
+  href: client-preferences.md
