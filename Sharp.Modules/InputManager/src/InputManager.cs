@@ -6,13 +6,14 @@ using Sharp.Modules.InputManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
+using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
 namespace Sharp.Modules.InputManager.Core;
 
-internal class InputManager : IModSharpModule, IInputManager
+internal class InputManager : IModSharpModule, IClientListener, IInputManager
 {
     public string DisplayName   => "InputManager";
     public string DisplayAuthor => "Bone";
@@ -32,6 +33,8 @@ internal class InputManager : IModSharpModule, IInputManager
     private readonly List<Action<IGameClient>> _keyTabListeners   = [];
     private readonly List<Action<IGameClient>> _keySpaceListeners = [];
     private readonly List<Action<IGameClient>> _keyShiftListeners = [];
+
+    private readonly List<(IGameClient Client, Action<IGameClient, string> Callback, bool HandleChat)> _nextChatListeners = [];
 
     public InputManager(ISharedSystem sharedSystem,
         string                        dllPath,
@@ -54,6 +57,7 @@ internal class InputManager : IModSharpModule, IInputManager
     public bool Init()
     {
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
+        _clients.InstallClientListener(this);
 
         return true;
     }
@@ -124,6 +128,18 @@ internal class InputManager : IModSharpModule, IInputManager
         }
 
         throw new ArgumentException("Unsupported input key: " + key);
+    }
+
+    public IDisposable GetClientNextChat(IGameClient client, Action<IGameClient, string> callback, bool handleChat = true)
+    {
+        _nextChatListeners.Add((client, callback, handleChat));
+
+        return new DisposeAction(() => _nextChatListeners.RemoveAll(x => x.Client.Equals(client) && x.Callback == callback));
+    }
+
+    public void CancelClientNextChat(IGameClient client)
+    {
+        _nextChatListeners.RemoveAll(x => x.Client.Equals(client));
     }
 
     private class DisposeAction : IDisposable
@@ -214,4 +230,54 @@ internal class InputManager : IModSharpModule, IInputManager
             }
         }
     }
+
+#region IClientListener
+
+    int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
+    int IClientListener.ListenerPriority => 0;
+
+    public ECommandAction OnClientSayCommand(IGameClient client,
+        bool                                             teamOnly,
+        bool                                             isCommand,
+        string                                           commandName,
+        string                                           message)
+    {
+        var needHandle = false;
+
+        if (!isCommand)
+        {
+            for (var i = 0; i < _nextChatListeners.Count; i++)
+            {
+                var (c, callback, handleChat) = _nextChatListeners[i];
+
+                if (c.Equals(client))
+                {
+                    try
+                    {
+                        callback(client, message);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error while processing next chat listener for client {clientId}", client.SteamId);
+                    }
+
+                    _nextChatListeners.RemoveAt(i);
+
+                    if (handleChat)
+                    {
+                        needHandle = true;
+                    }
+                }
+            }
+        }
+
+        if (needHandle)
+        {
+            return ECommandAction.Stopped;
+        }
+
+        return ECommandAction.Skipped;
+    }
+
+#endregion
 }
