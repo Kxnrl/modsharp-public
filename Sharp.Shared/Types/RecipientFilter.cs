@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -84,6 +84,13 @@ public readonly struct RecipientFilter
         Receivers = new NetworkReceiver(players);
     }
 
+    public RecipientFilter(IReadOnlyCollection<PlayerSlot> players)
+    {
+        Type      = RecipientFilterType.Players;
+        Team      = 0;
+        Receivers = new NetworkReceiver(players);
+    }
+
     public RecipientFilter(IEnumerable<IGameClient> players)
     {
         Type      = RecipientFilterType.Players;
@@ -105,7 +112,7 @@ public readonly struct RecipientFilter
             case RecipientFilterType.All:
                 return false;
             case RecipientFilterType.Team:
-                return Team != CStrikeTeam.UnAssigned;
+                return Team == CStrikeTeam.UnAssigned;
             case RecipientFilterType.Players:
                 return Receivers.IsEmpty();
             case RecipientFilterType.Single:
@@ -114,4 +121,15 @@ public readonly struct RecipientFilter
 
         throw new InvalidEnumArgumentException();
     }
+
+    public string DestructureTransform()
+        => Type switch
+        {
+            RecipientFilterType.All  => $"{{ \"Type\": {Type} }}",
+            RecipientFilterType.Team => $"{{ \"Type\": {Type}, \"Team\": {Team} }}",
+            RecipientFilterType.Players =>
+                $"{{ \"Type\": {Type}, \"Receivers\": [{string.Join(',', Receivers.GetClients())}] }}",
+            RecipientFilterType.Single => $"{{ \"Type\": {Type}, \"Player\": {ReceiverSlot} }}",
+            _                          => throw new InvalidEnumArgumentException(),
+        };
 }
