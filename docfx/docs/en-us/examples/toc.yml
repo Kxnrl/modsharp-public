@@ -49,6 +49,13 @@
     - name: Native Hook
       href: native-hook.md
 
+- name: Trace
+  items:
+    - name: Traces (Warpper)
+      href: trace-wrapper.md
+    - name: Traces (Native)
+      href: trace-native.md
+
 - name: Extensions
   items:
     - name: Using Sharp Extensions
