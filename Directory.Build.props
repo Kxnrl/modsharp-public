@@ -32,7 +32,7 @@
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)icon.png" Pack="true" PackagePath="\" />
         <None Include="$(MSBuildThisFileDirectory)README.nuget.md" Pack="true" PackagePath="\" />
-        <EmbeddedResource Include="$(MSBuildThisFileDirectory)LICENSE" />
+        <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>

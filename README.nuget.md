@@ -31,4 +31,4 @@ has served over 4 million players since Sep 2023.
 ## License
 
 ModSharp is licensed under the AGPL-3.0 License,  
-Special exceptions are outlined in the [LICENSE](./LICENSE) file inside of the licenses folder.
+Special exceptions are outlined in the [LICENSE](./LICENSE) file.

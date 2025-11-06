@@ -29,7 +29,7 @@ the copyright holder (Kxnrl) grants the following special exceptions:
       itself, its runtime engine, loader, core libraries, generators, and
       SDK infrastructure.
       
-   b) THIRD-PARTY MODULES (Plugins/Extensions built using ModSharp SDK):
+   b) THIRD-PARTY MODULES (Modules/Extensions built using ModSharp SDK):
       As a special exception, third-party developers creating NEW modules,
       plugins, or extensions using the ModSharp SDK, NuGet packages, or
       public APIs may choose to license their work under EITHER:
