@@ -190,24 +190,32 @@ public sealed class TraceWrapperExample : IModSharpModule
             return;
         }
 
+        // get the player's hull
         var hull     = new TraceShapeHull { Mins = cp.Mins, Maxs = cp.Maxs };
         var position = pawn.GetAbsOrigin();
 
-        var trace = _traces.TraceShapeNoPlayers(new TraceShapeRay(hull),
-                                                position,
-                                                position,
+        var trace = _traces.TraceShapeNoPlayers(
 
-                                                // you can use other layers what you want
-                                                // it's came from movement game code.
-                                                InteractionLayers.Solid
-                                                | InteractionLayers.Sky
-                                                | InteractionLayers.PlayerClip
-                                                | InteractionLayers.WorldGeometry
-                                                | InteractionLayers.Slime
-                                                | InteractionLayers.Player
-                                                | InteractionLayers.PhysicsProp,
-                                                CollisionGroupType.Default,
-                                                TraceQueryFlag.All);
+            // create shape
+            new TraceShapeRay(hull),
+
+            // start and end position mostly are the same
+            position,
+            position,
+
+            // you can use other layers what you want
+            // it's came from movement game code.
+            InteractionLayers.Solid
+            | InteractionLayers.Sky
+            | InteractionLayers.PlayerClip
+            | InteractionLayers.WorldGeometry
+            | InteractionLayers.Slime
+            | InteractionLayers.Player
+            | InteractionLayers.PhysicsProp,
+            CollisionGroupType.Default,
+
+            // query against all entities and static
+            TraceQueryFlag.All);
 
         if (!trace.DidHit())
         {
