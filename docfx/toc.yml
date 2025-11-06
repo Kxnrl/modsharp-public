@@ -1,9 +1,10 @@
-- name: 文档 / Doc
+- name: Doc / 文档 
   items:
-    - name: 中文
-      href: docs/zh-cn/
     - name: English
       href: docs/en-us/
+    - name: 中文
+      href: docs/zh-cn/
+
 - name: API
   items:
     - name: ModSharp

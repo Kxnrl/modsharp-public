@@ -49,7 +49,7 @@
     - name: Native Hook
       href: native-hook.md
 
-- name: Trace
+- name: Physics Query and Traces
   items:
     - name: Traces (Warpper)
       href: trace-wrapper.md
