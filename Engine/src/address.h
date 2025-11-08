@@ -158,7 +158,20 @@ using UTIL_DispatchEffectFilter_t = void (*)(IRecipientFilter*, float, const cha
 #else
 using UTIL_DispatchEffectFilter_t = void (*)(IRecipientFilter*, const char*, CEffectData*);
 #endif
+#ifdef PLATFORM_WINDOWS
 using UTIL_DispatchParticleEffectFilterPosition_t      = int32_t (*)(const char*, Vector*, Vector*, CBaseEntity*, bool, int, IRecipientFilter*, bool);
+#else
+using UTIL_DispatchParticleEffectFilterPosition_t = int32_t (*)(const char*,
+                                                                CBaseEntity*,
+                                                                bool,
+                                                                int,
+                                                                IRecipientFilter*,
+                                                                bool,
+                                                                double /*origin_xy*/,
+                                                                float /*origin_z*/,
+                                                                double /*angle_xy*/,
+                                                                float /*angle_z*/);
+#endif
 using UTIL_DispatchParticleEffectFilterAttachment_t    = int32_t (*)(const char*, uint32_t, CBaseEntity*, uint8_t, uint32_t, bool, int, IRecipientFilter*, bool);
 using CCSGameRules_TerminateRound_t                    = void (*)(IGameRules*, float, uint32_t, void*, uint32_t);
 using CCSGameRules_PlayerCanHearChat_t                 = bool (*)(IGameRules*, CCSPlayerController*, CCSPlayerController*, bool);
