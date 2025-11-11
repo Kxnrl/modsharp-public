@@ -109,10 +109,32 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
         {
             _logger.LogError("{n} init failed", "CBasePlayerPawn::GetEyePosition");
         }
+        else
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _trWindowsEP = (delegate* unmanaged<nint, Vector*, Vector*>) _hookEyePosition.Trampoline;
+            }
+            else
+            {
+                _trLinuxEP = (delegate* unmanaged<nint, Vector>) _hookEyePosition.Trampoline;
+            }
+        }
 
         if (!_hookEyeAngles.Install())
         {
             _logger.LogError("{n} init failed", "CBasePlayerPawn::GetEyeAngles");
+        }
+        else
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _trWindowsEA = (delegate* unmanaged<nint, Vector*, Vector*>) _hookEyeAngles.Trampoline;
+            }
+            else
+            {
+                _trLinuxEA = (delegate* unmanaged<nint, Vector>) _hookEyeAngles.Trampoline;
+            }
         }
     }
 
