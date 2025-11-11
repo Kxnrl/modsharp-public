@@ -47,8 +47,6 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
 
     private readonly Dictionary<IBaseEntity, GameUIEntity> _lastEntity;
 
-    private Guid? _timer;
-
     public GameUI(ISharedSystem sharedSystem)
     {
         _logger        = sharedSystem.GetLoggerFactory().CreateLogger<GameUI>();
@@ -63,19 +61,13 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
         _entityManager.InstallEntityListener(this);
         _modSharp.InstallGameListener(this);
 
-        _timer = _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
+        _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
     }
 
     public void Shutdown()
     {
         _entityManager.RemoveEntityListener(this);
         _modSharp.RemoveGameListener(this);
-
-        if (_timer.HasValue)
-        {
-            _modSharp.StopTimer(_timer.Value);
-            _timer = null;
-        }
     }
 
     int IGameListener.ListenerPriority => 0;
