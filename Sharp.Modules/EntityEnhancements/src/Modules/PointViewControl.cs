@@ -20,10 +20,12 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
+using Sharp.Shared.Hooks;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
@@ -58,7 +60,10 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
     private readonly Dictionary<IBaseEntity, ViewControlEntity> _viewControlEntities;
 
-    private Guid? _timer;
+    private static PointViewControl _sInstance = null!;
+
+    private readonly IDetourHook _hookEyePosition;
+    private readonly IDetourHook _hookEyeAngles;
 
     public PointViewControl(ISharedSystem sharedSystem)
     {
@@ -67,14 +72,48 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
         _entityManager = sharedSystem.GetEntityManager();
 
         _viewControlEntities = [];
+
+        _sInstance = this;
+
+        var hooks = sharedSystem.GetHookManager();
+
+        _hookEyePosition = hooks.CreateDetourHook();
+        _hookEyeAngles   = hooks.CreateDetourHook();
     }
 
-    public void Init()
+    public unsafe void Init()
     {
         _modSharp.InstallGameListener(this);
         _entityManager.InstallEntityListener(this);
 
-        _timer = _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
+        _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            _hookEyePosition.Prepare("CBasePlayerPawn::GetEyePosition",
+                                     (nint) (delegate* unmanaged<nint, Vector*, Vector*>) (&WindowsGetEyePosition));
+
+            _hookEyeAngles.Prepare("CBasePlayerPawn::GetEyeAngles",
+                                   (nint) (delegate* unmanaged<nint, Vector*, Vector*>) (&WindowsGetEyeAngles));
+        }
+        else
+        {
+            _hookEyePosition.Prepare("CBasePlayerPawn::GetEyePosition",
+                                     (nint) (delegate* unmanaged<nint, Vector>) (&LinuxGetEyePosition));
+
+            _hookEyeAngles.Prepare("CBasePlayerPawn::GetEyeAngles",
+                                   (nint) (delegate* unmanaged<nint, Vector>) (&LinuxGetEyeAngles));
+        }
+
+        if (!_hookEyePosition.Install())
+        {
+            _logger.LogError("{n} init failed", "CBasePlayerPawn::GetEyePosition");
+        }
+
+        if (!_hookEyeAngles.Install())
+        {
+            _logger.LogError("{n} init failed", "CBasePlayerPawn::GetEyeAngles");
+        }
     }
 
     public void Shutdown()
@@ -82,11 +121,11 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
         _modSharp.RemoveGameListener(this);
         _entityManager.RemoveEntityListener(this);
 
-        if (_timer.HasValue)
-        {
-            _modSharp.StopTimer(_timer.Value);
-            _timer = null;
-        }
+        _hookEyePosition.Uninstall();
+        _hookEyeAngles.Uninstall();
+
+        _hookEyePosition.Dispose();
+        _hookEyeAngles.Dispose();
     }
 
     int IGameListener.ListenerPriority => 0;
@@ -444,6 +483,87 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
             yield return controller;
         }
+    }
+
+    private bool IsViewControl(IPlayerPawn pawn)
+    {
+        if (_viewControlEntities.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (var (_, e) in _viewControlEntities)
+        {
+            if (e.Players.Contains(pawn))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static unsafe delegate* unmanaged<nint, Vector*, Vector*>  _trWindowsEP;
+    private static unsafe delegate * unmanaged<nint, Vector*, Vector*> _trWindowsEA;
+    private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEP;
+    private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEA;
+
+    [UnmanagedCallersOnly]
+    private static unsafe Vector* WindowsGetEyePosition(nint pEntity, Vector* pRet)
+    {
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
+            && _sInstance.IsViewControl(pawn))
+        {
+            var position = pawn.GetAbsOrigin() + pawn.ViewOffset;
+            pRet->X = position.X;
+            pRet->Y = position.Y;
+            pRet->Z = position.Z;
+
+            return pRet;
+        }
+
+        return _trWindowsEP(pEntity, pRet);
+    }
+
+    [UnmanagedCallersOnly]
+    private static unsafe Vector* WindowsGetEyeAngles(nint pEntity, Vector* pRet)
+    {
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
+            && _sInstance.IsViewControl(pawn))
+        {
+            var angles = pawn.GetNetVar<Vector>("v_angle");
+            pRet->X = angles.X;
+            pRet->Y = angles.Y;
+            pRet->Z = angles.Z;
+
+            return pRet;
+        }
+
+        return _trWindowsEP(pEntity, pRet);
+    }
+
+    [UnmanagedCallersOnly]
+    private static unsafe Vector LinuxGetEyePosition(nint pEntity)
+    {
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
+            && _sInstance.IsViewControl(pawn))
+        {
+            return pawn.GetAbsOrigin() + pawn.ViewOffset;
+        }
+
+        return _trLinuxEP(pEntity);
+    }
+
+    [UnmanagedCallersOnly]
+    private static unsafe Vector LinuxGetEyeAngles(nint pEntity)
+    {
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
+            && _sInstance.IsViewControl(pawn))
+        {
+            return pawn.GetNetVar<Vector>("v_angle");
+        }
+
+        return _trLinuxEA(pEntity);
     }
 }
 
