@@ -35,8 +35,9 @@ namespace Sharp.Modules.EntityEnhancements.Modules;
 
 internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 {
-    private const uint InvalidFieldOfView = 0xFFFFFFFF;
-    private const uint ResetFieldOfView   = 0xFFFFFFFE;
+    private const string Class              = "logic_relay";
+    private const uint   InvalidFieldOfView = 0xFFFFFFFF;
+    private const uint   ResetFieldOfView   = 0xFFFFFFFE;
 
     private static readonly CEntityHandle<IBaseEntity> InvalidEHandle = new (0xFFFFFFFFu);
 
@@ -88,10 +89,10 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
         _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
 
-        _entityManager.HookEntityInput("logic_relay", "EnableCamera");
-        _entityManager.HookEntityInput("logic_relay", "DisableCamera");
-        _entityManager.HookEntityInput("logic_relay", "EnableCameraAll");
-        _entityManager.HookEntityInput("logic_relay", "DisableCameraAll");
+        _entityManager.HookEntityInput(Class, "EnableCamera");
+        _entityManager.HookEntityInput(Class, "DisableCamera");
+        _entityManager.HookEntityInput(Class, "EnableCameraAll");
+        _entityManager.HookEntityInput(Class, "DisableCameraAll");
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -166,7 +167,7 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
     public void OnEntitySpawned(IBaseEntity entity)
     {
-        if (!entity.IsPointViewControl())
+        if (!entity.Classname.Equals(Class, StringComparison.OrdinalIgnoreCase) || !entity.IsPointViewControl())
         {
             return;
         }
