@@ -561,7 +561,7 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
             return pRet;
         }
 
-        return _trWindowsEP(pEntity, pRet);
+        return _trWindowsEA(pEntity, pRet);
     }
 
     [UnmanagedCallersOnly]
