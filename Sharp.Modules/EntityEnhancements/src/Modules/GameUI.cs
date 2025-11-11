@@ -130,7 +130,7 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
 
         DelayInput(entity, pawn, "InValue", "PlayerOn");
 
-        _logger.LogInformation("Pawn {index} activate game_ui {i2}.{name}", pawn.Index, entity.Index, entity.Name);
+        // _logger.LogInformation("Pawn {index} activate game_ui {i2}.{name}", pawn.Index, entity.Index, entity.Name);
 
         return EHookAction.SkipCallReturnOverride;
     }
@@ -152,10 +152,12 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
             DelayInput(entity, info.Owner, "InValue", "PlayerOff");
         }
 
+        /*
         _logger.LogInformation("activator {index} deactivate game_ui {i2}.{name}",
                                info.Owner.Index,
                                entity.Index,
                                entity.Name);
+        */
 
         return EHookAction.SkipCallReturnOverride;
     }
