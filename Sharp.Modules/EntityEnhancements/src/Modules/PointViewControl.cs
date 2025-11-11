@@ -88,6 +88,11 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
         _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
 
+        _entityManager.HookEntityInput("logic_relay", "EnableCamera");
+        _entityManager.HookEntityInput("logic_relay", "DisableCamera");
+        _entityManager.HookEntityInput("logic_relay", "EnableCameraAll");
+        _entityManager.HookEntityInput("logic_relay", "DisableCameraAll");
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             _hookEyePosition.Prepare("CBasePlayerPawn::GetEyePosition",

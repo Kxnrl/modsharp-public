@@ -62,6 +62,11 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
         _modSharp.InstallGameListener(this);
 
         _modSharp.PushTimer(OnRunThink, 0.05, GameTimerFlags.Repeatable);
+
+        _entityManager.HookEntityInput(Class, "Activate");
+        _entityManager.HookEntityInput(Class, "Deactivate");
+
+        _logger.LogInformation("GameUI init()");
     }
 
     public void Shutdown()
