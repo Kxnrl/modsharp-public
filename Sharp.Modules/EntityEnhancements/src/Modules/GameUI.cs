@@ -65,8 +65,6 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
 
         _entityManager.HookEntityInput(Class, "Activate");
         _entityManager.HookEntityInput(Class, "Deactivate");
-
-        _logger.LogInformation("GameUI init()");
     }
 
     public void Shutdown()
