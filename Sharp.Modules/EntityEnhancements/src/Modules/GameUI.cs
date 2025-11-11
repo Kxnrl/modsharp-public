@@ -34,7 +34,7 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
 {
     private const string Class = "logic_case";
 
-    private readonly record struct GameUIEntity(IBaseEntity Owner, UserCommandButtons Buttons);
+    private readonly record struct GameUIEntity(IPlayerPawn Owner, UserCommandButtons Buttons);
 
     private const uint SpawnFlagsFreezePlayer   = 32;
     private const uint SpawnFlagsHideWeapon     = 64;
@@ -94,20 +94,18 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
 
         if (input.Equals("Activate", StringComparison.OrdinalIgnoreCase))
         {
-            return InputActivate(entity, activator, caller);
+            return InputActivate(entity, activator);
         }
 
         if (input.Equals("Deactivate", StringComparison.OrdinalIgnoreCase))
         {
-            return InputDeactivate(entity, activator, caller);
+            return InputDeactivate(entity, activator);
         }
 
         return EHookAction.Ignored;
     }
 
-    private EHookAction InputActivate(IBaseEntity entity,
-        IBaseEntity?                              activator,
-        IBaseEntity?                              caller)
+    private EHookAction InputActivate(IBaseEntity entity, IBaseEntity? activator)
     {
         if (activator is null
             || !entity.IsGameUI()
@@ -134,29 +132,25 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
         return EHookAction.SkipCallReturnOverride;
     }
 
-    private EHookAction InputDeactivate(IBaseEntity entity,
-        IBaseEntity?                                activator,
-        IBaseEntity?                                caller)
+    private EHookAction InputDeactivate(IBaseEntity entity, IBaseEntity? activator)
     {
         if (!entity.IsGameUI() || !_lastEntity.Remove(entity, out var info))
         {
             return EHookAction.SkipCallReturnOverride;
         }
 
-        var owner = info.Owner;
-
-        if (owner.IsValid() && owner.AsPlayerPawn() is { } pawn)
+        if (info.Owner.IsValid())
         {
             if ((entity.SpawnFlags & SpawnFlagsFreezePlayer) != 0)
             {
-                pawn.Flags &= ~EntityFlags.AtControls;
+                info.Owner.Flags &= ~EntityFlags.AtControls;
             }
 
-            DelayInput(entity, pawn, "InValue", "PlayerOff");
+            DelayInput(entity, info.Owner, "InValue", "PlayerOff");
         }
 
         _logger.LogInformation("activator {index} deactivate game_ui {i2}.{name}",
-                               owner.Index,
+                               info.Owner.Index,
                                entity.Index,
                                entity.Name);
 
@@ -181,21 +175,21 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
                 continue;
             }
 
-            if (!info.Owner.IsValid() || info.Owner.AsPlayerPawn() is not { } pawn)
+            if (!info.Owner.IsValid())
             {
                 DelayInput(entity, "Deactivate");
 
                 continue;
             }
 
-            if (!pawn.IsAlive)
+            if (!info.Owner.IsAlive)
             {
-                DelayInput(entity, pawn, "Deactivate");
+                DelayInput(entity, info.Owner, "Deactivate");
 
                 continue;
             }
 
-            HandleGameUI(entity, pawn, info.Buttons);
+            HandleGameUI(entity, info.Owner, info.Buttons);
         }
 
         foreach (var entity in removeList)
@@ -326,7 +320,6 @@ internal sealed class GameUI : IEnhancement, IGameListener, IEntityListener
             }
         });
 
-    // TODO Refactor
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DelayInput(IBaseEntity entity, IBaseEntity activator, string input, string? param = null)
         => _modSharp.InvokeFrameAction(() =>
