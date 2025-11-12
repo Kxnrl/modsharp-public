@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 public enum RoundEndReason : uint
@@ -34,11 +36,13 @@ public enum RoundEndReason : uint
     /// <summary>
     ///     Vip润了
     /// </summary>
+    [Obsolete("Valve removed", true)]
     VipEscaped = 2,
 
     /// <summary>
     ///     Vip嗝屁了
     /// </summary>
+    [Obsolete("Valve removed", true)]
     VipAssassinated = 3,
 
     /// <summary>
@@ -99,6 +103,7 @@ public enum RoundEndReason : uint
     /// <summary>
     ///     Vip没跑掉
     /// </summary>
+    [Obsolete("Valve removed", true)]
     VipNotEscaped = 15,
 
     /// <summary>
@@ -125,4 +130,14 @@ public enum RoundEndReason : uint
     ///     CT救出人质了
     /// </summary>
     CTsReachedHostage = 20,
+
+    /// <summary>
+    ///     存活胜利
+    /// </summary>
+    SurvivalWin = 21,
+
+    /// <summary>
+    ///     存活平局
+    /// </summary>
+    SurvivalDraw = 22,
 }
