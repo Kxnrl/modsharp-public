@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyName>Sharp.Shared</AssemblyName>
+		<AssemblyName>Sharp.Shared</AssemblyName>
         <RootNamespace>Sharp.Shared</RootNamespace>
         <Title>ModSharp.$(AssemblyName)</Title>
         <PackageId>ModSharp.$(AssemblyName)</PackageId>
@@ -63,9 +63,6 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.10" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.10" />
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.10" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.10" />
-        <PackageReference Include="System.Text.Json" Version="9.0.10" />
         <PackageReference Include="UnitGenerator" Version="2.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
