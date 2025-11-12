@@ -159,7 +159,7 @@ using UTIL_DispatchEffectFilter_t = void (*)(IRecipientFilter*, float, const cha
 using UTIL_DispatchEffectFilter_t = void (*)(IRecipientFilter*, const char*, CEffectData*);
 #endif
 #ifdef PLATFORM_WINDOWS
-using UTIL_DispatchParticleEffectFilterPosition_t      = int32_t (*)(const char*, Vector*, Vector*, CBaseEntity*, bool, int, IRecipientFilter*, bool);
+using UTIL_DispatchParticleEffectFilterPosition_t = int32_t (*)(const char*, Vector*, Vector*, CBaseEntity*, bool, int, IRecipientFilter*, bool);
 #else
 using UTIL_DispatchParticleEffectFilterPosition_t = int32_t (*)(const char*,
                                                                 CBaseEntity*,
