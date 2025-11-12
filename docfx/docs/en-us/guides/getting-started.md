@@ -19,7 +19,7 @@ Please visit the [Release](https://github.com/Kxnrl/modsharp-public/releases) pa
 # [Windows](#tab/windows)
 
 - **Visual Studio Redistributable** [Download Link](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-- **.NET 9** [Download Link](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **.NET 10** [Download Link](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 > [!TIP]
 >
@@ -27,7 +27,7 @@ Please visit the [Release](https://github.com/Kxnrl/modsharp-public/releases) pa
 
 # [Linux](#tab/linux)
 
-- **.NET 9** [Installation Guide](https://learn.microsoft.com/dotnet/core/install/linux)
+- **.NET 10** [Installation Guide](https://learn.microsoft.com/dotnet/core/install/linux)
 
 If you are running Docker, please use the Steam RT3 image (see: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest)
 > [!TIP]

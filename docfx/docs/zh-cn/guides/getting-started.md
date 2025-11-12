@@ -21,7 +21,7 @@
 # [Windows](#tab/windows)
 
 - **Visual Studio Redistributable** [下载链接](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-- **.NET 9** [下载链接](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **.NET 10** [下载链接](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 > [!TIP]
 >
@@ -29,7 +29,7 @@
 
 # [Linux](#tab/linux)
 
-- **.NET 9** [安装教程](https://learn.microsoft.com/dotnet/core/install/linux)
+- **.NET 10** [安装教程](https://learn.microsoft.com/dotnet/core/install/linux)
 
 如你的运行Docker，请使用Steam RT3镜像（参阅：registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest）
 > [!TIP]

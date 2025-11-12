@@ -10,6 +10,12 @@
 - name: Dependency Injection
   href: dependency-injection.md
 
+- name: Module API
+  href: module-api.md
+
+- name: 编写ModSharp扩展包
+  href: writing-sharp-extensions.md
+
 - name: Listeners
   items:
     - name: IClientListener
