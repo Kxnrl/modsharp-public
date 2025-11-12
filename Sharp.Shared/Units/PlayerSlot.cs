@@ -38,7 +38,7 @@ public partial struct PlayerSlot
 
     public PlayerSlot(EntityIndex index)
     {
-        if (index.AsPrimitive() is >= 64 or < 0)
+        if (index.AsPrimitive() is > 64 or <= 0)
         {
             throw new ArgumentException("Invalid player slot from EntityIndex");
         }
