@@ -47,6 +47,8 @@ public enum WeaponGameplayAnimState : ushort
     ReloadOutro                  = 801,  // 0x321
     Inspect                      = 1000, // 0x3E8
     InspectOutro                 = 1001, // 0x3E9
-    EndValid                     = 1100, // 0x44C
-    WeaponLegacyStateClearFiring = 1101, // 0x44D
+    InventoryUITumble            = 1500, // 0x5DC
+    InventoryUIKeyChainApply     = 1501, // 0x5DD
+    EndValid                     = 2000, // 0x7D0
+    WeaponLegacyStateClearFiring = 2001, // 0x7D1
 }
