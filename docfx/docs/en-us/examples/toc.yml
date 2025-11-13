@@ -16,6 +16,9 @@
 - name: Writing ModSharp Extensions
   href: writing-sharp-extensions.md
 
+- name: Native Call
+  href: native-call.md
+
 - name: Listeners
   items:
     - name: IClientListener

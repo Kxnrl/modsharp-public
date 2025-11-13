@@ -16,6 +16,9 @@
 - name: 编写ModSharp扩展包
   href: writing-sharp-extensions.md
 
+- name: Native调用
+  href: native-call.md
+
 - name: Listeners
   items:
     - name: IClientListener
