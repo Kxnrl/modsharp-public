@@ -72,6 +72,15 @@ struct matrix3x4_t
         Init(xAxis, yAxis, zAxis, vecOrigin);
     }
 
+    matrix3x4_t& operator=(const matrix3x4_t& src)
+    {
+        if (this == &src)
+            return *this;
+
+        memcpy(this->Base(), src.Base(), sizeof(float) * 3 * 4);
+        return *this;
+    }
+
     inline Vector GetColumn(MatrixAxisType_t column) const;
     inline void   SetColumn(const Vector& in, MatrixAxisType_t column);
 
@@ -140,6 +149,15 @@ public:
         memcpy(Base(), src.Base(), sizeof(float) * 3 * 4);
         return *this;
     };
+
+    matrix3x4a_t& operator=(const matrix3x4a_t& src)
+    {
+        if (this == &src)
+            return *this;
+
+        memcpy(Base(), src.Base(), sizeof(float) * 3 * 4);
+        return *this;
+    }
 } MS_ALIGN16_POST;
 
 #endif
