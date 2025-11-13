@@ -166,7 +166,7 @@
     // convar ref 'mp_endmatch_votenextmap_keepcurrent'
     "CCSGameRules::CreateEndMatchMapGroupVoteOptions": {
       "library": "server",
-      "linux": "55 BE ? ? ? ? 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 53 48 8D 1D",
+      "linux": "55 BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 8D 3D ? ? ? ? 48 81 EC ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 48 8D 1D",
       "windows": "48 89 4C 24 08 55 41 54 48 8D 6C 24 B1"
     },
     "CCSGameRules::PlayerCanHearChat": {
@@ -222,8 +222,8 @@
     // str "nullptr Ent in GiveNamedItem: %s!\n"
     "CCSPlayer_ItemServices::GiveNamedItem": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC D8 00 00 00 48 89 8D 18 FF FF FF",
-      "windows": "48 89 5C 24 10 48 89 74 24 18 55 57 41 55 41 56 41 57 48 8D 6C 24 E0"
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 89 BD ? ? ? ? 89 95 ? ? ? ? 48 89 8D ? ? ? ? 44 89 85",
+      "windows": "48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 20 44 89 44 24 18"
     },
     "CCSPlayer_ItemServices::RemovePlayerItem": {
       "library": "server",
@@ -531,7 +531,7 @@
     },
     "HandleGCBanInfo": {
       "library": "server",
-      "linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 8B 10",
+      "linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC",
       "windows": "41 54 48 81 EC ? ? ? ? BA ? ? ? ?"
     },
     "HostSay": {
