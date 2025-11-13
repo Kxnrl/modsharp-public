@@ -25,7 +25,7 @@ public static partial class CsGameeventsReflection {
           "ChNjc19nYW1lZXZlbnRzLnByb3RvGhZuZXR3b3JrYmFzZXR5cGVzLnByb3Rv",
           "Ik4KFUNNc2dURVBsYXllckFuaW1FdmVudBIYCgZwbGF5ZXIYASABKAc6CDE2",
           "Nzc3MjE1Eg0KBWV2ZW50GAIgASgNEgwKBGRhdGEYAyABKAUiKwoPQ01zZ1RF",
-          "UmFkaW9JY29uEhgKBnBsYXllchgBIAEoBzoIMTY3NzcyMTUi9QIKEUNNc2dU",
+          "UmFkaW9JY29uEhgKBnBsYXllchgBIAEoBzoIMTY3NzcyMTUirAUKEUNNc2dU",
           "RUZpcmVCdWxsZXRzEhsKBm9yaWdpbhgBIAEoCzILLkNNc2dWZWN0b3ISGwoG",
           "YW5nbGVzGAIgASgLMgsuQ01zZ1FBbmdsZRIbCgl3ZWFwb25faWQYAyABKA06",
           "CDE2Nzc3MjE1EgwKBG1vZGUYBCABKA0SDAoEc2VlZBgFIAEoDRIYCgZwbGF5",
@@ -34,15 +34,27 @@ public static partial class CsGameeventsReflection {
           "GAogASgFEhYKDml0ZW1fZGVmX2luZGV4GAsgASgNEhgKEHNvdW5kX2RzcF9l",
           "ZmZlY3QYDCABKAcSHwoKZW50X29yaWdpbhgNIAEoCzILLkNNc2dWZWN0b3IS",
           "HQoVbnVtX2J1bGxldHNfcmVtYWluaW5nGA4gASgNEhMKC2F0dGFja190eXBl",
-          "GA8gASgNKl0KD0VDc2dvR2FtZUV2ZW50cxIZChRHRV9QbGF5ZXJBbmltRXZl",
-          "bnRJZBDCAxIYChNHRV9SYWRpb0ljb25FdmVudElkEMMDEhUKEEdFX0ZpcmVC",
-          "dWxsZXRzSWQQxAM="));
+          "GA8gASgNEhQKDHBsYXllcl9pbmFpchgRIAEoCBIVCg1wbGF5ZXJfc2NvcGVk",
+          "GBIgASgIEgwKBHRpY2sYEyABKAUSJwoFZXh0cmEYECABKAsyGC5DTXNnVEVG",
+          "aXJlQnVsbGV0cy5FeHRyYRrQAQoFRXh0cmESHgoJYWltX3B1bmNoGAEgASgL",
+          "MgsuQ01zZ1FBbmdsZRIZChFhdHRhY2tfdGlja19jb3VudBgCIAEoBRIYChBh",
+          "dHRhY2tfdGlja19mcmFjGAMgASgCEhkKEXJlbmRlcl90aWNrX2NvdW50GAQg",
+          "ASgFEhgKEHJlbmRlcl90aWNrX2ZyYWMYBSABKAISFwoPaW5hY2N1cmFjeV9t",
+          "b3ZlGAYgASgCEhYKDmluYWNjdXJhY3lfYWlyGAcgASgCEgwKBHR5cGUYCCAB",
+          "KAUiuQEKE0NNc2dQbGF5ZXJCdWxsZXRIaXQSGQoNYXR0YWNrZXJfc2xvdBgB",
+          "IAEoBToCLTESFwoLdmljdGltX3Nsb3QYAiABKAU6Ai0xEh8KCnZpY3RpbV9w",
+          "b3MYAyABKAsyCy5DTXNnVmVjdG9yEhEKCWhpdF9ncm91cBgEIAEoBRIOCgZk",
+          "YW1hZ2UYBSABKAUSGQoRcGVuZXRyYXRpb25fY291bnQYBiABKAUSDwoHaXNf",
+          "a2lsbBgHIAEoCCp4Cg9FQ3Nnb0dhbWVFdmVudHMSGQoUR0VfUGxheWVyQW5p",
+          "bUV2ZW50SWQQwgMSGAoTR0VfUmFkaW9JY29uRXZlbnRJZBDDAxIVChBHRV9G",
+          "aXJlQnVsbGV0c0lkEMQDEhkKFEdFX1BsYXllckJ1bGxldEhpdElkEMUD"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ECsgoGameEvents), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEPlayerAnimEvent), global::CMsgTEPlayerAnimEvent.Parser, new[]{ "Player", "Event", "Data" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTERadioIcon), global::CMsgTERadioIcon.Parser, new[]{ "Player" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEFireBullets), global::CMsgTEFireBullets.Parser, new[]{ "Origin", "Angles", "WeaponId", "Mode", "Seed", "Player", "Inaccuracy", "RecoilIndex", "Spread", "SoundType", "ItemDefIndex", "SoundDspEffect", "EntOrigin", "NumBulletsRemaining", "AttackType" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEFireBullets), global::CMsgTEFireBullets.Parser, new[]{ "Origin", "Angles", "WeaponId", "Mode", "Seed", "Player", "Inaccuracy", "RecoilIndex", "Spread", "SoundType", "ItemDefIndex", "SoundDspEffect", "EntOrigin", "NumBulletsRemaining", "AttackType", "PlayerInair", "PlayerScoped", "Tick", "Extra" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEFireBullets.Types.Extra), global::CMsgTEFireBullets.Types.Extra.Parser, new[]{ "AimPunch", "AttackTickCount", "AttackTickFrac", "RenderTickCount", "RenderTickFrac", "InaccuracyMove", "InaccuracyAir", "Type" }, null, null, null, null)}),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlayerBulletHit), global::CMsgPlayerBulletHit.Parser, new[]{ "AttackerSlot", "VictimSlot", "VictimPos", "HitGroup", "Damage", "PenetrationCount", "IsKill" }, null, null, null, null)
         }));
   }
   #endregion
@@ -53,6 +65,7 @@ public enum ECsgoGameEvents {
   [pbr::OriginalName("GE_PlayerAnimEventId")] GePlayerAnimEventId = 450,
   [pbr::OriginalName("GE_RadioIconEventId")] GeRadioIconEventId = 451,
   [pbr::OriginalName("GE_FireBulletsId")] GeFireBulletsId = 452,
+  [pbr::OriginalName("GE_PlayerBulletHitId")] GePlayerBulletHitId = 453,
 }
 
 #endregion
@@ -625,6 +638,10 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     entOrigin_ = other.entOrigin_ != null ? other.entOrigin_.Clone() : null;
     numBulletsRemaining_ = other.numBulletsRemaining_;
     attackType_ = other.attackType_;
+    playerInair_ = other.playerInair_;
+    playerScoped_ = other.playerScoped_;
+    tick_ = other.tick_;
+    extra_ = other.extra_ != null ? other.extra_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -994,6 +1011,99 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     _hasBits0 &= ~2048;
   }
 
+  /// <summary>Field number for the "player_inair" field.</summary>
+  public const int PlayerInairFieldNumber = 17;
+  private readonly static bool PlayerInairDefaultValue = false;
+
+  private bool playerInair_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool PlayerInair {
+    get { if ((_hasBits0 & 4096) != 0) { return playerInair_; } else { return PlayerInairDefaultValue; } }
+    set {
+      _hasBits0 |= 4096;
+      playerInair_ = value;
+    }
+  }
+  /// <summary>Gets whether the "player_inair" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasPlayerInair {
+    get { return (_hasBits0 & 4096) != 0; }
+  }
+  /// <summary>Clears the value of the "player_inair" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearPlayerInair() {
+    _hasBits0 &= ~4096;
+  }
+
+  /// <summary>Field number for the "player_scoped" field.</summary>
+  public const int PlayerScopedFieldNumber = 18;
+  private readonly static bool PlayerScopedDefaultValue = false;
+
+  private bool playerScoped_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool PlayerScoped {
+    get { if ((_hasBits0 & 8192) != 0) { return playerScoped_; } else { return PlayerScopedDefaultValue; } }
+    set {
+      _hasBits0 |= 8192;
+      playerScoped_ = value;
+    }
+  }
+  /// <summary>Gets whether the "player_scoped" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasPlayerScoped {
+    get { return (_hasBits0 & 8192) != 0; }
+  }
+  /// <summary>Clears the value of the "player_scoped" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearPlayerScoped() {
+    _hasBits0 &= ~8192;
+  }
+
+  /// <summary>Field number for the "tick" field.</summary>
+  public const int TickFieldNumber = 19;
+  private readonly static int TickDefaultValue = 0;
+
+  private int tick_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Tick {
+    get { if ((_hasBits0 & 16384) != 0) { return tick_; } else { return TickDefaultValue; } }
+    set {
+      _hasBits0 |= 16384;
+      tick_ = value;
+    }
+  }
+  /// <summary>Gets whether the "tick" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasTick {
+    get { return (_hasBits0 & 16384) != 0; }
+  }
+  /// <summary>Clears the value of the "tick" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearTick() {
+    _hasBits0 &= ~16384;
+  }
+
+  /// <summary>Field number for the "extra" field.</summary>
+  public const int ExtraFieldNumber = 16;
+  private global::CMsgTEFireBullets.Types.Extra extra_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CMsgTEFireBullets.Types.Extra Extra {
+    get { return extra_; }
+    set {
+      extra_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -1024,6 +1134,10 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     if (!object.Equals(EntOrigin, other.EntOrigin)) return false;
     if (NumBulletsRemaining != other.NumBulletsRemaining) return false;
     if (AttackType != other.AttackType) return false;
+    if (PlayerInair != other.PlayerInair) return false;
+    if (PlayerScoped != other.PlayerScoped) return false;
+    if (Tick != other.Tick) return false;
+    if (!object.Equals(Extra, other.Extra)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -1046,6 +1160,10 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     if (entOrigin_ != null) hash ^= EntOrigin.GetHashCode();
     if (HasNumBulletsRemaining) hash ^= NumBulletsRemaining.GetHashCode();
     if (HasAttackType) hash ^= AttackType.GetHashCode();
+    if (HasPlayerInair) hash ^= PlayerInair.GetHashCode();
+    if (HasPlayerScoped) hash ^= PlayerScoped.GetHashCode();
+    if (HasTick) hash ^= Tick.GetHashCode();
+    if (extra_ != null) hash ^= Extra.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -1124,6 +1242,22 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
       output.WriteRawTag(120);
       output.WriteUInt32(AttackType);
     }
+    if (extra_ != null) {
+      output.WriteRawTag(130, 1);
+      output.WriteMessage(Extra);
+    }
+    if (HasPlayerInair) {
+      output.WriteRawTag(136, 1);
+      output.WriteBool(PlayerInair);
+    }
+    if (HasPlayerScoped) {
+      output.WriteRawTag(144, 1);
+      output.WriteBool(PlayerScoped);
+    }
+    if (HasTick) {
+      output.WriteRawTag(152, 1);
+      output.WriteInt32(Tick);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -1194,6 +1328,22 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
       output.WriteRawTag(120);
       output.WriteUInt32(AttackType);
     }
+    if (extra_ != null) {
+      output.WriteRawTag(130, 1);
+      output.WriteMessage(Extra);
+    }
+    if (HasPlayerInair) {
+      output.WriteRawTag(136, 1);
+      output.WriteBool(PlayerInair);
+    }
+    if (HasPlayerScoped) {
+      output.WriteRawTag(144, 1);
+      output.WriteBool(PlayerScoped);
+    }
+    if (HasTick) {
+      output.WriteRawTag(152, 1);
+      output.WriteInt32(Tick);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -1248,6 +1398,18 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     }
     if (HasAttackType) {
       size += 1 + pb::CodedOutputStream.ComputeUInt32Size(AttackType);
+    }
+    if (HasPlayerInair) {
+      size += 2 + 1;
+    }
+    if (HasPlayerScoped) {
+      size += 2 + 1;
+    }
+    if (HasTick) {
+      size += 2 + pb::CodedOutputStream.ComputeInt32Size(Tick);
+    }
+    if (extra_ != null) {
+      size += 2 + pb::CodedOutputStream.ComputeMessageSize(Extra);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -1314,6 +1476,21 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
     }
     if (other.HasAttackType) {
       AttackType = other.AttackType;
+    }
+    if (other.HasPlayerInair) {
+      PlayerInair = other.PlayerInair;
+    }
+    if (other.HasPlayerScoped) {
+      PlayerScoped = other.PlayerScoped;
+    }
+    if (other.HasTick) {
+      Tick = other.Tick;
+    }
+    if (other.extra_ != null) {
+      if (extra_ == null) {
+        Extra = new global::CMsgTEFireBullets.Types.Extra();
+      }
+      Extra.MergeFrom(other.Extra);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -1399,6 +1576,25 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
           AttackType = input.ReadUInt32();
           break;
         }
+        case 130: {
+          if (extra_ == null) {
+            Extra = new global::CMsgTEFireBullets.Types.Extra();
+          }
+          input.ReadMessage(Extra);
+          break;
+        }
+        case 136: {
+          PlayerInair = input.ReadBool();
+          break;
+        }
+        case 144: {
+          PlayerScoped = input.ReadBool();
+          break;
+        }
+        case 152: {
+          Tick = input.ReadInt32();
+          break;
+        }
       }
     }
   #endif
@@ -1481,6 +1677,1109 @@ public sealed partial class CMsgTEFireBullets : pb::IMessage<CMsgTEFireBullets>
         }
         case 120: {
           AttackType = input.ReadUInt32();
+          break;
+        }
+        case 130: {
+          if (extra_ == null) {
+            Extra = new global::CMsgTEFireBullets.Types.Extra();
+          }
+          input.ReadMessage(Extra);
+          break;
+        }
+        case 136: {
+          PlayerInair = input.ReadBool();
+          break;
+        }
+        case 144: {
+          PlayerScoped = input.ReadBool();
+          break;
+        }
+        case 152: {
+          Tick = input.ReadInt32();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+  #region Nested types
+  /// <summary>Container for nested types declared in the CMsgTEFireBullets message type.</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static partial class Types {
+    public sealed partial class Extra : pb::IMessage<Extra>
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        , pb::IBufferMessage
+    #endif
+    {
+      private static readonly pb::MessageParser<Extra> _parser = new pb::MessageParser<Extra>(() => new Extra());
+      private pb::UnknownFieldSet _unknownFields;
+      private int _hasBits0;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public static pb::MessageParser<Extra> Parser { get { return _parser; } }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public static pbr::MessageDescriptor Descriptor {
+        get { return global::CMsgTEFireBullets.Descriptor.NestedTypes[0]; }
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      pbr::MessageDescriptor pb::IMessage.Descriptor {
+        get { return Descriptor; }
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public Extra() {
+        OnConstruction();
+      }
+
+      partial void OnConstruction();
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public Extra(Extra other) : this() {
+        _hasBits0 = other._hasBits0;
+        aimPunch_ = other.aimPunch_ != null ? other.aimPunch_.Clone() : null;
+        attackTickCount_ = other.attackTickCount_;
+        attackTickFrac_ = other.attackTickFrac_;
+        renderTickCount_ = other.renderTickCount_;
+        renderTickFrac_ = other.renderTickFrac_;
+        inaccuracyMove_ = other.inaccuracyMove_;
+        inaccuracyAir_ = other.inaccuracyAir_;
+        type_ = other.type_;
+        _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public Extra Clone() {
+        return new Extra(this);
+      }
+
+      /// <summary>Field number for the "aim_punch" field.</summary>
+      public const int AimPunchFieldNumber = 1;
+      private global::CMsgQAngle aimPunch_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public global::CMsgQAngle AimPunch {
+        get { return aimPunch_; }
+        set {
+          aimPunch_ = value;
+        }
+      }
+
+      /// <summary>Field number for the "attack_tick_count" field.</summary>
+      public const int AttackTickCountFieldNumber = 2;
+      private readonly static int AttackTickCountDefaultValue = 0;
+
+      private int attackTickCount_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public int AttackTickCount {
+        get { if ((_hasBits0 & 1) != 0) { return attackTickCount_; } else { return AttackTickCountDefaultValue; } }
+        set {
+          _hasBits0 |= 1;
+          attackTickCount_ = value;
+        }
+      }
+      /// <summary>Gets whether the "attack_tick_count" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasAttackTickCount {
+        get { return (_hasBits0 & 1) != 0; }
+      }
+      /// <summary>Clears the value of the "attack_tick_count" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearAttackTickCount() {
+        _hasBits0 &= ~1;
+      }
+
+      /// <summary>Field number for the "attack_tick_frac" field.</summary>
+      public const int AttackTickFracFieldNumber = 3;
+      private readonly static float AttackTickFracDefaultValue = 0F;
+
+      private float attackTickFrac_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public float AttackTickFrac {
+        get { if ((_hasBits0 & 2) != 0) { return attackTickFrac_; } else { return AttackTickFracDefaultValue; } }
+        set {
+          _hasBits0 |= 2;
+          attackTickFrac_ = value;
+        }
+      }
+      /// <summary>Gets whether the "attack_tick_frac" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasAttackTickFrac {
+        get { return (_hasBits0 & 2) != 0; }
+      }
+      /// <summary>Clears the value of the "attack_tick_frac" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearAttackTickFrac() {
+        _hasBits0 &= ~2;
+      }
+
+      /// <summary>Field number for the "render_tick_count" field.</summary>
+      public const int RenderTickCountFieldNumber = 4;
+      private readonly static int RenderTickCountDefaultValue = 0;
+
+      private int renderTickCount_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public int RenderTickCount {
+        get { if ((_hasBits0 & 4) != 0) { return renderTickCount_; } else { return RenderTickCountDefaultValue; } }
+        set {
+          _hasBits0 |= 4;
+          renderTickCount_ = value;
+        }
+      }
+      /// <summary>Gets whether the "render_tick_count" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasRenderTickCount {
+        get { return (_hasBits0 & 4) != 0; }
+      }
+      /// <summary>Clears the value of the "render_tick_count" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearRenderTickCount() {
+        _hasBits0 &= ~4;
+      }
+
+      /// <summary>Field number for the "render_tick_frac" field.</summary>
+      public const int RenderTickFracFieldNumber = 5;
+      private readonly static float RenderTickFracDefaultValue = 0F;
+
+      private float renderTickFrac_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public float RenderTickFrac {
+        get { if ((_hasBits0 & 8) != 0) { return renderTickFrac_; } else { return RenderTickFracDefaultValue; } }
+        set {
+          _hasBits0 |= 8;
+          renderTickFrac_ = value;
+        }
+      }
+      /// <summary>Gets whether the "render_tick_frac" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasRenderTickFrac {
+        get { return (_hasBits0 & 8) != 0; }
+      }
+      /// <summary>Clears the value of the "render_tick_frac" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearRenderTickFrac() {
+        _hasBits0 &= ~8;
+      }
+
+      /// <summary>Field number for the "inaccuracy_move" field.</summary>
+      public const int InaccuracyMoveFieldNumber = 6;
+      private readonly static float InaccuracyMoveDefaultValue = 0F;
+
+      private float inaccuracyMove_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public float InaccuracyMove {
+        get { if ((_hasBits0 & 16) != 0) { return inaccuracyMove_; } else { return InaccuracyMoveDefaultValue; } }
+        set {
+          _hasBits0 |= 16;
+          inaccuracyMove_ = value;
+        }
+      }
+      /// <summary>Gets whether the "inaccuracy_move" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasInaccuracyMove {
+        get { return (_hasBits0 & 16) != 0; }
+      }
+      /// <summary>Clears the value of the "inaccuracy_move" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearInaccuracyMove() {
+        _hasBits0 &= ~16;
+      }
+
+      /// <summary>Field number for the "inaccuracy_air" field.</summary>
+      public const int InaccuracyAirFieldNumber = 7;
+      private readonly static float InaccuracyAirDefaultValue = 0F;
+
+      private float inaccuracyAir_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public float InaccuracyAir {
+        get { if ((_hasBits0 & 32) != 0) { return inaccuracyAir_; } else { return InaccuracyAirDefaultValue; } }
+        set {
+          _hasBits0 |= 32;
+          inaccuracyAir_ = value;
+        }
+      }
+      /// <summary>Gets whether the "inaccuracy_air" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasInaccuracyAir {
+        get { return (_hasBits0 & 32) != 0; }
+      }
+      /// <summary>Clears the value of the "inaccuracy_air" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearInaccuracyAir() {
+        _hasBits0 &= ~32;
+      }
+
+      /// <summary>Field number for the "type" field.</summary>
+      public const int TypeFieldNumber = 8;
+      private readonly static int TypeDefaultValue = 0;
+
+      private int type_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public int Type {
+        get { if ((_hasBits0 & 64) != 0) { return type_; } else { return TypeDefaultValue; } }
+        set {
+          _hasBits0 |= 64;
+          type_ = value;
+        }
+      }
+      /// <summary>Gets whether the "type" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasType {
+        get { return (_hasBits0 & 64) != 0; }
+      }
+      /// <summary>Clears the value of the "type" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearType() {
+        _hasBits0 &= ~64;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override bool Equals(object other) {
+        return Equals(other as Extra);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool Equals(Extra other) {
+        if (ReferenceEquals(other, null)) {
+          return false;
+        }
+        if (ReferenceEquals(other, this)) {
+          return true;
+        }
+        if (!object.Equals(AimPunch, other.AimPunch)) return false;
+        if (AttackTickCount != other.AttackTickCount) return false;
+        if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackTickFrac, other.AttackTickFrac)) return false;
+        if (RenderTickCount != other.RenderTickCount) return false;
+        if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RenderTickFrac, other.RenderTickFrac)) return false;
+        if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(InaccuracyMove, other.InaccuracyMove)) return false;
+        if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(InaccuracyAir, other.InaccuracyAir)) return false;
+        if (Type != other.Type) return false;
+        return Equals(_unknownFields, other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override int GetHashCode() {
+        int hash = 1;
+        if (aimPunch_ != null) hash ^= AimPunch.GetHashCode();
+        if (HasAttackTickCount) hash ^= AttackTickCount.GetHashCode();
+        if (HasAttackTickFrac) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackTickFrac);
+        if (HasRenderTickCount) hash ^= RenderTickCount.GetHashCode();
+        if (HasRenderTickFrac) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RenderTickFrac);
+        if (HasInaccuracyMove) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(InaccuracyMove);
+        if (HasInaccuracyAir) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(InaccuracyAir);
+        if (HasType) hash ^= Type.GetHashCode();
+        if (_unknownFields != null) {
+          hash ^= _unknownFields.GetHashCode();
+        }
+        return hash;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override string ToString() {
+        return pb::JsonFormatter.ToDiagnosticString(this);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void WriteTo(pb::CodedOutputStream output) {
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        output.WriteRawMessage(this);
+      #else
+        if (aimPunch_ != null) {
+          output.WriteRawTag(10);
+          output.WriteMessage(AimPunch);
+        }
+        if (HasAttackTickCount) {
+          output.WriteRawTag(16);
+          output.WriteInt32(AttackTickCount);
+        }
+        if (HasAttackTickFrac) {
+          output.WriteRawTag(29);
+          output.WriteFloat(AttackTickFrac);
+        }
+        if (HasRenderTickCount) {
+          output.WriteRawTag(32);
+          output.WriteInt32(RenderTickCount);
+        }
+        if (HasRenderTickFrac) {
+          output.WriteRawTag(45);
+          output.WriteFloat(RenderTickFrac);
+        }
+        if (HasInaccuracyMove) {
+          output.WriteRawTag(53);
+          output.WriteFloat(InaccuracyMove);
+        }
+        if (HasInaccuracyAir) {
+          output.WriteRawTag(61);
+          output.WriteFloat(InaccuracyAir);
+        }
+        if (HasType) {
+          output.WriteRawTag(64);
+          output.WriteInt32(Type);
+        }
+        if (_unknownFields != null) {
+          _unknownFields.WriteTo(output);
+        }
+      #endif
+      }
+
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+        if (aimPunch_ != null) {
+          output.WriteRawTag(10);
+          output.WriteMessage(AimPunch);
+        }
+        if (HasAttackTickCount) {
+          output.WriteRawTag(16);
+          output.WriteInt32(AttackTickCount);
+        }
+        if (HasAttackTickFrac) {
+          output.WriteRawTag(29);
+          output.WriteFloat(AttackTickFrac);
+        }
+        if (HasRenderTickCount) {
+          output.WriteRawTag(32);
+          output.WriteInt32(RenderTickCount);
+        }
+        if (HasRenderTickFrac) {
+          output.WriteRawTag(45);
+          output.WriteFloat(RenderTickFrac);
+        }
+        if (HasInaccuracyMove) {
+          output.WriteRawTag(53);
+          output.WriteFloat(InaccuracyMove);
+        }
+        if (HasInaccuracyAir) {
+          output.WriteRawTag(61);
+          output.WriteFloat(InaccuracyAir);
+        }
+        if (HasType) {
+          output.WriteRawTag(64);
+          output.WriteInt32(Type);
+        }
+        if (_unknownFields != null) {
+          _unknownFields.WriteTo(ref output);
+        }
+      }
+      #endif
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public int CalculateSize() {
+        int size = 0;
+        if (aimPunch_ != null) {
+          size += 1 + pb::CodedOutputStream.ComputeMessageSize(AimPunch);
+        }
+        if (HasAttackTickCount) {
+          size += 1 + pb::CodedOutputStream.ComputeInt32Size(AttackTickCount);
+        }
+        if (HasAttackTickFrac) {
+          size += 1 + 4;
+        }
+        if (HasRenderTickCount) {
+          size += 1 + pb::CodedOutputStream.ComputeInt32Size(RenderTickCount);
+        }
+        if (HasRenderTickFrac) {
+          size += 1 + 4;
+        }
+        if (HasInaccuracyMove) {
+          size += 1 + 4;
+        }
+        if (HasInaccuracyAir) {
+          size += 1 + 4;
+        }
+        if (HasType) {
+          size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
+        }
+        if (_unknownFields != null) {
+          size += _unknownFields.CalculateSize();
+        }
+        return size;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void MergeFrom(Extra other) {
+        if (other == null) {
+          return;
+        }
+        if (other.aimPunch_ != null) {
+          if (aimPunch_ == null) {
+            AimPunch = new global::CMsgQAngle();
+          }
+          AimPunch.MergeFrom(other.AimPunch);
+        }
+        if (other.HasAttackTickCount) {
+          AttackTickCount = other.AttackTickCount;
+        }
+        if (other.HasAttackTickFrac) {
+          AttackTickFrac = other.AttackTickFrac;
+        }
+        if (other.HasRenderTickCount) {
+          RenderTickCount = other.RenderTickCount;
+        }
+        if (other.HasRenderTickFrac) {
+          RenderTickFrac = other.RenderTickFrac;
+        }
+        if (other.HasInaccuracyMove) {
+          InaccuracyMove = other.InaccuracyMove;
+        }
+        if (other.HasInaccuracyAir) {
+          InaccuracyAir = other.InaccuracyAir;
+        }
+        if (other.HasType) {
+          Type = other.Type;
+        }
+        _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void MergeFrom(pb::CodedInputStream input) {
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        input.ReadRawMessage(this);
+      #else
+        uint tag;
+        while ((tag = input.ReadTag()) != 0) {
+          switch(tag) {
+            default:
+              _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+              break;
+            case 10: {
+              if (aimPunch_ == null) {
+                AimPunch = new global::CMsgQAngle();
+              }
+              input.ReadMessage(AimPunch);
+              break;
+            }
+            case 16: {
+              AttackTickCount = input.ReadInt32();
+              break;
+            }
+            case 29: {
+              AttackTickFrac = input.ReadFloat();
+              break;
+            }
+            case 32: {
+              RenderTickCount = input.ReadInt32();
+              break;
+            }
+            case 45: {
+              RenderTickFrac = input.ReadFloat();
+              break;
+            }
+            case 53: {
+              InaccuracyMove = input.ReadFloat();
+              break;
+            }
+            case 61: {
+              InaccuracyAir = input.ReadFloat();
+              break;
+            }
+            case 64: {
+              Type = input.ReadInt32();
+              break;
+            }
+          }
+        }
+      #endif
+      }
+
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+        uint tag;
+        while ((tag = input.ReadTag()) != 0) {
+          switch(tag) {
+            default:
+              _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+              break;
+            case 10: {
+              if (aimPunch_ == null) {
+                AimPunch = new global::CMsgQAngle();
+              }
+              input.ReadMessage(AimPunch);
+              break;
+            }
+            case 16: {
+              AttackTickCount = input.ReadInt32();
+              break;
+            }
+            case 29: {
+              AttackTickFrac = input.ReadFloat();
+              break;
+            }
+            case 32: {
+              RenderTickCount = input.ReadInt32();
+              break;
+            }
+            case 45: {
+              RenderTickFrac = input.ReadFloat();
+              break;
+            }
+            case 53: {
+              InaccuracyMove = input.ReadFloat();
+              break;
+            }
+            case 61: {
+              InaccuracyAir = input.ReadFloat();
+              break;
+            }
+            case 64: {
+              Type = input.ReadInt32();
+              break;
+            }
+          }
+        }
+      }
+      #endif
+
+    }
+
+  }
+  #endregion
+
+}
+
+public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletHit>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CMsgPlayerBulletHit> _parser = new pb::MessageParser<CMsgPlayerBulletHit>(() => new CMsgPlayerBulletHit());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CMsgPlayerBulletHit> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::CsGameeventsReflection.Descriptor.MessageTypes[3]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgPlayerBulletHit() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgPlayerBulletHit(CMsgPlayerBulletHit other) : this() {
+    _hasBits0 = other._hasBits0;
+    attackerSlot_ = other.attackerSlot_;
+    victimSlot_ = other.victimSlot_;
+    victimPos_ = other.victimPos_ != null ? other.victimPos_.Clone() : null;
+    hitGroup_ = other.hitGroup_;
+    damage_ = other.damage_;
+    penetrationCount_ = other.penetrationCount_;
+    isKill_ = other.isKill_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgPlayerBulletHit Clone() {
+    return new CMsgPlayerBulletHit(this);
+  }
+
+  /// <summary>Field number for the "attacker_slot" field.</summary>
+  public const int AttackerSlotFieldNumber = 1;
+  private readonly static int AttackerSlotDefaultValue = -1;
+
+  private int attackerSlot_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int AttackerSlot {
+    get { if ((_hasBits0 & 1) != 0) { return attackerSlot_; } else { return AttackerSlotDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      attackerSlot_ = value;
+    }
+  }
+  /// <summary>Gets whether the "attacker_slot" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasAttackerSlot {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "attacker_slot" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearAttackerSlot() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "victim_slot" field.</summary>
+  public const int VictimSlotFieldNumber = 2;
+  private readonly static int VictimSlotDefaultValue = -1;
+
+  private int victimSlot_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int VictimSlot {
+    get { if ((_hasBits0 & 2) != 0) { return victimSlot_; } else { return VictimSlotDefaultValue; } }
+    set {
+      _hasBits0 |= 2;
+      victimSlot_ = value;
+    }
+  }
+  /// <summary>Gets whether the "victim_slot" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasVictimSlot {
+    get { return (_hasBits0 & 2) != 0; }
+  }
+  /// <summary>Clears the value of the "victim_slot" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearVictimSlot() {
+    _hasBits0 &= ~2;
+  }
+
+  /// <summary>Field number for the "victim_pos" field.</summary>
+  public const int VictimPosFieldNumber = 3;
+  private global::CMsgVector victimPos_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CMsgVector VictimPos {
+    get { return victimPos_; }
+    set {
+      victimPos_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "hit_group" field.</summary>
+  public const int HitGroupFieldNumber = 4;
+  private readonly static int HitGroupDefaultValue = 0;
+
+  private int hitGroup_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int HitGroup {
+    get { if ((_hasBits0 & 4) != 0) { return hitGroup_; } else { return HitGroupDefaultValue; } }
+    set {
+      _hasBits0 |= 4;
+      hitGroup_ = value;
+    }
+  }
+  /// <summary>Gets whether the "hit_group" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasHitGroup {
+    get { return (_hasBits0 & 4) != 0; }
+  }
+  /// <summary>Clears the value of the "hit_group" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearHitGroup() {
+    _hasBits0 &= ~4;
+  }
+
+  /// <summary>Field number for the "damage" field.</summary>
+  public const int DamageFieldNumber = 5;
+  private readonly static int DamageDefaultValue = 0;
+
+  private int damage_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Damage {
+    get { if ((_hasBits0 & 8) != 0) { return damage_; } else { return DamageDefaultValue; } }
+    set {
+      _hasBits0 |= 8;
+      damage_ = value;
+    }
+  }
+  /// <summary>Gets whether the "damage" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasDamage {
+    get { return (_hasBits0 & 8) != 0; }
+  }
+  /// <summary>Clears the value of the "damage" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearDamage() {
+    _hasBits0 &= ~8;
+  }
+
+  /// <summary>Field number for the "penetration_count" field.</summary>
+  public const int PenetrationCountFieldNumber = 6;
+  private readonly static int PenetrationCountDefaultValue = 0;
+
+  private int penetrationCount_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int PenetrationCount {
+    get { if ((_hasBits0 & 16) != 0) { return penetrationCount_; } else { return PenetrationCountDefaultValue; } }
+    set {
+      _hasBits0 |= 16;
+      penetrationCount_ = value;
+    }
+  }
+  /// <summary>Gets whether the "penetration_count" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasPenetrationCount {
+    get { return (_hasBits0 & 16) != 0; }
+  }
+  /// <summary>Clears the value of the "penetration_count" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearPenetrationCount() {
+    _hasBits0 &= ~16;
+  }
+
+  /// <summary>Field number for the "is_kill" field.</summary>
+  public const int IsKillFieldNumber = 7;
+  private readonly static bool IsKillDefaultValue = false;
+
+  private bool isKill_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool IsKill {
+    get { if ((_hasBits0 & 32) != 0) { return isKill_; } else { return IsKillDefaultValue; } }
+    set {
+      _hasBits0 |= 32;
+      isKill_ = value;
+    }
+  }
+  /// <summary>Gets whether the "is_kill" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasIsKill {
+    get { return (_hasBits0 & 32) != 0; }
+  }
+  /// <summary>Clears the value of the "is_kill" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearIsKill() {
+    _hasBits0 &= ~32;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CMsgPlayerBulletHit);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CMsgPlayerBulletHit other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (AttackerSlot != other.AttackerSlot) return false;
+    if (VictimSlot != other.VictimSlot) return false;
+    if (!object.Equals(VictimPos, other.VictimPos)) return false;
+    if (HitGroup != other.HitGroup) return false;
+    if (Damage != other.Damage) return false;
+    if (PenetrationCount != other.PenetrationCount) return false;
+    if (IsKill != other.IsKill) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasAttackerSlot) hash ^= AttackerSlot.GetHashCode();
+    if (HasVictimSlot) hash ^= VictimSlot.GetHashCode();
+    if (victimPos_ != null) hash ^= VictimPos.GetHashCode();
+    if (HasHitGroup) hash ^= HitGroup.GetHashCode();
+    if (HasDamage) hash ^= Damage.GetHashCode();
+    if (HasPenetrationCount) hash ^= PenetrationCount.GetHashCode();
+    if (HasIsKill) hash ^= IsKill.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasAttackerSlot) {
+      output.WriteRawTag(8);
+      output.WriteInt32(AttackerSlot);
+    }
+    if (HasVictimSlot) {
+      output.WriteRawTag(16);
+      output.WriteInt32(VictimSlot);
+    }
+    if (victimPos_ != null) {
+      output.WriteRawTag(26);
+      output.WriteMessage(VictimPos);
+    }
+    if (HasHitGroup) {
+      output.WriteRawTag(32);
+      output.WriteInt32(HitGroup);
+    }
+    if (HasDamage) {
+      output.WriteRawTag(40);
+      output.WriteInt32(Damage);
+    }
+    if (HasPenetrationCount) {
+      output.WriteRawTag(48);
+      output.WriteInt32(PenetrationCount);
+    }
+    if (HasIsKill) {
+      output.WriteRawTag(56);
+      output.WriteBool(IsKill);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasAttackerSlot) {
+      output.WriteRawTag(8);
+      output.WriteInt32(AttackerSlot);
+    }
+    if (HasVictimSlot) {
+      output.WriteRawTag(16);
+      output.WriteInt32(VictimSlot);
+    }
+    if (victimPos_ != null) {
+      output.WriteRawTag(26);
+      output.WriteMessage(VictimPos);
+    }
+    if (HasHitGroup) {
+      output.WriteRawTag(32);
+      output.WriteInt32(HitGroup);
+    }
+    if (HasDamage) {
+      output.WriteRawTag(40);
+      output.WriteInt32(Damage);
+    }
+    if (HasPenetrationCount) {
+      output.WriteRawTag(48);
+      output.WriteInt32(PenetrationCount);
+    }
+    if (HasIsKill) {
+      output.WriteRawTag(56);
+      output.WriteBool(IsKill);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasAttackerSlot) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(AttackerSlot);
+    }
+    if (HasVictimSlot) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(VictimSlot);
+    }
+    if (victimPos_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(VictimPos);
+    }
+    if (HasHitGroup) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(HitGroup);
+    }
+    if (HasDamage) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Damage);
+    }
+    if (HasPenetrationCount) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(PenetrationCount);
+    }
+    if (HasIsKill) {
+      size += 1 + 1;
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CMsgPlayerBulletHit other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasAttackerSlot) {
+      AttackerSlot = other.AttackerSlot;
+    }
+    if (other.HasVictimSlot) {
+      VictimSlot = other.VictimSlot;
+    }
+    if (other.victimPos_ != null) {
+      if (victimPos_ == null) {
+        VictimPos = new global::CMsgVector();
+      }
+      VictimPos.MergeFrom(other.VictimPos);
+    }
+    if (other.HasHitGroup) {
+      HitGroup = other.HitGroup;
+    }
+    if (other.HasDamage) {
+      Damage = other.Damage;
+    }
+    if (other.HasPenetrationCount) {
+      PenetrationCount = other.PenetrationCount;
+    }
+    if (other.HasIsKill) {
+      IsKill = other.IsKill;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          AttackerSlot = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          VictimSlot = input.ReadInt32();
+          break;
+        }
+        case 26: {
+          if (victimPos_ == null) {
+            VictimPos = new global::CMsgVector();
+          }
+          input.ReadMessage(VictimPos);
+          break;
+        }
+        case 32: {
+          HitGroup = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          Damage = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          PenetrationCount = input.ReadInt32();
+          break;
+        }
+        case 56: {
+          IsKill = input.ReadBool();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          AttackerSlot = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          VictimSlot = input.ReadInt32();
+          break;
+        }
+        case 26: {
+          if (victimPos_ == null) {
+            VictimPos = new global::CMsgVector();
+          }
+          input.ReadMessage(VictimPos);
+          break;
+        }
+        case 32: {
+          HitGroup = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          Damage = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          PenetrationCount = input.ReadInt32();
+          break;
+        }
+        case 56: {
+          IsKill = input.ReadBool();
           break;
         }
       }

@@ -199,6 +199,9 @@ extern CSVCMsg_HltvReplayDefaultTypeInternal _CSVCMsg_HltvReplay_default_instanc
 class CSVCMsg_Menu;
 struct CSVCMsg_MenuDefaultTypeInternal;
 extern CSVCMsg_MenuDefaultTypeInternal _CSVCMsg_Menu_default_instance_;
+class CSVCMsg_NextMsgPredicted;
+struct CSVCMsg_NextMsgPredictedDefaultTypeInternal;
+extern CSVCMsg_NextMsgPredictedDefaultTypeInternal _CSVCMsg_NextMsgPredicted_default_instance_;
 class CSVCMsg_PacketEntities;
 struct CSVCMsg_PacketEntitiesDefaultTypeInternal;
 extern CSVCMsg_PacketEntitiesDefaultTypeInternal _CSVCMsg_PacketEntities_default_instance_;
@@ -341,6 +344,7 @@ template<> ::CSVCMsg_HLTVStatus* Arena::CreateMaybeMessage<::CSVCMsg_HLTVStatus>
 template<> ::CSVCMsg_HltvFixupOperatorStatus* Arena::CreateMaybeMessage<::CSVCMsg_HltvFixupOperatorStatus>(Arena*);
 template<> ::CSVCMsg_HltvReplay* Arena::CreateMaybeMessage<::CSVCMsg_HltvReplay>(Arena*);
 template<> ::CSVCMsg_Menu* Arena::CreateMaybeMessage<::CSVCMsg_Menu>(Arena*);
+template<> ::CSVCMsg_NextMsgPredicted* Arena::CreateMaybeMessage<::CSVCMsg_NextMsgPredicted>(Arena*);
 template<> ::CSVCMsg_PacketEntities* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities>(Arena*);
 template<> ::CSVCMsg_PacketEntities_alternate_baseline_t* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities_alternate_baseline_t>(Arena*);
 template<> ::CSVCMsg_PacketEntities_non_transmitted_entities_t* Arena::CreateMaybeMessage<::CSVCMsg_PacketEntities_non_transmitted_entities_t>(Arena*);
@@ -461,11 +465,12 @@ enum SVC_Messages : int {
   svc_UserMessage = 72,
   svc_Broadcast_Command = 74,
   svc_HltvFixupOperatorStatus = 75,
-  svc_UserCmds = 76
+  svc_UserCmds = 76,
+  svc_NextMsgPredicted = 77
 };
 bool SVC_Messages_IsValid(int value);
 constexpr SVC_Messages SVC_Messages_MIN = svc_ServerInfo;
-constexpr SVC_Messages SVC_Messages_MAX = svc_UserCmds;
+constexpr SVC_Messages SVC_Messages_MAX = svc_NextMsgPredicted;
 constexpr int SVC_Messages_ARRAYSIZE = SVC_Messages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SVC_Messages_descriptor();
@@ -19026,6 +19031,181 @@ class CSVCMsg_UserCommands /*final*/ :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CSVCMsg_NextMsgPredicted /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_NextMsgPredicted) */ {
+ public:
+  inline CSVCMsg_NextMsgPredicted() : CSVCMsg_NextMsgPredicted(nullptr) {}
+  ~CSVCMsg_NextMsgPredicted() override;
+  explicit PROTOBUF_CONSTEXPR CSVCMsg_NextMsgPredicted(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSVCMsg_NextMsgPredicted(const CSVCMsg_NextMsgPredicted& from);
+  CSVCMsg_NextMsgPredicted(CSVCMsg_NextMsgPredicted&& from) noexcept
+    : CSVCMsg_NextMsgPredicted() {
+    *this = ::std::move(from);
+  }
+
+  inline CSVCMsg_NextMsgPredicted& operator=(const CSVCMsg_NextMsgPredicted& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSVCMsg_NextMsgPredicted& operator=(CSVCMsg_NextMsgPredicted&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSVCMsg_NextMsgPredicted& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSVCMsg_NextMsgPredicted* internal_default_instance() {
+    return reinterpret_cast<const CSVCMsg_NextMsgPredicted*>(
+               &_CSVCMsg_NextMsgPredicted_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    81;
+
+  friend void swap(CSVCMsg_NextMsgPredicted& a, CSVCMsg_NextMsgPredicted& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSVCMsg_NextMsgPredicted* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSVCMsg_NextMsgPredicted* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSVCMsg_NextMsgPredicted* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSVCMsg_NextMsgPredicted>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSVCMsg_NextMsgPredicted& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSVCMsg_NextMsgPredicted& from) {
+    CSVCMsg_NextMsgPredicted::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSVCMsg_NextMsgPredicted* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSVCMsg_NextMsgPredicted";
+  }
+  protected:
+  explicit CSVCMsg_NextMsgPredicted(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMessageTypeIdFieldNumber = 2,
+    kPredictedByPlayerSlotFieldNumber = 1,
+  };
+  // optional uint32 message_type_id = 2;
+  bool has_message_type_id() const;
+  private:
+  bool _internal_has_message_type_id() const;
+  public:
+  void clear_message_type_id();
+  uint32_t message_type_id() const;
+  void set_message_type_id(uint32_t value);
+  private:
+  uint32_t _internal_message_type_id() const;
+  void _internal_set_message_type_id(uint32_t value);
+  public:
+
+  // optional int32 predicted_by_player_slot = 1 [default = -1];
+  bool has_predicted_by_player_slot() const;
+  private:
+  bool _internal_has_predicted_by_player_slot() const;
+  public:
+  void clear_predicted_by_player_slot();
+  int32_t predicted_by_player_slot() const;
+  void set_predicted_by_player_slot(int32_t value);
+  private:
+  int32_t _internal_predicted_by_player_slot() const;
+  void _internal_set_predicted_by_player_slot(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSVCMsg_NextMsgPredicted)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t message_type_id_;
+    int32_t predicted_by_player_slot_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
 // ===================================================================
 
 
@@ -34415,9 +34595,71 @@ CSVCMsg_UserCommands::commands() const {
   return _impl_.commands_;
 }
 
+// -------------------------------------------------------------------
+
+// CSVCMsg_NextMsgPredicted
+
+// optional int32 predicted_by_player_slot = 1 [default = -1];
+inline bool CSVCMsg_NextMsgPredicted::_internal_has_predicted_by_player_slot() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSVCMsg_NextMsgPredicted::has_predicted_by_player_slot() const {
+  return _internal_has_predicted_by_player_slot();
+}
+inline void CSVCMsg_NextMsgPredicted::clear_predicted_by_player_slot() {
+  _impl_.predicted_by_player_slot_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CSVCMsg_NextMsgPredicted::_internal_predicted_by_player_slot() const {
+  return _impl_.predicted_by_player_slot_;
+}
+inline int32_t CSVCMsg_NextMsgPredicted::predicted_by_player_slot() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_NextMsgPredicted.predicted_by_player_slot)
+  return _internal_predicted_by_player_slot();
+}
+inline void CSVCMsg_NextMsgPredicted::_internal_set_predicted_by_player_slot(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.predicted_by_player_slot_ = value;
+}
+inline void CSVCMsg_NextMsgPredicted::set_predicted_by_player_slot(int32_t value) {
+  _internal_set_predicted_by_player_slot(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_NextMsgPredicted.predicted_by_player_slot)
+}
+
+// optional uint32 message_type_id = 2;
+inline bool CSVCMsg_NextMsgPredicted::_internal_has_message_type_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSVCMsg_NextMsgPredicted::has_message_type_id() const {
+  return _internal_has_message_type_id();
+}
+inline void CSVCMsg_NextMsgPredicted::clear_message_type_id() {
+  _impl_.message_type_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CSVCMsg_NextMsgPredicted::_internal_message_type_id() const {
+  return _impl_.message_type_id_;
+}
+inline uint32_t CSVCMsg_NextMsgPredicted::message_type_id() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_NextMsgPredicted.message_type_id)
+  return _internal_message_type_id();
+}
+inline void CSVCMsg_NextMsgPredicted::_internal_set_message_type_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.message_type_id_ = value;
+}
+inline void CSVCMsg_NextMsgPredicted::set_message_type_id(uint32_t value) {
+  _internal_set_message_type_id(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_NextMsgPredicted.message_type_id)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -1469,7 +1469,22 @@ struct CSVCMsg_UserCommandsDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSVCMsg_UserCommandsDefaultTypeInternal _CSVCMsg_UserCommands_default_instance_;
-static ::_pb::Metadata file_level_metadata_netmessages_2eproto[81];
+PROTOBUF_CONSTEXPR CSVCMsg_NextMsgPredicted::CSVCMsg_NextMsgPredicted(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.message_type_id_)*/0u
+  , /*decltype(_impl_.predicted_by_player_slot_)*/-1} {}
+struct CSVCMsg_NextMsgPredictedDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSVCMsg_NextMsgPredictedDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSVCMsg_NextMsgPredictedDefaultTypeInternal() {}
+  union {
+    CSVCMsg_NextMsgPredicted _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSVCMsg_NextMsgPredictedDefaultTypeInternal _CSVCMsg_NextMsgPredicted_default_instance_;
+static ::_pb::Metadata file_level_metadata_netmessages_2eproto[82];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_netmessages_2eproto[13];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_netmessages_2eproto = nullptr;
 
@@ -2751,6 +2766,16 @@ const uint32_t TableStruct_netmessages_2eproto::offsets[] PROTOBUF_SECTION_VARIA
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_UserCommands, _impl_.commands_),
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_NextMsgPredicted, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_NextMsgPredicted, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_NextMsgPredicted, _impl_.predicted_by_player_slot_),
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_NextMsgPredicted, _impl_.message_type_id_),
+  1,
+  0,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 11, -1, sizeof(::CCLCMsg_ClientInfo)},
@@ -2834,6 +2859,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 1244, 1252, -1, sizeof(::CSVCMsg_HltvFixupOperatorStatus)},
   { 1254, 1265, -1, sizeof(::CMsgServerUserCmd)},
   { 1270, -1, -1, sizeof(::CSVCMsg_UserCommands)},
+  { 1277, 1285, -1, sizeof(::CSVCMsg_NextMsgPredicted)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -2918,6 +2944,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CSVCMsg_HltvFixupOperatorStatus_default_instance_._instance,
   &::_CMsgServerUserCmd_default_instance_._instance,
   &::_CSVCMsg_UserCommands_default_instance_._instance,
+  &::_CSVCMsg_NextMsgPredicted_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_netmessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -3229,66 +3256,69 @@ const char descriptor_table_protodef_netmessages_2eproto[] PROTOBUF_SECTION_VARI
   "layer_slot\030\003 \001(\005:\002-1\022\034\n\024server_tick_exec"
   "uted\030\004 \001(\005\022\023\n\013client_tick\030\005 \001(\005\"<\n\024CSVCM"
   "sg_UserCommands\022$\n\010commands\030\001 \003(\0132\022.CMsg"
-  "ServerUserCmd*\313\002\n\014CLC_Messages\022\022\n\016clc_Cl"
-  "ientInfo\020\024\022\014\n\010clc_Move\020\025\022\021\n\rclc_VoiceDat"
-  "a\020\026\022\023\n\017clc_BaselineAck\020\027\022\030\n\024clc_RespondC"
-  "varValue\020\031\022\027\n\023clc_LoadingProgress\020\033\022\032\n\026c"
-  "lc_SplitPlayerConnect\020\034\022\035\n\031clc_SplitPlay"
-  "erDisconnect\020\036\022\024\n\020clc_ServerStatus\020\037\022\024\n\020"
-  "clc_RequestPause\020!\022\024\n\020clc_CmdKeyValues\020\""
-  "\022\031\n\025clc_RconServerDetails\020#\022\022\n\016clc_HltvR"
-  "eplay\020$\022\022\n\016clc_Diagnostic\020%*\227\005\n\014SVC_Mess"
-  "ages\022\022\n\016svc_ServerInfo\020(\022\033\n\027svc_Flattene"
-  "dSerializer\020)\022\021\n\rsvc_ClassInfo\020*\022\020\n\014svc_"
-  "SetPause\020+\022\031\n\025svc_CreateStringTable\020,\022\031\n"
-  "\025svc_UpdateStringTable\020-\022\021\n\rsvc_VoiceIni"
-  "t\020.\022\021\n\rsvc_VoiceData\020/\022\r\n\tsvc_Print\0200\022\016\n"
-  "\nsvc_Sounds\0201\022\017\n\013svc_SetView\0202\022\034\n\030svc_Cl"
-  "earAllStringTables\0203\022\024\n\020svc_CmdKeyValues"
-  "\0204\022\020\n\014svc_BSPDecal\0205\022\023\n\017svc_SplitScreen\020"
-  "6\022\026\n\022svc_PacketEntities\0207\022\020\n\014svc_Prefetc"
-  "h\0208\022\014\n\010svc_Menu\0209\022\024\n\020svc_GetCvarValue\020:\022"
-  "\021\n\rsvc_StopSound\020;\022\020\n\014svc_PeerList\020<\022\026\n\022"
-  "svc_PacketReliable\020=\022\022\n\016svc_HLTVStatus\020>"
-  "\022\025\n\021svc_ServerSteamID\020\?\022\026\n\022svc_FullFrame"
-  "Split\020F\022\031\n\025svc_RconServerDetails\020G\022\023\n\017sv"
-  "c_UserMessage\020H\022\031\n\025svc_Broadcast_Command"
-  "\020J\022\037\n\033svc_HltvFixupOperatorStatus\020K\022\020\n\014s"
-  "vc_UserCmds\020L*g\n\021VoiceDataFormat_t\022\032\n\026VO"
-  "ICEDATA_FORMAT_STEAM\020\000\022\033\n\027VOICEDATA_FORM"
-  "AT_ENGINE\020\001\022\031\n\025VOICEDATA_FORMAT_OPUS\020\002*B"
-  "\n\016RequestPause_t\022\014\n\010RP_PAUSE\020\000\022\016\n\nRP_UNP"
-  "AUSE\020\001\022\022\n\016RP_TOGGLEPAUSE\020\002*\035\n\014PrefetchTy"
-  "pe\022\r\n\tPFT_SOUND\020\000*V\n\027ESplitScreenMessage"
-  "Type\022\033\n\027MSG_SPLITSCREEN_ADDUSER\020\000\022\036\n\032MSG"
-  "_SPLITSCREEN_REMOVEUSER\020\001*\263\001\n\025EQueryCvar"
-  "ValueStatus\022%\n!eQueryCvarValueStatus_Val"
-  "ueIntact\020\000\022&\n\"eQueryCvarValueStatus_Cvar"
-  "NotFound\020\001\022\"\n\036eQueryCvarValueStatus_NotA"
-  "Cvar\020\002\022\'\n#eQueryCvarValueStatus_CvarProt"
-  "ected\020\003*h\n\013DIALOG_TYPE\022\016\n\nDIALOG_MSG\020\000\022\017"
-  "\n\013DIALOG_MENU\020\001\022\017\n\013DIALOG_TEXT\020\002\022\020\n\014DIAL"
-  "OG_ENTRY\020\003\022\025\n\021DIALOG_ASKCONNECT\020\004*+\n\031SVC"
-  "_Messages_LowFrequency\022\016\n\tsvc_dummy\020\330\004*y"
-  "\n\026Bidirectional_Messages\022\033\n\027bi_Rebroadca"
-  "stGameEvent\020\020\022\030\n\024bi_RebroadcastSource\020\021\022"
-  "\020\n\014bi_GameEvent\020\022\022\026\n\022bi_PredictionEvent\020"
-  "\023*M\n#Bidirectional_Messages_LowFrequency"
-  "\022\021\n\014bi_RelayInfo\020\274\005\022\023\n\016bi_RelayPacket\020\275\005"
-  "*\241\001\n\021ReplayEventType_t\022\027\n\023REPLAY_EVENT_C"
-  "ANCEL\020\000\022\026\n\022REPLAY_EVENT_DEATH\020\001\022\030\n\024REPLA"
-  "Y_EVENT_GENERIC\020\002\022\'\n#REPLAY_EVENT_STUCK_"
-  "NEED_FULL_UPDATE\020\003\022\030\n\024REPLAY_EVENT_VICTO"
-  "RY\020\004"
+  "ServerUserCmd\"Y\n\030CSVCMsg_NextMsgPredicte"
+  "d\022$\n\030predicted_by_player_slot\030\001 \001(\005:\002-1\022"
+  "\027\n\017message_type_id\030\002 \001(\r*\313\002\n\014CLC_Message"
+  "s\022\022\n\016clc_ClientInfo\020\024\022\014\n\010clc_Move\020\025\022\021\n\rc"
+  "lc_VoiceData\020\026\022\023\n\017clc_BaselineAck\020\027\022\030\n\024c"
+  "lc_RespondCvarValue\020\031\022\027\n\023clc_LoadingProg"
+  "ress\020\033\022\032\n\026clc_SplitPlayerConnect\020\034\022\035\n\031cl"
+  "c_SplitPlayerDisconnect\020\036\022\024\n\020clc_ServerS"
+  "tatus\020\037\022\024\n\020clc_RequestPause\020!\022\024\n\020clc_Cmd"
+  "KeyValues\020\"\022\031\n\025clc_RconServerDetails\020#\022\022"
+  "\n\016clc_HltvReplay\020$\022\022\n\016clc_Diagnostic\020%*\261"
+  "\005\n\014SVC_Messages\022\022\n\016svc_ServerInfo\020(\022\033\n\027s"
+  "vc_FlattenedSerializer\020)\022\021\n\rsvc_ClassInf"
+  "o\020*\022\020\n\014svc_SetPause\020+\022\031\n\025svc_CreateStrin"
+  "gTable\020,\022\031\n\025svc_UpdateStringTable\020-\022\021\n\rs"
+  "vc_VoiceInit\020.\022\021\n\rsvc_VoiceData\020/\022\r\n\tsvc"
+  "_Print\0200\022\016\n\nsvc_Sounds\0201\022\017\n\013svc_SetView\020"
+  "2\022\034\n\030svc_ClearAllStringTables\0203\022\024\n\020svc_C"
+  "mdKeyValues\0204\022\020\n\014svc_BSPDecal\0205\022\023\n\017svc_S"
+  "plitScreen\0206\022\026\n\022svc_PacketEntities\0207\022\020\n\014"
+  "svc_Prefetch\0208\022\014\n\010svc_Menu\0209\022\024\n\020svc_GetC"
+  "varValue\020:\022\021\n\rsvc_StopSound\020;\022\020\n\014svc_Pee"
+  "rList\020<\022\026\n\022svc_PacketReliable\020=\022\022\n\016svc_H"
+  "LTVStatus\020>\022\025\n\021svc_ServerSteamID\020\?\022\026\n\022sv"
+  "c_FullFrameSplit\020F\022\031\n\025svc_RconServerDeta"
+  "ils\020G\022\023\n\017svc_UserMessage\020H\022\031\n\025svc_Broadc"
+  "ast_Command\020J\022\037\n\033svc_HltvFixupOperatorSt"
+  "atus\020K\022\020\n\014svc_UserCmds\020L\022\030\n\024svc_NextMsgP"
+  "redicted\020M*g\n\021VoiceDataFormat_t\022\032\n\026VOICE"
+  "DATA_FORMAT_STEAM\020\000\022\033\n\027VOICEDATA_FORMAT_"
+  "ENGINE\020\001\022\031\n\025VOICEDATA_FORMAT_OPUS\020\002*B\n\016R"
+  "equestPause_t\022\014\n\010RP_PAUSE\020\000\022\016\n\nRP_UNPAUS"
+  "E\020\001\022\022\n\016RP_TOGGLEPAUSE\020\002*\035\n\014PrefetchType\022"
+  "\r\n\tPFT_SOUND\020\000*V\n\027ESplitScreenMessageTyp"
+  "e\022\033\n\027MSG_SPLITSCREEN_ADDUSER\020\000\022\036\n\032MSG_SP"
+  "LITSCREEN_REMOVEUSER\020\001*\263\001\n\025EQueryCvarVal"
+  "ueStatus\022%\n!eQueryCvarValueStatus_ValueI"
+  "ntact\020\000\022&\n\"eQueryCvarValueStatus_CvarNot"
+  "Found\020\001\022\"\n\036eQueryCvarValueStatus_NotACva"
+  "r\020\002\022\'\n#eQueryCvarValueStatus_CvarProtect"
+  "ed\020\003*h\n\013DIALOG_TYPE\022\016\n\nDIALOG_MSG\020\000\022\017\n\013D"
+  "IALOG_MENU\020\001\022\017\n\013DIALOG_TEXT\020\002\022\020\n\014DIALOG_"
+  "ENTRY\020\003\022\025\n\021DIALOG_ASKCONNECT\020\004*+\n\031SVC_Me"
+  "ssages_LowFrequency\022\016\n\tsvc_dummy\020\330\004*y\n\026B"
+  "idirectional_Messages\022\033\n\027bi_RebroadcastG"
+  "ameEvent\020\020\022\030\n\024bi_RebroadcastSource\020\021\022\020\n\014"
+  "bi_GameEvent\020\022\022\026\n\022bi_PredictionEvent\020\023*M"
+  "\n#Bidirectional_Messages_LowFrequency\022\021\n"
+  "\014bi_RelayInfo\020\274\005\022\023\n\016bi_RelayPacket\020\275\005*\241\001"
+  "\n\021ReplayEventType_t\022\027\n\023REPLAY_EVENT_CANC"
+  "EL\020\000\022\026\n\022REPLAY_EVENT_DEATH\020\001\022\030\n\024REPLAY_E"
+  "VENT_GENERIC\020\002\022\'\n#REPLAY_EVENT_STUCK_NEE"
+  "D_FULL_UPDATE\020\003\022\030\n\024REPLAY_EVENT_VICTORY\020"
+  "\004"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_netmessages_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_netmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_netmessages_2eproto = {
-    false, false, 14324, descriptor_table_protodef_netmessages_2eproto,
+    false, false, 14441, descriptor_table_protodef_netmessages_2eproto,
     "netmessages.proto",
-    &descriptor_table_netmessages_2eproto_once, descriptor_table_netmessages_2eproto_deps, 1, 81,
+    &descriptor_table_netmessages_2eproto_once, descriptor_table_netmessages_2eproto_deps, 1, 82,
     schemas, file_default_instances, TableStruct_netmessages_2eproto::offsets,
     file_level_metadata_netmessages_2eproto, file_level_enum_descriptors_netmessages_2eproto,
     file_level_service_descriptors_netmessages_2eproto,
@@ -3382,6 +3412,7 @@ bool SVC_Messages_IsValid(int value) {
     case 74:
     case 75:
     case 76:
+    case 77:
       return true;
     default:
       return false;
@@ -31209,6 +31240,238 @@ void CSVCMsg_UserCommands::InternalSwap(CSVCMsg_UserCommands* other) {
       file_level_metadata_netmessages_2eproto[80]);
 }
 
+// ===================================================================
+
+class CSVCMsg_NextMsgPredicted::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSVCMsg_NextMsgPredicted>()._impl_._has_bits_);
+  static void set_has_predicted_by_player_slot(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_message_type_id(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+CSVCMsg_NextMsgPredicted::CSVCMsg_NextMsgPredicted(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSVCMsg_NextMsgPredicted)
+}
+CSVCMsg_NextMsgPredicted::CSVCMsg_NextMsgPredicted(const CSVCMsg_NextMsgPredicted& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSVCMsg_NextMsgPredicted* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_type_id_){}
+    , decltype(_impl_.predicted_by_player_slot_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.message_type_id_, &from._impl_.message_type_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.predicted_by_player_slot_) -
+    reinterpret_cast<char*>(&_impl_.message_type_id_)) + sizeof(_impl_.predicted_by_player_slot_));
+  // @@protoc_insertion_point(copy_constructor:CSVCMsg_NextMsgPredicted)
+}
+
+inline void CSVCMsg_NextMsgPredicted::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.message_type_id_){0u}
+    , decltype(_impl_.predicted_by_player_slot_){-1}
+  };
+}
+
+CSVCMsg_NextMsgPredicted::~CSVCMsg_NextMsgPredicted() {
+  // @@protoc_insertion_point(destructor:CSVCMsg_NextMsgPredicted)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSVCMsg_NextMsgPredicted::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void CSVCMsg_NextMsgPredicted::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSVCMsg_NextMsgPredicted::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSVCMsg_NextMsgPredicted)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    _impl_.message_type_id_ = 0u;
+    _impl_.predicted_by_player_slot_ = -1;
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSVCMsg_NextMsgPredicted::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional int32 predicted_by_player_slot = 1 [default = -1];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_predicted_by_player_slot(&has_bits);
+          _impl_.predicted_by_player_slot_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 message_type_id = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_message_type_id(&has_bits);
+          _impl_.message_type_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSVCMsg_NextMsgPredicted::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSVCMsg_NextMsgPredicted)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional int32 predicted_by_player_slot = 1 [default = -1];
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_predicted_by_player_slot(), target);
+  }
+
+  // optional uint32 message_type_id = 2;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_message_type_id(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSVCMsg_NextMsgPredicted)
+  return target;
+}
+
+size_t CSVCMsg_NextMsgPredicted::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSVCMsg_NextMsgPredicted)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional uint32 message_type_id = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_message_type_id());
+    }
+
+    // optional int32 predicted_by_player_slot = 1 [default = -1];
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_predicted_by_player_slot());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSVCMsg_NextMsgPredicted::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSVCMsg_NextMsgPredicted::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSVCMsg_NextMsgPredicted::GetClassData() const { return &_class_data_; }
+
+
+void CSVCMsg_NextMsgPredicted::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSVCMsg_NextMsgPredicted*>(&to_msg);
+  auto& from = static_cast<const CSVCMsg_NextMsgPredicted&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSVCMsg_NextMsgPredicted)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_impl_.message_type_id_ = from._impl_.message_type_id_;
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.predicted_by_player_slot_ = from._impl_.predicted_by_player_slot_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSVCMsg_NextMsgPredicted::CopyFrom(const CSVCMsg_NextMsgPredicted& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSVCMsg_NextMsgPredicted)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSVCMsg_NextMsgPredicted::IsInitialized() const {
+  return true;
+}
+
+void CSVCMsg_NextMsgPredicted::InternalSwap(CSVCMsg_NextMsgPredicted* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  swap(_impl_.message_type_id_, other->_impl_.message_type_id_);
+  swap(_impl_.predicted_by_player_slot_, other->_impl_.predicted_by_player_slot_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSVCMsg_NextMsgPredicted::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_netmessages_2eproto_getter, &descriptor_table_netmessages_2eproto_once,
+      file_level_metadata_netmessages_2eproto[81]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CCLCMsg_ClientInfo*
@@ -31534,6 +31797,10 @@ Arena::CreateMaybeMessage< ::CMsgServerUserCmd >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CSVCMsg_UserCommands*
 Arena::CreateMaybeMessage< ::CSVCMsg_UserCommands >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CSVCMsg_UserCommands >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSVCMsg_NextMsgPredicted*
+Arena::CreateMaybeMessage< ::CSVCMsg_NextMsgPredicted >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSVCMsg_NextMsgPredicted >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

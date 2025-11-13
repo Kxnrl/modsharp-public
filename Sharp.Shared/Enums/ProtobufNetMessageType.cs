@@ -229,6 +229,7 @@ public enum ProtobufNetMessageType : ushort
     GE_PlayerAnimEventId = 450,
     GE_RadioIconEventId  = 451,
     GE_FireBulletsId     = 452,
+    GE_PlayerBulletHitId = 453,
 
     /* ETEProtobufIds */
     TE_EffectDispatchId = 400,
