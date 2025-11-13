@@ -673,8 +673,21 @@ static void PatchGiveNamedItemLimit()
             if (instr.mnemonic == ZYDIS_MNEMONIC_JZ)
             {
                 SetMemoryAccess(address, instr.length, g_nReadWriteExecuteAccess);
+                auto op = &operands[0];
+                if (instr.opcode_map == ZYDIS_OPCODE_MAP_DEFAULT)
+                {
+                    *address = 0xEB;
+                }
+                else
+                {
+                    std::array<uint8_t, 5> bytes;
+                    bytes[0]           = 0xE9;
+                    int32_t new_offset = static_cast<int32_t>(op->imm.value.s) + 1;
+                    memcpy(&bytes[1], &new_offset, sizeof(new_offset));
+                    memcpy(address, bytes.data(), bytes.size());
 
-                *address = 0xEB;
+                    *(address + 5) = 0x90; // NOP opcode
+                }
                 FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(address) - modules::server->Base());
                 SetMemoryAccess(address, instr.length, g_nReadExecuteAccess);
 
