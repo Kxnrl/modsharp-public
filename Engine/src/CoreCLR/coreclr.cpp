@@ -175,6 +175,7 @@ static std::string FindDotnetRuntime()
     std::filesystem::path latest_file;
     Version               latest_file_version;
     bool                  found = false;
+    constexpr int         min_major = 10;
 
     for (const auto& search_path : s_vecSearchPaths)
     {
@@ -188,9 +189,12 @@ static std::string FindDotnetRuntime()
 
             if (Version version(entry.path().parent_path().filename().string()); version > latest_file_version)
             {
-                latest_file_version = version;
-                latest_file         = entry;
-                found               = true;
+                if (version.get(0) >= min_major)
+                {
+                    latest_file_version = version;
+                    latest_file         = entry;
+                    found               = true;
+                }
             }
         }
     }
