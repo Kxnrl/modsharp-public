@@ -10,15 +10,6 @@
 - name: Dependency Injection
   href: dependency-injection.md
 
-- name: Module API
-  href: module-api.md
-
-- name: Writing ModSharp Extensions
-  href: writing-sharp-extensions.md
-
-- name: Native Call
-  href: native-call.md
-
 - name: Listeners
   items:
     - name: IClientListener
@@ -53,7 +44,12 @@
     - name: Transmit Hook
       href: transmit.md
 
-- name: Hooks
+- name: Game Calls
+  items:
+    - name: Native Call
+      href: native-call.md
+
+- name: Game Hooks
   items:
     - name: Native Hook
       href: native-hook.md
@@ -69,6 +65,8 @@
   items:
     - name: Using Sharp Extensions
       href: sharp-extensions.md
+    - name: Writing Sharp Extensions
+      href: writing-sharp-extensions.md
     - name: IEntityHookManager
       href: entity-hook-manager.md
     - name: IGameEventManager
@@ -82,3 +80,8 @@
       href: client-preferences.md
     - name: Localizer Manager
       href: localizer-manager.md
+
+- name: Shared Interface
+  items:
+    - name: Module API
+      href: module-api.md
