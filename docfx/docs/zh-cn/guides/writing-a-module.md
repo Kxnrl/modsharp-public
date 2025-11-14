@@ -32,7 +32,7 @@
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -45,7 +45,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
 +    <AssemblyName>Example</AssemblyName>
@@ -155,7 +155,7 @@ public class Example : IModSharpModule
 
 ## 编译，安装
 
-你可以参阅[Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/core/tutorials/publishing-with-visual-studio)  
+你可以参阅[Microsoft Learn](https://learn.microsoft.com/dotnet/core/tutorials/publishing-with-visual-studio)  
 虽然说其为控制台应用，但所执行的步骤完全一致。  
 推荐使用`dotnet publish`。  
 
