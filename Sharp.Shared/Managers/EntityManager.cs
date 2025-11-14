@@ -148,6 +148,18 @@ public interface IEntityManager
     IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot);
 
     /// <summary>
+    ///     查找所有存在的PlayerController
+    /// </summary>
+    /// <param name="inGame">是否在游戏中</param>
+    IEnumerable<IPlayerController> GetPlayerControllers(bool inGame = true);
+
+    /// <summary>
+    ///     列出所有存在的PlayerController
+    /// </summary>
+    /// <param name="inGame">是否在游戏中</param>
+    List<IPlayerController> FindPlayerControllers(bool inGame = true);
+
+    /// <summary>
     ///     更新Econ实体的属性
     /// </summary>
     bool UpdateEconItemAttributes(IBaseEntity entity,

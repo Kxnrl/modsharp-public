@@ -23,6 +23,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
+using Sharp.Core.Objects;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Listeners;
@@ -30,8 +31,8 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Units;
-using Native = Sharp.Core.Bridges.Natives.Entity;
 using Forward = Sharp.Core.Bridges.Forwards.Entity;
+using Native = Sharp.Core.Bridges.Natives.Entity;
 
 namespace Sharp.Core.Managers;
 
@@ -42,6 +43,8 @@ internal class EntityManager : ICoreEntityManager
 {
     private readonly List<IEntityListener>  _listeners;
     private readonly ILogger<EntityManager> _logger;
+
+    private PlayerSlot _maxSlots;
 
     public EntityManager(ILogger<EntityManager> logger)
     {
@@ -54,6 +57,15 @@ internal class EntityManager : ICoreEntityManager
         Forward.OnEntityFollowed    += OnEntityFollowed;
         Forward.OnEntityFireOutput  += OnEntityFireOutput;
         Forward.OnEntityAcceptInput += OnEntityAcceptInput;
+
+        Bridges.Forwards.Game.OnServerInit += OnServerInit;
+    }
+
+    private void OnServerInit()
+    {
+        var globalVars = GlobalVars.Create(Bridges.Natives.Core.GetGlobals());
+
+        _maxSlots = new PlayerSlot((byte) (globalVars?.MaxClients ?? 1));
     }
 
     private void OnEntityCreated(nint ptr)
@@ -341,6 +353,42 @@ internal class EntityManager : ICoreEntityManager
     public IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot)
         => PlayerController.Create(Player.ControllerFindBySlot(slot));
 
+    public IEnumerable<IPlayerController> GetPlayerControllers(bool inGame = true)
+    {
+        for (PlayerSlot slot = 0; slot < _maxSlots; slot++)
+        {
+            if (FindPlayerControllerBySlot(slot) is not { } controller)
+            {
+                continue;
+            }
+
+            if (inGame || controller.IsConnected())
+            {
+                yield return controller;
+            }
+        }
+    }
+
+    public List<IPlayerController> FindPlayerControllers(bool inGame = true)
+    {
+        var list = new List<IPlayerController>(_maxSlots.AsPrimitive());
+
+        for (PlayerSlot slot = 0; slot < _maxSlots; slot++)
+        {
+            if (FindPlayerControllerBySlot(slot) is not { } controller)
+            {
+                continue;
+            }
+
+            if (inGame || controller.IsConnected())
+            {
+                list.Add(controller);
+            }
+        }
+
+        return list;
+    }
+
     public bool UpdateEconItemAttributes(IBaseEntity entity,
         uint                                         accountId,
         string                                       nameTag,
@@ -355,27 +403,20 @@ internal class EntityManager : ICoreEntityManager
         float                                        flSticker3,
         int                                          nSticker4,
         float                                        flSticker4)
-    {
-        if (!entity.IsValid())
-        {
-            throw new InvalidOperationException("Entity is invalid");
-        }
-
-        return Econ.UpdateItemAttributes(entity.GetAbsPtr(),
-                                         accountId,
-                                         nameTag,
-                                         paint,
-                                         pattern,
-                                         wear,
-                                         nSticker1,
-                                         flSticker1,
-                                         nSticker2,
-                                         flSticker2,
-                                         nSticker3,
-                                         flSticker3,
-                                         nSticker4,
-                                         flSticker4);
-    }
+        => Econ.UpdateItemAttributes(entity.GetAbsPtr(),
+                                     accountId,
+                                     nameTag,
+                                     paint,
+                                     pattern,
+                                     wear,
+                                     nSticker1,
+                                     flSticker1,
+                                     nSticker2,
+                                     flSticker2,
+                                     nSticker3,
+                                     flSticker3,
+                                     nSticker4,
+                                     flSticker4);
 
     public IBaseTeam? GetGlobalCStrikeTeam(CStrikeTeam team)
         => BaseTeam.Create(Native.GetGlobalCStrikeTeam(team));
