@@ -10,6 +10,13 @@
 - name: Dependency Injection
   href: dependency-injection.md
 
+- name: Module Shared API
+  items:
+    - name: Shared API
+      href: module-api.md
+    # - name: Dynamic API
+    #   href: dynamic-api.md
+
 - name: Listeners
   items:
     - name: IClientListener
@@ -80,8 +87,3 @@
       href: client-preferences.md
     - name: Localizer Manager
       href: localizer-manager.md
-
-- name: Shared Interface
-  items:
-    - name: Module API
-      href: module-api.md

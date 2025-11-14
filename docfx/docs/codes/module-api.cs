@@ -1,8 +1,15 @@
 namespace SharedInterface.Shared;
 
-public interface ISharedModule
+public interface IMySharedModule
 {
-    const string Identity = nameof(ISharedModule);
+    const string Identity = nameof(IMySharedModule);
 
     void CallMe();
+}
+
+public interface IMySecondSharedModule
+{
+    const string Identity = nameof(IMySecondSharedModule);
+
+    void CallYou();
 }
