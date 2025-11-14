@@ -9,3 +9,6 @@
 
 - name: 重新加载模块
   href: reload-module.md
+
+- name: 安装其他模块提供的API
+  href: integrating-api.md

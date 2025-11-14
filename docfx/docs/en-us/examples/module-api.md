@@ -1,5 +1,6 @@
-# Module API
-This tutorial will teach you how to write an API.
+# Module Shared API
+
+This tutorial will teach you how to write an API that can be exported for use by other modules.
 
 > [!NOTE]
 > This project example is named `SharedInterface`.
@@ -7,13 +8,14 @@ This tutorial will teach you how to write an API.
 First, you need at least 2 projects to handle this task. For demonstration purposes in this tutorial, they are called `SharedInterface.Shared` and `SharedInterface` respectively.
 
 Before writing the API, consider the following questions:
-1. Do you need your components to be used across projects?
-   - Yes: Extension/Shared
-   - No: Ignore this directly
 
-2. Do your components require shared memory (e.g., if Plugin A registers something, Plugin B cannot register the same)?
-   - Yes: Module API
-   - No: Extension
+1. Do you need to share code?
+   - ✔️: Extension / Module Shared API
+   - ❌: No need to worry
+
+2. Do you need data interaction?
+   - ✔️: Module Shared API
+   - ❌: Extension
 
 This article only teaches how to write a Module API.
 

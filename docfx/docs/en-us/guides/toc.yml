@@ -9,3 +9,6 @@
 
 - name: Reload Module
   href: reload-module.md
+
+- name: Integrating APIs from Other Modules
+  href: integrating-api.md

@@ -1,17 +1,17 @@
 # Writing ModSharp Extensions
 
-> [!CAUTION]
-> This is a high-risk operation. You need to have a thorough understanding of what you are writing, otherwise it is easy to crash your server!
+> [!WARNING]
+> This is a high-risk operation. You need to have sufficient understanding of what you are writing!
 
 The questions are the same as those in [Module API](./module-api.md):
 
-1. Do you need your components to be used across projects?
-   - Yes: Extension/Shared
-   - No: Ignore this directly
+1. Do you need to share code?
+   - ✔️: Extension / Module Shared API
+   - ❌: No need to worry
 
-2. Do your components require shared memory (e.g., if Plugin A registers something, Plugin B cannot register the same)?
-   - Yes: Module API
-   - No: Extension
+2. Do you need data interaction?
+   - ✔️: Module Shared API
+   - ❌: Extension
 
 If you are absolutely sure there will be no issues, then you can write the extension package.
 
