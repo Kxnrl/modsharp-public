@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -184,7 +184,8 @@ static std::string FindDotnetRuntime()
 
         for (const auto& entry : std::filesystem::recursive_directory_iterator(search_path))
         {
-            if (entry.path().filename() != dll) continue;
+            if (entry.path().filename() != dll)
+                continue;
 
             Version version(entry.path().parent_path().filename().string());
             if (version > s_highestVersionFound)
@@ -356,6 +357,7 @@ bool coreclr::Init(const char* baseDir)
     const auto str = abs.string();
 
     std::cout << "AppContext.BaseDirectory = " << str << std::endl;
+    std::cout << ".NET runtime version = " << GetDotNetVersion() << std::endl;
 
     load_assembly_and_get_function_pointer = get_dotnet_load_assembly(STR("../../sharp/core/Sharp.Core.runtimeconfig.json"),
 #ifdef PLATFORM_WINDOWS
