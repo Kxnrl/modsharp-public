@@ -89,7 +89,7 @@ public interface IEntityManager
     /// <summary>
     ///     创建并生成实体 <br />
     ///     <remarks>
-    ///         实体的kv中的key必须要小写, 否则会不认
+    ///         无需调用<see cref="IBaseEntity.DispatchSpawn" />
     ///     </remarks>
     /// </summary>
     IBaseEntity? SpawnEntitySync(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues);
@@ -97,8 +97,8 @@ public interface IEntityManager
     /// <summary>
     ///     创建并生成实体 <br />
     ///     <remarks>
-    ///         实体的kv中的key必须要小写, 否则会不认 <br />
-    ///         T并不会进行检查, 由调用者自己保证类型
+    ///         无需调用<see cref="IBaseEntity.DispatchSpawn" /> <br />
+    ///         <b>&lt;T&gt;</b>并不会进行检查, 由调用者自己保证类型
     ///     </remarks>
     /// </summary>
     T? SpawnEntitySync<T>(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues)
@@ -107,7 +107,7 @@ public interface IEntityManager
     /// <summary>
     ///     创建实体 <br />
     ///     <remarks>
-    ///         不要创建武器相关的任何实体，否则之后的所有相关操作都会把服炸了。
+    ///         不能创建武器相关的实体, 否则崩溃
     ///     </remarks>
     /// </summary>
     IBaseEntity? CreateEntityByName(string classname);
@@ -115,7 +115,8 @@ public interface IEntityManager
     /// <summary>
     ///     创建实体 <br />
     ///     <remarks>
-    ///         不要创建武器相关的任何实体，否则之后的所有相关操作都会把服炸了。
+    ///         不能创建武器相关的实体, 否则崩溃 <br />
+    ///         <b>&lt;T&gt;</b>并不会进行检查, 由调用者自己保证类型
     ///     </remarks>
     /// </summary>
     T? CreateEntityByName<T>(string classname) where T : class, IBaseEntity;
