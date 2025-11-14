@@ -1,43 +1,53 @@
+using System;
 using Microsoft.Extensions.Configuration;
-using Sharp.Shared;
 using SharedInterface.Shared;
+using Sharp.Shared;
+using Sharp.Shared.Managers;
 
 namespace UseSharedModule;
 
 public class UseSharedModule : IModSharpModule
 {
-    private readonly ISharedSystem _sharedSystem;
+    private readonly ISharpModuleManager _modules;
 
-    public UseSharedModule(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration? coreConfiguration, bool hotReload)
-    {
-        _sharedSystem = sharedSystem;
-    }
+    public UseSharedModule(ISharedSystem sharedSystem,
+        string                           dllPath,
+        string                           sharpPath,
+        Version                          version,
+        IConfiguration?                  coreConfiguration,
+        bool                             hotReload)
+        => _modules = sharedSystem.GetSharpModuleManager();
 
     public bool Init()
-    {
-        return true;
-    }
-
+        => true;
 
     public void Shutdown()
     {
     }
 
-    private IModSharpModuleInterface<ISharedModule>? _cachedInterface;
+    private void WhatEventYouWantToCall()
+    {
+        // call interface here
+
+        GetInterface()?.CallMe();
+
+        if (GetInterface() is { } api)
+        {
+            api.CallMe();
+        }
+    }
+
+    private IModSharpModuleInterface<IMySharedModule>? _cachedInterface;
 
     // this may have performance issue if you call it too frequently,
 
-    private ISharedModule? GetInterface()
+    private IMySharedModule? GetInterface()
     {
+        // you can NOT cache the Instance directly!
+        // cache `IModSharpModuleInterface<T>` instead.
         if (_cachedInterface?.Instance is null)
         {
-            _cachedInterface = _sharedSystem.GetSharpModuleManager().GetOptionalSharpModuleInterface<ISharedModule>(ISharedModule.Identity);
-
-            // set the listener of cookie load event
-            if (_cachedInterface?.Instance is { } instance)
-            {
-                instance.CallMe();
-            }
+            _cachedInterface = _modules.GetOptionalSharpModuleInterface<IMySharedModule>(IMySharedModule.Identity);
         }
 
         return _cachedInterface?.Instance;
@@ -52,33 +62,33 @@ public class UseSharedModule : IModSharpModule
     // cache interface here
     public void OnAllModulesLoaded()
     {
-        _cachedInterface = _sharedSystem.GetSharpModuleManager().GetOptionalSharpModuleInterface<ISharedModule>(ISharedModule.Identity);
+        _cachedInterface = _modules.GetOptionalSharpModuleInterface<IMySharedModule>(IMySharedModule.Identity);
 
-        // set the listener of cookie load event
+        // call your interface method
         if (_cachedInterface?.Instance is { } instance)
         {
             instance.CallMe();
         }
     }
 
-    // it will be called when SharedModule is loaded
+    // it will be called when SharedModule is loaded/reload
     public void OnLibraryConnected(string name)
     {
-        // match name
+        // name is the Assembly name of the provider
         if (!name.Equals("SharedModule"))
         {
             return;
         }
-        _cachedInterface = _sharedSystem.GetSharpModuleManager().GetRequiredSharpModuleInterface<ISharedModule>(ISharedModule.Identity);
 
-        // set the listener of cookie load event
+        _cachedInterface = _modules.GetRequiredSharpModuleInterface<IMySharedModule>(IMySharedModule.Identity);
+
+        // call your interface method
         if (_cachedInterface?.Instance is { } instance)
         {
             instance.CallMe();
         }
     }
 
-
-    public string DisplayName => "Use Shared Module Example";
+    public string DisplayName   => "Use Shared Module Example";
     public string DisplayAuthor => "ModSharp dev team";
 }
