@@ -1,10 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-using Sharp.Shared;
+using System;
 using Sharp.Shared.Abstractions;
 
 namespace ExampleSharpExtension;
 
-internal class ExampleSharpExtension : ISharpExtension, IExampleSharpExtension
+internal sealed class ExampleSharpExtension : ISharpExtension, IExampleSharpExtension
 {
     public void Load()
     {
