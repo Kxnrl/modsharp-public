@@ -44,9 +44,9 @@ internal class CommandManager : ICommandManager, ISharpExtension
     private readonly Dictionary<string, Dictionary<string, CLCommandCallback?>> _clientCommandHooks;
     private readonly Dictionary<string, SVCommandCallback?>                     _serverCommandHooks;
 
-    public CommandManager(ILogger<CommandManager> logger, ISharedSystem sharedSystem)
+    public CommandManager(ISharedSystem sharedSystem)
     {
-        _logger        = logger;
+        _logger        = sharedSystem.GetLoggerFactory().CreateLogger<CommandManager>();
         _modSharp      = sharedSystem.GetModSharp();
         _clientManager = sharedSystem.GetClientManager();
         _conVarManager = sharedSystem.GetConVarManager();

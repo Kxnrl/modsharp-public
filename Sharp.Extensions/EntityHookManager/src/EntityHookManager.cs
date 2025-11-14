@@ -47,9 +47,9 @@ internal class EntityHookManager : IEntityHookManager, ISharpExtension, IEntityL
     private readonly Dictionary<string, Dictionary<string, OutputDelegate?>> _outputHook;
     private readonly Dictionary<string, Dictionary<string, InputDelegate?>>  _inputHook;
 
-    public EntityHookManager(ILogger<EntityHookManager> logger, ISharedSystem shared)
+    public EntityHookManager(ISharedSystem shared)
     {
-        _logger  = logger;
+        _logger  = shared.GetLoggerFactory().CreateLogger<EntityHookManager>();
         _manager = shared.GetEntityManager();
 
         _createdEvent = new Dictionary<string, EventDelegate?>(StringComparer.OrdinalIgnoreCase);

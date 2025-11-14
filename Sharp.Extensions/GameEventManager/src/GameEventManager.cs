@@ -38,9 +38,9 @@ internal class GameEventManager : IGameEventManager, ISharpExtension, IEventList
     private readonly Dictionary<string, HashSet<IGameEventManager.DelegateOnHookEvent>> _hooks;
     private readonly HashSet<string>                                                    _events;
 
-    public GameEventManager(ILogger<GameEventManager> logger, ISharedSystem shared)
+    public GameEventManager(ISharedSystem shared)
     {
-        _logger  = logger;
+        _logger  = shared.GetLoggerFactory().CreateLogger<GameEventManager>();
         _manager = shared.GetEventManager();
 
         _events    = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
