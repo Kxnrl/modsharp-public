@@ -44,7 +44,7 @@ If you are not using Docker, please [install SteamCMD](https://developer.valveso
 
 > [!CAUTION]
 > Due to Steam RT3 limitations, we cannot use the system's .NET.  
-> Please download the .NET distribution package from the [.NET Download Page](https://dotnet.microsoft.com/download/dotnet/9.0) mentioned above and extract it to `{CS2}/game/sharp/runtime`.
+> Please download the .NET distribution package from the [.NET Download Page](https://dotnet.microsoft.com/download/dotnet/10.0) mentioned above and extract it to `{CS2}/game/sharp/runtime`.
 
 ---
 

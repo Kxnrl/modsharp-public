@@ -13,7 +13,7 @@ Below we will introduce step by step how to write a module.
 
 ## Environment Setup
 
-The current version of **ModSharp** uses .NET version `9.x`,  
+The current version of **ModSharp** uses .NET version `10.x`,  
 Please ensure your .NET SDK version is at least this version or higher, otherwise you cannot proceed with the following steps.
 
 We recommend using the following development environments:

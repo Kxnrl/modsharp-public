@@ -46,7 +46,7 @@
 
 > [!CAUTION]
 > 由于SteamRT3的限制，我们没办法使用系统的.NET。  
-> 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/download/dotnet/9.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
+> 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/download/dotnet/10.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
 
 ---
 
