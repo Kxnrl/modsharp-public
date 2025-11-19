@@ -196,7 +196,7 @@ internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
         }
 
         _controllers[client.Slot]
-            = new MoveableMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client);
+            = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client);
     }
 
     public void ClosePlayerMenu(IGameClient client)
