@@ -25,7 +25,6 @@ internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
     private readonly ISharpModuleManager      _modules;
     private readonly IClientManager           _clients;
     private readonly IHookManager             _hooks;
-    private readonly List<IDisposable>        _disposables;
     private readonly IEntityManager           _entityManager;
     private readonly IEventManager            _eventManager;
 
@@ -83,13 +82,6 @@ internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
     public void Shutdown()
     {
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
-
-        foreach (var disposable in _disposables)
-        {
-            disposable.Dispose();
-        }
-
-        _disposables.Clear();
     }
 
 #endregion
