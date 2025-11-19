@@ -12,7 +12,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
-        <ProjectReference Include="..\..\InputManager\Shared\Sharp.Modules.InputManager.Shared.csproj" />
         <ProjectReference Include="..\Shared\Sharp.Modules.MenuManager.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
     </ItemGroup>
 
