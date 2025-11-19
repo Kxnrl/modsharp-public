@@ -12,7 +12,6 @@ internal class SurvivalStatusMenuRenderer : IMenuRenderer
 {
     private readonly Guid          _timer;
     private          string?       _cacheContent;
-    private          int           _itemSkipCount;
     private readonly IModSharp     _modSharp;
     private readonly IEventManager _eventManager;
     private readonly IGameClient   _client;
@@ -52,53 +51,24 @@ internal class SurvivalStatusMenuRenderer : IMenuRenderer
         _showSurvivalRespawnStatusEvent.FireToClient(client);
     }
 
-    public void Render(RenderData renderData, int cursor)
+    public void Render(RenderData renderData)
     {
-        const int maxItemCount     = 5; // 页面总数量
-        const int paddingItemCount = 2; // 游标视窗上下预留展示选项数量
-
-        var offset = cursor - _itemSkipCount;
-
-        if (offset >= maxItemCount - paddingItemCount)
-        {
-            _itemSkipCount = cursor - (maxItemCount - paddingItemCount - 1);
-
-            var maxItemSkipCount = renderData.Items.Count - maxItemCount;
-
-            if (_itemSkipCount >= maxItemSkipCount)
-                _itemSkipCount = maxItemSkipCount;
-        }
-        else if (offset < paddingItemCount)
-        {
-            _itemSkipCount = cursor - paddingItemCount;
-
-            if (_itemSkipCount < 0)
-                _itemSkipCount = 0;
-        }
-
-        var items = renderData.Items.Skip(_itemSkipCount)
-                              .Take(maxItemCount);
-
         var sb = new StringBuilder();
-
-        var index = 0;
 
         sb.Append(
             $"<font class='fontSize-m'>{renderData.Title}<br><font class='fontSize-xs'>\u00A0<br></font><font class='fontSize-sm'>");
 
-        foreach (var item in items)
+        foreach (var item in renderData.Items)
         {
-            if (cursor == index + _itemSkipCount)
+            if (item.IsSelected)
             {
                 sb.Append(
-                    $"<font color='#3399FF'>►<font color='#DDAA11'> {_itemSkipCount + index + 1}. <font color='#fff'>{renderData.Title} <font color='#3399FF'>◄<br>");
+                    $"<font color='#3399FF'>►<font color='#DDAA11'> {item.No}. <font color='#fff'>{item.Content} <font color='#3399FF'>◄<br>");
             }
             else
             {
-                sb.Append($"<font color='#DDAA11'>{_itemSkipCount + index + 1}. <font color='#fff'>{renderData.Title}<br>");
+                sb.Append($"<font color='#DDAA11'>{item.No}. <font color='#fff'>{item.Content}<br>");
             }
-
-            index++;
         }
 
         sb.Append(

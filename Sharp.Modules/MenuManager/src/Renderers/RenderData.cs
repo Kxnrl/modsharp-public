@@ -14,11 +14,13 @@ internal class RenderItem
     public string         Content    { get; set; }
     public RenderItemType Type       { get; set; }
     public bool           IsSelected { get; set; }
+    public int            No         { get; set; }
 
-    public RenderItem(string content, RenderItemType type, bool isSelected = false)
+    public RenderItem(string content, RenderItemType type, int no, bool isSelected = false)
     {
         Content    = content;
         Type       = type;
+        No         = no;
         IsSelected = isSelected;
     }
 }

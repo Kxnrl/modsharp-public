@@ -204,12 +204,13 @@ internal class MoveableMenuController : IInternalMenuController
         {
             if (item.State == MenuItemState.Spacer)
             {
-                items.Add(new ("", RenderItemType.Spacer));
+                items.Add(new ("", RenderItemType.Spacer, itemIndex));
             }
             else
             {
                 items.Add(new (item.Title,
-                               item.State == MenuItemState.Disabled ? RenderItemType.Disabled : RenderItemType.Default));
+                               item.State == MenuItemState.Disabled ? RenderItemType.Disabled : RenderItemType.Default,
+                               itemIndex));
             }
 
             itemIndex++;
@@ -218,7 +219,7 @@ internal class MoveableMenuController : IInternalMenuController
         // pad empty line
         for (var i = itemIndex; i <= MaxPageItems; i++)
         {
-            items.Add(new ("", RenderItemType.Spacer));
+            items.Add(new ("", RenderItemType.Spacer, itemIndex));
         }
 
         // bottom
@@ -247,7 +248,7 @@ internal class MoveableMenuController : IInternalMenuController
 
         _renderData.Items[_cursor].IsSelected = true;
 
-        _menuRenderer.Render(_renderData, _cursor);
+        _menuRenderer.Render(_renderData);
     }
 
     private void BuildItems()
@@ -277,7 +278,7 @@ internal class MoveableMenuController : IInternalMenuController
             }
             else
             {
-                var content = $"{index}.{metadata?.Title ?? string.Empty}";
+                var content = $"{metadata?.Title ?? string.Empty}";
 
                 _builtMenuItems.Add(new BuiltMenuItem(content,
                                                       metadata?.State ?? MenuItemState.Default,
