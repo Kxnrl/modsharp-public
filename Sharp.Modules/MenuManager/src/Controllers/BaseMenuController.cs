@@ -10,7 +10,7 @@ namespace Sharp.Modules.MenuManager.Core.Controllers;
 
 internal abstract class BaseMenuController : IInternalMenuController
 {
-    protected const int MaxPageItems = 7;
+    protected const int MaxPageItems = 5;
 
     public IGameClient Player { get; }
 
