@@ -64,7 +64,7 @@ internal class ViewmodelMenuRenderer : IMenuRenderer
             CursorEntity2?.Kill();
     }
 
-    public void Render(RenderData data, int cursor)
+    public void Render(RenderData data)
     {
         // hack to make sure origin is correct
         // ViewModel.SetAbsOrigin(new Vector());
