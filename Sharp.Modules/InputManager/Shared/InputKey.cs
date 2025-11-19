@@ -12,4 +12,6 @@ public enum InputKey
     E,
     Space,
     Shift,
+    F3,
+    F4,
 }
