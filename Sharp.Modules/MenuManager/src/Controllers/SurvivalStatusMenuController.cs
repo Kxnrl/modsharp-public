@@ -119,7 +119,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
         {
             if (item.State == MenuItemState.Spacer)
             {
-                sb.Append("<br/>");
+                sb.Append("<br>");
             }
             else if (item.State == MenuItemState.Disabled)
             {
@@ -127,7 +127,8 @@ internal class SurvivalStatusMenuController : BaseMenuController
             }
             else if (itemIndex - 1 + ItemSkipCount == Cursor)
             {
-                sb.Append($"<font color='#11AAFF'>▶ <font color='#fff'>{itemIndex}. <font color='#fff'>{item.Title}<br>");
+                sb.Append(
+                    $"<font color='#3399FF'>►<font color='#DDAA11'> {itemIndex}. <font color='#fff'>{item.Title} <font color='#3399FF'>◄<br>");
             }
             else
             {
