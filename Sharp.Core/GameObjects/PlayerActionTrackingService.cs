@@ -17,31 +17,28 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using Sharp.Core.GameObjects;
+using Sharp.Generator;
+using Sharp.Shared;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.GameObjects;
+using Sharp.Shared.Types;
 
-namespace Sharp.Core.GameEntities;
+namespace Sharp.Core.GameObjects;
 
-internal partial class ObserverPawn : BasePlayerPawn, IObserverPawn
+internal partial class PlayerActionTrackingService : PlayerPawnComponent, IPlayerActionTrackingService
 {
-    protected override bool IsObserver()
-        => true;
+#region Schemas
 
-    public override IObserverPawn? AsObserver()
-        => this;
+    [NativeSchemaField("CCSPlayer_ActionTrackingServices",
+                       "m_hLastWeaponBeforeC4AutoSwitch",
+                       typeof(CEntityHandle<IBaseWeapon>))]
+    private partial SchemaField GetLastWeaponBeforeC4AutoSwitchHandleField();
 
-#region Service Schema
-
-    public unsafe IObserverService? GetObserverService()
-        => ObserverService.Create(*(nint*) IntPtr.Add(_this, GetObserverServiceField().Offset));
-
-    public override unsafe IMovementService? GetMovementService()
-        => MovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
-
-    public override unsafe IUseService? GetUseService()
-        => UseService.Create(*(nint*) IntPtr.Add(_this, GetUseServiceField().Offset));
+    [NativeSchemaField("CCSPlayer_ActionTrackingServices", "m_bIsRescuing", typeof(bool))]
+    private partial SchemaField GetIsRescuingField();
 
 #endregion
+
+    public override string GetSchemaClassname()
+        => "CCSPlayer_ActionTrackingServices";
 }

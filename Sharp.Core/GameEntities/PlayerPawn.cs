@@ -179,11 +179,41 @@ internal partial class PlayerPawn : BasePlayerPawn, IPlayerPawn
     public unsafe IWeaponService? GetWeaponService()
         => WeaponService.Create(*(nint*) IntPtr.Add(_this, GetWeaponServiceField().Offset));
 
-    public override unsafe IMovementService? GetMovementService()
-        => PlayerMovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
+    public override IMovementService? GetMovementService()
+        => GetPlayerMovementService();
 
     public unsafe IPlayerMovementService? GetPlayerMovementService()
         => PlayerMovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
+
+    public override IUseService? GetUseService()
+        => GetPlayerUseService();
+
+    public unsafe IPlayerUseService? GetPlayerUseService()
+        => PlayerUseService.Create(*(nint*) IntPtr.Add(_this, GetUseServiceField().Offset));
+
+    [NativeSchemaField("CCSPlayerPawnBase", "m_pPingServices", typeof(PingService))]
+    private partial SchemaField GetPingServiceField();
+
+    [NativeSchemaField("CBasePlayerPawn", "m_pWaterServices", typeof(WaterService))]
+    private partial SchemaField GetWaterServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pBulletServices", typeof(BulletService))]
+    private partial SchemaField GetBulletServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pHostageServices", typeof(HostageService))]
+    private partial SchemaField GetHostageServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pBuyServices", typeof(BuyService))]
+    private partial SchemaField GetBuyServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pActionTrackingServices", typeof(PlayerActionTrackingService))]
+    private partial SchemaField GetActionTrackingServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pRadioServices", typeof(RadioService))]
+    private partial SchemaField GetRadioServiceField();
+
+    [NativeSchemaField("CCSPlayerPawn", "m_pDamageReactServices", typeof(DamageReactService))]
+    private partial SchemaField GetDamageReactServiceField();
 
 #endregion
 }

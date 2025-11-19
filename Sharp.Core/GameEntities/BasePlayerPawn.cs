@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Utilities;
@@ -127,29 +126,18 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
 
 #endregion
 
-#region Service Schema
-
-    public unsafe ICameraService? GetCameraService()
-        => CameraService.Create(*(nint*) IntPtr.Add(_this, GetCameraServiceField().Offset));
-
-    public abstract IMovementService? GetMovementService();
-
-#if USE_SCHEMA_GET_SERVICE
-    [NativeSchemaField("CBasePlayerPawn", "m_pItemServices", typeof(ItemService))]
-    private partial SchemaField GetItemServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pMovementServices", typeof(MovementService))]
-    private partial SchemaField GetMovementServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pWeaponServices", typeof(WeaponService))]
-    private partial SchemaField GetWeaponServiceField();
+#region Services
 
     [NativeSchemaField("CBasePlayerPawn", "m_pCameraServices", typeof(CameraService))]
     private partial SchemaField GetCameraServiceField();
 
-    [NativeSchemaField("CBasePlayerPawn", "m_pObserverServices", typeof(ObserverService))]
-    private partial SchemaField GetObserverServiceField();
-#endif
+    public abstract IMovementService? GetMovementService();
+
+    public abstract IUseService? GetUseService();
+
+#endregion
+
+#region Service Schema
 
     private static SchemaField? _itemServiceSchemaField;
 
@@ -158,6 +146,15 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
         _itemServiceSchemaField ??= Helpers.SchemaSystem.GetSchemaField("CBasePlayerPawn", "m_pItemServices");
 
         return _itemServiceSchemaField;
+    }
+
+    private static SchemaField? _useServiceSchemaField;
+
+    protected static SchemaField GetUseServiceField()
+    {
+        _useServiceSchemaField ??= Helpers.SchemaSystem.GetSchemaField("CBasePlayerPawn", "m_pUseServices");
+
+        return _useServiceSchemaField;
     }
 
     private static SchemaField? _movementServiceSchemaField;
@@ -176,15 +173,6 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
         _weaponServiceSchemaField ??= Helpers.SchemaSystem.GetSchemaField("CBasePlayerPawn", "m_pWeaponServices");
 
         return _weaponServiceSchemaField;
-    }
-
-    private static SchemaField? _cameraServiceSchemaField;
-
-    protected static SchemaField GetCameraServiceField()
-    {
-        _cameraServiceSchemaField ??= Helpers.SchemaSystem.GetSchemaField("CBasePlayerPawn", "m_pCameraServices");
-
-        return _cameraServiceSchemaField;
     }
 
     private static SchemaField? _observerServiceSchemaField;

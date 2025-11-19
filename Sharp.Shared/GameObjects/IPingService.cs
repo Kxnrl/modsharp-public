@@ -17,31 +17,26 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using Sharp.Core.GameObjects;
+using Sharp.Shared.Attributes;
+using Sharp.Shared.CStrike;
 using Sharp.Shared.GameEntities;
-using Sharp.Shared.GameObjects;
+using Sharp.Shared.Types;
 
-namespace Sharp.Core.GameEntities;
+namespace Sharp.Shared.GameObjects;
 
-internal partial class ObserverPawn : BasePlayerPawn, IObserverPawn
+/// <summary>
+///     PingServices is CCSPlayerPawn only
+/// </summary>
+[NetClass("CCSPlayer_PingServices")]
+public interface IPingService : IPlayerPawnComponent
 {
-    protected override bool IsObserver()
-        => true;
+    /// <summary>
+    ///     m_flPlayerPingTokens
+    /// </summary>
+    ISchemaArray<int> GetPlayerPingTokens();
 
-    public override IObserverPawn? AsObserver()
-        => this;
-
-#region Service Schema
-
-    public unsafe IObserverService? GetObserverService()
-        => ObserverService.Create(*(nint*) IntPtr.Add(_this, GetObserverServiceField().Offset));
-
-    public override unsafe IMovementService? GetMovementService()
-        => MovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
-
-    public override unsafe IUseService? GetUseService()
-        => UseService.Create(*(nint*) IntPtr.Add(_this, GetUseServiceField().Offset));
-
-#endregion
+    /// <summary>
+    ///     m_hPlayerPing
+    /// </summary>
+    CEntityHandle<IBaseEntity> PlayerPingHandle { get; set; }
 }

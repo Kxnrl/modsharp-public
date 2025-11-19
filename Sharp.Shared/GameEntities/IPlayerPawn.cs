@@ -118,9 +118,54 @@ public interface IPlayerPawn : IBasePlayerPawn
     IWeaponService? GetWeaponService();
 
     /// <summary>
-    ///     MoveService实例
+    ///     PlayerMoveService实例
     /// </summary>
     IPlayerMovementService? GetPlayerMovementService();
+
+    /// <summary>
+    ///     PlayerUseService实例
+    /// </summary>
+    IPlayerUseService? GetPlayerUseService();
+
+    /// <summary>
+    ///     PingServices实例
+    /// </summary>
+    IPingService? GetPingService();
+
+    /// <summary>
+    ///     WaterService实例
+    /// </summary>
+    IWaterService? GetWaterService();
+
+    /// <summary>
+    ///     BulletService实例
+    /// </summary>
+    IBulletService? GetBulletService();
+
+    /// <summary>
+    ///     HostageService实例
+    /// </summary>
+    IHostageService? GetHostageService();
+
+    /// <summary>
+    ///     BuyService实例
+    /// </summary>
+    IBuyService? GetBuyService();
+
+    /// <summary>
+    ///     ActionTrackingService实例
+    /// </summary>
+    IPlayerActionTrackingService? GetActionTrackingService();
+
+    /// <summary>
+    ///     RadioService实例
+    /// </summary>
+    IRadioService? GetRadioService();
+
+    /// <summary>
+    ///     DamageReactService实例
+    /// </summary>
+    IDamageReactService? GetDamageReactService();
 
     /// <summary>
     ///     Glove Econ

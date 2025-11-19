@@ -95,6 +95,11 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
     IMovementService? GetMovementService();
 
     /// <summary>
+    ///     UseService实例
+    /// </summary>
+    IUseService? GetUseService();
+
+    /// <summary>
     ///     m_iHideHUD
     /// </summary>
     uint HideHud { get; set; }

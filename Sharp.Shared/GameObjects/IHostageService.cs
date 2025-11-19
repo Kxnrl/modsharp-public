@@ -17,31 +17,25 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using Sharp.Core.GameObjects;
+using Sharp.Shared.Attributes;
 using Sharp.Shared.GameEntities;
-using Sharp.Shared.GameObjects;
+using Sharp.Shared.Types;
 
-namespace Sharp.Core.GameEntities;
+namespace Sharp.Shared.GameObjects;
 
-internal partial class ObserverPawn : BasePlayerPawn, IObserverPawn
+/// <summary>
+///     HostageServices is CCSPlayerPawn only
+/// </summary>
+[NetClass("CCSPlayer_HostageServices")]
+public interface IHostageService : IPlayerPawnComponent
 {
-    protected override bool IsObserver()
-        => true;
+    /// <summary>
+    ///     m_hCarriedHostage
+    /// </summary>
+    CEntityHandle<IBaseEntity> CarriedHostageHandle { get; set; }
 
-    public override IObserverPawn? AsObserver()
-        => this;
-
-#region Service Schema
-
-    public unsafe IObserverService? GetObserverService()
-        => ObserverService.Create(*(nint*) IntPtr.Add(_this, GetObserverServiceField().Offset));
-
-    public override unsafe IMovementService? GetMovementService()
-        => MovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
-
-    public override unsafe IUseService? GetUseService()
-        => UseService.Create(*(nint*) IntPtr.Add(_this, GetUseServiceField().Offset));
-
-#endregion
+    /// <summary>
+    ///     m_hCarriedHostageProp
+    /// </summary>
+    CEntityHandle<IBaseEntity> CarriedHostagePropHandle { get; set; }
 }

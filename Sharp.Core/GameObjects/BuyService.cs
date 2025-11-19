@@ -17,31 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
-using Sharp.Core.GameObjects;
-using Sharp.Shared.GameEntities;
 using Sharp.Shared.GameObjects;
 
-namespace Sharp.Core.GameEntities;
+namespace Sharp.Core.GameObjects;
 
-internal partial class ObserverPawn : BasePlayerPawn, IObserverPawn
+internal partial class BuyService : PlayerPawnComponent, IBuyService
 {
-    protected override bool IsObserver()
-        => true;
-
-    public override IObserverPawn? AsObserver()
-        => this;
-
-#region Service Schema
-
-    public unsafe IObserverService? GetObserverService()
-        => ObserverService.Create(*(nint*) IntPtr.Add(_this, GetObserverServiceField().Offset));
-
-    public override unsafe IMovementService? GetMovementService()
-        => MovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
-
-    public override unsafe IUseService? GetUseService()
-        => UseService.Create(*(nint*) IntPtr.Add(_this, GetUseServiceField().Offset));
-
-#endregion
+    public override string GetSchemaClassname()
+        => "CCSPlayer_BuyServices";
 }
