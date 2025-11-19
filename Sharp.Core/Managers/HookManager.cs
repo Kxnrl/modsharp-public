@@ -511,12 +511,20 @@ internal abstract class FunctionParams : ContextObject, IFunctionParams
         => WeaponService.Create(ptr) ?? throw new InvalidOperationException("WeaponService Pointer is null");
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected IMovementService CreateMovementService(nint ptr)
+    protected IPlayerMovementService CreatePlayerMovementService(nint ptr)
+        => PlayerMovementService.Create(ptr) ?? throw new InvalidOperationException("MovementService Pointer is null");
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected IMovementService CreateBaseMovementService(nint ptr)
         => MovementService.Create(ptr) ?? throw new InvalidOperationException("MovementService Pointer is null");
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected IPlayerPawn CreatePlayerPawn(nint ptr)
         => PlayerPawn.Create(ptr) ?? throw new InvalidOperationException("PlayerPawn Pointer is null");
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected IBasePlayerPawn CreateBasePlayerPawn(nint ptr)
+        => BasePlayerPawn.Create(ptr) ?? throw new InvalidOperationException("PlayerPawn Pointer is null");
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected IPlayerController CreatePlayerController(nint ptr)
@@ -674,9 +682,9 @@ internal abstract class PlayerMovementFunctionParams : PlayerPawnFunctionParams
         pawn)
         => _ptrService = ptrService;
 
-    private IMovementService? _service;
+    private IPlayerMovementService? _service;
 
-    public IMovementService Service
+    public IPlayerMovementService Service
     {
         get
         {
@@ -686,7 +694,7 @@ internal abstract class PlayerMovementFunctionParams : PlayerPawnFunctionParams
             }
 
             CheckDisposed();
-            _service = CreateMovementService(_ptrService);
+            _service = CreatePlayerMovementService(_ptrService);
 
             return _service;
         }

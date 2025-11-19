@@ -18,28 +18,27 @@
  */
 
 using System;
-using Sharp.Core.CStrike;
-using Sharp.Core.GameEntities;
-using Sharp.Core.Helpers;
+using Sharp.Core.GameObjects;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.GameObjects;
-using Sharp.Shared.Utilities;
 
-namespace Sharp.Core.GameObjects;
+namespace Sharp.Core.GameEntities;
 
-internal abstract partial class PlayerPawnComponent : SchemaObject, IPlayerPawnComponent
+internal partial class ObserverPawn : BasePlayerPawn, IObserverPawn
 {
-    internal static readonly Lazy<int> Offset
-        = new (() => SchemaSystem.GetNetVarOffset("CPlayerPawnComponent", "__m_pChainEntity"));
+    protected override bool IsObserver()
+        => true;
 
-    protected PlayerPawnComponent(nint ptr) : base(ptr)
-    {
-    }
+    public override IObserverPawn? AsObserver()
+        => this;
 
-    public IBasePlayerPawn? GetPlayer()
-    {
-        var ptr = _this.GetObjectPtr(Offset.Value);
+#region Service Schema
 
-        return ptr == nint.Zero ? null : BasePlayerPawn.Create(ptr);
-    }
+    public unsafe IObserverService? GetObserverService()
+        => ObserverService.Create(*(nint*) IntPtr.Add(_this, GetObserverServiceField().Offset));
+
+    public override unsafe IMovementService? GetMovementService()
+        => MovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
+
+#endregion
 }

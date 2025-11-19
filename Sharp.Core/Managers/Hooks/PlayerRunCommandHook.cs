@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,6 +20,8 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
+using Sharp.Shared.GameObjects;
 using Sharp.Shared.HookParams;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.CppProtobuf;
@@ -73,9 +75,11 @@ internal class PlayerRunCommandHook : HookType<PlayerRunCommandHookParams, Empty
     protected override bool AllowPost => true;
 }
 
-internal sealed unsafe class PlayerRunCommandHookParams : PlayerMovementFunctionParams, IPlayerRunCommandHookParams
+internal sealed unsafe class PlayerRunCommandHookParams : PlayerFunctionParams, IPlayerRunCommandHookParams
 {
     private readonly CUserCmd* _userCmd;
+    private readonly nint      _ptrPawn;
+    private readonly nint      _ptrService;
 
     public PlayerRunCommandHookParams(bool postHook,
         nint                               client,
@@ -84,10 +88,51 @@ internal sealed unsafe class PlayerRunCommandHookParams : PlayerMovementFunction
         nint                               ptrService,
         nint                               userCmd) : base(postHook,
                                                            client,
-                                                           controller,
-                                                           pawn,
-                                                           ptrService)
-        => _userCmd = (CUserCmd*) userCmd;
+                                                           controller)
+    {
+        _userCmd    = (CUserCmd*) userCmd;
+        _ptrPawn    = pawn;
+        _ptrService = ptrService;
+    }
+
+    private IBasePlayerPawn? _pawn;
+
+    public IBasePlayerPawn Pawn
+    {
+        get
+        {
+            if (_pawn is { } pawn)
+            {
+                return pawn;
+            }
+
+            CheckDisposed();
+            _pawn = CreateBasePlayerPawn(_ptrPawn);
+
+            return _pawn;
+        }
+    }
+
+    private IMovementService? _service;
+
+    public IMovementService Service
+    {
+        get
+        {
+            if (_service is { } service)
+            {
+                return service;
+            }
+
+            CheckDisposed();
+
+            _service = Bridges.Natives.Player.PawnIsPlayer(_ptrPawn)
+                ? CreatePlayerMovementService(_ptrService)
+                : CreateBaseMovementService(_ptrService);
+
+            return _service;
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private CUserCmd* GetUserCmd()

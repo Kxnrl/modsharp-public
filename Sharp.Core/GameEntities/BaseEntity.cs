@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -269,8 +269,23 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
         CollisionRulesChanged();
     }
 
+    public IBasePlayerPawn? AsBasePlayerPawn(bool safeCheck = true)
+        => BasePlayerPawn.Create(safeCheck ? Player.PawnFromEntity(_this) : _this);
+
     public IPlayerPawn? AsPlayerPawn(bool safeCheck = true)
-        => PlayerPawn.Create(safeCheck ? Player.PawnFromEntity(_this) : _this);
+    {
+        if (!safeCheck)
+        {
+            return PlayerPawn.Create(_this);
+        }
+
+        if (BasePlayerPawn.Create(Player.PawnFromEntity(_this)) is PlayerPawn pawn)
+        {
+            return pawn;
+        }
+
+        return null;
+    }
 
     public IPlayerController? AsPlayerController(bool safeCheck = true)
         => PlayerController.Create(safeCheck ? Player.ControllerFromEntity(_this) : _this);

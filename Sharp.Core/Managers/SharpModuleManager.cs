@@ -189,6 +189,7 @@ internal class SharpModuleManager : ICoreSharpModuleManager
 
             unsafe
             {
+                // TODO use protobuf message instead
                 Bridges.Natives.Game.PrintChannelFilter(HudPrintChannel.Console, builder.ToString(), &receiver);
             }
         }

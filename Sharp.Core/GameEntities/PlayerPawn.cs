@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -21,34 +21,23 @@ using System;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameObjects;
-using Sharp.Core.Utilities;
 using Sharp.Generator;
 using Sharp.Shared;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
+using Sharp.Shared.GameObjects;
 using Sharp.Shared.Types;
 
 namespace Sharp.Core.GameEntities;
 
-internal partial class PlayerPawn : BaseCombatCharacter, IPlayerPawn
+internal partial class PlayerPawn : BasePlayerPawn, IPlayerPawn
 {
-    public void Print(HudPrintChannel channel,
-        string                        message,
-        string?                       param1 = null,
-        string?                       param2 = null,
-        string?                       param3 = null,
-        string?                       param4 = null)
-        => Player.PawnPrint(_this,
-                            channel,
-                            channel is HudPrintChannel.Chat && message[0] != '#' ? $" {message}" : message,
-                            param1,
-                            param2,
-                            param3,
-                            param4);
+    protected override bool IsObserver()
+        => false;
 
-    public bool IsPlayer()
-        => Player.PawnIsPlayer(_this);
+    public override IPlayerPawn? AsPlayer()
+        => this;
 
     public void Slay(bool explode = false)
         => Player.PawnSlay(_this, explode);
@@ -65,12 +54,6 @@ internal partial class PlayerPawn : BaseCombatCharacter, IPlayerPawn
 
         return GiveNamedItem(value.DefinitionName);
     }
-
-    public IPlayerController? GetController()
-        => PlayerController.Create(Player.PawnGetController(_this));
-
-    public IPlayerController? GetOriginalController()
-        => PlayerController.Create(OriginalControllerHandle.GetEntityPtr());
 
     public IPlayerController? GetControllerAuto()
         => IsAlive ? GetController() : GetOriginalController();
@@ -114,58 +97,16 @@ internal partial class PlayerPawn : BaseCombatCharacter, IPlayerPawn
         Player.PawnGiveGloves(_this, (int) id, prefab, wear, seed);
     }
 
-    public void TransientChangeTeam(CStrikeTeam team)
-        => SetTeamLocal(team);
-
     public void TransientChangeVelocityModifier(float velocityModifier)
         => SetVelocityModifierLocal(velocityModifier);
-
-    public unsafe Vector GetEyeAngles()
-        => *Entity.GetEyeAngles(_this);
-
-    public unsafe Vector GetEyePosition()
-        => *Entity.GetEyePosition(_this);
-
-    public unsafe SoundOpEventGuid EmitSoundClient(string sound, float? volume = null)
-        => Player.PawnEmitSoundClient(_this, sound, &volume);
 
 #region Schemas
 
     [NativeSchemaField("CCSPlayerPawn", "m_ArmorValue", typeof(int))]
     private partial SchemaField GetArmorValueField();
 
-    [NativeSchemaField("CCSPlayerPawnBase", "m_flFlashMaxAlpha", typeof(float))]
-    private partial SchemaField GetFlashMaxAlphaField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_flFlashDuration", typeof(float))]
-    private partial SchemaField GetFlashDurationField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_iPlayerState", typeof(PlayerState))]
-    private partial SchemaField GetStateField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_iNumSpawns", typeof(int))]
-    private partial SchemaField GetNumSpawnsField();
-
     [NativeSchemaField("CCSPlayerPawn", "m_fMolotovDamageTime", typeof(float))]
     private partial SchemaField GetMolotovDamageTimeField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pItemServices", typeof(ItemService))]
-    private partial SchemaField GetItemServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pMovementServices", typeof(MovementService))]
-    private partial SchemaField GetMovementServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pWeaponServices", typeof(WeaponService))]
-    private partial SchemaField GetWeaponServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pCameraServices", typeof(CameraService))]
-    private partial SchemaField GetCameraServiceField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_pObserverServices", typeof(ObserverService))]
-    private partial SchemaField GetObserverServiceField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_hOriginalController", typeof(CEntityHandle<IPlayerController>))]
-    private partial SchemaField GetOriginalControllerHandleField();
 
     [NativeSchemaField("CCSPlayerPawn", "m_flHealthShotBoostExpirationTime", typeof(float))]
     private partial SchemaField GetHealthShotBoostExpirationTimeField();
@@ -181,30 +122,6 @@ internal partial class PlayerPawn : BaseCombatCharacter, IPlayerPawn
 
     [NativeSchemaField("CCSPlayerPawn", "m_flFlinchStack", typeof(float))]
     private partial SchemaField GetFlinchStackField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_flProgressBarStartTime", typeof(float))]
-    private partial SchemaField GetProgressBarStartTimeField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_iProgressBarDuration", typeof(int))]
-    private partial SchemaField GetProgressBarDurationField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_iHideHUD", typeof(uint))]
-    private partial SchemaField GetHideHudField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_fTimeLastHurt", typeof(float))]
-    private partial SchemaField GetTimeLastHurtField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_flDeathTime", typeof(float))]
-    private partial SchemaField GetDeathTimeField();
-
-    [NativeSchemaField("CBasePlayerPawn", "m_fNextSuicideTime", typeof(float))]
-    private partial SchemaField GetNextSuicideTimeField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_bRespawning", typeof(bool))]
-    private partial SchemaField GetRespawningField();
-
-    [NativeSchemaField("CCSPlayerPawnBase", "m_fNextRadarUpdateTime", typeof(float))]
-    private partial SchemaField GetNextRadarUpdateTimeField();
 
     [NativeSchemaField("CCSPlayerPawn", "m_bInBuyZone", typeof(bool))]
     private partial SchemaField GetInBuyZoneField();
@@ -251,6 +168,22 @@ internal partial class PlayerPawn : BaseCombatCharacter, IPlayerPawn
                        InlineObject = true,
                        ReturnType = typeof(ISchemaList<Vector>))]
     private partial SchemaField GetAimPunchCacheField();
+
+#endregion
+
+#region Service Schema
+
+    public unsafe IItemService? GetItemService()
+        => ItemService.Create(*(nint*) IntPtr.Add(_this, GetItemServiceField().Offset));
+
+    public unsafe IWeaponService? GetWeaponService()
+        => WeaponService.Create(*(nint*) IntPtr.Add(_this, GetWeaponServiceField().Offset));
+
+    public override unsafe IMovementService? GetMovementService()
+        => PlayerMovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
+
+    public unsafe IPlayerMovementService? GetPlayerMovementService()
+        => PlayerMovementService.Create(*(nint*) IntPtr.Add(_this, GetMovementServiceField().Offset));
 
 #endregion
 }

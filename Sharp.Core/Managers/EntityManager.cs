@@ -347,8 +347,8 @@ internal class EntityManager : ICoreEntityManager
     public void HookEntityInput(string classname, string input)
         => Native.HookInput(classname, input);
 
-    public IPlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot)
-        => PlayerPawn.Create(Player.PawnFindBySlot(slot));
+    public IBasePlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot)
+        => BasePlayerPawn.Create(Player.PawnFindBySlot(slot));
 
     public IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot)
         => PlayerController.Create(Player.ControllerFindBySlot(slot));

@@ -62,17 +62,17 @@ internal partial class PlayerController : BaseEntity, IPlayerController
     public void CheckPawn()
         => Player.ControllerCheckPawn(_this);
 
-    public void SetPawn(IPlayerPawn pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4)
+    public void SetPawn(IBasePlayerPawn pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4)
         => Player.ControllerSetPawn(_this, pawn.GetAbsPtr(), unknown1, unknown2, unknown3, unknown4);
 
-    public IPlayerPawn? GetPawn()
-        => PlayerPawn.Create(Player.ControllerGetPawn(_this));
+    public IBasePlayerPawn? GetPawn()
+        => BasePlayerPawn.Create(Player.ControllerGetPawn(_this));
 
     public IPlayerPawn? GetPlayerPawn()
         => PlayerPawn.Create(PlayerPawnHandle.GetEntityPtr());
 
-    public IPlayerPawn? GetObserverPawn()
-        => PlayerPawn.Create(ObserverPawnHandle.GetEntityPtr());
+    public IObserverPawn? GetObserverPawn()
+        => ObserverPawn.Create(ObserverPawnHandle.GetEntityPtr());
 
     public void SetPlayerPawn(IPlayerPawn pawn)
         => PlayerPawnHandle = pawn.Handle.As<IPlayerPawn>();

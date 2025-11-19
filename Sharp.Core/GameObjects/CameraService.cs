@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -67,5 +67,5 @@ internal partial class CameraService : PlayerPawnComponent, ICameraService
 #endregion
 
     public override string GetSchemaClassname()
-        => "CCSPlayer_CameraServices";
+        => "CCSPlayerBase_CameraServices";
 }

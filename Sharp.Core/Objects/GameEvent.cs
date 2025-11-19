@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -140,10 +140,13 @@ internal partial class GameEvent : NativeObject, IGameEvent
     }
 
     public IPlayerPawn? GetPlayerPawn(string key)
+        => GetBasePlayerPawn(key)?.AsPlayer();
+
+    public IBasePlayerPawn? GetBasePlayerPawn(string key)
     {
         CheckDisposed();
 
-        return PlayerPawn.Create(Event.GetPlayerPawn(_this, key));
+        return BasePlayerPawn.Create(Event.GetPlayerPawn(_this, key));
     }
 
     public string GetName()

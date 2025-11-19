@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -47,5 +47,5 @@ internal partial class ObserverService : PlayerPawnComponent, IObserverService
 #endregion
 
     public override string GetSchemaClassname()
-        => "CPlayer_ObserverServices";
+        => "CCSObserver_ObserverServices";
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Sharp.Core.Bridges.Forwards;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;
@@ -92,7 +93,7 @@ internal sealed class EntityPool<T> where T : class, IBaseEntity
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
 
 #if DEBUG
-        Console.WriteLine(
+        Debug.Print(
             $"Cached Entity {entity.GetAbsPtr()}::{entity.Handle.GetValue()}::{entity.Handle.GetEntryIndex().AsPrimitive()}::{entity.Handle.GetSerialNum()} as {typeof(T).Name} :: {entity.Classname}");
 #endif
 

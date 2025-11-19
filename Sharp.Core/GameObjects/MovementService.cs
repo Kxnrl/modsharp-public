@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -29,12 +29,6 @@ namespace Sharp.Core.GameObjects;
 
 internal partial class MovementService : PlayerPawnComponent, IMovementService
 {
-    public void TransientChangeStamina(float stamina)
-        => SetStaminaLocal(stamina);
-
-    public void TransientChangeMaxSpeed(float speed)
-        => SetMaxSpeedLocal(speed);
-
     public UserCommandButtons KeyButtons
     {
         get => (UserCommandButtons) _this.GetInt64(GetButtonsSchemaFieldOffset() + 8);
@@ -67,6 +61,38 @@ internal partial class MovementService : PlayerPawnComponent, IMovementService
 
     [NativeSchemaField("CPlayer_MovementServices", "m_flMaxspeed", typeof(float), IsStruct = true)]
     private partial SchemaField GetMaxSpeedField();
+
+#endregion
+
+    public override string GetSchemaClassname()
+        => "CPlayer_MovementServices";
+
+    public IPlayerMovementService? AsPlayerMovementService(bool reinterpret = false)
+    {
+        if (GetPlayerMovementService() is { } mv)
+        {
+            return mv;
+        }
+
+        return reinterpret ? PlayerMovementService.Create(_this) : null;
+    }
+
+    public void TransientChangeMaxSpeed(float speed)
+        => SetMaxSpeedLocal(speed);
+
+    protected virtual IPlayerMovementService? GetPlayerMovementService()
+        => null;
+}
+
+internal partial class PlayerMovementService : MovementService, IPlayerMovementService
+{
+    public void TransientChangeStamina(float stamina)
+        => SetStaminaLocal(stamina);
+
+    protected override IPlayerMovementService? GetPlayerMovementService()
+        => this;
+
+#region Schemas
 
     [NativeSchemaField("CCSPlayer_MovementServices", "m_flDuckSpeed", typeof(float), IsStruct = true)]
     private partial SchemaField GetDuckSpeedField();
