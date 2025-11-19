@@ -362,7 +362,7 @@ internal class EntityManager : ICoreEntityManager
                 continue;
             }
 
-            if (inGame || controller.IsConnected())
+            if (!inGame || controller.IsConnected())
             {
                 yield return controller;
             }
@@ -380,7 +380,7 @@ internal class EntityManager : ICoreEntityManager
                 continue;
             }
 
-            if (inGame || controller.IsConnected())
+            if (!inGame || controller.IsConnected())
             {
                 list.Add(controller);
             }

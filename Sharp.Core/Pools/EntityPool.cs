@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Sharp.Core.Bridges.Forwards;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;
@@ -90,7 +89,7 @@ internal sealed class EntityPool<T> where T : class, IBaseEntity
 
     internal void Set(T entity)
     {
-        ArgumentNullException.ThrowIfNull(entity, nameof(entity));
+        ArgumentNullException.ThrowIfNull(entity);
 
 #if DEBUG
         Debug.Print(

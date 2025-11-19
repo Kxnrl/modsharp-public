@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Types.Tier;
@@ -30,6 +31,12 @@ public interface INetworkServer : INativeObject
     ///     获取Client池的IClient数量
     /// </summary>
     int GetClientCount();
+
+    /// <summary>
+    ///     获取Client池的IClient数量
+    ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
+    /// </summary>
+    int GetClientCount(bool connected, bool inGame = false);
 
     /// <summary>
     ///     通过PlayerSlot获取IClient
@@ -49,10 +56,12 @@ public interface INetworkServer : INativeObject
     /// <summary>
     ///     获取IClient池
     /// </summary>
+    [Obsolete("Use overload GetGameClients(bool, bool) instead")]
     IReadOnlyList<IGameClient> GetGameClients();
 
     /// <summary>
-    ///     获取IClient
+    ///     获取IClient List <br />
+    ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
     /// </summary>
     List<IGameClient> GetGameClients(bool connected, bool inGame = false);
 
@@ -65,5 +74,6 @@ public interface INetworkServer : INativeObject
     /// <summary>
     ///     获取游戏内Client数量
     /// </summary>
+    [Obsolete("Use GetClientCount(bool, bool) instead")]
     int GetGameClientCount(bool fullyInGame = false);
 }

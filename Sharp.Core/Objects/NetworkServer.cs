@@ -42,6 +42,52 @@ internal sealed unsafe partial class NetworkServer : NativeObject, INetworkServe
         return _clients->Size;
     }
 
+    public int GetClientCount(bool connected, bool inGame)
+    {
+        CheckDisposed();
+
+        if (inGame)
+        {
+            connected = true;
+        }
+
+        if (!connected && !inGame)
+        {
+            return _clients->Size;
+        }
+
+        var count = 0;
+
+        for (var index = _clients->Size - 1; index >= 0; index--)
+        {
+            var client = GameClient.Create(_clients->Element(index));
+
+            if (client is null)
+            {
+                continue;
+            }
+
+            var s = client.SignOnState;
+
+            if (inGame)
+            {
+                if (s is SignOnState.Full)
+                {
+                    count++;
+                }
+
+                continue;
+            }
+
+            if (s is >= SignOnState.Connected and < SignOnState.ChangeLevel)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public IGameClient? GetGameClient(PlayerSlot slot)
         => GameClient.Create(Bridges.Natives.Client.GetClientBySlot(slot));
 
@@ -59,7 +105,7 @@ internal sealed unsafe partial class NetworkServer : NativeObject, INetworkServe
     }
 
     public IReadOnlyList<IGameClient> GetGameClients()
-        => GetGameClients(true);
+        => GetGameClients(true, false);
 
     public List<IGameClient> GetGameClients(bool connected, bool inGame = false)
     {
@@ -71,23 +117,42 @@ internal sealed unsafe partial class NetworkServer : NativeObject, INetworkServe
         {
             var client = GameClient.Create(_clients->Element(index));
 
-            if (client is null || client.SignOnState < SignOnState.Connected)
+            if (client is null)
             {
                 continue;
             }
 
-            builder.Add(client);
+            var s = client.SignOnState;
+
+            if (inGame)
+            {
+                if (s is SignOnState.Full)
+                {
+                    builder.Add(client);
+                }
+            }
+            else if (connected)
+            {
+                if (s is >= SignOnState.Connected and < SignOnState.ChangeLevel)
+                {
+                    builder.Add(client);
+                }
+            }
+            else
+            {
+                builder.Add(client);
+            }
         }
 
         return builder;
     }
 
-    public int GetGameClientCount(bool fullyInGame = false)
+    public int GetGameClientCount(bool inGame = false)
     {
         CheckDisposed();
 
         var count = 0;
-        var state = fullyInGame ? SignOnState.Full : SignOnState.Connected;
+        var state = inGame ? SignOnState.Full : SignOnState.Connected;
 
         for (var index = _clients->Size - 1; index >= 0; index--)
         {
