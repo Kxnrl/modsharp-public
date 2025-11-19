@@ -144,11 +144,13 @@ BeginStaticHookScope(HostStateRequest)
         // 因为有时候如果从de_mirage换成官方的第三方图，比如cs_agency
         // m_Addon不会带cs_agency而是DualAddonId
         // 导致客户端不会加载cs_agency，从而出现材质缺失的情况
-        if (!pRequest->m_LevelName.IsEmpty() && g_pFullFileSystem->IsDirectory(pRequest->m_LevelName.Get(), "OFFICIAL_ADDONS"))
+        if (!pRequest->m_LevelName.IsEmpty()
+            && g_pFullFileSystem->IsDirectory(pRequest->m_LevelName.Get(), "OFFICIAL_ADDONS")
+            && g_pFullFileSystem->FileExists(FString("%s/%s_dir.vpk", pRequest->m_LevelName.Get(), pRequest->m_LevelName.Get()), "OFFICIAL_ADDONS"))
         {
             s_CurrentWorkshopMap    = pRequest->m_LevelName.Get();
             s_IsOfficialWorkshopMap = true;
-            s_bReconnectionRequired = true;
+            s_bReconnectionRequired = false;
         }
 
         std::vector<std::string> addons{};
