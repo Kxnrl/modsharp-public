@@ -32,6 +32,7 @@ class IGameEvent;
 class CConVarBaseData;
 class CBasePlayerPawn;
 class CCSPlayerController;
+class CPlayer_MovementServices;
 class CCSPlayer_MovementServices;
 class CCSPlayer_WeaponServices;
 class CBaseWeapon;
@@ -118,8 +119,8 @@ DECLARE_FORWARD(Player, OnPlayerPreThink, void, FORWARD_ARG(CServerSideClient*, 
 DECLARE_FORWARD(Player, OnPlayerPostThink, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*));
 DECLARE_FORWARD(Player, OnPlayerKilledPre, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CTakeDamageResult*));
 DECLARE_FORWARD(Player, OnPlayerKilledPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CTakeDamageResult*));
-DECLARE_FORWARD(Player, OnPlayerRunCommandPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CCSPlayer_MovementServices*, void* /*CUserCmd*/));
-DECLARE_FORWARD(Player, OnPlayerRunCommandPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CCSPlayer_MovementServices*, void* /*CUserCmd*/, EHookAction));
+DECLARE_FORWARD(Player, OnPlayerRunCommandPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CBasePlayerPawn*, CPlayer_MovementServices*, void* /*CUserCmd*/));
+DECLARE_FORWARD(Player, OnPlayerRunCommandPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CBasePlayerPawn*, CPlayer_MovementServices*, void* /*CUserCmd*/, EHookAction));
 DECLARE_FORWARD(Player, OnPlayerProcessMovePre, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CCSPlayer_MovementServices*, CMoveData*));
 DECLARE_FORWARD(Player, OnPlayerProcessMovePost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CCSPlayer_MovementServices*, CMoveData*));
 DECLARE_FORWARD(Player, OnPlayerWalkMove, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, CCSPlayer_MovementServices*, CMoveData*, int*));

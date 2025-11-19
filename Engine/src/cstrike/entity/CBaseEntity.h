@@ -164,10 +164,10 @@ public:
 
     void SetName(const char* pszName) const;
 
-    [[nodiscard]] CCSPlayerPawn* ToPlayerPawn()
+    [[nodiscard]] CBasePlayerPawn* ToPlayerPawn()
     {
         if (IsPlayerPawn())
-            return reinterpret_cast<CCSPlayerPawn*>(this);
+            return reinterpret_cast<CBasePlayerPawn*>(this);
         return nullptr;
     }
 

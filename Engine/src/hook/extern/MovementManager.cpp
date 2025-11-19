@@ -56,9 +56,9 @@ static CConVarBaseData* ms_disable_usercmd_subtick_moves = nullptr;
 static CConVarBaseData* ms_disable_usercmd_subtick_input = nullptr;
 static CConVarBaseData* ms_fix_usercmd_rapid_fire        = nullptr;
 
-static bool FloatCompare(float a, float b)
+static inline bool FloatCompare(float a, float b)
 {
-    return fabs(a - b) < FLT_EPSILON;
+    return fabs(a - b) < 0.001f;
 }
 
 struct CUserCmdInButtonState
@@ -94,9 +94,53 @@ static_assert(sizeof(CUserCmd) == 152);
 static_assert(sizeof(CUserCmd) == 144);
 #endif
 
-CCSPlayerPawn*       s_pMovementPawn;
-CCSPlayerController* s_pMovementController;
-CServerSideClient*   s_pMovementClient;
+#define ValidateCCP()                                                      \
+    const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();                \
+    AssertPtr(pPawn);                                                      \
+    const auto pController = pPawn->GetController<CCSPlayerController*>(); \
+    AssertPtr(pController);                                                \
+    const auto pClient = sv->GetClient(pController->GetPlayerSlot());      \
+    AssertPtr(pClient)
+
+#define ValidateCP()                                                       \
+    const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();                \
+    AssertPtr(pPawn);                                                      \
+    const auto pController = pPawn->GetController<CCSPlayerController*>(); \
+    AssertPtr(pController)
+
+BeginMemberHookScope(CPlayer_MovementServices)
+{
+    DeclareMemberDetourHook(RunCommand, void, (CPlayer_MovementServices * pService, CUserCmd * pCommand))
+    {
+        if (!pCommand)
+            return RunCommand(pService, pCommand);
+
+        VPROF_MS_HOOK();
+
+        const auto pPawn = pService->GetPawn<CBasePlayerPawn*>();
+        AssertPtr(pPawn);
+        const auto pController = pPawn->GetController<CCSPlayerController*>();
+        AssertPtr(pController);
+        auto pClient = sv->GetClient(pController->GetPlayerSlot());
+        AssertPtr(pClient);
+
+        const auto action = forwards::OnPlayerRunCommandPre->Invoke(pClient, pController, pPawn, pService, pCommand);
+        if (action == EHookAction::SkipCallReturnOverride)
+        {
+            forwards::OnPlayerRunCommandPost->Invoke(pClient, pController, pPawn, pService, pCommand, action);
+            return;
+        }
+
+        if (action != EHookAction::Ignored)
+        {
+            FatalError("Not Impl Yet");
+        }
+
+        RunCommand(pService, pCommand);
+
+        forwards::OnPlayerRunCommandPost->Invoke(pClient, pController, pPawn, pService, pCommand, action);
+    }
+}
 
 BeginMemberHookScope(CCSPlayer_MovementServices)
 {
@@ -105,10 +149,9 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         VPROF_MS_HOOK();
         AssertPtr(gpGlobals);
 
-        const auto pPawn       = s_pMovementPawn;
-        const auto pController = s_pMovementController;
-        const auto pClient     = s_pMovementClient;
-        const auto nSlot       = pClient->GetSlot();
+        ValidateCCP();
+
+        const auto nSlot = pClient->GetSlot();
 
         if (pClient)
         {
@@ -133,42 +176,6 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         }
     }
 
-    DeclareMemberDetourHook(RunCommand, void, (CCSPlayer_MovementServices * pService, CUserCmd * pCommand))
-    {
-        if (!pCommand)
-            return RunCommand(pService, pCommand);
-
-        VPROF_MS_HOOK();
-
-        const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
-        AssertPtr(pPawn);
-        s_pMovementPawn = pPawn;
-
-        const auto pController = pPawn->GetController<CCSPlayerController*>();
-        AssertPtr(pController);
-        s_pMovementController = pController;
-
-        auto pClient = sv->GetClient(pController->GetPlayerSlot());
-        AssertPtr(pClient);
-        s_pMovementClient = pClient;
-
-        const auto action = forwards::OnPlayerRunCommandPre->Invoke(pClient, pController, pPawn, pService, pCommand);
-        if (action == EHookAction::SkipCallReturnOverride)
-        {
-            forwards::OnPlayerRunCommandPost->Invoke(pClient, pController, pPawn, pService, pCommand, action);
-            return;
-        }
-
-        if (action != EHookAction::Ignored)
-        {
-            FatalError("Not Impl Yet");
-        }
-
-        RunCommand(pService, pCommand);
-
-        forwards::OnPlayerRunCommandPost->Invoke(pClient, pController, pPawn, pService, pCommand, action);
-    }
-
     // 因为MovementLocker, 所以需要魔法替换MV本身的最大速度
     // RunCommand
     //   -> WalkMove
@@ -178,9 +185,9 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
 
     DeclareMemberDetourHook(WalkMove, void, (CCSPlayer_MovementServices * pService, CMoveData * pMoveData))
     {
-        const auto pPawn       = s_pMovementPawn;
-        const auto pController = s_pMovementController;
-        const auto pClient     = s_pMovementClient;
+        ValidateCP();
+
+        const auto pClient = sv->GetClient(pController->GetPlayerSlot());
 
         if (!pClient)
             return WalkMove(pService, pMoveData);
@@ -216,7 +223,7 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
     // Fix mega push
     DeclareVirtualHook(CheckMovingGround, void, (CCSPlayer_MovementServices * pService, double frametime))
     {
-        const auto pController = s_pMovementController;
+        ValidateCP();
 
         const auto slot = pController->GetPlayerSlot();
 
@@ -388,7 +395,8 @@ static void PatchJumpInWaterVelocityZ()
 
 void InstallMovementHook()
 {
-    InstallMemberDetourAutoSig(CCSPlayer_MovementServices, RunCommand);
+    InstallMemberDetourAutoSig(CPlayer_MovementServices, RunCommand);
+
     InstallMemberDetourAutoSig(CCSPlayer_MovementServices, WalkMove);
     InstallMemberDetourAutoSig(CCSPlayer_MovementServices, Accelerate);
     InstallMemberDetourAutoSig(CCSPlayer_MovementServices, ProcessMove);

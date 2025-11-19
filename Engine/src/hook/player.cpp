@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -39,9 +39,11 @@
 // forward to movement
 extern float GetPlayerRunSpeedValue(CCSPlayerController* pController);
 
-extern CCSPlayerPawn*       s_pMovementPawn;
-extern CCSPlayerController* s_pMovementController;
-extern CServerSideClient*   s_pMovementClient;
+#define ValidateCC()                                                       \
+    const auto pController = pPawn->GetController<CCSPlayerController*>(); \
+    AssertPtr(pController);                                                \
+    const auto pClient = sv->GetClient(pController->GetPlayerSlot());      \
+    AssertPtr(pClient)
 
 BeginMemberHookScope(CCSPlayerPawn)
 {
@@ -97,9 +99,11 @@ BeginMemberHookScope(CCSPlayerPawn)
 
     DeclareVirtualHook(PlayerPreThink, void, (CCSPlayerPawn * pPawn))
     {
+        ValidateCC();
+
         PlayerPreThink(pPawn);
 
-        forwards::OnPlayerPreThink->Invoke(s_pMovementClient, s_pMovementController, pPawn);
+        forwards::OnPlayerPreThink->Invoke(pClient, pController, pPawn);
 #ifdef PLAYER_EVENT_ASSERT
         // LOG("CCSPlayerPawn::PlayerPreThink %p", pPawn);
 #endif
@@ -107,9 +111,11 @@ BeginMemberHookScope(CCSPlayerPawn)
 
     DeclareVirtualHook(PlayerPostThink, void, (CCSPlayerPawn * pPawn))
     {
+        ValidateCC();
+
         PlayerPostThink(pPawn);
 
-        forwards::OnPlayerPostThink->Invoke(s_pMovementClient, s_pMovementController, pPawn);
+        forwards::OnPlayerPostThink->Invoke(pClient, pController, pPawn);
 #ifdef PLAYER_EVENT_ASSERT
         // LOG("CCSPlayerPawn::PlayerPostThink %p", pPawn);
 #endif
@@ -120,9 +126,12 @@ BeginMemberHookScope(CCSPlayerPawn)
 
     static void ProcessMovement_AssignMaxSpeed(SafetyHookContext & ctx)
     {
-        const auto pPawn       = s_pMovementPawn;
-        const auto pController = s_pMovementController;
-        const auto pClient     = s_pMovementClient;
+        AssertPtr(gpGlobals);
+
+        const auto pServices = reinterpret_cast<CCSPlayer_MovementServices*>(ctx.rdi);
+        const auto pPawn     = pServices->GetPawn<CCSPlayerPawn*>();
+        AssertPtr(pPawn);
+        ValidateCC();
 
         const float originalSpeed = ctx.xmm6.f32[0];
         auto        speed         = originalSpeed;
@@ -143,8 +152,7 @@ BeginMemberHookScope(CCSPlayerPawn)
     {
         const float originalSpeed = GetPlayerMaxSpeed(pPawn);
 
-        const auto pController = s_pMovementController;
-        const auto pClient     = s_pMovementClient;
+        ValidateCC();
 
         float      speed  = originalSpeed;
         const auto action = forwards::OnPlayerGetMaxSpeed->Invoke(pClient, pController, pPawn, originalSpeed, &speed);

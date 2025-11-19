@@ -83,7 +83,16 @@ public:
     void                       SwitchWeapon(CBaseWeapon* weapon);
 };
 
-class CPlayer_MovementServices_Humanoid : public PlayerPawnComponent
+class CPlayer_MovementServices : public PlayerPawnComponent
+{
+    DECLARE_SCHEMA_CLASS(CPlayer_MovementServices)
+
+public:
+    SCHEMA_POINTER_FIELD(CInButtonState, m_nButtons)
+    SCHEMA_FIELD(float, m_flMaxspeed)
+};
+
+class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 {
     DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid)
 public:
@@ -92,11 +101,10 @@ public:
 
 class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
 {
-    DECLARE_SCHEMA_CLASS(CPlayer_MovementServices)
+    DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices)
 
 public:
-    SCHEMA_POINTER_FIELD(CInButtonState, m_nButtons)
-    SCHEMA_FIELD(float, m_flMaxspeed)
+    SCHEMA_FIELD(float, m_flDuckSpeed)
 };
 
 class CCSPlayer_BulletServices : public PlayerPawnComponent

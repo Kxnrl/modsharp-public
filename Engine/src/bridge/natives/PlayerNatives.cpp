@@ -115,12 +115,12 @@ static void PawnPrint(CBasePlayerPawn* pPawn, HudPrint_t dest, const char* name,
     pPawn->ClientPrint(dest, name, param1, param2, param3, param4);
 }
 
-static void PawnSlay(CBasePlayerPawn* pPawn, bool explode)
+static void PawnSlay(CCSPlayerPawn* pPawn, bool explode)
 {
     pPawn->CommitSuicide(explode);
 }
 
-static CBaseWeapon* PawnGiveNamedItem(CBasePlayerPawn* pPawn, const char* name)
+static CBaseWeapon* PawnGiveNamedItem(CCSPlayerPawn* pPawn, const char* name)
 {
     return pPawn->GiveNamedItem(name);
 }
