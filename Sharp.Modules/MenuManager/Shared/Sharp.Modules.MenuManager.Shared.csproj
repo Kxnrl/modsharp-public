@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <AssemblyName>Sharp.Modules.MenuManager.Shared</AssemblyName>
+        <RootNamespace>Sharp.Modules.MenuManager.Shared</RootNamespace>
+        <Title>ModSharp.$(AssemblyName)</Title>
+        <PackageId>ModSharp.$(AssemblyName)</PackageId>
+        <Description>Shared interface of MenuManager for ModSharp.</Description>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <BaseOutputPath>../../../.build/Sharp.Modules/MenuManager.Shared/</BaseOutputPath>
+        <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+    </ItemGroup>
+
+</Project>
