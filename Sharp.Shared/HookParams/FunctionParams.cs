@@ -57,7 +57,7 @@ public interface IPlayerWeaponWithServiceFunctionParams : IPlayerWeaponFunctionP
 
 public interface IPlayerMovementFunctionParams : IPlayerPawnFunctionParams
 {
-    IMovementService Service { get; }
+    IPlayerMovementService Service { get; }
 }
 
 public unsafe interface IPlayerMovementWithDataFunctionParams : IPlayerMovementFunctionParams

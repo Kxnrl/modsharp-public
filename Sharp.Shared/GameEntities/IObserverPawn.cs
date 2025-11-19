@@ -18,23 +18,15 @@
  */
 
 using Sharp.Shared.Attributes;
-using Sharp.Shared.Enums;
-using Sharp.Shared.GameEntities;
-using Sharp.Shared.Types;
+using Sharp.Shared.GameObjects;
 
-namespace Sharp.Shared.GameObjects;
+namespace Sharp.Shared.GameEntities;
 
-/// <summary>
-///     ObserverServices is CCSObserver only
-/// </summary>
-[NetClass("CCSObserver_ObserverServices")]
-public interface IObserverService : IPlayerPawnComponent
+[NetClass("CCSObserverPawn")]
+public interface IObserverPawn : IBasePlayerPawn
 {
-    bool ForcedObserverMode { get; set; }
-
-    ObserverMode ObserverLastMode { get; set; }
-
-    CEntityHandle<IBaseEntity> ObserverTarget { get; set; }
-
-    ObserverMode ObserverMode { get; set; }
+    /// <summary>
+    ///     ObserverService实例
+    /// </summary>
+    IObserverService? GetObserverService();
 }

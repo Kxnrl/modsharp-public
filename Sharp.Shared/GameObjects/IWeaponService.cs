@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,6 +24,9 @@ using Sharp.Shared.Types;
 
 namespace Sharp.Shared.GameObjects;
 
+/// <summary>
+///     WeaponServices is only for CCSPlayerPawn
+/// </summary>
 [NetClass("CCSPlayer_WeaponServices")]
 public interface IWeaponService : IPlayerPawnComponent
 {

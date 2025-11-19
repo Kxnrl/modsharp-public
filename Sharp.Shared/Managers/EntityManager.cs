@@ -141,7 +141,7 @@ public interface IEntityManager
     /// <summary>
     ///     通过PlayerSlot查找PlayerPawn
     /// </summary>
-    IPlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot);
+    IBasePlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot);
 
     /// <summary>
     ///     通过PlayerSlot查找PlayerController

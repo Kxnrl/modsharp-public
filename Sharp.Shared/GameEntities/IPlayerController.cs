@@ -33,14 +33,16 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     取得Controller对应的PlayerPawn
     /// </summary>
-    /// <returns><c>CCSPlayerPawn</c>或<c>CCSObserverPawn</c></returns>
-    IPlayerPawn? GetPawn();
+    /// <returns>
+    ///     <see cref="IBasePlayerPawn" />
+    /// </returns>
+    IBasePlayerPawn? GetPawn();
 
     /// <summary>
     ///     取得Controller对应的PlayerPawn
     /// </summary>
     /// <returns>
-    ///     <c>CCSPlayerPawn</c>
+    ///     <see cref="IPlayerPawn" />
     /// </returns>
     IPlayerPawn? GetPlayerPawn();
 
@@ -48,9 +50,9 @@ public interface IPlayerController : IBaseEntity
     ///     取得Controller对应的ObserverPawn
     /// </summary>
     /// <returns>
-    ///     <c>CCSObserverPawn</c>
+    ///     <see cref="IObserverPawn" />
     /// </returns>
-    IPlayerPawn? GetObserverPawn();
+    IObserverPawn? GetObserverPawn();
 
     /// <summary>
     ///     设置PlayerPawn <br />
@@ -97,7 +99,7 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     设置PlayerPawn
     /// </summary>
-    void SetPawn(IPlayerPawn pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4);
+    void SetPawn(IBasePlayerPawn pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4);
 
     /// <summary>
     ///     是否已在游戏

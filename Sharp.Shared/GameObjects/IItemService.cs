@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -23,6 +23,9 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.GameObjects;
 
+/// <summary>
+///     ItemServices is only for CCSPlayerPawn
+/// </summary>
 [NetClass("CCSPlayer_ItemServices")]
 public interface IItemService : IPlayerPawnComponent
 {

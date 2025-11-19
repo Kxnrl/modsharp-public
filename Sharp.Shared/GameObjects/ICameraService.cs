@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,7 +24,7 @@ using Sharp.Shared.Types;
 
 namespace Sharp.Shared.GameObjects;
 
-[NetClass("CCSPlayer_CameraServices")]
+[NetClass("CCSPlayerBase_CameraServices")]
 public interface ICameraService : IPlayerPawnComponent
 {
     /// <summary>
@@ -43,27 +43,27 @@ public interface ICameraService : IPlayerPawnComponent
     uint FieldOfView { get; set; }
 
     /// <summary>
-    ///     m_iFOVStart
+    ///     CCSPlayerBase_CameraServices::m_iFOVStart
     /// </summary>
     uint FieldOfViewStart { get; set; }
 
     /// <summary>
-    ///     m_flFOVTime
+    ///     CCSPlayerBase_CameraServices::m_flFOVTime
     /// </summary>
     float FieldOfViewTime { get; set; }
 
     /// <summary>
-    ///     m_flFOVRate
+    ///     CCSPlayerBase_CameraServices::m_flFOVRate
     /// </summary>
     float FieldOfViewRate { get; set; }
 
     /// <summary>
-    ///     m_hZoomOwner
+    ///     CCSPlayerBase_CameraServices::m_hZoomOwner
     /// </summary>
     CEntityHandle<IBaseEntity> ZoomOwnerHandle { get; set; }
 
     /// <summary>
-    ///     m_PostProcessingVolumes
+    ///     CPlayer_CameraServices::m_PostProcessingVolumes
     /// </summary>
     ISchemaList<CEntityHandle<IBaseEntity>> GetPostProcessingVolumes();
 }

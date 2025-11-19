@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -22,7 +22,7 @@ using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.GameObjects;
 
-[NetClass("CCSPlayer_MovementServices")]
+[NetClass("CPlayer_MovementServices")]
 public interface IMovementService : IPlayerPawnComponent
 {
     /// <summary>
@@ -30,6 +30,39 @@ public interface IMovementService : IPlayerPawnComponent
     /// </summary>
     float MaxSpeed { get; set; }
 
+    /// <summary>
+    ///     按键
+    /// </summary>
+    UserCommandButtons KeyButtons { get; set; }
+
+    /// <summary>
+    ///     变化的按键
+    /// </summary>
+    UserCommandButtons KeyChangedButtons { get; set; }
+
+    /// <summary>
+    ///     滚轮的按键
+    /// </summary>
+    UserCommandButtons ScrollButtons { get; set; }
+
+    /// <summary>
+    ///     转换为CCSPlayer_MovementServices
+    /// </summary>
+    /// <param name="reinterpret">
+    ///     False: 如果当前MovementService不是CCSPlayer_MovementServices则返回null<br />True:
+    ///     使用指针重新解析为CCSPlayer_MovementServices
+    /// </param>
+    IPlayerMovementService? AsPlayerMovementService(bool reinterpret = false);
+
+    /// <summary>
+    ///     临时修改MaxSpeed, 不发送
+    /// </summary>
+    void TransientChangeMaxSpeed(float speed);
+}
+
+[NetClass("CCSPlayer_MovementServices")]
+public interface IPlayerMovementService : IMovementService
+{
     /// <summary>
     ///     下蹲疲劳速度
     /// </summary>
@@ -59,24 +92,4 @@ public interface IMovementService : IPlayerPawnComponent
     ///     临时修改耐力值, 不发送
     /// </summary>
     void TransientChangeStamina(float stamina);
-
-    /// <summary>
-    ///     临时修改MaxSpeed, 不发送
-    /// </summary>
-    void TransientChangeMaxSpeed(float speed);
-
-    /// <summary>
-    ///     按键
-    /// </summary>
-    UserCommandButtons KeyButtons { get; set; }
-
-    /// <summary>
-    ///     变化的按键
-    /// </summary>
-    UserCommandButtons KeyChangedButtons { get; set; }
-
-    /// <summary>
-    ///     滚轮的按键
-    /// </summary>
-    UserCommandButtons ScrollButtons { get; set; }
 }

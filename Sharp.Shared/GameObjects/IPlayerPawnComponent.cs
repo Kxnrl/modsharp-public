@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -27,5 +27,5 @@ public interface IPlayerPawnComponent : ISchemaObject
     /// <summary>
     ///     获取玩家
     /// </summary>
-    IPlayerPawn? GetPlayer();
+    IBasePlayerPawn? GetPlayer();
 }

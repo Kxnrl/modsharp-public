@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -26,38 +26,13 @@ using Sharp.Shared.Types;
 namespace Sharp.Shared.GameEntities;
 
 [NetClass("CCSPlayerPawn")]
-public interface IPlayerPawn : IBaseCombatCharacter
+public interface IPlayerPawn : IBasePlayerPawn
 {
-    /// <summary>
-    ///     打印对应的消息 (HudMsg)
-    /// </summary>
-    void Print(HudPrintChannel channel,
-        string                 message,
-        string?                param1 = null,
-        string?                param2 = null,
-        string?                param3 = null,
-        string?                param4 = null);
-
-    /// <summary>
-    ///     是否是玩家或者Observer
-    /// </summary>
-    bool IsPlayer();
-
     /// <summary>
     ///     处死
     /// </summary>
     /// <param name="explode">原地爆炸</param>
     void Slay(bool explode = false);
-
-    /// <summary>
-    ///     取得当前PlayerPawn对应的Controller
-    /// </summary>
-    IPlayerController? GetController();
-
-    /// <summary>
-    ///     m_hOriginalController
-    /// </summary>
-    IPlayerController? GetOriginalController();
 
     /// <summary>
     ///     自动识别存活状态就拿Controller, 否则Original
@@ -128,22 +103,6 @@ public interface IPlayerPawn : IBaseCombatCharacter
     void GiveGloves(EconGlovesId id, int prefab, float wear, int seed);
 
     /// <summary>
-    ///     👀角度
-    /// </summary>
-    Vector GetEyeAngles();
-
-    /// <summary>
-    ///     👀位置
-    /// </summary>
-    Vector GetEyePosition();
-
-    /// <summary>
-    ///     瞬态更换队伍 <br />
-    ///     <remarks>直接修改m_iTeamNum的值并且不发送网络消息</remarks>
-    /// </summary>
-    void TransientChangeTeam(CStrikeTeam team);
-
-    /// <summary>
     ///     瞬态修改VelocityModifier,不发送网络消息
     /// </summary>
     void TransientChangeVelocityModifier(float velocityModifier);
@@ -154,29 +113,14 @@ public interface IPlayerPawn : IBaseCombatCharacter
     IItemService? GetItemService();
 
     /// <summary>
-    ///     MoveService实例
-    /// </summary>
-    IMovementService? GetMovementService();
-
-    /// <summary>
     ///     WeaponService实例
     /// </summary>
     IWeaponService? GetWeaponService();
 
     /// <summary>
-    ///     CameraService实例
+    ///     MoveService实例
     /// </summary>
-    ICameraService? GetCameraService();
-
-    /// <summary>
-    ///     ObserverService实例
-    /// </summary>
-    IObserverService? GetObserverService();
-
-    /// <summary>
-    ///     只给当前玩家播放本地音频
-    /// </summary>
-    SoundOpEventGuid EmitSoundClient(string sound, float? volume = null);
+    IPlayerMovementService? GetPlayerMovementService();
 
     /// <summary>
     ///     Glove Econ
@@ -187,26 +131,6 @@ public interface IPlayerPawn : IBaseCombatCharacter
     ///     护甲值
     /// </summary>
     int ArmorValue { get; set; }
-
-    /// <summary>
-    ///     闪光Alpha
-    /// </summary>
-    float FlashMaxAlpha { get; set; }
-
-    /// <summary>
-    ///     闪光持续时间
-    /// </summary>
-    float FlashDuration { get; set; }
-
-    /// <summary>
-    ///     PlayerState
-    /// </summary>
-    PlayerState State { get; set; }
-
-    /// <summary>
-    ///     m_iNumSpawns
-    /// </summary>
-    int NumSpawns { get; }
 
     /// <summary>
     ///     m_fMolotovDamageTime
@@ -232,46 +156,6 @@ public interface IPlayerPawn : IBaseCombatCharacter
     ///     m_flFlinchStack
     /// </summary>
     float FlinchStack { get; set; }
-
-    /// <summary>
-    ///     m_flProgressBarStartTime
-    /// </summary>
-    float ProgressBarStartTime { get; set; }
-
-    /// <summary>
-    ///     m_iProgressBarDuration
-    /// </summary>
-    int ProgressBarDuration { get; set; }
-
-    /// <summary>
-    ///     m_iHideHUD
-    /// </summary>
-    uint HideHud { get; set; }
-
-    /// <summary>
-    ///     m_fTimeLastHurt
-    /// </summary>
-    float TimeLastHurt { get; set; }
-
-    /// <summary>
-    ///     m_flDeathTime
-    /// </summary>
-    float DeathTime { get; set; }
-
-    /// <summary>
-    ///     m_fNextSuicideTime
-    /// </summary>
-    float NextSuicideTime { get; set; }
-
-    /// <summary>
-    ///     m_bRespawning
-    /// </summary>
-    bool Respawning { get; }
-
-    /// <summary>
-    ///     m_fNextRadarUpdateTime
-    /// </summary>
-    float NextRadarUpdateTime { get; set; }
 
     /// <summary>
     ///     m_bInBuyZone

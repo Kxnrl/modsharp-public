@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -495,8 +495,20 @@ public interface IBaseEntity : ISchemaObject
     void SetCollisionGroup(CollisionGroupType type);
 
     /// <summary>
-    ///     转换为PlayerPawn <br />
-    ///     <remarks>如果实体不是PlayerPawn则返回空</remarks>
+    ///     转换为<see cref="IBasePlayerPawn" /> <br />
+    ///     <remarks>
+    ///         如果实体不是CBasePlayerPawn直接返回空
+    ///     </remarks>
+    /// </summary>
+    /// <param name="safeCheck">False时直接创建实例, 不进行检查</param>
+    IBasePlayerPawn? AsBasePlayerPawn(bool safeCheck = true);
+
+    /// <summary>
+    ///     转换为<see cref="IPlayerPawn" /> <br />
+    ///     <remarks>
+    ///         如果实体不是CCSPlayerPawn直接返回空 <br />
+    ///         如果你要转换为<see cref="IBasePlayerPawn" />请查看<seealso cref="AsBasePlayerPawn" />
+    ///     </remarks>
     /// </summary>
     /// <param name="safeCheck">False时直接创建实例, 不进行检查</param>
     IPlayerPawn? AsPlayerPawn(bool safeCheck = true);

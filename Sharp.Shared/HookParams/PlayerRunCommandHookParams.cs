@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -18,12 +18,17 @@
  */
 
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
+using Sharp.Shared.GameObjects;
 using Sharp.Shared.Types.CppProtobuf;
 
 namespace Sharp.Shared.HookParams;
 
-public unsafe interface IPlayerRunCommandHookParams : IFunctionParams, IPlayerMovementFunctionParams
+public unsafe interface IPlayerRunCommandHookParams : IFunctionParams, IPlayerFunctionParams
 {
+    IBasePlayerPawn  Pawn    { get; }
+    IMovementService Service { get; }
+
     /// <summary>
     ///     获取CSGOUserCmd <br />
     ///     <remarks>获取成员struct时请使用ref</remarks>

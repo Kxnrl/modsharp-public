@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -101,8 +101,16 @@ public interface IGameEvent : INativeObject
 
     /// <summary>
     ///     获取事件字段的PlayerPawn
+    ///     <remarks>
+    ///         <br />若实体本身为Observer这里也会返回null
+    ///     </remarks>
     /// </summary>
     IPlayerPawn? GetPlayerPawn(string key);
+
+    /// <summary>
+    ///     与游戏原本行为相符, 取BasePlayerPawn
+    /// </summary>
+    IBasePlayerPawn? GetBasePlayerPawn(string key);
 
     /// <summary>
     ///     获取事件的名称
