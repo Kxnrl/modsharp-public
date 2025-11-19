@@ -200,14 +200,14 @@ public interface IBaseEntity : ISchemaObject
     ///     速度矢量 <br />
     ///     <remarks>如果存在MoveParent, 这个速度是基于Parent的</remarks>
     /// </summary>
-    [Obsolete("Use GetLocalVelocity/GetLocalVelocity")]
+    [Obsolete("Use GetLocalVelocity/GetLocalVelocity, will be removed in 2.2")]
     Vector Velocity { get; set; }
 
     /// <summary>
     ///     绝对的速度矢量 <br />
     ///     <remarks>该矢量不会计算MoveParent</remarks>
     /// </summary>
-    [Obsolete("Use GetAbsVelocity/GetAbsVelocity")]
+    [Obsolete("Use GetAbsVelocity/GetAbsVelocity, will be removed in 2.2")]
     Vector AbsVelocity { get; set; }
 
     /// <summary>

@@ -235,12 +235,6 @@ public interface IModSharp
     /// <summary>
     ///     发送NetMessage
     /// </summary>
-    [Obsolete("Use SendNetMessage<T> instead, will remove in 2.1")]
-    bool SendNetMessage(RecipientFilter filter, string name, IMessage data);
-
-    /// <summary>
-    ///     发送NetMessage
-    /// </summary>
     bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage;
 
     /// <summary>

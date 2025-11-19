@@ -1083,17 +1083,6 @@ internal partial class SharpCore : ISharpCore
     public void RadioTextAll(PlayerSlot slot, string name, string? params1, string? params2, string? params3, string? params4)
         => Game.RadioMessageAll(slot, name, params1, params2, params3, params4);
 
-    public unsafe bool SendNetMessage(RecipientFilter filter, string name, IMessage data)
-    {
-        var bytes = data.ToByteArray();
-        var size  = bytes.Length;
-
-        fixed (byte* pBytes = bytes)
-        {
-            return Net.SendNetMessage(&filter, name, pBytes, size);
-        }
-    }
-
     public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage
     {
         var bytes = data.ToByteArray();

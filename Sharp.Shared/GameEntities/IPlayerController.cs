@@ -137,14 +137,14 @@ public interface IPlayerController : IBaseEntity
     ///     Pawn存活状态 <br />
     ///     <remarks>该功能是给计分板用的</remarks>
     /// </summary>
-    [Obsolete("Use GetPawn().IsAlive")]
+    [Obsolete("Use GetPawn().IsAlive, will be removed in 2.2")]
     bool IsPawnAlive { get; }
 
     /// <summary>
     ///     Pawn血量 <br />
     ///     <remarks>该功能是给计分板用的</remarks>
     /// </summary>
-    [Obsolete("Use GetPawn().Health")]
+    [Obsolete("Use GetPawn().Health, will be removed in 2.2")]
     uint PawnHealth { get; }
 
     /// <summary>
@@ -266,10 +266,4 @@ public interface IPlayerController : IBaseEntity
     ///     获取装备的库存物品
     /// </summary>
     IEconItemView? GetItemInLoadoutFromInventory(CStrikeTeam team, int slot);
-
-    /// <summary>
-    ///     刷新计分板
-    /// </summary>
-    [Obsolete("Valve broken this, will remove in 2.1")]
-    void RefreshScoreBoardData();
 }

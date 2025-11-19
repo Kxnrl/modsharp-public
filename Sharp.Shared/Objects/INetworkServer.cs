@@ -56,7 +56,7 @@ public interface INetworkServer : INativeObject
     /// <summary>
     ///     获取IClient池
     /// </summary>
-    [Obsolete("Use overload GetGameClients(bool, bool) instead")]
+    [Obsolete("Use overload GetGameClients(bool, bool) instead, will be removed in 2.2")]
     IReadOnlyList<IGameClient> GetGameClients();
 
     /// <summary>
@@ -74,6 +74,6 @@ public interface INetworkServer : INativeObject
     /// <summary>
     ///     获取游戏内Client数量
     /// </summary>
-    [Obsolete("Use GetClientCount(bool, bool) instead")]
+    [Obsolete("Use GetClientCount(bool, bool) instead, will be removed in 2.2")]
     int GetGameClientCount(bool fullyInGame = false);
 }

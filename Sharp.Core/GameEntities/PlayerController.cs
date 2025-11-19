@@ -84,10 +84,6 @@ internal partial class PlayerController : BaseEntity, IPlayerController
 
     public PlayerSlot PlayerSlot => (byte) (Index - 1);
 
-    public void RefreshScoreBoardData()
-    {
-    }
-
     public unsafe SoundOpEventGuid EmitSoundClient(string sound, float? volume = null)
         => Player.ControllerEmitSoundClient(_this, sound, &volume);
 

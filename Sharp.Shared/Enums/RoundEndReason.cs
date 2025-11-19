@@ -36,13 +36,13 @@ public enum RoundEndReason : uint
     /// <summary>
     ///     Vip润了
     /// </summary>
-    [Obsolete("Valve removed", true)]
+    [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipEscaped = 2,
 
     /// <summary>
     ///     Vip嗝屁了
     /// </summary>
-    [Obsolete("Valve removed", true)]
+    [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipAssassinated = 3,
 
     /// <summary>
@@ -103,7 +103,7 @@ public enum RoundEndReason : uint
     /// <summary>
     ///     Vip没跑掉
     /// </summary>
-    [Obsolete("Valve removed", true)]
+    [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipNotEscaped = 15,
 
     /// <summary>

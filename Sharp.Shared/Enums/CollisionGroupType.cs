@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -31,7 +31,7 @@ public enum CollisionGroupType : byte
     /// <summary>
     ///     This is how you turn off all collisions for an object - move it to this group
     /// </summary>
-    [Obsolete("用NonPhysical")]
+    [Obsolete("use NonPhysical instead, will be removed in 2.2")]
     Never,
 
     /// <summary>

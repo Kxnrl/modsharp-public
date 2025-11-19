@@ -99,7 +99,6 @@ internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams
 
     public EntityIndex     EntityIndex   { get; }
     public string          SoundName     { get; private set; }
-    public SoundChannel    Channel       => SoundChannel.Auto;
     public float           Volume        { get; private set; }
     public NetworkReceiver Receivers     { get; private set; }
     public bool            Changed       { get; private set; }
@@ -111,14 +110,6 @@ internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams
         CheckEditable();
         SoundName     = soundName;
         OverrideSound = true;
-    }
-
-    public void SetChannel(SoundChannel channel)
-    {
-        CheckDisposed();
-        CheckEditable();
-
-        // do nothing
     }
 
     public void SetVolume(float volume)
