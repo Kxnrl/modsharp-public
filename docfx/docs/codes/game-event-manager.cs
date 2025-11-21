@@ -72,8 +72,8 @@ public sealed class GameEventManagerExample : IModSharpModule
     // the original event will be silenced to clients, only server will receive it.
     private HookReturnValue<bool> OnPlayerDeath(IGameEvent e, ref bool serverOnly)
     {
-        IGameEvent? clone = null;
-        var         sv    = _provider.GetRequiredService<ISharedSystem>().GetModSharp().GetIServer();
+        IGameEvent? clone   = null;
+        var         clients = _provider.GetRequiredService<ISharedSystem>().GetClientManager();
 
         try
         {
@@ -83,12 +83,9 @@ public sealed class GameEventManagerExample : IModSharpModule
             // modify kill feed icon
             clone.SetString("weapon", "SawnLake");
 
-            foreach (var client in sv.GetGameClients())
+            foreach (var client in clients.GetGameClients(true))
             {
-                if (client is { SignOnState: SignOnState.Full, IsFakeClient: false })
-                {
-                    clone.FireToClient(client);
-                }
+                clone.FireToClient(client);
             }
 
             // hide original event

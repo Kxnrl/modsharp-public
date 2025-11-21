@@ -16,6 +16,7 @@ public sealed class TraceWrapperExample : IModSharpModule
     public string DisplayAuthor => "Modsharp dev team";
 
     private readonly IModSharp            _modSharp;
+    private readonly IClientManager       _clientManager;
     private readonly IPhysicsQueryManager _traces;
 
     private readonly IConVar _aimTargetType;
@@ -32,8 +33,9 @@ public sealed class TraceWrapperExample : IModSharpModule
                           .CreateConVar("ms_show_aim_target_type", 0, "0 = all, 1 = teammate, 2 = enemy", ConVarFlags.Release)
               ?? throw new EntryPointNotFoundException("Failed to create convar");
 
-        _modSharp = sharedSystem.GetModSharp();
-        _traces   = sharedSystem.GetPhysicsQueryManager();
+        _modSharp      = sharedSystem.GetModSharp();
+        _clientManager = sharedSystem.GetClientManager();
+        _traces        = sharedSystem.GetPhysicsQueryManager();
     }
 
     public bool Init()
@@ -48,12 +50,10 @@ public sealed class TraceWrapperExample : IModSharpModule
 
     private void Think()
     {
-        // you also can use other way to get clients or controllers
-        var clients = _modSharp.GetIServer().GetGameClients(true, true);
-
         var type = _aimTargetType.GetInt32();
 
-        foreach (var client in clients)
+        // you also can use other way to get clients or controllers
+        foreach (var client in _clientManager.GetGameClients(true))
         {
             if (client.GetPlayerController() is not { } controller)
             {
@@ -82,7 +82,7 @@ public sealed class TraceWrapperExample : IModSharpModule
         var startPos = pawn.GetEyePosition();
 
         // build the end position of the ray
-        var endPos   = startPos + (pawn.GetEyeAngles().AnglesToVectorForward() * maxAimTargetDistance);
+        var endPos = startPos + (pawn.GetEyeAngles().AnglesToVectorForward() * maxAimTargetDistance);
 
         TraceResult trace;
 
