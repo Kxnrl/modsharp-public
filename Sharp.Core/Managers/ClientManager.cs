@@ -66,6 +66,8 @@ internal class ClientManager : ICoreClientManager
     private static volatile bool _sReloadAdmin;
     private static volatile int  _sQueryCookie;
 
+    private NetworkServer? _sv;
+
     public ClientManager(ILogger<ClientManager> logger, IConfiguration configuration, IShutdownMonitor shutdown)
     {
         _logger               = logger;
@@ -96,6 +98,7 @@ internal class ClientManager : ICoreClientManager
         Bridges.Forwards.Game.OnGamePreShutdown  += OnGameShutdown;
         Bridges.Forwards.Game.OnGameShutdown     += OnGameShutdown;
         Bridges.Forwards.Game.OnStartupServerPre += OnServerReset;
+        Bridges.Forwards.Game.OnServerInit       += OnServerInit;
 
         configuration.GetReloadToken().RegisterChangeCallback(_ => LoadCommandPrefix(), null);
         LoadCommandPrefix();
@@ -446,6 +449,13 @@ internal class ClientManager : ICoreClientManager
     private void OnServerReset()
     {
         _queryConVarInfos.Clear();
+
+        _sv = null;
+    }
+
+    private void OnServerInit()
+    {
+        _sv = NetworkServer.Create(Bridges.Natives.Core.GetIServer());
     }
 
     public void InstallClientListener(IClientListener listener)
@@ -550,6 +560,44 @@ internal class ClientManager : ICoreClientManager
 
     public IGameClient? GetGameClient(SteamID steamId)
         => GameClient.Create(Native.GetClientBySteamId(steamId));
+
+    public IEnumerable<IGameClient> GetGameClients(bool inGame = false)
+    {
+        if (_sv is null || _sv.IsDisposed)
+        {
+            throw new InvalidOperationException("You can not call this now.");
+        }
+
+        var clients = _sv.GetGameClients(true);
+
+        foreach (var client in clients)
+        {
+            if (!inGame || client.SignOnState is SignOnState.Full)
+            {
+                yield return client;
+            }
+        }
+    }
+
+    public List<IGameClient> GetGameClientList(bool inGame = false)
+    {
+        if (_sv is null || _sv.IsDisposed)
+        {
+            throw new InvalidOperationException("You can not call this now.");
+        }
+
+        return _sv.GetGameClients(true, inGame);
+    }
+
+    public int GetClientCount(bool inGame = false)
+    {
+        if (_sv is null || _sv.IsDisposed)
+        {
+            throw new InvalidOperationException("You can not call this now.");
+        }
+
+        return _sv.GetClientCount(true, inGame);
+    }
 
     public void KickClient(IGameClient client, string internalReason, NetworkDisconnectionReason networkDisconnectionReason)
         => Native.KickClient(client, internalReason, networkDisconnectionReason);

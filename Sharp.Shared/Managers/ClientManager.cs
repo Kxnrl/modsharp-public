@@ -79,6 +79,21 @@ public interface IClientManager
     IGameClient? GetGameClient(SteamID steamId);
 
     /// <summary>
+    ///     获取已建立链接的IClient
+    /// </summary>
+    IEnumerable<IGameClient> GetGameClients(bool inGame = false);
+
+    /// <summary>
+    ///     获取已建立链接的IClient
+    /// </summary>
+    List<IGameClient> GetGameClientList(bool inGame = false);
+
+    /// <summary>
+    ///     获取Client池的IClient数量
+    /// </summary>
+    int GetClientCount(bool inGame = false);
+
+    /// <summary>
     ///     把某个玩家立即踢出游戏
     /// </summary>
     /// <param name="client">IClient</param>
