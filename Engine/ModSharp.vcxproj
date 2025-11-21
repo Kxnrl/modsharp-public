@@ -176,6 +176,7 @@
     <ClInclude Include="src\cstrike\type\KeyValues.h" />
     <ClInclude Include="src\cstrike\type\KeyValues3.h" />
     <ClInclude Include="src\cstrike\type\matrix3x4.h" />
+    <ClInclude Include="src\mathematics.h" />
     <ClInclude Include="src\murmurhash.h" />
     <ClInclude Include="src\cstrike\type\QAngle.h" />
     <ClInclude Include="src\cstrike\type\Quaternion.h" />

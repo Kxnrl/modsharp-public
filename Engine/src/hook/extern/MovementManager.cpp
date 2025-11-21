@@ -21,6 +21,7 @@
 #include "global.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
+#include "mathematics.h"
 #include "memory/memory_access.h"
 #include "module.h"
 #include "vhook/hook.h"
@@ -43,9 +44,6 @@
 
 // #define LOG_FIX_TICKCOUNT
 
-constexpr float CStrikeMaxSpeed   = 260.f;
-constexpr float DefaultSpeedValue = 1.f;
-
 volatile float g_flReplaceMaxSpeed;
 volatile bool  g_bInWalkMove;
 
@@ -55,11 +53,6 @@ static float m_flRunSpeedValue[CS_MAX_PLAYERS];
 static CConVarBaseData* ms_disable_usercmd_subtick_moves = nullptr;
 static CConVarBaseData* ms_disable_usercmd_subtick_input = nullptr;
 static CConVarBaseData* ms_fix_usercmd_rapid_fire        = nullptr;
-
-static inline bool FloatCompare(float a, float b)
-{
-    return fabs(a - b) < 0.001f;
-}
 
 struct CUserCmdInButtonState
 {
@@ -158,7 +151,7 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
             forwards::OnPlayerProcessMovePre->Invoke(pClient, pController, pPawn, pService, pMoveData);
         }
 
-        if (nSlot >= CS_MAX_PLAYERS || FloatCompare(m_flLaggedMovementValue[nSlot], DefaultSpeedValue) || m_flLaggedMovementValue[nSlot] < 0)
+        if (nSlot >= CS_MAX_PLAYERS || FloatEquals(m_flLaggedMovementValue[nSlot], DefaultSpeedValue))
         {
             ProcessMove(pService, pMoveData);
         }

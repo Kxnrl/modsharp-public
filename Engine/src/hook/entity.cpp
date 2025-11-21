@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -662,13 +662,13 @@ static void AddOutputCustom_Targetname(const CEntityIdentity* pInstance, const c
 
 static void AddOutputCustom_Origin(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
-    Vector origin(std::clamp((float)atof(vecArgs[1].c_str()), -16384.f, 16384.f), std::clamp((float)atof(vecArgs[2].c_str()), -16384.f, 16384.f), std::clamp((float)atof(vecArgs[3].c_str()), -16384.f, 16384.f));
+    Vector origin(std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), -16384.f, 16384.f), std::clamp(static_cast<float>(atof(vecArgs[2].c_str())), -16384.f, 16384.f), std::clamp(static_cast<float>(atof(vecArgs[3].c_str())), -16384.f, 16384.f));
     pInstance->GetBaseEntity()->Teleport(&origin, nullptr, nullptr);
 }
 
 static void AddOutputCustom_Angles(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
-    QAngle angles(std::clamp((float)atof(vecArgs[1].c_str()), -360.f, 360.f), std::clamp((float)atof(vecArgs[2].c_str()), -360.f, 360.f), std::clamp((float)atof(vecArgs[3].c_str()), -360.f, 360.f));
+    QAngle angles(std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), -360.f, 360.f), std::clamp(static_cast<float>(atof(vecArgs[2].c_str())), -360.f, 360.f), std::clamp(static_cast<float>(atof(vecArgs[3].c_str())), -360.f, 360.f));
     pInstance->GetBaseEntity()->Teleport(nullptr, &angles, nullptr);
 }
 
@@ -694,7 +694,7 @@ static void AddOutputCustom_Health(const CEntityIdentity* pInstance, const char*
 
 static void AddOutputCustom_Solid(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
-    const auto value = std::clamp((SolidType_t)atoi(vecArgs[1].c_str()), SOLID_NONE, SOLID_VPHYSICS);
+    const auto value = std::clamp(static_cast<SolidType_t>(atoi(vecArgs[1].c_str())), SOLID_NONE, SOLID_VPHYSICS);
 
     const auto pEntity = pInstance->GetBaseEntity();
     if (const auto pCollision = pEntity->m_pCollision())
@@ -716,7 +716,7 @@ static void AddOutputCustom_Solid(const CEntityIdentity* pInstance, const char* 
 static void AddOutputCustom_MoveType(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
     static Vector stopVelocity(0, 0, 0);
-    const auto    value = std::clamp((MoveType_t)atoi(vecArgs[1].c_str()), MOVETYPE_NONE, MOVETYPE_LAST);
+    const auto    value = std::clamp(static_cast<MoveType_t>(atoi(vecArgs[1].c_str())), MOVETYPE_NONE, MOVETYPE_LAST);
     if (const auto type = static_cast<MoveType_t>(std::clamp(value, MOVETYPE_NONE, MOVETYPE_LAST)); type == MOVETYPE_NONE || type == MOVETYPE_OBSOLETE || type == MOVETYPE_WALK)
     {
         const auto pEntity = pInstance->GetBaseEntity();
@@ -748,14 +748,14 @@ static void AddOutputCustom_EntityTemplate(const CEntityIdentity* pInstance, con
 
 static void AddOutputCustom_BaseVelocity(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
-    const Vector velocity(std::clamp((float)atof(vecArgs[1].c_str()), -3500.f, 3500.f), std::clamp((float)atof(vecArgs[2].c_str()), -3500.f, 3500.f), std::clamp((float)atof(vecArgs[3].c_str()), -3500.f, 3500.f));
+    const Vector velocity(std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), -3500.f, 3500.f), std::clamp(static_cast<float>(atof(vecArgs[2].c_str())), -3500.f, 3500.f), std::clamp(static_cast<float>(atof(vecArgs[3].c_str())), -3500.f, 3500.f));
     const auto   pEntity = pInstance->GetBaseEntity();
     pEntity->m_vecBaseVelocity(velocity);
 }
 
 static void AddOutputCustom_AbsVelocity(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const std::vector<std::string>& vecArgs)
 {
-    Vector velocity(std::clamp((float)atof(vecArgs[1].c_str()), -3500.f, 3500.f), std::clamp((float)atof(vecArgs[2].c_str()), -3500.f, 3500.f), std::clamp((float)atof(vecArgs[3].c_str()), -3500.f, 3500.f));
+    Vector velocity(std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), -3500.f, 3500.f), std::clamp(static_cast<float>(atof(vecArgs[2].c_str())), -3500.f, 3500.f), std::clamp(static_cast<float>(atof(vecArgs[3].c_str())), -3500.f, 3500.f));
     pInstance->GetBaseEntity()->SetAbsVelocity(&velocity);
 }
 
@@ -867,7 +867,7 @@ static void AddOutputCustom_Speed(const CEntityIdentity* pInstance, const char* 
     if (!pController || !pController->IsConnected())
         return;
 
-    const auto value = std::clamp((float)atof(vecArgs[1].c_str()), 0.01f, 5.0f);
+    const auto value = std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), 0.01f, 5.0f);
 
     SetPlayerLaggedMovementValue(pController, value);
 }
@@ -887,7 +887,7 @@ static void AddOutputCustom_RunSpeed(const CEntityIdentity* pInstance, const cha
     if (!pController || !pController->IsConnected())
         return;
 
-    const auto value = std::clamp((float)atof(vecArgs[1].c_str()), 0.01f, 5.0f);
+    const auto value = std::clamp(static_cast<float>(atof(vecArgs[1].c_str())), 0.01f, 5.0f);
 
     SetPlayerRunSpeedValue(pController, value);
 }
@@ -911,6 +911,7 @@ const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
     {{"targetname", 2},     AddOutputCustom_Targetname    },
     {{"origin", 4},         AddOutputCustom_Origin        },
     {{"angles", 4},         AddOutputCustom_Angles        },
+    {{"angle", 4},          AddOutputCustom_Angles        },
     {{"max_health", 2},     AddOutputCustom_MaxHealth     },
     {{"health", 2},         AddOutputCustom_Health        },
     {{"solid", 2},          AddOutputCustom_Solid         },
@@ -1072,7 +1073,7 @@ static bool CustomInput_SetAbsAngles(const CEntityIdentity* pInstance, const cha
     {
         if (const auto split = StringSplit(param, " "); split.size() == 3)
         {
-            QAngle angles(std::clamp((float)atof(split[0].c_str()), -360.f, 360.f), std::clamp((float)atof(split[1].c_str()), -360.f, 360.f), std::clamp((float)atof(split[2].c_str()), -360.f, 360.f));
+            QAngle angles(std::clamp(static_cast<float>(atof(split[0].c_str())), -360.f, 360.f), std::clamp(static_cast<float>(atof(split[1].c_str())), -360.f, 360.f), std::clamp(static_cast<float>(atof(split[2].c_str())), -360.f, 360.f));
             pInstance->GetBaseEntity()->Teleport(nullptr, &angles, nullptr);
         }
         else
@@ -1094,7 +1095,7 @@ static bool CustomInput_SetAbsOrigin(const CEntityIdentity* pInstance, const cha
     {
         if (const auto split = StringSplit(param, " "); split.size() == 3)
         {
-            Vector origin(std::clamp((float)atof(split[0].c_str()), -16384.f, 16384.f), std::clamp((float)atof(split[1].c_str()), -16384.f, 16384.f), std::clamp((float)atof(split[2].c_str()), -16384.f, 16384.f));
+            Vector origin(std::clamp(static_cast<float>(atof(split[0].c_str())), -16384.f, 16384.f), std::clamp(static_cast<float>(atof(split[1].c_str())), -16384.f, 16384.f), std::clamp(static_cast<float>(atof(split[2].c_str())), -16384.f, 16384.f));
             pInstance->GetBaseEntity()->Teleport(&origin, nullptr, nullptr);
         }
         else
@@ -1117,7 +1118,7 @@ static bool CustomInput_SetSolidType(const CEntityIdentity* pInstance, const cha
         const auto pEntity = pInstance->GetBaseEntity();
         if (const auto pCollision = pEntity->m_pCollision())
         {
-            value = std::clamp((SolidType_t)value, SOLID_NONE, SOLID_VPHYSICS);
+            value = std::clamp(static_cast<SolidType_t>(value), SOLID_NONE, SOLID_VPHYSICS);
             pCollision->SetSolid(static_cast<SolidType_t>(value));
             pEntity->CollisionRulesChanged();
         }
@@ -1140,7 +1141,7 @@ static bool CustomInput_SetMoveType(const CEntityIdentity* pInstance, const char
 
     if (int value; GetVariantInt(pValue, value))
     {
-        if (const auto type = static_cast<MoveType_t>(std::clamp((MoveType_t)value, MOVETYPE_NONE, MOVETYPE_LAST)); type == MOVETYPE_NONE || type == MOVETYPE_OBSOLETE || type == MOVETYPE_WALK)
+        if (const auto type = static_cast<MoveType_t>(std::clamp(static_cast<MoveType_t>(value), MOVETYPE_NONE, MOVETYPE_LAST)); type == MOVETYPE_NONE || type == MOVETYPE_OBSOLETE || type == MOVETYPE_WALK)
         {
             const auto pEntity = pInstance->GetBaseEntity();
             pEntity->SetMoveType(type);

@@ -56,6 +56,9 @@ inline constexpr EHandle_t         INVALID_EHANDLE      = static_cast<EHandle_t>
 inline constexpr PlayerSlot_t      CS_MAX_PLAYERS       = 64;
 inline constexpr EntityIndex_t     MAX_NETWORKED_ENTITY = 16384;
 
+inline constexpr float CStrikeMaxSpeed   = 260.f;
+inline constexpr float DefaultSpeedValue = 1.f;
+
 inline constexpr const char* g_szInlineHookErrors[7] = {
     "BAD_ALLOCATION",
     "FAILED_TO_DECODE_INSTRUCTION",
