@@ -11,7 +11,7 @@ namespace Sharp.Modules.MenuManager.Core.Controllers;
 
 internal class SurvivalStatusMenuController : BaseMenuController
 {
-    public SurvivalStatusMenuController(CoreMenuManager menuManager,
+    public SurvivalStatusMenuController(DefaultMenuManager menuManager,
         IModSharp                                       modSharp,
         IEventManager                                   eventManager,
         IEntityManager                                  entityManager,

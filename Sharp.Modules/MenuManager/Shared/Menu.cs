@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Sharp.Shared.Objects;
 
@@ -39,21 +39,21 @@ public class Menu
         => _items.AddRange(items);
 
     public void AddItem(string name, Action<IMenuController>? action = null)
-        => _items.Add(new MenuItem(x => new MenuItemMetadata(name, Action: action)));
+        => _items.Add(new MenuItem(x => new MenuItemMetadata(name), action));
 
     public void AddItem(Func<IMenuController, MenuItemMetadata> factory)
         => _items.Add(new MenuItem(factory));
 
     public void AddItem(Func<IMenuController, string> titleFactory, Action<IMenuController>? action)
-        => _items.Add(new MenuItem(x => new MenuItemMetadata(titleFactory(x), Action: action)));
+        => _items.Add(new MenuItem(x => new MenuItemMetadata(titleFactory(x)), action));
 
     public void AddItem(Func<IMenuController, string> titleFactory,
         Action<IMenuController>?                      action,
         Func<IMenuController, MenuItemState>          stateFactory)
-        => _items.Add(new MenuItem(x => new MenuItemMetadata(titleFactory(x), stateFactory(x), action)));
+        => _items.Add(new MenuItem(x => new MenuItemMetadata(titleFactory(x), stateFactory(x)), action));
 
     public void AddItem(string name, Action<IMenuController>? action, Func<IMenuController, MenuItemState> stateFactory)
-        => _items.Add(new MenuItem(x => new MenuItemMetadata(name, stateFactory(x), action)));
+        => _items.Add(new MenuItem(x => new MenuItemMetadata(name, stateFactory(x)), action));
 
     public void AddSpacer()
         => _items.Add(new MenuItem(x => new MenuItemMetadata(null, MenuItemState.Spacer)));
@@ -140,12 +140,11 @@ public class Menu
     }
 }
 
-public readonly record struct MenuItem(Func<IMenuController, MenuItemMetadata>? Factory = null);
+public readonly record struct MenuItem(Func<IMenuController, MenuItemMetadata>? Factory = null, Action<IMenuController>? Action = null);
 
 public readonly record struct MenuItemMetadata(
     string?                  Title  = null,
-    MenuItemState            State  = MenuItemState.Default,
-    Action<IMenuController>? Action = null);
+    MenuItemState            State  = MenuItemState.Default);
 
 public enum MenuItemState
 {
