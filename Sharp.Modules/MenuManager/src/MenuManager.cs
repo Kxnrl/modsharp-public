@@ -15,12 +15,12 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.MenuManager.Core;
 
-internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
+internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 {
     public string DisplayName   => "MenuManager";
     public string DisplayAuthor => "Bone";
 
-    private readonly ILogger<CoreMenuManager> _logger;
+    private readonly ILogger<MenuManager> _logger;
     private readonly IModSharp                _modSharp;
     private readonly ISharpModuleManager      _modules;
     private readonly IClientManager           _clients;
@@ -30,7 +30,7 @@ internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
 
-    public CoreMenuManager(ISharedSystem sharedSystem,
+    public MenuManager(ISharedSystem sharedSystem,
         string                           dllPath,
         string                           sharpPath,
         Version                          version,
@@ -39,7 +39,7 @@ internal class CoreMenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger        = loggerFactory.CreateLogger<CoreMenuManager>();
+        _logger        = loggerFactory.CreateLogger<MenuManager>();
         _modSharp      = sharedSystem.GetModSharp();
         _modules       = sharedSystem.GetSharpModuleManager();
         _clients       = sharedSystem.GetClientManager();

@@ -21,12 +21,12 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public             Menu                    Menu        { get; protected set; }
     public             Func<IGameClient, Menu> MenuFactory { get; private set; }
-    protected readonly DefaultMenuManager         MenuManager;
+    protected readonly MenuManager         MenuManager;
     protected readonly IEntityManager          EntityManager;
     protected readonly IModSharp               ModSharp;
     protected readonly IEventManager           EventManager;
 
-    public BaseMenuController(DefaultMenuManager menuManager,
+    public BaseMenuController(MenuManager menuManager,
         IModSharp                             modSharp,
         IEventManager                         eventManager,
         IEntityManager                        entityManager,
