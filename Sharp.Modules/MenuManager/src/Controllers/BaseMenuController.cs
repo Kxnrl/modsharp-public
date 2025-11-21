@@ -12,7 +12,7 @@ internal abstract class BaseMenuController : IInternalMenuController
 {
     protected const int MaxPageItems = 5;
 
-    public IGameClient Player { get; }
+    public IGameClient Client { get; }
 
     protected readonly Stack<PreviousMenu> PreviousMenus  = new ();
     protected readonly List<BuiltMenuItem> BuiltMenuItems = [];
@@ -42,10 +42,10 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         Menu = menuFactory(player);
 
-        Player = player;
+        Client = player;
 
         // call menu enter hook
-        Menu.OnEnter?.Invoke(Player);
+        Menu.OnEnter?.Invoke(Client);
 
         // build current menu items
         BuildItems();
@@ -208,8 +208,8 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         MenuFactory = menuFactory;
 
-        Menu = MenuFactory(Player);
-        Menu.OnEnter?.Invoke(Player);
+        Menu = MenuFactory(Client);
+        Menu.OnEnter?.Invoke(Client);
 
         BuildItems();
         SetCursor(0);
@@ -218,7 +218,7 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public void Exit()
     {
-        MenuManager.ClosePlayerMenu(Player);
+        MenuManager.ClosePlayerMenu(Client);
     }
 
     public void GoBack()
@@ -230,7 +230,7 @@ internal abstract class BaseMenuController : IInternalMenuController
             return;
         }
 
-        Menu.OnExit?.Invoke(Player);
+        Menu.OnExit?.Invoke(Client);
 
         MenuFactory = previousMenu.MenuFactory;
         Menu        = previousMenu.Menu;
@@ -242,11 +242,11 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public virtual void Dispose()
     {
-        Menu.OnExit?.Invoke(Player);
+        Menu.OnExit?.Invoke(Client);
 
         foreach (var previousMenu in PreviousMenus.Reverse())
         {
-            previousMenu.Menu.OnExit?.Invoke(Player);
+            previousMenu.Menu.OnExit?.Invoke(Client);
         }
 
         PreviousMenus.Clear();

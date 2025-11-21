@@ -31,7 +31,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
         if (_cacheContent is null)
             return;
 
-        Print(Player, _cacheContent);
+        Print(Client, _cacheContent);
     }
 
     private void Print(IGameClient client, string content)
@@ -87,7 +87,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
             foreach (var previousMenu in PreviousMenus.Reverse())
             {
-                builder.Append(previousMenu.Menu.BuildTitle(Player));
+                builder.Append(previousMenu.Menu.BuildTitle(Client));
 
                 builder.Append(" > ");
             }
@@ -98,7 +98,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
         }
 
         // title
-        var title = Menu.BuildTitle(Player);
+        var title = Menu.BuildTitle(Client);
 
         sb.Append($"<font class='fontSize-m'>{title}<br><font class='fontSize-xs'>\u00A0<br></font><font class='fontSize-sm'>");
 
@@ -107,7 +107,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         if (Menu.Description is not null || Menu.DescriptionFactory is not null)
         {
-            var content = Menu.BuildDescription(Player);
+            var content = Menu.BuildDescription(Client);
 
             description = content;
         }

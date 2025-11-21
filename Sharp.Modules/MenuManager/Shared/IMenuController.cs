@@ -9,7 +9,7 @@ public interface IMenuController : IDisposable
 
     void Refresh();
 
-    IGameClient Player { get; }
+    IGameClient Client { get; }
 
     void Next(Menu menu);
 
