@@ -348,6 +348,26 @@ internal class ClientManager : ICoreClientManager
             return;
         }
 
+        if (_sReloadAdmin)
+        {
+            for (var i = 0; i < _listeners.Count; i++)
+            {
+                try
+                {
+                    _listeners[i].OnAdminCacheReload();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e,
+                                     "An error occurred while calling listener<{s}> {name}",
+                                     "OnAdminCacheReload",
+                                     _listeners[i].GetType().Name);
+                }
+            }
+
+            _sReloadAdmin = false;
+        }
+
         if (_adminRunCheckQueue.Count == 0)
         {
             return;
@@ -386,7 +406,7 @@ internal class ClientManager : ICoreClientManager
 
                 if (block)
                 {
-                    _logger.LogDebug("Blocked {client}<{steamId}> as AdminCheck", client.Name, client.SteamId);
+                    _logger.LogTrace("Blocked {client}<{steamId}> as AdminCheck", client.Name, client.SteamId);
 
                     continue;
                 }
