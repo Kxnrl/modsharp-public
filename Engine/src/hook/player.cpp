@@ -136,10 +136,15 @@ BeginMemberHookScope(CCSPlayerPawn)
         const float originalSpeed = ctx.xmm6.f32[0];
         auto        speed         = originalSpeed;
         const auto  action        = forwards::OnPlayerGetMaxSpeed->Invoke(pClient, pController, pPawn, originalSpeed, &speed);
+        const auto  runSpeed      = GetPlayerRunSpeedValue(pController);
 
         if (action == EHookAction::SkipCallReturnOverride)
         {
-            ctx.xmm6.f32[0] = speed * GetPlayerRunSpeedValue(pController);
+            ctx.xmm6.f32[0] = speed * runSpeed;
+        }
+        else
+        {
+            ctx.xmm6.f32[0] = originalSpeed * runSpeed;
         }
 
         if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
