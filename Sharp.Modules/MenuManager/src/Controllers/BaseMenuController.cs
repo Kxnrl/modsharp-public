@@ -171,7 +171,7 @@ internal abstract class BaseMenuController : IInternalMenuController
                 BuiltMenuItems.Add(new BuiltMenuItem(content,
                                                      metadata?.State ?? MenuItemState.Default,
                                                      0,
-                                                     metadata?.Action));
+                                                     menuItem.Action));
             }
         }
     }
