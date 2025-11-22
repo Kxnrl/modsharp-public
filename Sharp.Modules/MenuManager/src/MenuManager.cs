@@ -21,21 +21,21 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public string DisplayAuthor => "Bone";
 
     private readonly ILogger<MenuManager> _logger;
-    private readonly IModSharp                _modSharp;
-    private readonly ISharpModuleManager      _modules;
-    private readonly IClientManager           _clients;
-    private readonly IHookManager             _hooks;
-    private readonly IEntityManager           _entityManager;
-    private readonly IEventManager            _eventManager;
+    private readonly IModSharp            _modSharp;
+    private readonly ISharpModuleManager  _modules;
+    private readonly IClientManager       _clients;
+    private readonly IHookManager         _hooks;
+    private readonly IEntityManager       _entityManager;
+    private readonly IEventManager        _eventManager;
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
 
     public MenuManager(ISharedSystem sharedSystem,
-        string                           dllPath,
-        string                           sharpPath,
-        Version                          version,
-        IConfiguration                   configuration,
-        bool                             hotReload)
+        string                       dllPath,
+        string                       sharpPath,
+        Version                      version,
+        IConfiguration               configuration,
+        bool                         hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
@@ -47,22 +47,23 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         _entityManager = sharedSystem.GetEntityManager();
         _eventManager  = sharedSystem.GetEventManager();
 
-        _clients.InstallCommandCallback("aa", OnAA);
+        _clients.InstallCommandListener("autobuy", OnAutoBuyCommand);
+        _clients.InstallCommandListener("rebuy",   OnReBuyCommand);
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
     }
 
-    private ECommandAction OnAA(IGameClient client, StringCommand command)
+    private ECommandAction OnAutoBuyCommand(IGameClient client, StringCommand command)
     {
-        DisplayMenu(client,
-                    Menu.Create()
-                        .Title("Test Menu")
-                        .Item("Option 1", controller => { })
-                        .Item("Option 2", controller => { })
-                        .Item("Option 3", controller => { })
-                        .Spacer()
-                        .Build());
+        _controllers[client.Slot]?.MoveUpCursor();
 
-        return ECommandAction.Handled;
+        return ECommandAction.Skipped;
+    }
+
+    private ECommandAction OnReBuyCommand(IGameClient client, StringCommand command)
+    {
+        _controllers[client.Slot]?.MoveDownCursor();
+        
+        return ECommandAction.Skipped;
     }
 
 #region IModSharpModule
@@ -115,34 +116,6 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
     {
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Forward)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Forward))
-        {
-            _controllers[@params.Client.Slot]
-                ?.MoveUpCursor();
-        }
-
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Back)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Back))
-        {
-            _controllers[@params.Client.Slot]
-                ?.MoveDownCursor();
-        }
-
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.MoveLeft)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.MoveLeft))
-        {
-            _controllers[@params.Client.Slot]
-                ?.GoToPreviousPage();
-        }
-
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.MoveRight)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.MoveRight))
-        {
-            _controllers[@params.Client.Slot]
-                ?.GoToNextPage();
-        }
-
         if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Speed)
             && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Speed))
         {
@@ -150,15 +123,15 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
                 ?.GoBack();
         }
 
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Jump)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Jump))
+        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Scoreboard)
+            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Scoreboard))
         {
             _controllers[@params.Client.Slot]
                 ?.Exit();
         }
 
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Use)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Use))
+        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.LookAtWeapon)
+            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.LookAtWeapon))
         {
             _controllers[@params.Client.Slot]
                 ?.Confirm();
