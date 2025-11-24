@@ -146,7 +146,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         // bottom
         sb.Append(
-            $"<br><font class='fontSize-s'><font color='#DDAA11'>E<font color='#fff'> 选择 / <font color='#DDAA11'>W<font color='#fff'> 上一项 / <font color='#DDAA11'>S<font color='#fff'> 下一项 / <font color='#DDAA11'>Tab<font color='#fff'> 退出<br>");
+            $"<br><font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> 选择 / <font color='#DDAA11'>F3<font color='#fff'> 上一项 / <font color='#DDAA11'>F4<font color='#fff'> 下一项 / <font color='#DDAA11'>Tab<font color='#fff'> 退出<br>");
 
         _cacheContent = sb.ToString();
     }
