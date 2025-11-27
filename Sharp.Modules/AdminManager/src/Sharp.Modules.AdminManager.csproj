@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\CommandManager\Shared\Sharp.Modules.CommandManager.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+	  <ProjectReference Include="..\Shared\Sharp.Modules.AdminManager.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+	</ItemGroup>
+
+</Project>
