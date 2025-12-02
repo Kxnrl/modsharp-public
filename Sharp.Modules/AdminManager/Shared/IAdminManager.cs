@@ -16,8 +16,11 @@ public interface IAdminManager
 
     public IAdmin? GetAdmin(SteamID identity);
 
+    void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call);
+
     public IAdminCommandRegistry GetCommandRegistry(string moduleIdentity);
 }
+
 
 public interface IAdminCommandRegistry
 {
