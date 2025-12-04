@@ -174,8 +174,9 @@ internal class CommandRegistry : ICommandRegistry
     private readonly IClientManager _clientManager;
     private readonly ILogger<CommandManager> _logger;
 
+    private readonly List<CommandListenerInfo> _hookCommands = [];
     private readonly List<ClientCommandInfo> _clientCommands = [];
-    private readonly List<ServerCommandInfo> _serverCommands = [];
+    private readonly List<ConsoleCommandInfo> _consoleCommands = [];
     private readonly List<GenericCommandInfo> _genericCommands = [];
     private readonly IConVarManager _conVarManager;
 
@@ -207,37 +208,49 @@ internal class CommandRegistry : ICommandRegistry
         }
 
         var info = new ClientCommandInfo(command, _self.GetStripPrefixCommand(command), call);
-        Console.WriteLine($"Registering: {info.StripPrefixCommand}");
         _clientManager.InstallCommandCallback(info.StripPrefixCommand, info.Function);
         _clientCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
 
     }
 
-    public void RegisterServerCommand(string command, Action<StringCommand> call, string description = "")
+    public void RegisterServerCommand(string command, Action<StringCommand> call, string description = "", bool addPrefix = true)
     {
         RegisterServerCommand(command, stringCommand =>
         {
             call(stringCommand);
             return ECommandAction.Handled;
-        }, description);
+        }, description, addPrefix);
+    }
+
+    public void RegisterServerCommand(string command, Action call, string description = "", bool addPrefix = true)
+    {
+        RegisterServerCommand(command, _ =>
+        {
+            call();
+        }, description, addPrefix);
     }
 
     private void RegisterServerCommand(string command, Func<StringCommand, ECommandAction> call,
-        string description = "")
+        string description = "", bool addPrefix = true)
     {
         if (_self.IsCommandExists(command))
         {
             _logger.LogWarning("Command `{Name}` has already registered.", command);
             return;
         }
-        var info = new ServerCommandInfo(command, _self.GetAddPrefixCommand(command),
-            (_, stringCommand) => call(stringCommand));
 
-        _conVarManager.CreateServerCommand(info.AddPrefixCommand, info.OnServerCommand);
-        _serverCommands.Add(info);
+        var info = new ConsoleCommandInfo(
+            command,
+            _self.GetAddPrefixCommand(command),
+            addPrefix,
+            (_, stringCommand) => call(stringCommand)
+        );
+        _conVarManager.CreateServerCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command, info.OnServerCommand);
+        _consoleCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
     }
+
 
     public void RegisterGenericCommand(string command, Action<IGameClient?, StringCommand> call, string description = "")
     {
@@ -261,9 +274,42 @@ internal class CommandRegistry : ICommandRegistry
             _self.GetStripPrefixCommand(command), call);
         _clientManager.InstallCommandCallback(info.StripPrefixCommand, (client, stringCommand) => info.OnClientCommand(client, stringCommand));
         _conVarManager.CreateServerCommand(info.AddPrefixCommand, stringCommand => info.OnServerCommand(stringCommand), description);
-        Console.WriteLine($"Registering: {command}, StripPrefix: {info.StripPrefixCommand}, AddPrefix: {info.AddPrefixCommand}");
         _genericCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
+    }
+
+    public void RegisterConsoleCommand(string command, Action<IGameClient?, StringCommand> callback,
+        bool addPrefix = true)
+    {
+        RegisterConsoleCommand(command, (client, stringCommand) =>
+        {
+            callback(client, stringCommand);
+            return ECommandAction.Handled;
+        }, addPrefix);
+    }
+
+    private void RegisterConsoleCommand(string command, Func<IGameClient?, StringCommand, ECommandAction> callback, bool addPrefix = true)
+    {
+        if (_self.IsCommandExists(command))
+        {
+            _logger.LogWarning("Command `{Name}` has already registered.", command);
+            return;
+        }
+
+        var info = new ConsoleCommandInfo(command, _self.GetAddPrefixCommand(command), addPrefix, callback);
+        _conVarManager.CreateConsoleCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command,
+            info.OnConsoleCommand);
+        _consoleCommands.Add(info);
+        _self.AddRegisteredCommand(_identity, info.Command);
+
+    }
+
+    public void AddCommandListener(string commandName, DelegateClientCommand callback)
+    {
+        var info = new CommandListenerInfo(commandName, callback);
+
+        _clientManager.InstallCommandListener(info.Command, info.Function);
+        _hookCommands.Add(info);
     }
 
     public void Clear()
@@ -279,11 +325,18 @@ internal class CommandRegistry : ICommandRegistry
             _clientManager.RemoveCommandCallback(info.StripPrefixCommand, info.OnClientCommand);
         }
 
-        foreach (var info in _serverCommands)
+        foreach (var info in _consoleCommands)
         {
-            _conVarManager.ReleaseCommand(info.AddPrefixCommand);
+            _conVarManager.ReleaseCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command);
+        }
+
+        foreach (var info in _hookCommands)
+        {
+            _clientManager.RemoveCommandListener(info.Command, info.Function);
         }
     }
+
+    private record CommandListenerInfo(string Command, DelegateClientCommand Function);
 
     private record ClientCommandInfo(string Command, string StripPrefixCommand, DelegateClientCommand Function);
 
@@ -304,15 +357,16 @@ internal class CommandRegistry : ICommandRegistry
         }
     }
 
-    private record ServerCommandInfo(
+    private record ConsoleCommandInfo(
         string Command,
         string AddPrefixCommand,
+        bool AddPrefix,
         Func<IGameClient?, StringCommand, ECommandAction> Function)
     {
-        //public ECommandAction OnConsoleCommand(IGameClient? client, StringCommand command)
-        //{
-        //    return Function(client, command);
-        //}
+        public ECommandAction OnConsoleCommand(IGameClient? client, StringCommand command)
+        {
+            return Function(client, command);
+        }
 
         public ECommandAction OnServerCommand(StringCommand command)
         {
