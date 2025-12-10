@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -316,6 +316,16 @@ internal class InputManager : IModSharpModule, IClientListener, IInputManager
                          _keySpaceJustPressedListeners,
                          _keySpacePressedListeners,
                          _keySpaceReleasedListeners);
+
+        // Tab key
+        ProcessKeyStates(@params.Client,
+            @params.Service.KeyButtons,
+            @params.Service.KeyChangedButtons,
+            UserCommandButtons.Scoreboard,
+            InputKey.Tab,
+            _keyTabJustPressedListeners,
+            _keyTabPressedListeners,
+            _keyTabReleasedListeners);
 
         // Process combination keys
         ProcessCombinationKeys(@params.Client, @params.Service.KeyButtons, @params.Service.KeyChangedButtons);
