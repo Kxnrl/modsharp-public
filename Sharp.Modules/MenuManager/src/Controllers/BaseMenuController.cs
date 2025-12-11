@@ -232,7 +232,7 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public void Exit()
     {
-        MenuManager.ClosePlayerMenu(Client);
+        MenuManager.CloseClientMenu(Client);
     }
 
     public void GoBack()

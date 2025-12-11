@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.MenuManager.Core.Controllers;
@@ -56,14 +55,14 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         _controllers[client.Slot]?.MoveUpCursor();
 
-        return ECommandAction.Skipped;
+        return ECommandAction.Stopped;
     }
 
     private ECommandAction OnReBuyCommand(IGameClient client, StringCommand command)
     {
         _controllers[client.Slot]?.MoveDownCursor();
 
-        return ECommandAction.Skipped;
+        return ECommandAction.Stopped;
     }
 
     #region IModSharpModule
@@ -90,6 +89,16 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     #endregion
 
     #region IClientListener
+
+    public void OnClientPutInServer(IGameClient client)
+    {
+        DisposeClientMenu(client);
+    }
+
+    public void OnClientDisconnected(IGameClient client, NetworkDisconnectionReason reason)
+    {
+        DisposeClientMenu(client);
+    }
 
     int IClientListener.ListenerVersion => IClientListener.ApiVersion;
     int IClientListener.ListenerPriority => 0;
@@ -122,25 +131,24 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     public void DisplayMenu(IGameClient client, Menu menu)
     {
-        if (_controllers[client.Slot] is not null)
-        {
-            _controllers[client.Slot]
-                ?.Dispose();
-
-            _controllers[client.Slot] = null;
-        }
-
+        DisposeClientMenu(client);
         _controllers[client.Slot]
             = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client);
     }
 
-    public void ClosePlayerMenu(IGameClient client)
+    public void CloseClientMenu(IGameClient client)
     {
         _modSharp.PushTimer(() =>
-                            {
-                                _controllers[client.Slot]?.Dispose();
-                                _controllers[client.Slot] = null;
-                            },
-                            0.01);
+            {
+                DisposeClientMenu(client);
+            },
+            0.01);
+    }
+
+    private void DisposeClientMenu(IGameClient client)
+    {
+        _controllers[client.Slot]?.Exit();
+        _controllers[client.Slot]?.Dispose();
+        _controllers[client.Slot] = null;
     }
 }
