@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,38 +17,38 @@ namespace Sharp.Modules.MenuManager.Core;
 
 internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 {
-    public string DisplayName   => "MenuManager";
+    public string DisplayName => "MenuManager";
     public string DisplayAuthor => "Bone";
 
     private readonly ILogger<MenuManager> _logger;
-    private readonly IModSharp            _modSharp;
-    private readonly ISharpModuleManager  _modules;
-    private readonly IClientManager       _clients;
-    private readonly IHookManager         _hooks;
-    private readonly IEntityManager       _entityManager;
-    private readonly IEventManager        _eventManager;
+    private readonly IModSharp _modSharp;
+    private readonly ISharpModuleManager _modules;
+    private readonly IClientManager _clientManager;
+    private readonly IHookManager _hooks;
+    private readonly IEntityManager _entityManager;
+    private readonly IEventManager _eventManager;
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
 
     public MenuManager(ISharedSystem sharedSystem,
-        string                       dllPath,
-        string                       sharpPath,
-        Version                      version,
-        IConfiguration               configuration,
-        bool                         hotReload)
+        string dllPath,
+        string sharpPath,
+        Version version,
+        IConfiguration configuration,
+        bool hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger        = loggerFactory.CreateLogger<MenuManager>();
-        _modSharp      = sharedSystem.GetModSharp();
-        _modules       = sharedSystem.GetSharpModuleManager();
-        _clients       = sharedSystem.GetClientManager();
-        _hooks         = sharedSystem.GetHookManager();
+        _logger = loggerFactory.CreateLogger<MenuManager>();
+        _modSharp = sharedSystem.GetModSharp();
+        _modules = sharedSystem.GetSharpModuleManager();
+        _clientManager = sharedSystem.GetClientManager();
+        _hooks = sharedSystem.GetHookManager();
         _entityManager = sharedSystem.GetEntityManager();
-        _eventManager  = sharedSystem.GetEventManager();
+        _eventManager = sharedSystem.GetEventManager();
 
-        _clients.InstallCommandListener("autobuy", OnAutoBuyCommand);
-        _clients.InstallCommandListener("rebuy",   OnReBuyCommand);
+        _clientManager.InstallCommandListener("autobuy", OnAutoBuyCommand);
+        _clientManager.InstallCommandListener("rebuy", OnReBuyCommand);
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
     }
 
@@ -62,15 +62,15 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     private ECommandAction OnReBuyCommand(IGameClient client, StringCommand command)
     {
         _controllers[client.Slot]?.MoveDownCursor();
-        
+
         return ECommandAction.Skipped;
     }
 
-#region IModSharpModule
+    #region IModSharpModule
 
     public bool Init()
     {
-        _clients.InstallClientListener(this);
+        _clientManager.InstallClientListener(this);
 
         return true;
     }
@@ -83,36 +83,18 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void Shutdown()
     {
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
+        _clientManager.RemoveClientListener(this);
+
     }
 
-#endregion
+    #endregion
 
-    private class DisposeAction : IDisposable
-    {
-        private readonly Action _disposeAction;
-        private          bool   _disposed;
+    #region IClientListener
 
-        public DisposeAction(Action disposeAction)
-        {
-            _disposeAction = disposeAction;
-        }
-
-        public void Dispose()
-        {
-            if (_disposed)
-                return;
-
-            _disposeAction();
-            _disposed = true;
-        }
-    }
-
-#region IClientListener
-
-    int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
+    int IClientListener.ListenerVersion => IClientListener.ApiVersion;
     int IClientListener.ListenerPriority => 0;
 
-#endregion
+    #endregion
 
     private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
     {
@@ -138,21 +120,9 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         }
     }
 
-    public void OnAllModulesLoaded()
-    {
-    }
-
-    public void OnLibraryConnected(string name)
-    {
-    }
-
-    public void OnLibraryDisconnect(string name)
-    {
-    }
-
     public void DisplayMenu(IGameClient client, Menu menu)
     {
-        if (_controllers[client.Slot] != null)
+        if (_controllers[client.Slot] is not null)
         {
             _controllers[client.Slot]
                 ?.Dispose();
@@ -168,13 +138,8 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         _modSharp.PushTimer(() =>
                             {
-                                var controller = _controllers[client.Slot];
-
-                                if (controller != null)
-                                {
-                                    controller.Dispose();
-                                    _controllers[client.Slot] = null;
-                                }
+                                _controllers[client.Slot]?.Dispose();
+                                _controllers[client.Slot] = null;
                             },
                             0.01);
     }
