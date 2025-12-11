@@ -8,15 +8,15 @@ public enum InputState
     /// <summary>
     /// Key was just pressed this frame
     /// </summary>
-    JustPressed,
+    KeyDown,
 
     /// <summary>
     /// Key is being held down
     /// </summary>
-    Pressed,
+    KeyHold,
 
     /// <summary>
     /// Key was just released this frame
     /// </summary>
-    Released,
+    KeyUp,
 }
