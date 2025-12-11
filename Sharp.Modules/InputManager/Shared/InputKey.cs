@@ -22,4 +22,7 @@ public enum InputKey
     F3,
     [Obsolete("Currently does nothing, DO NOT USE IT FOR NOW. It will be implemented in the future release. This is just a placeholder.")]
     F4,
+    Attack1,
+    Attack2,
+    R
 }

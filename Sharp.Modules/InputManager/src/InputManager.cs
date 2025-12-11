@@ -78,7 +78,11 @@ internal class InputManager : IModSharpModule, IInputManager
         [InputKey.G] = new InputListenerInfo(),
         [InputKey.Tab] = new InputListenerInfo(),
         [InputKey.Space] = new InputListenerInfo(),
-        [InputKey.Shift] = new InputListenerInfo()
+        [InputKey.Shift] = new InputListenerInfo(),
+        [InputKey.Attack1] = new InputListenerInfo(),
+        [InputKey.Attack2] = new InputListenerInfo(),
+        [InputKey.R] = new InputListenerInfo(),
+        [InputKey.F] = new InputListenerInfo()
     };
 
     private readonly List<CombinationListenerInfo> _combinationListeners = [];
@@ -217,6 +221,11 @@ internal class InputManager : IModSharpModule, IInputManager
 
         ProcessKeyStates(@params.Client,
             @params.Service,
+            UserCommandButtons.LookAtWeapon,
+            InputKey.F);
+
+        ProcessKeyStates(@params.Client,
+            @params.Service,
             UserCommandButtons.Use,
             InputKey.E);
 
@@ -234,6 +243,21 @@ internal class InputManager : IModSharpModule, IInputManager
             @params.Service,
             UserCommandButtons.Scoreboard,
             InputKey.Tab);
+
+        ProcessKeyStates(@params.Client, 
+            @params.Service,
+            UserCommandButtons.Attack,
+            InputKey.Attack1);
+
+        ProcessKeyStates(@params.Client,
+            @params.Service,
+            UserCommandButtons.Attack2,
+            InputKey.Attack2);
+
+        ProcessKeyStates(@params.Client,
+            @params.Service,
+            UserCommandButtons.Reload,
+            InputKey.R);
 
         ProcessCombinationKeys(@params.Client, @params.Service.KeyButtons, @params.Service.KeyChangedButtons);
     }
@@ -403,6 +427,10 @@ internal class InputManager : IModSharpModule, IInputManager
             InputKey.Space => UserCommandButtons.Jump,
             InputKey.Shift => UserCommandButtons.Speed,
             InputKey.Tab => UserCommandButtons.Scoreboard,
+            InputKey.Attack1 => UserCommandButtons.Attack,
+            InputKey.Attack2 => UserCommandButtons.Attack2,
+            InputKey.R => UserCommandButtons.Reload,
+            InputKey.F => UserCommandButtons.LookAtWeapon,
             _ => default,
         };
 
