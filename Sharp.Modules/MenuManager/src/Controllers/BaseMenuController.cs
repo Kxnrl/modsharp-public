@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sharp.Modules.MenuManager.Shared;
@@ -94,14 +94,21 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         var cursor = Cursor - 1;
 
-        if (cursor >= BuiltMenuItems.Count || cursor < 0)
-            return false;
+        if (cursor < 0)
+            cursor = BuiltMenuItems.Count - 1;
+
+        var tries = 0;
 
         while (BuiltMenuItems[cursor].State != MenuItemState.Default)
         {
             cursor--;
 
             if (cursor < 0)
+                cursor = BuiltMenuItems.Count - 1;
+
+            tries++;
+
+            if (tries >= BuiltMenuItems.Count)
                 return false;
         }
 
@@ -119,14 +126,21 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         var cursor = Cursor + 1;
 
-        if (cursor >= BuiltMenuItems.Count || cursor < 0)
-            return false;
+        if (cursor >= BuiltMenuItems.Count)
+            cursor = 0;
+
+        var tries = 0;
 
         while (BuiltMenuItems[cursor].State != MenuItemState.Default)
         {
             cursor++;
 
             if (cursor >= BuiltMenuItems.Count)
+                cursor = 0;
+
+            tries++;
+
+            if (tries >= BuiltMenuItems.Count)
                 return false;
         }
 
