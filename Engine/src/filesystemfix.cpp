@@ -82,7 +82,7 @@ void FixFileSystem()
             std::string_view directory_name = (first_slash != std::string_view::npos) ? path.substr(0, first_slash) : path;
             if (directory_name.empty()) continue;
 
-            if (directory_name.starts_with("sharp"))
+            if (directory_name == "sharp")
             {
                 g_pFullFileSystem->RemoveSearchPath(search_path.Get(), pathId);
 
