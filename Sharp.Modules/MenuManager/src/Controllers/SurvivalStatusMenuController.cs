@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using Sharp.Modules.MenuManager.Shared;
@@ -145,8 +145,16 @@ internal class SurvivalStatusMenuController : BaseMenuController
         }
 
         // bottom
-        sb.Append(
-            $"<br><font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> 选择 / <font color='#DDAA11'>F3<font color='#fff'> 上一项 / <font color='#DDAA11'>F4<font color='#fff'> 下一项 / <font color='#DDAA11'>Tab<font color='#fff'> 退出<br>");
+        sb.Append("<br>");
+        sb.Append("<font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> 选择");
+        //sb.Append("<br>");
+        sb.Append(" / ");
+        sb.Append("<font color='#DDAA11'>F3<font color='#fff'> 上一项 / <font color='#DDAA11'>F4<font color='#fff'> 下一项");
+        //sb.Append("<br>");
+        sb.Append(" / ");
+        sb.Append("<font color='#DDAA11'>Tab<font color='#fff'> 退出");
+        sb.Append(" / ");
+        sb.Append("<font color='#DDAA11'>Shift<font color='#fff'> 返回上一级");
 
         _cacheContent = sb.ToString();
     }
