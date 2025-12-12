@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -25,7 +25,7 @@ namespace Sharp.Shared.Types;
 public unsafe ref struct CTraceFilter
 {
     [FieldOffset(0)]
-    public CTraceFilterVTableDescriptor* Vtable;
+    public CTraceFilterVirtualTableDescriptor* Vtable;
 
     [FieldOffset(8)]
     public RnQueryShapeAttr QueryAttribute;
@@ -34,7 +34,7 @@ public unsafe ref struct CTraceFilter
     public bool m_bIterateEntities;
 }
 
-public unsafe struct CTraceFilterVTableDescriptor
+public unsafe struct CTraceFilterVirtualTableDescriptor
 {
     public delegate* unmanaged<nint, void>                Deconstructor;
     public delegate* unmanaged<CTraceFilter*, nint, bool> ShouldHitEntity;

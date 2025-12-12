@@ -355,12 +355,14 @@ static void PatchJumpInWaterVelocityZ()
     static constexpr int32_t  vel_offset     = offsetof(CMoveData, m_vecVelocity.z);
     static constexpr uint32_t new_z_velocity = 0x43110000; // 145.0f
 
-    for (auto& address : addresses)
-    {
-        CAddress instruction_address = address - 8;
+    constexpr std::array<int8_t, 2> offsets = {-3, -4};
 
-        for (auto j = 0; j < 5; j++)
+    for (auto address : addresses)
+    {
+        for (int8_t offset : offsets)
         {
+            // C7 ? ? 00 00 C8 42
+            auto instruction_address = address.Offset(offset);
             if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, instruction_address.As<uint8_t*>(), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands))
                 && instr.mnemonic == ZYDIS_MNEMONIC_MOV
                 && instr.operand_count_visible == 2
@@ -369,6 +371,7 @@ static void PatchJumpInWaterVelocityZ()
                 && operands[0].mem.disp.value == vel_offset)
             {
                 auto* target_address = instruction_address.Offset(instr.raw.imm[0].offset).As<uint8_t*>();
+                if (target_address != address.As<uint8_t*>()) continue;
 
                 SetMemoryAccess(target_address, sizeof(new_z_velocity), g_nReadWriteExecuteAccess);
                 *reinterpret_cast<uint32_t*>(target_address) = new_z_velocity;
@@ -378,8 +381,6 @@ static void PatchJumpInWaterVelocityZ()
 
                 return;
             }
-
-            instruction_address = instruction_address + instr.length;
         }
     }
 

@@ -183,17 +183,17 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
         const auto pController = pPawn->GetController<CCSPlayerController*>();
         if (pController == nullptr)
         {
-            WARN("pController is nullptr!");
+            WARN("pController is nullptr in GiveNamedItem -> [%s]", pClassname);
             return CALL_GiveNamedItem();
         }
         const auto pClient = sv->GetClient(pController->GetPlayerSlot());
         if (pClient == nullptr)
         {
-            FatalError("pClient is nullptr!");
+            FatalError("pClient is nullptr in GiveNamedItem -> [%s]", pClassname);
         }
         if (!pClient->IsInGame())
         {
-            WARN("pClient is not InGame!");
+            WARN("pClient is not InGame in GiveNamedItem -> [%s]", pClassname);
             return CALL_GiveNamedItem();
         }
 
@@ -642,11 +642,21 @@ class LocalEntityListener : public IEntityListener
 
 #endif
 
+extern uintptr_t ResolveCallTarget(ZydisDecoder* decoder, ZydisDecodedInstruction* instr, ZydisDecodedOperand* operands, uintptr_t current_ip);
+
 static void PatchGiveNamedItemLimit()
 {
-    auto address = g_pGameData->GetAddress<uint8_t*>("CCSPlayer_ItemServices::GiveNamedItem");
+    static auto address = g_pGameData->GetAddress<uintptr_t>("CCSPlayer_ItemServices::GiveNamedItem");
     if (!address)
-        return;
+    {
+        FatalError("Failed to find address for 'CCSPlayer_ItemServices::GiveNamedItem'");
+    }
+
+    auto V_stricmp_fast = modules::tier0->GetFunctionByName("V_stricmp_fast");
+    if (!V_stricmp_fast.IsValid())[[unlikely]]
+    {
+        FatalError("Failed to get V_stricmp_fast from tier0");
+    }
 
     ZydisDecoder decoder{};
     if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
@@ -657,63 +667,82 @@ static void PatchGiveNamedItemLimit()
     ZydisDecodedInstruction instr{};
     ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
 
-    bool found_test_eax = false;
+    bool     prev_was_stricmp     = false;
+    uint8_t* pending_test_address = nullptr;
 
-    for (auto count = 0; count < 40; count++)
+    constexpr int max_decode_times = 40;
+
+    for (auto count = 0; count < max_decode_times; count++)
     {
-        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, address, ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(address), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands))) [[unlikely]]
         {
             address += instr.length;
             continue;
         }
 
-        if (found_test_eax)
+        /*
+        call    cs:V_stricmp_fast
+        test    eax, eax;        replace with xor eax, eax. forcing eax to 0
+        jz      loc_180703391
+        */
+        if (pending_test_address && instr.meta.category == ZYDIS_CATEGORY_COND_BR)
         {
-#ifdef PLATFORM_WINDOWS
-            if (instr.mnemonic == ZYDIS_MNEMONIC_JZ)
+            std::array<uint8_t, ZYDIS_MAX_INSTRUCTION_LENGTH> buffer{};
+
+            ZydisEncoderRequest req   = {};
+            req.mnemonic              = ZYDIS_MNEMONIC_XOR;
+            req.machine_mode          = ZYDIS_MACHINE_MODE_LONG_64;
+            req.operand_count         = 2;
+            req.operands[0].type      = ZYDIS_OPERAND_TYPE_REGISTER;
+            req.operands[0].reg.value = ZYDIS_REGISTER_EAX;
+            req.operands[1].type      = ZYDIS_OPERAND_TYPE_REGISTER;
+            req.operands[1].reg.value = ZYDIS_REGISTER_EAX;
+
+            ZyanUSize encoded_length = buffer.size();
+            if (ZYAN_SUCCESS(ZydisEncoderEncodeInstruction(&req, buffer.data(), &encoded_length)))
             {
-                SetMemoryAccess(address, instr.length, g_nReadWriteExecuteAccess);
-                auto op = &operands[0];
-                if (instr.opcode_map == ZYDIS_OPCODE_MAP_DEFAULT)
+                if (encoded_length == 2)
                 {
-                    *address = 0xEB;
-                }
-                else
-                {
-                    std::array<uint8_t, 5> bytes;
-                    bytes[0]           = 0xE9;
-                    int32_t new_offset = static_cast<int32_t>(op->imm.value.s) + 1;
-                    memcpy(&bytes[1], &new_offset, sizeof(new_offset));
-                    memcpy(address, bytes.data(), bytes.size());
+                    SetMemoryAccess(pending_test_address, encoded_length, g_nReadWriteExecuteAccess);
+                    memcpy(pending_test_address, buffer.data(), encoded_length);
+                    SetMemoryAccess(pending_test_address, encoded_length, g_nReadExecuteAccess);
 
-                    *(address + 5) = 0x90; // NOP opcode
+                    FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(pending_test_address) - modules::server->Base());
+                    return;
                 }
-                FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(address) - modules::server->Base());
-                SetMemoryAccess(address, instr.length, g_nReadExecuteAccess);
-
-                return;
+                WARN("Encoder generated instruction length mismatch (Expected 2, got %d)", encoded_length);
             }
-#else
-            if (instr.mnemonic == ZYDIS_MNEMONIC_JNZ)
+            else
             {
-                SetMemoryAccess(address, instr.length, g_nReadWriteExecuteAccess);
-
-                memset(address, 0x90, instr.length);
-                FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(address) - modules::server->Base());
-                SetMemoryAccess(address, instr.length, g_nReadExecuteAccess);
-                return;
+                WARN("Failed to encode XOR instruction");
             }
-#endif
+
+            return;
         }
-        else if (instr.mnemonic == ZYDIS_MNEMONIC_TEST && instr.operand_count_visible == 2 && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER && operands[0].reg.value == ZYDIS_REGISTER_EAX && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER && operands[1].reg.value == ZYDIS_REGISTER_EAX)
+
+        if (prev_was_stricmp && instr.mnemonic == ZYDIS_MNEMONIC_TEST && operands[0].reg.value == ZYDIS_REGISTER_EAX && operands[1].reg.value == ZYDIS_REGISTER_EAX)
         {
-            found_test_eax = true;
+            pending_test_address = reinterpret_cast<uint8_t*>(address);
+        }
+        else if (instr.meta.category != ZYDIS_CATEGORY_COND_BR)
+        {
+            pending_test_address = nullptr;
+        }
+
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL)
+        {
+            uintptr_t final_target = ResolveCallTarget(&decoder, &instr, operands, address);
+            prev_was_stricmp = final_target == V_stricmp_fast;
+        }
+        else if (instr.mnemonic != ZYDIS_MNEMONIC_TEST)
+        {
+            prev_was_stricmp = false;
         }
 
         address += instr.length;
     }
 
-    WARN("Failed to patch GiveNamedItemLimit, found_test_eax: %s", found_test_eax ? "true" : "false");
+    WARN("Failed to patch GiveNamedItemLimit after decoding %i times", max_decode_times);
 }
 
 void InstallGiveNamedItemHooks()

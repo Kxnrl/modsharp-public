@@ -32,6 +32,7 @@
 
 #include "cstrike/interface/CDedicatedServerWorkshopManager.h"
 #include "cstrike/interface/IGameRules.h"
+#include "cstrike/interface/IGameSystem.h"
 #include "cstrike/interface/IGameTypes.h"
 #include "cstrike/interface/IResourceManifest.h"
 #include "cstrike/interface/IResourceSystem.h"
@@ -272,6 +273,11 @@ static const char* GetMapName()
     return sv->GetMapName();
 }
 
+static void* GetGameSystemFactory()
+{
+    return CBaseGameSystemFactory::GetFirst();
+}
+
 static CCSWeaponBaseVData* FindWeaponVDataByName(const char* name)
 {
     return address::server::FindWeaponVDataByName(1, name);
@@ -341,6 +347,8 @@ void Init()
     bridge::CreateNative("Game.GetMapName", reinterpret_cast<void*>(GetMapName));
 
     bridge::CreateNative("Game.FindWeaponVDataByName", reinterpret_cast<void*>(FindWeaponVDataByName));
+
+    bridge::CreateNative("Game.GetGameSystemFactory", reinterpret_cast<void*>(GetGameSystemFactory));
 
     bridge::CreateNative("Game.DualAddonPurgeCheck", reinterpret_cast<void*>(DualAddonPurgeCheck));
     bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));

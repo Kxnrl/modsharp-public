@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -67,12 +67,16 @@ struct GameDataOffset
 
 struct GameDataAddress
 {
-    std::optional<std::string> m_Module;
-    std::optional<std::string> m_Signature;
-    std::optional<std::string> m_Base;
-    std::optional<std::string> m_Factory;
-    std::uintptr_t             m_FoundAddress = 0;
-    std::string                m_File;
+    std::string              m_Module;
+    std::string              m_Signature;
+    std::string              m_Base;
+    std::string              m_Factory;
+    std::vector<std::string> m_StringRefs{};
+    std::vector<std::string> m_CvarRefs{};
+    std::vector<std::string> m_VTableRefs{};
+    std::string              m_FromVTable{};
+    std::uintptr_t           m_FoundAddress = 0;
+    std::string              m_File;
 };
 
 struct GameDataPatch
@@ -83,6 +87,14 @@ struct GameDataPatch
     std::vector<uint8_t> m_StoreBytes; // store for restoring
     std::string          m_File;
     uint8_t*             m_Address;
+};
+
+struct StringHash
+{
+    using is_transparent = void;
+    size_t operator()(const char* txt) const noexcept { return std::hash<std::string_view>{}(txt); }
+    size_t operator()(std::string_view txt) const noexcept { return std::hash<std::string_view>{}(txt); }
+    size_t operator()(const std::string& txt) const noexcept { return std::hash<std::string>{}(txt); }
 };
 
 class GameData : public IGameData
@@ -110,9 +122,9 @@ private:
     void* GetAddressInternal(const char* name);
     bool  InitPatch(const std::string& name, GameDataPatch* item);
 
-    std::unordered_map<std::string, GameDataOffset>  m_Offsets;
-    std::unordered_map<std::string, GameDataOffset>  m_VFuncs;
-    std::unordered_map<std::string, GameDataAddress> m_Addresses;
-    std::unordered_map<std::string, GameDataPatch>   m_Patches;
+    std::unordered_map<std::string, GameDataOffset, StringHash, std::equal_to<>>  m_Offsets;
+    std::unordered_map<std::string, GameDataOffset, StringHash, std::equal_to<>>  m_VFuncs;
+    std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>> m_Addresses;
+    std::unordered_map<std::string, GameDataPatch, StringHash, std::equal_to<>>   m_Patches;
 };
 #endif

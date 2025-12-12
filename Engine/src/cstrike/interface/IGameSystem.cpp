@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,28 +17,18 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "gamedata.h"
-#include "global.h"
-
 #include "cstrike/interface/IGameSystem.h"
 
 #include <cstring>
 
-class CGameSystemFactory
+CBaseGameSystemFactory* GetGameSystemFactory()
 {
-    virtual ~CGameSystemFactory() = 0;
-
-public:
-    CGameSystemFactory* m_pNext;
-    const char*         m_pszName;
-    IGameSystem*        m_pInstance;
-};
+    return CBaseGameSystemFactory::GetFirst();
+}
 
 void* FindGameSystemByName(const char* name)
 {
-    static auto pFactoryList = g_pGameData->GetAddress<CGameSystemFactory*>("GameSystemFactory::m_FactoryList");
-
-    auto list = pFactoryList;
+    auto list = CBaseGameSystemFactory::GetFirst();
 
     while (list)
     {

@@ -33,7 +33,8 @@ class InlineHook;
 enum HookType_t
 {
     HookType_Pre,
-    HookType_Post
+    HookType_Post,
+    HookType_Max,
 };
 
 class CServerSideClient;

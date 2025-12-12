@@ -1,37 +1,120 @@
 {
   "Addresses": {
+    "CNetworkGameServer::ActiveServer": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "CNetworkGameServer::ActivateServer",
+          "SV:  %i player server started\n",
+          "SV:  Game started\n",
+          "SV:  addon='%s'\n"
+        ]
+      }
+    },
+    "CNetworkGameServer::ConnectClient": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "CNetworkGameServerBase::ConnectClient( name='%s', remote='%s' )\n",
+          "Server not active, ignoring %s\n",
+          "Bad host version %d %s\n",
+          "Bad auth data from %s\n"
+        ]
+      }
+    },
     "CNetworkGameServer::GetFreeClient": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 49 89 F4 53 48 81 EC ? ? ? ? 41 C6 01",
-      "windows": "48 89 54 24 10 53 56 57 41 56 48 83 EC ?"
+      "windows": "48 89 54 24 10 53 56 57 41 56 48 83 EC ?",
+      "refs": {
+        "strings": [
+          "Kicked to free up slot"
+        ]
+      }
     },
     // str '---------players--------\n'
     "CNetworkGameServer::PrintStatus": {
       "library": "engine",
       "linux": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53",
-      "windows": "48 89 5C 24 20 44 89 44 24 18 89 54 24 10"
+      "windows": "48 89 5C 24 20 44 89 44 24 18 89 54 24 10",
+      "refs": {
+        "strings": [
+          "NOTE: Printing secret stuff because non-public Steam universe.\n"
+        ]
+      }
     },
     // "SV:  Spawn Server: %s\n"
     "CNetworkGameServer::SpawnServer": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 48 85 F6 8B 3D",
-      "windows": "48 89 5C 24 20 55 56 57 41 54 41 56 48 8D 6C 24 C9"
+      "windows": "48 89 5C 24 20 55 56 57 41 54 41 56 48 8D 6C 24 C9",
+      "refs": {
+        "strings": [
+          "SV:  Spawn Server: %s\n",
+          "SV:  Spawn Server: %s: [%s]\n",
+          "SV_SpawnServer -- Finished"
+        ]
+      }
     },
     // "PrepareForAssetLoad(%s)"
     "CNetworkGameServer::SpawnServer_Unknown": {
       "library": "engine",
       "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC",
-      "windows": "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8B EC"
+      "windows": "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8B EC",
+      "refs": {
+        "strings": [
+          "PrepareForAssetLoad(%s)"
+        ]
+      }
+    },
+    "CServerSideClient::ExecuteStringCommand": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "Client %s(%d) tried to execute command \"%s\" but it is not marked FCVAR_CLIENT_CAN_EXECUTE.\n",
+          "Client %s(%d) tried to execute command \"%s\" before being fully connected.\n",
+          "SV: Cheat command '%s' ignored. Set sv_cheats to 1 enable cheats.\n"
+        ],
+        "vtable": "CServerSideClient"
+      }
+    },
+    "CServerSideClient::IsHearingClient": {
+      "library": "engine",
+      "refs": {
+        "cvars": [
+          "ss_voice_hearpartner"
+        ],
+        "vtable": "CServerSideClient"
+      }
+    },
+    "CServerSideClient::SendNetMessage": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "TV client has no downstream TV sink\n"
+        ],
+        "vtable": "CServerSideClient"
+      }
     },
     "HostStateRequest": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 83 7F ? ? 74 ? 8B 3D",
-      "windows": "48 89 74 24 ? 57 48 83 EC ? 33 F6 48 8B FA 48 39 35"
+      "windows": "48 89 74 24 ? 57 48 83 EC ? 33 F6 48 8B FA 48 39 35",
+      "refs": {
+        "strings": [
+          "Discarding pending request '%s, %u'\n"
+        ]
+      }
     },
     "Source2_Init": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 89 BD ? ? ? ? 48 8B 3D ? ? ? ? 48 85 FF",
-      "windows": "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E1"
+      "windows": "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E1",
+      "refs": {
+        "strings": [
+          "Source2Init OK\n"
+        ]
+      }
     }
   },
   "Offsets": {
@@ -161,18 +244,6 @@
     "CServerSideClient::CLCMsg_VoiceData": {
       "linux": 39,
       "windows": 37
-    },
-    "CServerSideClient::ExecuteStringCommand": {
-      "linux": 15,
-      "windows": 14
-    },
-    "CServerSideClient::IsHearingClient": {
-      "linux": 21,
-      "windows": 19
-    },
-    "CServerSideClient::SendNetMessage": {
-      "linux": 16,
-      "windows": 15
     },
     "CServerSideClient::SetName": {
       "linux": 63,

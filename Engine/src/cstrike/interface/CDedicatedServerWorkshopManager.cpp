@@ -49,12 +49,6 @@ struct RequestedMap_t
 
 bool CDedicatedServerWorkshopManager::AddWorkshopMap(uint64_t sharedFileId, const char* mapName, const char* path)
 {
-    if (!g_pSteamApiProxy->GetSteamUGC())
-    {
-        FERROR("Cannot get SteamUGC");
-        return false;
-    }
-
     m_mapLoadedWorkshopMaps.EnsureCapacity(1);
 
     if (m_mapLoadedWorkshopMaps.Find(sharedFileId) != m_mapLoadedWorkshopMaps.InvalidIndex())

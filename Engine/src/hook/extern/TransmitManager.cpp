@@ -600,8 +600,8 @@ void Init()
 
 BeginMemberHookScope(ISource2GameEntities)
 {
-    DeclareVirtualHook(CheckTransmit, void, (ISource2GameEntities * pGameEntities, CCheckTransmitInfo * *ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts1, CBitVec<16384>& unionTransmitEdicts2, const Entity2Networkable_t** pNetworkables, const uint16_t* pEntityIndicies, uint32_t nEntities))
-    {
+DeclareMemberDetourHook(CheckTransmit, void, (ISource2GameEntities * pGameEntities, CCheckTransmitInfo * *ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts1, CBitVec<16384>& unionTransmitEdicts2, const Entity2Networkable_t** pNetworkables, const uint16_t* pEntityIndicies, uint32_t nEntities))
+{
 #ifdef HOOK_EXTERN_TRANSMITMANAGER_ASSERT
         WARN("%10s: 0x%p\n" // ISource2GameEntities*
              "%10s: 0x%p\n" // CCheckTransmitInfo**
@@ -846,7 +846,7 @@ public:
 
 void InstallTransmitHook()
 {
-    InstallVirtualHookAutoWithVTableManual(ISource2GameEntities, CheckTransmit, server, CSource2GameEntities);
+    InstallMemberDetourAutoSig(ISource2GameEntities, CheckTransmit, server, CSource2GameEntities);
 
     g_pGameEntitySystem->AddListenerEntity(&s_listener);
 

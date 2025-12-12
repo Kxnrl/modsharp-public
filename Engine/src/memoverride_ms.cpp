@@ -60,7 +60,7 @@ void __cdecl operator delete[](void* pMem)
 
 void* AllocateMemory(size_t size)
 {
-    return g_pMemAlloc->AllocRaw(size);
+    return g_pMemAlloc->Alloc(size);
 }
 
 void* ReallocateMemory(void* mem, size_t size)

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,36 +17,9 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MS_ROOT_TYPES_H
-#define MS_ROOT_TYPES_H
+#ifndef CSTRIKE_ROOT_INTERFACES_H
+#define CSTRIKE_ROOT_INTERFACES_H
 
-#ifdef PLATFORM_WINDOWS
-#    ifndef WIN32_LEAN_AND_MEAN
-#        define WIN32_LEAN_AND_MEAN
-#    endif
-#    include <windows.h>
-#elif defined PLATFORM_POSIX
-#    include <dlfcn.h>
-#else
-#    error "Unsupported platform"
-#endif
-
-#ifdef PLATFORM_WINDOWS
-
-using LibModule = HMODULE;
-#    define LIB_FILE_PREFIX ""
-#    define LIB_FILE_EXTENSION ".dll"
-
-#    define MS_EXPORT extern "C" __declspec(dllexport)
-
-#else
-
-using LibModule = void*;
-#    define LIB_FILE_PREFIX "lib"
-#    define LIB_FILE_EXTENSION ".so"
-
-#    define MS_EXPORT extern "C" __attribute__((visibility("default")))
-
-#endif
+void InitializeInterfaces();
 
 #endif

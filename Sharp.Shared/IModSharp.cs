@@ -399,12 +399,21 @@ public interface IModSharp
     /// <param name="module">DLL/SO name</param>
     /// <param name="className">C++ class name</param>
     /// <returns></returns>
+    [Obsolete("Renamed to GetVirtualTableByClass, will be removed in the future", true)]
     nint GetVTableByClass(string module, string className);
 
     /// <summary>
     ///     Find StringTable
     /// </summary>
     INetworkingStringTable? FindStringTable(string name);
+
+    /// <summary>
+    ///     Get virtual table for specified C++ class
+    /// </summary>
+    /// <param name="module">DLL/SO name</param>
+    /// <param name="className">C++ class name</param>
+    /// <returns></returns>
+    nint GetVirtualTableByClass(string module, string className);
 
     /// <summary>
     ///     Create KeyValues

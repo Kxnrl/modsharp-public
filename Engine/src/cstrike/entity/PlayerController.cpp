@@ -45,10 +45,9 @@ CBasePlayerPawn* CBasePlayerController::GetPawnInternal()
 
 SteamId_t CBasePlayerController::GetSteamID()
 {
-    constexpr SteamId_t UserIdOffset = 76561197960265728;
-    static auto         offset       = GetFieldOffset("CBasePlayerController", "m_steamID");
-    const auto          steamId      = GetFieldValue<SteamId_t>(offset);
-    if (IsFakeClient() || steamId < UserIdOffset)
+    static auto offset  = GetFieldOffset("CBasePlayerController", "m_steamID");
+    const auto  steamId = GetFieldValue<SteamId_t>(offset);
+    if (IsFakeClient())
         return 0;
 
     return steamId;

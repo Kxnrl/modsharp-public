@@ -22,6 +22,7 @@
     <ClCompile Include="src\cstrike\econitem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp" />
     <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp" />
+    <ClCompile Include="src\cstrike\interfaces.cpp" />
     <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />
     <ClCompile Include="src\cstrike\Interface\ICvar.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h" />
     <ClInclude Include="src\cstrike\component\CGameSceneNode.h" />
     <ClInclude Include="src\cstrike\entity\CEconEntity.h" />
+    <ClInclude Include="src\cstrike\interfaces.h" />
     <ClInclude Include="src\cstrike\Interface\ICommandLine.h" />
     <ClInclude Include="src\cstrike\Interface\IFileSystem.h" />
     <ClInclude Include="src\cstrike\Interface\IGameEvent.h" />
@@ -269,6 +271,7 @@
     <ClInclude Include="src\module.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\protobufproxy.h" />
+    <ClInclude Include="src\scopetimer.h" />
     <ClInclude Include="src\sdkproxy.h" />
     <ClInclude Include="src\steamproxy.h" />
     <ClInclude Include="src\steamworks.h" />
@@ -334,7 +337,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

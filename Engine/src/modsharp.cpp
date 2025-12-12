@@ -69,7 +69,7 @@ unsigned int g_nMainThreadId;
 #    include <format>
 #    include <fstream>
 
-static void DumpVtableCount()
+static void DumpVTableCount()
 {
     if (!IsDebugMode())
         return;
@@ -164,49 +164,49 @@ static void DumpVtableCount()
     file << "[server.dll]" << '\n';
     for (const auto& server_vtable : server_vtables)
     {
-        file << std::format("{}={}", server_vtable, modules::server->GetVTableCount(server_vtable)) << '\n';
+        file << std::format("{}={}", server_vtable, modules::server->GetVFunctionsFromVTable(server_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[engine2.dll]" << '\n';
     for (const auto& engine_vtable : engine_vtables)
     {
-        file << std::format("{}={}", engine_vtable, modules::engine->GetVTableCount(engine_vtable)) << '\n';
+        file << std::format("{}={}", engine_vtable, modules::engine->GetVFunctionsFromVTable(engine_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[tier0.dll]" << '\n';
     for (const auto& tier0_vtable : tier0_vtables)
     {
-        file << std::format("{}={}", tier0_vtable, modules::tier0->GetVTableCount(tier0_vtable)) << '\n';
+        file << std::format("{}={}", tier0_vtable, modules::tier0->GetVFunctionsFromVTable(tier0_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[vscript.dll]" << '\n';
     for (const auto& vscript_vtable : vscript_vtables)
     {
-        file << std::format("{}={}", vscript_vtable, modules::vscript->GetVTableCount(vscript_vtable)) << '\n';
+        file << std::format("{}={}", vscript_vtable, modules::vscript->GetVFunctionsFromVTable(vscript_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[resourcesystem.dll]" << '\n';
     for (const auto& resource_vtable : resource_vtables)
     {
-        file << std::format("{}={}", resource_vtable, modules::resource->GetVTableCount(resource_vtable)) << '\n';
+        file << std::format("{}={}", resource_vtable, modules::resource->GetVFunctionsFromVTable(resource_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[vphysics2.dll]" << '\n';
     for (const auto& vphysics_vtable : vphysics_vtables)
     {
-        file << std::format("{}={}", vphysics_vtable, modules::vphysics2->GetVTableCount(vphysics_vtable)) << '\n';
+        file << std::format("{}={}", vphysics_vtable, modules::vphysics2->GetVFunctionsFromVTable(vphysics_vtable).size()) << '\n';
     }
     file << '\n';
 
     file << "[soundsystem.dll]" << '\n';
     for (const auto& soundsystem_vtable : soundsystem_vtables)
     {
-        file << std::format("{}={}", soundsystem_vtable, modules::sound->GetVTableCount(soundsystem_vtable)) << '\n';
+        file << std::format("{}={}", soundsystem_vtable, modules::sound->GetVFunctionsFromVTable(soundsystem_vtable).size()) << '\n';
     }
     file << '\n';
 }
@@ -223,49 +223,16 @@ bool ModSharp_Init()
     g_pLoggerMapName = {};
     g_nMainThreadId  = GetCurrentThreadId();
 
-    engine                       = factory::engine->GetInterface<IEngineServer*>("Source2EngineToServer001");
-    server                       = factory::server->GetInterface<CSource2Server*>("Source2Server001");
-    gameClients                  = factory::server->GetInterface<IServerGameClient*>("Source2GameClients001");
-    gameEntities                 = factory::server->GetInterface<IServerGameEntities*>("Source2GameEntities001");
-    icvar                        = factory::engine->GetInterface<ICvar*>("VEngineCvar007");
-    schemaSystem                 = modules::schemas->FindInterface("SchemaSystem_001").As<ISchemaSystem*>();
-    g_pFullFileSystem            = factory::engine->GetInterface<IFileSystem*>("VFileSystem017");
-    g_pGameResourceServiceServer = factory::engine->GetInterface<IGameResourceServiceServer*>("GameResourceServiceServerV001");
-    g_pNetworkServerService      = factory::engine->GetInterface<INetworkServerService*>("NetworkServerService_001");
-    g_pGameEventSystem           = factory::engine->GetInterface<IGameEventSystem*>("GameEventSystemServerV001");
-    g_pNetworkMessages           = factory::engine->GetInterface<INetworkMessages*>("NetworkMessagesVersion001");
-    g_pNetworkSystem             = factory::engine->GetInterface<INetworkSystem*>("NetworkSystemVersion001");
-
-    g_pGameTypes            = factory::engine->GetInterface<IGameTypes*>("GameTypes001");
-    g_pStringTableContainer = factory::engine->GetInterface<INetworkStringTableContainer*>("Source2EngineToServerStringTable001");
-    g_pResourceSystem       = modules::resource->FindInterface("ResourceSystem013").As<IResourceSystem*>();
+    auto gameEventManagerVtable = modules::server->GetVirtualTableByName("CGameEventManager");
+    eventManager                = modules::server->FindPtr(gameEventManagerVtable).As<IGameEventManager2*>();
 
     const auto pSoundOpSystem = factory::engine->GetInterface<ISoundOpSystem*>("SoundOpSystem001");
-
-    AssertPtr(engine);
-    AssertPtr(server);
-    AssertPtr(gameClients);
-    AssertPtr(gameEntities);
-    AssertPtr(icvar);
-    AssertPtr(schemaSystem);
-    AssertPtr(g_pFullFileSystem);
-    AssertPtr(g_pGameResourceServiceServer);
-    AssertPtr(g_pNetworkServerService);
-    AssertPtr(g_pGameEventSystem);
-    AssertPtr(g_pNetworkMessages);
-    AssertPtr(g_pNetworkSystem);
-    AssertPtr(g_pGameTypes);
-    AssertPtr(g_pStringTableContainer);
-    AssertPtr(g_pResourceSystem);
     AssertPtr(pSoundOpSystem);
 
-    g_pCVar                  = icvar;
-    eventManager             = g_pGameData->GetAddress<IGameEventManager2*>("g_GameEventManager");
     g_pSoundEventManager     = reinterpret_cast<CSoundEventManager*>(reinterpret_cast<intptr_t>(pSoundOpSystem) + 8);
     g_pSoundOpGameSystem     = static_cast<SoundOpGameSystem*>(FindGameSystemByName("SoundOpGameSystem"));
     g_pServerWorkshopManager = static_cast<CDedicatedServerWorkshopManager*>(FindGameSystemByName("DedicatedServerWorkshopManager"));
 
-    AssertPtr(g_pCVar);
     AssertPtr(eventManager);
     AssertPtr(g_pSoundEventManager);
     AssertPtr(g_pSoundOpGameSystem);
@@ -275,7 +242,7 @@ bool ModSharp_Init()
     FixFileSystem();
 
 #ifdef PLATFORM_WINDOWS
-    DumpVtableCount();
+    DumpVTableCount();
 #endif
 
     InitSchemaSystem();

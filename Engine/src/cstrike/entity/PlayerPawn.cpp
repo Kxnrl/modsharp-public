@@ -40,7 +40,10 @@ CBaseWeapon* CBasePlayerPawn::GiveNamedItem(const char* pszWeaponName)
 {
     const auto pItemServices = m_pItemServices();
     if (!pItemServices)
+    {
+        WARN("GiveNamedItem with nullptr item services -> weapon [%s] ", pszWeaponName);
         return nullptr;
+    }
     return pItemServices->GiveNamedItem(pszWeaponName);
 }
 
@@ -48,7 +51,10 @@ void CBasePlayerPawn::RemoveAllItems(bool removeSuit)
 {
     const auto pItemServices = m_pItemServices();
     if (!pItemServices)
+    {
+        WARN("RemoveAllItems with nullptr item services");
         return;
+    }
     return pItemServices->RemoveAllItems(removeSuit);
 }
 

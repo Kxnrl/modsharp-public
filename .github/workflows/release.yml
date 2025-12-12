@@ -185,19 +185,22 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
+    env:
+      CC: clang-21
+      CXX: clang++-21
     steps:
-      - name: Install Linux packages
+      - name: Install Clang 21
         run: |
-          sudo apt update
-          sudo apt install -yq --no-install-recommends g++-multilib build-essential
-
-      - name: Use GCC14
-        run: |
-          PATH="/usr/lib/gcc-14/bin:$PATH"
-
-      - name: Install Clang16
-        run: |
-          apt update && apt install -y clang-16
+          apt update
+          apt install -y wget gnupg
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          apt update
+          apt install -y clang-21
+          echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
+          echo "LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
 
       - name: Set Timezone
         uses: szenius/set-timezone@v2.0
@@ -244,13 +247,21 @@ jobs:
           mkdir ./build/sharp/configs
           mkdir ./build/sharp/gamedata
 
+      # Build Loader
       - name: Build Loader
+        working-directory: Loader
         run: |
-          cd Loader && cmake -P cmkr.cmake && cmake -B build -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cmake -P cmkr.cmake
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -- -j$(nproc)
 
+      # Build Engine
       - name: Build Engine
+        working-directory: Engine
         run: |
-          cd Engine && cmake -P cmkr.cmake && cmake -B build  -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cmake -P cmkr.cmake
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -- -j$(nproc)
 
       - name: Build Sharp.Core
         shell: bash

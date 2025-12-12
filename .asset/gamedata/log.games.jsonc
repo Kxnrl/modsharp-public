@@ -3,7 +3,12 @@
     "LogDirect": {
       "library": "tier0",
       "linux": "55 49 89 FA 48 89 E5 41 57 41 56 41 89 D6",
-      "windows": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55"
+      "windows": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55",
+      "refs": {
+        "strings": [
+          "%s():\n%s"
+        ]
+      }
     },
     "LoggingSystem_IsChannelEnabled": {
       "library": "tier0",

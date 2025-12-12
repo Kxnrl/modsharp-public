@@ -55,8 +55,8 @@ static std::unordered_map<uint64_t, int32_t> s_bBannedSteamIds;
 
 BeginMemberHookScope(CNetworkGameServer)
 {
-    DeclareVirtualHook(ActiveServer, bool, (CNetworkGameServer * pServer))
-    {
+DeclareMemberDetourHook(ActiveServer, bool, (CNetworkGameServer * pServer))
+{
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
              "%10s: %f\n"
@@ -133,12 +133,6 @@ BeginMemberHookScope(CNetworkGameServer)
         // earliest available for get this shit
         sv        = pServer;
         gpGlobals = pServer->GetGlobalVars();
-
-        const auto pszMapName = sv->GetMapName();
-
-        g_pLoggerMapName = "| ";
-        g_pLoggerMapName += pszMapName;
-        g_pLoggerMapName += " ";
 
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
@@ -228,7 +222,7 @@ BeginMemberHookScope(CNetworkGameServer)
         return nullptr;
     }
 
-    DeclareVirtualHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, void* pNetAddress, void* pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
+    DeclareMemberDetourHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, void* pNetAddress, void* pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
     {
 #ifdef CONNECT_HOOK_ASSERT
         WARN("%10s: 0x%p\n" // CNetworkGameServer*
@@ -291,20 +285,26 @@ BeginMemberHookScope(CNetworkGameServer)
 
 BeginMemberHookScope(INetworkServerService)
 {
-    DeclareVirtualHook(StartupServer, void, (INetworkServerService * pService, const GameSessionConfiguration_t& config, ISource2WorldSession* pWorldSession, const char* unknown))
-    {
+DeclareVirtualHook(StartupServer, void, (INetworkServerService * pService, const GameSessionConfiguration_t& config, ISource2WorldSession* pWorldSession, const char* pszMapName))
+{
         g_pSpawnGroupMgr = nullptr;
 
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
              "%10s: 0x%p\n"
              "%10s: 0x%p",
-             "this", pService, "config", pWorldSession, "unknown", unknown);
+             "this", pService, "config", pWorldSession, "unknown", pszMapName);
 #endif
+
+        g_pLoggerMapName = "| ";
+        g_pLoggerMapName += pszMapName;
+        g_pLoggerMapName += " ";
+
+        g_pSpawnGroupMgr = nullptr;
 
         forwards::OnStartupServerPre->Invoke();
 
-        StartupServer(pService, config, pWorldSession, unknown);
+        StartupServer(pService, config, pWorldSession, pszMapName);
 
         sv = g_pNetworkServerService->GetIGameServer();
     }
@@ -317,13 +317,13 @@ void InstallEngineHooks()
     InstallMemberDetourAutoSig(CNetworkGameServer, PrintStatus);
     InstallMemberDetourAutoSig(CNetworkGameServer, GetFreeClient);
 
-    InstallVirtualHookAutoWithVTableAuto(CNetworkGameServer, ActiveServer, engine);
+    InstallMemberDetourAutoSig(CNetworkGameServer, ActiveServer, engine);
 
     // BUG 运行在客户端模式下时, 该功能会导致游戏无法启动
     if (CommandLine()->HasParam("-dedicated"))
     {
         InstallVirtualHookAutoWithVTableAuto(CNetworkGameServer, DisconnectClient, engine);
-        InstallVirtualHookAutoWithVTableAuto(CNetworkGameServer, ConnectClient, engine);
+        InstallMemberDetourAutoSig(CNetworkGameServer, ConnectClient, engine);
     }
 
     // TODO steamnetworkingsockets -> str 'SendServerBrowserPacket' patch MTU

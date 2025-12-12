@@ -73,7 +73,7 @@ BeginMemberHookScope(CCSPlayerPawn)
         return ret;
     }
 
-    DeclareVirtualHook(PlayerSpawn, void, (CCSPlayerPawn * pPawn, void* a2))
+    DeclareMemberDetourHook(PlayerSpawn, void, (CCSPlayerPawn * pPawn, void* a2))
     {
         const auto pController = pPawn->GetController<CCSPlayerController*>();
         const auto pClient     = pController ? sv->GetClient(pController->GetPlayerSlot()) : nullptr;
@@ -109,7 +109,7 @@ BeginMemberHookScope(CCSPlayerPawn)
 #endif
     }
 
-    DeclareVirtualHook(PlayerPostThink, void, (CCSPlayerPawn * pPawn))
+    DeclareMemberDetourHook(PlayerPostThink, void, (CCSPlayerPawn * pPawn))
     {
         ValidateCC();
 
@@ -349,7 +349,7 @@ void InstallPlayerHooks()
     InstallVirtualHookAutoWithVTableAuto(CCSPlayer_WeaponServices, CanUse, server);
 
     InstallVirtualHookManualWithVTableAuto(CCSPlayerPawn, Event_Killed, server, "CBaseEntity::Event_Killed");
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayerPawn, PlayerSpawn, server);
+    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerSpawn, server);
     InstallVirtualHookAutoWithVTableAuto(CCSPlayerPawn, PlayerPreThink, server);
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayerPawn, PlayerPostThink, server);
+    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerPostThink, server);
 }

@@ -918,7 +918,7 @@ internal partial class SharpCore : ISharpCore
         Utf8.FromUtf16(name, new Span<byte>(pName, 256), out _, out var bytesWritten);
         pName[bytesWritten] = 0;
 
-        var factory = (CGameSystemFactory*) GetGameData().GetAddress("GameSystemFactory::m_FactoryList");
+        var factory = (CGameSystemFactory*) Game.GetGameSystemFactory();
 
         while (factory is not null)
         {
@@ -947,6 +947,9 @@ internal partial class SharpCore : ISharpCore
 
     public INetworkingStringTable? FindStringTable(string name)
         => NetworkingStringTable.Create(Bridges.Natives.Core.FindStringTable(name));
+        
+    public IntPtr GetVirtualTableByClass(string module, string className)
+        => Bridges.Natives.Core.GetVTableByClass(module, className);
 
     public IKeyValues CreateKeyValues(string name)
     {

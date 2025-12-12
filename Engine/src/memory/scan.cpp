@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -36,89 +36,107 @@
 
 struct Pattern
 {
+    struct Element
+    {
+        uint8_t byte;
+        uint8_t mask;
+    };
+
+    static_assert(sizeof(Element) == 2, "Element must be 2 bytes");
+
     Pattern() = default;
 
     static Pattern FromHexString(std::string_view input)
     {
-        if (input.empty())
-            [[unlikely]]
+        if (input.empty()) [[unlikely]]
             throw;
+
         Pattern p{};
+        p._elements.reserve(input.size() / 3 + 1);
 
         static constexpr auto hex_char_to_byte = [](char c) -> int8_t {
-            if (c >= '0' && c <= '9')
-                return c - '0';
-            if (c >= 'A' && c <= 'F')
-                return c - 'A' + 10;
-            if (c >= 'a' && c <= 'f')
-                return c - 'a' + 10;
+            if (c >= '0' && c <= '9') return c - '0';
+            if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+            if (c >= 'a' && c <= 'f') return c - 'a' + 10;
             return -1;
         };
 
-        p._bytes.reserve(input.size() / 3 + 1);
+        p._elements.reserve(input.size() / 3 + 1);
 
-        for (auto&& str : input | std::views::split(' '))
+        for (auto subrange : input | std::views::split(' '))
         {
-            if (str.empty())
-                [[unlikely]]
-            {
+            if (subrange.empty()) [[unlikely]]
                 continue;
-            }
-
-            std::string_view byte(&*str.begin(), std::ranges::distance(str));
+            std::string_view byte(subrange.begin(), subrange.end());
 
             if (byte[0] == '?')
             {
-                p._bytes.push_back(-1);
-                /*_has_wildcard = true;*/
-                continue;
+                p._elements.push_back({.byte = 0x00, .mask = 0x00});
             }
-
-            const auto high = hex_char_to_byte(byte[0]);
-            const auto low  = hex_char_to_byte(byte[1]);
-
-            p._bytes.push_back((high << 4) | low);
+            else
+            {
+                const auto high = hex_char_to_byte(byte[0]);
+                const auto low  = hex_char_to_byte(byte[1]);
+                p._elements.push_back({.byte = static_cast<uint8_t>((high << 4) | low), .mask = 0xFF});
+            }
         }
 
-        auto rit = std::ranges::find_if(std::ranges::reverse_view(p._bytes), [](auto n) { return n != -1; });
+        // Clean up trailing wildcards (mask == 0)
+        auto rit = std::ranges::find_if(std::ranges::reverse_view(p._elements),
+                                        [](const Element& e) { return e.mask != 0; });
 
-        // Erase all -1 elements from the end
-        p._bytes.erase(rit.base(), p._bytes.end());
+        p._elements.erase(rit.base(), p._elements.end());
         return p;
     }
 
     static Pattern FromString(std::string_view input, bool zero_terminated = false)
     {
         Pattern p{};
+        p._elements.reserve(input.size() + (zero_terminated ? 1 : 0));
 
-        for (const char c : input)
-        {
-            p._bytes.push_back(c);
-        }
+        for (const char c : input) p._elements.push_back({.byte = static_cast<uint8_t>(c), .mask = 0xFF});
 
-        if (zero_terminated)
-            p._bytes.push_back(0);
+        if (zero_terminated) p._elements.push_back({.byte = 0x00, .mask = 0xFF});
 
         return p;
     }
 
-    [[nodiscard]] const std::vector<int16_t>& bytes() const
+    [[nodiscard]] const std::vector<Element>& bytes() const
     {
-        return _bytes;
+        return _elements;
+    }
+
+    bool is_match(const uint8_t* data) const
+    {
+        const Element* current = _elements.data();
+        const Element* end     = current + _elements.size() - 1;
+
+        current++;
+        data++;
+
+        while (current != end)
+        {
+            // if mask is 0x00 (wildcard), result is 0 (success)
+            // if mask is 0xFF (match), result is 0 only if data == pattern
+            if ((data[0] ^ current->byte) & current->mask)
+            {
+                return false;
+            }
+
+            current++;
+            data++;
+        }
+
+        return true;
     }
 
     bool is_match(uint8_t* data) const
     {
-        return std::equal(_bytes.begin() + 1,
-                          _bytes.end() - 1,
-                          data + 1,
-                          [](auto opt, auto byte) {
-                              return opt == -1 || opt == byte;
-                          });
+        return is_match(const_cast<const uint8_t*>(data));
     }
 
 private:
-    std::vector<int16_t> _bytes{};
+    std::vector<Element> _elements{};
 };
 
 class InstructionSet
@@ -126,7 +144,7 @@ class InstructionSet
 public:
     InstructionSet()
     {
-#ifndef PLATFORM_WINDOWS
+#if defined(__clang__) || defined(__GNUC__) || defined(__GNUG__)
         _supportAvx2 = __builtin_cpu_supports("avx2");
 #else
 
@@ -195,27 +213,20 @@ enum class SearchAction : uint8_t
 };
 
 template <typename Callback>
-static void FindPatternScalar(uint8_t* data, std::size_t size, const std::vector<int16_t>& pattern, Callback on_match) noexcept
+static void FindDataScalar(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size, Callback on_match) noexcept
 {
-    const auto patternSize = pattern.size();
-    uint8_t*   end         = data + size - patternSize;
-    const auto firstByte   = pattern[0];
+    if (size < needle_size) [[unlikely]]
+        return;
 
-    for (uint8_t* current = data; current <= end; ++current)
+    const auto first_byte = needle[0];
+    uint8_t*   end        = data + size - needle_size + 1;
+
+    for (uint8_t* current = data; current < end; ++current)
     {
-        current = std::find(current, end, firstByte);
+        current = std::find(current, end, first_byte);
+        if (current == end) break;
 
-        if (current == end)
-        {
-            break;
-        }
-
-        if (std::equal(pattern.begin() + 1,
-                       pattern.end(),
-                       current + 1,
-                       [](auto opt, auto byte) {
-                           return opt == -1 || opt == byte;
-                       }))
+        if (std::memcmp(current, needle, needle_size) == 0)
         {
             if (on_match(current) == SearchAction::Stop)
                 return;
@@ -223,14 +234,276 @@ static void FindPatternScalar(uint8_t* data, std::size_t size, const std::vector
     }
 }
 
+template <typename Callback>
+static void FindPatternScalar(uint8_t* data, std::size_t size, const std::vector<Pattern::Element>& pattern, Callback on_match) noexcept
+{
+    const auto pattern_size = pattern.size();
+    if (size < pattern_size) [[unlikely]]
+        return;
+
+    const auto first_byte = pattern[0].byte;
+    uint8_t*   end        = data + size - pattern_size + 1;
+
+    for (uint8_t* current = data; current < end; ++current)
+    {
+        current = std::find(current, end, first_byte);
+        if (current == end) break;
+
+        bool match = true;
+        for (std::size_t i = 1; i < pattern_size; ++i)
+        {
+            if ((current[i] ^ pattern[i].byte) & pattern[i].mask)
+            {
+                match = false;
+                break;
+            }
+        }
+
+        if (match && on_match(current) == SearchAction::Stop) return;
+    }
+}
+
 // Implementation from: http://0x80.pl/notesen/2016-11-28-simd-strfind.html
 
 template <typename Callback>
-static void FindPatternSSEImpl(uint8_t* data, std::size_t size, const Pattern& pattern, Callback on_match)
+ATTRIBUTE_SSE static void FindDataSSEImpl(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size, Callback on_match)
 {
-    constexpr auto type_size     = sizeof(__m128i);
-    const auto&    pattern_bytes = pattern.bytes();
-    const auto     pattern_size  = pattern_bytes.size();
+    if (needle_size < 2 || size < needle_size) [[unlikely]]
+    {
+        FindDataScalar(data, size, needle, needle_size, on_match);
+        return;
+    }
+
+    auto* current  = data;
+    auto* end      = data + size;
+    auto* loop_end = end - needle_size + 1;
+
+    constexpr auto simd_size = sizeof(__m128i);
+
+    const auto v_first = _mm_set1_epi8(static_cast<char>(needle[0]));
+    const auto v_last  = _mm_set1_epi8(static_cast<char>(needle[needle_size - 1]));
+
+    auto process_mask = [&](uint32_t mask, uint8_t* base) -> bool {
+        while (mask != 0)
+        {
+            uint32_t bit_pos   = std::countr_zero(mask);
+            uint8_t* match_ptr = base + bit_pos;
+
+            // only check middle bytes, first and last are already checked
+            if (std::memcmp(match_ptr + 1, needle + 1, needle_size - 2) == 0) [[unlikely]]
+            {
+                if (on_match(match_ptr) == SearchAction::Stop) return true;
+            }
+            mask &= (mask - 1);
+        }
+        return false;
+    };
+
+    const auto* unroll_limit = loop_end - (4 * simd_size);
+
+    while (current <= unroll_limit)
+    {
+        auto v_block1_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current));
+        auto v_block2_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + simd_size));
+        auto v_block3_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 2 * simd_size));
+        auto v_block4_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 3 * simd_size));
+
+        auto v_block1_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + needle_size - 1));
+        auto v_block2_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + simd_size + needle_size - 1));
+        auto v_block3_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 2 * simd_size + needle_size - 1));
+        auto v_block4_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 3 * simd_size + needle_size - 1));
+
+        uint32_t mask1 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block1_first), _mm_cmpeq_epi8(v_last, v_block1_last)));
+        uint32_t mask2 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block2_first), _mm_cmpeq_epi8(v_last, v_block2_last)));
+        uint32_t mask3 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block3_first), _mm_cmpeq_epi8(v_last, v_block3_last)));
+        uint32_t mask4 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block4_first), _mm_cmpeq_epi8(v_last, v_block4_last)));
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
+        }
+
+        current += 4 * simd_size;
+    }
+
+    while (current + simd_size <= loop_end)
+    {
+        const auto v_block_first = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current));
+        const auto v_block_last  = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current + needle_size - 1));
+
+        uint32_t mask = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block_first), _mm_cmpeq_epi8(v_last, v_block_last)));
+
+        if (mask && process_mask(mask, current)) return;
+
+        current += simd_size;
+    }
+
+    if (current < loop_end)
+    {
+        FindDataScalar(current, static_cast<std::size_t>(end - current), needle, needle_size, on_match);
+    }
+}
+
+template <typename Callback>
+ATTRIBUTE_AVX2 static void FindDataAvx2Impl(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size, Callback on_match)
+{
+    if (needle_size < 2 || size < needle_size) [[unlikely]]
+    {
+        FindDataScalar(data, size, needle, needle_size, on_match);
+        return;
+    }
+
+    auto* current  = data;
+    auto* end      = data + size;
+    auto* loop_end = end - needle_size + 1;
+
+    constexpr auto simd_size = sizeof(__m256i);
+
+    const auto v_first = _mm256_set1_epi8(static_cast<char>(needle[0]));
+    const auto v_last  = _mm256_set1_epi8(static_cast<char>(needle[needle_size - 1]));
+
+    auto process_mask = [&](uint32_t mask, uint8_t* base) -> bool {
+        while (mask != 0)
+        {
+            uint32_t bit_pos   = std::countr_zero(mask);
+            uint8_t* match_ptr = base + bit_pos;
+
+            // only check middle bytes, first and last are already checked
+            if (std::memcmp(match_ptr + 1, needle + 1, needle_size - 2) == 0) [[unlikely]]
+            {
+                if (on_match(match_ptr) == SearchAction::Stop) return true;
+            }
+            mask &= (mask - 1);
+        }
+        return false;
+    };
+
+    const auto* unroll_limit = loop_end - (4 * simd_size);
+
+    while (current <= unroll_limit)
+    {
+        auto v_block1_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current));
+        auto v_block2_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + simd_size));
+        auto v_block3_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 2 * simd_size));
+        auto v_block4_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 3 * simd_size));
+
+        auto v_block1_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + needle_size - 1));
+        auto v_block2_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + simd_size + needle_size - 1));
+        auto v_block3_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 2 * simd_size + needle_size - 1));
+        auto v_block4_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 3 * simd_size + needle_size - 1));
+
+        uint32_t mask1 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block1_first), _mm256_cmpeq_epi8(v_last, v_block1_last)));
+        uint32_t mask2 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block2_first), _mm256_cmpeq_epi8(v_last, v_block2_last)));
+        uint32_t mask3 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block3_first), _mm256_cmpeq_epi8(v_last, v_block3_last)));
+        uint32_t mask4 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block4_first), _mm256_cmpeq_epi8(v_last, v_block4_last)));
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
+        }
+
+        current += 4 * simd_size;
+    }
+
+    while (current + simd_size <= loop_end)
+    {
+        const auto v_block_first = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current));
+        const auto v_block_last  = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current + needle_size - 1));
+
+        uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block_first), _mm256_cmpeq_epi8(v_last, v_block_last)));
+
+        if (mask && process_mask(mask, current)) return;
+
+        current += simd_size;
+    }
+
+    if (current < loop_end)
+    {
+        FindDataScalar(current, static_cast<std::size_t>(end - current), needle, needle_size, on_match);
+    }
+}
+
+static CAddress FindDataSSE(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+{
+    CAddress   result{};
+    const auto base = reinterpret_cast<uintptr_t>(data);
+
+    FindDataSSEImpl(data, size, needle, needle_size,
+                    [&result, base](CAddress match) {
+                        result = match - base;
+                        return detail::SearchAction::Stop;
+                    });
+    return result;
+}
+
+static std::vector<CAddress> FindDataMultiSSE(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+{
+    std::vector<CAddress> results{};
+    results.reserve(8);
+
+    const auto base = reinterpret_cast<uintptr_t>(data);
+
+    FindDataSSEImpl(data, size, needle, needle_size,
+                    [&results, base](CAddress match) {
+                        results.emplace_back(match - base);
+                        return detail::SearchAction::Continue;
+                    });
+    return results;
+}
+
+ATTRIBUTE_AVX2
+
+static CAddress FindDataAVX2(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+{
+    CAddress   result{};
+    const auto base = reinterpret_cast<uintptr_t>(data);
+
+    FindDataAvx2Impl(data, size, needle, needle_size,
+                     [&result, base](CAddress match) {
+                         result = match - base;
+                         return detail::SearchAction::Stop;
+                     });
+    return result;
+}
+
+ATTRIBUTE_AVX2
+
+static std::vector<CAddress> FindDataMultiAVX2(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+{
+    std::vector<CAddress> results{};
+    results.reserve(8);
+
+    const auto base = reinterpret_cast<uintptr_t>(data);
+
+    FindDataAvx2Impl(data, size, needle, needle_size,
+                     [&results, base](CAddress match) {
+                         results.emplace_back(match - base);
+                         return detail::SearchAction::Continue;
+                     });
+    return results;
+}
+
+template <typename Callback>
+ATTRIBUTE_SSE static void FindPatternSSEImpl(uint8_t* data, std::size_t size, const Pattern& pattern, Callback on_match)
+{
+    const auto& pattern_bytes = pattern.bytes();
+    const auto  pattern_size  = pattern_bytes.size();
 
     if (pattern_size < 2 || size < pattern_size) [[unlikely]]
     {
@@ -238,48 +511,88 @@ static void FindPatternSSEImpl(uint8_t* data, std::size_t size, const Pattern& p
         return;
     }
 
-    const auto first = _mm_set1_epi8(static_cast<char>(pattern_bytes.front()));
-    const auto last  = _mm_set1_epi8(static_cast<char>(pattern_bytes.back()));
+    auto* current  = data;
+    auto* end      = data + size;
+    auto* loop_end = end - pattern_size + 1;
 
-    const auto bytes_to_search = size - pattern_size;
+    constexpr auto simd_size = sizeof(__m128i);
 
-    size_t i = 0;
-    while (i + type_size <= bytes_to_search)
-    {
-        const auto block_first = _mm_loadu_si128(reinterpret_cast<const __m128i*>(data + i));
-        const auto block_last  = _mm_loadu_si128(reinterpret_cast<const __m128i*>(data + i + pattern_size - 1));
+    const auto v_first = _mm_set1_epi8(static_cast<char>(pattern_bytes.front().byte));
+    const auto v_last  = _mm_set1_epi8(static_cast<char>(pattern_bytes.back().byte));
 
-        const auto eq_first = _mm_cmpeq_epi8(first, block_first);
-        const auto eq_last  = _mm_cmpeq_epi8(last, block_last);
-
-        uint32_t mask = _mm_movemask_epi8(_mm_and_si128(eq_first, eq_last));
-
+    auto process_mask = [&](uint32_t mask, uint8_t* base) -> bool {
         while (mask != 0)
         {
-            const uint32_t bit_pos = std::countr_zero(mask);
-            auto           current = data + i + bit_pos;
-            if (pattern.is_match(current)) [[unlikely]]
+            uint32_t bit_pos   = std::countr_zero(mask);
+            uint8_t* match_ptr = base + bit_pos;
+
+            if (pattern.is_match(match_ptr)) [[unlikely]]
             {
-                if (on_match(current) == SearchAction::Stop)
-                {
-                    return;
-                }
+                if (on_match(match_ptr) == SearchAction::Stop) return true;
             }
-            mask = mask & (mask - 1);
+            mask &= (mask - 1);
+        }
+        return false;
+    };
+
+    const auto* unroll_limit = loop_end - (4 * simd_size);
+
+    while (current <= unroll_limit)
+    {
+        auto v_block1_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current));
+        auto v_block2_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + simd_size));
+        auto v_block3_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 2 * simd_size));
+        auto v_block4_first = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 3 * simd_size));
+
+        auto v_block1_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + pattern_size - 1));
+        auto v_block2_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + simd_size + pattern_size - 1));
+        auto v_block3_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 2 * simd_size + pattern_size - 1));
+        auto v_block4_last = _mm_loadu_si128(reinterpret_cast<__m128i*>(current + 3 * simd_size + pattern_size - 1));
+
+        uint32_t mask1 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block1_first), _mm_cmpeq_epi8(v_last, v_block1_last)));
+        uint32_t mask2 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block2_first), _mm_cmpeq_epi8(v_last, v_block2_last)));
+        uint32_t mask3 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block3_first), _mm_cmpeq_epi8(v_last, v_block3_last)));
+        uint32_t mask4 = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block4_first), _mm_cmpeq_epi8(v_last, v_block4_last)));
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
         }
 
-        i += type_size;
+        current += 4 * simd_size;
     }
 
-    FindPatternScalar(data + i, size - i, pattern_bytes, on_match);
+    while (current + simd_size <= loop_end)
+    {
+        const auto v_block_first = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current));
+        const auto v_block_last  = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current + pattern_size - 1));
+
+        uint32_t mask = _mm_movemask_epi8(_mm_and_si128(
+            _mm_cmpeq_epi8(v_first, v_block_first), _mm_cmpeq_epi8(v_last, v_block_last)));
+
+        if (mask && process_mask(mask, current)) return;
+
+        current += simd_size;
+    }
+
+    if (current < loop_end)
+    {
+        FindPatternScalar(current, static_cast<std::size_t>(end - current), pattern_bytes, on_match);
+    }
 }
 
 template <typename Callback>
 ATTRIBUTE_AVX2 static void FindPatternAvx2Impl(uint8_t* data, std::size_t size, const Pattern& pattern, Callback on_match)
 {
-    constexpr auto type_size     = sizeof(__m256i);
-    const auto&    pattern_bytes = pattern.bytes();
-    const auto     pattern_size  = pattern_bytes.size();
+    const auto& pattern_bytes = pattern.bytes();
+    const auto  pattern_size  = pattern_bytes.size();
 
     if (pattern_size < 2 || size < pattern_size) [[unlikely]]
     {
@@ -287,40 +600,81 @@ ATTRIBUTE_AVX2 static void FindPatternAvx2Impl(uint8_t* data, std::size_t size, 
         return;
     }
 
-    const auto first = _mm256_set1_epi8(static_cast<char>(pattern_bytes.front()));
-    const auto last  = _mm256_set1_epi8(static_cast<char>(pattern_bytes.back()));
+    auto* current  = data;
+    auto* end      = data + size;
+    auto* loop_end = end - pattern_size + 1;
 
-    const auto bytes_to_search = size - pattern_size;
+    constexpr auto simd_size = sizeof(__m256i);
 
-    size_t i = 0;
-    while (i + type_size <= bytes_to_search)
-    {
-        const auto block_first = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + i));
-        const auto block_last  = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + i + pattern_size - 1));
+    const auto v_first = _mm256_set1_epi8(static_cast<char>(pattern_bytes.front().byte));
+    const auto v_last  = _mm256_set1_epi8(static_cast<char>(pattern_bytes.back().byte));
 
-        const auto eq_first = _mm256_cmpeq_epi8(first, block_first);
-        const auto eq_last  = _mm256_cmpeq_epi8(last, block_last);
-
-        uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(eq_first, eq_last));
-
+    auto process_mask = [&](uint32_t mask, uint8_t* base) -> bool {
         while (mask != 0)
         {
-            const uint32_t bit_pos = std::countr_zero(mask);
-            auto           current = data + i + bit_pos;
-            if (pattern.is_match(current)) [[unlikely]]
+            uint32_t bit_pos   = std::countr_zero(mask);
+            uint8_t* match_ptr = base + bit_pos;
+
+            if (pattern.is_match(match_ptr)) [[unlikely]]
             {
-                if (on_match(current) == SearchAction::Stop)
-                {
-                    return;
-                }
+                if (on_match(match_ptr) == SearchAction::Stop) return true;
             }
-            mask = mask & (mask - 1);
+            mask &= (mask - 1);
+        }
+        return false;
+    };
+
+    const auto* unroll_limit = loop_end - (4 * simd_size);
+
+    while (current <= unroll_limit)
+    {
+        auto v_block1_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current));
+        auto v_block2_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + simd_size));
+        auto v_block3_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 2 * simd_size));
+        auto v_block4_first = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 3 * simd_size));
+
+        auto v_block1_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + pattern_size - 1));
+        auto v_block2_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + simd_size + pattern_size - 1));
+        auto v_block3_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 2 * simd_size + pattern_size - 1));
+        auto v_block4_last = _mm256_loadu_si256(reinterpret_cast<__m256i*>(current + 3 * simd_size + pattern_size - 1));
+
+        uint32_t mask1 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block1_first), _mm256_cmpeq_epi8(v_last, v_block1_last)));
+        uint32_t mask2 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block2_first), _mm256_cmpeq_epi8(v_last, v_block2_last)));
+        uint32_t mask3 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block3_first), _mm256_cmpeq_epi8(v_last, v_block3_last)));
+        uint32_t mask4 = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block4_first), _mm256_cmpeq_epi8(v_last, v_block4_last)));
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
         }
 
-        i += type_size;
+        current += 4 * simd_size;
     }
 
-    FindPatternScalar(data + i, size - i, pattern_bytes, on_match);
+    while (current + simd_size <= loop_end)
+    {
+        const auto v_block_first = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current));
+        const auto v_block_last  = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current + pattern_size - 1));
+
+        uint32_t mask = _mm256_movemask_epi8(_mm256_and_si256(
+            _mm256_cmpeq_epi8(v_first, v_block_first), _mm256_cmpeq_epi8(v_last, v_block_last)));
+
+        if (mask && process_mask(mask, current)) return;
+
+        current += simd_size;
+    }
+
+    if (current < loop_end)
+    {
+        FindPatternScalar(current, static_cast<std::size_t>(end - current), pattern_bytes, on_match);
+    }
 }
 
 static CAddress FindPatternSSE(uint8_t* data, std::size_t size, const Pattern& pattern)
@@ -384,122 +738,204 @@ static std::vector<CAddress> FindPatternMultiAVX2(uint8_t* data, std::size_t siz
 template <typename T, typename Callback>
 ATTRIBUTE_SSE static void FindValueSSEImpl(std::uintptr_t data, std::size_t size, T value, Callback on_match) noexcept
 {
-    constexpr auto value_size = sizeof(T);
-    constexpr auto simd_size  = sizeof(__m128i);
+    constexpr auto value_size    = sizeof(T);
+    constexpr auto simd_size     = sizeof(__m128i);
+    constexpr int  unroll_factor = 4;
 
-    auto current = reinterpret_cast<uint8_t*>(data);
-    auto end     = reinterpret_cast<uint8_t*>(data + size - value_size + 1);
+    const auto* p_data = reinterpret_cast<const uint8_t*>(data);
 
     __m128i v_value;
     if constexpr (value_size == 8)
     {
-        v_value = _mm_set1_epi64x(static_cast<long long>(value));
+        long long val_i;
+        std::memcpy(&val_i, &value, sizeof(val_i));
+        v_value = _mm_set1_epi64x(val_i);
     }
     else
     {
-        v_value = _mm_set1_epi32(static_cast<int>(value));
+        int val_i;
+        std::memcpy(&val_i, &value, sizeof(val_i));
+        v_value = _mm_set1_epi32(val_i);
     }
 
-    while (current + simd_size <= end)
-    {
-        const auto v_data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current));
-        __m128i    v_cmp;
-        uint32_t   mask;
+    auto get_cmp_mask = [&v_value](__m128i v_data) ATTRIBUTE_SSE -> uint32_t {
         if constexpr (value_size == 8)
         {
-            v_cmp = _mm_cmpeq_epi64(v_data, v_value);
-            mask  = _mm_movemask_pd(_mm_castsi128_pd(v_cmp));
+            return static_cast<uint32_t>(_mm_movemask_pd(
+                _mm_castsi128_pd(_mm_cmpeq_epi64(v_data, v_value))));
         }
         else
         {
-            v_cmp = _mm_cmpeq_epi32(v_data, v_value);
-            mask  = _mm_movemask_ps(_mm_castsi128_ps(v_cmp));
+            return static_cast<uint32_t>(_mm_movemask_ps(
+                _mm_castsi128_ps(_mm_cmpeq_epi32(v_data, v_value))));
         }
+    };
 
+    auto process_mask = [&on_match, p_data](uint32_t mask, const uint8_t* base) -> bool {
         while (mask != 0)
         {
-            const auto element_index = std::countr_zero(mask);
-            auto       offset        = (reinterpret_cast<std::uintptr_t>(current) + element_index * value_size) - data;
+            const int         element_index = std::countr_zero(mask);
+            const std::size_t offset        = (base - p_data) + (element_index * value_size);
 
-            if (on_match(offset) == SearchAction::Stop)
-                return;
-            mask &= mask - 1;
+            if (on_match(offset) == SearchAction::Stop) return true;
+
+            mask &= (mask - 1);
         }
+        return false;
+    };
+
+    const auto*       current    = p_data;
+    const auto* const scalar_end = p_data + size - value_size;
+    const auto* const unroll_end = p_data + size - (unroll_factor * simd_size);
+
+    while (current <= unroll_end)
+    {
+        const auto v_data1 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current));
+        const auto v_data2 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current + simd_size));
+        const auto v_data3 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current + 2 * simd_size));
+        const auto v_data4 = _mm_loadu_si128(reinterpret_cast<const __m128i*>(current + 3 * simd_size));
+
+        uint32_t mask1 = get_cmp_mask(v_data1);
+        uint32_t mask2 = get_cmp_mask(v_data2);
+        uint32_t mask3 = get_cmp_mask(v_data3);
+        uint32_t mask4 = get_cmp_mask(v_data4);
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
+        }
+
+        current += unroll_factor * simd_size;
+    }
+
+    const auto* const simd_end = p_data + size - simd_size;
+    while (current <= simd_end)
+    {
+        uint32_t mask = get_cmp_mask(_mm_loadu_si128(reinterpret_cast<const __m128i*>(current)));
+
+        if (mask && process_mask(mask, current)) return;
+
         current += simd_size;
     }
 
-    while (current < end)
+    while (current <= scalar_end)
     {
-        if (*reinterpret_cast<T*>(current) == value)
+        T val;
+        std::memcpy(&val, current, value_size);
+
+        if (val == value)
         {
-            const auto offset = reinterpret_cast<std::uintptr_t>(current) - data;
-            if (on_match(offset) == SearchAction::Stop)
+            if (on_match(static_cast<std::size_t>(current - p_data)) == SearchAction::Stop)
             {
                 return;
             }
         }
-        ++current;
+        current += value_size;
     }
 }
 
 template <typename T, typename Callback>
 ATTRIBUTE_AVX2 static void FindValueAVX2Impl(std::uintptr_t data, std::size_t size, T value, Callback on_match) noexcept
 {
-    constexpr auto value_size = sizeof(T);
-    constexpr auto simd_size  = sizeof(__m256i);
+    constexpr auto value_size    = sizeof(T);
+    constexpr auto simd_size     = sizeof(__m256i);
+    constexpr int  unroll_factor = 4;
 
-    auto current = reinterpret_cast<uint8_t*>(data);
-    auto end     = reinterpret_cast<uint8_t*>(data + size - value_size + 1);
+    const auto* p_data = reinterpret_cast<const uint8_t*>(data);
 
     __m256i v_value;
     if constexpr (value_size == 8)
     {
-        v_value = _mm256_set1_epi64x(static_cast<long long>(value));
+        long long val_i;
+        std::memcpy(&val_i, &value, sizeof(val_i));
+        v_value = _mm256_set1_epi64x(val_i);
     }
     else
     {
-        v_value = _mm256_set1_epi32(static_cast<int>(value));
+        int val_i;
+        std::memcpy(&val_i, &value, sizeof(val_i));
+        v_value = _mm256_set1_epi32(val_i);
     }
 
-    while (current + simd_size <= end)
-    {
-        const auto v_data = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current));
-        __m256i    v_cmp;
-        uint32_t   mask;
+    auto get_cmp_mask = [&v_value](__m256i v_data) ATTRIBUTE_AVX2 -> uint32_t {
         if constexpr (value_size == 8)
         {
-            v_cmp = _mm256_cmpeq_epi64(v_data, v_value);
-            mask  = _mm256_movemask_pd(_mm256_castsi256_pd(v_cmp));
+            return static_cast<uint32_t>(_mm256_movemask_pd(
+                _mm256_castsi256_pd(_mm256_cmpeq_epi64(v_data, v_value))));
         }
         else
         {
-            v_cmp = _mm256_cmpeq_epi32(v_data, v_value);
-            mask  = _mm256_movemask_ps(_mm256_castsi256_ps(v_cmp));
+            return static_cast<uint32_t>(_mm256_movemask_ps(
+                _mm256_castsi256_ps(_mm256_cmpeq_epi32(v_data, v_value))));
         }
+    };
 
+    auto process_mask = [&on_match, p_data](uint32_t mask, const uint8_t* base) -> bool {
         while (mask != 0)
         {
-            const auto element_index = std::countr_zero(mask);
-            auto       offset        = (reinterpret_cast<std::uintptr_t>(current) + element_index * value_size) - data;
+            const int         element_index = std::countr_zero(mask);
+            const std::size_t offset        = (base - p_data) + (element_index * value_size);
 
-            if (on_match(offset) == SearchAction::Stop)
-                return;
-            mask &= mask - 1;
+            if (on_match(offset) == SearchAction::Stop) return true;
+
+            mask &= (mask - 1);
         }
+        return false;
+    };
+
+    const auto*       current    = p_data;
+    const auto* const scalar_end = p_data + size - value_size;
+    const auto* const unroll_end = p_data + size - (unroll_factor * simd_size);
+
+    while (current <= unroll_end)
+    {
+        const auto v_data1 = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current));
+        const auto v_data2 = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current + simd_size));
+        const auto v_data3 = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current + 2 * simd_size));
+        const auto v_data4 = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(current + 3 * simd_size));
+
+        uint32_t mask1 = get_cmp_mask(v_data1);
+        uint32_t mask2 = get_cmp_mask(v_data2);
+        uint32_t mask3 = get_cmp_mask(v_data3);
+        uint32_t mask4 = get_cmp_mask(v_data4);
+
+        if ((mask1 | mask2 | mask3 | mask4) != 0) [[unlikely]]
+        {
+            if (mask1 && process_mask(mask1, current)) return;
+            if (mask2 && process_mask(mask2, current + simd_size)) return;
+            if (mask3 && process_mask(mask3, current + 2 * simd_size)) return;
+            if (mask4 && process_mask(mask4, current + 3 * simd_size)) return;
+        }
+
+        current += unroll_factor * simd_size;
+    }
+
+    const auto* const simd_end = p_data + size - simd_size;
+    while (current <= simd_end)
+    {
+        uint32_t mask = get_cmp_mask(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(current)));
+
+        if (mask && process_mask(mask, current)) return;
+
         current += simd_size;
     }
 
-    while (current < end)
+    while (current <= scalar_end)
     {
-        if (*reinterpret_cast<T*>(current) == value)
+        T val;
+        std::memcpy(&val, current, value_size);
+
+        if (val == value)
         {
-            const auto offset = reinterpret_cast<std::uintptr_t>(current) - data;
-            if (on_match(offset) == SearchAction::Stop)
+            if (on_match(static_cast<std::size_t>(current - p_data)) == SearchAction::Stop)
             {
                 return;
             }
         }
-        ++current;
+        current += value_size;
     }
 }
 } // namespace detail
@@ -526,12 +962,11 @@ std::vector<CAddress> scan::FindPatternMulti(uint8_t* data, std::size_t size, st
 
 CAddress scan::FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated) noexcept
 {
-    auto pat = Pattern::FromString(str, zero_terminated);
-
-    if (s_InstructionSet.SupportAvx2())
-        return detail::FindPatternAVX2(data, size, pat);
-
-    return detail::FindPatternSSE(data, size, pat);
+    if (zero_terminated)
+    {
+        return FindData(data, size, reinterpret_cast<const uint8_t*>(str.c_str()), str.size() + 1);
+    }
+    return FindData(data, size, reinterpret_cast<const uint8_t*>(str.data()), str.size());
 }
 
 CAddress scan::FindPtr(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept
@@ -612,4 +1047,18 @@ std::vector<CAddress> scan::FindPtrs(std::uintptr_t data, std::size_t size, std:
     }
 
     return result;
+}
+
+CAddress scan::FindData(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept
+{
+    if (s_InstructionSet.SupportAvx2()) return detail::FindDataAVX2(data, size, needle, needle_size);
+
+    return detail::FindDataSSE(data, size, needle, needle_size);
+}
+
+std::vector<CAddress> scan::FindDataMulti(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept
+{
+    if (s_InstructionSet.SupportAvx2()) return detail::FindDataMultiAVX2(data, size, needle, needle_size);
+
+    return detail::FindDataMultiSSE(data, size, needle, needle_size);
 }

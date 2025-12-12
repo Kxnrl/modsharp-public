@@ -101,17 +101,13 @@ struct Version
 
         int count = 0;
 
-        for (auto&& str : input | std::views::split('.'))
+        for (auto subrange  : input | std::views::split('.'))
         {
             // 应该不会遇到这个情况
             if (count >= 4)
                 break;
-
-#if defined(__GNUC__) && __GNUC__ < 12
-            const std::string_view token(&*str.begin(), std::ranges::distance(str));
-#else
-            const std::string_view token(str.begin(), str.end());
-#endif
+            
+            std::string_view token(subrange.begin(), subrange.end());
 
             _numbers[count] = sv_to_int(token).value_or(0);
             count++;

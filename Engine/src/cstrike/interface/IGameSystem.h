@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -46,6 +46,24 @@ public:
 
 class CGameRulesGameSystem : public IGameSystem
 {
+};
+
+class CBaseGameSystemFactory
+{
+    virtual ~CBaseGameSystemFactory() = 0;
+
+public:
+    static CBaseGameSystemFactory** sm_ppFirst;
+
+    static CBaseGameSystemFactory* GetFirst()
+    {
+        return *sm_ppFirst;
+    }
+
+public:
+    CBaseGameSystemFactory* m_pNext;
+    const char*             m_pszName;
+    IGameSystem*            m_pInstance;
 };
 
 #endif

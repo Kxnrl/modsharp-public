@@ -353,8 +353,8 @@ internal unsafe partial class PhysicsQueryManager : ICorePhysicsQueryManager
 internal unsafe partial class PhysicsQueryManager
 {
     // ReSharper disable InconsistentNaming
-    private static readonly CTraceFilterVTableDescriptor* _vtable;
-    private static readonly nint                          _interface;
+    private static readonly CTraceFilterVirtualTableDescriptor* _vtable;
+    private static readonly nint                                _interface;
 
     private static readonly delegate* unmanaged<nint, TraceShapeRay*, Vector*, Vector*, CTraceFilter*, GameTrace*, bool>
         _traceShape;
@@ -367,7 +367,9 @@ internal unsafe partial class PhysicsQueryManager
 
     static PhysicsQueryManager()
     {
-        _vtable = (CTraceFilterVTableDescriptor*) CoreGameData.Core.GetRequiredVTable("server", "CTraceFilterPlayerMovementCS");
+        _vtable = (CTraceFilterVirtualTableDescriptor*) CoreGameData.Core.GetRequiredVirtualTable("server",
+                 "CTraceFilterPlayerMovementCS");
+
         _interface = CoreGameData.Core.GetRequiredAddress("g_pPhysicsQuery");
 
         _traceShape
@@ -390,17 +392,17 @@ internal unsafe partial class PhysicsQueryManager
             return TraceInternal(pRay, start, end, in query, vtable: null);
         }
 
-        var vtable = stackalloc CTraceFilterVTableDescriptor[1];
+        var vtable = stackalloc CTraceFilterVirtualTableDescriptor[1];
         vtable->ShouldHitEntity = (delegate* unmanaged<CTraceFilter*, nint, bool>) callback;
 
         return TraceInternal(pRay, start, end, in query, vtable);
     }
 
-    private static GameTrace TraceInternal(TraceShapeRay* pRay,
-        Vector                                            start,
-        Vector                                            end,
-        in RnQueryShapeAttr                               query,
-        CTraceFilterVTableDescriptor*                     vtable)
+    private static GameTrace TraceInternal(TraceShapeRay*                      pRay,
+                                           Vector                              start,
+                                           Vector                              end,
+                                           in RnQueryShapeAttr                 query,
+                                           CTraceFilterVirtualTableDescriptor* vtable)
     {
         var traceFilter = stackalloc CTraceFilter[1];
 
@@ -430,7 +432,7 @@ internal unsafe partial class PhysicsQueryManager
 
         if (callback is not null)
         {
-            var vtable = stackalloc CTraceFilterVTableDescriptor[1];
+            var vtable = stackalloc CTraceFilterVirtualTableDescriptor[1];
             vtable->ShouldHitEntity = (delegate* unmanaged<CTraceFilter*, nint, bool>) callback;
             traceFilter->Vtable     = vtable;
         }
