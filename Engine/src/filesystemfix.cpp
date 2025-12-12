@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -51,48 +51,58 @@ void FixFileSystem()
 
     const auto enableDualAddon = CommandLine()->HasParam("-dual_addon");
     auto       hasReplaceValue = false;
-
-    std::string assets_paths{};
+    auto       assetsPath      = std::string();
 
 #ifdef ASSERT_FS_LOG
     g_pFullFileSystem->PrintSearchPaths();
     Msg("\n\n\n----------------------------------------------\n\n\n");
 #endif
 
-    std::string_view game_dir = Plat_GetGameDirectory();
+    std::string_view gameDirView = Plat_GetGameDirectory();
 
     for (auto& pathId : pathIds)
     {
-        CUtlVector<CUtlString> search_paths;
-        g_pFullFileSystem->GetSearchPathsForPathID(pathId, static_cast<GetSearchPathTypes_t>(0), &search_paths);
+        CUtlVector<CUtlString> searchPaths;
+        g_pFullFileSystem->GetSearchPathsForPathID(pathId, static_cast<GetSearchPathTypes_t>(0), &searchPaths);
 
-        for (auto i = 0; i < search_paths.Count(); i++)
+        for (auto i = 0; i < searchPaths.Count(); i++)
         {
-            const auto&            search_path    = search_paths[i];
-            const std::string_view search_path_sv = search_path.Get();
+            const auto&            searchPath = searchPaths[i];
+            const std::string_view pathView   = searchPath.Get();
 
-            if (!search_path_sv.starts_with(game_dir) || search_path_sv.length() <= game_dir.length()) continue;
+            if (!pathView.starts_with(gameDirView) || pathView.length() <= gameDirView.length())
+            {
+                continue;
+            }
 
-            std::string_view path = search_path_sv.substr(game_dir.size() + 1);
-            if (path.empty()) continue;
+            std::string_view path = pathView.substr(gameDirView.size() + 1);
+            if (path.empty())
+            {
+                continue;
+            }
 
             auto first_slash = path.find_first_of('/');
-            if (first_slash == std::string_view::npos) first_slash = path.find_first_of('\\');
+            if (first_slash == std::string_view::npos)
+            {
+                first_slash = path.find_first_of('\\');
+            }
 
             std::string_view directory_name = (first_slash != std::string_view::npos) ? path.substr(0, first_slash) : path;
-            if (directory_name.empty()) continue;
+            if (directory_name.empty())
+            {
+                continue;
+            }
 
             if (directory_name == "sharp")
             {
-                g_pFullFileSystem->RemoveSearchPath(search_path.Get(), pathId);
+                g_pFullFileSystem->RemoveSearchPath(searchPath.Get(), pathId);
 
                 if (enableDualAddon)
                 {
                     if (strcasecmp(pathId, "game") == 0)
                     {
-                        assets_paths = search_path_sv;
-                        assets_paths += "assets\\";
-                        
+                        assetsPath = pathView;
+                        assetsPath += "assets\\";
                         hasReplaceValue = true;
                     }
                 }
@@ -111,9 +121,9 @@ void FixFileSystem()
     g_pFullFileSystem->GetSearchPath("GAME", static_cast<GetSearchPathTypes_t>(0), &searchPath, 1);
     g_pFullFileSystem->AddSearchPath(searchPath.Get(), "DEFAULT_WRITE_PATH");
 
-    if (hasReplaceValue && !assets_paths.empty())
+    if (hasReplaceValue && !assetsPath.empty())
     {
-        g_pFullFileSystem->AddSearchPath(assets_paths.c_str(), "GAME");
+        g_pFullFileSystem->AddSearchPath(assetsPath.c_str(), "GAME");
     }
 
 #ifdef ASSERT_FS_LOG
