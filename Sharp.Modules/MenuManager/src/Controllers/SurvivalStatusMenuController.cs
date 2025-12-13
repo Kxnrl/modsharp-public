@@ -46,7 +46,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
             _showSurvivalRespawnStatusEvent = EventManager.CreateEvent("show_survival_respawn_status", false)
                                               ?? throw new Exception("Failed to create event");
 
-            _showSurvivalRespawnStatusEvent.SetInt("duration", 5);
+            _showSurvivalRespawnStatusEvent.SetInt("duration", 1);
             _showSurvivalRespawnStatusEvent.SetInt("userid",   -1);
         }
 
@@ -117,6 +117,12 @@ internal class SurvivalStatusMenuController : BaseMenuController
             description = content;
         }
 
+        // colors
+        const string keyColor      = "#DDAA11";
+        const string textColor     = "#ffffff";
+        const string disabledColor = "#333";
+        const string cursorColor   = "#3399FF";
+
         var itemIndex = 1;
 
         foreach (var item in BuiltMenuItems.Skip(ItemSkipCount)
@@ -128,16 +134,15 @@ internal class SurvivalStatusMenuController : BaseMenuController
             }
             else if (item.State == MenuItemState.Disabled)
             {
-                sb.Append($"<font color='#333'>{itemIndex}. <font color='#333'>{item.Title}<br>");
+                sb.Append($"{Colored(disabledColor, $"{itemIndex}. {item.Title}")}<br>");
             }
-            else if (itemIndex - 1 + ItemSkipCount == Cursor)
+            else if ((itemIndex - 1) + ItemSkipCount == Cursor)
             {
-                sb.Append(
-                    $"<font color='#3399FF'>►<font color='#DDAA11'> {itemIndex}. <font color='#fff'>{item.Title} <font color='#3399FF'>◄<br>");
+                sb.Append($"{Colored(cursorColor, "►")} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, "◄")}<br>");
             }
             else
             {
-                sb.Append($"<font color='#DDAA11'>{itemIndex}. <font color='#fff'>{item.Title}<br>");
+                sb.Append($"{Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)}<br>");
             }
 
             itemIndex++;
@@ -179,20 +184,28 @@ internal class SurvivalStatusMenuController : BaseMenuController
             back = localizer.TryGet(backKey) ?? backKey;
         }
 
-        // bottom
-        //sb.Append("<br>");
-        sb.Append($"<font color='#DDAA11'>F<font color='#ffffff'> {confirm}");
-
-        //sb.Append("<br>");
-        sb.Append(" / ");
-        sb.Append($"<font color='#DDAA11'>F3<font color='#ffffff'> {prevItem} / <font color='#DDAA11'>F4<font color='#ffffff'> {nextItem}");
-
         sb.Append("<br>");
-        sb.Append($"<font color='#DDAA11'>Tab<font color='#ffffff'> {exit}");
-        sb.Append(" / ");
-        sb.Append($"<font color='#DDAA11'>Shift<font color='#ffffff'> {back}");
+
+        // sb.Append("<font class='fontSize-s'>");
+
+        sb.Append($"{Key("F")} {Text(confirm)} / {Key("F3")} {Text(prevItem)} / {Key("F4")} {Text(nextItem)}");
+        sb.Append("<br>"); // without this it won't show this hint
+        sb.Append($"{Key("Tab")} {Text(exit)} / {Key("Shift")} {Text(back)}");
+
+        // sb.Append("</font>");
 
         _cacheContent = sb.ToString();
+
+        return;
+
+        string Colored(string color, string content)
+            => $"<font color='{color}'>{content}</font>";
+
+        string Key(string key)
+            => Colored(keyColor, key);
+
+        string Text(string text)
+            => Colored(textColor, text);
     }
 
     public override void Dispose()
