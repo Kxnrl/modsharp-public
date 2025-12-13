@@ -184,8 +184,6 @@ internal class SurvivalStatusMenuController : BaseMenuController
             back = localizer.TryGet(backKey) ?? backKey;
         }
 
-        sb.Append("<br>");
-
         // sb.Append("<font class='fontSize-s'>");
 
         sb.Append($"{Key("F")} {Text(confirm)} / {Key("F3")} {Text(prevItem)} / {Key("F4")} {Text(nextItem)}");
