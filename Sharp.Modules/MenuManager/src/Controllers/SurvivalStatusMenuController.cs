@@ -180,16 +180,17 @@ internal class SurvivalStatusMenuController : BaseMenuController
         }
 
         // bottom
+        //sb.Append("<br>");
+        sb.Append($"<font color='#DDAA11'>F<font color='#ffffff'> {confirm}");
+
+        //sb.Append("<br>");
+        sb.Append(" / ");
+        sb.Append($"<font color='#DDAA11'>F3<font color='#ffffff'> {prevItem} / <font color='#DDAA11'>F4<font color='#ffffff'> {nextItem}");
+
         sb.Append("<br>");
-        sb.Append($"<font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> {confirm}");
-        //sb.Append("<br>");
+        sb.Append($"<font color='#DDAA11'>Tab<font color='#ffffff'> {exit}");
         sb.Append(" / ");
-        sb.Append($"<font color='#DDAA11'>F3<font color='#fff'> {prevItem} / <font color='#DDAA11'>F4<font color='#fff'> {nextItem}");
-        //sb.Append("<br>");
-        sb.Append(" / ");
-        sb.Append($"<font color='#DDAA11'>Tab<font color='#fff'> {exit}");
-        sb.Append(" / ");
-        sb.Append($"<font color='#DDAA11'>Shift<font color='#fff'> {back}");
+        sb.Append($"<font color='#DDAA11'>Shift<font color='#ffffff'> {back}");
 
         _cacheContent = sb.ToString();
     }
