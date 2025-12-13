@@ -50,8 +50,6 @@ internal abstract class BaseMenuController : IInternalMenuController
         // build current menu items
         BuildItems();
 
-        // render current page
-        Render();
     }
 
     private bool SetCursor(int cursor)
@@ -151,7 +149,7 @@ internal abstract class BaseMenuController : IInternalMenuController
         return true;
     }
 
-    protected abstract void Render();
+    public abstract void Render();
 
     private void BuildItems()
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Modules.MenuManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -11,18 +12,22 @@ namespace Sharp.Modules.MenuManager.Core.Controllers;
 
 internal class SurvivalStatusMenuController : BaseMenuController
 {
+    private readonly ILocalizerManager? _localizerManager;
+
     public SurvivalStatusMenuController(MenuManager menuManager,
         IModSharp                                       modSharp,
         IEventManager                                   eventManager,
         IEntityManager                                  entityManager,
         Func<IGameClient, Menu>                         menuFactory,
-        IGameClient                                     player) : base(menuManager,
+        IGameClient                                     player,
+        ILocalizerManager? localizerManager) : base(menuManager,
                                                                        modSharp,
                                                                        eventManager,
                                                                        entityManager,
                                                                        menuFactory,
                                                                        player)
     {
+        _localizerManager = localizerManager;
         _timer = modSharp.PushTimer(Think, 0.01, GameTimerFlags.Repeatable);
     }
 
@@ -54,7 +59,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
     private static IGameEvent? _showSurvivalRespawnStatusEvent;
 
-    protected override void Render()
+    public override void Render()
     {
         var sb = new StringBuilder();
 
@@ -144,17 +149,47 @@ internal class SurvivalStatusMenuController : BaseMenuController
             sb.Append("<br/>");
         }
 
+        const string confirmKey = "MenuSelection.Confirm";
+        const string prevItemKey = "MenuSelection.PrevItem";
+        const string nextItemKey = "MenuSelection.NextItem";
+        const string exitKey = "MenuSelection.Exit";
+        const string backKey = "MenuSelection.Back";
+
+        string confirm;
+        string prevItem;
+        string nextItem;
+        string exit;
+        string back;
+
+        if (_localizerManager is null)
+        {
+            confirm = confirmKey;
+            prevItem = prevItemKey;
+            nextItem = nextItemKey;
+            exit = exitKey;
+            back = backKey;
+        }
+        else
+        {
+            var localizer = _localizerManager.GetLocalizer(Client);
+            confirm = localizer.TryGet(confirmKey) ?? confirmKey;
+            prevItem = localizer.TryGet(prevItemKey) ?? prevItemKey;
+            nextItem = localizer.TryGet(nextItemKey) ?? nextItemKey;
+            exit = localizer.TryGet(exitKey) ?? exitKey;
+            back = localizer.TryGet(backKey) ?? backKey;
+        }
+
         // bottom
         sb.Append("<br>");
-        sb.Append("<font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> 选择");
+        sb.Append($"<font class='fontSize-s'><font color='#DDAA11'>F<font color='#fff'> {confirm}");
         //sb.Append("<br>");
         sb.Append(" / ");
-        sb.Append("<font color='#DDAA11'>F3<font color='#fff'> 上一项 / <font color='#DDAA11'>F4<font color='#fff'> 下一项");
+        sb.Append($"<font color='#DDAA11'>F3<font color='#fff'> {prevItem} / <font color='#DDAA11'>F4<font color='#fff'> {nextItem}");
         //sb.Append("<br>");
         sb.Append(" / ");
-        sb.Append("<font color='#DDAA11'>Tab<font color='#fff'> 退出");
+        sb.Append($"<font color='#DDAA11'>Tab<font color='#fff'> {exit}");
         sb.Append(" / ");
-        sb.Append("<font color='#DDAA11'>Shift<font color='#fff'> 返回上一级");
+        sb.Append($"<font color='#DDAA11'>Shift<font color='#fff'> {back}");
 
         _cacheContent = sb.ToString();
     }

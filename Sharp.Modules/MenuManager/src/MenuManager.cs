@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Modules.MenuManager.Core.Controllers;
 using Sharp.Modules.MenuManager.Shared;
 using Sharp.Shared;
@@ -26,6 +27,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     private readonly IHookManager _hooks;
     private readonly IEntityManager _entityManager;
     private readonly IEventManager _eventManager;
+    private IModSharpModuleInterface<ILocalizerManager> _localizerManager = null!;
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
 
@@ -77,6 +79,18 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void PostInit()
     {
         _modules.RegisterSharpModuleInterface<IMenuManager>(this, IMenuManager.Identity, this);
+    }
+
+    public void OnAllModulesLoaded()
+    {
+        _localizerManager = _modules.GetRequiredSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
+        if (_localizerManager.Instance is not { } @interface)
+        {
+            _logger.LogWarning("Sharp.Modules.LocalizerManager is not loaded.");
+            return;
+        }
+
+        @interface.LoadLocaleFile("basemenu", true);
     }
 
     public void Shutdown()
@@ -132,8 +146,20 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void DisplayMenu(IGameClient client, Menu menu)
     {
         DisposeClientMenu(client);
-        _controllers[client.Slot]
-            = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client);
+
+        ILocalizerManager? instance;
+        if (_localizerManager.Instance is not { } value)
+        {
+            _logger.LogWarning("Sharp.Modules.LocalizerManager is not loaded.");
+            instance = null;
+        }
+        else
+        {
+            instance = value;
+        }
+        var controller = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client, instance);
+        _controllers[client.Slot] = controller;
+        controller.Render();
     }
 
     public void CloseClientMenu(IGameClient client)
