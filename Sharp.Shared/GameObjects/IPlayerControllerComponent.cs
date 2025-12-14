@@ -25,7 +25,7 @@ namespace Sharp.Shared.GameObjects;
 public interface IPlayerControllerComponent : ISchemaObject
 {
     /// <summary>
-    ///     获取玩家
+    ///     Get player controller
     /// </summary>
     IPlayerController? GetPlayer();
 }

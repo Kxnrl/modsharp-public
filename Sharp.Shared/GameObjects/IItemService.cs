@@ -30,12 +30,12 @@ namespace Sharp.Shared.GameObjects;
 public interface IItemService : IPlayerPawnComponent
 {
     /// <summary>
-    ///     拆弹器
+    ///     Does the player have a defuser
     /// </summary>
     bool HasDefuser { get; set; }
 
     /// <summary>
-    ///     头盔
+    ///     Does the player have a helmet
     /// </summary>
     bool HasHelmet { get; set; }
 

@@ -26,12 +26,12 @@ public interface IGameListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 

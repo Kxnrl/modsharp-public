@@ -26,7 +26,7 @@ namespace Sharp.Shared.GameObjects;
 public interface IAttributeContainer : ISchemaObject
 {
     /// <summary>
-    ///     Econ物品
+    ///     Econ item view
     /// </summary>
     IEconItemView Item { get; }
 }
@@ -40,32 +40,32 @@ public interface IEconItemView : ISchemaObject
     ushort ItemDefinitionIndex { get; }
 
     /// <summary>
-    ///     价值等级
+    ///     Item quality
     /// </summary>
     int Quality { get; }
 
     /// <summary>
-    ///     物品等级
+    ///     Item level
     /// </summary>
     uint Level { get; }
 
     /// <summary>
-    ///     物品Id (对应Steam库存中的Id)
+    ///     Item ID (corresponds to ID in Steam inventory)
     /// </summary>
     ulong ItemId { get; }
 
     /// <summary>
-    ///     物品Id (高位)
+    ///     Item ID (high bits)
     /// </summary>
     uint ItemIdHigh { get; }
 
     /// <summary>
-    ///     物品Id (低位)
+    ///     Item ID (low bits)
     /// </summary>
     uint ItemIdLow { get; }
 
     /// <summary>
-    ///     拥有者的AccountId
+    ///     Owner AccountId
     /// </summary>
     uint AccountId { get; }
 

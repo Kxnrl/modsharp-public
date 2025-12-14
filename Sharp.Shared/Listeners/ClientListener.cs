@@ -27,17 +27,17 @@ public interface IClientListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     是否允许检查Admin
+    ///     Is allowed to check for Admin
     /// </summary>
     /// <returns>True = Block Check</returns>
     bool OnClientPreAdminCheck(IGameClient client)

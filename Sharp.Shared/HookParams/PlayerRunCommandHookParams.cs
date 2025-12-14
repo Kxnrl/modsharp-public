@@ -30,14 +30,14 @@ public unsafe interface IPlayerRunCommandHookParams : IFunctionParams, IPlayerFu
     IMovementService Service { get; }
 
     /// <summary>
-    ///     获取CSGOUserCmd <br />
-    ///     <remarks>获取成员struct时请使用ref</remarks>
+    ///     Get CSGOUserCmd <br />
+    ///     <remarks>Please use ref when getting member struct</remarks>
     /// </summary>
     CCSGOUserCmdPb* CSGOUserCmd { get; }
 
     /// <summary>
-    ///     获取BaseUserCmd <br />
-    ///     <remarks>获取成员struct时请使用ref</remarks>
+    ///     Get BaseUserCmd <br />
+    ///     <remarks>Please use ref when getting member struct</remarks>
     /// </summary>
     CBaseUserCmdPb* BaseUserCmd { get; }
 
@@ -48,16 +48,16 @@ public unsafe interface IPlayerRunCommandHookParams : IFunctionParams, IPlayerFu
     int InputHistorySize { get; }
 
     /// <summary>
-    ///     获取InputHistory
+    ///     Get InputHistory
     /// </summary>
-    /// <returns>如果超出范围则返回null</returns>
+    /// <returns>Returns null if out of range</returns>
     CCSGOInputHistoryEntryPb* GetInputHistoryEntry(int index);
 
     int SubtickMoveSize { get; }
 
     /// <summary>
-    ///     获取SubtickMove
+    ///     Get SubtickMove
     /// </summary>
-    /// <returns>如果超出范围则返回null</returns>
+    /// <returns>Returns null if out of range</returns>
     CSubtickMoveStepPb* GetSubtickMove(int index);
 }

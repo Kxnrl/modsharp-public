@@ -25,34 +25,34 @@ namespace Sharp.Shared.Hooks;
 public interface IVirtualHook : IRuntimeNativeHook
 {
     /// <summary>
-    ///     准备Hook
+    ///     Prepare Hook
     /// </summary>
     /// <param name="module">dll</param>
     /// <param name="class">class</param>
     /// <param name="function">function</param>
-    /// <param name="hookFn">UnmanagedCallersOnly 静态函数</param>
-    /// <exception cref="EntryPointNotFoundException">找不到VTable</exception>
-    /// <exception cref="KeyNotFoundException">GameData 找不到</exception>
+    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
+    /// <exception cref="KeyNotFoundException">GameData not found</exception>
     void Prepare(string module, string @class, string function, nint hookFn);
 
     /// <summary>
-    ///     准备Hook
+    ///     Prepare Hook
     /// </summary>
     /// <param name="module">dll</param>
     /// <param name="class">class</param>
     /// <param name="offset">offset</param>
-    /// <param name="hookFn">UnmanagedCallersOnly 静态函数</param>
-    /// <exception cref="EntryPointNotFoundException">找不到VTable</exception>
-    /// <exception cref="KeyNotFoundException">GameData 找不到</exception>
+    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
+    /// <exception cref="KeyNotFoundException">GameData not found</exception>
     void Prepare(string module, string @class, int offset, nint hookFn);
 
     /// <summary>
-    ///     准备Hook
+    ///     Prepare Hook
     /// </summary>
-    /// <param name="vTable">vtable地址</param>
+    /// <param name="vTable">vtable address</param>
     /// <param name="offset">offset</param>
-    /// <param name="hookFn">UnmanagedCallersOnly 静态函数</param>
-    /// <exception cref="EntryPointNotFoundException">VTable无效</exception>
-    /// <exception cref="KeyNotFoundException">GameData 找不到</exception>
+    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <exception cref="EntryPointNotFoundException">VTable invalid</exception>
+    /// <exception cref="KeyNotFoundException">GameData not found</exception>
     void Prepare(nint vTable, int offset, nint hookFn);
 }

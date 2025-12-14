@@ -27,8 +27,8 @@ public interface IPlayerSwitchWeaponForwardParams : IFunctionParams, IPlayerPawn
     IWeaponService Service { get; }
 
     /// <summary>
-    ///     切换到的武器, 可以是空手<br />
-    ///     <remarks>当切换至空手时为null</remarks>
+    ///     The weapon being switched to, can be empty hands<br />
+    ///     <remarks>Returns null when switching to empty hands</remarks>
     /// </summary>
     IBaseWeapon? Weapon { get; }
 }

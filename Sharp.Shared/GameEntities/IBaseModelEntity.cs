@@ -98,20 +98,20 @@ public interface IBaseModelEntity : IBaseEntity
     void SetMaterialGroupMask(ulong mask);
 
     /// <summary>
-    ///     查找Attachment的Index
+    ///     Get the given attachment's index
     /// </summary>
-    /// <returns>从1开始</returns>
+    /// <returns>Starts with 1</returns>
     int LookupAttachment(string attachment);
 
     /// <summary>
-    ///     获取Attachment的位置和角度
+    ///     Get the given attachment's origin and angles
     /// </summary>
     void GetAttachment(int attachment, out Vector origin, out Vector angles);
 
     /// <summary>
-    ///     获取Bone的Index
+    ///     Get the index of the bone
     /// </summary>
-    /// <returns>从0开始</returns>
+    /// <returns>Starts with 0</returns>
     int LookupBone(string bone);
 
     /// <summary>
@@ -119,7 +119,7 @@ public interface IBaseModelEntity : IBaseEntity
     void GetBoneTransform(int bone, out Matrix3x4 matrix);
 
     /// <summary>
-    ///     设置模型scale
+    ///     Set model scale, will not work if the model has BoneMerge flag
     /// </summary>
     void SetModelScale(float scale);
 

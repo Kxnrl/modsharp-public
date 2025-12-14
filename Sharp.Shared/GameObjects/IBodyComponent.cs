@@ -30,7 +30,7 @@ public interface IBodyComponent : IEntityComponent
     IGameSceneNode? GetSceneNode();
 
     /// <summary>
-    ///     强制转换为 <see cref="IBodyComponentSkeletonInstance" /> 实例, 不验证任何信息
+    ///     Cast to <see cref="IBodyComponentSkeletonInstance" /> without validating
     /// </summary>
     IBodyComponentSkeletonInstance AsBodyComponentSkeletonInstance { get; }
 }
@@ -58,7 +58,7 @@ public interface IGameSceneNode : ISchemaObject
     float  AbsScale    { get; set; }
 
     /// <summary>
-    ///     转换为 <see cref="ISkeletonInstance" />
+    ///     Cast to <see cref="ISkeletonInstance" />
     /// </summary>
     ISkeletonInstance? AsSkeletonInstance { get; }
 }

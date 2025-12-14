@@ -28,7 +28,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IBasePlayerPawn : IBaseCombatCharacter
 {
     /// <summary>
-    ///     打印对应的消息 (HudMsg)
+    ///     Print message to this player
     /// </summary>
     void Print(HudPrintChannel channel,
         string                 message,
@@ -38,23 +38,23 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
         string?                param4 = null);
 
     /// <summary>
-    ///     CCSPlayerPawn或者CCSObserverPawn
+    ///     Check if entity is CCSPlayerPawn or CCSObserverPawn
     /// </summary>
     bool IsPlayer(bool nativeCall = false);
 
     /// <summary>
-    ///     转换为CCSPlayerPawn
+    ///     Cast to CCSPlayerPawn
     /// </summary>
     /// <returns></returns>
     IPlayerPawn? AsPlayer();
 
     /// <summary>
-    ///     转换为CCSObserverPawn
+    ///     Cast to CCSObserverPawn
     /// </summary>
     IObserverPawn? AsObserver();
 
     /// <summary>
-    ///     取得当前PlayerPawn对应的Controller
+    ///     Gets the Controller corresponding to the current PlayerPawn
     /// </summary>
     IPlayerController? GetController();
 
@@ -64,38 +64,39 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
     IPlayerController? GetOriginalController();
 
     /// <summary>
-    ///     👀角度
+    ///     Eye angles
     /// </summary>
     Vector GetEyeAngles();
 
     /// <summary>
-    ///     👀位置
+    ///     Eye position
     /// </summary>
     Vector GetEyePosition();
 
     /// <summary>
-    ///     只给当前玩家播放本地音频
+    ///     Play a soundevent to this player, other player won't hear it
     /// </summary>
+    /// <param name="sound">The sound event name to play (e.g., "Player.DamageKevlar")</param>
+    /// <param name="volume">Volume. If null, uses default volume</param>
     SoundOpEventGuid EmitSoundClient(string sound, float? volume = null);
 
     /// <summary>
-    ///     瞬态更换队伍 <br />
-    ///     <remarks>直接修改m_iTeamNum的值并且不发送网络消息</remarks>
+    ///     Change m_iTeamNum without sending update state to the client <br />
     /// </summary>
     void TransientChangeTeam(CStrikeTeam team);
 
     /// <summary>
-    ///     CameraService实例
+    ///     CameraService
     /// </summary>
     ICameraService? GetCameraService();
 
     /// <summary>
-    ///     MoveService实例
+    ///     MoveService
     /// </summary>
     IMovementService? GetMovementService();
 
     /// <summary>
-    ///     UseService实例
+    ///     UseService
     /// </summary>
     IUseService? GetUseService();
 
@@ -135,12 +136,12 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
     int NumSpawns { get; }
 
     /// <summary>
-    ///     闪光Alpha
+    ///     Alpha for flashbang effect
     /// </summary>
     float FlashMaxAlpha { get; set; }
 
     /// <summary>
-    ///     闪光持续时间
+    ///     How long does the flashbang effect last
     /// </summary>
     float FlashDuration { get; set; }
 

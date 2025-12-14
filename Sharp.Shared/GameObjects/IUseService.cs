@@ -27,11 +27,11 @@ namespace Sharp.Shared.GameObjects;
 public interface IUseService : IPlayerPawnComponent
 {
     /// <summary>
-    ///     转换为CCSPlayer_UseServices
+    ///     Cast to CCSPlayer_UseServices
     /// </summary>
     /// <param name="reinterpret">
-    ///     False: 如果当前UseService不是CCSPlayer_UseService则返回null<br />True:
-    ///     使用指针重新解析为CCSPlayer_UseServices
+    ///     False: Returns null if current UseService is not CCSPlayer_UseService<br />True:
+    ///     Reinterpret pointer as CCSPlayer_UseServices
     /// </param>
     IPlayerUseService? AsPlayerUseService(bool reinterpret = false);
 }

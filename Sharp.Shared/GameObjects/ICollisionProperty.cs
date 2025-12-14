@@ -28,12 +28,12 @@ namespace Sharp.Shared.GameObjects;
 public interface ICollisionProperty : IEntityObject
 {
     /// <summary>
-    ///     Solid类型, 通常与碰撞有关
+    ///     Solid type, typically related to collision
     /// </summary>
     SolidType SolidType { get; set; }
 
     /// <summary>
-    ///     启用VPhysics的类型值
+    ///     VPhysics type to enable
     /// </summary>
     byte EnablePhysics { get; set; }
 
@@ -43,12 +43,12 @@ public interface ICollisionProperty : IEntityObject
     byte SolidFlags { get; set; }
 
     /// <summary>
-    ///     碰撞组
+    ///     Collision group
     /// </summary>
     CollisionGroupType CollisionGroup { get; set; }
 
     /// <summary>
-    ///     VPhysics碰撞属性
+    ///     VPhysics collision attribute
     /// </summary>
     IVPhysicsCollisionAttribute CollisionAttribute { get; }
 
@@ -76,7 +76,7 @@ public interface ICollisionProperty : IEntityObject
 public interface IVPhysicsCollisionAttribute : ISchemaObject
 {
     /// <summary>
-    ///     碰撞组
+    ///     Collision group
     /// </summary>
     CollisionGroupType CollisionGroup { get; set; }
 

@@ -110,7 +110,7 @@ public interface IModSharp
     void InvokeAction(Action action);
 
     /// <summary>
-    ///     在当前帧末尾调用Action
+    ///     Invoke action at the end of current frame
     /// </summary>
     void InvokeFrameAction(Action action);
 
