@@ -24,34 +24,34 @@ namespace Sharp.Shared.Enums;
 public enum RoundEndReason : uint
 {
     /// <summary>
-    ///     游戏还在进行
+    ///     Game is still in progress
     /// </summary>
     RoundEndReasonStillInProgress = 0,
 
     /// <summary>
-    ///     包炸了
+    ///     Bomb exploded
     /// </summary>
     TargetBombed = 1,
 
     /// <summary>
-    ///     Vip润了
+    ///     VIP escaped
     /// </summary>
     [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipEscaped = 2,
 
     /// <summary>
-    ///     Vip嗝屁了
+    ///     VIP was killed
     /// </summary>
     [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipAssassinated = 3,
 
     /// <summary>
-    ///     TE跑路了
+    ///     Terrorists escaped
     /// </summary>
     TerroristsEscaped = 4,
 
     /// <summary>
-    ///     CT阻止TE跑路
+    ///     CTs prevented terrorist escape
     /// </summary>
     CTsPreventEscape = 5,
 
@@ -61,83 +61,83 @@ public enum RoundEndReason : uint
     EscapingTerroristsNeutralized = 6,
 
     /// <summary>
-    ///     包拆了
+    ///     Bomb defused
     /// </summary>
     BombDefused = 7,
 
     /// <summary>
-    ///     CT默认胜利
+    ///     CTs win by default
     /// </summary>
     CTsWin = 8,
 
     /// <summary>
-    ///     TE默认胜利
+    ///     Terrorists win by default
     /// </summary>
     TerroristsWin = 9,
 
     /// <summary>
-    ///     平局
+    ///     Round draw
     /// </summary>
     RoundDraw = 10,
 
     /// <summary>
-    ///     人质跑路了额
+    ///     All hostages rescued
     /// </summary>
     AllHostagesRescued = 11,
 
     /// <summary>
-    ///     包点没炸
+    ///     Bomb site not destroyed
     /// </summary>
     TargetSaved = 12,
 
     /// <summary>
-    ///     人质没救出来
+    ///     Hostages not rescued
     /// </summary>
     HostagesNotRescued = 13,
 
     /// <summary>
-    ///     TE没跑掉
+    ///     Terrorists did not escape
     /// </summary>
     TerroristsNotEscaped = 14,
 
     /// <summary>
-    ///     Vip没跑掉
+    ///     VIP did not escape
     /// </summary>
     [Obsolete("Valve removed it in 1.4.1.8, will be removed in 2.2", true)]
     VipNotEscaped = 15,
 
     /// <summary>
-    ///     游戏重启
+    ///     Game restarting
     /// </summary>
     GameCommencing = 16,
 
     /// <summary>
-    ///     TE投降了
+    ///     Terrorists surrendered
     /// </summary>
     TerroristsSurrender = 17,
 
     /// <summary>
-    ///     CT投降了
+    ///     CTs surrendered
     /// </summary>
     CTsSurrender = 18,
 
     /// <summary>
-    ///     TE下包了
+    ///     Terrorists planted the bomb
     /// </summary>
     TerroristsPlanted = 19,
 
     /// <summary>
-    ///     CT救出人质了
+    ///     CTs reached the hostage
     /// </summary>
     CTsReachedHostage = 20,
 
     /// <summary>
-    ///     存活胜利
+    ///     Survival win
     /// </summary>
     SurvivalWin = 21,
 
     /// <summary>
-    ///     存活平局
+    ///     Survival draw
     /// </summary>
     SurvivalDraw = 22,
 }

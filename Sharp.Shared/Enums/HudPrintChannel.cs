@@ -22,17 +22,17 @@ namespace Sharp.Shared.Enums;
 public enum HudPrintChannel : uint
 {
     /// <summary>
-    ///     控制台
+    ///     Console
     /// </summary>
     Console = 2,
 
     /// <summary>
-    ///     聊天框
+    ///     Chat
     /// </summary>
     Chat,
 
     /// <summary>
-    ///     中间Hud
+    ///     Hud
     /// </summary>
     Hint,
 

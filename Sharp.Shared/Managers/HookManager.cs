@@ -30,17 +30,17 @@ namespace Sharp.Shared.Managers;
 public interface IHookManager
 {
     /// <summary>
-    ///     创建 DetourHook
+    ///     Create DetourHook
     /// </summary>
     IDetourHook CreateDetourHook();
 
     /// <summary>
-    ///     创建vmt hook
+    ///     Create VMThook
     /// </summary>
     IVirtualHook CreateVirtualHook();
 
     /// <summary>
-    ///     创建 MidFuncHook
+    ///     Create MidFuncHook
     /// </summary>
     IMidFuncHook CreateMidFuncHook();
 
@@ -85,10 +85,10 @@ public interface IHookManager
     /// <summary>
     ///     CCSPlayerPawn->WeaponService::CanEquip <br />
     ///     <remarks>
-    ///         这里实际上Hook ValidateLineOfSight  <br />
-    ///         CS2实际上不止检查LOS, 还检查VIS <br />
-    ///         强制true也不能捡起来VIS不通过的武器 <br />
-    ///         这里只是为了方便Hook CanEquip
+    ///         This actually hooks ValidateLineOfSight  <br />
+    ///         CS2 doesn't just check LOS, it also checks VIS <br />
+    ///         Forcing true still won't allow picking up weapons that fail VIS check <br />
+    ///         This is just for convenience to hook CanEquip
     ///     </remarks>
     /// </summary>
     IHookType<IPlayerWeaponCanEquipHookParams, bool> PlayerWeaponCanEquip { get; }
@@ -104,7 +104,7 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayer_ItemServices::CanAcquire
-    ///     <remarks>是否能捡起或者购买物品,包括武器</remarks>
+    ///     <remarks>Used for checking if the player can acquire an item or weapon</remarks>
     /// </summary>
     IHookType<IPlayerCanAcquireHookParams, EAcquireResult> PlayerCanAcquire { get; }
 
@@ -124,7 +124,7 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayerPawn->MovementService::RunCommand <br />
-    ///     <remarks>Pre中 MovementService数据都是上一帧的, 还没有填充, Buttons 可以从参数拿</remarks>
+    ///     <remarks>Fields in MovementService is from the last frame. To get Buttons you can get it from <see cref="IPlayerRunCommandHookParams"/></remarks>
     /// </summary>
     IHookType<IPlayerRunCommandHookParams, EmptyHookReturn> PlayerRunCommand { get; }
 
@@ -147,14 +147,14 @@ public interface IHookManager
 #region Damage
 
     /// <summary>
-    ///     CBasePlayer::DispatchTraceAttack (PlayerPawn Only)
-    ///     <remarks>不关心返回值, 如果return SkipCall, 返回值则为0</remarks>
+    ///     CBaseEntity::DispatchTraceAttack (PlayerPawn Only)
+    ///     <remarks>Return value is ignored if it returns SkipCall, the return value will be 0</remarks>
     /// </summary>
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
 
     /// <summary>
-    ///     CBasePlayer::DispatchTraceAttack (No PlayerPawn)
-    ///     <remarks>不关心返回值, 如果return SkipCall, 返回值则为0</remarks>
+    ///     CBaseEntity::DispatchTraceAttack (No PlayerPawn)
+    ///     <remarks>Return value is ignored if it returns SkipCall, the return value will be 0</remarks>
     /// </summary>
     IHookType<IEntityDispatchTraceAttackHookParams, long> EntityDispatchTraceAttack { get; }
 
@@ -169,20 +169,20 @@ public interface IHookManager
 
     /// <summary>
     ///     'status' Command <br />
-    ///     <remarks>Client为空时, 是Server发送</remarks>
+    ///     <remarks>When client is null means it is sent by server</remarks>
     /// </summary>
     IHookType<IPrintStatusHookParams, EmptyHookReturn> PrintStatus { get; }
 
     /// <summary>
-    ///     NetworkMessages::CUserMsgTextMSG<br />
-    ///     <remarks>返回值为新的Receiver Bits</remarks>
+    ///     NetworkMessages::CUserMsgTextMSG
     /// </summary>
+    /// <returns>The new Receiver Bits</returns>
     IHookType<ITextMsgHookParams, NetworkReceiver> TextMsg { get; }
 
     /// <summary>
     ///     IGameEventSystem::PostEventAbstract
-    ///     <remarks>返回值为新的Receiver Bits</remarks>
     /// </summary>
+    /// <returns>The new Receiver Bits</returns>
     IHookType<IPostEventAbstractHookParams, NetworkReceiver> PostEventAbstract { get; }
 
     /// <summary>
@@ -200,7 +200,7 @@ public interface IHookManager
 
     /// <summary>
     ///     SoundOpGameSystem::DoStartSoundEvent <br />
-    ///     <remarks>仅当视为音乐触发时</remarks>
+    ///     <remarks>Only fires when the sound event is treated as music</remarks>
     /// </summary>
     IForwardType<IEmitMusicForwardParams> EmitMusic { get; }
 
@@ -302,24 +302,24 @@ public interface IHookManager
 public interface IHookType<out TParams, THookReturn> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     监听这个Hook的Pre <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Hook's Pre <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre, int priority = 0);
 
     /// <summary>
-    ///     监听这个Hook的Post <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Hook's Post <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallHookPost(Action<TParams, HookReturnValue<THookReturn>> post, int priority = 0);
 
     /// <summary>
-    ///     停止监听这个Hook的Pre
+    ///     Stop listening to this Hook's Pre
     /// </summary>
     void RemoveHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre);
 
     /// <summary>
-    ///     停止监听这个Hook的Post
+    ///     Stop listening to this Hook's Post
     /// </summary>
     void RemoveHookPost(Action<TParams, HookReturnValue<THookReturn>> post);
 }
@@ -327,13 +327,13 @@ public interface IHookType<out TParams, THookReturn> where TParams : class, IFun
 public interface IForwardType<out TParams> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     监听这个Forward调用 <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Forward call <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallForward(Action<TParams> func, int priority = 0);
 
     /// <summary>
-    ///     停止监听这个Forward调用
+    ///     Stop listening to this Forward call
     /// </summary>
     void RemoveForward(Action<TParams> func);
 }

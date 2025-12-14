@@ -26,35 +26,35 @@ namespace Sharp.Shared.Managers;
 public interface IFileManager
 {
     /// <summary>
-    ///     获取Source2的文件系统接口指针
+    ///     Get Source2 file system interface pointer
     /// </summary>
     nint GetValveFileSystem();
 
     /// <summary>
-    ///     检查文件是否存在 <br />
-    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    ///     Check if file exists <br />
+    ///     <remarks>Uses engine file system, supports vp access</remarks>
     /// </summary>
     bool FileExists(string filename, string pathId = "GAME");
 
     /// <summary>
-    ///     打开文件 <br />
-    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    ///     Open file <br />
+    ///     <remarks>Uses engine file system, supports vp access</remarks>
     /// </summary>
     IValveFile? OpenFile(string filename, string pathId = "GAME");
 
     /// <summary>
-    ///     打开文件夹 <br />
-    ///     <remarks>使用引擎的文件系统, 支持vp访问</remarks>
+    ///     Open directory <br />
+    ///     <remarks>Uses engine file system, supports vp access</remarks>
     /// </summary>
     IValveDirectory? OpenDirectory(string path, string pathId = "GAME");
 
     /// <summary>
-    ///     添加路径到引擎文件系统的搜索路径
+    ///     Add path to engine file system search paths
     /// </summary>
     void AddSearchPath(string path, string pathId, int addType = 1, int priority = 0, int unknown = 0);
 
     /// <summary>
-    ///     从引擎文件系统移除搜索路径
+    ///     Remove search path from engine file system
     /// </summary>
     void RemoveSearchPath(string path, string pathId);
 }
@@ -62,17 +62,17 @@ public interface IFileManager
 public interface IValveFile : INativeObject, IDisposable
 {
     /// <summary>
-    ///     读
+    ///     Read data from file
     /// </summary>
     void Read(Span<byte> output);
 
     /// <summary>
-    ///     写
+    ///     Write data to file
     /// </summary>
     void Write(ReadOnlySpan<byte> input);
 
     /// <summary>
-    ///     文件大小
+    ///     Get file size
     /// </summary>
     int Size();
 }
@@ -80,7 +80,7 @@ public interface IValveFile : INativeObject, IDisposable
 public interface IValveDirectory : IDisposable
 {
     /// <summary>
-    ///     迭代文件夹
+    ///     Iterate through directory
     /// </summary>
     IEnumerator<string> GetEnumerator();
 }

@@ -22,27 +22,27 @@ namespace Sharp.Shared.Enums;
 public enum EHookAction : byte
 {
     /// <summary>
-    ///     不关心返回值, 也不关心参数
+    ///     Don't care about return value or parameters
     /// </summary>
     Ignored,
 
     /// <summary>
-    ///     修改参数后调用原始Function → 原始返回值
+    ///     Modify parameters then call original function → Use original return value
     /// </summary>
     ChangeParamReturnDefault,
 
     /// <summary>
-    ///     修改参数后调用原始Function → 我们提供的返回值
+    ///     Modify parameters then call original function → Use our provided return value
     /// </summary>
     ChangeParamReturnOverride,
 
     /// <summary>
-    ///     忽略参数后调用原始Function → 我们提供的返回值
+    ///     Ignore parameters then call original function → Use our provided return value
     /// </summary>
     IgnoreParamReturnOverride,
 
     /// <summary>
-    ///     忽略原始Function → 我们提供的返回值
+    ///     Skip original function → Use our provided return value
     /// </summary>
     SkipCallReturnOverride,
 }

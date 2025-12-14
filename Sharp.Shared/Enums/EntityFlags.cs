@@ -44,7 +44,7 @@ public enum EntityFlags : uint
 
     /// <summary>
     ///     Is FakeClient <br />
-    ///     <remarks>(只有Pawn会有这个Flags)</remarks>
+    ///     <remarks>Only PlayerPawn has this flag</remarks>
     /// </summary>
     Bot = 1 << 4,
 
@@ -60,13 +60,13 @@ public enum EntityFlags : uint
 
     /// <summary>
     ///     Is a player. <br />
-    ///     <remarks>(只有Pawn会有这个Flags)</remarks>
+    ///     <remarks>Only PlayerPawn has this flag</remarks>
     /// </summary>
     Client = 1 << 7,
 
     /// <summary>
     ///     Fake client.<br />
-    ///     <remarks>(只有Controller会有这个Flags)</remarks>
+    ///     <remarks>Only PlayerController has this flag</remarks>
     /// </summary>
     FakeClient = 1 << 8,
 

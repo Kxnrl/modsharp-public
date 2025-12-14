@@ -26,38 +26,38 @@ namespace Sharp.Shared.Managers;
 public interface IEventManager
 {
     /// <summary>
-    ///     添加EventListener以监听事件
+    ///     Add <see cref="IEventListener"/> to listen for events
     /// </summary>
     void InstallEventListener(IEventListener listener);
 
     /// <summary>
-    ///     移除EventListener
+    ///     Remove <see cref="IEventListener"/>
     /// </summary>
     void RemoveEventListener(IEventListener listener);
 
     /// <summary>
-    ///     创建Game Event
+    ///     Create Game Event
     /// </summary>
     IGameEvent? CreateEvent(string name, bool force);
 
     /// <summary>
-    ///     创建Game Event
+    ///     Create Game Event
     /// </summary>
     T? CreateEvent<T>(bool force) where T : class, IGameEvent;
 
     /// <summary>
-    ///     克隆事件 (可编辑)  <br />
-    ///     <remarks>Clone一个新的事件, 需要后期手动释放或发射</remarks>
+    ///     Clone event (editable)  <br />
+    ///     <remarks>Clone a new event, requires manual release or firing later</remarks>
     /// </summary>
     T? CloneEvent<T>(T @event) where T : class, IGameEvent;
 
     /// <summary>
-    ///     添加某个事件名称到Hook队列
+    ///     Add an event name to the Hook queue
     /// </summary>
     void HookEvent(string name);
 
     /// <summary>
-    ///     检查客户端订阅的事件
+    ///     Check client subscribed events
     /// </summary>
     bool FindListener(PlayerSlot slot, string name);
 }

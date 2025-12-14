@@ -26,27 +26,27 @@ namespace Sharp.Shared.Managers;
 public interface IEconItemManager
 {
     /// <summary>
-    ///     获取所有EconItem的字典
+    ///     Get dictionary of all EconItems
     /// </summary>
     FrozenDictionary<ushort, IEconItemDefinition> GetEconItems();
 
     /// <summary>
-    ///     获取所有PaintKit的字典
+    ///     Get dictionary of all PaintKits
     /// </summary>
     FrozenDictionary<uint, IPaintKit> GetPaintKits();
 
     /// <summary>
-    ///     获取EconItemDefinition定义
+    ///     Get EconItemDefinition by index
     /// </summary>
     IEconItemDefinition? GetEconItemDefinitionByIndex(ushort index);
 
     /// <summary>
-    ///     获取EconItemDefinition定义
+    ///     Get EconItemDefinition by index
     /// </summary>
     IEconItemDefinition? GetEconItemDefinitionByIndex(EconItemId index);
 
     /// <summary>
-    ///     获取EconItemDefinition定义
+    ///     Get EconItemDefinition by name
     /// </summary>
     IEconItemDefinition? GetEconItemDefinitionByName(string name);
 }

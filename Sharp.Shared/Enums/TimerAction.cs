@@ -21,13 +21,6 @@ namespace Sharp.Shared.Enums;
 
 public enum TimerAction
 {
-    /// <summary>
-    ///     继续
-    /// </summary>
     Continue,
-
-    /// <summary>
-    ///     停止
-    /// </summary>
     Stop,
 }

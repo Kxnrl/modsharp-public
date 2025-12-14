@@ -27,26 +27,26 @@ namespace Sharp.Shared.Managers;
 public interface IConVarManager
 {
     /// <summary>
-    ///     ConVar值变化时调用的回调 <br />
-    ///     <remarks>在当前Callback内调用值的修改会立即StackOverflow</remarks>
+    ///     Callback called when ConVar value changes <br />
+    ///     <remarks>Modifying values within the Callback will cause StackOverflow</remarks>
     /// </summary>
     public delegate void DelegateConVarChange(IConVar conVar);
 
     /// <summary>
-    ///     搜索某个已存在的ConVar
+    ///     Search for an existing ConVar
     /// </summary>
-    /// <param name="name">参数名字 (匹配大小写)</param>
-    /// <param name="useIterator">是否使用迭代器模式, 会比直接查找更慢, 但是可以找到隐藏的ConVar</param>
+    /// <param name="name">Parameter name (case sensitive)</param>
+    /// <param name="useIterator">Whether to use iterator mode, slower than direct lookup but can find hidden ConVars</param>
     IConVar? FindConVar(string name, bool useIterator = false);
 
     /// <summary>
-    ///     监听某个ConVar的值发生变化 <br />
-    ///     <remarks>在Callback内调用值的修改会立即StackOverflow</remarks>
+    ///     Listen for changes to a ConVar value <br />
+    ///     <remarks>Modifying values within the Callback will immediately cause StackOverflow</remarks>
     /// </summary>
     void InstallChangeHook(IConVar conVar, DelegateConVarChange callback);
 
     /// <summary>
-    ///     移除ConVar监听
+    ///     Remove ConVar listener
     /// </summary>
     void RemoveChangeHook(IConVar conVar, DelegateConVarChange callback);
 
@@ -145,12 +145,12 @@ public interface IConVarManager
         ConVarFlags?             flags      = null);
 
     /// <summary>
-    ///     创建一个控制台命令, 可以被客户端和服务器调用, 如果你想创建 <br />
+    ///     Create a console command that can be used by both client and server. If you want to create <br />
     ///     <remarks>
-    ///         高性能的, <br />
-    ///         只允许客户端执行的, <br />
-    ///         同时支持控制台和聊天窗口触发的<br />
-    ///         命令, 那么请使用 <see cref="IClientManager.InstallCommandCallback" />
+    ///         High performance, <br />
+    ///         Client-only, <br />
+    ///         Support both console and chat<br />
+    ///         please use <see cref="IClientManager.InstallCommandCallback" />
     ///     </remarks>
     /// </summary>
     void CreateConsoleCommand(string                      name,
@@ -159,7 +159,7 @@ public interface IConVarManager
         ConVarFlags?                                      flags       = null);
 
     /// <summary>
-    ///     创建一个仅服务器控制台可用的命令
+    ///     Create a server only command
     /// </summary>
     void CreateServerCommand(string         name,
         Func<StringCommand, ECommandAction> fn,
@@ -167,7 +167,7 @@ public interface IConVarManager
         ConVarFlags?                        flags       = null);
 
     /// <summary>
-    ///     卸载时需要调用, 否则发生泄漏
+    ///     Must be called during unload, otherwise leak occurs
     /// </summary>
     bool ReleaseCommand(string name);
 }
