@@ -29,14 +29,14 @@ public interface IPhysicsQueryManager
     /// <summary>
     ///     TraceLine
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
-    /// <param name="ignore1">忽略的实体1</param>
-    /// <param name="ignore2">忽略的实体2</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
+    /// <param name="ignore1">Entity 1 to ignore</param>
+    /// <param name="ignore2">Entity 2 to ignore</param>
     TraceResult TraceLine(Vector start,
         Vector                   end,
         InteractionLayers        mask,
@@ -47,16 +47,16 @@ public interface IPhysicsQueryManager
         IBaseEntity?             ignore2       = null);
 
     /// <summary>
-    ///     TraceLine 但 忽略玩家
+    ///     TraceLine but ignores players
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
-    /// <param name="ignore1">忽略的实体1</param>
-    /// <param name="ignore2">忽略的实体2</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
+    /// <param name="ignore1">Entity 1 to ignore</param>
+    /// <param name="ignore2">Entity 2 to ignore</param>
     TraceResult TraceLineNoPlayers(Vector start,
         Vector                            end,
         InteractionLayers                 mask,
@@ -67,14 +67,14 @@ public interface IPhysicsQueryManager
         IBaseEntity?                      ignore2       = null);
 
     /// <summary>
-    ///     TraceLine, 使用自定义Filter
+    ///     TraceLine with custom filter
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="filter">Filter Callback</param>
     TraceResult TraceLineFilter(Vector start,
         Vector                         end,
@@ -87,15 +87,15 @@ public interface IPhysicsQueryManager
     /// <summary>
     ///     TraceShape
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
-    /// <param name="ignore1">忽略的实体1</param>
-    /// <param name="ignore2">忽略的实体2</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
+    /// <param name="ignore1">Entity 1 to ignore</param>
+    /// <param name="ignore2">Entity 2 to ignore</param>
     TraceResult TraceShape(TraceShapeRay ray,
         Vector                           start,
         Vector                           end,
@@ -107,17 +107,17 @@ public interface IPhysicsQueryManager
         IBaseEntity?                     ignore2       = null);
 
     /// <summary>
-    ///     TraceShape 但 忽略玩家
+    ///     TraceShape but ignores players
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
-    /// <param name="ignore1">忽略的实体1</param>
-    /// <param name="ignore2">忽略的实体2</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
+    /// <param name="ignore1">Entity 1 to ignore</param>
+    /// <param name="ignore2">Entity 2 to ignore</param>
     TraceResult TraceShapeNoPlayers(TraceShapeRay ray,
         Vector                                    start,
         Vector                                    end,
@@ -129,15 +129,15 @@ public interface IPhysicsQueryManager
         IBaseEntity?                              ignore2       = null);
 
     /// <summary>
-    ///     TraceShape, 使用自定义Filter
+    ///     TraceShape with custom filter
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="mask">看<seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
     /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">基本上都用7 (1+2+4)</param>
-    /// <param name="excludeLayers">排除的Layers</param>
+    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="filter">Filter Callback</param>
     TraceResult TraceShapeFilter(TraceShapeRay ray,
         Vector                                 start,
@@ -149,13 +149,13 @@ public interface IPhysicsQueryManager
         Func<IBaseEntity, bool>                filter);
 
     /// <summary>
-    ///     TraceShape, 用游戏的MovementFilter
+    ///     TraceShape using the game's MovementFilter
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="interactsWith"> 一般情况下用 CollisionProperty 里的 InteractsWith 就可以了</param>
-    /// <param name="pawn">玩家pawn</param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="interactsWith">Generally, using InteractsWith from CollisionProperty is sufficient</param>
+    /// <param name="pawn">Player pawn</param>
     TraceResult TraceShapePlayerMovement(TraceShapeRay ray,
         Vector                                         start,
         Vector                                         end,
@@ -165,58 +165,59 @@ public interface IPhysicsQueryManager
     /// <summary>
     ///     TraceShape
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="query">Trace参数</param>
-    /// <param name="filterCallback">filter回调, 需要自行转换<b>unmanaged</b>到<b>nint</b></param>
+    /// <param name="ray">Defines Ray_t</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="query">Trace parameters</param>
+    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
     GameTrace TraceShape(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query, nint? filterCallback = null);
 
     /// <summary>
     ///     TraceLine
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="query">Trace参数</param>
-    /// <param name="filterCallback">filter回调, 需要自行转换<b>unmanaged</b>到<b>nint</b></param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="query">Trace parameters</param>
+    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
     GameTrace TraceLine(Vector start, Vector end, in RnQueryShapeAttr query, nint? filterCallback = null);
 
     /// <summary>
-    ///     TracePlayerMovement
+    ///     TraceShapePlayerMovement
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="query">Trace参数</param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="query">Trace parameters</param>
     GameTrace TraceShapePlayerMovement(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query);
 
     /// <summary>
-    ///     TraceShape (自动过滤玩家)
+    ///     TraceShape (filters players)
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="query">Trace参数</param>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="query">Trace parameters</param>
     GameTrace TraceShapeNoPlayers(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query);
 
     /// <summary>
-    ///     TraceLine (自动过滤玩家)
+    ///     TraceLine (filters players)
     /// </summary>
-    /// <param name="start">起始位置</param>
-    /// <param name="end">结束位置</param>
-    /// <param name="query">Trace参数</param>
+    /// <param name="start">Start position</param>
+    /// <param name="end">End position</param>
+    /// <param name="query">Trace parameters</param>
     GameTrace TraceLineNoPlayers(Vector start, Vector end, in RnQueryShapeAttr query);
 
     /// <summary>
-    ///     遍历Ray上的实体
+    ///     Enumerate entities along a ray
     /// </summary>
-    /// <param name="ray">定义Ray_t</param>
-    /// <param name="origin">起始位置</param>
-    /// <param name="query">Trace参数</param>
-    /// <param name="unique">唯一</param>
-    /// <param name="entities">buffer</param>
-    /// <param name="test">不知道干什么的, 游戏都用<b>1</b></param>
-    /// <param name="filterCallback">filter回调, 需要自行转换<b>unmanaged</b>到<b>nint</b></param>
-    /// <returns>包含的实体个数</returns>
+    /// <param name="ray">Ray shape</param>
+    /// <param name="origin">Origin position</param>
+    /// <param name="query">Trace parameters</param>
+    /// <param name="unique">Unique entities only</param>
+    /// <param name="entities">Buffer for entities</param>
+    /// <param name="test">Unknown purpose, game always uses <b>1</b></param>
+    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
+    /// <returns>Number of entities found</returns>
     int EntitiesAlongRay(TraceShapeRay ray,
         Vector                         origin,
         in RnQueryShapeAttr            query,

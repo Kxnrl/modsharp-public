@@ -9,68 +9,68 @@ namespace Sharp.Shared.Objects;
 public interface IGlobalVars : INativeObject
 {
     /// <summary>
-    ///     真实时间
+    ///     Real time in seconds
     /// </summary>
     float RealTime { get; }
 
     /// <summary>
-    ///     帧计数
+    ///     Current frame number
     /// </summary>
     int FrameCount { get; }
 
     /// <summary>
-    ///     基于EngineTime的帧时间
+    ///     Frame time based on engine time
     /// </summary>
     float AbsoluteFrameTime { get; }
 
     /// <summary>
-    ///     基于EngineTime的帧生成时间
+    ///     Frame start time standard deviation based on engine time
     /// </summary>
     float AbsoluteFrameStartTimeStdDev { get; }
 
     /// <summary>
-    ///     最大允许的玩家数
+    ///     Maximum allowed client connections
     /// </summary>
     int MaxClients { get; }
 
     /// <summary>
-    ///     帧时间
+    ///     Time between frames
     /// </summary>
     float FrameTime { get; }
 
     /// <summary>
-    ///     GameTime
+    ///     Current game time
     /// </summary>
     float CurTime { get; }
 
     /// <summary>
-    ///     渲染时间
+    ///     Render time
     /// </summary>
     float RenderTime { get; }
 
     /// <summary>
-    ///     运行状态
+    ///     Whether simulation is running
     /// </summary>
     bool InSimulation { get; }
 
     /// <summary>
-    ///     Tick计数
+    ///     Current tick count
     /// </summary>
     int TickCount { get; }
 
     /// <summary>
-    ///     SubTickFraction
+    ///     Sub-tick fraction
     /// </summary>
     float SubTickFraction { get; }
 
     /// <summary>
-    ///     地图名
+    ///     Current map name
     /// </summary>
     string MapName { get; }
 
     /// <summary>
-    ///     最大实体数量 <br />
-    ///     <remarks>这里指的是最大的Edict数量</remarks>
+    ///     Maximum number of entities <br />
+    ///     <remarks>Refers to maximum Edict count</remarks>
     /// </summary>
     int MaxEntities { get; }
 }

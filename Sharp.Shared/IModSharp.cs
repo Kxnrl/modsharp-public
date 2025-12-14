@@ -38,17 +38,17 @@ public interface IModSharp
 #region Logs
 
     /// <summary>
-    ///     打印日志 (Info)
+    ///     Print log (Info)
     /// </summary>
     void LogMessage(string message);
 
     /// <summary>
-    ///     打印日志 (Warning)
+    ///     Print log (Warning)
     /// </summary>
     void LogWarning(string message);
 
     /// <summary>
-    ///     打印日志 (自定义彩色)
+    ///     Print log (custom color)
     /// </summary>
     void LogColorText(Color color, string text);
 
@@ -57,55 +57,55 @@ public interface IModSharp
 #region Core
 
     /// <summary>
-    ///     直接Engine Error
+    ///     Engine error
     /// </summary>
     void FatalError(string message);
 
     /// <summary>
-    ///     获取 GameData
+    ///     Get GameData
     /// </summary>
     /// <returns></returns>
     IGameData GetGameData();
 
     /// <summary>
-    ///     获取gpGlobals
+    ///     Get gpGlobals
     /// </summary>
     IGlobalVars GetGlobals();
 
     /// <summary>
-    ///     获取NetworkGameServer (sv)
+    ///     Get NetworkGameServer (sv)
     /// </summary>
     INetworkServer GetIServer();
 
     /// <summary>
-    ///     获取Engine2Server (engine)
+    ///     Get Engine2Server (engine)
     /// </summary>
     nint GetIEngine();
 
     /// <summary>
-    ///     获取GameRules
+    ///     Get GameRules
     /// </summary>
     IGameRules GetGameRules();
 
     /// <summary>
-    ///     获取SteamApi SteamGameServer
+    ///     Get SteamApi SteamGameServer
     /// </summary>
     ISteamApi GetSteamGameServer();
 
     /// <summary>
-    ///     获取NativeFunction
+    ///     Get NativeFunction
     /// </summary>
-    /// <returns>Func 指针, 可以直接Invoke unmanaged</returns>
+    /// <returns>Function pointer, can directly invoke unmanaged</returns>
     nint GetNativeFunctionPointer(string name);
 
     /// <summary>
-    ///     Plat_FloatTime 也是Source 1的EngineTime
+    ///     Plat_FloatTime, also Source 1's EngineTime
     /// </summary>
     double EngineTime();
 
     /// <summary>
-    ///     在主线程调用Action <br />
-    ///     <remarks>如果当前在主线程则立即调用, 否则会在当前帧末尾调用</remarks>
+    ///     Invoke action on main thread <br />
+    ///     <remarks>If currently on main thread, calls immediately, otherwise calls at end of current frame</remarks>
     /// </summary>
     void InvokeAction(Action action);
 
@@ -115,37 +115,37 @@ public interface IModSharp
     void InvokeFrameAction(Action action);
 
     /// <summary>
-    ///     在当前帧末尾调用Action并等待
+    ///     Invoke action at the end of current frame and wait
     /// </summary>
     Task<T> InvokeFrameActionAsync<T>(Func<T> action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     在当前帧末尾调用Action并等待
+    ///     Invoke action at the end of current frame and wait
     /// </summary>
     Task InvokeFrameActionAsync(Action action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     把Timer加入队列<br />
+    ///     Add timer to queue<br />
     /// </summary>
     Guid PushTimer(Action action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
     /// <summary>
-    ///     把Timer加入队列<br />
+    ///     Add timer to queue<br />
     /// </summary>
     Guid PushTimer(Func<TimerAction> action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
     /// <summary>
-    ///     把Timer移除队列
+    ///     Remove timer from queue
     /// </summary>
     void StopTimer(Guid uniqueId);
 
     /// <summary>
-    ///     判断Timer是否在队列中
+    ///     Check if timer is in queue
     /// </summary>
     bool IsValidTimer(Guid uniqueId);
 
     /// <summary>
-    ///     获取游戏绝对路径
+    ///     Get game absolute path
     /// </summary>
     string GetGamePath();
 
@@ -183,7 +183,7 @@ public interface IModSharp
     void RemoveServerGameSimulateHook(Action callback);
 
     /// <summary>
-    ///     返回给的字符串的MurmurHash2值,不区分大小写
+    ///     Returns the MurmurHash2 value of the given string, case-insensitive
     /// </summary>
     uint MakeStringToken(string str);
 
@@ -192,32 +192,32 @@ public interface IModSharp
 #region UserMessage
 
     /// <summary>
-    ///     打印到所有玩家聊天框 (Chat)
+    ///     Send chat message to all players
     /// </summary>
     void PrintToChatAll(string message);
 
     /// <summary>
-    ///     打印到对应队伍玩家聊天框 (Chat)
+    ///     Send chat message to specific team
     /// </summary>
     void PrintToChat(CStrikeTeam team, string message);
 
     /// <summary>
-    ///     打印到所有玩家的对应频道
+    ///     Send message to all players on specified channel
     /// </summary>
     void PrintChannelAll(HudPrintChannel channel, string message);
 
     /// <summary>
-    ///     打印到对应玩家的对应频道
+    ///     Send message to filtered players on specified channel
     /// </summary>
     void PrintChannelFilter(HudPrintChannel channel, string message, RecipientFilter receiver);
 
     /// <summary>
-    ///     打印到对应队伍玩家的对应频道
+    ///     Send message to team players on specified channel
     /// </summary>
     void PrintChannelTeam(HudPrintChannel channel, CStrikeTeam team, string message);
 
     /// <summary>
-    ///     无线电消息 (Team)
+    ///     Radio message (Team)
     /// </summary>
     void RadioTextTeam(CStrikeTeam team,
         PlayerSlot                 slot,
@@ -228,12 +228,12 @@ public interface IModSharp
         string?                    params4);
 
     /// <summary>
-    ///     无线电消息
+    ///     Radio message
     /// </summary>
     void RadioTextAll(PlayerSlot slot, string name, string? params1, string? params2, string? params3, string? params4);
 
     /// <summary>
-    ///     发送NetMessage
+    ///     Send NetMessage
     /// </summary>
     bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage;
 
@@ -252,71 +252,72 @@ public interface IModSharp
 #region Engine
 
     /// <summary>
-    ///     是否存在某个启动参数
+    ///     Check if the command line argument exists
     /// </summary>
     bool HasCommandLine(string key);
 
     /// <summary>
-    ///     获取某个启动参数的值
+    ///     Get value for a specific command line argument
     /// </summary>
     T? GetCommandLine<T>(string key) where T : IParsable<T>;
 
     /// <summary>
-    ///     获取某个启动参数的值 (String)
+    ///     Get command line argument value as string
     /// </summary>
     string? GetCommandLine(string key);
 
     /// <summary>
-    ///     预加载资源 <br />
+    ///     Precache resource
     /// </summary>
     void PrecacheResource(string resource);
 
     /// <summary>
-    ///     更换地图
+    ///     Change map
     /// </summary>
     void ChangeLevel(string map);
 
     /// <summary>
-    ///     地图是否是有效的地图
+    ///     Check if map is valid
     /// </summary>
     bool IsMapValid(string map);
 
     /// <summary>
-    ///     读取地图列表 <br />
-    ///     <remarks>返回null时为该地图组无效</remarks>
+    ///     Get map list for given map group
+    ///     <remarks>Returns null if map group is invalid</remarks>
     /// </summary>
-    /// <param name="mapGroup">例如 'workshop'</param>
+    /// <param name="mapGroup">e.g. 'workshop'</param>
     List<string>? GetMapGroupMapList(string mapGroup);
 
     /// <summary>
-    ///     读取游戏资源buffer <br />
-    ///     <remarks>如果文件无效或者加载失败时返回null</remarks>
+    ///     Read game resource data buffer
+    ///     <remarks>Returns null if file is invalid or fails to load</remarks>
     /// </summary>
-    /// <param name="filePath">文件名,比如 'scripts/weapons.vdata_c'. 如果不带 '_c' 将会自动加上</param>
-    /// <param name="pathId">路径ID,比如 'GAME'</param>
+    /// <param name="filePath">File name, e.g. 'scripts/weapons.vdata_c'. '_c' will be added automatically if missing</param>
+    /// <param name="pathId">Path ID, e.g. 'GAME'</param>
     byte[]? FindResourceDataBlockInfo(string filePath, string pathId);
 
     /// <summary>
-    ///     获取指定资源状态 <br />
-    ///     <remarks>如果返回Resident则说明资源已加载</remarks>
+    ///     Get resource status
+    ///     <remarks>Returns Resident if resource is loaded</remarks>
     /// </summary>
-    /// <param name="filePath">文件名,比如 'scripts/weapons.vdata'. 末尾不能带_c</param>
+    /// <param name="filePath">File name, e.g. 'scripts/weapons.vdata'. Must not end with '_c'</param>
     ResourceStatus GetResourceStatus(string filePath);
 
     /// <summary>
-    ///     调用ServerCommand
+    ///     Execute server command
+    ///     <remarks>Commands are buffered and not executed immediately. Too many commands can stop the execution</remarks>
     /// </summary>
     void ServerCommand(string command);
 
     /// <summary>
-    ///     获取当前加载的AddonId
-    ///     <remarks>获取失败或者没有加载则返回null, 加载上插件后返回为 addonId1,addonId2 </remarks>
+    ///     Get currently loaded addon IDs
+    ///     <remarks>Returns null if failed or no addons loaded, otherwise returns format: addonId1,addonId2</remarks>
     /// </summary>
     string? GetAddonName();
 
     /// <summary>
-    ///     获取地图bsp名字, 如 de_mirage, surf_beginner
-    ///     <remarks>获取失败或者没有加载则返回null</remarks>
+    ///     Get map BSP name, e.g. de_mirage, surf_beginner
+    ///     <remarks>Returns null if failed or no map loaded</remarks>
     /// </summary>
     string? GetMapName();
 
@@ -354,22 +355,22 @@ public interface IModSharp
 #region Listener
 
     /// <summary>
-    ///     添加GameListener以监听事件
+    ///     Install <see cref="IGameListener"/> to listen for game events
     /// </summary>
     void InstallGameListener(IGameListener listener);
 
     /// <summary>
-    ///     移除GameListener
+    ///     Remove <see cref="IGameListener"/>
     /// </summary>
     void RemoveGameListener(IGameListener listener);
 
     /// <summary>
-    ///     添加SteamListener以监听事件
+    ///     Install <see cref="ISteamListener"/> to listen for Steam events
     /// </summary>
     void InstallSteamListener(ISteamListener listener);
 
     /// <summary>
-    ///     移除SteamListener
+    ///     Remove <see cref="ISteamListener"/>
     /// </summary>
     void RemoveSteamListener(ISteamListener listener);
 
@@ -378,24 +379,24 @@ public interface IModSharp
 #region Native
 
     /// <summary>
-    ///     从指针创建NativeObject
+    ///     Create native object from pointer
     /// </summary>
-    /// <typeparam name="T">Object类型</typeparam>
-    /// <param name="ptr">Object指针</param>
+    /// <typeparam name="T">Object type</typeparam>
+    /// <param name="ptr">Object pointer</param>
     T? CreateNativeObject<T>(nint ptr) where T : class, INativeObject;
 
     /// <summary>
-    ///     FindPattern, 无效的module会直接FatalError
+    ///     Find pattern in module, invalid module will cause FatalError
     /// </summary>
-    /// <param name="module">dll/so名字</param>
-    /// <param name="pattern">IDA Pattern</param>
+    /// <param name="module">DLL/SO name</param>
+    /// <param name="pattern">IDA pattern</param>
     nint FindPattern(string module, string pattern);
 
     /// <summary>
-    ///     查找指定C++ Class的虚表
+    ///     Get virtual table for specified C++ class
     /// </summary>
-    /// <param name="module">dll/so名字</param>
-    /// <param name="className">C++ Class名</param>
+    /// <param name="module">DLL/SO name</param>
+    /// <param name="className">C++ class name</param>
     /// <returns></returns>
     nint GetVTableByClass(string module, string className);
 
@@ -410,17 +411,17 @@ public interface IModSharp
     IKeyValues3 CreateKeyValues3(KeyValues3Type type, KeyValues3SubType subType);
 
     /// <summary>
-    ///     获取DLL/SO
+    ///     Get DLL/SO library module
     /// </summary>
     ILibraryModule GetLibraryModule(string module);
 
     /// <summary>
-    ///     通过名称查找GameSystem
+    ///     Find GameSystem by name
     /// </summary>
     IGameSystem? FindGameSystemByName(string name);
 
     /// <summary>
-    ///     查找Valve Interface
+    ///     Find Valve interface
     /// </summary>
     nint FindValveInterface(string module, string name);
 
@@ -430,18 +431,18 @@ public interface IModSharp
     bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access);
 
     /// <summary>
-    ///     获取MemAlloc
+    ///     Get memory allocator
     /// </summary>
     /// <returns></returns>
     IMemAlloc GetMemAlloc();
 
     /// <summary>
-    ///     通过武器名字获取VData <br />
+    ///     Find weapon VData by name
     ///     <remarks>
-    ///         这里找到的VData只能读不能写。
+    ///         The VData found here is read-only and cannot be modified.
     ///     </remarks>
     /// </summary>
-    /// <returns>IWeaponData, 如果未加载或者找不到则返回null</returns>
+    /// <returns>IWeaponData, returns null if not loaded or not found</returns>
     IWeaponData? FindWeaponVDataByName(string name);
 
 #endregion
@@ -449,12 +450,12 @@ public interface IModSharp
 #region Dual Addon
 
     /// <summary>
-    ///     清空缓存
+    ///     Clear dual addon cache
     /// </summary>
     void DualAddonPurgeCheck();
 
     /// <summary>
-    ///     复写Dual Addon缓存
+    ///     Override cache for a player
     /// </summary>
     void DualAddonOverrideCheck(SteamID steamId, double time);
 

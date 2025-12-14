@@ -18,7 +18,7 @@ public interface IContextObject
 public interface INativeObject : IContextObject, IEquatable<INativeObject>
 {
     /// <summary>
-    ///     获取指针
+    ///     Get pointer
     /// </summary>
     nint GetAbsPtr();
 

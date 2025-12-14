@@ -51,7 +51,7 @@ public readonly ref struct RnCollisionAttr
 }
 
 /// <summary>
-///     CGameTrace 必须要为只读, 一旦修改可能会崩溃
+///     CGameTrace must be readonly, changing it can cause crashes
 /// </summary>
 [StructLayout(LayoutKind.Explicit)]
 public readonly unsafe ref struct GameTrace

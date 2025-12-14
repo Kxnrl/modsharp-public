@@ -23,11 +23,11 @@ namespace Sharp.Shared.Types;
 
 public readonly record struct HookReturnValue<T>
 {
-    // Hook的操作类型
+    // Action type
     public EHookAction Action { get; }
 
     /// <summary>
-    ///     Hook的返回值, 如果是void则为空
+    ///     Return value, void when EmptyHookReturn
     /// </summary>
     public T? ReturnValue { get; }
 

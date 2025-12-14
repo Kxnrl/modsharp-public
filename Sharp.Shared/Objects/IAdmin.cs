@@ -25,43 +25,43 @@ namespace Sharp.Shared.Objects;
 public interface IAdmin
 {
     /// <summary>
-    ///     管理员名字
+    ///     Administrator name
     /// </summary>
     string               Name        { get; }
 
     /// <summary>
-    ///     SteamID
+    ///     Steam ID
     /// </summary>
     SteamID              Identity    { get; }
 
     /// <summary>
-    ///     权限级别
+    ///     Immunity level
     /// </summary>
     byte                 Immunity    { get; }
 
     /// <summary>
-    ///     权限
+    ///     Set of permissions
     /// </summary>
     IReadOnlySet<string> Permissions { get; }
 
     /// <summary>
-    ///     是否拥有权限
+    ///     Check if admin has specific permission
     /// </summary>
-    /// <param name="permission">权限字段</param>
+    /// <param name="permission">Permission name</param>
     /// <returns></returns>
     bool HasPermission(string permission);
 
     /// <summary>
-    ///     添加权限
+    ///     Add permission to admin
     /// </summary>
-    /// <param name="permission">权限字段</param>
+    /// <param name="permission">Permission name</param>
     /// <returns></returns>
     bool AddPermission(string permission);
 
     /// <summary>
-    ///     删除权限
+    ///     Remove permission from admin
     /// </summary>
-    /// <param name="permission">权限字段</param>
+    /// <param name="permission">Permission name</param>
     /// <returns></returns>
     bool RemovePermission(string permission);
 }

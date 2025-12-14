@@ -25,24 +25,24 @@ namespace Sharp.Shared.Objects;
 public interface INativeProtobuf : INativeObject
 {
     /// <summary>
-    ///     消息名称
+    ///     Get message name
     /// </summary>
     /// <returns></returns>
     string GetName();
 
     /// <summary>
-    ///     消息大小
+    ///     Get message size in bytes
     /// </summary>
     /// <returns></returns>
     ulong GetSize();
 
     /// <summary>
-    ///     是否存在字段
+    ///     Check if field exists
     /// </summary>
     bool HasField(string field);
 
     /// <summary>
-    ///     获取Repeated字段的元素数量
+    ///     Get number of elements in repeated field
     /// </summary>
     int GetRepeatedFieldCount(string field);
 
@@ -107,20 +107,20 @@ public interface INativeProtobuf : INativeObject
     int AddBytes(string field, byte[] value);
 
     /// <summary>
-    ///     读取嵌套的Message
+    ///     Read nested message
     /// </summary>
     /// <returns></returns>
     INativeProtobuf? ReadMessage(string field, int repeatedIndex = -1);
 
     /// <summary>
-    ///     添加新的message
+    ///     Add new message to field
     /// </summary>
     /// <param name="field"></param>
     /// <returns></returns>
     INativeProtobuf? AddMessage(string field);
 
     /// <summary>
-    ///     删除Repeated中的字段
+    ///     Remove value from repeated field
     /// </summary>
     /// <param name="field"></param>
     /// <param name="repeatedIndex"></param>
@@ -128,12 +128,12 @@ public interface INativeProtobuf : INativeObject
     bool RemoveRepeatedFieldValue(string field, int repeatedIndex);
 
     /// <summary>
-    ///     从其他<see cref="IMessage" />中复制数据并覆盖
+    ///     Copy data from another <see cref="IMessage" /> and overwrite
     /// </summary>
     bool CopyFromOtherMessage(IMessage message);
 
     /// <summary>
-    ///     反序列化为C#可读的<see cref="IMessage{T}" />对象
+    ///     Deserialize to C# readable <see cref="IMessage{T}" /> object
     /// </summary>
     T Deserialize<T>() where T : class, IMessage<T>, IMessage, new();
 }

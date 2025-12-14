@@ -24,43 +24,43 @@ namespace Sharp.Shared;
 public interface ILibraryModule
 {
     /// <summary>
-    ///     通过IDA Pattern找函数地址 (不唯一) <br />
-    ///     <remarks>该方法通常用于遍历地址</remarks>
+    ///     Find function address by IDA pattern (non-unique) <br />
+    ///     <remarks>This method is typically used for iterating through addresses</remarks>
     /// </summary>
     nint FindPattern(string pattern, nint startAddress = 0);
 
     /// <summary>
-    ///     查找虚表
+    ///     Find virtual table by name
     /// </summary>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
     /// <summary>
-    ///     从<b>.text</b>中查找函数地址
+    ///     Get exported function address
     /// </summary>
     nint GetFunctionByName(string functionName);
 
     /// <summary>
-    ///     通过IDA Pattern找函数地址 (唯一)
+    ///     Find function address by IDA pattern (unique match)
     /// </summary>
     nint FindPatternExactly(string pattern);
 
     /// <summary>
-    ///     查找Game VInterface
+    ///     Find game VInterface
     /// </summary>
     nint FindInterface(string interfaceName);
 
     /// <summary>
-    ///     通过IDA Pattern找函数地址
+    ///     Find multiple function addresses by IDA pattern
     /// </summary>
     List<nint> FindPatternMulti(string pattern);
 
     /// <summary>
-    ///     查找string
+    ///     Find address of the given string in data section
     /// </summary>
     nint FindString(string str);
 
     /// <summary>
-    ///     查找指针
+    ///     Find address whose value equals to the given pointer
     /// </summary>
     nint FindPtr(nint ptr);
 }

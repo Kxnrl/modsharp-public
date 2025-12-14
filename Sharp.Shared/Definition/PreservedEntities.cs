@@ -27,8 +27,8 @@ namespace Sharp.Shared.Definition;
 // ReSharper disable StringLiteralTypo
 // ReSharper disable IdentifierTypo
 /// <summary>
-///     永久实体 <br />
-///     别问为什么是这么怪的名字，问就是不知道怎么取名
+///     Persistent entities <br />
+///     Don't ask why it has such an odd name - naming things is hard
 /// </summary>
 public static class PreservedEntities
 {
@@ -119,19 +119,19 @@ public static class PreservedEntities
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
-    ///     判断当前实体是不是永久实体
+    ///     Determines whether the current entity is a persistent entity
     /// </summary>
     public static bool IsPreservedEntity(this IBaseEntity entity)
         => Classnames.Contains(entity.Classname);
 
     /// <summary>
-    ///     判断这个class是不是永久实体
+    ///     Determines whether this class is a persistent entity
     /// </summary>
     public static bool IsPreservedEntity(string classname)
         => Classnames.Contains(classname);
 
     /// <summary>
-    ///     获取永久实体列表
+    ///     Gets the list of persistent entities
     /// </summary>
     public static FrozenSet<string> GetPreservedEntities()
         => Classnames;

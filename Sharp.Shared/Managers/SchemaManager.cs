@@ -25,159 +25,159 @@ using Sharp.Shared.Types.Tier;
 namespace Sharp.Shared.Managers;
 
 /// <summary>
-///     底层与Native Schema交互的接口。<br />
-///     用于处理API覆盖不到的，特殊的Schema Class <br />
-///     这套接口将会直接和底层数据接触<br />
-///     除非你很清楚你在干什么，你要干什么，否则不要随意使用它们！
+///     Low-level interface for interacting with Native Schema.<br />
+///     Used for handling special Schema Classes not covered by the API.<br />
+///     This interface directly accesses underlying data.<br />
+///     Do not use these methods unless you know exactly what you're doing!
 /// </summary>
 public interface ISchemaManager
 {
     /// <summary>
-    ///     获取Schema字段
-    ///     <exception cref="ArgumentException">如果不存在<paramref name="classname" />或<paramref name="field" />则抛出异常</exception>
+    ///     Gets a Schema field
+    ///     <exception cref="ArgumentException">Thrown if <paramref name="classname" /> or <paramref name="field" /> does not exist</exception>
     /// </summary>
     SchemaField GetSchemaField(string classname, string field);
 
     /// <summary>
-    ///     获取Schema成员变量的偏移
+    ///     Gets the offset of a Schema member variable
     /// </summary>
-    /// <exception cref="ArgumentException">如果不存在<paramref name="classname" />或<paramref name="field" />则抛出异常</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="classname" /> or <paramref name="field" /> does not exist</exception>
     int GetNetVarOffset(string classname, string field);
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     bool GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, bool? _ = null)
         where T : IComparable<bool>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     byte GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, byte? _ = null)
         where T : IComparable<byte>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     short GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, short? _ = null)
         where T : IComparable<short>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ushort GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, ushort? _ = null)
         where T : IComparable<ushort>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     int GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, int? _ = null)
         where T : IComparable<int>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     uint GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, uint? _ = null)
         where T : IComparable<uint>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     long GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, long? _ = null)
         where T : IComparable<long>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ulong GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, ulong? _ = null)
         where T : IComparable<ulong>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     float GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, float? _ = null)
         where T : IComparable<float>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     nint GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, nint? _ = null)
         where T : IComparable<nint>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     string GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, string? _ = null)
         where T : IComparable<string>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     Vector GetNetVar<T>(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0, Vector? _ = null)
         where T : IComparable<Vector>;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     string GetNetVarUtlSymbolLarge(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0);
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ref CUtlSymbolLarge GetNetVarUtlSymbolLargeRef(INativeObject nativeObject,
@@ -186,70 +186,70 @@ public interface ISchemaManager
         ushort                                                   extraOffset = 0);
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     string GetNetVarUtlString(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0);
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ref CUtlString GetNetVarUtlStringRef(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0);
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="pointer" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ISchemaArray<T> GetSchemaFixedArray<T>(nint pointer, string classname, string field, ISchemaObject chain)
         where T : unmanaged;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="pointer" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ISchemaArray<T> GetSchemaFixedArray<T>(nint pointer, SchemaField field, ISchemaObject chain)
         where T : unmanaged;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="pointer" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ISchemaList<T> GetSchemaList<T>(nint pointer, string classname, string field, ISchemaObject chain, bool isStruct)
         where T : unmanaged;
 
     /// <summary>
-    ///     获取Schema成员变量的值 <br />
+    ///     Gets the value of a Schema member variable <br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="pointer" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     ISchemaList<T> GetSchemaList<T>(nint pointer, SchemaField field, ISchemaObject chain, bool isStruct)
         where T : unmanaged;
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -260,12 +260,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -276,12 +276,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -292,12 +292,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -308,12 +308,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -324,12 +324,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -340,12 +340,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -356,12 +356,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -372,12 +372,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -388,12 +388,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -405,12 +405,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVar(INativeObject nativeObject,
@@ -421,12 +421,12 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVarUtlSymbolLarge(INativeObject nativeObject,
@@ -437,12 +437,12 @@ public interface ISchemaManager
         ushort                                 extraOffset = 0);
 
     /// <summary>
-    ///     设置Schema成员的值 <br />
+    ///     Sets the value of a Schema member <br />
     ///     <remarks>
-    ///         不需要在显式调用<seealso cref="NetVarStateChanged" /><br />
-    ///         <paramref name="isStruct" />为<c>true</c>时不会主动调用<b>NetVarStateChanged</b><br /><br />
-    ///         这里并不会验证传入的<paramref name="ptr" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
+    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically<br /><br />
+    ///         This method does not validate whether the provided <paramref name="ptr" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void SetNetVarUtlString(INativeObject ptr,
@@ -453,10 +453,10 @@ public interface ISchemaManager
         ushort                            extraOffset = 0);
 
     /// <summary>
-    ///     自动调用<b>NetworkStateChanged</b>或<b>StateChanged</b><br />
+    ///     Automatically calls <b>NetworkStateChanged</b> or <b>StateChanged</b><br />
     ///     <remarks>
-    ///         这里并不会验证传入的<paramref name="nativeObject" />是否是有效的Schema实例<br />
-    ///         传入错误的实例可能会导致崩溃
+    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance<br />
+    ///         Passing an invalid instance may cause crashes
     ///     </remarks>
     /// </summary>
     void NetVarStateChanged(

@@ -31,147 +31,145 @@ namespace Sharp.Shared.Objects;
 public interface IGameClient : INativeObject
 {
     /// <summary>
-    ///     输出到客户端控制台
+    ///     Print message to client console
     /// </summary>
     void ConsolePrint(string message);
 
     /// <summary>
-    ///     覆盖游戏内名字
+    ///     Override player's in-game name
     /// </summary>
     void SetName(string name);
 
     /// <summary>
-    ///     发生聊天消息
+    ///     Send chat message as this client
     /// </summary>
     void SayChatMessage(bool teamOnly, string message);
 
     /// <summary>
-    ///     读取客户端IP地址
+    ///     Get client IP address
     /// </summary>
     /// <returns></returns>
     string? GetAddress(bool withPort);
 
     /// <summary>
-    ///     获取客户端建立链接的时间
+    ///     Get time since client connected
     /// </summary>
     float GetTimeConnected();
 
     /// <summary>
-    ///     执行命令 (via Client/NetChannel)
+    ///     Execute command (via Client/NetChannel)
     /// </summary>
     void Command(string command);
 
     /// <summary>
-    ///     执行命令 (via GameClients)
+    ///     Execute command (via GameClients)
     /// </summary>
     void FakeCommand(string command);
 
     /// <summary>
-    ///     执行命令 (via Engine)
+    ///     Execute command (via Engine)
     /// </summary>
     void ExecuteStringCommand(string command);
 
     /// <summary>
-    ///     强制发送FullUpdate
+    ///     Force send full update to client
     /// </summary>
     void ForceFullUpdate();
 
     /// <summary>
-    ///     获取客户端info类ConVar的值
+    ///     Get client info ConVar value
     /// </summary>
     string? GetConVarValue(string cvarName);
 
     /// <summary>
-    ///     获取客户端ConVars KeyValues对象
+    ///     Get client ConVars as KeyValues object
     /// </summary>
     IKeyValues? GetConVars();
 
     /// <summary>
-    ///     获取<see cref="IPlayerController" /> <br />
+    ///     Get <see cref="IPlayerController" /> <br />
     ///     <remarks>
-    ///         如果玩家不在服务器内, 哪怕是实体存在, 也会返回<c>null</c>
+    ///         Returns <c>null</c> if player is not on server, even if entity exists
     ///     </remarks>
     /// </summary>
     IPlayerController? GetPlayerController();
 
     /// <summary>
-    ///     客户端SignOn状态
+    ///     Client sign-on state
     /// </summary>
     SignOnState SignOnState { get; }
 
     /// <summary>
-    ///     是否为FakeClient <br />
-    ///     <remarks>Hltv / Bot</remarks>
+    ///     Whether this is a fake client <br />
+    ///     <remarks>HLTV / Bot</remarks>
     /// </summary>
     bool IsFakeClient { get; }
 
     /// <summary>
-    ///     是否为Hltv
+    ///     Whether this is HLTV
     /// </summary>
     bool IsHltv { get; }
 
     /// <summary>
-    ///     UserId
+    ///     User ID
     /// </summary>
     UserID UserId { get; }
 
     /// <summary>
-    ///     SteamId (64位)
+    ///     Steam ID (64-bit)
     /// </summary>
     SteamID SteamId { get; }
 
     /// <summary>
-    ///     IClient的Engine Slot (PlayerSlot)
+    ///     Client engine slot (PlayerSlot)
     /// </summary>
     PlayerSlot Slot { get; }
 
     /// <summary>
-    ///     Controller的Index
+    ///     Controller entity index
     /// </summary>
     EntityIndex ControllerIndex { get; }
 
     /// <summary>
-    ///     名字 <br />
-    ///     <remarks>目前游戏里无法改名</remarks>
+    ///     Player name <br />
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     是否是完美世界用户
+    ///     Whether client is Perfect World user or has low violence mode enabled
     /// </summary>
     bool PerfectWorld { get; }
 
     /// <summary>
-    ///     是否已经被Steam服务器验证过SteamId
+    ///     Whether Steam ID has been authenticated by Steam servers
     /// </summary>
     bool IsAuthenticated { get; }
 
     /// <summary>
-    ///     当前指针的IClient是否有效
+    ///     Whether this client pointer is valid
     /// </summary>
     bool IsValid { get; }
 
     /// <summary>
-    ///     当前指针的IClient是否已连线
+    ///     Whether this client is connected
     /// </summary>
     bool IsConnected { get; }
 
     /// <summary>
-    ///     当前指针的IClient是否已在游戏内
+    ///     Whether this client is in-game
     /// </summary>
     bool IsInGame { get; }
 
     /// <summary>
-    ///     网络存活时间 <br />
-    ///     <remarks>对于玩家, 该值为进服到现在的时间 (换图不会重置)</remarks>
+    ///     <remarks>For players: time since joining server (persists across map changes)</remarks>
     ///     <br />
-    ///     <remarks>对于Bot/Hltv, 该值永远为服务器启动到现在的时间</remarks>
+    ///     <remarks>For bots/HLTV: always shows server uptime</remarks>
     /// </summary>
     float TimeConnected { get; }
 
     /// <summary>
-    ///     客户端的IP和端口 <br />
-    ///     <remarks>对于Bot/Hltv, 该值永远为空</remarks>
+    ///     Client IP address and port <br />
+    ///     <remarks>Always null for bots/HLTV</remarks>
     /// </summary>
     string? Address { get; }
 

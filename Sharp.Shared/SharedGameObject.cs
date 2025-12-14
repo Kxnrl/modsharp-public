@@ -50,8 +50,8 @@ public record SchemaField
 }
 
 /// <summary>
-///     如果你不知道你在做什么, 随便动这里的东西 <br />
-///     <remarks>手贱可能会导致意想不到的结果</remarks>
+///     Do not modify anything here if you don't know what you're doing <br />
+///     <remarks>Modifying can lead to unexpected results</remarks>
 /// </summary>
 public static class SharedGameObject
 {

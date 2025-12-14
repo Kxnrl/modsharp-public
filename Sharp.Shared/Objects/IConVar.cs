@@ -30,27 +30,27 @@ namespace Sharp.Shared.Objects;
 public interface IConVar : INativeObject
 {
     /// <summary>
-    ///     ConVar名
+    ///     ConVar name
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     默认值
+    ///     Default value
     /// </summary>
     string DefaultValue { get; }
 
     /// <summary>
-    ///     提示文本
+    ///     Help description text
     /// </summary>
     string HelpString { get; }
 
     /// <summary>
-    ///     Flags
+    ///     ConVar flags
     /// </summary>
     ConVarFlags Flags { get; set; }
 
     /// <summary>
-    ///     ConVar的值类型
+    ///     ConVar value type
     /// </summary>
     ConVarType Type { get; }
 
@@ -89,20 +89,20 @@ public interface IConVar : INativeObject
     bool SetMaxBound(ConVarVariantValue value);
 
     /// <summary>
-    ///     将字符串自动解析为ConVar对应的类型并设置 <br />
-    ///     <remarks>不符合类型解析失败将设置对应类型默认值</remarks>
+    ///     Parse string and set ConVar to corresponding type value <br />
+    ///     <remarks>Sets to default value if parsing fails</remarks>
     /// </summary>
     /// <param name="value"></param>
     void SetString(string value);
 
     /// <summary>
-    ///     将各种ConVar的值转换为字符串表达方式 <br />
+    ///     Convert ConVar value to string representation <br />
     /// </summary>
     /// <returns></returns>
     string GetString();
 
     /// <summary>
-    ///     ReplicateToClient 而不修改值
+    ///     Replicate value to client without modifying the ConVar
     /// </summary>
     void ReplicateToClient(IGameClient client, string value);
 }

@@ -25,7 +25,7 @@ namespace Sharp.Shared.CStrike;
 public interface ISchemaEmbeddedList<T> : INativeObject
 {
     /// <summary>
-    ///     元素的数量
+    ///     The number of elements
     /// </summary>
     int Count { get; }
 
@@ -35,17 +35,17 @@ public interface ISchemaEmbeddedList<T> : INativeObject
     T this[int index] { get; set; }
 
     /// <summary>
-    ///     转换为 <see cref="IEnumerable{T}" /> 以使用 Linq/ZLinq
+    ///     Convert to <see cref="IEnumerable{T}" /> for use with Linq/ZLinq
     /// </summary>
     IEnumerator<T> AsEnumerable();
 
     /// <summary>
-    ///     通常情况下你不需要使用它, 因为这是为<c>foreach</c>提供的0分配 <seealso cref="Enumerator" />
+    ///     You typically don't need to use this, as it provides zero-allocation enumeration for <c>foreach</c> <seealso cref="Enumerator" />
     /// </summary>
     Enumerator GetEnumerator();
 
     /// <summary>
-    ///     你不需要使用它
+    ///     You don't need to use this
     /// </summary>
     public struct Enumerator : IEnumerator<T>
     {

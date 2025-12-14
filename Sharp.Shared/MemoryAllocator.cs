@@ -22,8 +22,8 @@ using System.Runtime.InteropServices;
 namespace Sharp.Shared;
 
 /// <summary>
-///     如果你不知道你在做什么, 你就不要用这个 <br />
-///     <remarks>手贱可能会导致意想不到的结果</remarks>
+///     Do not use this if you don't know what you're doing <br />
+///     <remarks>Improper usage can lead to unexpected results</remarks>
 /// </summary>
 public static unsafe class MemoryAllocator
 {
