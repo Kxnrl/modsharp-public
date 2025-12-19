@@ -93,12 +93,12 @@ public interface IGameData
     /// <summary>
     ///     Register GameData file
     /// </summary>
-    /// <param name="path">File path (automatically searches GameData directory)</param>
+    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
     void Register(string path);
 
     /// <summary>
     ///     Unregister GameData file
     /// </summary>
-    /// <param name="path">File path (automatically searches GameData directory)</param>
+    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
     void Unregister(string path);
 }
