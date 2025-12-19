@@ -64,7 +64,7 @@ public interface IMovementService : IPlayerPawnComponent
 public interface IPlayerMovementService : IMovementService
 {
     /// <summary>
-    ///     Duck speed, lower it is the longer it takes to fully duck
+    ///     Duck speed, the lower it is the longer it takes to fully duck
     /// </summary>
     float DuckSpeed { get; set; }
 
