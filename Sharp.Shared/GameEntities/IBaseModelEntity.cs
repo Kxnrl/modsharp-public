@@ -100,7 +100,7 @@ public interface IBaseModelEntity : IBaseEntity
     /// <summary>
     ///     Get the given attachment's index
     /// </summary>
-    /// <returns>Starts with 1</returns>
+    /// <returns>It returns 0 when the given attachment does not exist</returns>
     int LookupAttachment(string attachment);
 
     /// <summary>
@@ -129,7 +129,7 @@ public interface IBaseModelEntity : IBaseEntity
     void SetCollisionBounds(Vector mins, Vector maxs);
 
     /// <summary>
-    ///     GlowProperty (不为空)
+    ///     GlowProperty
     /// </summary>
     IGlowProperty GetGlowProperty();
 }
