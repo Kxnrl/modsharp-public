@@ -94,13 +94,6 @@ public static unsafe partial class Game
         InteractionLayers                                      excludeLayers,
         TraceResultStruct*                                     result);
 
-    public static partial void TraceShapePlayerMovement(TraceShapeRay* ray,
-        Vector*                                                        start,
-        Vector*                                                        end,
-        InteractionLayers                                              interactsWith,
-        nint                                                           entityPtr,
-        TraceResultStruct*                                             result);
-
     public static partial int DispatchParticleEffectPosition(string particle,
         Vector*                                                     origin,
         Vector*                                                     angles,

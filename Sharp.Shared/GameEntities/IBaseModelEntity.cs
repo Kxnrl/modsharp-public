@@ -124,7 +124,7 @@ public interface IBaseModelEntity : IBaseEntity
     void SetModelScale(float scale);
 
     /// <summary>
-    ///     设置 BBox
+    ///     Set collision bounding box
     /// </summary>
     void SetCollisionBounds(Vector mins, Vector maxs);
 

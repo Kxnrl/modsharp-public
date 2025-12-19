@@ -89,7 +89,7 @@ public interface IGameClient : INativeObject
     /// <summary>
     ///     Get <see cref="IPlayerController" /> <br />
     ///     <remarks>
-    ///         Returns <c>null</c> if player is not on server, even if entity exists
+    ///         Returns <c>null</c> if the player is not on the server, even if the controller entity exists
     ///     </remarks>
     /// </summary>
     IPlayerController? GetPlayerController();
@@ -101,7 +101,6 @@ public interface IGameClient : INativeObject
 
     /// <summary>
     ///     Whether this is a fake client <br />
-    ///     <remarks>HLTV / Bot</remarks>
     /// </summary>
     bool IsFakeClient { get; }
 
@@ -163,7 +162,7 @@ public interface IGameClient : INativeObject
     /// <summary>
     ///     <remarks>For players: time since joining server (persists across map changes)</remarks>
     ///     <br />
-    ///     <remarks>For bots/HLTV: always shows server uptime</remarks>
+    ///     <remarks>For bots/HLTV: always returns server uptime</remarks>
     /// </summary>
     float TimeConnected { get; }
 

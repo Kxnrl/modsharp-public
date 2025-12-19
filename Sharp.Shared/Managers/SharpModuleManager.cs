@@ -24,7 +24,7 @@ namespace Sharp.Shared.Managers;
 public interface ISharpModuleManager
 {
     /// <summary>
-    ///     Register your current module as a library to allow other modules to reference it
+    ///     Register your current module as a library to allow other modules to use the interface
     /// </summary>
     public void RegisterSharpModuleInterface<T>(IModSharpModule owner, string identity, T impl) where T : class;
 
@@ -41,7 +41,7 @@ public interface ISharpModuleManager
 
     /// <summary>
     ///     Register dynamic native functions for convenient debugging, performance is actually decent too<br />
-    ///     <remarks>Same as in SourceMod, you can use it however you want</remarks>
+    ///     <remarks>It is the same as SourceMod, you can use it however you want</remarks>
     /// </summary>
     public void RegisterDynamicNative(IModSharpModule owner, string name, Delegate function);
 

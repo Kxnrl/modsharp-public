@@ -186,20 +186,6 @@ static void TraceShape(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t lay
     result.Init(trace);
 }
 
-static void TraceShapePlayerMovement(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t interactsWith, CBaseEntity* entity, CTraceResult_t& result)
-{
-    static auto physicsQuery = g_pGameData->GetAddress<CGamePhysicsQueryInterface*>("g_pPhysicsQuery");
-    AssertPtr(physicsQuery);
-
-    CGameTrace                   trace;
-    CTraceFilterPlayerMovementCS filter;
-    address::server::CTraceFilterPlayerMovementCS_ctor(filter, entity, interactsWith, 11 /*COLLISONGROUP_PLAYER_MOVEMENT*/);
-
-    physicsQuery->TraceShape(ray, start, end, &filter, &trace);
-
-    result.Init(trace);
-}
-
 static void TraceShapeFilter(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t layers, uint8_t collisionGroup, RnQueryObjectFlags flag, uint64_t excludeLayers, CTraceResult_t& result)
 {
     static auto physicsQuery = g_pGameData->GetAddress<CGamePhysicsQueryInterface*>("g_pPhysicsQuery");
@@ -341,7 +327,6 @@ void Init()
     bridge::CreateNative("Game.TraceLineFilter", reinterpret_cast<void*>(TraceLineFilter));
     bridge::CreateNative("Game.TraceShape", reinterpret_cast<void*>(TraceShape));
     bridge::CreateNative("Game.TraceShapeFilter", reinterpret_cast<void*>(TraceShapeFilter));
-    bridge::CreateNative("Game.TraceShapePlayerMovement", reinterpret_cast<void*>(TraceShapePlayerMovement));
 
     bridge::CreateNative("Game.DispatchParticleEffectPosition", reinterpret_cast<void*>(DispatchParticleEffectPosition));
     bridge::CreateNative("Game.DispatchParticleEffectEntityPosition", reinterpret_cast<void*>(DispatchParticleEffectEntityPosition));

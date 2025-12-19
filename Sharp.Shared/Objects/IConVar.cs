@@ -89,20 +89,22 @@ public interface IConVar : INativeObject
     bool SetMaxBound(ConVarVariantValue value);
 
     /// <summary>
-    ///     Parse string and set ConVar to corresponding type value <br />
-    ///     <remarks>Sets to default value if parsing fails</remarks>
+    ///     Parses the string and sets the ConVar to the corresponding typed value.
+    ///     Falls back to the default value if parsing fails.
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">The string value to parse.</param>
     void SetString(string value);
 
     /// <summary>
-    ///     Convert ConVar value to string representation <br />
+    ///     Returns the ConVar value as a string.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The string representation of the current value.</returns>
     string GetString();
 
     /// <summary>
-    ///     Replicate value to client without modifying the ConVar
+    ///     Sends the specified value to the client without changing the server-side ConVar.
     /// </summary>
+    /// <param name="client">The target client.</param>
+    /// <param name="value">The value to replicate.</param>
     void ReplicateToClient(IGameClient client, string value);
 }

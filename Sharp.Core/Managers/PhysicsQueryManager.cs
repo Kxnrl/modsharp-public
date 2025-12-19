@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -297,28 +297,7 @@ internal unsafe partial class PhysicsQueryManager : ICorePhysicsQueryManager
         Vector                                                end,
         InteractionLayers                                     interactsWith,
         IPlayerPawn                                           pawn)
-    {
-        var result = stackalloc TraceResultStruct[1];
-
-        Game.TraceShapePlayerMovement(&ray, &start, &end, interactsWith, pawn.GetAbsPtr(), result);
-
-        return new TraceResult(BaseEntity.Create(result->HitEntity),
-                               result->Fraction,
-                               result->RayType,
-                               result->StartInSolid,
-                               result->Triangle,
-                               result->StartPosition,
-                               result->EndPosition,
-                               result->PlaneNormal,
-                               result->SurfaceProp,
-                               result->HitBoxData,
-                               result->PhysicsBody,
-                               result->PhysicsShape,
-                               result->HitPoint,
-                               result->HitOffset,
-                               result->Contents,
-                               result->HitGroupHitBoxBoneIndex);
-    }
+        => throw new NotImplementedException();
 
     private Func<IBaseEntity, bool>? _traceFilterCallback;
 
