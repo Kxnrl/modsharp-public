@@ -148,14 +148,32 @@ public interface IHookManager
 
     /// <summary>
     ///     CBaseEntity::DispatchTraceAttack (PlayerPawn Only)
-    ///     <remarks>Return value is ignored if it returns SkipCall, the return value will be 0</remarks>
     /// </summary>
+    /// <remarks>
+    ///     This hook is only fired when the entity that takes damage is a player pawn.
+    ///     <para>
+    ///     This hook should only return <see cref="EHookAction.Ignored"/> or <see cref="EHookAction.SkipCallReturnOverride"/>.
+    ///     If <see cref="EHookAction.SkipCallReturnOverride"/> is used, the function returns 0 (the specific return value provided by the hook is ignored).
+    ///     </para>
+    ///     <para>
+    ///     To make a player take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack"/> on the player pawn entity.
+    ///     </para>
+    /// </remarks>
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
 
     /// <summary>
     ///     CBaseEntity::DispatchTraceAttack (No PlayerPawn)
-    ///     <remarks>Return value is ignored if it returns SkipCall, the return value will be 0</remarks>
     /// </summary>
+    /// <remarks>
+    ///     This hook is only fired when the entity that takes damage is <b>not</b> a player pawn.
+    ///     <para>
+    ///     This hook should only return <see cref="EHookAction.Ignored"/> or <see cref="EHookAction.SkipCallReturnOverride"/>.
+    ///     If <see cref="EHookAction.SkipCallReturnOverride"/> is used, the function returns 0 (the specific return value provided by the hook is ignored).
+    ///     </para>
+    ///     <para>
+    ///     To make an entity take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack"/> on the target entity.
+    ///     </para>
+    /// </remarks>
     IHookType<IEntityDispatchTraceAttackHookParams, long> EntityDispatchTraceAttack { get; }
 
 #endregion
@@ -231,11 +249,19 @@ public interface IHookManager
     /// <summary>
     ///     CCSPlayerPawn::PreThink
     /// </summary>
+    /// <remarks>
+    ///     Invoked only for living players. Executes after internal pre-processing logic is complete, 
+    ///     such as handling mp_autokick, domination updates, and healthshot recovery.
+    /// </remarks>
     IForwardType<IPlayerThinkForwardParams> PlayerPreThink { get; }
 
     /// <summary>
     ///     CCSPlayerPawn::PostThink
     /// </summary>
+    /// <remarks>
+    ///     Invoked only for living players. Runs after the game has done processing movement, attack
+    ///     animation update for the player.
+    /// </remarks>
     IForwardType<IPlayerThinkForwardParams> PlayerPostThink { get; }
 
 #endregion
@@ -252,18 +278,28 @@ public interface IHookManager
 #region Player Movement
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::WalkMove
+    ///     CPlayer_MovementService::WalkMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is only called when the player is on the ground with (<see cref="MoveType.Walk"/>) and before the engine runs its own logic.
+    ///     You can use <see cref="IPlayerWalkMoveForwardParams.SetSpeed"/> to override the maximum prestrafe speed.
+    /// </remarks>
     IForwardType<IPlayerWalkMoveForwardParams> PlayerWalkMove { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::ProcessMove
+    ///     CPlayer_MovementService::ProcessMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is called regardless of the player's <see cref="MoveType"/>, executing before specific movement functions (like WalkMove, AirMove).
+    /// </remarks>
     IForwardType<IPlayerProcessMoveForwardParams> PlayerProcessMovePre { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::ProcessMove
+    ///     CPlayer_MovementService::ProcessMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is called regardless of the player's <see cref="MoveType"/>, executing after the game has processed movement functions (like WalkMove, AirMove).
+    /// </remarks>
     IForwardType<IPlayerProcessMoveForwardParams> PlayerProcessMovePost { get; }
 
 #endregion

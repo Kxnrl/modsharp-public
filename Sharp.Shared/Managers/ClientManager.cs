@@ -104,12 +104,16 @@ public interface IClientManager
         NetworkDisconnectionReason msgId = NetworkDisconnectionReason.Invalid);
 
     /// <summary>
-    ///     Remotely query client ConVar
+    ///     Query the value of a given cvar from the client
     /// </summary>
     /// <param name="client"><see cref="IGameClient"/></param>
     /// <param name="name">ConVar name</param>
     /// <param name="callback">Callback</param>
     /// <returns>Cookie</returns>
+    /// <remarks>
+    ///     <para>Can query any cvar that does not have flag <see cref="ConVarFlags.ServerCannotQuery"/> set.</para>
+    ///     <para>Note that client-side values can be manipulated by cheats/hacks and should not be trusted for security-critical decisions.</para>
+    /// </remarks>
     int QueryConVar(IGameClient client, string name, Action<IGameClient, QueryConVarValueStatus, string, string> callback);
 
     /// <summary>

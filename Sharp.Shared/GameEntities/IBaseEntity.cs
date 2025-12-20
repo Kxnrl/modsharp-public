@@ -362,15 +362,33 @@ public interface IBaseEntity : ISchemaObject
         int               outputId = 0);
 
     /// <summary>
-    ///     TakeDamage
+    ///     Applies damage to this entity using trace attack logic.
     /// </summary>
-    /// <returns>The amount of damage is applied</returns>
+    /// <remarks>
+    ///     This is the programmatic way to inflict damage.
+    ///     <para>
+    ///     Calling this triggers <see cref="IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
+    ///     <see cref="IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
+    ///     </para>
+    /// </remarks>
+    /// <param name="info">The damage information to apply.</param>
+    /// <param name="bypassHook">If <see langword="true"/>, the damage is applied directly without being intercepted by hooks.</param>
+    /// <returns>The result returned by the engine (or the hook), typically representing the damage applied.</returns>
     long DispatchTraceAttack(in TakeDamageInfo info, bool bypassHook = false);
 
     /// <summary>
-    ///     TakeDamage
+    ///     Applies damage to this entity using trace attack logic (Unsafe).
     /// </summary>
-    /// <returns>The amount of damage is applied</returns>
+    /// <remarks>
+    ///     This is the programmatic way to inflict damage using a raw pointer.
+    ///     <para>
+    ///     Calling this triggers <see cref="IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
+    ///     <see cref="IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
+    ///     </para>
+    /// </remarks>
+    /// <param name="info">A pointer to the damage information struct. Must not be null.</param>
+    /// <param name="bypassHook">If <see langword="true"/>, the damage is applied directly without being intercepted by hooks.</param>
+    /// <returns>The result returned by the engine (or the hook), typically representing the damage applied.</returns>
     unsafe long DispatchTraceAttack(TakeDamageInfo* info, bool bypassHook = false);
 
     /// <summary>

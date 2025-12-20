@@ -19,6 +19,10 @@
 
 namespace Sharp.Shared.Managers;
 
+/// <summary>
+///     Provides memory access to the game libraries, such as server.dll (or .so on linux) 
+///     Can be used for FindPattern and other memory scanning operations.
+/// </summary>
 public interface ILibraryModuleManager
 {
     ILibraryModule Server                { get; }

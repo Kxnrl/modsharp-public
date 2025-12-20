@@ -27,40 +27,51 @@ public interface ILibraryModule
     ///     Find function address by IDA pattern (non-unique) <br />
     ///     <remarks>This method is typically used for iterating through addresses</remarks>
     /// </summary>
+    /// <param name="pattern">The IDA-style signature string (e.g. "48 89 ? 24 ??")</param>
     nint FindPattern(string pattern, nint startAddress = 0);
 
     /// <summary>
     ///     Find virtual table by name
     /// </summary>
+    /// <param name="tableName">The name of the vtable</param>
+    /// <param name="decorated">If true, will treat <paramref name="tableName"/> as the mangled (symbol) name</param>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
     /// <summary>
-    ///     Get exported function address
+    ///     Get exported function address (similar to GetProcAddress or dlsym).
     /// </summary>
+    /// <param name="functionName">The name of the exported function</param>
     nint GetFunctionByName(string functionName);
 
     /// <summary>
-    ///     Find function address by IDA pattern (unique match)
+    ///     Find function address by IDA pattern (expecting a unique match).
     /// </summary>
+    /// <param name="pattern">The IDA-style signature string (e.g. "48 89 ? 24 ??")</param>
+    /// <returns>The address of the match, or 0 if not found/ambiguous</returns>
     nint FindPatternExactly(string pattern);
 
     /// <summary>
-    ///     Find game VInterface
+    ///     Find a game VInterface pointer exposed by this module (via CreateInterface).
     /// </summary>
+    /// <param name="interfaceName">The versioned interface name (e.g., "Source2Server001")</param>
     nint FindInterface(string interfaceName);
 
     /// <summary>
-    ///     Find multiple function addresses by IDA pattern
+    ///     Find multiple function addresses by IDA pattern.
     /// </summary>
+    /// <param name="pattern">The IDA-style signature string (e.g. "48 89 ? 24 ??")</param>
+    /// <returns>A list of all memory addresses matching the pattern</returns>
     List<nint> FindPatternMulti(string pattern);
 
     /// <summary>
-    ///     Find address of the given string in data section
+    ///     Find address of the given string in the module's data section.
     /// </summary>
+    /// <param name="str">The string literal to search for</param>
     nint FindString(string str);
 
     /// <summary>
-    ///     Find address whose value equals to the given pointer
+    ///     Find the address in memory that contains a pointer to the specific value provided.
     /// </summary>
+    /// <param name="ptr">The value/address to search for within the module's memory space</param>
     nint FindPtr(nint ptr);
 }
