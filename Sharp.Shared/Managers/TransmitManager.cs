@@ -85,18 +85,19 @@ public interface ITransmitManager
     bool SetEntityOwner(EntityIndex entity, EntityIndex owner);
 
     /// <summary>
-    ///     Get temporary entity state
+    ///     Checks if a specific temporary entity type is currently blocked for a player.
     /// </summary>
     /// <param name="type">Temporary entity type</param>
     /// <param name="slot">IGameClient slot</param>
+    /// <returns><see langword="true"/> if the entity type is blocked; otherwise, <see langword="false"/>.</returns>
     bool GetTempEntState(BlockTempEntType type, PlayerSlot slot);
 
     /// <summary>
-    ///     Set temporary entity state
+    ///     Configures whether a specific temporary entity type is blocked for a player.
     /// </summary>
     /// <param name="type">Temporary entity type</param>
     /// <param name="slot">IGameClient slot</param>
-    /// <param name="state">Visibility state</param>
+    /// <param name="state">If <see langword="true"/>, the entity type will be blocked (not sent to the client). If <see langword="false"/>, it will be allowed.</param>
     void SetTempEntState(BlockTempEntType type, PlayerSlot slot, bool state);
 
     /// <summary>
@@ -106,12 +107,12 @@ public interface ITransmitManager
     void ClearReceiverState(EntityIndex receiverIndex);
 
     /// <summary>
-    ///     Check weapon FireBullet blocking state
+    ///     Get weapon sound blocking state
     /// </summary>
     TransmitFireBulletState GetWeaponFireBulletState(IBaseWeapon weapon);
 
     /// <summary>
-    ///     Set weapon FireBullet state
+    ///     Set weapon sound blocking state
     /// </summary>
     void SetWeaponFireBulletState(IBaseWeapon weapon, TransmitFireBulletState state);
 }
