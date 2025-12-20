@@ -107,12 +107,14 @@ public interface ITransmitManager
     void ClearReceiverState(EntityIndex receiverIndex);
 
     /// <summary>
-    ///     Get weapon sound blocking state
+    ///     Gets the blocking state for fire bullet effects (e.g., sound, visual effects).
     /// </summary>
+    /// <param name="weapon">The weapon instance to check.</param>
+    /// <returns>The current transmission or blocking state.</returns>
     TransmitFireBulletState GetWeaponFireBulletState(IBaseWeapon weapon);
 
     /// <summary>
-    ///     Set weapon sound blocking state
+    ///     Sets the blocking state for fire bullet effects (e.g., sound, visual effects).
     /// </summary>
     void SetWeaponFireBulletState(IBaseWeapon weapon, TransmitFireBulletState state);
 }
