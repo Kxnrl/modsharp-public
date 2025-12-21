@@ -68,21 +68,20 @@ internal class InputManager : IModSharpModule, IInputManager
 
     private readonly Dictionary<(IGameClient Client, InputKey Key), (DateTime PressedTime, bool HasTriggered)> _keyPressStates = new();
 
-    private readonly Dictionary<InputKey, InputListenerInfo> _inputListeners = new()
+    private readonly Dictionary<InputKey, InputListenerInfo> _inputListeners = new ()
     {
-        [InputKey.W] = new InputListenerInfo(),
-        [InputKey.S] = new InputListenerInfo(),
-        [InputKey.A] = new InputListenerInfo(),
-        [InputKey.D] = new InputListenerInfo(),
-        [InputKey.E] = new InputListenerInfo(),
-        [InputKey.G] = new InputListenerInfo(),
-        [InputKey.Tab] = new InputListenerInfo(),
-        [InputKey.Space] = new InputListenerInfo(),
-        [InputKey.Shift] = new InputListenerInfo(),
+        [InputKey.W]       = new InputListenerInfo(),
+        [InputKey.S]       = new InputListenerInfo(),
+        [InputKey.A]       = new InputListenerInfo(),
+        [InputKey.D]       = new InputListenerInfo(),
+        [InputKey.E]       = new InputListenerInfo(),
+        [InputKey.Tab]     = new InputListenerInfo(),
+        [InputKey.Space]   = new InputListenerInfo(),
+        [InputKey.Shift]   = new InputListenerInfo(),
         [InputKey.Attack1] = new InputListenerInfo(),
         [InputKey.Attack2] = new InputListenerInfo(),
-        [InputKey.R] = new InputListenerInfo(),
-        [InputKey.F] = new InputListenerInfo()
+        [InputKey.R]       = new InputListenerInfo(),
+        [InputKey.F]       = new InputListenerInfo(),
     };
 
     private readonly List<CombinationListenerInfo> _combinationListeners = [];
