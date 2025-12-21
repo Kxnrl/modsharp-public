@@ -167,6 +167,16 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         controller.Render();
     }
 
+    public void QuitMenu(IGameClient client)
+    {
+        if (_controllers[client.Slot] is not { } controller)
+        {
+            throw new InvalidOperationException("Client is not in a menu.");
+        }
+
+        controller.Exit();
+    }
+
     public bool IsInMenu(IGameClient client)
         => _controllers[client.Slot] is not null;
 

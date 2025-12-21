@@ -8,5 +8,7 @@ public interface IMenuManager
 
     void DisplayMenu(IGameClient client, Menu menu);
 
+    void QuitMenu(IGameClient client);
+
     bool IsInMenu(IGameClient client);
 }
