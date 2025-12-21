@@ -16,12 +16,12 @@ namespace Sharp.Modules.InputManager.Core;
 
 internal class ListenerInfo
 {
-    public Action<IGameClient> Callback { get; }
-    public float HoldDuration { get; }
+    public Action<IGameClient> Callback     { get; }
+    public float               HoldDuration { get; }
 
     public ListenerInfo(Action<IGameClient> callback, float holdDuration)
     {
-        Callback = callback;
+        Callback     = callback;
         HoldDuration = holdDuration;
     }
 }
@@ -30,7 +30,7 @@ internal class InputListenerInfo
 {
     private readonly List<ListenerInfo> _keyDownListeners = [];
     private readonly List<ListenerInfo> _keyHoldListeners = [];
-    private readonly List<ListenerInfo> _keyUpListeners = [];
+    private readonly List<ListenerInfo> _keyUpListeners   = [];
 
     public List<ListenerInfo> GetListeners(InputState state)
     {
@@ -38,35 +38,36 @@ internal class InputListenerInfo
         {
             InputState.KeyDown => _keyDownListeners,
             InputState.KeyHold => _keyHoldListeners,
-            InputState.KeyUp => _keyUpListeners,
-            _ => throw new ArgumentException($"Unsupported input state: {state}")
+            InputState.KeyUp   => _keyUpListeners,
+            _                  => throw new ArgumentException($"Unsupported input state: {state}"),
         };
     }
 }
 
 internal class CombinationListenerInfo
 {
-    public InputKey[] Keys { get; }
+    public InputKey[]          Keys     { get; }
     public Action<IGameClient> Callback { get; }
-    public InputState State { get; }
+    public InputState          State    { get; }
 
     public CombinationListenerInfo(InputKey[] keys, Action<IGameClient> callback, InputState state)
     {
-        Keys = keys;
+        Keys     = keys;
         Callback = callback;
-        State = state;
+        State    = state;
     }
 }
 
 internal class InputManager : IModSharpModule, IInputManager
 {
     private readonly ILogger<InputManager> _logger;
-    private readonly IModSharp _modSharp;
-    private readonly ISharpModuleManager _modules;
-    private readonly IClientManager _clients;
-    private readonly IHookManager _hooks;
+    private readonly IModSharp             _modSharp;
+    private readonly ISharpModuleManager   _modules;
+    private readonly IClientManager        _clients;
+    private readonly IHookManager          _hooks;
 
-    private readonly Dictionary<(IGameClient Client, InputKey Key), (DateTime PressedTime, bool HasTriggered)> _keyPressStates = new();
+    private readonly Dictionary<(IGameClient Client, InputKey Key), (DateTime PressedTime, bool HasTriggered)> _keyPressStates
+        = new ();
 
     private readonly Dictionary<InputKey, InputListenerInfo> _inputListeners = new ()
     {
@@ -89,26 +90,27 @@ internal class InputManager : IModSharpModule, IInputManager
     private readonly Dictionary<string, InputListenerRegistry> _registries = [];
 
     public InputManager(ISharedSystem sharedSystem,
-        string dllPath,
-        string sharpPath,
-        Version version,
-        IConfiguration configuration,
-        bool hotReload)
+        string                        dllPath,
+        string                        sharpPath,
+        Version                       version,
+        IConfiguration                configuration,
+        bool                          hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger = loggerFactory.CreateLogger<InputManager>();
+        _logger   = loggerFactory.CreateLogger<InputManager>();
         _modSharp = sharedSystem.GetModSharp();
-        _modules = sharedSystem.GetSharpModuleManager();
-        _clients = sharedSystem.GetClientManager();
-        _hooks = sharedSystem.GetHookManager();
+        _modules  = sharedSystem.GetSharpModuleManager();
+        _clients  = sharedSystem.GetClientManager();
+        _hooks    = sharedSystem.GetHookManager();
     }
 
-    #region IModSharpModule
+#region IModSharpModule
 
     public bool Init()
     {
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
+
         return true;
     }
 
@@ -132,12 +134,12 @@ internal class InputManager : IModSharpModule, IInputManager
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
     }
 
-    string IModSharpModule.DisplayName => "InputManager";
+    string IModSharpModule.DisplayName   => "InputManager";
     string IModSharpModule.DisplayAuthor => "Bone";
 
-    #endregion
+#endregion
 
-    #region IInputManager
+#region IInputManager
 
     public IInputListenerRegistry GetInputListenerRegistry(string moduleIdentity)
     {
@@ -146,27 +148,29 @@ internal class InputManager : IModSharpModule, IInputManager
             return registry;
         }
 
-        registry = new InputListenerRegistry(this);
+        registry                    = new InputListenerRegistry(this);
         _registries[moduleIdentity] = registry;
 
         return registry;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods for Registry
+#region Internal Methods for Registry
 
     internal void AddInputListener(InputKey key, Action<IGameClient> callback, InputState state, float holdDuration)
     {
         var listenerInfo = new ListenerInfo(callback, holdDuration);
-        var listeners = GetListenerList(key, state);
+        var listeners    = GetListenerList(key, state);
         listeners.Add(listenerInfo);
     }
 
     internal void AddCombinationListener(InputKey[] keys, Action<IGameClient> callback, InputState state)
     {
         if (keys == null || keys.Length == 0)
+        {
             throw new ArgumentException("Keys array cannot be null or empty");
+        }
 
         var listenerInfo = new CombinationListenerInfo(keys, callback, state);
         _combinationListeners.Add(listenerInfo);
@@ -180,100 +184,97 @@ internal class InputManager : IModSharpModule, IInputManager
 
     internal void RemoveCombinationListener(InputKey[] keys, Action<IGameClient> callback, InputState state)
     {
-        _combinationListeners.RemoveAll(x => 
-            x.Keys.SequenceEqual(keys) && 
-            x.Callback == callback && 
-            x.State == state);
+        _combinationListeners.RemoveAll(x =>
+                                            x.Keys.SequenceEqual(keys) && x.Callback == callback && x.State == state);
     }
 
     private List<ListenerInfo> GetListenerList(InputKey key, InputState state)
-    {
-        if (!_inputListeners.TryGetValue(key, out var listenerInfo))
-            throw new ArgumentException($"Unsupported input key: {key}");
+        => !_inputListeners.TryGetValue(key, out var listenerInfo)
+            ? throw new NotSupportedException($"Unsupported input key: {key}")
+            : listenerInfo.GetListeners(state);
 
-        return listenerInfo.GetListeners(state);
-    }
-
-    #endregion
+#endregion
 
     private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
     {
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Forward,
-            InputKey.W);
+                         @params.Service,
+                         UserCommandButtons.Forward,
+                         InputKey.W);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Back,
-            InputKey.S);
+                         @params.Service,
+                         UserCommandButtons.Back,
+                         InputKey.S);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.MoveLeft,
-            InputKey.A);
+                         @params.Service,
+                         UserCommandButtons.MoveLeft,
+                         InputKey.A);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.MoveRight,
-            InputKey.D);
+                         @params.Service,
+                         UserCommandButtons.MoveRight,
+                         InputKey.D);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.LookAtWeapon,
-            InputKey.F);
+                         @params.Service,
+                         UserCommandButtons.LookAtWeapon,
+                         InputKey.F);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Use,
-            InputKey.E);
+                         @params.Service,
+                         UserCommandButtons.Use,
+                         InputKey.E);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Speed,
-            InputKey.Shift);
+                         @params.Service,
+                         UserCommandButtons.Speed,
+                         InputKey.Shift);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Jump,
-            InputKey.Space);
+                         @params.Service,
+                         UserCommandButtons.Jump,
+                         InputKey.Space);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Scoreboard,
-            InputKey.Tab);
-
-        ProcessKeyStates(@params.Client, 
-            @params.Service,
-            UserCommandButtons.Attack,
-            InputKey.Attack1);
+                         @params.Service,
+                         UserCommandButtons.Scoreboard,
+                         InputKey.Tab);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Attack2,
-            InputKey.Attack2);
+                         @params.Service,
+                         UserCommandButtons.Attack,
+                         InputKey.Attack1);
 
         ProcessKeyStates(@params.Client,
-            @params.Service,
-            UserCommandButtons.Reload,
-            InputKey.R);
+                         @params.Service,
+                         UserCommandButtons.Attack2,
+                         InputKey.Attack2);
+
+        ProcessKeyStates(@params.Client,
+                         @params.Service,
+                         UserCommandButtons.Reload,
+                         InputKey.R);
 
         ProcessCombinationKeys(@params.Client, @params.Service.KeyButtons, @params.Service.KeyChangedButtons);
     }
 
     private void ProcessKeyStates(
-        IGameClient client,
-        IMovementService movementService,
+        IGameClient        client,
+        IMovementService   movementService,
         UserCommandButtons targetButton,
-        InputKey inputKey)
+        InputKey           inputKey)
     {
         if (!_inputListeners.TryGetValue(inputKey, out var listenerInfo))
+        {
             return;
+        }
 
-        var keyButtons = movementService.KeyButtons;
+        var keyButtons        = movementService.KeyButtons;
         var keyChangedButtons = movementService.KeyChangedButtons;
 
-        var isPressed = keyButtons.HasFlag(targetButton);
+        var isPressed  = keyButtons.HasFlag(targetButton);
         var hasChanged = keyChangedButtons.HasFlag(targetButton);
 
         var stateKey = (client, inputKey);
@@ -283,6 +284,7 @@ internal class InputManager : IModSharpModule, IInputManager
             _keyPressStates[stateKey] = (DateTime.UtcNow, false);
 
             var justPressedListeners = listenerInfo.GetListeners(InputState.KeyDown);
+
             if (justPressedListeners.Count > 0)
             {
                 ProcessKeyListeners(justPressedListeners, client, inputKey, 0f);
@@ -292,13 +294,14 @@ internal class InputManager : IModSharpModule, IInputManager
         if (isPressed)
         {
             var pressedListeners = listenerInfo.GetListeners(InputState.KeyHold);
+
             if (pressedListeners.Count > 0)
             {
                 var holdTime = 0f;
 
                 if (_keyPressStates.TryGetValue(stateKey, out var state))
                 {
-                    holdTime = (float)(DateTime.UtcNow - state.PressedTime).TotalSeconds;
+                    holdTime = (float) (DateTime.UtcNow - state.PressedTime).TotalSeconds;
                 }
 
                 ProcessKeyListeners(pressedListeners, client, inputKey, holdTime);
@@ -310,6 +313,7 @@ internal class InputManager : IModSharpModule, IInputManager
             _keyPressStates.Remove(stateKey);
 
             var releasedListeners = listenerInfo.GetListeners(InputState.KeyUp);
+
             if (releasedListeners.Count > 0)
             {
                 ProcessKeyListeners(releasedListeners, client, inputKey, 0f);
@@ -351,13 +355,15 @@ internal class InputManager : IModSharpModule, IInputManager
     private void ProcessCombinationKeys(IGameClient client, UserCommandButtons keyButtons, UserCommandButtons keyChangedButtons)
     {
         if (_combinationListeners.Count == 0)
+        {
             return;
+        }
 
         foreach (var listener in _combinationListeners)
         {
             try
             {
-                var allKeysMatch = true;
+                var allKeysMatch  = true;
                 var anyKeyChanged = false;
 
                 foreach (var key in listener.Keys)
@@ -365,14 +371,17 @@ internal class InputManager : IModSharpModule, IInputManager
                     if (!TryGetUserCommandButton(key, out var button))
                     {
                         allKeysMatch = false;
+
                         break;
                     }
 
-                    var isPressed = keyButtons.HasFlag(button);
+                    var isPressed  = keyButtons.HasFlag(button);
                     var hasChanged = keyChangedButtons.HasFlag(button);
 
                     if (hasChanged)
+                    {
                         anyKeyChanged = true;
+                    }
 
                     switch (listener.State)
                     {
@@ -381,6 +390,7 @@ internal class InputManager : IModSharpModule, IInputManager
                             {
                                 allKeysMatch = false;
                             }
+
                             break;
 
                         case InputState.KeyHold:
@@ -388,6 +398,7 @@ internal class InputManager : IModSharpModule, IInputManager
                             {
                                 allKeysMatch = false;
                             }
+
                             break;
 
                         case InputState.KeyUp:
@@ -395,11 +406,14 @@ internal class InputManager : IModSharpModule, IInputManager
                             {
                                 allKeysMatch = false;
                             }
+
                             break;
                     }
 
                     if (!allKeysMatch)
+                    {
                         break;
+                    }
                 }
 
                 if (allKeysMatch && (listener.State == InputState.KeyHold || anyKeyChanged))
@@ -418,19 +432,19 @@ internal class InputManager : IModSharpModule, IInputManager
     {
         button = key switch
         {
-            InputKey.W => UserCommandButtons.Forward,
-            InputKey.S => UserCommandButtons.Back,
-            InputKey.A => UserCommandButtons.MoveLeft,
-            InputKey.D => UserCommandButtons.MoveRight,
-            InputKey.E => UserCommandButtons.Use,
-            InputKey.Space => UserCommandButtons.Jump,
-            InputKey.Shift => UserCommandButtons.Speed,
-            InputKey.Tab => UserCommandButtons.Scoreboard,
+            InputKey.W       => UserCommandButtons.Forward,
+            InputKey.S       => UserCommandButtons.Back,
+            InputKey.A       => UserCommandButtons.MoveLeft,
+            InputKey.D       => UserCommandButtons.MoveRight,
+            InputKey.E       => UserCommandButtons.Use,
+            InputKey.Space   => UserCommandButtons.Jump,
+            InputKey.Shift   => UserCommandButtons.Speed,
+            InputKey.Tab     => UserCommandButtons.Scoreboard,
             InputKey.Attack1 => UserCommandButtons.Attack,
             InputKey.Attack2 => UserCommandButtons.Attack2,
-            InputKey.R => UserCommandButtons.Reload,
-            InputKey.F => UserCommandButtons.LookAtWeapon,
-            _ => default,
+            InputKey.R       => UserCommandButtons.Reload,
+            InputKey.F       => UserCommandButtons.LookAtWeapon,
+            _                => default,
         };
 
         return button != default;

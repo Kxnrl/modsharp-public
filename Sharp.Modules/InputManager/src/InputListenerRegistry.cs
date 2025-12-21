@@ -7,16 +7,17 @@ namespace Sharp.Modules.InputManager.Core;
 
 public class InputListenerRegistry : IInputListenerRegistry
 {
-    private readonly InputManager _manager;
-    private readonly List<(InputKey Key, Action<IGameClient> Callback, InputState State)> _inputListeners = [];
+    private readonly InputManager                                                            _manager;
+    private readonly List<(InputKey Key, Action<IGameClient> Callback, InputState State)>    _inputListeners       = [];
     private readonly List<(InputKey[] Keys, Action<IGameClient> Callback, InputState State)> _combinationListeners = [];
 
     internal InputListenerRegistry(InputManager manager)
-    {
-        _manager = manager;
-    }
+        => _manager = manager;
 
-    public void AddInputListener(InputKey key, Action<IGameClient> action, InputState state = InputState.KeyDown, float holdDuration = 0)
+    public void AddInputListener(InputKey key,
+        Action<IGameClient>               action,
+        InputState                        state        = InputState.KeyDown,
+        float                             holdDuration = 0)
     {
         _manager.AddInputListener(key, action, state, holdDuration);
         _inputListeners.Add((key, action, state));
