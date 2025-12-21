@@ -167,6 +167,9 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         controller.Render();
     }
 
+    public bool IsInMenu(IGameClient client)
+        => _controllers[client.Slot] is not null;
+
     public void CloseClientMenu(IGameClient client)
     {
         _modSharp.PushTimer(() => { DisposeClientMenu(client); },
