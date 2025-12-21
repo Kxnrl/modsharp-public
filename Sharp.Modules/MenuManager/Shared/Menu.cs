@@ -4,6 +4,7 @@ using Sharp.Shared.Objects;
 
 namespace Sharp.Modules.MenuManager.Shared;
 
+// ReSharper disable MemberCanBePrivate.Global
 public class Menu
 {
     public string?                    Title              { get; private set; }
@@ -148,10 +149,4 @@ public readonly record struct MenuItemMetadata(
     string?       Title = null,
     MenuItemState State = MenuItemState.Default);
 
-public enum MenuItemState
-{
-    Default,
-    Disabled,
-    Spacer,
-    Ignore,
-}
+
