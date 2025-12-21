@@ -22,7 +22,7 @@ namespace Sharp.Shared.Enums;
 public enum SolidType : byte
 {
     /// <summary>
-    ///     无
+    ///     None
     /// </summary>
     None,
 

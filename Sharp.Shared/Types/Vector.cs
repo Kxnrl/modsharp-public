@@ -198,7 +198,7 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
         => (X * X) + (Y * Y);
 
     /// <summary>
-    ///     距离 (平方)
+    ///     Calculates the squared distance to another vector.
     /// </summary>
     public float DistToSqr(Vector other)
     {
@@ -211,7 +211,7 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
         => MathF.Sqrt(DistToSqr(other));
 
     /// <summary>
-    ///     常规化
+    ///     Normalizes the vector (makes it a unit vector with length 1).
     /// </summary>
     public void Normalize()
     {
@@ -223,7 +223,7 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     }
 
     /// <summary>
-    ///     取反
+    ///     Negates the vector (inverts its direction).
     /// </summary>
     public void Negate()
     {
@@ -248,8 +248,9 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     public override string ToString()
         => $"{{{X:F6}, {Y:F6}, {Z:F6}}}";
 
-    // 由于速度也是用的Vector, 所以如果真有用到了IComparable, 那么就比较它的长度.
-    // 除此之外的使用场景, 比较坐标毫无意义.
+    // Since Vector is also used for velocity, if IComparable is actually used, 
+    // we compare the lengths (magnitudes). 
+    // In any other scenario, comparing raw coordinates is meaningless.
     public int CompareTo(object? obj)
     {
         if (obj is not Vector rhs)
@@ -260,25 +261,26 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
         return (int) (LengthSqr() - rhs.LengthSqr());
     }
 
-    // 由于速度也是用的Vector, 所以如果真有用到了IComparable, 那么就比较它的长度.
-    // 除此之外的使用场景, 比较坐标毫无意义.
+    // Since Vector is also used for velocity, if IComparable is actually used, 
+    // we compare the lengths (magnitudes). 
+    // In any other scenario, comparing raw coordinates is meaningless.
     public int CompareTo(Vector rhs)
         => (int) (LengthSqr() - rhs.LengthSqr());
 
     /// <summary>
-    ///     DotProduct
+    ///     Calculates the Dot Product.
     /// </summary>
     public static float DotProduct(in Vector a, in Vector b)
         => (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z);
 
     /// <summary>
-    ///     Magnitude
+    ///     Calculates the Magnitude (Length).
     /// </summary>
     public static float Magnitude(in Vector v)
         => MathF.Sqrt((v.X * v.X) + (v.Y * v.Y) + (v.Z * v.Z));
 
     /// <summary>
-    ///     Direction转为Angles
+    ///     Converts a direction vector into Euler angles.
     /// </summary>
     public Vector DirectionToAngles()
     {
@@ -289,9 +291,9 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     }
 
     /// <summary>
-    ///     获取欧拉角
+    ///     Calculates the Euler angles required to look at a specific position.
     /// </summary>
-    /// <param name="position">你看向的位置</param>
+    /// <param name="position">The target position to look at.</param>
     public Vector AnglesTo(Vector position)
     {
         var dir = position - this;
@@ -367,8 +369,9 @@ public struct Vector2D : IComparable, IComparable<Vector2D>, IEquatable<Vector2D
     public float Dot(Vector2D other)
         => (X * other.X) + (Y * other.Y);
 
-    // 由于速度也是用的Vector, 所以如果真有用到了IComparable, 那么就比较它的长度.
-    // 除此之外的使用场景, 比较坐标毫无意义.
+    // Since Vector is also used for velocity, if IComparable is actually used, 
+    // we compare the lengths (magnitudes). 
+    // In any other scenario, comparing raw coordinates is meaningless.
     public int CompareTo(object? obj)
     {
         if (obj is not Vector2D rhs)
@@ -379,8 +382,9 @@ public struct Vector2D : IComparable, IComparable<Vector2D>, IEquatable<Vector2D
         return (int) (LengthSqr() - rhs.LengthSqr());
     }
 
-    // 由于速度也是用的Vector, 所以如果真有用到了IComparable, 那么就比较它的长度.
-    // 除此之外的使用场景, 比较坐标毫无意义.
+    // Since Vector is also used for velocity, if IComparable is actually used, 
+    // we compare the lengths (magnitudes). 
+    // In any other scenario, comparing raw coordinates is meaningless.
     public int CompareTo(Vector2D rhs)
         => (int) (LengthSqr() - rhs.LengthSqr());
 

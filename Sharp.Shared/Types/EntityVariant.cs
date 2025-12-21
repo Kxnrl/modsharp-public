@@ -24,8 +24,9 @@ using Sharp.Shared.Utilities;
 
 namespace Sharp.Shared.Types;
 
-// Explicit 因为强制编辑为union之后, 就不能简单的复制了
-// 直接复制会导致内存布局错误, 从而导致数据错误
+// Explicit is used here to enforce a Union structure.
+// Simple copying is unsafe because the memory layout overlaps; 
+// direct copying or mismanagement will cause data corruption.
 [StructLayout(LayoutKind.Explicit)]
 public ref struct EntityVariant
 {
@@ -85,7 +86,7 @@ public ref struct EntityVariant
         };
 
     /// <summary>
-    ///     有VScript调用的IO中, Type String但是使用的是CString
+    ///     In IO triggered by VScript, the Type is labeled as String, but the actual data used is CString.
     /// </summary>
     /// <returns></returns>
     public readonly string AutoCastString()

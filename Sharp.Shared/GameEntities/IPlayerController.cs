@@ -114,7 +114,7 @@ public interface IPlayerController : IBaseEntity
         => ConnectedState is PlayerConnectedState.PlayerDisconnecting;
 
     /// <summary>
-    ///     SteamId 64位
+    ///     Returns a SteamID64 (7656119xxxxxxxxxx)
     /// </summary>
     SteamID SteamId { get; }
 
@@ -129,7 +129,7 @@ public interface IPlayerController : IBaseEntity
     string ClanTag { get; }
 
     /// <summary>
-    ///     PlayerName, setting does not call StateChanged
+    ///     PlayerName, setting the value does not call StateChanged
     /// </summary>
     string PlayerName { get; set; }
 

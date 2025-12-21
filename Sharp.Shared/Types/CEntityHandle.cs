@@ -56,8 +56,10 @@ public readonly struct CEntityHandle<T> :
     public int GetEHandleInt()
         => unchecked((int) _value);
 
+    
     /// <summary>
-    ///     泛型不支持显示/隐式转换，所以这里只能用 As&lt;TOut&gt;() 来转换类型
+    ///     Casts the handle to a different entity type. 
+    ///     (Required because generic structs do not support implicit variance).
     /// </summary>
     public CEntityHandle<TOut> As<TOut>() where TOut : class, IBaseEntity
         => new (_value);

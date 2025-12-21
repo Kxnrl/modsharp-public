@@ -32,7 +32,7 @@ public readonly unsafe struct NativeList<T> where T : unmanaged
     public ref T this[int index] => ref Memory[index];
 
     /// <summary>
-    ///     使用Enumerator迭代器会放弃使用Ref引用
+    ///     Note: The Enumerator yields copies by value. Use the indexer for by-reference access.
     /// </summary>
     public IEnumerator<T> GetEnumerator()
     {

@@ -22,7 +22,7 @@ using System;
 namespace Sharp.Shared.Enums;
 
 /// <summary>
-///     Schema Dump 出来是 uint16
+///     The enum type dumped from schema is ushort
 /// </summary>
 [Flags]
 public enum EntityEffects : uint

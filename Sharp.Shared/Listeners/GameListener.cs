@@ -72,7 +72,7 @@ public interface IGameListener
     }
 
     /// <summary>
-    ///     gameRules 在此处不可用!
+    ///     <see cref="IModSharp.GetGameRules"/> 在此处不可用!
     /// </summary>
     void OnGameShutdown()
     {

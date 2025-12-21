@@ -79,31 +79,31 @@ public readonly unsafe struct TraceResult
     }
 
     /// <summary>
-    ///     是否命中
+    ///     Did the trace hit anything
     /// </summary>
     public bool DidHit()
         => Fraction < 1 || StartInSolid;
 
     /// <summary>
-    ///     实体 HitGroup
+    ///     The HitGroup of the entity (e.g., Head, Chest).
     /// </summary>
-    /// <returns>如果没有HitEntity那么这里为Invalid</returns>
+    /// <returns>Returns <see cref="HitGroupType.Invalid"/> if no entity was hit.</returns>
     public HitGroupType HitGroup => HitEntity is not null ? HitBoxData->HitGroup : HitGroupType.Invalid;
 
     /// <summary>
-    ///     实体HitBox Id
+    ///     The HitBox ID of the entity.
     /// </summary>
-    /// <returns>如果没有HitEntity那么这里为-1</returns>
+    /// <returns>Returns -1 if no entity was hit.</returns>
     public int HitBoxId => HitEntity is not null ? HitBoxData->HitBoxId : -1;
 
     /// <summary>
-    ///     实体HitBox名
+    ///     The HitBox name of the entity.
     /// </summary>
-    /// <returns>如果没有HitEntity那么这里为Empty</returns>
+    /// <returns>Returns an empty string if no entity was hit.</returns>
     public string HitBoxName => HitEntity is not null ? Utils.ReadString(HitBoxData->pName) : string.Empty;
 
     /// <summary>
-    ///     Surface 名
+    ///     The name of the surface material.
     /// </summary>
     public string SurfaceName => SurfaceProp == null ? string.Empty : Utils.ReadString(SurfaceProp->pName);
 }

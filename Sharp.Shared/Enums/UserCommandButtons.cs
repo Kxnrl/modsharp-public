@@ -90,11 +90,6 @@ public enum UserCommandButtons : ulong
     Speed = 1 << 16,
 
     /// <summary>
-    ///     假蹲?
-    /// </summary>
-    BullRush = 1 << 22,
-
-    /// <summary>
     ///     User or Reload
     /// </summary>
     UserOrReload = 1ul << 32,

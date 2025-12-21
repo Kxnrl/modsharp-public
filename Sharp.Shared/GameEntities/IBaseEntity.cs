@@ -36,13 +36,16 @@ namespace Sharp.Shared.GameEntities;
 public interface IBaseEntity : ISchemaObject
 {
     /// <summary>
-    ///     Handle
+    ///     Gets the raw handle stored on the entity
     /// </summary>
     CEntityHandle<IBaseEntity> Handle { get; }
 
     /// <summary>
-    ///     Ref EntityHandle <br />
-    ///     <remarks>我也不知道是什么玩意, 反正游戏有</remarks>
+    ///     Gets the true, usable handle for this entity.
+    ///     <para>
+    ///     Unlike <see cref="Handle"/>, this ensures the Serial Number in entity handle matches the global list, 
+    ///     allowing you to find the entity even if it is currently flagged as INVALID_ENTITY_HANDLE.
+    ///     </para>
     /// </summary>
     CEntityHandle<IBaseEntity> RefHandle { get; }
 
@@ -187,7 +190,7 @@ public interface IBaseEntity : ISchemaObject
     IBaseFilter? DamageFilterEntity { get; }
 
     /// <summary>
-    ///     检查实体是否有效
+    ///     Check if this entity is valid
     /// </summary>
     bool IsValidEntity { get; }
 
@@ -272,13 +275,13 @@ public interface IBaseEntity : ISchemaObject
     void ChangeTeam(CStrikeTeam team);
 
     /// <summary>
-    ///     Input实体IO
+    ///     Fires an entity input.
     /// </summary>
-    /// <param name="input">input名</param>
-    /// <param name="activator">触发者</param>
-    /// <param name="caller">调用者</param>
-    /// <param name="value">Variant值(可为空)</param>
-    /// <param name="outputId">不知道干什么的</param>
+    /// <param name="input">Input name, for example SetAngles</param>
+    /// <param name="activator">The entity that activates this IO Event</param>
+    /// <param name="caller">The entity that calls this IO Event</param>
+    /// <param name="value">The string value (can be null).</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator = null,
         IBaseEntity?        caller    = null,
@@ -286,13 +289,13 @@ public interface IBaseEntity : ISchemaObject
         int                 outputId  = 0);
 
     /// <summary>
-    ///     Input实体IO
+    ///     Fires an entity input.
     /// </summary>
-    /// <param name="input">input名</param>
-    /// <param name="activator">触发者</param>
-    /// <param name="caller">调用者</param>
-    /// <param name="value">Variant值</param>
-    /// <param name="outputId">不知道干什么的</param>
+    /// <param name="input">Input name, for example SetAngles</param>
+    /// <param name="activator">The entity that activates this IO Event</param>
+    /// <param name="caller">The entity that calls this IO Event</param>
+    /// <param name="value">The integer parameter value</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator,
         IBaseEntity?        caller,
@@ -300,13 +303,13 @@ public interface IBaseEntity : ISchemaObject
         int                 outputId = 0);
 
     /// <summary>
-    ///     Fire
+    ///     Fires an entity input.
     /// </summary>
     /// <param name="input">Input name, for example SetAngles</param>
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
-    /// <param name="value">Value</param>
-    /// <param name="outputId">No idea what it does</param>
+    /// <param name="value">The float parameter value</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator,
         IBaseEntity?        caller,
@@ -321,7 +324,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">No idea what it does</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator = null,
@@ -337,7 +340,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">No idea what it does</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator,
@@ -353,7 +356,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">No idea what it does</param>
+    /// <param name="outputId">The unique ID of the output that was fired</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator,

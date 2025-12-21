@@ -83,7 +83,7 @@ public interface IModSharp
     nint GetIEngine();
 
     /// <summary>
-    ///     Get GameRules
+    ///     Get GameRules (not available in <see cref="GameListener.OnGameShutdown"/>)
     /// </summary>
     IGameRules GetGameRules();
 
@@ -326,12 +326,12 @@ public interface IModSharp
 #region Effects
 
     /// <summary>
-    ///     发送粒子特效
+    ///     Dispatches a particle effect at a specific world location
     /// </summary>
     int DispatchParticleEffect(string particle, Vector origin, Vector angles, RecipientFilter filter = default);
 
     /// <summary>
-    ///     发送粒子特效
+    ///     Dispatches a particle effect relative to an entity
     /// </summary>
     int DispatchParticleEffect(string particle,
         IBaseEntity                   entity,
@@ -341,7 +341,7 @@ public interface IModSharp
         RecipientFilter               filter      = default);
 
     /// <summary>
-    ///     发送粒子特效
+    ///     Dispatches a particle effect attached to a specific point on an entity
     /// </summary>
     int DispatchParticleEffect(string particle,
         ParticleAttachmentType        attachType,
