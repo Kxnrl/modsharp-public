@@ -21,17 +21,17 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public             Menu                    Menu        { get; protected set; }
     public             Func<IGameClient, Menu> MenuFactory { get; private set; }
-    protected readonly MenuManager         MenuManager;
+    protected readonly MenuManager             MenuManager;
     protected readonly IEntityManager          EntityManager;
     protected readonly IModSharp               ModSharp;
     protected readonly IEventManager           EventManager;
 
     public BaseMenuController(MenuManager menuManager,
-        IModSharp                             modSharp,
-        IEventManager                         eventManager,
-        IEntityManager                        entityManager,
-        Func<IGameClient, Menu>               menuFactory,
-        IGameClient                           player)
+        IModSharp                         modSharp,
+        IEventManager                     eventManager,
+        IEntityManager                    entityManager,
+        Func<IGameClient, Menu>           menuFactory,
+        IGameClient                       player)
     {
         EntityManager = entityManager;
         MenuManager   = menuManager;
@@ -49,13 +49,14 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         // build current menu items
         BuildItems();
-
     }
 
     private bool SetCursor(int cursor)
     {
         if (cursor >= BuiltMenuItems.Count || cursor < 0)
+        {
             cursor = BuiltMenuItems.Count - 1;
+        }
 
         var tries = 0;
 
@@ -88,12 +89,16 @@ internal abstract class BaseMenuController : IInternalMenuController
     public bool MoveUpCursor()
     {
         if (Cursor == -1)
+        {
             return false;
+        }
 
         var cursor = Cursor - 1;
 
         if (cursor < 0)
+        {
             cursor = BuiltMenuItems.Count - 1;
+        }
 
         var tries = 0;
 
@@ -102,12 +107,16 @@ internal abstract class BaseMenuController : IInternalMenuController
             cursor--;
 
             if (cursor < 0)
+            {
                 cursor = BuiltMenuItems.Count - 1;
+            }
 
             tries++;
 
             if (tries >= BuiltMenuItems.Count)
+            {
                 return false;
+            }
         }
 
         Cursor = cursor;
@@ -120,12 +129,16 @@ internal abstract class BaseMenuController : IInternalMenuController
     public bool MoveDownCursor()
     {
         if (Cursor == -1)
+        {
             return false;
+        }
 
         var cursor = Cursor + 1;
 
         if (cursor >= BuiltMenuItems.Count)
+        {
             cursor = 0;
+        }
 
         var tries = 0;
 
@@ -134,12 +147,16 @@ internal abstract class BaseMenuController : IInternalMenuController
             cursor++;
 
             if (cursor >= BuiltMenuItems.Count)
+            {
                 cursor = 0;
+            }
 
             tries++;
 
             if (tries >= BuiltMenuItems.Count)
+            {
                 return false;
+            }
         }
 
         Cursor = cursor;
@@ -205,7 +222,9 @@ internal abstract class BaseMenuController : IInternalMenuController
     public void Confirm()
     {
         if (Cursor == -1)
+        {
             return;
+        }
 
         BuiltMenuItems[Cursor]
             .Action?.Invoke(this);

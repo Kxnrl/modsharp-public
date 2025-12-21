@@ -15,26 +15,28 @@ internal class SurvivalStatusMenuController : BaseMenuController
     private readonly ILocalizerManager? _localizerManager;
 
     public SurvivalStatusMenuController(MenuManager menuManager,
-        IModSharp                                       modSharp,
-        IEventManager                                   eventManager,
-        IEntityManager                                  entityManager,
-        Func<IGameClient, Menu>                         menuFactory,
-        IGameClient                                     player,
-        ILocalizerManager? localizerManager) : base(menuManager,
-                                                                       modSharp,
-                                                                       eventManager,
-                                                                       entityManager,
-                                                                       menuFactory,
-                                                                       player)
+        IModSharp                                   modSharp,
+        IEventManager                               eventManager,
+        IEntityManager                              entityManager,
+        Func<IGameClient, Menu>                     menuFactory,
+        IGameClient                                 player,
+        ILocalizerManager?                          localizerManager) : base(menuManager,
+                                                                             modSharp,
+                                                                             eventManager,
+                                                                             entityManager,
+                                                                             menuFactory,
+                                                                             player)
     {
         _localizerManager = localizerManager;
-        _timer = modSharp.PushTimer(Think, 0.01, GameTimerFlags.Repeatable);
+        _timer            = modSharp.PushTimer(Think, 0.01, GameTimerFlags.Repeatable);
     }
 
     private void Think()
     {
         if (_cacheContent is null)
+        {
             return;
+        }
 
         Print(Client, _cacheContent);
     }
@@ -74,14 +76,18 @@ internal class SurvivalStatusMenuController : BaseMenuController
             var maxItemSkipCount = BuiltMenuItems.Count - MaxPageItems;
 
             if (ItemSkipCount >= maxItemSkipCount)
+            {
                 ItemSkipCount = maxItemSkipCount;
+            }
         }
         else if (offset < paddingItemCount)
         {
             ItemSkipCount = Cursor - paddingItemCount;
 
             if (ItemSkipCount < 0)
+            {
                 ItemSkipCount = 0;
+            }
         }
 
         string? header = null;
@@ -138,7 +144,8 @@ internal class SurvivalStatusMenuController : BaseMenuController
             }
             else if ((itemIndex - 1) + ItemSkipCount == Cursor)
             {
-                sb.Append($"{Colored(cursorColor, "►")} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, "◄")}<br>");
+                sb.Append(
+                    $"{Colored(cursorColor, "►")} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, "◄")}<br>");
             }
             else
             {
@@ -154,11 +161,11 @@ internal class SurvivalStatusMenuController : BaseMenuController
             sb.Append("<br/>");
         }
 
-        const string confirmKey = "MenuSelection.Confirm";
+        const string confirmKey  = "MenuSelection.Confirm";
         const string prevItemKey = "MenuSelection.PrevItem";
         const string nextItemKey = "MenuSelection.NextItem";
-        const string exitKey = "MenuSelection.Exit";
-        const string backKey = "MenuSelection.Back";
+        const string exitKey     = "MenuSelection.Exit";
+        const string backKey     = "MenuSelection.Back";
 
         string confirm;
         string prevItem;
@@ -168,20 +175,20 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         if (_localizerManager is null)
         {
-            confirm = confirmKey;
+            confirm  = confirmKey;
             prevItem = prevItemKey;
             nextItem = nextItemKey;
-            exit = exitKey;
-            back = backKey;
+            exit     = exitKey;
+            back     = backKey;
         }
         else
         {
             var localizer = _localizerManager.GetLocalizer(Client);
-            confirm = localizer.TryGet(confirmKey) ?? confirmKey;
+            confirm  = localizer.TryGet(confirmKey)  ?? confirmKey;
             prevItem = localizer.TryGet(prevItemKey) ?? prevItemKey;
             nextItem = localizer.TryGet(nextItemKey) ?? nextItemKey;
-            exit = localizer.TryGet(exitKey) ?? exitKey;
-            back = localizer.TryGet(backKey) ?? backKey;
+            exit     = localizer.TryGet(exitKey)     ?? exitKey;
+            back     = localizer.TryGet(backKey)     ?? backKey;
         }
 
         // sb.Append("<font class='fontSize-s'>");

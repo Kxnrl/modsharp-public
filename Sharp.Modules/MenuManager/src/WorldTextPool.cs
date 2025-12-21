@@ -32,7 +32,9 @@ internal class WorldTextPool : IDisposable
     public IWorldText GetNextWorldText()
     {
         if (_cursor < _list.Count)
+        {
             return _list[_cursor++];
+        }
 
         var entity = _entityManager.SpawnEntitySync<IWorldText>("point_worldtext",
                                                                 new Dictionary<string, KeyValuesVariantValueItem>
@@ -75,7 +77,9 @@ internal class WorldTextPool : IDisposable
         foreach (var worldText in _list)
         {
             if (worldText.IsValid())
+            {
                 worldText.Kill();
+            }
         }
 
         _list.Clear();

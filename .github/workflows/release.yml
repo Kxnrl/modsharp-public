@@ -142,6 +142,7 @@ jobs:
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -150,6 +151,7 @@ jobs:
         run: |
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
@@ -273,6 +275,7 @@ jobs:
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -281,6 +284,7 @@ jobs:
         run: |
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
@@ -345,6 +349,7 @@ jobs:
           dotnet pack Sharp.Extensions/EntityHookManager/src/Sharp.Extensions.EntityHookManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Publish
         shell: bash

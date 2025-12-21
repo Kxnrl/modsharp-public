@@ -17,39 +17,39 @@ namespace Sharp.Modules.MenuManager.Core;
 
 internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 {
-    public string DisplayName => "MenuManager";
+    public string DisplayName   => "MenuManager";
     public string DisplayAuthor => "Bone";
 
-    private readonly ILogger<MenuManager> _logger;
-    private readonly IModSharp _modSharp;
-    private readonly ISharpModuleManager _modules;
-    private readonly IClientManager _clientManager;
-    private readonly IHookManager _hooks;
-    private readonly IEntityManager _entityManager;
-    private readonly IEventManager _eventManager;
-    private IModSharpModuleInterface<ILocalizerManager> _localizerManager = null!;
+    private readonly ILogger<MenuManager>                        _logger;
+    private readonly IModSharp                                   _modSharp;
+    private readonly ISharpModuleManager                         _modules;
+    private readonly IClientManager                              _clientManager;
+    private readonly IHookManager                                _hooks;
+    private readonly IEntityManager                              _entityManager;
+    private readonly IEventManager                               _eventManager;
+    private          IModSharpModuleInterface<ILocalizerManager> _localizerManager = null!;
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
 
     public MenuManager(ISharedSystem sharedSystem,
-        string dllPath,
-        string sharpPath,
-        Version version,
-        IConfiguration configuration,
-        bool hotReload)
+        string                       dllPath,
+        string                       sharpPath,
+        Version                      version,
+        IConfiguration               configuration,
+        bool                         hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger = loggerFactory.CreateLogger<MenuManager>();
-        _modSharp = sharedSystem.GetModSharp();
-        _modules = sharedSystem.GetSharpModuleManager();
+        _logger        = loggerFactory.CreateLogger<MenuManager>();
+        _modSharp      = sharedSystem.GetModSharp();
+        _modules       = sharedSystem.GetSharpModuleManager();
         _clientManager = sharedSystem.GetClientManager();
-        _hooks = sharedSystem.GetHookManager();
+        _hooks         = sharedSystem.GetHookManager();
         _entityManager = sharedSystem.GetEntityManager();
-        _eventManager = sharedSystem.GetEventManager();
+        _eventManager  = sharedSystem.GetEventManager();
 
         _clientManager.InstallCommandListener("autobuy", OnAutoBuyCommand);
-        _clientManager.InstallCommandListener("rebuy", OnReBuyCommand);
+        _clientManager.InstallCommandListener("rebuy",   OnReBuyCommand);
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
     }
 
@@ -67,7 +67,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         return ECommandAction.Stopped;
     }
 
-    #region IModSharpModule
+#region IModSharpModule
 
     public bool Init()
     {
@@ -84,9 +84,11 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void OnAllModulesLoaded()
     {
         _localizerManager = _modules.GetRequiredSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
+
         if (_localizerManager.Instance is not { } @interface)
         {
             _logger.LogWarning("Sharp.Modules.LocalizerManager is not loaded.");
+
             return;
         }
 
@@ -97,12 +99,11 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
         _clientManager.RemoveClientListener(this);
-
     }
 
-    #endregion
+#endregion
 
-    #region IClientListener
+#region IClientListener
 
     public void OnClientPutInServer(IGameClient client)
     {
@@ -114,10 +115,10 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         DisposeClientMenu(client);
     }
 
-    int IClientListener.ListenerVersion => IClientListener.ApiVersion;
+    int IClientListener.ListenerVersion  => IClientListener.ApiVersion;
     int IClientListener.ListenerPriority => 0;
 
-    #endregion
+#endregion
 
     private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
     {
@@ -148,6 +149,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         DisposeClientMenu(client);
 
         ILocalizerManager? instance;
+
         if (_localizerManager.Instance is not { } value)
         {
             _logger.LogWarning("Sharp.Modules.LocalizerManager is not loaded.");
@@ -157,18 +159,18 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         {
             instance = value;
         }
-        var controller = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client, instance);
+
+        var controller
+            = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client, instance);
+
         _controllers[client.Slot] = controller;
         controller.Render();
     }
 
     public void CloseClientMenu(IGameClient client)
     {
-        _modSharp.PushTimer(() =>
-            {
-                DisposeClientMenu(client);
-            },
-            0.01);
+        _modSharp.PushTimer(() => { DisposeClientMenu(client); },
+                            0.01);
     }
 
     private void DisposeClientMenu(IGameClient client)

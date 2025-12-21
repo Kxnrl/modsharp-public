@@ -59,7 +59,7 @@ public class Menu
         => _items.Add(new MenuItem(x => new MenuItemMetadata(null, MenuItemState.Spacer)));
 
     public static Builder Create()
-        => new Builder();
+        => new ();
 
     public class Builder
     {
@@ -140,11 +140,13 @@ public class Menu
     }
 }
 
-public readonly record struct MenuItem(Func<IMenuController, MenuItemMetadata>? Factory = null, Action<IMenuController>? Action = null);
+public readonly record struct MenuItem(
+    Func<IMenuController, MenuItemMetadata>? Factory = null,
+    Action<IMenuController>?                 Action  = null);
 
 public readonly record struct MenuItemMetadata(
-    string?                  Title  = null,
-    MenuItemState            State  = MenuItemState.Default);
+    string?       Title = null,
+    MenuItemState State = MenuItemState.Default);
 
 public enum MenuItemState
 {
