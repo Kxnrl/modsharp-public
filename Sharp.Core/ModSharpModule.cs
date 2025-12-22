@@ -21,11 +21,10 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
+using Sharp.Core.Helpers;
 using Sharp.Core.Utilities;
 using Sharp.Shared;
 
@@ -199,17 +198,12 @@ internal sealed class ModSharpModule
                 throw new ApplicationException("Failed to update module while starting");
             }
 
-            var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_dllFile)));
-
-            _processLock = ProcessLock.Create(key);
+            _processLock = ProcessLock.CreateByRaw(_dllFile);
 
             if (!_processLock.IsAcquired)
             {
-                _processLock.Dispose();
-                _processLock = null;
-
-                throw new
-                    AbandonedMutexException($"Module '{Name}' is already loaded by another process. Ensure no other instance is running.");
+                throw new AbandonedMutexException(
+                    $"Module '{Name}' is already loaded by another process. Ensure no other instance is running.");
             }
 
             loader = PluginLoader.CreateFromAssemblyFile(_dllFile,
@@ -280,15 +274,11 @@ internal sealed class ModSharpModule
 
             try
             {
-                if (_processLock is not null)
-                {
-                    _processLock.Dispose();
-                    _processLock = null;
-                }
+                _processLock?.Dispose();
             }
-            catch
+            finally
             {
-                // empty
+                _processLock = null;
             }
 
             _instance = null;

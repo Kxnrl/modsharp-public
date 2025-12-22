@@ -20,9 +20,11 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 
-namespace Sharp.Core.Utilities;
+namespace Sharp.Core.Helpers;
 
 internal interface IProcessLock : IDisposable
 {
@@ -31,6 +33,13 @@ internal interface IProcessLock : IDisposable
 
 internal static class ProcessLock
 {
+    public static IProcessLock CreateByRaw(string raw)
+    {
+        var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(raw)));
+
+        return Create(key);
+    }
+
     public static IProcessLock Create(string key)
     {
         return RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -50,7 +59,7 @@ internal static class ProcessLock
 
             try
             {
-                _mutex     = new (true, mutexName, out var success);
+                _mutex     = new Mutex(true, mutexName, out var success);
                 IsAcquired = success;
             }
             catch (IOException)
@@ -61,8 +70,7 @@ internal static class ProcessLock
             {
                 if (!IsAcquired)
                 {
-                    _mutex?.Dispose();
-                    _mutex = null;
+                    Dispose();
                 }
             }
         }
@@ -77,14 +85,12 @@ internal static class ProcessLock
             try
             {
                 _mutex.ReleaseMutex();
+                _mutex.Close();
             }
-            catch (Exception)
+            finally
             {
-                // ignored
+                _mutex = null;
             }
-
-            _mutex.Dispose();
-            _mutex = null;
         }
     }
 
@@ -100,12 +106,12 @@ internal static class ProcessLock
 
             try
             {
-                _lockFile = new (lockPath,
-                                 FileMode.OpenOrCreate,
-                                 FileAccess.ReadWrite,
-                                 FileShare.None,
-                                 1,
-                                 FileOptions.DeleteOnClose);
+                _lockFile = new FileStream(lockPath,
+                                           FileMode.OpenOrCreate,
+                                           FileAccess.ReadWrite,
+                                           FileShare.None,
+                                           1,
+                                           FileOptions.DeleteOnClose);
 
                 IsAcquired = true;
             }
@@ -117,16 +123,21 @@ internal static class ProcessLock
             {
                 if (!IsAcquired)
                 {
-                    _lockFile?.Dispose();
-                    _lockFile = null;
+                    Dispose();
                 }
             }
         }
 
         public void Dispose()
         {
-            _lockFile?.Dispose();
-            _lockFile = null;
+            try
+            {
+                _lockFile?.Dispose();
+            }
+            finally
+            {
+                _lockFile = null;
+            }
         }
     }
 }
