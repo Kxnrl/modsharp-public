@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
 using Sharp.Core.Utilities;
@@ -60,7 +59,7 @@ internal sealed class ModSharpModule
     public ModuleLoadState State { get; private set; }
 
     private PluginLoader?    _loader;
-    private Mutex?           _mutex;
+    private FileStream?      _lockFile;
     private IModSharpModule? _instance;
 
     internal ModSharpModule(
@@ -144,18 +143,19 @@ internal sealed class ModSharpModule
             throw new InvalidOperationException("Shutdown must be called from the same thread as the constructor.");
         }
 
-        _mutex?.ReleaseMutex();
-        _mutex?.Close();
-        _mutex = null;
+        if (_lockFile is null)
+        {
+            return;
+        }
+
+        _lockFile.Dispose();
+        _lockFile = null;
     }
 
     public void Unload(Action<string> onUnload)
     {
         try
         {
-            _mutex?.ReleaseMutex();
-            _mutex?.Close();
-
             State = ModuleLoadState.Unloading;
 
             if (_instance is not null)
@@ -177,7 +177,12 @@ internal sealed class ModSharpModule
         }
         finally
         {
-            _mutex    = null;
+            if (_lockFile is not null)
+            {
+                _lockFile.Dispose();
+                _lockFile = null;
+            }
+
             _instance = null;
             _loader   = null;
         }
@@ -226,9 +231,14 @@ internal sealed class ModSharpModule
             }
 
             var key = builder.ToString();
-            _mutex = new Mutex(true, key, out var success);
 
-            if (!success)
+            var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
+
+            try
+            {
+                _lockFile = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
+            }
+            catch (IOException)
             {
                 throw new AbandonedMutexException("Double load!");
             }
@@ -279,16 +289,15 @@ internal sealed class ModSharpModule
 
             try
             {
-                _mutex?.ReleaseMutex();
-                _mutex?.Close();
+                if (_lockFile is not null)
+                {
+                    _lockFile.Dispose();
+                    _lockFile = null;
+                }
             }
             catch
             {
                 // empty
-            }
-            finally
-            {
-                _mutex = null;
             }
 
             _instance = null;
