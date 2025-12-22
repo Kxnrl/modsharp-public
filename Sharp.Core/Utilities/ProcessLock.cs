@@ -57,15 +57,13 @@ internal static class ProcessLock
             {
                 IsAcquired = false;
             }
-            catch (UnauthorizedAccessException)
+            finally
             {
-                IsAcquired = false;
-            }
-
-            if (!IsAcquired)
-            {
-                _mutex?.Dispose();
-                _mutex = null;
+                if (!IsAcquired)
+                {
+                    _mutex?.Dispose();
+                    _mutex = null;
+                }
             }
         }
 
@@ -115,11 +113,13 @@ internal static class ProcessLock
             {
                 IsAcquired = false;
             }
-
-            if (!IsAcquired)
+            finally
             {
-                _lockFile?.Dispose();
-                _lockFile = null;
+                if (!IsAcquired)
+                {
+                    _lockFile?.Dispose();
+                    _lockFile = null;
+                }
             }
         }
 
