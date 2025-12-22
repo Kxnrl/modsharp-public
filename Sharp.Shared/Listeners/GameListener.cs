@@ -96,7 +96,7 @@ public interface IGameListener
 //    OnGameInit            -> safe to get GameRules
 //    OnGamePostInit
 //    OnResourcePrecache
-//    OnSpawnServer         -> safe to execute .cfg
+//    OnServerSpawn         -> safe to execute .cfg
 //    OnGameActivate
 //    OnActivateServer
 //    ...

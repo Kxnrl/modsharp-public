@@ -18,7 +18,7 @@ Execution order:
 - ``OnGameInit``: You can safely access ``GameRules``
 - ``OnGamePostInit``
 - ``OnResourcePrecache``: You can only ``PrecacheResource`` here
-- ``OnSpawnServer``: From here you can load *.cfg*
+- ``OnServerSpawn``: From here you can load *.cfg*
 - ``OnGameActivate``
 - ``OnServerActivate``
 - ...
