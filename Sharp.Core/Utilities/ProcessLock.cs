@@ -37,92 +37,92 @@ internal static class ProcessLock
             ? new WindowsMutexLock(key)
             : new UnixFileLock(key);
     }
-}
 
-internal sealed class WindowsMutexLock : IProcessLock
-{
-    private Mutex? _mutex;
-
-    public bool IsAcquired { get; }
-
-    public WindowsMutexLock(string key)
+    private sealed class WindowsMutexLock : IProcessLock
     {
-        var mutexName = $"Global\\modsharp_{key}";
+        private Mutex? _mutex;
 
-        try 
+        public bool IsAcquired { get; }
+
+        public WindowsMutexLock(string key)
         {
-            _mutex = new Mutex(true, mutexName, out var success);
-            IsAcquired = success;
-        }
-        catch (Exception)
-        {
-            IsAcquired = false;
+            var mutexName = $"Global\\modsharp_{key}";
+
+            try
+            {
+                _mutex     = new (true, mutexName, out var success);
+                IsAcquired = success;
+            }
+            catch (Exception)
+            {
+                IsAcquired = false;
+            }
+
+            if (!IsAcquired)
+            {
+                _mutex?.Dispose();
+                _mutex = null;
+            }
         }
 
-        if (!IsAcquired)
+        public void Dispose()
         {
-            _mutex?.Dispose();
+            if (_mutex is null)
+            {
+                return;
+            }
+
+            try
+            {
+                _mutex.ReleaseMutex();
+            }
+            catch (Exception)
+            {
+            }
+
+            _mutex.Dispose();
             _mutex = null;
         }
     }
 
-    public void Dispose()
+    private sealed class UnixFileLock : IProcessLock
     {
-        if (_mutex is null)
+        private FileStream? _lockFile;
+
+        public bool IsAcquired { get; }
+
+        public UnixFileLock(string key)
         {
-            return;
+            var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
+
+            try
+            {
+                _lockFile = new (lockPath,
+                                 FileMode.OpenOrCreate,
+                                 FileAccess.ReadWrite,
+                                 FileShare.None,
+                                 1,
+                                 FileOptions.DeleteOnClose);
+
+                IsAcquired = true;
+            }
+            catch (Exception)
+            {
+                IsAcquired = false;
+                _lockFile  = null;
+            }
+
+            if (!IsAcquired)
+            {
+                _lockFile?.Dispose();
+                _lockFile = null;
+            }
         }
 
-        try
-        {
-            _mutex.ReleaseMutex();
-        }
-        catch (Exception)
-        {
-        }
-
-        _mutex.Dispose();
-        _mutex = null;
-    }
-}
-
-internal sealed class UnixFileLock : IProcessLock
-{
-    private FileStream? _lockFile;
-
-    public bool IsAcquired { get; }
-
-    public UnixFileLock(string key)
-    {
-        var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
-
-        try
-        {
-            _lockFile = new FileStream(lockPath,
-                                       FileMode.OpenOrCreate,
-                                       FileAccess.ReadWrite,
-                                       FileShare.None,
-                                       1,
-                                       FileOptions.DeleteOnClose);
-
-            IsAcquired = true;
-        }
-        catch (Exception)
-        {
-            IsAcquired = false;
-            _lockFile = null;
-        }
-        
-        if (!IsAcquired)
+        public void Dispose()
         {
             _lockFile?.Dispose();
             _lockFile = null;
         }
-    }
-
-    public void Dispose()
-    {
-        _lockFile?.Dispose();
-        _lockFile = null;
     }
 }
