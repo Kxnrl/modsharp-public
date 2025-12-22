@@ -53,7 +53,11 @@ internal static class ProcessLock
                 _mutex     = new (true, mutexName, out var success);
                 IsAcquired = success;
             }
-            catch (Exception)
+            catch (IOException)
+            {
+                IsAcquired = false;
+            }
+            catch (UnauthorizedAccessException)
             {
                 IsAcquired = false;
             }
@@ -78,6 +82,7 @@ internal static class ProcessLock
             }
             catch (Exception)
             {
+                // ignored
             }
 
             _mutex.Dispose();
@@ -106,10 +111,9 @@ internal static class ProcessLock
 
                 IsAcquired = true;
             }
-            catch (Exception)
+            catch (IOException)
             {
                 IsAcquired = false;
-                _lockFile  = null;
             }
 
             if (!IsAcquired)
