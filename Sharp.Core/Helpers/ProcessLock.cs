@@ -55,24 +55,9 @@ internal static class ProcessLock
 
         public WindowsMutexLock(string key)
         {
-            var mutexName = $"Global\\modsharp_{key}";
+            _mutex = new Mutex(true, $"Global\\modsharp_{key}", out var success);
 
-            try
-            {
-                _mutex     = new Mutex(true, mutexName, out var success);
-                IsAcquired = success;
-            }
-            catch (IOException)
-            {
-                IsAcquired = false;
-            }
-            finally
-            {
-                if (!IsAcquired)
-                {
-                    Dispose();
-                }
-            }
+            IsAcquired = success;
         }
 
         public void Dispose()
@@ -104,28 +89,14 @@ internal static class ProcessLock
         {
             var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
 
-            try
-            {
-                _lockFile = new FileStream(lockPath,
-                                           FileMode.OpenOrCreate,
-                                           FileAccess.ReadWrite,
-                                           FileShare.None,
-                                           1,
-                                           FileOptions.DeleteOnClose);
+            _lockFile = new FileStream(lockPath,
+                                       FileMode.OpenOrCreate,
+                                       FileAccess.ReadWrite,
+                                       FileShare.None,
+                                       1,
+                                       FileOptions.DeleteOnClose);
 
-                IsAcquired = true;
-            }
-            catch (IOException)
-            {
-                IsAcquired = false;
-            }
-            finally
-            {
-                if (!IsAcquired)
-                {
-                    Dispose();
-                }
-            }
+            IsAcquired = true;
         }
 
         public void Dispose()
