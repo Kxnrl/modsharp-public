@@ -21,8 +21,8 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
@@ -60,7 +60,7 @@ internal sealed class ModSharpModule
     public ModuleLoadState State { get; private set; }
 
     private PluginLoader?    _loader;
-    private FileStream?      _lockFile;
+    private IProcessLock?    _processLock;
     private IModSharpModule? _instance;
 
     internal ModSharpModule(
@@ -144,13 +144,13 @@ internal sealed class ModSharpModule
             throw new InvalidOperationException("Shutdown must be called from the same thread as the constructor.");
         }
 
-        if (_lockFile is null)
+        if (_processLock is null)
         {
             return;
         }
 
-        _lockFile.Dispose();
-        _lockFile = null;
+        _processLock.Dispose();
+        _processLock = null;
     }
 
     public void Unload(Action<string> onUnload)
@@ -178,10 +178,10 @@ internal sealed class ModSharpModule
         }
         finally
         {
-            if (_lockFile is not null)
+            if (_processLock is not null)
             {
-                _lockFile.Dispose();
-                _lockFile = null;
+                _processLock.Dispose();
+                _processLock = null;
             }
 
             _instance = null;
@@ -202,6 +202,18 @@ internal sealed class ModSharpModule
                 throw new ApplicationException("Failed to update module while starting");
             }
 
+            var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_dllFile)));
+
+            _processLock = ProcessLock.Create(key);
+
+            if (!_processLock.IsAcquired)
+            {
+                _processLock.Dispose();
+                _processLock = null;
+
+                throw new AbandonedMutexException($"Module '{Name}' is already loaded by another process. Ensure no other instance is running.");
+            }
+
             loader = PluginLoader.CreateFromAssemblyFile(_dllFile,
                                                          config =>
                                                          {
@@ -216,32 +228,11 @@ internal sealed class ModSharpModule
 
             var module = assembly.GetTypes()
                                  .FirstOrDefault(t => typeof(IModSharpModule).IsAssignableFrom(t) && !t.IsAbstract)
-                         ?? throw new BadImageFormatException("IModSharpModule is not implemented.");
+                         ?? throw new BadImageFormatException($"Assembly '{assembly.GetName().Name}' does not contain a valid IModSharpModule implementation. Ensure a non-abstract class implements IModSharpModule.");
 
             if (assembly.GetName().Version is not { } version)
             {
-                throw new VersionNotFoundException("Could not versioning");
-            }
-
-            var matches = Regex.Matches(_dllFile, "[a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
-            var builder = new StringBuilder();
-
-            foreach (Match m in matches)
-            {
-                builder.Append(m.Value);
-            }
-
-            var key = builder.ToString();
-
-            var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
-
-            try
-            {
-                _lockFile = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose);
-            }
-            catch (IOException)
-            {
-                throw new AbandonedMutexException("Double load!");
+                throw new VersionNotFoundException($"Assembly '{assembly.GetName().Name}' does not have a version defined..");
             }
 
             if (Activator.CreateInstance(module, shared, _dllPath, _rootPath, version, configuration, hotReload)
@@ -290,10 +281,10 @@ internal sealed class ModSharpModule
 
             try
             {
-                if (_lockFile is not null)
+                if (_processLock is not null)
                 {
-                    _lockFile.Dispose();
-                    _lockFile = null;
+                    _processLock.Dispose();
+                    _processLock = null;
                 }
             }
             catch

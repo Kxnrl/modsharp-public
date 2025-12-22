@@ -105,17 +105,16 @@ internal class SharpModuleManager : ICoreSharpModuleManager
                     continue;
                 }
 
-                Log.Logger.Warning("Module [{n}] need to be reload, reloading...", module.Name);
-
+                Log.Logger.Information("Reloading module [{Name}]...", module.Name);
                 module.Unload(OnModuleUnload);
                 module.Update();
                 module.Load(true, OnModuleLoad, _sharedManager, _configuration);
                 updates.Add(module);
-                Log.Logger.Warning("Module [{n}] has been reloaded!", module.Name);
+                Log.Logger.Information("Module [{Name}] reloaded successfully", module.Name);
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e, "Failed to reload module [{n}]", module.Name);
+                Log.Logger.Error(e, "Failed to reload module [{Name}]", module.Name);
             }
         }
 
