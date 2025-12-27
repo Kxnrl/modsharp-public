@@ -5,16 +5,55 @@ using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
 
-namespace MenuExample;
+namespace Ptr.Modules.Debugger;
 
 internal class MenuExample : IModSharpModule
 {
     private readonly ISharedSystem _sharedSystem;
     private IModSharpModuleInterface<IMenuManager> _menuManager;
+    private readonly Menu _subMenu2;
+    private readonly Menu _menu;
 
     public MenuExample(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool hotReload)
     {
         _sharedSystem = sharedSystem;
+
+        // You can precache menu.
+        _subMenu2 = Menu.Create()
+            .Title("Menu Title2")
+            .Description("Desc 2")
+            .Item("SubItem1", controller =>
+            {
+                controller.Client.PrintToChat("SubItem1 selected.");
+            })
+            .OnExit(cl =>
+            {
+
+            })
+            .Build();
+        _menu = Menu.Create()
+            .Title("Menu title")
+            .Description("Desc")
+            .Item("Item1", controller =>
+            {
+                controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item1 selected.");
+                controller.Exit();
+            })
+            .Item("Item2", controller =>
+            {
+                // Call Next will let you invoke next menu.
+                controller.Next(_subMenu2);
+                controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item2 Selected.");
+            })
+            .OnEnter(cl =>
+            {
+                cl.PrintToChat("OnEnter");
+            })
+            .OnExit(cl =>
+            {
+                cl.PrintToChat("OnExit");
+            })
+            .Build();
     }
 
     public bool Init()
@@ -33,44 +72,45 @@ internal class MenuExample : IModSharpModule
         var client = obj.Client;
         var playerController = obj.Controller;
 
-        var subMenu2 = Menu.Create()
-            .Title("Menu Title2")
-            .Description("Desc 2")
-            .Item("SubItem1", controller =>
-            {
-                controller.Client.PrintToChat("SubItem1 selected.");
-            })
-            .OnExit(cl =>
-            {
+        menuManager.DisplayMenu(client, _menu);
 
-            })
-            .Build();
+        // Or create menu on the fly.
+        //var subMenu2 = Menu.Create()
+        //    .Title("Menu Title2")
+        //    .Description("Desc 2")
+        //    .Item("SubItem1", controller =>
+        //    {
+        //        controller.Client.PrintToChat("SubItem1 selected.");
+        //    })
+        //    .OnExit(cl =>
+        //    {
 
-        var menu = Menu.Create()
-            .Title("Menu title")
-            .Description("Desc")
-            .Item("Item1", controller =>
-            {
-                controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item1 selected.");
-                controller.Exit();
-            })
-            .Item("Item2", controller =>
-            {
-                // Call Next will let you invoke next menu.
-                controller.Next(subMenu2);
-                playerController.Print(HudPrintChannel.Chat, "Item2 Selected.");
-            })
-            .OnEnter(cl =>
-            {
-                cl.PrintToChat("OnEnter");
-            })
-            .OnExit(cl =>
-            {
-                cl.PrintToChat("OnExit");
-            })
-            .Build();
-
-        menuManager.DisplayMenu(client, menu);
+        //    })
+        //    .Build();
+        //var menu = Menu.Create()
+        //    .Title("Menu title")
+        //    .Description("Desc")
+        //    .Item("Item1", controller =>
+        //    {
+        //        controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item1 selected.");
+        //        controller.Exit();
+        //    })
+        //    .Item("Item2", controller =>
+        //    {
+        //        // Call Next will let you invoke next menu.
+        //        controller.Next(subMenu2);
+        //        controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item2 Selected.");
+        //    })
+        //    .OnEnter(cl =>
+        //    {
+        //        cl.PrintToChat("OnEnter");
+        //    })
+        //    .OnExit(cl =>
+        //    {
+        //        cl.PrintToChat("OnExit");
+        //    })
+        //    .Build();
+        //menuManager.DisplayMenu(client, menu);
 
         if (menuManager.IsInMenu(client))
         {
@@ -88,7 +128,6 @@ internal class MenuExample : IModSharpModule
                 menuManager.QuitMenu(client);
             }
         }, 10.0);
-
     }
 
     public void OnAllModulesLoaded()
@@ -104,5 +143,4 @@ internal class MenuExample : IModSharpModule
 
     public string DisplayName => "MenuExample";
     public string DisplayAuthor => "ModSharp Dev Team";
-
 }
