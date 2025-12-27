@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -27,7 +27,10 @@ public interface IKeyValues : INativeObject
 {
     /// <summary>
     ///     Destroy this instance <br />
-    ///     <remarks>Only created instances and clones can be destroyed</remarks>
+    ///     <remarks>
+    ///         Only instances created by <see cref="IModSharp.CreateKeyValues" /> or <see cref="IKeyValues.Clone" /> can
+    ///         be destroyed
+    ///     </remarks>
     /// </summary>
     void DeleteThis();
 
@@ -153,7 +156,7 @@ public interface IKeyValues3 : INativeObject
 {
     /// <summary>
     ///     Destroy this instance <br />
-    ///     <remarks>Only created instances and clones can be destroyed</remarks>
+    ///     <remarks>Only instances created by <see cref="IModSharp.CreateKeyValues3" /> can be destroyed</remarks>
     /// </summary>
     void DeleteThis();
 
