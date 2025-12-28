@@ -148,5 +148,3 @@ public readonly record struct MenuItem(
 public readonly record struct MenuItemMetadata(
     string?       Title = null,
     MenuItemState State = MenuItemState.Default);
-
-
