@@ -35,7 +35,7 @@ public interface ISharpModuleManager
     public IModSharpModuleInterface<T> GetRequiredSharpModuleInterface<T>(string identity) where T : class;
 
     /// <summary>
-    ///     Get the required sharp module interface.
+    ///     Get the optional sharp module interface.
     /// </summary>
     public IModSharpModuleInterface<T>? GetOptionalSharpModuleInterface<T>(string identity) where T : class;
 

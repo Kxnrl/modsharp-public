@@ -89,10 +89,16 @@ public interface IConVar : INativeObject
     bool SetMaxBound(ConVarVariantValue value);
 
     /// <summary>
-    ///     Parses the string and sets the ConVar to the corresponding typed value.
-    ///     Falls back to the default value if parsing fails.
+    ///     Universal method to set the ConVar value by parsing a string.
+    ///     <para>
+    ///         Use this if you do not know the underlying type of the ConVar.
+    ///         It attempts to parse the string and set the ConVar to the corresponding typed value.
+    ///     </para>
+    ///     <para>
+    ///         Falls back to the default value if parsing fails.
+    ///     </para>
     /// </summary>
-    /// <param name="value">The string value to parse.</param>
+    /// <param name="value">The string value to parse and set.</param>
     void SetString(string value);
 
     /// <summary>
