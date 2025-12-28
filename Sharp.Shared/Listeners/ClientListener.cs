@@ -63,6 +63,18 @@ public interface IClientListener
     {
     }
 
+    /// <summary>
+    ///     Called when a client changes a ConVar in <see cref="IGameClient.GetConVars" /> that has the <see cref="ConVarFlags.UserInfo"/> flag set.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This is commonly triggered when a player changes their name or other user info settings.
+    ///     </para>
+    ///     <para>
+    ///         You can use this to validate or revert changes, such as enforcing name restrictions.
+    ///     </para>
+    /// </remarks>
+    /// <param name="client">The client who changed the setting.</param>
     void OnClientSettingChanged(IGameClient client)
     {
     }

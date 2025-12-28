@@ -119,38 +119,86 @@ public interface IGameEvent : INativeObject
     string GetName();
 
     /// <summary>
-    ///     Fire event <br />
-    ///     <remarks>Throws exception if called on non-custom created event</remarks>
+    ///     Fire the event.
+    ///     <para>
+    ///         If <paramref name="serverOnly"/> is <c>false</c>, the event will be broadcast to all clients.
+    ///     </para>
     /// </summary>
-    /// <param name="serverOnly">Don't send to clients</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will be automatically disposed after firing the event.
+    ///         Do not manually call <see cref="Dispose"/> if you use this method.
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="serverOnly">If set to <c>true</c>, the event is processed only on the server and not sent to clients.</param>
     void Fire(bool serverOnly);
 
     /// <summary>
-    ///     Fire event to specific client <br />
-    ///     <remarks>Throws exception if called on non-custom created event</remarks>
+    ///     Fire the event to a specific client identified by their slot index.
     /// </summary>
-    /// <param name="slot">IGameClient index</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on module unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="slot">The client's slot index (0-based).</param>
     void FireToClient(int slot);
 
     /// <summary>
-    ///     Fire event to specific client <br />
-    ///     <remarks>Throws exception if called on non-custom created event</remarks>
+    ///     Fire the event to a specific client.
     /// </summary>
-    /// <param name="client">IGameClient</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on module unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="client">The target <see cref="IGameClient"/>.</param>
     void FireToClient(IGameClient client);
 
     /// <summary>
-    ///     Fire event to all clients<br />
-    ///     <remarks>Throws exception if called on non-custom created event</remarks>
+    ///     Fire the event to all connected clients.
     /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on plugin unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
     void FireToClients();
 
     /// <summary>
-    ///     Dispose event <br />
-    ///     <remarks>Throws exception if called on non-custom created event</remarks>
-    ///     <br />
-    ///     <remarks>Will crash immediately if called on already fired event</remarks>
+    ///     Manually dispose of the event object.
     /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This should only be called for custom-created events that were fired using
+    ///         <see cref="FireToClient(int)"/>, <see cref="FireToClient(IGameClient)"/>, or <see cref="FireToClients"/>.
+    ///     </para>
+    ///     <para>
+    ///         <b>WARNING:</b> Calling this method on an event that has already been disposed or fired via <see cref="Fire(bool)"/>
+    ///         may cause the server to crash.
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
     void Dispose();
 
     /// <summary>
