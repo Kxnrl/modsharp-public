@@ -9,10 +9,11 @@ namespace MenuExample;
 
 internal class MenuExample : IModSharpModule
 {
-    private readonly ISharedSystem                          _sharedSystem;
-    private          IModSharpModuleInterface<IMenuManager> _menuManager;
-    private readonly Menu                                   _subMenu2;
-    private readonly Menu                                   _menu;
+    private readonly ISharedSystem _sharedSystem;
+    private readonly Menu          _subMenu2;
+    private readonly Menu          _menu;
+
+    private IModSharpModuleInterface<IMenuManager>? _menuManager;
 
     public MenuExample(ISharedSystem sharedSystem,
         string                       dllPath,
@@ -27,7 +28,11 @@ internal class MenuExample : IModSharpModule
         _subMenu2 = Menu.Create()
                         .Title("Menu Title2")
                         .Description("Desc 2")
-                        .Item("SubItem1", controller => { controller.Client.PrintToChat("SubItem1 selected."); })
+                        .Item("SubItem1",
+                              controller =>
+                              {
+                                  controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "SubItem1 selected.");
+                              })
                         .OnExit(cl => { })
                         .Build();
 
@@ -47,8 +52,8 @@ internal class MenuExample : IModSharpModule
                               controller.Next(_subMenu2);
                               controller.Client.GetPlayerController()?.Print(HudPrintChannel.Chat, "Item2 Selected.");
                           })
-                    .OnEnter(cl => { cl.PrintToChat("OnEnter"); })
-                    .OnExit(cl => { cl.PrintToChat("OnExit"); })
+                    .OnEnter(cl => { cl.GetPlayerController()?.Print(HudPrintChannel.Chat, "OnEnter"); })
+                    .OnExit(cl => { cl.GetPlayerController()?.Print(HudPrintChannel.Chat,  "OnExit"); })
                     .Build();
     }
 
@@ -61,7 +66,7 @@ internal class MenuExample : IModSharpModule
 
     private void OnPlayerSpawnPost(IPlayerSpawnForwardParams obj)
     {
-        if (_menuManager.Instance is not { } menuManager)
+        if (_menuManager?.Instance is not { } menuManager)
         {
             return;
         }
