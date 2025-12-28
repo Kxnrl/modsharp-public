@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Configuration;
-using Ptr.Shared.Extensions;
 using Sharp.Modules.MenuManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
 
-namespace Ptr.Modules.Debugger;
+namespace MenuExample;
 
 internal class MenuExample : IModSharpModule
 {
