@@ -16,6 +16,8 @@ public class Menu
     public string CursorLeft  { get; private set; } = "►";
     public string CursorRight { get; private set; } = "◄";
 
+    public bool ShowIndex { get; private set; } = true;
+
     private readonly List<MenuItem> _items = [];
 
     public Action<IGameClient>? OnExit;
@@ -29,6 +31,9 @@ public class Menu
         CursorLeft  = left;
         CursorRight = right;
     }
+
+    public void SetShowIndex(bool show)
+        => ShowIndex = show;
 
     public void SetTitle(Func<IGameClient, string> factory)
         => TitleFactory = factory;
@@ -162,6 +167,20 @@ public class Menu
             return this;
         }
 
+        public Builder HideIndex()
+        {
+            _menu.SetShowIndex(false);
+
+            return this;
+        }
+
+        public Builder Item(string name, string color, Action<IMenuController>? action = null)
+        {
+            _menu.AddItem(x => new MenuItemMetadata(name, MenuItemState.Default, color), action);
+
+            return this;
+        }
+
         public Builder OnExit(Action<IGameClient> fn)
         {
             _menu.OnExit = fn;
@@ -184,4 +203,5 @@ public readonly record struct MenuItem(
 
 public readonly record struct MenuItemMetadata(
     string?       Title = null,
-    MenuItemState State = MenuItemState.Default);
+    MenuItemState State = MenuItemState.Default,
+    string?       Color = null);

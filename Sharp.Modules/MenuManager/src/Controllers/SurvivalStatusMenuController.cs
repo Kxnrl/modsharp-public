@@ -144,12 +144,14 @@ internal class SurvivalStatusMenuController : BaseMenuController
             }
             else if ((itemIndex - 1) + ItemSkipCount == Cursor)
             {
+                var indexStr = Menu.ShowIndex ? $"{Colored(keyColor, $"{itemIndex}.")} " : "";
                 sb.Append(
-                    $"{Colored(cursorColor, Menu.CursorLeft)} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, Menu.CursorRight)}<br>");
+                    $"{Colored(cursorColor, Menu.CursorLeft)} {indexStr}{Colored(item.Color ?? textColor, item.Title)} {Colored(cursorColor, Menu.CursorRight)}<br>");
             }
             else
             {
-                sb.Append($"{Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)}<br>");
+                var indexStr = Menu.ShowIndex ? $"{Colored(keyColor, $"{itemIndex}.")} " : "";
+                sb.Append($"{indexStr}{Colored(item.Color ?? textColor, item.Title)}<br>");
             }
 
             itemIndex++;
