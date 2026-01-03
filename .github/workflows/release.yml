@@ -158,6 +158,7 @@ jobs:
         run: |
           cp -r ./.asset/configs  ./build/sharp
           cp -r ./.asset/gamedata ./build/sharp
+          cp -r ./.asset/locales ./build/sharp
 
       - name: Upload ModSharp artifact
         uses: actions/upload-artifact@v4
@@ -291,6 +292,7 @@ jobs:
         run: |
           cp -r ./.asset/configs  ./build/sharp
           cp -r ./.asset/gamedata ./build/sharp
+          cp -r ./.asset/locales ./build/sharp
           cp -r ./Engine/build/libmodsharp.so ./build/sharp/bin/libmodsharp.so
           cp -r ./Loader/build/libserver.so ./build/sharp/bin/linuxsteamrt64/libserver.so
 
