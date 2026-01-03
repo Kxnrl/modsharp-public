@@ -145,7 +145,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
             else if ((itemIndex - 1) + ItemSkipCount == Cursor)
             {
                 sb.Append(
-                    $"{Colored(cursorColor, "►")} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, "◄")}<br>");
+                    $"{Colored(cursorColor, Menu.CursorLeft)} {Colored(keyColor, $"{itemIndex}.")} {Colored(textColor, item.Title)} {Colored(cursorColor, Menu.CursorRight)}<br>");
             }
             else
             {

@@ -13,6 +13,9 @@ public class Menu
     public Func<IGameClient, string>? DescriptionFactory { get; private set; }
     public IReadOnlyList<MenuItem>    Items              => _items.AsReadOnly();
 
+    public string CursorLeft  { get; private set; } = "►";
+    public string CursorRight { get; private set; } = "◄";
+
     private readonly List<MenuItem> _items = [];
 
     public Action<IGameClient>? OnExit;
@@ -20,6 +23,12 @@ public class Menu
 
     public void SetTitle(string name)
         => Title = name;
+
+    public void SetCursor(string left, string right)
+    {
+        CursorLeft  = left;
+        CursorRight = right;
+    }
 
     public void SetTitle(Func<IGameClient, string> factory)
         => TitleFactory = factory;
@@ -90,6 +99,27 @@ public class Menu
             return this;
         }
 
+        public Builder Item(string name, Action<IMenuController>? action, MenuItemState state)
+        {
+            _menu.AddItem(name, action, _ => state);
+
+            return this;
+        }
+
+        public Builder Item(string name, Action<IMenuController>? action, Func<IMenuController, MenuItemState> stateFactory)
+        {
+            _menu.AddItem(name, action, stateFactory);
+
+            return this;
+        }
+
+        public Builder Item(Func<IMenuController, string> titleFactory, Action<IMenuController>? action, Func<IMenuController, MenuItemState> stateFactory)
+        {
+            _menu.AddItem(titleFactory, action, stateFactory);
+
+            return this;
+        }
+
         public Builder Spacer()
         {
             _menu.AddSpacer();
@@ -121,6 +151,13 @@ public class Menu
         public Builder Description(Func<IGameClient, string> factory)
         {
             _menu.SetDescription(factory);
+
+            return this;
+        }
+
+        public Builder Cursor(string left, string right)
+        {
+            _menu.SetCursor(left, right);
 
             return this;
         }
