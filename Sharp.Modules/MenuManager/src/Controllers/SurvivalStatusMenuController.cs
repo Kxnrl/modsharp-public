@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Modules.MenuManager.Shared;
@@ -65,34 +65,34 @@ internal class SurvivalStatusMenuController : BaseMenuController
     {
         var sb = new StringBuilder();
 
-        const int paddingItemCount = 2; // 游标视窗上下预留展示选项数量
+        const int paddingItemCount = 2; // Buffer zones above and below the cursor
 
         var offset = Cursor - ItemSkipCount;
 
+        // Scroll down if cursor hits the bottom buffer
         if (offset >= MaxPageItems - paddingItemCount)
         {
             ItemSkipCount = Cursor - (MaxPageItems - paddingItemCount - 1);
 
-            var maxItemSkipCount = BuiltMenuItems.Count - MaxPageItems;
+            // Prevent scrolling past the last item
+            var maxItemSkipCount = Math.Max(0, BuiltMenuItems.Count - MaxPageItems);
 
             if (ItemSkipCount >= maxItemSkipCount)
             {
                 ItemSkipCount = maxItemSkipCount;
             }
         }
+
+        // Scroll up if cursor hits the top buffer
         else if (offset < paddingItemCount)
         {
-            ItemSkipCount = Cursor - paddingItemCount;
-
-            if (ItemSkipCount < 0)
-            {
-                ItemSkipCount = 0;
-            }
+            // Clamp to 0 to prevent negative skip when cursor is near the start
+            ItemSkipCount = Math.Max(0, Cursor - paddingItemCount);
         }
 
-        string? header = null;
+        /*string? header = null;
 
-        if (PreviousMenus.Any())
+        if (PreviousMenus.Count > 0)
         {
             var builder = new StringBuilder();
 
@@ -106,51 +106,49 @@ internal class SurvivalStatusMenuController : BaseMenuController
             var content = builder.ToString();
 
             header = content;
-        }
+        }*/
 
         // title
         var title = Menu.BuildTitle(Client);
 
         sb.Append($"<font class='fontSize-m'>{title}<br><font class='fontSize-xs'>\u00A0<br></font><font class='fontSize-sm'>");
 
-        // description
-        string? description = null;
-
-        if (Menu.Description is not null || Menu.DescriptionFactory is not null)
-        {
-            var content = Menu.BuildDescription(Client);
-
-            description = content;
-        }
-
         // colors
         const string keyColor      = "#DDAA11";
         const string textColor     = "#ffffff";
-        const string disabledColor = "#333";
+        const string disabledColor = "#888888";
         const string cursorColor   = "#3399FF";
 
         var itemIndex = 1;
 
-        foreach (var item in BuiltMenuItems.Skip(ItemSkipCount)
-                                           .Take(MaxPageItems))
+        var start = ItemSkipCount;
+        var end   = Math.Min(start + MaxPageItems, BuiltMenuItems.Count);
+
+        ReadOnlySpan<BuiltMenuItem> span = CollectionsMarshal.AsSpan(BuiltMenuItems);
+
+        for (var i = start; i < end; i++)
         {
+            ref readonly var item = ref span[i];
+
             if (item.State == MenuItemState.Spacer)
             {
                 sb.Append("<br>");
+
+                continue;
             }
-            else if (item.State == MenuItemState.Disabled)
+
+            var indexStr = Menu.ShowIndex ? $"{Colored(keyColor, $"{itemIndex}.")} " : "";
+
+            if (item.State == MenuItemState.Disabled)
             {
-                sb.Append($"{Colored(disabledColor, $"{itemIndex}. {item.Title}")}<br>");
+                sb.Append($"{Colored(disabledColor, $"{indexStr}{item.Title}")}<br>");
             }
-            else if ((itemIndex - 1) + ItemSkipCount == Cursor)
+            else if (i == Cursor)
             {
-                var indexStr = Menu.ShowIndex ? $"{Colored(keyColor, $"{itemIndex}.")} " : "";
-                sb.Append(
-                    $"{Colored(cursorColor, Menu.CursorLeft)} {indexStr}{Colored(item.Color ?? textColor, item.Title)} {Colored(cursorColor, Menu.CursorRight)}<br>");
+                sb.Append($"{Colored(cursorColor, Menu.CursorLeft)} {indexStr}{Colored(item.Color ?? textColor, item.Title)} {Colored(cursorColor, Menu.CursorRight)}<br>");
             }
             else
             {
-                var indexStr = Menu.ShowIndex ? $"{Colored(keyColor, $"{itemIndex}.")} " : "";
                 sb.Append($"{indexStr}{Colored(item.Color ?? textColor, item.Title)}<br>");
             }
 
@@ -205,13 +203,13 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         return;
 
-        string Colored(string color, string content)
+        static string Colored(string color, string content)
             => $"<font color='{color}'>{content}</font>";
 
-        string Key(string key)
+        static string Key(string key)
             => Colored(keyColor, key);
 
-        string Text(string text)
+        static string Text(string text)
             => Colored(textColor, text);
     }
 

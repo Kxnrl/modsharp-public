@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Sharp.Modules.MenuManager.Shared;
 using Sharp.Shared.Objects;
 
@@ -10,4 +10,5 @@ public readonly record struct BuiltMenuItem(
     string                   Title,
     MenuItemState            State,
     float                    Width,
-    Action<IMenuController>? Action = null);
+    Action<IMenuController>? Action = null,
+    string?                  Color  = null);

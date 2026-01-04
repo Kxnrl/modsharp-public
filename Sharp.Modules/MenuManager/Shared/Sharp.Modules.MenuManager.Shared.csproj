@@ -10,10 +10,11 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <BaseOutputPath>../../../.build/Sharp.Modules/MenuManager.Shared/</BaseOutputPath>
         <PlatformTarget>x64</PlatformTarget>
+        <LangVersion>14</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+        <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
     </ItemGroup>
 
 </Project>

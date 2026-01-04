@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
-        <ProjectReference Include="..\..\LocalizerManager\Shared\Sharp.Modules.LocalizerManager.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+        <ProjectReference Include="..\..\LocalizerManager\Shared\Sharp.Modules.LocalizerManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
         <ProjectReference Include="..\Shared\Sharp.Modules.MenuManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
     </ItemGroup>
 

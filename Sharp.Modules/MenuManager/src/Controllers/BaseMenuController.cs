@@ -170,38 +170,54 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     private void BuildItems()
     {
+        var span = Menu.GetItemSpan();
+
         BuiltMenuItems.Clear();
+        BuiltMenuItems.EnsureCapacity(span.Length);
 
-        var index = 0;
-
-        foreach (var menuItem in Menu.Items)
+        foreach (ref readonly var menuItem in span)
         {
-            index++;
-            var metadata = menuItem.Factory?.Invoke(this);
-
-            if (metadata?.State == MenuItemState.Ignore)
+            if (menuItem.Generator is null)
             {
-                index--;
+                continue;
+            }
+
+            var context = new MenuItemContext();
+            menuItem.Generator.Invoke(Client, ref context);
+
+            if (context.State == MenuItemState.Ignore)
+            {
+                continue;
+            }
+
+            if (context.State == MenuItemState.Spacer)
+            {
+                BuiltMenuItems.Add(new (string.Empty,
+                                        MenuItemState.Spacer,
+                                        0));
 
                 continue;
             }
 
-            if (metadata?.State == MenuItemState.Spacer)
+            // ignore if no title
+            if (string.IsNullOrWhiteSpace(context.Title))
             {
-                BuiltMenuItems.Add(new BuiltMenuItem(string.Empty,
-                                                     MenuItemState.Spacer,
-                                                     0,
-                                                     null));
+                continue;
             }
-            else
-            {
-                var content = $"{metadata?.Title ?? string.Empty}";
 
-                BuiltMenuItems.Add(new BuiltMenuItem(content,
-                                                     metadata?.State ?? MenuItemState.Default,
-                                                     0,
-                                                     menuItem.Action));
+            // we mark it as disabled if no action is provided
+            if (context.Action is null && context.State == MenuItemState.Default)
+            {
+                context.State = MenuItemState.Disabled;
             }
+
+            var content = context.Title ?? string.Empty;
+
+            BuiltMenuItems.Add(new (content,
+                                    context.State,
+                                    0,
+                                    context.Action,
+                                    context.Color));
         }
     }
 
