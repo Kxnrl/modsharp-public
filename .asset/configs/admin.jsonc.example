@@ -1,0 +1,99 @@
+/* 
+PermissionCollection: The base data of the permission, all 'access' will be checked against this collection.
+Roles: Collections of permissions, which can be assigned to Admins.
+Admins: Users with assigned roles and permissions.
+
+Noting that several rules that you need to know:
+1. Wildcards (*): You can use '*' to represent all permissions in a module or all permissions in general.
+2. Role Inheritance (@): Admins can inherit permissions from multiple roles.
+3. Deny Permissions (!): You can explicitly deny certain permissions even if they are granted by roles.
+4. Separator (:): Permissions are structured in a 'module:action' format for clarity and organization.
+*/
+
+{
+    // 权限集合定义：按模块/功能分类权限，供角色引用
+    "PermissionCollection": {
+        "system": [
+            "system:role:create",
+            "system:role:delete"
+        ],
+        "pluginA": [
+            "pluginA:getWeapon",
+            "pluginA:fetchItems"
+        ],
+        "pluginB": [
+            "pluginB:kick",
+            "pluginB:slay"
+        ]
+    },
+
+    // 角色定义：通过权限集合组织权限，供用户继承
+    "Roles": [
+        {
+            "Name": "global_root",
+            "Permissions": [
+                "*"
+            ]
+        },
+        {
+            "Name": "pluginA_admin",
+            "Permissions": [
+                "pluginA:*"
+            ]
+        },
+        {
+            "Name": "pluginB_kicker",
+            "Permissions": [
+                "pluginB:kick"
+            ]
+        }
+    ],
+
+    // 管理员定义：为用户分配角色和权限
+    // 权限格式说明：
+    //   @开头    = 继承指定角色的所有权限
+    //   !开头    = 显式拒绝某个权限
+    //   其他     = 直接允许某个权限
+    "Admins": [
+        {
+            "Name": "Admin_Root",
+            "Identity": 76561198000000001,
+            "Immunity": 100,
+            // 继承全局管理员角色，并显式拒绝禁用踢人功能
+            "Permissions": [
+                "@global_root",
+                "!pluginB:slay"
+            ]
+        },
+        {
+            "Name": "Admin_PluginA",
+            "Identity": 76561198000000002,
+            "Immunity": 50,
+            // 同时继承两个角色：插件A管理员 + 插件B踢人者
+            "Permissions": [
+                "@pluginA_admin",
+                "@pluginB_kicker"
+            ]
+        },
+        {
+            "Name": "Admin_Limited",
+            "Identity": 76561198000000003,
+            "Immunity": 10,
+            // 只授予特定权限，不继承任何角色
+            "Permissions": [
+                "pluginA:getWeapon",
+                "!pluginA:fetchItems"
+            ]
+        },
+        {
+            "Name": "Admin_Mixed",
+            "Identity": 76561198000000004,
+            "Immunity": 30,
+            // 混合：继承角色 + 直接添加权限
+            "Permissions": [
+                "@pluginA_admin",
+                "pluginB:slay"
+            ]
+        }
+    ]
+}
