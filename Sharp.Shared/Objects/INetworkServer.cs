@@ -66,7 +66,7 @@ public interface INetworkServer : INativeObject
     List<IGameClient> GetGameClients(bool connected, bool inGame = false);
 
     /// <summary>
-    ///     Get raw client pointers (sv->m_vecClients)
+    ///     Retrieves a pointer to the internal server client list container.
     /// </summary>
     /// <returns></returns>
     unsafe CUtlVector<nint>* GetGameClientPointers();
