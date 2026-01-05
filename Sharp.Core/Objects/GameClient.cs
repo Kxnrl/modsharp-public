@@ -199,7 +199,7 @@ internal partial class GameClient : NativeObject, IGameClient
            && _defaultSlot   == GetSlot(_this)                       // default slot not changed
            && SignOnState    >= SignOnState.Connected;
 
-    public bool IsConnected => IsValid && SignOnState < SignOnState.Challenge;
+    public bool IsConnected => IsValid && SignOnState < SignOnState.ChangeLevel;
 
     public bool IsInGame => IsValid && SignOnState is SignOnState.Full;
 
