@@ -24,15 +24,13 @@ namespace Sharp.Modules.AdminManager;
 
 internal class Admin : IAdmin
 {
-    public string  Name     { get; }
     public SteamID Identity { get; }
     public byte    Immunity { get; internal set; }
 
     private readonly HashSet<string> _permissions;
 
-    public Admin(string name, SteamID identity, byte immunity)
+    public Admin(SteamID identity, byte immunity)
     {
-        Name = name;
         Identity = identity;
         Immunity = immunity;
 

@@ -24,11 +24,6 @@ namespace Sharp.Modules.AdminManager.Shared;
 public interface IAdmin
 {
     /// <summary>
-    ///     管理员名字
-    /// </summary>
-    string Name { get; }
-
-    /// <summary>
     ///     SteamID
     /// </summary>
     SteamID Identity { get; }

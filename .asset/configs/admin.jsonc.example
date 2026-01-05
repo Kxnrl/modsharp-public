@@ -1,99 +1,71 @@
-/* 
-PermissionCollection: The base data of the permission, all 'access' will be checked against this collection.
-Roles: Collections of permissions, which can be assigned to Admins.
-Admins: Users with assigned roles and permissions.
+/*
+ * PermissionCollection: The base data of the permission, all 'access' will be checked against this collection.
+ * Roles: Collections of permissions, which can be assigned to Admins.
+ * Admins: Users with assigned roles and permissions.
+ */
 
-Noting that several rules that you need to know:
-1. Wildcards (*): You can use '*' to represent all permissions in a module or all permissions in general.
-2. Role Inheritance (@): Admins can inherit permissions from multiple roles.
-3. Deny Permissions (!): You can explicitly deny certain permissions even if they are granted by roles.
-4. Separator (:): Permissions are structured in a 'module:action' format for clarity and organization.
-*/
-
+/*
+ * Permission Syntax:
+ *   @RoleName   = Inherit permissions from role
+ *   !permission = Deny permission (global, overrides grants)
+ *   *           = All permissions
+ *   module:*    = All permissions in module
+ * 
+ * Immunity: Higher = more protection. Takes max from all roles/direct.
+ */
 {
-    // 权限集合定义：按模块/功能分类权限，供角色引用
     "PermissionCollection": {
-        "system": [
-            "system:role:create",
-            "system:role:delete"
-        ],
-        "pluginA": [
-            "pluginA:getWeapon",
-            "pluginA:fetchItems"
-        ],
-        "pluginB": [
-            "pluginB:kick",
-            "pluginB:slay"
-        ]
+        "admin": ["admin:kick", "admin:ban", "admin:slay"],
+        "vip": ["vip:skins", "vip:reserved_slot"]
     },
 
-    // 角色定义：通过权限集合组织权限，供用户继承
     "Roles": [
         {
-            "Name": "global_root",
-            "Permissions": [
-                "*"
-            ]
+            // Full access, highest immunity
+            "Name": "root",
+            "Immunity": 100,
+            "Permissions": ["*"]
         },
         {
-            "Name": "pluginA_admin",
-            "Permissions": [
-                "pluginA:*"
-            ]
+            // All admin permissions
+            "Name": "admin",
+            "Immunity": 50,
+            "Permissions": ["admin:*"]
         },
         {
-            "Name": "pluginB_kicker",
-            "Permissions": [
-                "pluginB:kick"
-            ]
+            // VIP perks only, no immunity specified (defaults to 0)
+            "Name": "vip",
+            "Permissions": ["vip:*"]
         }
     ],
-
-    // 管理员定义：为用户分配角色和权限
-    // 权限格式说明：
-    //   @开头    = 继承指定角色的所有权限
-    //   !开头    = 显式拒绝某个权限
-    //   其他     = 直接允许某个权限
+    
+    /*
+     * MULTI-MODULE BEHAVIOR FOR ADMINS:
+     * If the same Identity (SteamID) appears in multiple module configs:
+     * 1. MERGING: The user gets the combined permissions of ALL entries.
+     * 2. IMMUNITY: The user gets the HIGHEST immunity value found across all entries.
+     * 3. DENIALS: A '!permission' here overrides grants from ANY other module.
+     */
     "Admins": [
         {
-            "Name": "Admin_Root",
+            // Server owner with root access
             "Identity": 76561198000000001,
-            "Immunity": 100,
-            // 继承全局管理员角色，并显式拒绝禁用踢人功能
-            "Permissions": [
-                "@global_root",
-                "!pluginB:slay"
-            ]
+            "Permissions": ["@root"]
         },
         {
-            "Name": "Admin_PluginA",
+            // Admin who cannot ban
+            // NOTE: If another module tries to give this user "admin:ban", 
+            // the "!admin:ban" here will override it and force a denial.
             "Identity": 76561198000000002,
-            "Immunity": 50,
-            // 同时继承两个角色：插件A管理员 + 插件B踢人者
-            "Permissions": [
-                "@pluginA_admin",
-                "@pluginB_kicker"
-            ]
+            "Permissions": ["@admin", "!admin:ban"]
         },
         {
-            "Name": "Admin_Limited",
+            // VIP with extra kick permission and custom immunity
+            // NOTE: If another module defines this user with Immunity 10,
+            // the value 20 here will take precedence (Max wins).
             "Identity": 76561198000000003,
-            "Immunity": 10,
-            // 只授予特定权限，不继承任何角色
-            "Permissions": [
-                "pluginA:getWeapon",
-                "!pluginA:fetchItems"
-            ]
-        },
-        {
-            "Name": "Admin_Mixed",
-            "Identity": 76561198000000004,
-            "Immunity": 30,
-            // 混合：继承角色 + 直接添加权限
-            "Permissions": [
-                "@pluginA_admin",
-                "pluginB:slay"
-            ]
+            "Immunity": 20,
+            "Permissions": ["@vip", "admin:kick"]
         }
     ]
 }

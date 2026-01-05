@@ -38,8 +38,8 @@ using PermissionCollectionDictionary = Dictionary<
     HashSet<string> // Actual permission
 >;
 using RolesDictionary = Dictionary<
-    string,         // Roles key
-    HashSet<string> // Roles permissions
+    string,      // Roles key
+    RoleManifest // Roles permissions
 >;
 
 internal class AdminManager : IAdminManager, IModSharpModule
@@ -60,14 +60,21 @@ internal class AdminManager : IAdminManager, IModSharpModule
         string, // module identity
         RolesDictionary> _roles = new(StringComparer.OrdinalIgnoreCase);
 
-    // 这个无视所有插件的，这个是统一的，这个只是用来方便内部调用的，跟外部无关。
-    private readonly HashSet<string> _allConcretePermissions = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int> _permissionReferenceCounts = new (StringComparer.OrdinalIgnoreCase);
 
     // No duplicate SteamIDs allowed here.
     private readonly Dictionary<ulong, Admin> _globalAdmins = new ();
 
-    // Ownership tracker: Which module owns which SteamIDs?
-    private readonly Dictionary<string, HashSet<ulong>> _moduleOwnership = new (StringComparer.OrdinalIgnoreCase);
+    // Input: Raw permission/immunity data from each module, keyed by SteamID -> ModuleIdentity
+    // This is merged into _globalAdmins (the output) via RebuildAdmin()
+    private readonly Dictionary<ulong, Dictionary<string, AdminSource>> _adminSources = new ();
+
+    // Represents what a specific module contributed to a user's admin state
+    private record AdminSource(
+        byte            CalculatedImmunity,
+        HashSet<string> ResolvedAllows,
+        HashSet<string> ResolvedDenies
+    );
 
     private readonly ILogger<AdminManager> _logger;
 
@@ -132,30 +139,53 @@ internal class AdminManager : IAdminManager, IModSharpModule
             .Instance!;
     }
 
-    public void OnLibraryDisconnect(string name)
+    public void OnLibraryDisconnect(string moduleIdentity)
     {
         // Remove command registry for this module
-        _commandRegistries.Remove(name);
+        _commandRegistries.Remove(moduleIdentity);
 
-        // Remove permissions from the disconnecting module before removing its collections
-        if (_permissionCollections.Remove(name, out var modulePermissionCollections))
+        // Clean up Permissions Collections & Global lookup
+        if (_permissionCollections.Remove(moduleIdentity, out var modulePermissionCollections))
         {
+            // Flatten all permissions this module introduced
             foreach (var permission in modulePermissionCollections.Values.SelectMany(permissionSet => permissionSet))
             {
-                _allConcretePermissions.Remove(permission);
+                // Shouldn't be possible to have such case, but just to be safe :innocent:
+                if (!_permissionReferenceCounts.TryGetValue(permission, out var count))
+                {
+                    continue;
+                }
+
+                if (count <= 1)
+                {
+                    // This was the last module using this permission, remove
+                    _permissionReferenceCounts.Remove(permission);
+                }
+                else
+                {
+                    // Other modules still need this permission, just lower the count
+                    _permissionReferenceCounts[permission] = count - 1;
+                }
             }
         }
 
         // Remove roles for this module
-        _roles.Remove(name);
+        _roles.Remove(moduleIdentity);
 
-        // Remove admins from this module
-        if (_moduleOwnership.Remove(name, out var ownedIds))
+        // Find all users who had contributions from this module and rebuild their permissions and immunity
+        var affectedUsers = new List<ulong>();
+
+        foreach (var kvp in _adminSources)
         {
-            foreach (var id in ownedIds)
+            if (kvp.Value.Remove(moduleIdentity))
             {
-                _globalAdmins.Remove(id);
+                affectedUsers.Add(kvp.Key);
             }
+        }
+
+        foreach (var steamId in affectedUsers)
+        {
+            RebuildAdmin(steamId);
         }
     }
 
@@ -194,21 +224,6 @@ internal class AdminManager : IAdminManager, IModSharpModule
     {
         var manifest = call();
 
-        foreach (var adminDef in manifest.Admins)
-        {
-            if (_globalAdmins.ContainsKey(adminDef.Identity))
-            {
-                var existingOwner = FindOwner(adminDef.Identity);
-
-                _logger.LogError("Module '{NewModule}' failed to mount admins! Conflict detected: SteamID {Id} is already owned by '{OldModule}'.",
-                                 moduleIdentity,
-                                 adminDef.Identity,
-                                 existingOwner);
-
-                return; // STOP EXECUTION. Do not load partially.
-            }
-        }
-
         // Mount permission collections for this module
         if (!_permissionCollections.TryGetValue(moduleIdentity, out var modulePermissionCollection))
         {
@@ -223,7 +238,8 @@ internal class AdminManager : IAdminManager, IModSharpModule
             // Add all concrete permissions from this collection to the global set
             foreach (var permission in kv.Value)
             {
-                _allConcretePermissions.Add(permission);
+                _permissionReferenceCounts.TryAdd(permission, 0);
+                _permissionReferenceCounts[permission]++;
             }
         }
 
@@ -236,54 +252,150 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         foreach (var role in manifest.Roles)
         {
-            moduleRoles[role.Name] = role.Permissions;
+            moduleRoles[role.Name] = role;
         }
 
-        if (!_moduleOwnership.TryGetValue(moduleIdentity, out var ownedIds))
-        {
-            ownedIds                         = [];
-            _moduleOwnership[moduleIdentity] = ownedIds;
-        }
+        var usersToRebuild = new HashSet<ulong>();
 
         foreach (var adminManifest in manifest.Admins)
         {
-            // Resolve recursive/wildcard permissions
-            var resolvedPermissions = ResolvePermissions(moduleIdentity, adminManifest.Permissions);
+            var (allowed, denied) = ResolvePermissions(moduleIdentity, adminManifest.Permissions);
+            var calculatedImmunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
 
-            // Create the concrete Admin object
-            // Note: Since we verified conflicts earlier, we know this ID is unique in _globalAdmins.
-            var admin = new Admin(adminManifest.Name, adminManifest.Identity, adminManifest.Immunity);
-
-            foreach (var permission in resolvedPermissions)
+            if (!_adminSources.TryGetValue(adminManifest.Identity, out var userSources))
             {
-                admin.AddPermission(permission);
+                userSources                           = new Dictionary<string, AdminSource>(StringComparer.OrdinalIgnoreCase);
+                _adminSources[adminManifest.Identity] = userSources;
             }
 
-            _globalAdmins.Add(admin.Identity, admin);
-            ownedIds.Add(admin.Identity);
+            userSources[moduleIdentity] = new AdminSource(calculatedImmunity, allowed, denied);
+            usersToRebuild.Add(adminManifest.Identity);
+        }
+
+        foreach (var steamId in usersToRebuild)
+        {
+            RebuildAdmin(steamId);
         }
     }
 
     /// <summary>
-    ///     Resolves a list of permission rules into concrete permissions
+    ///     Re-calculates the final concrete Admin object based on all module sources.
+    ///     Handles merging permissions and finding max immunity.
     /// </summary>
-    /// <param name="moduleIdentity">The module identity to resolve permissions within</param>
-    /// <param name="permissionRules">Permission rules to resolve</param>
-    private HashSet<string> ResolvePermissions(string moduleIdentity, HashSet<string> permissionRules)
+    private void RebuildAdmin(ulong steamId)
+    {
+        if (!_adminSources.TryGetValue(steamId, out var sources) || sources.Count == 0)
+        {
+            // No modules claim this user anymore, remove them.
+            _globalAdmins.Remove(steamId);
+            _adminSources.Remove(steamId);
+
+            return;
+        }
+
+        byte maxImmunity = 0;
+
+        var  globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var  globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var source in sources.Values)
+        {
+            // we only take the max immunity
+            if (source.CalculatedImmunity > maxImmunity)
+            {
+                maxImmunity = source.CalculatedImmunity;
+            }
+
+            // Merge this module's sources into the global pool
+            globalAllows.UnionWith(source.ResolvedAllows);
+            globalDenies.UnionWith(source.ResolvedDenies);
+        }
+
+        // If Module A grants 'kick' and Module B denies 'kick', 'kick' is removed here.
+        globalAllows.ExceptWith(globalDenies);
+
+        var mergedAdmin = new Admin(steamId, maxImmunity);
+
+        foreach (var perm in globalAllows)
+        {
+            mergedAdmin.AddPermission(perm);
+        }
+
+        _globalAdmins[steamId] = mergedAdmin;
+    }
+
+    /// <summary>
+    ///     Calculates immunity by comparing Admin Manifest definition vs referenced Roles.
+    /// </summary>
+    private byte CalculateEffectiveImmunity(string moduleIdentity, AdminManifest adminManifest)
+    {
+        var maxImmunity = adminManifest.Immunity;
+
+        // Check immunity in assigned Roles
+        if (!_roles.TryGetValue(moduleIdentity, out var rolesDict))
+        {
+            return maxImmunity;
+        }
+
+        foreach (var rule in adminManifest.Permissions)
+        {
+            if (!rule.StartsWith(IAdminManager.RolesOperator))
+            {
+                continue;
+            }
+
+            var roleName = rule[1..];
+
+            if (!rolesDict.TryGetValue(roleName, out var roleManifest))
+            {
+                continue;
+            }
+
+            if (roleManifest.Immunity > maxImmunity)
+            {
+                maxImmunity = roleManifest.Immunity;
+            }
+        }
+
+        return maxImmunity;
+    }
+
+    /// <summary>
+    ///     Resolves a list of permission rules into separate Allow and Deny sets.
+    ///     This does not apply the denial logic yet; it simply categorizes rules so
+    ///     that global merging can handle "Deny Wins" across different modules.
+    /// </summary>
+    /// <param name="moduleIdentity">The module identity to resolve permissions within.</param>
+    /// <param name="permissionRules">The raw list of permission rules (e.g. "admin.kick", "!admin.ban", "@SuperAdmin").</param>
+    /// <returns>
+    ///     A tuple containing:
+    ///     <br /><b>Allows:</b> Concrete permissions explicitly granted.
+    ///     <br /><b>Denies:</b> Concrete permissions explicitly revoked (prefixed with '!').
+    /// </returns>
+    private (HashSet<string> Allows, HashSet<string> Denies) ResolvePermissions(
+        string          moduleIdentity,
+        HashSet<string> permissionRules)
     {
         // a tracker for recursion
         var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var allows       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var denies       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        return ResolvePermissionsInternal(moduleIdentity, permissionRules, visitedRoles);
+        ResolvePermissionsRecursive(moduleIdentity, permissionRules, visitedRoles, allows, denies);
+
+        return (allows, denies);
     }
 
-    private HashSet<string> ResolvePermissionsInternal(string          moduleIdentity,
-                                                       HashSet<string> permissionRules,
-                                                       HashSet<string> visitedRoles)
+    /// <summary>
+    ///     Recursively traverses permission rules and role inheritance trees to populate the Allow/Deny sets.
+    /// </summary>
+    private void ResolvePermissionsRecursive(
+        string          moduleIdentity,
+        HashSet<string> permissionRules,
+        HashSet<string> visitedRoles,
+        HashSet<string> collectedAllows,
+        HashSet<string> collectedDenies)
     {
-        var allowedPermissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var deniedPermissions  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
         foreach (var rule in permissionRules)
         {
             if (string.IsNullOrWhiteSpace(rule))
@@ -298,7 +410,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
                 // Expand wildcards in denied rules
                 var matchedPermissions = MatchWildcard(moduleIdentity, deniedRule);
-                deniedPermissions.UnionWith(matchedPermissions);
+                collectedDenies.UnionWith(matchedPermissions);
             }
 
             // Handle role inheritance (@)
@@ -316,10 +428,11 @@ internal class AdminManager : IAdminManager, IModSharpModule
                 if (_roles.TryGetValue(moduleIdentity, out var moduleRoles)
                     && moduleRoles.TryGetValue(roleName, out var rolePermissions))
                 {
-                    // Pass the visited set down
-                    var roleResolved = ResolvePermissionsInternal(moduleIdentity, rolePermissions, visitedRoles);
-
-                    allowedPermissions.UnionWith(roleResolved);
+                    ResolvePermissionsRecursive(moduleIdentity,
+                                                rolePermissions.Permissions,
+                                                visitedRoles,
+                                                collectedAllows,
+                                                collectedDenies);
                 }
 
                 // BACKTRACKING:
@@ -334,13 +447,9 @@ internal class AdminManager : IAdminManager, IModSharpModule
             {
                 var matchedPermissions = MatchWildcard(moduleIdentity, rule);
 
-                allowedPermissions.UnionWith(matchedPermissions);
+                collectedAllows.UnionWith(matchedPermissions);
             }
         }
-
-        allowedPermissions.ExceptWith(deniedPermissions);
-
-        return allowedPermissions;
     }
 
     /// <summary>
@@ -363,7 +472,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         {
             var matches = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            if (_allConcretePermissions.Contains(pattern))
+            if (_permissionReferenceCounts.ContainsKey(pattern))
             {
                 matches.Add(pattern);
             }
@@ -374,13 +483,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
         // Global wildcard "*"
         if (pattern is [wildcard])
         {
-            return new HashSet<string>(_allConcretePermissions, StringComparer.OrdinalIgnoreCase);
+            return new HashSet<string>(_permissionReferenceCounts.Keys, StringComparer.OrdinalIgnoreCase);
         }
 
         var patternSegments = pattern.Split(separator);
         var result          = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var permission in _allConcretePermissions)
+        foreach (var permission in _permissionReferenceCounts.Keys)
         {
             if (IsWildcardMatch(permission, patternSegments))
             {
@@ -435,18 +544,5 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
 
         return patternIndex == patternSegments.Length;
-    }
-
-    private string FindOwner(ulong identity)
-    {
-        foreach (var kv in _moduleOwnership)
-        {
-            if (kv.Value.Contains(identity))
-            {
-                return kv.Key;
-            }
-        }
-
-        return "Unknown";
     }
 }
