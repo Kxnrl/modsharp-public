@@ -173,8 +173,7 @@ internal class MenuExample : IModSharpModule
     {
         // a more flexible way to add a menu item
 
-        if (client.GetPlayerController() is not { } playerController
-            || playerController.GetPlayerPawn() is not { } playerPawn)
+        if (client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
         {
             // if we return here, this item won't be added, because .Title is null
             // and .State is MenuItemState.Default; the purpose of this is to prevent ghost item...
@@ -210,16 +209,16 @@ internal class MenuExample : IModSharpModule
         {
             if (!playerPawn.IsAlive)
             {
-                playerController.Print(HudPrintChannel.Chat,
-                                       "You are not alive, so no weapon for you haha!");
+                playerPawn.Print(HudPrintChannel.Chat,
+                                 "You are not alive, so no weapon for you haha!");
 
                 goto exit;
             }
 
             if (playerPawn.GiveNamedItem(EconItemId.Ak47) is null)
             {
-                playerController.Print(HudPrintChannel.Chat,
-                                       "Can't give you an AK47 for some reason...?");
+                playerPawn.Print(HudPrintChannel.Chat,
+                                 "Can't give you an AK47 for some reason...?");
             }
 
         exit:
@@ -231,26 +230,29 @@ internal class MenuExample : IModSharpModule
     {
         // simple action example, this should cover most of the use cases
         // noted that this action code is only called when the player selects this item
-        if (controller.Client.GetPlayerController() is not { } playerController)
+        if (controller.Client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
         {
-            goto exit;
+            controller.Exit();
+
+            return;
         }
 
-        if (playerController.GetPlayerPawn() is not { IsAlive: true } pawn)
+        if (!playerPawn.IsAlive)
         {
-            playerController.Print(HudPrintChannel.Chat,
-                                   "You are not alive, so no weapon for you haha!");
+            playerPawn.Print(HudPrintChannel.Chat,
+                             "You are not alive, so no weapon for you haha!");
 
-            goto exit;
+            controller.Exit();
+
+            return;
         }
 
-        if (pawn.GiveNamedItem(EconItemId.Deagle) is null)
+        if (playerPawn.GiveNamedItem(EconItemId.Deagle) is null)
         {
-            playerController.Print(HudPrintChannel.Chat,
-                                   "Can't give you a deagle for some reason...?");
+            playerPawn.Print(HudPrintChannel.Chat,
+                             "Can't give you a deagle for some reason...?");
         }
 
-    exit:
         controller.Exit();
     }
 }
