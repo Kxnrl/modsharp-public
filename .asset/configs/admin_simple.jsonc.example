@@ -1,0 +1,23 @@
+/*
+ * Simple Admin Configuration
+ * --------------------------
+ * Use this file to quickly assign Roles to users.
+ * 
+ * Format: "SteamID64": "RoleName"
+ * 
+ * Note: 
+ * 1. Role names (like "root", "admin", "vip") must be defined in admin.jsonc.
+ * 2. If a user is listed in BOTH this file and admin.jsonc, 
+ *    it will use the settings in admin.jsonc instead.
+ */
+{
+    // Owner / Root
+    "76561198000000001": "root",
+
+    // Moderators
+    "76561198000000002": "admin",
+    "76561198000000003": "admin",
+
+    // Donators
+    "76561198000000004": "vip"
+}

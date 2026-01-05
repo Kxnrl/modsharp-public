@@ -32,7 +32,6 @@ public record RoleManifest(
 );
 
 public record AdminManifest(
-    string          Name,
     ulong           Identity,
     byte            Immunity,
     HashSet<string> Permissions

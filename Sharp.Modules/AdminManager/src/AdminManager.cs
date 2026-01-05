@@ -50,15 +50,15 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     private readonly Dictionary<
         string, // Module Identity
-        IAdminCommandRegistry> _commandRegistries = new(StringComparer.OrdinalIgnoreCase);
+        IAdminCommandRegistry> _commandRegistries = new (StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<
         string, // Module identity
-        PermissionCollectionDictionary> _permissionCollections = new(StringComparer.OrdinalIgnoreCase);
+        PermissionCollectionDictionary> _permissionCollections = new (StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<
         string, // module identity
-        RolesDictionary> _roles = new(StringComparer.OrdinalIgnoreCase);
+        RolesDictionary> _roles = new (StringComparer.OrdinalIgnoreCase);
 
     private readonly Dictionary<string, int> _permissionReferenceCounts = new (StringComparer.OrdinalIgnoreCase);
 
@@ -79,47 +79,107 @@ internal class AdminManager : IAdminManager, IModSharpModule
     private readonly ILogger<AdminManager> _logger;
 
     public AdminManager(
-        ISharedSystem sharedSystem,
-        string dllPath,
-        string sharpPath,
-        Version version,
+        ISharedSystem  sharedSystem,
+        string         dllPath,
+        string         sharpPath,
+        Version        version,
         IConfiguration coreConfiguration,
-        bool hotReload)
+        bool           hotReload)
     {
         var moduleIdentity = Path.GetFileName(dllPath);
         _shared = sharedSystem;
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<AdminManager>();
-        var adminConfigPath = Path.Combine(sharpPath, "configs", "admin.jsonc");
 
-        if (!Path.Exists(adminConfigPath))
+        var jsonOptions = new JsonSerializerOptions
         {
-            _logger.LogWarning("{DefaultConfigPath} does not found, default config will not work!", adminConfigPath);
+            ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true, PropertyNameCaseInsensitive = true,
+        };
 
-            return;
-        }
+        var manifest = LoadMergedManifest(sharpPath, jsonOptions);
 
-        if (JsonSerializer.Deserialize<AdminTableManifest>(File.ReadAllText(adminConfigPath),
-                                                           new JsonSerializerOptions
-                                                           {
-                                                               ReadCommentHandling = JsonCommentHandling.Skip,
-                                                               AllowTrailingCommas = true,
-                                                           }) is { } manifest)
+        // 2. Mount (if valid)
+        if (manifest.Admins.Count > 0 || manifest.Roles.Count > 0)
         {
             MountAdminManifest(moduleIdentity, () => manifest);
         }
+    }
+
+    private AdminTableManifest LoadMergedManifest(string sharpPath, JsonSerializerOptions jsonOptions)
+    {
+        var simpleConfigPath   = Path.Combine(sharpPath, "configs", "admins_simple.jsonc");
+        var advancedConfigPath = Path.Combine(sharpPath, "configs", "admin.jsonc");
+
+        AdminTableManifest? manifest = null;
+
+        if (File.Exists(advancedConfigPath))
+        {
+            try
+            {
+                var json = File.ReadAllText(advancedConfigPath);
+                manifest = JsonSerializer.Deserialize<AdminTableManifest>(json, jsonOptions);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load admin.jsonc");
+            }
+        }
+
+        if (manifest is null)
+        {
+            manifest = new AdminTableManifest(new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase),
+                                              [],
+                                              []);
+        }
         else
         {
-            _logger.LogWarning("{DefaultConfigPath} is not a valid json or empty, default config may not work!",
-                               adminConfigPath);
+            manifest = new AdminTableManifest(manifest.PermissionCollection
+                                              ?? new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase),
+                                              manifest.Roles  ?? [],
+                                              manifest.Admins ?? []);
         }
+
+        if (File.Exists(simpleConfigPath))
+        {
+            try
+            {
+                var simpleJson = File.ReadAllText(simpleConfigPath);
+                var simpleDict = JsonSerializer.Deserialize<Dictionary<string, string>>(simpleJson, jsonOptions);
+
+                if (simpleDict != null)
+                {
+                    var existingIds = manifest.Admins.Select(x => x.Identity).ToHashSet();
+
+                    foreach (var (steamIdStr, roleName) in simpleDict)
+                    {
+                        if (!ulong.TryParse(steamIdStr, out var steamId))
+                        {
+                            continue;
+                        }
+
+                        if (existingIds.Contains(steamId))
+                        {
+                            continue;
+                        }
+
+                        manifest.Admins.Add(new AdminManifest(steamId,
+                                                              0,
+                                                              [$"{IAdminManager.RolesOperator}{roleName}"]));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load admins_simple.jsonc");
+            }
+        }
+
+        return manifest;
     }
 
-    #region IModSharpModule
+#region IModSharpModule
 
     public bool Init()
-    {
-        return true;
-    }
+        => true;
 
     public void PostInit()
     {
@@ -134,9 +194,9 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
 
         _commandManager = _shared
-            .GetSharpModuleManager()
-            .GetRequiredSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
-            .Instance!;
+                          .GetSharpModuleManager()
+                          .GetRequiredSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
+                          .Instance!;
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -193,12 +253,12 @@ internal class AdminManager : IAdminManager, IModSharpModule
     {
     }
 
-    string IModSharpModule.DisplayName => "Sharp.Modules.AdminManager";
+    string IModSharpModule.DisplayName   => "Sharp.Modules.AdminManager";
     string IModSharpModule.DisplayAuthor => "laper32";
 
-    #endregion
+#endregion
 
-    #region IAdminManager
+#region IAdminManager
 
     public IAdmin? GetAdmin(SteamID identity)
         => _globalAdmins.GetValueOrDefault(identity);
@@ -212,13 +272,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         // Get a separate CommandRegistry for each module identity
         var commandRegistry = _commandManager.GetRegistry(moduleIdentity);
-        var registry = new AdminCommandRegistry(commandRegistry, this, _shared);
+        var registry        = new AdminCommandRegistry(commandRegistry, this, _shared);
         _commandRegistries[moduleIdentity] = registry;
+
         return registry;
     }
 
-
-    #endregion
+#endregion
 
     public void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call)
     {
@@ -295,8 +355,8 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         byte maxImmunity = 0;
 
-        var  globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var  globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var source in sources.Values)
         {
@@ -418,21 +478,34 @@ internal class AdminManager : IAdminManager, IModSharpModule
             {
                 var roleName = rule[1..];
 
-                // if we already visited this role, skip it to prevent infinite loop
+                // if false it means we already visited this role, skip it to prevent infinite loop
                 if (!visitedRoles.Add(roleName))
                 {
                     continue;
                 }
 
-                // Mark as visited
-                if (_roles.TryGetValue(moduleIdentity, out var moduleRoles)
-                    && moduleRoles.TryGetValue(roleName, out var rolePermissions))
+                if (_roles.TryGetValue(moduleIdentity, out var moduleRoles))
                 {
-                    ResolvePermissionsRecursive(moduleIdentity,
-                                                rolePermissions.Permissions,
-                                                visitedRoles,
-                                                collectedAllows,
-                                                collectedDenies);
+                    if (moduleRoles.TryGetValue(roleName, out var rolePermissions))
+                    {
+                        ResolvePermissionsRecursive(moduleIdentity,
+                                                    rolePermissions.Permissions,
+                                                    visitedRoles,
+                                                    collectedAllows,
+                                                    collectedDenies);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Module '{Module}' refers to Role '@{Role}', but it is not defined in the manifest!",
+                                           moduleIdentity,
+                                           roleName);
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("Module '{Module}' refers to Role '@{Role}', but this module has no Roles defined!",
+                                       moduleIdentity,
+                                       roleName);
                 }
 
                 // BACKTRACKING:
@@ -501,8 +574,8 @@ internal class AdminManager : IAdminManager, IModSharpModule
     }
 
     /// <summary>
-    /// Checks if a concrete permission matches a wildcard pattern
-    /// Rule: pattern segments must match permission segments (segment count must be equal)
+    ///     Checks if a concrete permission matches a wildcard pattern
+    ///     Rule: pattern segments must match permission segments (segment count must be equal)
     /// </summary>
     private static bool IsWildcardMatch(string permission, string[] patternSegments)
     {
