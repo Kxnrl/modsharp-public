@@ -5,9 +5,9 @@ namespace Sharp.Modules.AdminManager;
 
 internal class Admin : IAdmin
 {
-    public string Name { get; }
+    public string  Name     { get; }
     public SteamID Identity { get; }
-    public byte Immunity { get; }
+    public byte    Immunity { get; internal set; }
 
     private readonly HashSet<string> _permissions;
 
