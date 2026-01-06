@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Modules.CommandManager.Shared;
+using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Units;
 
@@ -35,16 +36,20 @@ namespace Sharp.Modules.AdminManager;
 // 由此，复杂是不可避免的：因为这里涉及到二级key。
 using PermissionCollectionDictionary = Dictionary<
     string,         // Collection key
-    HashSet<string> // Actual permission
+    HashSet<string> // Permissions
 >;
 using RolesDictionary = Dictionary<
     string,      // Roles key
-    RoleManifest // Roles permissions
+    RoleManifest // Roles permissions + immunity
 >;
 
 internal class AdminManager : IAdminManager, IModSharpModule
 {
-    private ICommandManager _commandManager = null!;
+    private const string CommandManagerAssemblyName  = "Sharp.Modules.CommandManager";
+    private const string LocalizeManagerAssemblyName = "Sharp.Modules.LocalizerManager";
+
+    private ICommandManager?   _commandManager;
+    private ILocalizerManager? _localizerManager;
 
     private readonly ISharedSystem _shared;
 
@@ -188,15 +193,20 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public void OnLibraryConnected(string name)
     {
-        if (!name.Equals("Sharp.Modules.CommandManager", StringComparison.OrdinalIgnoreCase))
+        if (name.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
-            return;
+            _commandManager = _shared
+                              .GetSharpModuleManager()
+                              .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
+                              ?.Instance;
         }
-
-        _commandManager = _shared
-                          .GetSharpModuleManager()
-                          .GetRequiredSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
-                          .Instance!;
+        else if (name.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        {
+            _localizerManager = _shared
+                                .GetSharpModuleManager()
+                                .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity)
+                                ?.Instance;
+        }
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -210,7 +220,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
             // Flatten all permissions this module introduced
             foreach (var permission in modulePermissionCollections.Values.SelectMany(permissionSet => permissionSet))
             {
-                // Shouldn't be possible to have such case, but just to be safe :innocent:
+                // Shouldn't be possible to have such case :innocent:
                 if (!_permissionReferenceCounts.TryGetValue(permission, out var count))
                 {
                     continue;
@@ -232,7 +242,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         // Remove roles for this module
         _roles.Remove(moduleIdentity);
 
-        // Find all users who had contributions from this module and rebuild their permissions and immunity
+        // Find users with permissions from this module, and rebuild their permissions and immunity
         var affectedUsers = new List<ulong>();
 
         foreach (var kvp in _adminSources)
@@ -246,6 +256,31 @@ internal class AdminManager : IAdminManager, IModSharpModule
         foreach (var steamId in affectedUsers)
         {
             RebuildAdmin(steamId);
+        }
+    }
+
+    public void OnAllModulesLoaded()
+    {
+        _commandManager ??= _shared
+                            .GetSharpModuleManager()
+                            .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
+                            ?.Instance!;
+
+        _localizerManager ??= _shared
+                              .GetSharpModuleManager()
+                              .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity)
+                              ?.Instance;
+
+        if (_localizerManager is null)
+        {
+            _logger.LogWarning("Failed to get LocalizerManager, Do you have '{assemblyName}' installed? If you don't, messages will use the fallback value.",
+                               LocalizeManagerAssemblyName);
+        }
+
+        if (_commandManager is null)
+        {
+            _logger.LogWarning("Failed to get CommandManager, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
+                               CommandManagerAssemblyName);
         }
     }
 
@@ -270,6 +305,11 @@ internal class AdminManager : IAdminManager, IModSharpModule
             return value;
         }
 
+        if (_commandManager is null)
+        {
+            throw new NullReferenceException($"CommandManager is null! Did you have '{CommandManagerAssemblyName}' installed?");
+        }
+
         // Get a separate CommandRegistry for each module identity
         var commandRegistry = _commandManager.GetRegistry(moduleIdentity);
         var registry        = new AdminCommandRegistry(commandRegistry, this, _shared);
@@ -277,8 +317,6 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         return registry;
     }
-
-#endregion
 
     public void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call)
     {
@@ -337,6 +375,11 @@ internal class AdminManager : IAdminManager, IModSharpModule
             RebuildAdmin(steamId);
         }
     }
+
+#endregion
+
+    public ILocalizerManager? GetLocalizerManager()
+        => _localizerManager;
 
     /// <summary>
     ///     Re-calculates the final concrete Admin object based on all module sources.
@@ -541,7 +584,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         const char separator = IAdminManager.SeparatorOperator;
 
         // Concrete permission (no wildcard)
-        if (pattern.IndexOf(wildcard) == -1)
+        if (!pattern.Contains(wildcard))
         {
             var matches = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 

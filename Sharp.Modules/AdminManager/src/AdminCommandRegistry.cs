@@ -30,15 +30,17 @@ namespace Sharp.Modules.AdminManager;
 
 internal class AdminCommandRegistry : IAdminCommandRegistry
 {
-    private readonly ICommandRegistry _commandRegistry;
-    private readonly AdminManager _self;
-    private readonly ISharedSystem _shared;
+    private readonly ICommandRegistry   _commandRegistry;
+    private readonly AdminManager       _self;
+    private readonly ISharedSystem      _shared;
 
-    public AdminCommandRegistry(ICommandRegistry commandRegistry, AdminManager self, ISharedSystem shared)
+    public AdminCommandRegistry(ICommandRegistry commandRegistry,
+                                AdminManager     self,
+                                ISharedSystem    shared)
     {
-        _commandRegistry = commandRegistry;
-        _self = self;
-        _shared = shared;
+        _commandRegistry  = commandRegistry;
+        _self             = self;
+        _shared           = shared;
     }
 
     public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call, ImmutableArray<string> permissions)
@@ -66,24 +68,50 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
         if (HasPermission(admin, permissions))
         {
             call(client, command);
+
             return;
         }
 
-        if (_shared.GetEntityManager().FindPlayerControllerBySlot(client.Slot) is not { } controller)
+        if (client.GetPlayerController() is not { } controller)
         {
             return;
         }
 
-        if (!command.ChatTrigger)
-        {
-            client.ConsolePrint("[MS] You do not have access to do this command.");
-        }
+        const string prefix   = "[MS] ";
+        const string fallback = "You do not have access to do this command.";
 
-        controller.Print(HudPrintChannel.Chat, "[MS] You do not have access to do this command.");
+        var msg = prefix + GetLocalizedString(client, "AdminManager.NoPermission", fallback);
+
+        if (command.ChatTrigger)
+        {
+            controller.Print(HudPrintChannel.Chat, msg);
+        }
+        else
+        {
+            client.ConsolePrint(msg);
+        }
     }
 
-    private bool HasPermission(IAdmin admin, ImmutableArray<string> permissions)
+    private string GetLocalizedString(IGameClient client, string key, string fallback)
     {
-        return Enumerable.Any(permissions, admin.HasPermission);
+        if (_self.GetLocalizerManager() is { } lm && lm.TryGetLocalizer(client, out var loc))
+        {
+            return loc.TryGet(key) ?? fallback;
+        }
+
+        return fallback;
+    }
+
+    private static bool HasPermission(IAdmin admin, ImmutableArray<string> permissions)
+    {
+        foreach (var permission in permissions)
+        {
+            if (admin.HasPermission(permission))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
