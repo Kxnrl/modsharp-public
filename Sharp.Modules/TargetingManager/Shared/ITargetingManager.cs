@@ -7,11 +7,21 @@ public interface ITargetingManager
     const string Identity = nameof(ITargetingManager);
 
     /// <summary>
-    ///     Targeting player.
+    ///     Resolves a target string into a list of game clients.
     /// </summary>
-    /// <param name="activator">Who targets</param>
-    /// <param name="target">the target string (e.g. "@me").</param>
-    /// <returns></returns>
+    /// <param name="activator">The client who initiated the targeting (can be null).</param>
+    /// <param name="target">
+    ///     The target string. Examples:
+    ///     <list type="bullet">
+    ///         <item><c>@me</c>, <c>@t</c>, <c>@ct</c> - Standard resolvers.</item>
+    ///         <item><c>76561198...</c> or <c>@76561198...</c> - SteamID64.</item>
+    ///         <item>
+    ///             <c>@!target</c> - Inversion (e.g., <c>@!ct</c> targets everyone who is NOT CT, also supports
+    ///             <c>@!76561198...</c>).
+    ///         </item>
+    ///     </list>
+    /// </param>
+    /// <returns>A collection of matching game clients.</returns>
     public IEnumerable<IGameClient> GetByTarget(IGameClient? activator, string target);
 
     /// <summary>

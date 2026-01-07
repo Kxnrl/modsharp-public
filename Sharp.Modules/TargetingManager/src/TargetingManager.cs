@@ -8,7 +8,6 @@ using Sharp.Modules.TargetingManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
-using Sharp.Shared.Units;
 
 namespace Sharp.Modules.TargetingManager;
 
@@ -49,7 +48,6 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
         RegisterResolver(coreId, PredefinedTargets.Spec,  new Spec(clientManager));
         RegisterResolver(coreId, PredefinedTargets.T,     new T(clientManager));
     }
-
 
     public bool Init()
     {
@@ -100,11 +98,35 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
             return resolver.Resolver.Resolve(activator);
         }
 
-        if (target.Length == 17 && SteamID.TryParse(target, out var steamId))
+        // invert
+        if (target.StartsWith("@!"))
         {
-            if (_clientManager.GetGameClient(steamId) is { } client)
+            // "@!ct" --> "@ct"
+            var positiveTarget = target.Remove(1, 1);
+
+            var allClients      = _clientManager.GetGameClients(true);
+
+            var clientsToExclude = GetByTarget(activator, positiveTarget);
+
+            return allClients.Except(clientsToExclude);
+        }
+
+        // check for 76561198... and @76561198...
+        if (target.Length is 17 or 18)
+        {
+            var span = target.AsSpan();
+
+            if (span[0] == '@')
             {
-                return [client];
+                span = span[1..];
+            }
+
+            if (span.Length == 17 && ulong.TryParse(span, out var steamId))
+            {
+                if (_clientManager.GetGameClient(steamId) is { } client)
+                {
+                    return [client];
+                }
             }
         }
 
