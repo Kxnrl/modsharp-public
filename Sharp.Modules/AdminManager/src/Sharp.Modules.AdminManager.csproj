@@ -7,11 +7,10 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\CommandManager\Shared\Sharp.Modules.CommandManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
-	  <ProjectReference Include="..\..\LocalizerManager\Shared\Sharp.Modules.LocalizerManager.Shared.csproj" />
-	  <ProjectReference Include="..\Shared\Sharp.Modules.AdminManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+
+		<ProjectReference Include="..\..\CommandManager\Shared\Sharp.Modules.CommandManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+		<ProjectReference Include="..\..\LocalizerManager\Shared\Sharp.Modules.LocalizerManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+		<ProjectReference Include="..\Shared\Sharp.Modules.AdminManager.Shared.csproj" Private="false" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 </Project>

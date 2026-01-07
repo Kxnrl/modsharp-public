@@ -28,20 +28,20 @@ using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Units;
 
+// 核心目的是集中管理员注册机制，让所有管理员的注册逻辑都走同一个。
+// 由此，复杂是不可避免的：因为这里涉及到二级key。
+using PermissionCollectionDictionary = System.Collections.Generic.Dictionary<
+    string,                                    // Collection key
+    System.Collections.Generic.HashSet<string> // Permissions
+>;
+using RolesDictionary = System.Collections.Generic.Dictionary<
+    string,                                        // Roles key
+    Sharp.Modules.AdminManager.Shared.RoleManifest // Roles permissions + immunity
+>;
+
 namespace Sharp.Modules.AdminManager;
 
 // https://www.doubao.com/thread/wc0f1c5cae120c2bb
-
-// 核心目的是集中管理员注册机制，让所有管理员的注册逻辑都走同一个。
-// 由此，复杂是不可避免的：因为这里涉及到二级key。
-using PermissionCollectionDictionary = Dictionary<
-    string,         // Collection key
-    HashSet<string> // Permissions
->;
-using RolesDictionary = Dictionary<
-    string,      // Roles key
-    RoleManifest // Roles permissions + immunity
->;
 
 internal class AdminManager : IAdminManager, IModSharpModule
 {
