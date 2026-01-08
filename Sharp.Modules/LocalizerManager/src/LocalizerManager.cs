@@ -52,9 +52,8 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         _modules  = sharedSystem.GetSharpModuleManager();
         _clients  = sharedSystem.GetClientManager();
 
-        _localizers         = new Dictionary<SteamID, Localizer>(128);
-        _defaultCultureInfo = CultureInfo.CurrentUICulture;
-        _localePath         = Path.Combine(sharpPath, "locales");
+        _localizers = new Dictionary<SteamID, Localizer>(128);
+        _localePath = Path.Combine(sharpPath, "locales");
 
         var locales = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
@@ -64,8 +63,29 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         }
 
         _locales = locales;
-        var defaultLocale = _locales.GetValueOrDefault(CultureInfo.CurrentUICulture.Name, _locales["en-us"]);
-        _defaultLocalizer = new Localizer(defaultLocale, defaultLocale, new CultureInfo(CultureInfo.CurrentUICulture.Name));
+
+        var selectedKey = "en-US";
+        var targetName  = CultureInfo.CurrentUICulture.Name;
+
+        if (_locales.ContainsKey(targetName))
+        {
+            selectedKey = targetName;
+        }
+        else
+        {
+            var prefix = targetName.Length >= 2 ? targetName[..2] : targetName;
+
+            var match = _locales.Keys.FirstOrDefault(k => k.StartsWith(prefix + "-", StringComparison.OrdinalIgnoreCase));
+
+            if (match != null)
+            {
+                selectedKey = match;
+            }
+        }
+
+        _defaultCultureInfo = new CultureInfo(selectedKey);
+        var defaultLocale = _locales[selectedKey];
+        _defaultLocalizer = new Localizer(defaultLocale, defaultLocale, _defaultCultureInfo);
     }
 
 #region IModSharpModule
