@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using Sharp.Modules.LocalizerManager.Core;
 using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Shared.Objects;
 

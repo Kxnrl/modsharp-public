@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using Sharp.Shared.Objects;
 
 namespace Sharp.Modules.LocalizerManager;
 
@@ -10,17 +9,14 @@ internal class Localizer
     private readonly Dictionary<string, string> _default;
     private readonly Dictionary<string, string> _local;
     private readonly CultureInfo                _culture;
-    private readonly IGameClient?               _client;
 
     public Localizer(Dictionary<string, string> @default,
                      Dictionary<string, string> local,
-                     CultureInfo                culture,
-                     IGameClient?               client = null)
+                     CultureInfo                culture)
     {
         _default = @default;
         _local   = local;
         _culture = culture;
-        _client  = client;
     }
 
     public string Format(string key, params ReadOnlySpan<object?> param)
