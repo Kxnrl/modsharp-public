@@ -94,9 +94,12 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
 
     private string GetLocalizedString(IGameClient client, string key, string fallback)
     {
-        if (_self.GetLocalizerManager() is { } lm && lm.TryGetLocalizer(client, out var loc))
+        if (_self.GetLocalizerManager() is { } lm)
         {
-            return loc.TryGet(key) ?? fallback;
+            if (lm.For(client).TryText(key, out var value))
+            {
+                return value;
+            }
         }
 
         return fallback;

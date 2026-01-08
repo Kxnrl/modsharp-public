@@ -2,7 +2,7 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 
-namespace Sharp.Modules.LocalizerManager.Core;
+namespace Sharp.Modules.LocalizerManager;
 
 internal static class Internationalization
 {

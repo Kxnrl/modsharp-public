@@ -20,14 +20,14 @@ internal class SurvivalStatusMenuController : BaseMenuController
         IEntityManager                              entityManager,
         Func<IGameClient, Menu>                     menuFactory,
         IGameClient                                 player,
-        ILocalizerManager?                          localizerManager) : base(menuManager,
+        ILocalizerManager?                          localization) : base(menuManager,
                                                                              modSharp,
                                                                              eventManager,
                                                                              entityManager,
                                                                              menuFactory,
                                                                              player)
     {
-        _localizerManager = localizerManager;
+        _localizerManager = localization;
         _timer            = modSharp.PushTimer(Think, 0.01, GameTimerFlags.Repeatable);
     }
 
@@ -183,12 +183,12 @@ internal class SurvivalStatusMenuController : BaseMenuController
         }
         else
         {
-            var localizer = _localizerManager.GetLocalizer(Client);
-            confirm  = localizer.TryGet(confirmKey)  ?? confirmKey;
-            prevItem = localizer.TryGet(prevItemKey) ?? prevItemKey;
-            nextItem = localizer.TryGet(nextItemKey) ?? nextItemKey;
-            exit     = localizer.TryGet(exitKey)     ?? exitKey;
-            back     = localizer.TryGet(backKey)     ?? backKey;
+            var locale = _localizerManager.For(Client);
+            confirm  = locale.Text(confirmKey);
+            prevItem = locale.Text(prevItemKey);
+            nextItem = locale.Text(nextItemKey);
+            exit     = locale.Text(exitKey);
+            back     = locale.Text(backKey);
         }
 
         // sb.Append("<font class='fontSize-s'>");

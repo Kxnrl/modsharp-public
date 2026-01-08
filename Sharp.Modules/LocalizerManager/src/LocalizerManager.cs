@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
@@ -15,10 +15,12 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
 
-namespace Sharp.Modules.LocalizerManager.Core;
+namespace Sharp.Modules.LocalizerManager;
 
 internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientListener
 {
+    private const string DefaultPrefix = "[MS]";
+
     public string DisplayName   => "LocalizerManager";
     public string DisplayAuthor => "Kxnrl";
 
@@ -34,12 +36,14 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     private readonly Localizer                                      _defaultLocalizer;
     private readonly string                                         _localePath;
 
-    public LocalizerManager(ISharedSystem sharedSystem,
-        string                            dllPath,
-        string                            sharpPath,
-        Version                           version,
-        IConfiguration                    configuration,
-        bool                              hotReload)
+    private static readonly JsonSerializerOptions Option = new() { ReadCommentHandling = JsonCommentHandling.Skip };
+
+    public LocalizerManager(ISharedSystem  sharedSystem,
+                            string         dllPath,
+                            string         sharpPath,
+                            Version        version,
+                            IConfiguration configuration,
+                            bool           hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
@@ -132,14 +136,16 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         _localizers[identity] = CreateLocalize(i18n);
     }
 
-    private Localizer CreateLocalize(string i18n)
+    private Localizer CreateLocalize(string cultureName)
     {
-        var info = new CultureInfo(i18n);
+        var culture = Internationalization.SteamLanguageToI18N.TryGetValue(cultureName, out var i18n)
+            ? new CultureInfo(i18n)
+            : new CultureInfo(cultureName);
 
         var def   = _locales[_defaultCultureInfo.Name];
-        var local = _locales[info.Name];
+        var local = _locales.GetValueOrDefault(culture.Name, def);
 
-        return new Localizer(def, local, info);
+        return new Localizer(def, local, culture);
     }
 
 #endregion
@@ -158,32 +164,25 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
         var text = File.ReadAllText(path, Encoding.UTF8);
 
-        var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(text)
+        var data = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(text, Option)
                    ?? throw new InvalidDataException($"Invalid locale file: {name}");
 
         LoadLocaleFile(data, suppressDuplicationWarnings);
     }
 
-    public ILocalizer GetLocalizer(IGameClient client)
-        => _localizers.GetValueOrDefault(client.SteamId, _defaultLocalizer);
+    public ILocale For(IGameClient client)
+        => new Locale(GetLocalizer(client), client, DefaultPrefix);
 
-    public ILocalizer this[IGameClient client] => GetLocalizer(client);
+    public IMultiLocale ForMany(IEnumerable<IGameClient> clients)
+        => new MultiLocale(clients.ToArray(), this, DefaultPrefix);
 
-    public bool TryGetLocalizer(IGameClient client, [NotNullWhen(true)] out ILocalizer? localizer)
-    {
-        if (_localizers.TryGetValue(client.SteamId, out var value))
-        {
-            localizer = value;
-
-            return true;
-        }
-
-        localizer = null;
-
-        return false;
-    }
+    public IMultiLocale ForMany(params IGameClient[] clients)
+        => new MultiLocale(clients, this, DefaultPrefix);
 
 #endregion
+
+    private Localizer GetLocalizer(IGameClient client)
+        => _localizers.GetValueOrDefault(client.SteamId, _defaultLocalizer);
 
     private void LoadLocaleFile(Dictionary<string, Dictionary<string, string>> data, bool suppressDuplicationWarnings)
     {
@@ -200,16 +199,67 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
                 if (locale.TryGetValue(key, out var old) && !suppressDuplicationWarnings)
                 {
-                    _logger.LogWarning(
-                        "Duplicate localization key '{key}' in language '{lang}', override to [{value}] from [{old}]",
-                        key,
-                        lang,
-                        value,
-                        old);
+                    _logger.LogWarning("Duplicate localization key '{key}' in language '{lang}', override to [{value}] from [{old}]",
+                                       key,
+                                       lang,
+                                       value,
+                                       old);
                 }
 
                 locale[key] = value;
             }
         }
     }
+
+#region ILocalizerManager - Server Formatting
+
+    public string Format(CultureInfo? culture, string key, params ReadOnlySpan<object?> args)
+    {
+        culture ??= _defaultCultureInfo;
+
+        return FormatInternal(culture, culture.Name, key, args);
+    }
+
+    public string Format(string cultureName, string key, params ReadOnlySpan<object?> args)
+    {
+        var culture = Internationalization.SteamLanguageToI18N.TryGetValue(cultureName, out var i18n)
+            ? new CultureInfo(i18n)
+            : new CultureInfo(cultureName);
+
+        return FormatInternal(culture, cultureName, key, args);
+    }
+
+    private string FormatInternal(CultureInfo culture, string cultureName, string key, ReadOnlySpan<object?> args)
+    {
+        if (!_locales.TryGetValue(cultureName, out var dict))
+        {
+            // if requested lang doesn't exist, use default lang dict
+            dict = _locales[_defaultCultureInfo.Name];
+        }
+
+        if (!dict.TryGetValue(key, out var formatString))
+        {
+            // try default lang if key is missing in target language 
+            var defaultDict = _locales[_defaultCultureInfo.Name];
+
+            if (!defaultDict.TryGetValue(key, out formatString))
+            {
+                // key is not found in default language, return key instead
+                return key;
+            }
+        }
+
+        try
+        {
+            return string.Format(culture, formatString, args);
+        }
+        catch (FormatException ex)
+        {
+            _logger.LogError(ex, "Failed to format localization string '{Key}' for culture '{Culture}'", key, cultureName);
+
+            return formatString;
+        }
+    }
+
+#endregion
 }
