@@ -40,6 +40,7 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
 
         RegisterResolver(coreId, PredefinedTargets.Alive, new Alive(clientManager));
         RegisterResolver(coreId, PredefinedTargets.All,   new All(clientManager));
+        RegisterResolver(coreId, PredefinedTargets.None,  new None(clientManager));
         RegisterResolver(coreId, PredefinedTargets.Bots,  new Bots(clientManager));
         RegisterResolver(coreId, PredefinedTargets.Ct,    new Ct(clientManager));
         RegisterResolver(coreId, PredefinedTargets.Dead,  new Dead(clientManager));
