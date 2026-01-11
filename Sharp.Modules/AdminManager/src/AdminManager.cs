@@ -189,24 +189,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
     public void PostInit()
     {
         _shared.GetSharpModuleManager().RegisterSharpModuleInterface<IAdminManager>(this, IAdminManager.Identity, this);
+
+        RefreshModuleManagers(force: true);
     }
 
     public void OnLibraryConnected(string name)
     {
-        if (name.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
-        {
-            _commandManager = _shared
-                              .GetSharpModuleManager()
-                              .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
-                              ?.Instance;
-        }
-        else if (name.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
-        {
-            _localizerManager = _shared
-                                .GetSharpModuleManager()
-                                .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity)
-                                ?.Instance;
-        }
+        RefreshModuleManagers(name, force: true);
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -261,15 +250,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public void OnAllModulesLoaded()
     {
-        _commandManager ??= _shared
-                            .GetSharpModuleManager()
-                            .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
-                            ?.Instance!;
-
-        _localizerManager ??= _shared
-                              .GetSharpModuleManager()
-                              .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity)
-                              ?.Instance;
+        RefreshModuleManagers();
 
         if (_localizerManager is null)
         {
@@ -380,6 +361,29 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public ILocalizerManager? GetLocalizerManager()
         => _localizerManager;
+
+    private void RefreshModuleManagers(string? changedModuleName = null, bool force = false)
+    {
+        var checkAll        = changedModuleName is null;
+        var updateCommand   = checkAll || changedModuleName.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+        var updateLocalizer = checkAll || changedModuleName.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+
+        var moduleManager = _shared.GetSharpModuleManager();
+
+        if (updateCommand && (force || _commandManager is null))
+        {
+            _commandManager = moduleManager
+                              .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity)
+                              ?.Instance;
+        }
+
+        if (updateLocalizer && (force || _localizerManager is null))
+        {
+            _localizerManager = moduleManager
+                                .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity)
+                                ?.Instance;
+        }
+    }
 
     /// <summary>
     ///     Re-calculates the final concrete Admin object based on all module sources.

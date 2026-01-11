@@ -182,11 +182,10 @@ internal class CommandRegistry : ICommandRegistry
 
     public CommandRegistry(string identity, CommandManager self, ISharedSystem sharedSystem, ILogger<CommandManager> logger)
     {
-        _identity = identity;
-        _self = self;
-        _logger = logger;
+        _identity      = identity;
+        _self          = self;
+        _logger        = logger;
         _clientManager = sharedSystem.GetClientManager();
-        sharedSystem.GetModSharp();
         _conVarManager = sharedSystem.GetConVarManager();
     }
 

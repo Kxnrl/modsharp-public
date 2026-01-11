@@ -22,6 +22,7 @@ using Sharp.Modules.AdminManager.Shared;
 using Sharp.Modules.CommandManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using IAdmin = Sharp.Modules.AdminManager.Shared.IAdmin;
@@ -59,9 +60,16 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
             return;
         }
 
+        if (client.GetPlayerController() is not { } controller)
+        {
+            return;
+        }
+
         var admin = _self.GetAdmin(client.SteamId);
         if (admin is null)
         {
+            PrintNoAccess(client, command, controller);
+
             return;
         }
 
@@ -72,11 +80,11 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
             return;
         }
 
-        if (client.GetPlayerController() is not { } controller)
-        {
-            return;
-        }
+        PrintNoAccess(client, command, controller);
+    }
 
+    private void PrintNoAccess(IGameClient client, StringCommand command, IPlayerController controller)
+    {
         const string prefix   = "[MS] ";
         const string fallback = "You do not have access to do this command.";
 
