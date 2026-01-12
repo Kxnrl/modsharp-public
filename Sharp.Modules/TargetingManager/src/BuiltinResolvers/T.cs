@@ -19,7 +19,7 @@ public class T(IClientManager clientManager) : ITargetResolver
                 continue;
             }
 
-            if (pawn.Team == CStrikeTeam.CT)
+            if (pawn.Team == CStrikeTeam.TE)
             {
                 yield return client;
             }
