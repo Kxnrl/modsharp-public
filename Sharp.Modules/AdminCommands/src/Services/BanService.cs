@@ -1,0 +1,217 @@
+using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Common;
+using Sharp.Modules.AdminCommands.Services.Internal;
+using Sharp.Modules.AdminCommands.Shared;
+using Sharp.Modules.AdminManager.Shared;
+using Sharp.Shared.Objects;
+using Sharp.Shared.Types;
+using Sharp.Shared.Units;
+
+namespace Sharp.Modules.AdminCommands.Services;
+
+internal class BanService : ICommandCategory, IBanService
+{
+    private readonly InterfaceBridge       _bridge;
+    private readonly AdminOperationService _operations;
+    private readonly AdminOperationEngine  _engine;
+    private readonly ModuleContext         _moduleContext;
+    private readonly CommandContextFactory _contextFactory;
+    private readonly ILogger<BanService>   _logger;
+
+    public BanService(
+        InterfaceBridge       bridge,
+        AdminOperationService operations,
+        AdminOperationEngine  engine,
+        CommandContextFactory contextFactory,
+        ModuleContext         moduleContext)
+    {
+        _bridge         = bridge;
+        _operations     = operations;
+        _engine         = engine;
+        _contextFactory = contextFactory;
+        _moduleContext  = moduleContext;
+        _logger         = bridge.LoggerFactory.CreateLogger<BanService>();
+    }
+
+    public void Register(IAdminCommandRegistry registry)
+    {
+        registry.RegisterAdminCommand("ban",    OnCommandBan,    ["admin:ban"]);
+        registry.RegisterAdminCommand("addban", OnCommandAddBan, ["admin:ban"]);
+        registry.RegisterAdminCommand("unban",  OnCommandUnban,  ["admin:ban", "admin:unban"]);
+    }
+
+    public void Ban(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
+        => _engine.ApplyOnline(admin, target, AdminOperationType.Ban, duration, reason);
+
+    public void Ban(IGameClient? admin, SteamID steamId, TimeSpan? duration, string reason)
+        => _engine.ApplyOffline(admin, steamId, steamId.ToString(), AdminOperationType.Ban, duration, reason);
+
+    public void Unban(IGameClient? admin, SteamID steamId, string reason)
+        => _engine.RemoveOffline(admin, steamId, steamId.ToString(), AdminOperationType.Ban, reason);
+
+    private void OnCommandBan(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(3, "Admin.Usage.Ban", "Usage: ms_ban <target> <duration> [reason]"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetSingleTarget(1, out var target) || target.IsFakeClient)
+        {
+            return;
+        }
+
+        if (!ctx.TryParseDuration(2, out var duration))
+        {
+            return;
+        }
+
+        var reason        = ctx.GetReason(3);
+        var targetSteamId = target.SteamId;
+        var targetName    = target.Name;
+
+        _ = ExecuteBanAsync(ctx, targetSteamId, targetName, duration, reason, issuer)
+            .ContinueWith(t =>
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process ban for {SteamId}", targetSteamId);
+                                  ctx.Reply("Failed to process ban. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
+    }
+
+    private void OnCommandAddBan(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(3, "Admin.Usage.AddBan", "Usage: ms_addban <steamid> <duration> [reason]"))
+        {
+            return;
+        }
+
+        if (!TryParseSteamId(command.GetArg(1), out var steamId))
+        {
+            ctx.ReplyKey("Admin.InvalidSteamId", "Invalid SteamID.");
+
+            return;
+        }
+
+        if (!ctx.TryParseDuration(2, out var duration))
+        {
+            return;
+        }
+
+        var reason = ctx.GetReason(3);
+
+        _ = ExecuteBanAsync(ctx, steamId, steamId.ToString(), duration, reason, issuer)
+            .ContinueWith(t =>
+            {
+                if (t.Exception?.InnerException is { } ex)
+                {
+                    _logger.LogError(ex, "Failed to process ban for {SteamId}", steamId);
+                    ctx.Reply("Failed to process ban. Check server logs.");
+                }
+            }, TaskContinuationOptions.OnlyOnFaulted);
+    }
+
+    private void OnCommandUnban(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(2, "Admin.Usage.Unban", "Usage: ms_unban <steamid> [reason]"))
+        {
+            return;
+        }
+
+        if (!TryParseSteamId(command.GetArg(1), out var steamId))
+        {
+            ctx.ReplyKey("Admin.InvalidSteamId", "Invalid SteamID.");
+
+            return;
+        }
+
+        var reason = ctx.GetReason(2);
+
+        _ = ExecuteUnbanAsync(ctx, steamId, reason, issuer)
+            .ContinueWith(t =>
+            {
+                if (t.Exception?.InnerException is { } ex)
+                {
+                    _logger.LogError(ex, "Failed to process unban for {SteamId}", steamId);
+                    ctx.Reply("Failed to process unban. Check server logs.");
+                }
+            }, TaskContinuationOptions.OnlyOnFaulted);
+    }
+
+    private async Task ExecuteUnbanAsync(CommandContext ctx, SteamID steamId, string reason, IGameClient? issuer)
+    {
+        if (!await _operations.HasActiveAsync(steamId, AdminOperationType.Ban).ConfigureAwait(false))
+        {
+            ctx.ReplyKey("Admin.NotBanned", "{0} is not banned.", steamId);
+
+            return;
+        }
+
+        _engine.RemoveOffline(issuer, steamId, steamId.ToString(), AdminOperationType.Ban, reason);
+
+        ctx.ReplySuccessKey("Admin.Unbanned", "Unbanned {0}. Reason: {1}", steamId, reason);
+    }
+
+    private async Task ExecuteBanAsync(
+        CommandContext ctx,
+        SteamID        targetId,
+        string         targetDisplayName,
+        TimeSpan?      duration,
+        string         reason,
+        IGameClient?   issuer)
+    {
+        try
+        {
+            if (await _operations.HasActiveAsync(targetId, AdminOperationType.Ban).ConfigureAwait(false))
+            {
+                ctx.ReplyKey("Admin.AlreadyBanned", "{0} is already banned.", targetDisplayName);
+
+                return;
+            }
+
+            if (_bridge.ClientManager.GetGameClient(targetId) is { } targetClient)
+            {
+                _engine.ApplyOnline(issuer, targetClient, AdminOperationType.Ban, duration, reason);
+            }
+            else
+            {
+                _engine.ApplyOffline(issuer, targetId, targetDisplayName, AdminOperationType.Ban, duration, reason);
+            }
+
+            var durationStr = FormatDuration(duration);
+            ctx.ReplySuccessKey("Admin.Banned", "Banned {0} {1}. Reason: {2}", targetDisplayName, durationStr, reason);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to process ban for {SteamId}", targetId);
+            ctx.Reply("Failed to process ban. Check server logs.");
+        }
+    }
+
+    private static bool TryParseSteamId(string raw, out SteamID steamId)
+    {
+        var trimmed = raw.Trim();
+
+        if (trimmed.StartsWith('@'))
+        {
+            trimmed = trimmed[1..];
+        }
+
+        steamId = default;
+
+        return ulong.TryParse(trimmed, out var value) && (steamId = new SteamID(value)).IsValidUserId();
+    }
+
+    private LocalizedDuration FormatDuration(TimeSpan? duration)
+        => new (duration, _moduleContext.LocalizerManager);
+}

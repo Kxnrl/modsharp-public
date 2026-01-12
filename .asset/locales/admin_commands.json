@@ -1,0 +1,362 @@
+{
+  "Admin.TargetRequired": {
+    "en-us": "Target is required.",
+    "zh-cn": "必须指定目标。"
+  },
+  "Admin.TargetNone": {
+    "en-us": "No player found matching '{0}'.",
+    "zh-cn": "未找到匹配 '{0}' 的玩家。"
+  },
+  "Admin.TargetMultiple": {
+    "en-us": "Multiple players matched '{0}'. Please be more specific.",
+    "zh-cn": "有多个玩家匹配 '{0}'。请更具体一些。"
+  },
+  "Admin.InvalidDuration": {
+    "en-us": "Invalid duration. Use formats like 5m, 2h, 1d, 1w or 0 for permanent.",
+    "zh-cn": "无效的时长。请使用如 5m, 2h, 1d, 1w 的格式，或使用 0 代表永久。"
+  },
+  "Admin.Reason.Default": {
+    "en-us": "No reason provided",
+    "zh-cn": "未提供理由"
+  },
+  "Admin.Usage.Mute": {
+    "en-us": "Usage: ms_mute <target> [duration] [reason]",
+    "zh-cn": "用法: ms_mute <目标> [时长] [理由]"
+  },
+  "Admin.Usage.Unmute": {
+    "en-us": "Usage: ms_unmute <target> [reason]",
+    "zh-cn": "用法: ms_unmute <目标> [理由]"
+  },
+  "Admin.Usage.Gag": {
+    "en-us": "Usage: ms_gag <target> [duration] [reason]",
+    "zh-cn": "用法: ms_gag <目标> [时长] [理由]"
+  },
+  "Admin.Usage.Ungag": {
+    "en-us": "Usage: ms_ungag <target> [reason]",
+    "zh-cn": "用法: ms_ungag <目标> [理由]"
+  },
+  "Admin.Usage.Silence": {
+    "en-us": "Usage: ms_silence <target> [duration] [reason]",
+    "zh-cn": "用法: ms_silence <目标> [时长] [理由]"
+  },
+  "Admin.Usage.Unsilence": {
+    "en-us": "Usage: ms_unsilence <target> [reason]",
+    "zh-cn": "用法: ms_unsilence <目标> [理由]"
+  },
+  "Admin.Usage.Kick": {
+    "en-us": "Usage: ms_kick <target> [reason]",
+    "zh-cn": "用法: ms_kick <目标> [理由]"
+  },
+  "Admin.Usage.Ban": {
+    "en-us": "Usage: ms_ban <target> <duration> [reason]",
+    "zh-cn": "用法: ms_ban <目标> <时长> [理由]"
+  },
+  "Admin.Usage.AddBan": {
+    "en-us": "Usage: ms_addban <steamid> <duration> [reason]",
+    "zh-cn": "用法: ms_addban <SteamID> <时长> [理由]"
+  },
+  "Admin.Usage.Unban": {
+    "en-us": "Usage: ms_unban <steamid> [reason]",
+    "zh-cn": "用法: ms_unban <SteamID> [理由]"
+  },
+  "Admin.MuteApplied": {
+    "en-us": "{0} muted {1} {2}. Reason: {3}",
+    "zh-cn": "{0} 禁麦了 {1} {2}。理由: {3}"
+  },
+  "Admin.MuteRemoved": {
+    "en-us": "{0} unmuted {1}. Reason: {3}",
+    "zh-cn": "{0} 解除了 {1} 的禁麦。理由: {3}"
+  },
+  "Admin.GagApplied": {
+    "en-us": "{0} gagged {1} {2}. Reason: {3}",
+    "zh-cn": "{0} 禁言了 {1} {2}。理由: {3}"
+  },
+  "Admin.GagRemoved": {
+    "en-us": "{0} ungagged {1}. Reason: {3}",
+    "zh-cn": "{0} 解除了 {1} 的禁言。理由: {3}"
+  },
+  "Admin.SilenceApplied": {
+    "en-us": "{0} silenced {1} {2}. Reason: {3}",
+    "zh-cn": "{0} 让 {1} 静默了 {2}。理由: {3}"
+  },
+  "Admin.SilenceRemoved": {
+    "en-us": "{0} unsilenced {1}. Reason: {3}",
+    "zh-cn": "{0} 解除了 {1} 的静默。理由: {3}"
+  },
+  "Admin.AlreadyMuted": {
+    "en-us": "{0} is already muted.",
+    "zh-cn": "{0} 已经被禁麦了。"
+  },
+  "Admin.NotMuted": {
+    "en-us": "{0} is not muted.",
+    "zh-cn": "{0} 未被禁麦。"
+  },
+  "Admin.AlreadyGagged": {
+    "en-us": "{0} is already gagged.",
+    "zh-cn": "{0} 已经被禁言了。"
+  },
+  "Admin.NotGagged": {
+    "en-us": "{0} is not gagged.",
+    "zh-cn": "{0} 未被禁言。"
+  },
+  "Admin.AlreadySilenced": {
+    "en-us": "{0} is already silenced.",
+    "zh-cn": "{0} 已经被静默了。"
+  },
+  "Admin.NotSilenced": {
+    "en-us": "{0} is not silenced.",
+    "zh-cn": "{0} 未被静默。"
+  },
+  "Admin.Kicked": {
+    "en-us": "{0} Kicked {1}.",
+    "zh-cn": "{0} 踢出了 {1}。"
+  },
+  "Admin.InvalidSteamId": {
+    "en-us": "Invalid SteamID.",
+    "zh-cn": "无效的 SteamID。"
+  },
+  "Admin.AlreadyBanned": {
+    "en-us": "{0} is already banned.",
+    "zh-cn": "{0} 已经被封禁了。"
+  },
+  "Admin.NotBanned": {
+    "en-us": "{0} is not banned.",
+    "zh-cn": "{0} 未被封禁。"
+  },
+  "Admin.Banned": {
+    "en-us": "Banned {0} {1}. Reason: {2}",
+    "zh-cn": "封禁了 {0} {1}。理由: {2}"
+  },
+  "Admin.BannedOffline": {
+    "en-us": "Banned {0} {1}. Reason: {2}",
+    "zh-cn": "封禁了 {0} {1}。理由: {2}"
+  },
+  "Admin.Unbanned": {
+    "en-us": "Unbanned {0}. Reason: {1}",
+    "zh-cn": "解封了 {0}。理由: {1}"
+  },
+  "Admin.Usage.Say": {
+    "en-us": "Usage: ms_say <message>",
+    "zh-cn": "用法: ms_say <消息>"
+  },
+  "Admin.Usage.Csay": {
+    "en-us": "Usage: ms_csay <message>",
+    "zh-cn": "用法: ms_csay <消息>"
+  },
+  "Admin.Usage.Hsay": {
+    "en-us": "Usage: ms_hsay <message>",
+    "zh-cn": "用法: ms_hsay <消息>"
+  },
+  "Admin.Usage.Psay": {
+    "en-us": "Usage: ms_psay <target> <message>",
+    "zh-cn": "用法: ms_psay <目标> <消息>"
+  },
+  "Admin.Psay.Sent": {
+    "en-us": "Sent private message to {0}.",
+    "zh-cn": "已发送私信给 {0}。"
+  },
+  "Admin.Usage.Noclip": {
+    "en-us": "Usage: ms_noclip <target> [on|off]",
+    "zh-cn": "用法: ms_noclip <目标> [on|off]"
+  },
+  "Admin.Noclip.Enabled": {
+    "en-us": "{0} Enabled noclip for {1}.",
+    "zh-cn": "{0} 已为 {1} 开启穿墙模式。"
+  },
+  "Admin.Noclip.Disabled": {
+    "en-us": "{0} Disabled noclip for {1}.",
+    "zh-cn": "{0} 已为 {1} 关闭穿墙模式。"
+  },
+  "Admin.Usage.Slay": {
+    "en-us": "Usage: ms_slay <target>",
+    "zh-cn": "用法: ms_slay <目标>"
+  },
+  "Admin.Slay": {
+    "en-us": "{0} Slain {1}.",
+    "zh-cn": "{0} 处死了 {1}。"
+  },
+  "Admin.Usage.Slap": {
+    "en-us": "Usage: ms_slap <target> [damage]",
+    "zh-cn": "用法: ms_slap <目标> [伤害]"
+  },
+  "Admin.Slap": {
+    "en-us": "{0} Slapped {1} for {2} damage.",
+    "zh-cn": "{0} 拍了 {1} ，造成 {2} 点伤害。"
+  },
+  "Admin.Usage.Rename": {
+    "en-us": "Usage: ms_rename <target> <new name>",
+    "zh-cn": "用法: ms_rename <目标> <新名字>"
+  },
+  "Admin.Rename": {
+    "en-us": "{0} Renamed {1} to {2}.",
+    "zh-cn": "{0} 将 {1} 重命名为 {2}。"
+  },
+  "Admin.TargetNotAlive": {
+    "en-us": "Target must be alive.",
+    "zh-cn": "目标必须处于存活状态."
+  },
+  "Admin.InvalidNumber": {
+    "en-us": "Invalid number.",
+    "zh-cn": "无效的数字。"
+  },
+  "Admin.Usage.Hp": {
+    "en-us": "Usage: ms_hp <target> <amount>",
+    "zh-cn": "用法: ms_hp <目标> <数值>"
+  },
+  "Admin.Hp": {
+    "en-us": "{0} Set {1}'s health to {2}.",
+    "zh-cn": "{0} 将 {1} 的生命值设为 {2}。"
+  },
+  "Admin.Usage.Speed": {
+    "en-us": "Usage: ms_speed <target> <amount>",
+    "zh-cn": "用法: ms_speed <目标> <数值>"
+  },
+  "Admin.Speed": {
+    "en-us": "{0} Set {1}'s speed to {2}.",
+    "zh-cn": "{0} 将 {1} 的速度设为 {2}。"
+  },
+  "Admin.Usage.Gravity": {
+    "en-us": "Usage: ms_gravity <target> <scale>",
+    "zh-cn": "用法: ms_gravity <目标> <比例>"
+  },
+  "Admin.Gravity": {
+    "en-us": "{0} Set {1}'s gravity scale to {2}.",
+    "zh-cn": "{1} 将 {1} 的重力比例设为 {2}。"
+  },
+  "Admin.Usage.Money": {
+    "en-us": "Usage: ms_money <target> <amount>",
+    "zh-cn": "用法: ms_money <目标> <金额>"
+  },
+  "Admin.Money": {
+    "en-us": "{0} Set {1}'s money to {2}.",
+    "zh-cn": "{0} 将 {1} 的金钱设为 {2}。"
+  },
+  "Admin.Usage.Team": {
+    "en-us": "Usage: ms_team <target> <ct|t|spec>",
+    "zh-cn": "用法: ms_team <目标> <ct|t|spec>"
+  },
+  "Admin.InvalidTeam": {
+    "en-us": "Team must be one of: ct, t, spec.",
+    "zh-cn": "队伍必须是以下之一: ct, t, spec。"
+  },
+  "Admin.Team": {
+    "en-us": "Moved {0} to {1}.",
+    "zh-cn": "将 {0} 移动到了 {1}。"
+  },
+  "Admin.Usage.Give": {
+    "en-us": "Usage: ms_give <target> <weapon>",
+    "zh-cn": "用法: ms_give <目标> <武器>"
+  },
+  "Admin.GiveFailed": {
+    "en-us": "Failed to give {0} to {1}.",
+    "zh-cn": "无法给予 {0} 给 {1}。"
+  },
+  "Admin.Give": {
+    "en-us": "{0} Gave {1} to {2}.",
+    "zh-cn": "{0} 把 {1} 给了 {2}。"
+  },
+  "Admin.Usage.Strip": {
+    "en-us": "Usage: ms_strip <target>",
+    "zh-cn": "用法: ms_strip <目标>"
+  },
+  "Admin.Strip": {
+    "en-us": "{0} Stripped all items from {1}.",
+    "zh-cn": "{0} 移除了 {1} 的所有物品。"
+  },
+  "Admin.Usage.Tp": {
+    "en-us": "Usage: ms_tp <target> <destination|x y z>",
+    "zh-cn": "用法: ms_tp <目标> <目的地|x y z>"
+  },
+  "Admin.Teleport": {
+    "en-us": "{0} Teleported {1} to {2}.",
+    "zh-cn": "{0} 将 {1} 传送到了 {2}。"
+  },
+  "Admin.Usage.Bring": {
+    "en-us": "Usage: ms_bring <target>",
+    "zh-cn": "用法: ms_bring <目标>"
+  },
+  "Admin.BringFailed": {
+    "en-us": "Only players can use bring.",
+    "zh-cn": "只有玩家可以使用 bring 命令。"
+  },
+  "Admin.AliveToUse": {
+    "en-us": "You have to be alive to use this command.",
+    "zh-cn": "你必须活着才能使用此命令。"
+  },
+  "Admin.Bring": {
+    "en-us": "{0} Brought {1} to them.",
+    "zh-cn": "{0} 将 {1} 传送到了自己身边。"
+  },
+  "Admin.Usage.Respawn": {
+    "en-us": "Usage: ms_respawn <target>",
+    "zh-cn": "用法: ms_respawn <目标>"
+  },
+  "Admin.Respawn": {
+    "en-us": "{0} Respawned {1}.",
+    "zh-cn": "{0} 复活了 {1}。"
+  },
+  "Admin.Usage.Map": {
+    "en-us": "Usage: ms_map <mapname>",
+    "zh-cn": "用法: ms_map <地图名>"
+  },
+  "Admin.InvalidMap": {
+    "en-us": "Map '{0}' is not available.",
+    "zh-cn": "地图 '{0}' 不可用。"
+  },
+  "Admin.MapChanged": {
+    "en-us": "Changing map to {0}...",
+    "zh-cn": "正在更换地图为 {0}..."
+  },
+  "Admin.MapFailed": {
+    "en-us": "Failed to change map to {0}.",
+    "zh-cn": "更换地图为 {0} 失败。"
+  },
+  "Admin.Usage.Rcon": {
+    "en-us": "Usage: ms_rcon <command>",
+    "zh-cn": "用法: ms_rcon <命令>"
+  },
+  "Admin.RconSent": {
+    "en-us": "Executed server command: {0}",
+    "zh-cn": "已执行服务器命令: {0}"
+  },
+  "Admin.Usage.Cvar": {
+    "en-us": "Usage: ms_cvar <name> [value]",
+    "zh-cn": "用法: ms_cvar <名称> [值]"
+  },
+  "Admin.CvarMissing": {
+    "en-us": "ConVar '{0}' not found.",
+    "zh-cn": "未找到 ConVar '{0}'。"
+  },
+  "Admin.CvarSet": {
+    "en-us": "{0} Set {1} to {2}.",
+    "zh-cn": "{0} 把 {1} 设为 {2}。"
+  },
+  "Admin.CvarGet": {
+    "en-us": "{0} = {1}",
+    "zh-cn": "{0} = {1}"
+  },
+  "Admin.Duration.Permanent": {
+    "en-us": "permanently",
+    "zh-cn": "永久"
+  },
+  "Admin.Duration.Days": {
+    "en-us": "for {0} day(s)",
+    "zh-cn": "{0} 天"
+  },
+  "Admin.Duration.Hours": {
+    "en-us": "for {0} hour(s)",
+    "zh-cn": "{0} 小时"
+  },
+  "Admin.Duration.Minutes": {
+    "en-us": "for {0} minute(s)",
+    "zh-cn": "{0} 分钟"
+  },
+  "Admin.BanApplied": {
+    "en-us": "{0} banned {1} {2}. Reason: {3}",
+    "zh-cn": "{0} 封禁了 {1} {2}。理由: {3}"
+  },
+  "Admin.BanRemoved": {
+    "en-us": "{0} unbanned {1}. Reason: {3}",
+    "zh-cn": "{0} 解封了 {1}。理由: {3}"
+  }
+}

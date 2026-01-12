@@ -1,0 +1,110 @@
+{
+  "PermissionCollection": {
+    "admin": [
+      "admin:ban",
+      "admin:unban",
+      "admin:mute",
+      "admin:silence",
+      "admin:gag",
+      "admin:kick",
+      "admin:say",
+      "admin:csay",
+      "admin:hsay",
+      "admin:psay",
+      "admin:noclip",
+      "admin:speed",
+      "admin:gravity",
+      "admin:tp",
+      "admin:bring",
+      "admin:slay",
+      "admin:slap",
+      "admin:hp",
+      "admin:respawn",
+      "admin:give",
+      "admin:strip",
+      "admin:rename",
+      "admin:team",
+      "admin:money",
+      "admin:map",
+      "admin:rcon",
+      "admin:cvar"
+    ]
+  },
+  "Roles": [
+    {
+      // Full access across all modules
+      "Name": "root",
+      "Immunity": 100,
+      "Permissions": [
+        "*"
+      ]
+    },
+    {
+      // Admin baseline + server config
+      "Name": "senior_admin",
+      "Immunity": 80,
+      "Permissions": [
+        "@admin",
+        "admin:rcon",
+        "admin:cvar"
+      ]
+    },
+    {
+      // Daily administration without rcon/cvar
+      "Name": "admin",
+      "Immunity": 60,
+      "Permissions": [
+        "@moderator",
+        "admin:noclip",
+        "admin:speed",
+        "admin:gravity",
+        "admin:hsay",
+        "admin:hp",
+        "admin:give",
+        "admin:strip",
+        "admin:team",
+        "admin:money",
+        "admin:map"
+      ]
+    },
+    {
+      // Core moderation and player management
+      "Name": "moderator",
+      "Immunity": 40,
+      "Permissions": [
+        "@helper",
+        "admin:ban",
+        "admin:unban",
+        "admin:tp",
+        "admin:bring",
+        "admin:slay",
+        "admin:slap",
+        "admin:rename",
+        "admin:respawn"
+      ]
+    },
+    {
+      // Entry-level helpers; no bans or server-impacting commands
+      "Name": "helper",
+      "Immunity": 20,
+      "Permissions": [
+        "admin:mute",
+        "admin:silence",
+        "admin:gag",
+        "admin:kick",
+        "admin:say",
+        "admin:csay",
+        "admin:psay"
+      ]
+    }
+  ],
+  "Admins": [
+    // Example: replace with real SteamID
+    {
+      "Identity": 76561198000000001,
+      "Permissions": [
+        "@root"
+      ]
+    }
+  ]
+}

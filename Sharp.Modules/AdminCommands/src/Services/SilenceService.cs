@@ -1,0 +1,139 @@
+using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Shared;
+using Sharp.Modules.AdminManager.Shared;
+using Sharp.Shared.Objects;
+using Sharp.Shared.Types;
+
+namespace Sharp.Modules.AdminCommands.Services;
+
+internal class SilenceService : ICommandCategory, ISilenceService
+{
+    private readonly AdminOperationService   _operations;
+    private readonly AdminOperationEngine    _engine;
+    private readonly CommandContextFactory   _contextFactory;
+    private readonly ILogger<SilenceService> _logger;
+
+    public SilenceService(
+        InterfaceBridge       bridge,
+        AdminOperationService operations,
+        AdminOperationEngine  engine,
+        CommandContextFactory contextFactory)
+    {
+        _operations     = operations;
+        _engine         = engine;
+        _contextFactory = contextFactory;
+        _logger         = bridge.LoggerFactory.CreateLogger<SilenceService>();
+    }
+
+    public void Register(IAdminCommandRegistry registry)
+    {
+        registry.RegisterAdminCommand("silence",   OnCommandSilence,   ["admin:silence"]);
+        registry.RegisterAdminCommand("unsilence", OnCommandUnSilence, ["admin:silence"]);
+    }
+
+    private void OnCommandSilence(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(2, "Admin.Usage.Silence", "Usage: ms_silence <target> [duration] [reason]"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetSingleTarget(1, out var target))
+        {
+            return;
+        }
+
+        if (!ctx.TryParseDuration(2, out var duration))
+        {
+            return;
+        }
+
+        var reason = ctx.GetReason(3);
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
+                var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+
+                if (isMuted && isGag)
+                {
+                    ctx.ReplyKey("Admin.AlreadySilenced", "{0} is already silenced.", target.Name);
+
+                    return;
+                }
+
+                _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason, true);
+                _engine.ApplyOnline(issuer, target, AdminOperationType.Gag,  duration, reason, true);
+
+                _engine.NotifySilenceApplied(issuer, target, duration, reason);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to process silence for {SteamId}", target.SteamId);
+                ctx.Reply("Failed to process silence. Check server logs.");
+            }
+        });
+    }
+
+    private void OnCommandUnSilence(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(2, "Admin.Usage.Unsilence", "Usage: ms_unsilence <target> [reason]"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetSingleTarget(1, out var target))
+        {
+            return;
+        }
+
+        var reason = ctx.GetReason(2);
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
+                var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+
+                if (!isMuted && !isGag)
+                {
+                    ctx.ReplyKey("Admin.NotSilenced", "{0} is not silenced.", target.Name);
+
+                    return;
+                }
+
+                _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason, true);
+                _engine.RemoveOnline(issuer, target, AdminOperationType.Gag,  reason, true);
+
+                _engine.NotifySilenceRemoved(issuer, target, reason);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to process unsilence for {SteamId}", target.SteamId);
+                ctx.Reply("Failed to process unsilence. Check server logs.");
+            }
+        });
+    }
+
+    public void Silence(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
+    {
+        _engine.ApplyOnline(admin, target, AdminOperationType.Mute, duration, reason, true);
+        _engine.ApplyOnline(admin, target, AdminOperationType.Gag,  duration, reason, true);
+        _engine.NotifySilenceApplied(admin, target, duration, reason);
+    }
+
+    public void Unsilence(IGameClient? admin, IGameClient target, string reason)
+    {
+        _engine.RemoveOnline(admin, target, AdminOperationType.Mute, reason, true);
+        _engine.RemoveOnline(admin, target, AdminOperationType.Gag,  reason, true);
+        _engine.NotifySilenceRemoved(admin, target, reason);
+    }
+}
