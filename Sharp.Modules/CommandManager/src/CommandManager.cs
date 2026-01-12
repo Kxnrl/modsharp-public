@@ -14,10 +14,10 @@ namespace Sharp.Modules.CommandManager;
 
 internal class CommandManager : IModSharpModule, ICommandManager
 {
-    private readonly Dictionary<string, ICommandRegistry> _registries = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, CommandRegistry> _registries       = new (StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, HashSet<string>> _registerCommands = new(StringComparer.OrdinalIgnoreCase);
-    private readonly ISharedSystem _shared;
-    private readonly ILogger<CommandManager> _logger;
+    private readonly ISharedSystem                       _shared;
+    private readonly ILogger<CommandManager>             _logger;
 
     public CommandManager(
         ISharedSystem sharedSystem,
@@ -151,7 +151,8 @@ internal class CommandManager : IModSharpModule, ICommandManager
         {
             return;
         }
-        ((CommandRegistry)value).Clear();
+
+        value.Clear();
         _registries.Remove(identity);
     }
 
@@ -161,6 +162,7 @@ internal class CommandManager : IModSharpModule, ICommandManager
         {
             return;
         }
+
         set.Clear();
 
         _registerCommands.Remove(identity);
@@ -239,12 +241,11 @@ internal class CommandRegistry : ICommandRegistry
             return;
         }
 
-        var info = new ConsoleCommandInfo(
-            command,
-            _self.GetAddPrefixCommand(command),
-            addPrefix,
-            (_, stringCommand) => call(stringCommand)
-        );
+        var info = new ConsoleCommandInfo(command,
+                                          _self.GetAddPrefixCommand(command),
+                                          addPrefix,
+                                          (_, stringCommand) => call(stringCommand));
+
         _conVarManager.CreateServerCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command, info.OnServerCommand);
         _consoleCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
@@ -269,10 +270,13 @@ internal class CommandRegistry : ICommandRegistry
             return;
         }
 
-        var info = new GenericCommandInfo(command, _self.GetAddPrefixCommand(command),
-            _self.GetStripPrefixCommand(command), call);
-        _clientManager.InstallCommandCallback(info.StripPrefixCommand, (client, stringCommand) => info.OnClientCommand(client, stringCommand));
-        _conVarManager.CreateServerCommand(info.AddPrefixCommand, stringCommand => info.OnServerCommand(stringCommand), description);
+        var info = new GenericCommandInfo(command,
+                                          _self.GetAddPrefixCommand(command),
+                                          _self.GetStripPrefixCommand(command),
+                                          call);
+
+        _clientManager.InstallCommandCallback(info.StripPrefixCommand, info.OnClientCommand);
+        _conVarManager.CreateServerCommand(info.AddPrefixCommand, info.OnServerCommand, description);
         _genericCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
     }
@@ -280,11 +284,14 @@ internal class CommandRegistry : ICommandRegistry
     public void RegisterConsoleCommand(string command, Action<IGameClient?, StringCommand> callback,
         bool addPrefix = true)
     {
-        RegisterConsoleCommand(command, (client, stringCommand) =>
-        {
-            callback(client, stringCommand);
-            return ECommandAction.Handled;
-        }, addPrefix);
+        RegisterConsoleCommand(command,
+                               (client, stringCommand) =>
+                               {
+                                   callback(client, stringCommand);
+
+                                   return ECommandAction.Handled;
+                               },
+                               addPrefix);
     }
 
     private void RegisterConsoleCommand(string command, Func<IGameClient?, StringCommand, ECommandAction> callback, bool addPrefix = true)
@@ -296,8 +303,9 @@ internal class CommandRegistry : ICommandRegistry
         }
 
         var info = new ConsoleCommandInfo(command, _self.GetAddPrefixCommand(command), addPrefix, callback);
+
         _conVarManager.CreateConsoleCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command,
-            info.OnConsoleCommand);
+                                            info.OnConsoleCommand);
         _consoleCommands.Add(info);
         _self.AddRegisteredCommand(_identity, info.Command);
 

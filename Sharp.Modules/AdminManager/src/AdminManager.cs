@@ -195,7 +195,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public void OnLibraryConnected(string name)
     {
-        RefreshModuleManagers(name, force: true);
+        RefreshModuleManagers(name, true);
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -291,7 +291,6 @@ internal class AdminManager : IAdminManager, IModSharpModule
             throw new NullReferenceException($"CommandManager is null! Did you have '{CommandManagerAssemblyName}' installed?");
         }
 
-        // Get a separate CommandRegistry for each module identity
         var commandRegistry = _commandManager.GetRegistry(moduleIdentity);
         var registry        = new AdminCommandRegistry(commandRegistry, this, _shared);
         _commandRegistries[moduleIdentity] = registry;
@@ -364,9 +363,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     private void RefreshModuleManagers(string? changedModuleName = null, bool force = false)
     {
-        var checkAll        = changedModuleName is null;
-        var updateCommand   = checkAll || changedModuleName.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
-        var updateLocalizer = checkAll || changedModuleName.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+        var checkAll = changedModuleName is null;
+
+        var updateCommand
+            = checkAll || changedModuleName!.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+
+        var updateLocalizer
+            = checkAll || changedModuleName!.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
 
         var moduleManager = _shared.GetSharpModuleManager();
 
