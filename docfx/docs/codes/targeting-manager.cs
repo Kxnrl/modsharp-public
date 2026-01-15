@@ -67,7 +67,6 @@ internal class AimTargetResolver : ITargetResolver
 
         // NOTE: even if controller is a valid entity, if the corresponding IGameClient does not exist, it will still return null 
         if (traceController.GetGameClient() is { } traceClient)
-
         {
             return [traceClient];
         }
