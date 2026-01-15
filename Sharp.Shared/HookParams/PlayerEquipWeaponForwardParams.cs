@@ -21,5 +21,6 @@ namespace Sharp.Shared.HookParams;
 
 public interface IPlayerEquipWeaponForwardParams : IFunctionParams, IPlayerWeaponWithServiceFunctionParams
 {
+    [Obsolete("DO NOT USE THIS, IT IS GARBAGE VALUE FROM LAST RAX REGISTER. WILL BE REMOVED IN THE FUTURE", true)]
     long EquipmentValue { get; }
 }
