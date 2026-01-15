@@ -1,6 +1,5 @@
 using System;
 using Sharp.Shared.Enums;
-using Sharp.Shared.Objects;
 
 namespace Sharp.Modules.LocalizerManager.Shared;
 
@@ -10,24 +9,10 @@ namespace Sharp.Modules.LocalizerManager.Shared;
 public interface ILocalizedMessage
 {
     /// <summary>
-    ///     Set or override prefix (applied if not empty).
+    ///     Sets the prefix.
+    ///     Pass <c>null</c> to disable the prefix entirely.
     /// </summary>
-    ILocalizedMessage WithPrefix(string prefix);
-
-    /// <summary>
-    ///     Disable prefix.
-    /// </summary>
-    ILocalizedMessage WithoutPrefix();
-
-    /// <summary>
-    ///     Enable chat color placeholder processing.
-    /// </summary>
-    ILocalizedMessage Colorize(bool enabled = true);
-
-    /// <summary>
-    ///     Strip chat color placeholders/control codes.
-    /// </summary>
-    ILocalizedMessage StripColors(bool enabled = true);
+    ILocalizedMessage Prefix(string? prefix);
 
     /// <summary>
     ///     Append literal text.
@@ -50,7 +35,13 @@ public interface ILocalizedMessage
     ILocalizedMessage Value(object? value);
 
     /// <summary>
-    ///     Build the final string (applies prefix/colors).
+    ///     Register a post-processor for the rendered string (applied before Build/Print return/send).
+    ///     Multiple calls compose in order of invocation.
+    /// </summary>
+    ILocalizedMessage Transform(Func<string, string> processor);
+
+    /// <summary>
+    ///     Build the final string (applies prefix/colors and any processors).
     /// </summary>
     string Build();
 

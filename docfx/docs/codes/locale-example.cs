@@ -53,6 +53,7 @@ public sealed class LocaleExample : IModSharpModule
             return;
         }
 
+        // or ues loc.ForMany(clients); if you want to print to multiple players
         var locale     = loc.For(param.Client);
         var controller = param.Controller;
 
@@ -68,10 +69,10 @@ public sealed class LocaleExample : IModSharpModule
         controller.Print(HudPrintChannel.Chat, $"Date => {locale.Text("Date", date)}");
         controller.Print(HudPrintChannel.Chat, $"Generic.HelloWorld => {locale.Text("Generic.HelloWorld")}");
 
-        // Builder with prefix & color placeholders
+        // Builder with prefix & post-processing (example: alternating upper/lower to show transform)
         locale.Localized("Generic.HelloWorld")
               .WithPrefix("[Example]")
-              .Colorize()
+              .Transform(ToAlternatingCase)
               .Print();
     }
 
@@ -85,6 +86,19 @@ public sealed class LocaleExample : IModSharpModule
         }
 
         return _cachedInterface?.Instance;
+    }
+
+    private static string ToAlternatingCase(string text)
+    {
+        var chars = text.ToCharArray();
+
+        for (var i = 0; i < chars.Length; i++)
+        {
+            var c = chars[i];
+            chars[i] = i % 2 == 0 ? char.ToUpperInvariant(c) : char.ToLowerInvariant(c);
+        }
+
+        return new string(chars);
     }
 
     public string DisplayName   => "Locale Example";

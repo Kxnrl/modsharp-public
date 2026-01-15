@@ -11,10 +11,9 @@ internal sealed class LocalizedMessageBuilder : ILocalizedMessage
     private readonly ILocale              _locale;
     private readonly IGameClient?         _client;
     private readonly List<MessageSegment> _segments = new (8);
+    private Func<string, string>?         _processor;
 
-    private bool   _applyPrefix = true;
-    private bool   _colorize;
-    private bool   _stripColors;
+    private bool    _applyPrefix = true;
     private string? _prefix;
 
     public LocalizedMessageBuilder(ILocale locale, IGameClient? client, string? defaultPrefix)
@@ -24,36 +23,19 @@ internal sealed class LocalizedMessageBuilder : ILocalizedMessage
         _prefix = defaultPrefix;
     }
 
-    public ILocalizedMessage WithPrefix(string prefix)
+    public ILocalizedMessage Prefix(string? prefix)
     {
-        _prefix = prefix;
-        _applyPrefix = true;
-        return this;
-    }
-
-    public ILocalizedMessage WithoutPrefix()
-    {
-        _applyPrefix = false;
-        return this;
-    }
-
-    public ILocalizedMessage Colorize(bool enabled = true)
-    {
-        _colorize = enabled;
-        if (enabled)
+        if (string.IsNullOrEmpty(prefix))
         {
-            _stripColors = false;
+            _applyPrefix = false;
+            _prefix      = null;
         }
-        return this;
-    }
-
-    public ILocalizedMessage StripColors(bool enabled = true)
-    {
-        _stripColors = enabled;
-        if (enabled)
+        else
         {
-            _colorize = false;
+            _applyPrefix = true;
+            _prefix      = prefix;
         }
+
         return this;
     }
 
@@ -66,14 +48,14 @@ internal sealed class LocalizedMessageBuilder : ILocalizedMessage
 
     public ILocalizedMessage Text(string key, params ReadOnlySpan<object?> args)
     {
-        _segments.Add(MessageSegment.FromText(key, args.ToArray()));
+        _segments.Add(MessageSegment.FromText(key, args));
 
         return this;
     }
 
     public ILocalizedMessage TextOrFallback(string key, string fallback, params ReadOnlySpan<object?> args)
     {
-        _segments.Add(MessageSegment.FromTextWithFallback(key, fallback, args.ToArray()));
+        _segments.Add(MessageSegment.FromTextWithFallback(key, fallback, args));
 
         return this;
     }
@@ -85,9 +67,39 @@ internal sealed class LocalizedMessageBuilder : ILocalizedMessage
         return this;
     }
 
+    public ILocalizedMessage Transform(Func<string, string> processor)
+    {
+        if (processor is null)
+        {
+            throw new ArgumentNullException(nameof(processor));
+        }
+
+        _processor = _processor is null
+            ? processor
+            : Chain(_processor, processor);
+
+        return this;
+    }
+
     public string Build()
-        => MessageRenderHelper.Render(_segments, _locale, _applyPrefix, _prefix, _stripColors, _colorize);
+    {
+        var rendered = MessageRenderHelper.Render(_segments, _locale, _applyPrefix, _prefix);
+
+        return _processor is null
+            ? rendered
+            : _processor(rendered);
+    }
 
     public void Print(HudPrintChannel channel = HudPrintChannel.Chat)
         => _client?.GetPlayerController()?.Print(channel, Build());
+
+    private static Func<string, string> Chain(Func<string, string> first, Func<string, string> next)
+    {
+        return s =>
+        {
+            var intermediate = first(s) ?? string.Empty;
+
+            return next(intermediate) ?? string.Empty;
+        };
+    }
 }

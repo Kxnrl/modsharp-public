@@ -11,11 +11,11 @@ internal sealed class MultiLocalizedMessageBuilder : ILocalizedMessageMany
     private readonly IReadOnlyList<IGameClient> _clients;
     private readonly ILocalizerManager          _localizerManager;
 
-    private readonly List<MessageSegment> _segments = new(8);
+    private readonly List<MessageSegment>  _segments = new(8);
+    private          Func<string, string>? _processor;
 
     private bool    _applyPrefix = true;
-    private bool    _colorize;
-    private bool    _stripColors;
+
     private string? _prefix;
 
     public MultiLocalizedMessageBuilder(IReadOnlyList<IGameClient> clients,
@@ -27,36 +27,17 @@ internal sealed class MultiLocalizedMessageBuilder : ILocalizedMessageMany
         _prefix           = defaultPrefix;
     }
 
-    public ILocalizedMessageMany WithPrefix(string prefix)
+    public ILocalizedMessageMany Prefix(string? prefix)
     {
-        _prefix      = prefix;
-        _applyPrefix = true;
-        return this;
-    }
-
-    public ILocalizedMessageMany WithoutPrefix()
-    {
-        _applyPrefix = false;
-        return this;
-    }
-
-    public ILocalizedMessageMany Colorize(bool enabled = true)
-    {
-        _colorize = enabled;
-        if (enabled)
+        if (string.IsNullOrEmpty(prefix))
         {
-            _stripColors = false;
+            _applyPrefix = false;
+            _prefix      = null;
         }
-
-        return this;
-    }
-
-    public ILocalizedMessageMany StripColors(bool enabled = true)
-    {
-        _stripColors = enabled;
-        if (enabled)
+        else
         {
-            _colorize = false;
+            _applyPrefix = true;
+            _prefix      = prefix;
         }
 
         return this;
@@ -70,19 +51,30 @@ internal sealed class MultiLocalizedMessageBuilder : ILocalizedMessageMany
 
     public ILocalizedMessageMany Text(string key, params ReadOnlySpan<object?> args)
     {
-        _segments.Add(MessageSegment.FromText(key, args.ToArray()));
+        _segments.Add(MessageSegment.FromText(key, args));
         return this;
     }
 
     public ILocalizedMessageMany TextOrFallback(string key, string fallback, params ReadOnlySpan<object?> args)
     {
-        _segments.Add(MessageSegment.FromTextWithFallback(key, fallback, args.ToArray()));
+        _segments.Add(MessageSegment.FromTextWithFallback(key, fallback, args));
         return this;
     }
 
     public ILocalizedMessageMany Value(object? value)
     {
         _segments.Add(MessageSegment.FromValue(value));
+        return this;
+    }
+
+    public ILocalizedMessageMany Transform(Func<string, string> processor)
+    {
+        ArgumentNullException.ThrowIfNull(processor);
+
+        _processor = _processor is null
+            ? processor
+            : Chain(_processor, processor);
+
         return this;
     }
 
@@ -97,11 +89,22 @@ internal sealed class MultiLocalizedMessageBuilder : ILocalizedMessageMany
 
             if (!cache.TryGetValue(culture, out var message))
             {
-                message        = MessageRenderHelper.Render(_segments, locale, _applyPrefix, _prefix, _stripColors, _colorize);
+                message        = MessageRenderHelper.Render(_segments, locale, _applyPrefix, _prefix);
+                message        = _processor is null ? message : _processor(message);
                 cache[culture] = message;
             }
 
             client.GetPlayerController()?.Print(channel, message);
         }
+    }
+
+    private static Func<string, string> Chain(Func<string, string> first, Func<string, string> next)
+    {
+        return s =>
+        {
+            var intermediate = first(s) ?? string.Empty;
+
+            return next(intermediate) ?? string.Empty;
+        };
     }
 }

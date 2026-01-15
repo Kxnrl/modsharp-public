@@ -9,24 +9,10 @@ namespace Sharp.Modules.LocalizerManager.Shared;
 public interface ILocalizedMessageMany
 {
     /// <summary>
-    ///     Set or override prefix (applied if not empty).
+    ///     Sets the prefix.
+    ///     Pass <c>null</c> to disable the prefix entirely.
     /// </summary>
-    ILocalizedMessageMany WithPrefix(string prefix);
-
-    /// <summary>
-    ///     Disable prefix.
-    /// </summary>
-    ILocalizedMessageMany WithoutPrefix();
-
-    /// <summary>
-    ///     Enable chat color placeholder processing.
-    /// </summary>
-    ILocalizedMessageMany Colorize(bool enabled = true);
-
-    /// <summary>
-    ///     Strip chat color placeholders/control codes.
-    /// </summary>
-    ILocalizedMessageMany StripColors(bool enabled = true);
+    ILocalizedMessageMany Prefix(string? prefix);
 
     /// <summary>
     ///     Append literal text.
@@ -47,6 +33,11 @@ public interface ILocalizedMessageMany
     ///     Append a raw value.
     /// </summary>
     ILocalizedMessageMany Value(object? value);
+
+    /// <summary>
+    ///     Register a post-processor for each rendered string (applied before print). Multiple calls compose in order.
+    /// </summary>
+    ILocalizedMessageMany Transform(Func<string, string> processor);
 
     /// <summary>
     ///     Render per locale and print to the captured clients. Do not cache builders across reload/unload.

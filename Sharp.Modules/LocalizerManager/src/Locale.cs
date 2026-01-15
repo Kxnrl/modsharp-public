@@ -23,6 +23,15 @@ internal sealed class Locale : ILocale
     public string Text(string key, params ReadOnlySpan<object?> args)
         => _localizer.Format(key, args);
 
+    public string Text(string key, object? arg0)
+        => _localizer.Format(key, arg0);
+
+    public string Text(string key, object? arg0, object? arg1)
+        => _localizer.Format(key, arg0, arg1);
+
+    public string Text(string key, object? arg0, object? arg1, object? arg2)
+        => _localizer.Format(key, arg0, arg1, arg2);
+
     public string Raw(string key, params ReadOnlySpan<object?> args)
         => _localizer.FormatRaw(key, args);
 
@@ -39,6 +48,72 @@ internal sealed class Locale : ILocale
         try
         {
             value = string.Format(_localizer.Culture, format, args);
+            return true;
+        }
+        catch (FormatException)
+        {
+            value = format;
+            return false;
+        }
+    }
+
+    public bool TryText(string key, out string value, object? arg0)
+    {
+        var format = _localizer.TryGet(key);
+
+        if (format is null)
+        {
+            value = key;
+            return false;
+        }
+
+        try
+        {
+            value = string.Format(_localizer.Culture, format, arg0);
+            return true;
+        }
+        catch (FormatException)
+        {
+            value = format;
+            return false;
+        }
+    }
+
+    public bool TryText(string key, out string value, object? arg0, object? arg1)
+    {
+        var format = _localizer.TryGet(key);
+
+        if (format is null)
+        {
+            value = key;
+            return false;
+        }
+
+        try
+        {
+            value = string.Format(_localizer.Culture, format, arg0, arg1);
+            return true;
+        }
+        catch (FormatException)
+        {
+            value = format;
+            return false;
+        }
+    }
+
+    public bool TryText(string key, out string value, object? arg0, object? arg1, object? arg2)
+    {
+        var format = _localizer.TryGet(key);
+
+        if (format is null)
+        {
+            value = key;
+            return false;
+        }
+
+        try
+        {
+            value = string.Format(_localizer.Culture, format, arg0, arg1, arg2);
             return true;
         }
         catch (FormatException)

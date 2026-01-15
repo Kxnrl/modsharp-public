@@ -22,8 +22,26 @@ internal class Localizer
     public string Format(string key, params ReadOnlySpan<object?> param)
         => string.Format(_culture, this[key], param);
 
+    public string Format(string key, object? arg0)
+        => string.Format(_culture, this[key], arg0);
+
+    public string Format(string key, object? arg0, object? arg1)
+        => string.Format(_culture, this[key], arg0, arg1);
+
+    public string Format(string key, object? arg0, object? arg1, object? arg2)
+        => string.Format(_culture, this[key], arg0, arg1, arg2);
+
     public string FormatRaw(string key, params ReadOnlySpan<object?> param)
         => string.Format(this[key], param);
+
+    public string FormatRaw(string key, object? arg0)
+        => string.Format(this[key], arg0);
+
+    public string FormatRaw(string key, object? arg0, object? arg1)
+        => string.Format(this[key], arg0, arg1);
+
+    public string FormatRaw(string key, object? arg0, object? arg1, object? arg2)
+        => string.Format(this[key], arg0, arg1, arg2);
 
     public string this[string key] => TryGet(key) ?? throw new KeyNotFoundException($"Missing '{key}' in locale file");
 

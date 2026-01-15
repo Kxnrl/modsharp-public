@@ -296,7 +296,7 @@ public class AdminCommands : IModSharpModule
         {
             if (!ReferenceEquals(_adminOperationStorage.Current, external))
             {
-                _adminOperationStorage.Use(external, true, providerName);
+                _adminOperationStorage.Use(external, providerName);
             }
 
             return;
