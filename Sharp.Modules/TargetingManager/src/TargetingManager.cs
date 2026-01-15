@@ -38,16 +38,16 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
         var clientManager = sharedSystem.GetClientManager();
         _clientManager = clientManager;
 
-        RegisterResolver(coreId, PredefinedTargets.Alive, new Alive(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.All,   new All(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.None,  new None(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.Bots,  new Bots(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.Ct,    new Ct(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.Dead,  new Dead(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.Me,    new Me(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.NotMe, new NotMe(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.Spec,  new Spec(clientManager));
-        RegisterResolver(coreId, PredefinedTargets.T,     new T(clientManager));
+        RegisterResolver(coreId, new Alive(clientManager));
+        RegisterResolver(coreId, new All(clientManager));
+        RegisterResolver(coreId, new None(clientManager));
+        RegisterResolver(coreId, new Bots(clientManager));
+        RegisterResolver(coreId, new Ct(clientManager));
+        RegisterResolver(coreId, new Dead(clientManager));
+        RegisterResolver(coreId, new Me(clientManager));
+        RegisterResolver(coreId, new NotMe(clientManager));
+        RegisterResolver(coreId, new Spec(clientManager));
+        RegisterResolver(coreId, new T(clientManager));
     }
 
     public bool Init()
@@ -134,8 +134,10 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
         return [];
     }
 
-    public bool RegisterResolver(string ownerIdentity, string target, ITargetResolver resolver)
+    public bool RegisterResolver(string ownerIdentity, ITargetResolver resolver)
     {
+        var target = resolver.GetTarget();
+
         if (_targetResolvers.TryGetValue(target, out var existingEntry))
         {
             _logger.LogError("Failed to register target '{target}'. It is already registered by '{owner}'. Request from '{newOwner}' denied.",

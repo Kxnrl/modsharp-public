@@ -31,8 +31,7 @@ public interface ITargetingManager
     ///     The identity of the module registering this target.
     ///     Recommended: <c>typeof(YourModule).Assembly.GetName().Name</c>
     /// </param>
-    /// <param name="target">The target string (e.g. "@vip").</param>
     /// <param name="resolver">The resolver logic.</param>
     /// <returns>True if registered successfully, false if target already exists.</returns>
-    public bool RegisterResolver(string ownerIdentity, string target, ITargetResolver resolver);
+    public bool RegisterResolver(string ownerIdentity, ITargetResolver resolver);
 }

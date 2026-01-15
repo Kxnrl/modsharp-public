@@ -171,7 +171,7 @@ internal class TargetingManagerExample : IModSharpModule
         }
 
         // stop if the target string is already registered
-        if (!_targetingManager.RegisterResolver(AssemblyName, AimTargetResolver.TargetString, new AimTargetResolver(_shared)))
+        if (!_targetingManager.RegisterResolver(AssemblyName, new AimTargetResolver(_shared)))
         {
             return;
         }
