@@ -17,9 +17,24 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Shared.Enums;
+
 namespace Sharp.Shared.HookParams;
 
 public interface IPlayerGetMaxSpeedHookParams : IFunctionParams, IPlayerPawnFunctionParams
 {
+    /// <summary>
+    ///     Gets the original max run speed calculated by the game.
+    ///     <br />
+    ///     To override this value, your hook must return <see cref="EHookAction.SkipCallReturnOverride" />
+    ///     paired with the new speed value.
+    ///     <br />
+    ///     <example>
+    ///         Example:
+    ///         <code>
+    /// return new (EHookAction.SkipCallReturnOverride, 300.0f);
+    /// </code>
+    ///     </example>
+    /// </summary>
     float OriginalSpeed { get; }
 }
