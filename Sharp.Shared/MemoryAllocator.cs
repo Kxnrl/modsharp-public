@@ -18,10 +18,6 @@
  */
 
 using System.Runtime.InteropServices;
-
-namespace Sharp.Shared;
-
-using System.Runtime.InteropServices;
 using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared;
