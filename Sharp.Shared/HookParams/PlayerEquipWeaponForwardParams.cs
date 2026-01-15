@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.HookParams;
 
 public interface IPlayerEquipWeaponForwardParams : IFunctionParams, IPlayerWeaponWithServiceFunctionParams
