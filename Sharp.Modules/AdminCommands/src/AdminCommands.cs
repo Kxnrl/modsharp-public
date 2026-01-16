@@ -1,12 +1,13 @@
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Commands;
 using Sharp.Modules.AdminCommands.Extensions;
-using Sharp.Modules.AdminCommands.Listeners;
 using Sharp.Modules.AdminCommands.Services;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Modules.AdminCommands.Services.Internal.Permissions;
+using Sharp.Modules.AdminCommands.Services.Handlers;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminCommands.Storage;
 using Sharp.Modules.AdminManager.Shared;
@@ -79,11 +80,13 @@ public class AdminCommands : IModSharpModule
         services.AddSingleton(new InterfaceBridge(sharpPath, shared));
         services.AddSingleton<PermissionTracker>();
         services.AddSingleton<ModuleContext>();
-        services.AddSingleton<AdminOperationCache>();
         services.AddSingleton<CommandContextFactory>();
         services.AddSingleton<AdminOperationService>();
         services.AddSingleton<AdminOperationEngine>();
-        services.AddSingleton<PunishmentListener>();
+        
+        services.AddOperationHandler<BanHandler>();
+        services.AddOperationHandler<MuteHandler>();
+        services.AddOperationHandler<GagHandler>();
     }
 
     private static void AddStorageServices(IServiceCollection services, string sharpPath)
@@ -136,8 +139,7 @@ public class AdminCommands : IModSharpModule
         var engine = _serviceProvider.GetRequiredService<AdminOperationEngine>();
         engine.Init();
 
-        var punishmentListener = _serviceProvider.GetRequiredService<PunishmentListener>();
-        punishmentListener.Register();
+        RegisterHandlerHooks();
 
         var adminServices = _serviceProvider.GetRequiredService<IAdminService>();
 
@@ -174,6 +176,9 @@ public class AdminCommands : IModSharpModule
         {
             TryResolveAdminOperationStorage();
         }
+
+        var engine = _serviceProvider.GetRequiredService<AdminOperationEngine>();
+        engine.UnregisterHandlers(name);
     }
 
     public void OnAllModulesLoaded()
@@ -186,8 +191,7 @@ public class AdminCommands : IModSharpModule
         var engine = _serviceProvider.GetRequiredService<AdminOperationEngine>();
         engine.Shutdown();
 
-        var punishmentListener = _serviceProvider.GetRequiredService<PunishmentListener>();
-        punishmentListener.Unregister();
+        UnregisterHandlerHooks();
 
         _serviceProvider.Dispose();
     }
@@ -353,9 +357,26 @@ public class AdminCommands : IModSharpModule
         }
     }
 
+    private void RegisterHandlerHooks()
+    {
+        foreach (var registrar in _serviceProvider.GetServices<IAdminOperationHandler>()
+                                                  .OfType<IAdminOperationHookRegistrar>())
+        {
+            registrar.RegisterHooks();
+        }
+    }
+
+    private void UnregisterHandlerHooks()
+    {
+        foreach (var registrar in _serviceProvider.GetServices<IAdminOperationHandler>()
+                                                  .OfType<IAdminOperationHookRegistrar>())
+        {
+            registrar.UnregisterHooks();
+        }
+    }
+
     private T? GetExternalModule<T>(string identity) where T : class
         => _shared.GetSharpModuleManager()
                   .GetOptionalSharpModuleInterface<T>(identity)
                   ?.Instance;
 }
-

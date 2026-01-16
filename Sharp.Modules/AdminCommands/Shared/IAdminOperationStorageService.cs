@@ -38,11 +38,19 @@ public interface IAdminOperationStorageService
     Task<bool> HasActiveAsync(SteamID steamId, AdminOperationType type);
 }
 
-public enum AdminOperationType
+public readonly record struct AdminOperationType(string Value)
 {
-    Ban,
-    Mute, // Voice
-    Gag,  // Text chat
+    public static readonly AdminOperationType Ban  = new ("core:ban");
+    public static readonly AdminOperationType Mute = new ("core:mute");
+    public static readonly AdminOperationType Gag  = new ("core:gag");
+
+    public override string ToString() => Value;
+
+    public bool Equals(AdminOperationType other)
+        => string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
+
+    public override int GetHashCode()
+        => StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
 }
 
 public record AdminOperationRecord(

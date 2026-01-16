@@ -1,3 +1,6 @@
+using Sharp.Shared.Objects;
+using Sharp.Shared.Units;
+
 namespace Sharp.Modules.AdminCommands.Shared;
 
 /// <summary>
@@ -12,4 +15,63 @@ public interface IAdminService
     IMuteService    Mute    { get; }
     IGagService     Gag     { get; }
     ISilenceService Silence { get; }
+
+    /// <summary>
+    ///     Registers a new operation handler.
+    /// </summary>
+    void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler);
+
+    /// <summary>
+    ///     Applies an admin operation to an online target.
+    ///     <para>
+    ///         This executes the full pipeline: notifications, game actions (e.g. kick), cache updates, and storage
+    ///         persistence.
+    ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
+    ///     </para>
+    /// </summary>
+    void Apply(IGameClient?       admin,
+               IGameClient        target,
+               AdminOperationType type,
+               TimeSpan?          duration,
+               string             reason,
+               bool               silent = false);
+
+    /// <summary>
+    ///     Applies an admin operation to an offline target.
+    ///     <para>
+    ///         This executes the full pipeline: game actions (e.g. kick), cache updates, and storage
+    ///         persistence.
+    ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
+    ///     </para>
+    /// </summary>
+    void Apply(IGameClient?       admin,
+               SteamID            target,
+               AdminOperationType type,
+               TimeSpan?          duration,
+               string             reason);
+
+    /// <summary>
+    ///     Removes an admin operation from an online target.
+    ///     <para>
+    ///         This executes the full pipeline: notifications, cache updates, and storage persistence.
+    ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
+    ///     </para>
+    /// </summary>
+    void Remove(IGameClient?       admin,
+                IGameClient        target,
+                AdminOperationType type,
+                string             reason,
+                bool               silent = false);
+
+    /// <summary>
+    ///     Removes an admin operation from an offline target.
+    ///     <para>
+    ///         This executes the full pipeline: cache updates, and storage persistence.
+    ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
+    ///     </para>
+    /// </summary>
+    void Remove(IGameClient?       admin,
+                SteamID            target,
+                AdminOperationType type,
+                string             reason);
 }

@@ -11,7 +11,7 @@ namespace Sharp.Modules.AdminCommands.Services;
 
 /// <summary>
 ///     Core execution pipeline for admin operations (ban/mute/gag) and load-on-connect handling.
-///     Provides shared behaviors: cache updates, storage persistence, notifications, kick, and listener hooks.
+///     Provides shared behaviors: storage persistence, notifications, and kick.
 /// </summary>
 internal class AdminOperationEngine : IClientListener
 {
@@ -19,22 +19,56 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerPriority => 0;
 
     private readonly InterfaceBridge               _bridge;
-    private readonly AdminOperationCache           _cache;
     private readonly AdminOperationService         _operations;
     private readonly ModuleContext                 _moduleContext;
     private readonly ILogger<AdminOperationEngine> _logger;
 
+    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)> _handlers;
+
     public AdminOperationEngine(
-        InterfaceBridge       bridge,
-        AdminOperationCache   cache,
-        AdminOperationService operations,
-        ModuleContext         moduleContext)
+        InterfaceBridge                     bridge,
+        AdminOperationService               operations,
+        ModuleContext                       moduleContext,
+        IEnumerable<IAdminOperationHandler> handlers)
     {
         _bridge        = bridge;
-        _cache         = cache;
         _operations    = operations;
         _moduleContext = moduleContext;
         _logger        = bridge.LoggerFactory.CreateLogger<AdminOperationEngine>();
+
+        _handlers = handlers.ToDictionary(h => h.Type,
+                                          h => (h, AdminCommands.AssemblyName));
+    }
+
+    public void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler)
+    {
+        if (!_handlers.TryAdd(handler.Type, (handler, moduleIdentity)))
+        {
+            _logger.LogWarning("Failed to register handler for {Type} from {Module}: Handler already registered.",
+                               handler.Type,
+                               moduleIdentity);
+
+            return;
+        }
+
+        _logger.LogDebug("Registered admin operation handler for {Type} (Module: {Module})", handler.Type, moduleIdentity);
+    }
+
+    public void UnregisterHandlers(string moduleIdentity)
+    {
+        var toRemove = _handlers.Where(x => x.Value.ModuleIdentity == moduleIdentity)
+                                .Select(x => x.Key)
+                                .ToArray();
+
+        foreach (var type in toRemove)
+        {
+            if (_handlers.Remove(type))
+            {
+                _logger.LogDebug("Unregistered admin operation handler for {Type} (Module: {Module})",
+                                 type,
+                                 moduleIdentity);
+            }
+        }
     }
 
     public void Init()
@@ -109,36 +143,27 @@ internal class AdminOperationEngine : IClientListener
                            string             reason,
                            bool               silent)
     {
+        if (!_handlers.TryGetValue(type, out var entry))
+        {
+            _logger.LogWarning("Operation '{type}' does not exist in the handler.", type.Value);
+
+            admin?.GetPlayerController()?.Print(HudPrintChannel.Chat, $"[MS] Operation {type.Value} does not exist.");
+
+            return;
+        }
+
         var record = CreateRecord(targetId, type, admin?.SteamId, duration, reason);
 
-        if (slot.HasValue)
-        {
-            UpdateCache(targetId, slot.Value, type, true, record.ExpiresAt);
-        }
+        entry.Handler.OnApplied(record, target);
 
         if (!silent && target is not null)
         {
             var formattedDuration = FormatDuration(duration);
             var durationText      = formattedDuration.ToString();
 
-            var (key, fallback) = type switch
-            {
-                AdminOperationType.Mute => ("Admin.MuteApplied", $"muted {target.Name} {durationText}"),
-                AdminOperationType.Gag  => ("Admin.GagApplied", $"gagged {target.Name} {durationText}"),
-                _                       => ("Admin.BanApplied", $"banned {target.Name} {durationText}"),
-            };
+            var (key, fallback) = entry.Handler.GetAppliedNotification(target, durationText);
 
             Notify(admin, target, key, fallback, formattedDuration, reason);
-        }
-
-        if (type == AdminOperationType.Ban)
-        {
-            _cache.SetBanned(targetId, true, record.ExpiresAt);
-
-            if (target is not null)
-            {
-                _bridge.ClientManager.KickClient(target, reason, NetworkDisconnectionReason.SteamBanned);
-            }
         }
 
         LogOperation(admin, targetName, targetId, type, duration, reason, "Applied");
@@ -154,49 +179,26 @@ internal class AdminOperationEngine : IClientListener
                             string             reason,
                             bool               silent)
     {
-        if (slot.HasValue)
+        if (!_handlers.TryGetValue(type, out var entry))
         {
-            UpdateCache(targetId, slot.Value, type, false, null);
+            _logger.LogWarning("Operation '{type}' does not exist in the handler.", type.Value);
+
+            admin?.GetPlayerController()?.Print(HudPrintChannel.Chat, $"[MS] Operation {type.Value} does not exist.");
+
+            return;
         }
 
-        if (type == AdminOperationType.Ban)
-        {
-            _cache.SetBanned(targetId, false);
-        }
+        entry.Handler.OnRemoved(targetId, target);
 
         if (!silent && target is not null)
         {
-            var (key, fallback) = type switch
-            {
-                AdminOperationType.Mute => ("Admin.MuteRemoved", "unmuted"),
-                AdminOperationType.Gag  => ("Admin.GagRemoved", "ungagged"),
-                _                       => ("Admin.BanRemoved", "unbanned"),
-            };
+            var (key, fallback) = entry.Handler.GetRemovedNotification(target);
 
-            Notify(admin, target, key, $"{fallback} {target.Name}", FormatDuration(null), reason);
+            Notify(admin, target, key, fallback, FormatDuration(null), reason);
         }
 
         LogOperation(admin, targetName, targetId, type, null, reason, "Removed");
         _ = _operations.RemoveAsync(targetId, type);
-    }
-
-    private void UpdateCache(SteamID steamId, PlayerSlot slot, AdminOperationType type, bool active, DateTime? expiresAt)
-    {
-        switch (type)
-        {
-            case AdminOperationType.Mute:
-                _cache.SetMuted(slot, active, expiresAt);
-
-                break;
-            case AdminOperationType.Gag:
-                _cache.SetGagged(slot, active, expiresAt);
-
-                break;
-            case AdminOperationType.Ban:
-                _cache.SetBanned(steamId, active, expiresAt);
-
-                break;
-        }
     }
 
     private static AdminOperationRecord CreateRecord(SteamID            targetId,
@@ -210,15 +212,6 @@ internal class AdminOperationEngine : IClientListener
 
         return new AdminOperationRecord(targetId, type, adminId, now, expiresAt, reason);
     }
-
-    private Task TryKickOnlineTargetAsync(SteamID steamId, string reason)
-        => _bridge.ModSharp.InvokeFrameActionAsync(() =>
-        {
-            if (_bridge.ClientManager.GetGameClient(steamId) is { } onlineClient)
-            {
-                _bridge.ClientManager.KickClient(onlineClient, reason, NetworkDisconnectionReason.SteamBanned);
-            }
-        });
 
     private void Notify(IGameClient?      admin,
                         IGameClient?      target,
@@ -271,42 +264,34 @@ internal class AdminOperationEngine : IClientListener
         {
             var operations = await _operations.GetAllAsync(steamId).ConfigureAwait(false);
 
-            var hasBan       = false;
-            var hasActiveOps = false;
-
-            foreach (var operation in operations)
-            {
-                if (operation.IsExpired)
-                {
-                    continue;
-                }
-
-                hasActiveOps = true;
-
-                if (operation.Type == AdminOperationType.Ban)
-                {
-                    hasBan = true;
-                    break;
-                }
-            }
-
-            if (hasBan)
-            {
-                await TryKickOnlineTargetAsync(steamId, "Banned").ConfigureAwait(false);
-
-                return;
-            }
-
-            if (!hasActiveOps)
+            if (operations.Count == 0)
             {
                 return;
             }
 
             await _bridge.ModSharp.InvokeFrameActionAsync(() =>
                          {
-                             if (_bridge.ClientManager.GetGameClient(steamId) is { } current)
+                             if (_bridge.ClientManager.GetGameClient(steamId) is not { } target)
                              {
-                                 _cache.SetState(current.Slot, steamId, operations);
+                                 return;
+                             }
+
+                             foreach (var operation in operations)
+                             {
+                                 if (operation.IsExpired)
+                                 {
+                                     continue;
+                                 }
+
+                                 if (_handlers.TryGetValue(operation.Type, out var entry))
+                                 {
+                                     entry.Handler.OnApplied(operation, target);
+                                 }
+
+                                 if (operation.Type == AdminOperationType.Ban)
+                                 {
+                                     break;
+                                 }
                              }
                          })
                          .ConfigureAwait(false);
@@ -321,17 +306,8 @@ internal class AdminOperationEngine : IClientListener
 
 #region IClientListener
 
-    public void OnClientPutInServer(IGameClient client)
-        => _cache.EnsureSlot(client.Slot);
-
-    public void OnClientConnected(IGameClient client)
-        => _cache.EnsureSlot(client.Slot);
-
     public void OnClientPostAdminCheck(IGameClient client)
         => _ = LoadAndApplyOperationsAsync(client.SteamId);
-
-    public void OnClientDisconnected(IGameClient client, NetworkDisconnectionReason reason)
-        => _cache.Clear(client.Slot);
 
 #endregion
 }

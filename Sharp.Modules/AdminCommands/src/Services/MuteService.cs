@@ -56,13 +56,14 @@ internal class MuteService : ICommandCategory, IMuteService
 
         _ = ExecuteMuteAsync(ctx, target, duration, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process mute for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process mute. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process mute for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process mute. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private async Task ExecuteMuteAsync(CommandContext ctx, IGameClient target, TimeSpan? duration, string reason, IGameClient? issuer)
@@ -95,13 +96,14 @@ internal class MuteService : ICommandCategory, IMuteService
 
         _ = ExecuteUnmuteAsync(ctx, target, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process unmute for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process unmute. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process unmute for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process unmute. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private async Task ExecuteUnmuteAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)
