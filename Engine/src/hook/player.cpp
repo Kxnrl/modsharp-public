@@ -73,7 +73,7 @@ BeginMemberHookScope(CCSPlayerPawn)
         return ret;
     }
 
-    DeclareVirtualHook(PlayerSpawn, void, (CCSPlayerPawn * pPawn))
+    DeclareVirtualHook(PlayerSpawn, void, (CCSPlayerPawn * pPawn, void* a2))
     {
         const auto pController = pPawn->GetController<CCSPlayerController*>();
         const auto pClient     = pController ? sv->GetClient(pController->GetPlayerSlot()) : nullptr;
@@ -84,7 +84,7 @@ BeginMemberHookScope(CCSPlayerPawn)
             forwards::OnPlayerSpawnPre->Invoke(pClient, pController, pPawn);
         }
 
-        PlayerSpawn(pPawn);
+        PlayerSpawn(pPawn, a2);
 
         if (pClient)
         {

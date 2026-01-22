@@ -28,25 +28,27 @@
 
 enum class TakeDamageFlags_t : uint64_t
 {
-    DFLAG_NONE                         = 0,       // 0x0
-    DFLAG_SUPPRESS_HEALTH_CHANGES      = 1 << 0,  // 0x1
-    DFLAG_SUPPRESS_PHYSICS_FORCE       = 1 << 1,  // 0x2
-    DFLAG_SUPPRESS_EFFECTS             = 1 << 2,  // 0x4
-    DFLAG_PREVENT_DEATH                = 1 << 3,  // 0x8
-    DFLAG_FORCE_DEATH                  = 1 << 4,  // 0x10
-    DFLAG_ALWAYS_GIB                   = 1 << 5,  // 0x20
-    DFLAG_NEVER_GIB                    = 1 << 6,  // 0x40
-    DFLAG_REMOVE_NO_RAGDOLL            = 1 << 7,  // 0x80
-    DFLAG_SUPPRESS_DAMAGE_MODIFICATION = 1 << 8,  // 0x100
-    DFLAG_ALWAYS_FIRE_DAMAGE_EVENTS    = 1 << 9,  // 0x200
-    DFLAG_RADIUS_DMG                   = 1 << 10, // 0x400
-    DFLAG_FORCEREDUCEARMOR_DMG         = 1 << 11, // 0x800
-    DFLAG_SUPPRESS_INTERRUPT_FLINCH    = 1 << 12, // 0x1000
-    DFLAG_IGNORE_DESTRUCTIBLE_PARTS    = 1 << 13, // 0x2000
-    DFLAG_SUPPRESS_BREAKABLES          = 1 << 14, // 0x4000
-    DFLAG_FORCE_PHYSICS_FORCE          = 1 << 15, // 0x8000
-    DFLAG_IGNORE_ARMOR                 = 1 << 16, // 0x10000
-    DFLAG_SUPPRESS_UTILREMOVE          = 1 << 17, // 0x20000
+    DFLAG_NONE                           = 0,       // 0x0
+    DFLAG_SUPPRESS_HEALTH_CHANGES        = 1 << 0,  // 0x1
+    DFLAG_SUPPRESS_PHYSICS_FORCE         = 1 << 1,  // 0x2
+    DFLAG_SUPPRESS_EFFECTS               = 1 << 2,  // 0x4
+    DFLAG_PREVENT_DEATH                  = 1 << 3,  // 0x8
+    DFLAG_FORCE_DEATH                    = 1 << 4,  // 0x10
+    DFLAG_ALWAYS_GIB                     = 1 << 5,  // 0x20
+    DFLAG_NEVER_GIB                      = 1 << 6,  // 0x40
+    DFLAG_REMOVE_NO_RAGDOLL              = 1 << 7,  // 0x80
+    DFLAG_SUPPRESS_DAMAGE_MODIFICATION   = 1 << 8,  // 0x100
+    DFLAG_ALWAYS_FIRE_DAMAGE_EVENTS      = 1 << 9,  // 0x200
+    DFLAG_RADIUS_DMG                     = 1 << 10, // 0x400
+    DFLAG_FORCEREDUCEARMOR_DMG           = 1 << 11, // 0x800
+    DFLAG_SUPPRESS_INTERRUPT_FLINCH      = 1 << 12, // 0x1000
+    DFLAG_IGNORE_DESTRUCTIBLE_PARTS      = 1 << 13, // 0x2000
+    DFLAG_SUPPRESS_BREAKABLES            = 1 << 14, // 0x4000
+    DFLAG_FORCE_PHYSICS_FORCE            = 1 << 15, // 0x8000
+    DFLAG_SUPPRESS_SCREENSPACE_DAMAGE_FX = 1 << 16, // 0x10000,
+    DFLAG_ALLOW_NON_AUTHORITATIVE        = 1 << 17, // 0x20000,
+    DFLAG_IGNORE_ARMOR                   = 1 << 18, // 0x40000
+    DFLAG_SUPPRESS_UTILREMOVE            = 1 << 19, // 0x80000
 };
 
 enum class DamageTypes_t : int32_t
@@ -64,15 +66,14 @@ enum class DamageTypes_t : int32_t
     DMG_SONIC         = 1 << 9,  // 0x200
     DMG_ENERGYBEAM    = 1 << 10, // 0x400
     DMG_BUCKSHOT      = 1 << 11, // 0x800
+    DMG_BLAST_SURFACE = 1 << 12, // 0x1000
+    DMG_DISSOLVE      = 1 << 13, // 0x2000
     DMG_DROWN         = 1 << 14, // 0x4000
     DMG_POISON        = 1 << 15, // 0x8000
     DMG_RADIATION     = 1 << 16, // 0x10000
     DMG_DROWNRECOVER  = 1 << 17, // 0x20000
     DMG_ACID          = 1 << 18, // 0x40000
-    DMG_PHYSGUN       = 1 << 20, // 0x100000
-    DMG_DISSOLVE      = 1 << 21, // 0x200000
-    DMG_BLAST_SURFACE = 1 << 22, // 0x400000
-    DMG_HEADSHOT      = 1 << 23, // 0x800000
+    DMG_HEADSHOT      = 1 << 19  // 0x80000
 };
 
 struct AttackerInfo_t

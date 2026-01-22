@@ -165,6 +165,12 @@ public static class Bootstrap
         }
 
         SharedGameObject.SchemaInfo = schema.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        
+        if (Debugger.IsAttached)
+        {
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "data", "schema.dump.json"),
+                              System.Text.Json.JsonSerializer.Serialize(SharedGameObject.SchemaInfo));
+        }
 
         // validate used schema field
         return SchemaValidate.SchemaValidator.Validate();
