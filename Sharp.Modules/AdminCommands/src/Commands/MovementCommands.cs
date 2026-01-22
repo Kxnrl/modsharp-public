@@ -239,7 +239,7 @@ internal sealed class MovementCommands : ICommandCategory
 
             if (count > 0)
             {
-                ctx.ReplySuccessKey("Admin.Teleport", "{0} Teleported {0} to {1}.", ctx.IssuerName, targetLabel, destLabel);
+                ctx.ReplySuccessKey("Admin.Teleport", "{0} Teleported {1} to {2}.", ctx.IssuerName, targetLabel, destLabel);
             }
         }
     }

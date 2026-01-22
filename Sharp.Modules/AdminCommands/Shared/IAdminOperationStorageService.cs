@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Shared;
@@ -5,7 +6,11 @@ namespace Sharp.Modules.AdminCommands.Shared;
 /// <summary>
 ///     Storage contract for admin operations (ban/mute/gag). This is the primary external extension point; implement this
 ///     to plug in your own persistence.
-///     <para>Register your implementation with identity <see cref="Identity"/>.</para>
+///     <para>
+///         Metadata on <see cref="AdminOperationRecord" /> is an optional JSON string for handler-specific payload
+///         (e.g., weapon lists for custom operations).
+///     </para>
+///     <para>Register your implementation with identity <see cref="Identity" />.</para>
 ///     <para>All methods are async and should not touch anything from the game.</para>
 /// </summary>
 public interface IAdminOperationStorageService
@@ -60,6 +65,7 @@ public record AdminOperationRecord(
     DateTime           CreatedAt,
     DateTime?          ExpiresAt, // null = permanent
     string             Reason,
+    string?            Metadata     = null,
     SteamID?           RemovedBy    = null,
     DateTime?          RemovedAt    = null,
     string?            RemoveReason = null
@@ -67,4 +73,21 @@ public record AdminOperationRecord(
 {
     public bool IsExpired   => RemovedAt.HasValue || (ExpiresAt.HasValue && ExpiresAt.Value < DateTime.UtcNow);
     public bool IsPermanent => !ExpiresAt.HasValue;
+
+    public T? GetMetadata<T>()
+    {
+        if (string.IsNullOrWhiteSpace(Metadata))
+        {
+            return default;
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<T>(Metadata);
+        }
+        catch
+        {
+            return default;
+        }
+    }
 }

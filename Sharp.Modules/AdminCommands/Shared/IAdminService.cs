@@ -17,7 +17,8 @@ public interface IAdminService
     ISilenceService Silence { get; }
 
     /// <summary>
-    ///     Registers a new operation handler.
+    ///     Registers a new operation handler. It is not recommended to register handlers outside OnAllModuleLoaded or
+    ///     PostInit.
     /// </summary>
     void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler);
 

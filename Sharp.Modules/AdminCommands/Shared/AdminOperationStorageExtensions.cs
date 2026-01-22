@@ -11,8 +11,9 @@ public static class AdminOperationStorageExtensions
                                    SteamID                            targetId,
                                    SteamID?                           adminId,
                                    TimeSpan?                          duration,
-                                   string                             reason)
-        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Ban, duration, reason));
+                                   string                             reason,
+                                   string?                            metadata = null)
+        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Ban, duration, reason, metadata));
 
     public static Task RemoveBanAsync(this IAdminOperationStorageService storage, SteamID targetId)
         => storage.RemoveAsync(targetId, AdminOperationType.Ban);
@@ -21,8 +22,9 @@ public static class AdminOperationStorageExtensions
                                     SteamID                            targetId,
                                     SteamID?                           adminId,
                                     TimeSpan?                          duration,
-                                    string                             reason)
-        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Mute, duration, reason));
+                                    string                             reason,
+                                    string?                            metadata = null)
+        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Mute, duration, reason, metadata));
 
     public static Task RemoveMuteAsync(this IAdminOperationStorageService storage, SteamID targetId)
         => storage.RemoveAsync(targetId, AdminOperationType.Mute);
@@ -31,8 +33,9 @@ public static class AdminOperationStorageExtensions
                                    SteamID                            targetId,
                                    SteamID?                           adminId,
                                    TimeSpan?                          duration,
-                                   string                             reason)
-        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Gag, duration, reason));
+                                   string                             reason,
+                                   string?                            metadata = null)
+        => storage.AddAsync(CreateRecord(targetId, adminId, AdminOperationType.Gag, duration, reason, metadata));
 
     public static Task RemoveGagAsync(this IAdminOperationStorageService storage, SteamID targetId)
         => storage.RemoveAsync(targetId, AdminOperationType.Gag);
@@ -41,10 +44,11 @@ public static class AdminOperationStorageExtensions
                                                      SteamID?           adminId,
                                                      AdminOperationType type,
                                                      TimeSpan?          duration,
-                                                     string             reason)
+                                                     string             reason,
+                                                     string?            metadata = null)
     {
         var expiresAt = duration.HasValue ? DateTime.UtcNow.Add(duration.Value) : (DateTime?) null;
 
-        return new AdminOperationRecord(targetId, type, adminId, DateTime.UtcNow, expiresAt, reason);
+        return new AdminOperationRecord(targetId, type, adminId, DateTime.UtcNow, expiresAt, reason, metadata);
     }
 }

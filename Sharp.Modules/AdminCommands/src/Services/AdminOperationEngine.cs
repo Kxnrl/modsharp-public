@@ -205,12 +205,13 @@ internal class AdminOperationEngine : IClientListener
                                                      AdminOperationType type,
                                                      SteamID?           adminId,
                                                      TimeSpan?          duration,
-                                                     string             reason)
+                                                     string             reason,
+                                                     string?            metadata = null)
     {
         var now       = DateTime.UtcNow;
         var expiresAt = duration.HasValue ? now.Add(duration.Value) : (DateTime?) null;
 
-        return new AdminOperationRecord(targetId, type, adminId, now, expiresAt, reason);
+        return new AdminOperationRecord(targetId, type, adminId, now, expiresAt, reason, metadata);
     }
 
     private void Notify(IGameClient?      admin,
