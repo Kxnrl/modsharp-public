@@ -28,25 +28,28 @@ public static partial class UsercmdReflection {
           "aWNrTW92ZVN0ZXASDgoGYnV0dG9uGAEgASgEEg8KB3ByZXNzZWQYAiABKAgS",
           "DAoEd2hlbhgDIAEoAhIcChRhbmFsb2dfZm9yd2FyZF9kZWx0YRgEIAEoAhIZ",
           "ChFhbmFsb2dfbGVmdF9kZWx0YRgFIAEoAhITCgtwaXRjaF9kZWx0YRgIIAEo",
-          "AhIRCgl5YXdfZGVsdGEYCSABKAIi4wMKDkNCYXNlVXNlckNtZFBCEh0KFWxl",
-          "Z2FjeV9jb21tYW5kX251bWJlchgBIAEoBRITCgtjbGllbnRfdGljaxgCIAEo",
-          "BRIkChxwcmVkaWN0aW9uX29mZnNldF90aWNrc194MjU2GBEgASgNEiUKCmJ1",
-          "dHRvbnNfcGIYAyABKAsyES5DSW5CdXR0b25TdGF0ZVBCEh8KCnZpZXdhbmds",
-          "ZXMYBCABKAsyCy5DTXNnUUFuZ2xlEhMKC2ZvcndhcmRtb3ZlGAUgASgCEhAK",
-          "CGxlZnRtb3ZlGAYgASgCEg4KBnVwbW92ZRgHIAEoAhIPCgdpbXB1bHNlGAgg",
-          "ASgFEhQKDHdlYXBvbnNlbGVjdBgJIAEoBRITCgtyYW5kb21fc2VlZBgKIAEo",
-          "BRIPCgdtb3VzZWR4GAsgASgFEg8KB21vdXNlZHkYDCABKAUSJAoScGF3bl9l",
-          "bnRpdHlfaGFuZGxlGA4gASgNOggxNjc3NzIxNRIoCg1zdWJ0aWNrX21vdmVz",
-          "GBIgAygLMhEuQ1N1YnRpY2tNb3ZlU3RlcBIQCghtb3ZlX2NyYxgTIAEoDBIl",
-          "Ch1jb25zdW1lZF9zZXJ2ZXJfYW5nbGVfY2hhbmdlcxgUIAEoDRIRCgljbWRf",
-          "ZmxhZ3MYFSABKAUiLwoOQ1VzZXJDbWRCYXNlUEISHQoEYmFzZRgBIAEoCzIP",
-          "LkNCYXNlVXNlckNtZFBC"));
+          "AhIRCgl5YXdfZGVsdGEYCSABKAIiNAoaQ0Jhc2VVc2VyQ21kRXhlY3V0aW9u",
+          "Tm90ZXMSFgoOaWdub3JlZF9yZWFzb24YASABKAkimQQKDkNCYXNlVXNlckNt",
+          "ZFBCEh0KFWxlZ2FjeV9jb21tYW5kX251bWJlchgBIAEoBRITCgtjbGllbnRf",
+          "dGljaxgCIAEoBRIkChxwcmVkaWN0aW9uX29mZnNldF90aWNrc194MjU2GBEg",
+          "ASgNEiUKCmJ1dHRvbnNfcGIYAyABKAsyES5DSW5CdXR0b25TdGF0ZVBCEh8K",
+          "CnZpZXdhbmdsZXMYBCABKAsyCy5DTXNnUUFuZ2xlEhMKC2ZvcndhcmRtb3Zl",
+          "GAUgASgCEhAKCGxlZnRtb3ZlGAYgASgCEg4KBnVwbW92ZRgHIAEoAhIPCgdp",
+          "bXB1bHNlGAggASgFEhQKDHdlYXBvbnNlbGVjdBgJIAEoBRITCgtyYW5kb21f",
+          "c2VlZBgKIAEoBRIPCgdtb3VzZWR4GAsgASgFEg8KB21vdXNlZHkYDCABKAUS",
+          "JAoScGF3bl9lbnRpdHlfaGFuZGxlGA4gASgNOggxNjc3NzIxNRIoCg1zdWJ0",
+          "aWNrX21vdmVzGBIgAygLMhEuQ1N1YnRpY2tNb3ZlU3RlcBIQCghtb3ZlX2Ny",
+          "YxgTIAEoDBIlCh1jb25zdW1lZF9zZXJ2ZXJfYW5nbGVfY2hhbmdlcxgUIAEo",
+          "DRIRCgljbWRfZmxhZ3MYFSABKAUSNAoPZXhlY3V0aW9uX25vdGVzGBYgASgL",
+          "MhsuQ0Jhc2VVc2VyQ21kRXhlY3V0aW9uTm90ZXMiLwoOQ1VzZXJDbWRCYXNl",
+          "UEISHQoEYmFzZRgBIAEoCzIPLkNCYXNlVXNlckNtZFBC"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CInButtonStatePB), global::CInButtonStatePB.Parser, new[]{ "Buttonstate1", "Buttonstate2", "Buttonstate3" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSubtickMoveStep), global::CSubtickMoveStep.Parser, new[]{ "Button", "Pressed", "When", "AnalogForwardDelta", "AnalogLeftDelta", "PitchDelta", "YawDelta" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CBaseUserCmdPB), global::CBaseUserCmdPB.Parser, new[]{ "LegacyCommandNumber", "ClientTick", "PredictionOffsetTicksX256", "ButtonsPb", "Viewangles", "Forwardmove", "Leftmove", "Upmove", "Impulse", "Weaponselect", "RandomSeed", "Mousedx", "Mousedy", "PawnEntityHandle", "SubtickMoves", "MoveCrc", "ConsumedServerAngleChanges", "CmdFlags" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CBaseUserCmdExecutionNotes), global::CBaseUserCmdExecutionNotes.Parser, new[]{ "IgnoredReason" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CBaseUserCmdPB), global::CBaseUserCmdPB.Parser, new[]{ "LegacyCommandNumber", "ClientTick", "PredictionOffsetTicksX256", "ButtonsPb", "Viewangles", "Forwardmove", "Leftmove", "Upmove", "Impulse", "Weaponselect", "RandomSeed", "Mousedx", "Mousedy", "PawnEntityHandle", "SubtickMoves", "MoveCrc", "ConsumedServerAngleChanges", "CmdFlags", "ExecutionNotes" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CUserCmdBasePB), global::CUserCmdBasePB.Parser, new[]{ "Base" }, null, null, null, null)
         }));
   }
@@ -882,6 +885,209 @@ public sealed partial class CSubtickMoveStep : pb::IMessage<CSubtickMoveStep>
 
 }
 
+public sealed partial class CBaseUserCmdExecutionNotes : pb::IMessage<CBaseUserCmdExecutionNotes>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CBaseUserCmdExecutionNotes> _parser = new pb::MessageParser<CBaseUserCmdExecutionNotes>(() => new CBaseUserCmdExecutionNotes());
+  private pb::UnknownFieldSet _unknownFields;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CBaseUserCmdExecutionNotes> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::UsercmdReflection.Descriptor.MessageTypes[2]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CBaseUserCmdExecutionNotes() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CBaseUserCmdExecutionNotes(CBaseUserCmdExecutionNotes other) : this() {
+    ignoredReason_ = other.ignoredReason_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CBaseUserCmdExecutionNotes Clone() {
+    return new CBaseUserCmdExecutionNotes(this);
+  }
+
+  /// <summary>Field number for the "ignored_reason" field.</summary>
+  public const int IgnoredReasonFieldNumber = 1;
+  private readonly static string IgnoredReasonDefaultValue = "";
+
+  private string ignoredReason_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string IgnoredReason {
+    get { return ignoredReason_ ?? IgnoredReasonDefaultValue; }
+    set {
+      ignoredReason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "ignored_reason" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasIgnoredReason {
+    get { return ignoredReason_ != null; }
+  }
+  /// <summary>Clears the value of the "ignored_reason" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearIgnoredReason() {
+    ignoredReason_ = null;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CBaseUserCmdExecutionNotes);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CBaseUserCmdExecutionNotes other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (IgnoredReason != other.IgnoredReason) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasIgnoredReason) hash ^= IgnoredReason.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasIgnoredReason) {
+      output.WriteRawTag(10);
+      output.WriteString(IgnoredReason);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasIgnoredReason) {
+      output.WriteRawTag(10);
+      output.WriteString(IgnoredReason);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasIgnoredReason) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(IgnoredReason);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CBaseUserCmdExecutionNotes other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasIgnoredReason) {
+      IgnoredReason = other.IgnoredReason;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 10: {
+          IgnoredReason = input.ReadString();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 10: {
+          IgnoredReason = input.ReadString();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
 public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     , pb::IBufferMessage
@@ -897,7 +1103,7 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::UsercmdReflection.Descriptor.MessageTypes[2]; }
+    get { return global::UsercmdReflection.Descriptor.MessageTypes[3]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -936,6 +1142,7 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     moveCrc_ = other.moveCrc_;
     consumedServerAngleChanges_ = other.consumedServerAngleChanges_;
     cmdFlags_ = other.cmdFlags_;
+    executionNotes_ = other.executionNotes_ != null ? other.executionNotes_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -1384,6 +1591,18 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     _hasBits0 &= ~8192;
   }
 
+  /// <summary>Field number for the "execution_notes" field.</summary>
+  public const int ExecutionNotesFieldNumber = 22;
+  private global::CBaseUserCmdExecutionNotes executionNotes_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CBaseUserCmdExecutionNotes ExecutionNotes {
+    get { return executionNotes_; }
+    set {
+      executionNotes_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -1417,6 +1636,7 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     if (MoveCrc != other.MoveCrc) return false;
     if (ConsumedServerAngleChanges != other.ConsumedServerAngleChanges) return false;
     if (CmdFlags != other.CmdFlags) return false;
+    if (!object.Equals(ExecutionNotes, other.ExecutionNotes)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -1442,6 +1662,7 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     if (HasMoveCrc) hash ^= MoveCrc.GetHashCode();
     if (HasConsumedServerAngleChanges) hash ^= ConsumedServerAngleChanges.GetHashCode();
     if (HasCmdFlags) hash ^= CmdFlags.GetHashCode();
+    if (executionNotes_ != null) hash ^= ExecutionNotes.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -1529,6 +1750,10 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
       output.WriteRawTag(168, 1);
       output.WriteInt32(CmdFlags);
     }
+    if (executionNotes_ != null) {
+      output.WriteRawTag(178, 1);
+      output.WriteMessage(ExecutionNotes);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -1608,6 +1833,10 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
       output.WriteRawTag(168, 1);
       output.WriteInt32(CmdFlags);
     }
+    if (executionNotes_ != null) {
+      output.WriteRawTag(178, 1);
+      output.WriteMessage(ExecutionNotes);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -1669,6 +1898,9 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     }
     if (HasCmdFlags) {
       size += 2 + pb::CodedOutputStream.ComputeInt32Size(CmdFlags);
+    }
+    if (executionNotes_ != null) {
+      size += 2 + pb::CodedOutputStream.ComputeMessageSize(ExecutionNotes);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -1739,6 +1971,12 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
     }
     if (other.HasCmdFlags) {
       CmdFlags = other.CmdFlags;
+    }
+    if (other.executionNotes_ != null) {
+      if (executionNotes_ == null) {
+        ExecutionNotes = new global::CBaseUserCmdExecutionNotes();
+      }
+      ExecutionNotes.MergeFrom(other.ExecutionNotes);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -1831,6 +2069,13 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
         }
         case 168: {
           CmdFlags = input.ReadInt32();
+          break;
+        }
+        case 178: {
+          if (executionNotes_ == null) {
+            ExecutionNotes = new global::CBaseUserCmdExecutionNotes();
+          }
+          input.ReadMessage(ExecutionNotes);
           break;
         }
       }
@@ -1926,6 +2171,13 @@ public sealed partial class CBaseUserCmdPB : pb::IMessage<CBaseUserCmdPB>
           CmdFlags = input.ReadInt32();
           break;
         }
+        case 178: {
+          if (executionNotes_ == null) {
+            ExecutionNotes = new global::CBaseUserCmdExecutionNotes();
+          }
+          input.ReadMessage(ExecutionNotes);
+          break;
+        }
       }
     }
   }
@@ -1947,7 +2199,7 @@ public sealed partial class CUserCmdBasePB : pb::IMessage<CUserCmdBasePB>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::UsercmdReflection.Descriptor.MessageTypes[3]; }
+    get { return global::UsercmdReflection.Descriptor.MessageTypes[4]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

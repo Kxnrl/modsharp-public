@@ -44,6 +44,7 @@
     <ClCompile Include="src\memoverride_ms.cpp" />
     <ClCompile Include="src\module_windows.cpp" />
     <ClCompile Include="src\proto\cs_usercmd.pb.cc" />
+    <ClCompile Include="src\proto\source2_steam_stats.pb.cc" />
     <ClCompile Include="src\proto\usercmd.pb.cc" />
     <ClCompile Include="src\sdkproxy.cpp" />
     <ClCompile Include="src\address.cpp" />

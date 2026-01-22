@@ -131,6 +131,7 @@ set(modsharp_SOURCES
 	"src/proto/netmessages.pb.cc"
 	"src/proto/cs_usercmd.pb.cc"
 	"src/proto/usercmd.pb.cc"
+	"src/proto/source2_steam_stats.pb.cc"
 	cmake.toml
 )
 

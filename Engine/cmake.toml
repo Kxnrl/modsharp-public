@@ -69,12 +69,12 @@ linux.compile-options = [
     "-fvisibility=default",
 ]
 
-linux.link-options=[
+linux.link-options = [
     "-fuse-ld=mold",
     "-static-libgcc",
     "-Wl,-Bstatic",
     "-lstdc++",
-    "-Wl,-Bdynamic"
+    "-Wl,-Bdynamic",
 ]
 
 # define
@@ -138,6 +138,7 @@ sources = [
     "src/proto/netmessages.pb.cc",
     "src/proto/cs_usercmd.pb.cc",
     "src/proto/usercmd.pb.cc",
+    "src/proto/source2_steam_stats.pb.cc",
 ]
 
 # windows release will use /MT then with this memoverride
