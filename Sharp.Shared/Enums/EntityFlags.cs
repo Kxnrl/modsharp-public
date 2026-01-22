@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -97,11 +97,6 @@ public enum EntityFlags : uint
     ///     Set if the crosshair needs to aim onto the entity.
     /// </summary>
     AimTarget = 1 << 16,
-
-    /// <summary>
-    ///     Eetsa static prop!
-    /// </summary>
-    StaticProp = 1 << 18,
 
     /// <summary>
     ///     Grenade.

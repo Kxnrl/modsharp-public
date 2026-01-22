@@ -10,8 +10,8 @@
     // str "CNetChan::SendNetMessage: SerializeAbstract for message %s failed!\n"
     "INetChannel::SendNetMessage": {
       "library": "networksystem",
-      "linux": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 89 D7",
-      "windows": "48 89 5C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC ? 41 0F B6 F0"
+      "linux": "55 48 89 E5 41 57 41 89 D7 41 56 4C 8D B7",
+      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 41 0F B6 F0"
     },
     "IScriptVM::CreateVM": {
       "library": "vscript",
@@ -53,8 +53,8 @@
     // 往上拉有个 (*(unsigned int (__fastcall **)(uintptr_t, __int64))(*(_QWORD *)a1 + offset))(a1, a2) == 3的
     // offset / 8 就是 index
     "IResourceSystem::GetResourceStatus": {
-      "linux": 48,
-      "windows": 50
+      "linux": 49,
+      "windows": 51
     }
   }
 }

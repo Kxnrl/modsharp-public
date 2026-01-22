@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -105,9 +105,9 @@ struct ShootInfo_t
     float                    m_flGroundInaccuracy;   // 0x48
     float                    m_flAirInaccuracy;      // 0x4c
     float                    m_flRecoilIndex;        // 0x50
-    [[maybe_unused]] uint8_t pad_54[0x8];            // 0x54
+    [[maybe_unused]] uint8_t pad_54[0x4];            // 0x54
 }; // Size: 0x54
-static_assert(sizeof(ShootInfo_t) == 0x5C);
+static_assert(sizeof(ShootInfo_t) == 88);
 
 class CTakeDamageInfo
 {
@@ -115,52 +115,45 @@ class CTakeDamageInfo
     virtual void Method_001()  = 0;
 
 public:
-    Vector      m_vecDamageForce;      // 0x8  |  8
-    Vector      m_vecDamagePosition;   // 0x14 | 20
-    Vector      m_vecReportedPosition; // 0x20 | 32
-    Vector      m_vecDamageDirection;  // 0x2c | 44
-    CBaseHandle m_hInflictor;          // 0x38 | 56
-    CBaseHandle m_hAttacker;           // 0x3c | 60
-    CBaseHandle m_hAbility;            // 0x40 | 64
-    float       m_flDamage;            // 0x44 | 68
-    float       m_flTotalledDamage;    // 0x48 | 72
-    int32_t     m_bitsDamageType;      // 0x4c | 76
-    int32_t     m_iDamageCustom;       // 0x50 | 80
-    int8_t      m_iAmmoType;           // 0x54 | 84
+    Vector      m_vecDamageForce;      //  8
+    Vector      m_vecDamagePosition;   // 20
+    Vector      m_vecReportedPosition; // 32
+    Vector      m_vecDamageDirection;  // 44
+    CBaseHandle m_hInflictor;          // 56
+    CBaseHandle m_hAttacker;           // 60
+    CBaseHandle m_hAbility;            // 64
+    float       m_flDamage;            // 68
+    float       m_flTotalledDamage;    // 72
+    int32_t     m_bitsDamageType;      // 76
+    int32_t     m_iDamageCustom;       // 80
+    int8_t      m_iAmmoType;           // 84
 
 private:
-    [[maybe_unused]] uint8_t m_nUnknown0[0xb]; // 0x55 | 85
+    [[maybe_unused]] uint8_t m_nUnknown0[0xb]{}; // 85
 
 public:
-    float m_flOriginalDamage; // 0x60 | 96
-    bool  m_bShouldBleed;     // 0x64 | 100
-    bool  m_bShouldSpark;     // 0x65 | 101
+    float m_flOriginalDamage; //  96
+    bool  m_bShouldBleed;     // 100
+    bool  m_bShouldSpark;     // 101
 
 private:
-    [[maybe_unused]] uint8_t m_nUnknown1[0x2]{}; // 0x66
+    [[maybe_unused]] uint8_t m_nUnknown1[0x2]{}; // 102
 
 public:
-    CGameTrace*       m_pTrace;       // 0x68 | 104
-    TakeDamageFlags_t m_nDamageFlags; // 0x70 | 112
+    CGameTrace*          m_pTrace;                               // 104
+    TakeDamageFlags_t    m_nDamageFlags;                         // 112
+    HitGroup_t           m_iHitGroupId;                          // 120
+    int32_t              m_nNumObjectsPenetrated;                // 124
+    float                m_flFriendlyFireDamageReductionRatio;   // 128
+    bool                 m_bStoppedBullet;                       // 132
+    ShootInfo_t          m_ShootInfo;                            // 136
+    void*                m_hScriptInstance;                      // 224
+    AttackerInfo_t       m_AttackerInfo;                         // 232
+    CUtlVector<uint32_t> m_nDestructibleHitGroupsToForceDestroy; // 256
+    bool                 m_bInTakeDamageFlow;                    // 280
 
 private:
-    [[maybe_unused]] uint8_t m_sDamageSourceName[0x8]{}; // 0x78 | 120
-
-public:
-    HitGroup_t     m_iHitGroupId;                        // 0x80 | 128
-    int32_t        m_nNumObjectsPenetrated;              // 0x84 | 132
-    float          m_flFriendlyFireDamageReductionRatio; // 0x88 | 136
-    ShootInfo_t    m_ShootInfo;                          // 0x9c | 140
-    void*          m_hScriptInstance;                    // 0xe8 | 232
-    AttackerInfo_t m_AttackerInfo;                       // 0xf0 | 240
-private:
-    [[maybe_unused]] uint8_t m_nUnknown2[0x1C]{}; // 0x104 | 260
-
-public:
-    bool m_bInTakeDamageFlow; // 0x120 | 288
-
-private:
-    [[maybe_unused]] int32_t m_nUnknown3; // 0x124 | 292
+    [[maybe_unused]] uint8_t m_nUnknown2[0x4]{}; // 284
 
 public:
     [[nodiscard]] bool HasTakeDamageFlags(TakeDamageFlags_t flags) const
@@ -170,13 +163,12 @@ public:
         return (currentFlags & flagToCheck) != 0;
     }
 };
-static_assert(sizeof(CTakeDamageInfo) == 296);
+static_assert(sizeof(CTakeDamageInfo) == 288);
 #ifdef PLATFORM_WINDOWS
 static_assert(offsetof(CTakeDamageInfo, m_flOriginalDamage) == 96);
 static_assert(offsetof(CTakeDamageInfo, m_pTrace) == 104);
-static_assert(offsetof(CTakeDamageInfo, m_hScriptInstance) == 232);
-static_assert(offsetof(CTakeDamageInfo, m_AttackerInfo) == 240);
-static_assert(offsetof(CTakeDamageInfo, m_bInTakeDamageFlow) == 288);
+static_assert(offsetof(CTakeDamageInfo, m_AttackerInfo) == 232);
+static_assert(offsetof(CTakeDamageInfo, m_bInTakeDamageFlow) == 280);
 #endif
 
 #endif

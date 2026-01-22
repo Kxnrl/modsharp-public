@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -68,7 +68,7 @@ public:
     float flSubTickFraction; // 0x50
 private:
     char pad_54[0x4];
-
+    int  m_nCurrentThreadId; // 0x68
 public:
 };
 
@@ -95,8 +95,8 @@ public:
     int nServerCount; // 0x74
 };
 #ifdef PLATFORM_WINDOWS
-static_assert(offsetof(CGlobalVars, pszMapName) == 88);
-static_assert(offsetof(CGlobalVars, nMaxEntities) == 112);
+static_assert(offsetof(CGlobalVars, pszMapName) == 0x60);
+static_assert(offsetof(CGlobalVars, nMaxEntities) == 0x78);
 #endif
 
 #endif

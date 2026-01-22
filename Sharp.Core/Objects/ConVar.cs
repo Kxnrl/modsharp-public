@@ -75,7 +75,7 @@ internal partial class ConVar : NativeObject, IConVar
 
     public unsafe ref ConVarVariantValue Get()
     {
-        ref var target = ref Unsafe.AsRef<ConVarVariantValue>(nint.Add(_this, 0x50).ToPointer());
+        ref var target = ref Unsafe.AsRef<ConVarVariantValue>(nint.Add(_this, 0x58).ToPointer());
 
         return ref target;
     }

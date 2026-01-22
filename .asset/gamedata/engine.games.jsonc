@@ -26,12 +26,12 @@
     "HostStateRequest": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 83 7F ? ? 74 ? 8B 3D",
-      "windows": "48 89 74 24 10 57 48 83 EC ? 33 F6 48 8B FA"
+      "windows": "48 89 74 24 ? 57 48 83 EC ? 33 F6 48 8B FA 48 39 35"
     },
     "Source2_Init": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 89 BD ? ? ? ? 48 8B 3D ? ? ? ? 48 85 FF",
-      "windows": "40 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 50 FF FF FF"
+      "windows": "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E1"
     }
   },
   "Offsets": {
@@ -41,118 +41,118 @@
       "windows": 56
     },
     "CNetworkGameServer::m_vecClients": {
-      "linux": 640,
-      "windows": 624
+      "linux": 592,
+      "windows": 592
     },
     // 搜 "CServerSideClientBase::SpawnPlayer"
     // 找到带 client->m_Slot + 1 的引用
     "CServerSideClient::m_ControllerEntityIndex": {
       "linux": 76,
-      "windows": 68
+      "windows": 76
     },
     // str "voice_loopback" and "unnamed" 下面就有 a1[XX] * 8 就行
     "CServerSideClient::m_ConVars": {
       "linux": 272,
-      "windows": 264
+      "windows": 272
     },
     // 搜字符串 "'%s' already awaiting full update"
     // 最上面调用的vfunc是IsFakeClient
     "CServerSideClient::m_FakeClient": {
       "linux": 160,
-      "windows": 152
+      "windows": 160
     },
     // str 'STEAM USERID validated\n'
     // 最后一行 'var + xx = 1'
     "CServerSideClient::m_FullyAuthenticated": {
       "linux": 2554,
-      "windows": 2546
+      "windows": 2554
     },
     // 搜 "TV client has no downstream TV sink" 最外面的 if 就是
     "CServerSideClient::m_IsHLTV": {
       "linux": 322,
-      "windows": 314
+      "windows": 322
     },
     // 搜字符串 "WARNING: msg overflowed for %s\n"
     "CServerSideClient::m_Name": {
       "linux": 64,
-      "windows": 56
+      "windows": 64
     },
     // "'%s' already awaiting full update\n", 往下找 if (var == -1)
     // 如果 var 是从a1里拿的那就是m_nDeltaTick
     "CServerSideClient::m_nDeltaTick": {
       "linux": 348,
-      "windows": 340
+      "windows": 348
     },
     // 搜 "NetMessage %s"
     // 最上面的第一个if判断就是
     "CServerSideClient::m_NetChannel": {
       "linux": 88,
-      "windows": 80
+      "windows": 88
     },
     // 从EngineServer里面找IsPerfetcWorld VCall, 进去就是
     "CServerSideClient::m_PerfectWorld": {
       "linux": 2552,
-      "windows": 2544
+      "windows": 2552
     },
     // 搜字符串 "SV: ProcessMove %s on tick %d, packet had too many Move messages (expected only 1, this is %d), disconnecting user"
     // 最上面的 if (m_SignonState != 6)
     "CServerSideClient::m_SignonState": {
       "linux": 100,
-      "windows": 92
+      "windows": 100
     },
     // 跟找 "CServerSideClient::m_SteamId"一样, 下面的 if (client->m_IsHLTV) 就是
     "CServerSideClient::m_Slot": {
       "linux": 72,
-      "windows": 64
+      "windows": 72
     },
     // 搜 "ClientPutInServer"
     // 下面的 if (!IsFakeClient()) 就是
     "CServerSideClient::m_SteamId": {
       "linux": 171,
-      "windows": 163
+      "windows": 171
     },
     // 搜字符串 "CServerSideClientBase::Connect( name='%s', userid=%d, fake=%d, chan->addr=%s )\n"
     // a4是userid, 找引用就行
     "CServerSideClient::m_UserId": {
       "linux": 168,
-      "windows": 160
+      "windows": 168
     },
     // 搜字符串"Not sending unload group to client '%s' due to not being sent"
     // 往下有个 size > 0的检测, size的offset就是这个
     "CServerSideClient::m_vecLoadedSpawnGroups": {
       "linux": 376,
-      "windows": 368
+      "windows": 376
     }
   },
   "VFuncs": {
     "CNetworkGameServer::ActiveServer": {
-      "linux": 28,
-      "windows": 28
+      "linux": 29,
+      "windows": 29
     },
     // str 'CNetworkGameServerBase::ConnectClient( name='%s', remote='%s' )\n'
     "CNetworkGameServer::ConnectClient": {
+      "linux": 80,
+      "windows": 75
+    },
+    "CNetworkGameServer::DisconnectClient": {
       "linux": 75,
       "windows": 70
     },
-    "CNetworkGameServer::DisconnectClient": {
-      "linux": 70,
-      "windows": 65
-    },
     "CNetworkGameServer::GetAddonName": {
-      "linux": 25,
-      "windows": 25
+      "linux": 26,
+      "windows": 26
     },
     "CNetworkGameServer::GetGlobalVars": {
       "linux": 7,
       "windows": 7
     },
     "CNetworkGameServer::GetMapName": {
-      "linux": 24,
-      "windows": 24
+      "linux": 25,
+      "windows": 25
     },
     "CNetworkGameServer::SpawnServer": {
-      "linux": 35,
-      "windows": 35
+      "linux": 36,
+      "windows": 36
     },
     "CServerSideClient::CLCMsg_RespondCvarValue": {
       "linux": 40,

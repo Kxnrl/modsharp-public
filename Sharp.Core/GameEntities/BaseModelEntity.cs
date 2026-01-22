@@ -55,12 +55,6 @@ internal partial class BaseModelEntity : BaseEntity, IBaseModelEntity
 
 #region Schema
 
-    [NativeSchemaField("CBaseModelEntity", "m_LastHitGroup", typeof(HitGroupType))]
-    private partial SchemaField GetLastHitGroupField();
-
-    [NativeSchemaField("CBaseModelEntity", "m_vLastDamagePosition", typeof(Vector))]
-    private partial SchemaField GetLastDamagePositionField();
-
     [NativeSchemaField("CBaseModelEntity", "m_flDissolveStartTime", typeof(float))]
     private partial SchemaField GetDissolveStartTimeField();
 

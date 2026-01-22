@@ -141,7 +141,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetPtrString(0x58);
+            return _this.GetPtrString(0x60);
         }
     }
 
@@ -151,7 +151,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetInt32(0x70);
+            return _this.GetInt32(0x78);
         }
     }
 }

@@ -28,16 +28,6 @@ namespace Sharp.Shared.GameEntities;
 public interface IBaseModelEntity : IBaseEntity
 {
     /// <summary>
-    ///     m_LastHitGroup
-    /// </summary>
-    HitGroupType LastHitGroup { get; set; }
-
-    /// <summary>
-    ///     m_vLastDamagePosition
-    /// </summary>
-    Vector LastDamagePosition { get; set; }
-
-    /// <summary>
     ///     m_flDissolveStartTime
     /// </summary>
     float DissolveStartTime { get; set; }

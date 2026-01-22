@@ -23,7 +23,7 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 280)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 288)]
 public unsafe struct TakeDamageInfo
 {
     [FieldOffset(0)]
@@ -83,51 +83,57 @@ public unsafe struct TakeDamageInfo
     [FieldOffset(112)]
     public TakeDamageFlags TakeDamageFlags;
 
-    [FieldOffset(128)]
+    [FieldOffset(120)]
     public HitGroupType HitGroupId;
 
-    [FieldOffset(132)]
+    [FieldOffset(124)]
     public int NumObjectsPenetrated;
 
-    [FieldOffset(136)]
+    [FieldOffset(128)]
     public float FriendlyFireDamageReductionRatio;
 
-    [FieldOffset(140)]
+    [FieldOffset(132)]
+    public bool StoppedBullet;
+
+    [FieldOffset(136)]
     public ShootInfo ShootInfo;
 
-    [FieldOffset(232)]
+    [FieldOffset(224)]
     public void* ScriptInstance;
 
     /* CCSGOAttackerInfo */
 
-    [FieldOffset(240)]
+    [FieldOffset(232)]
     public bool NeedInit;
 
-    [FieldOffset(241)]
+    [FieldOffset(233)]
     public bool IsPawn;
 
-    [FieldOffset(242)]
+    [FieldOffset(234)]
     public bool IsWorld;
 
-    [FieldOffset(244)]
+    [FieldOffset(236)]
     public CEntityHandle<IPlayerPawn> AttackerPawnHandle;
 
     /// <summary>
     ///     Attacker PlayerSlot
     /// </summary>
-    [FieldOffset(248)]
+    [FieldOffset(240)]
     public int AttackerPlayerSlot;
 
-    [FieldOffset(252)]
+    [FieldOffset(244)]
     public int TeamChecked;
 
-    [FieldOffset(256)]
+    [FieldOffset(248)]
     public int Team;
 
     /* End */
 
-    [FieldOffset(288)]
+    [FieldOffset(280)]
     public bool InTakeDamageFlow;
+
+    [FieldOffset(284)]
+    public int UnknownFinal;
 
     private static readonly CEntityHandle<IBaseEntity> InvalidEntityHandle = new (uint.MaxValue);
     private static readonly CEntityHandle<IPlayerPawn> InvalidPawnHandle   = new (uint.MaxValue);
@@ -143,6 +149,8 @@ public unsafe struct TakeDamageInfo
 
         Inflictor = InvalidEntityHandle;
         Ability   = InvalidEntityHandle;
+
+        UnknownFinal = -1;
     }
 
     public TakeDamageInfo(IPlayerPawn killer) : this()

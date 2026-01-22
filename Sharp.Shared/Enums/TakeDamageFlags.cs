@@ -41,6 +41,8 @@ public enum TakeDamageFlags : ulong
     IgnoreDestructibleParts    = 1 << 13, // 0x2000
     SuppressBreakables         = 1 << 14, // 0x4000
     ForcePhysicsForce          = 1 << 15, // 0x8000
-    IgnoreArmor                = 1 << 16, // 0x10000
-    SuppressUtilRemove         = 1 << 17, // 0x20000
+    ScreenSpaceDamageFx        = 1 << 16, // 0x10000
+    AllowNonAuthoritative      = 1 << 17, // 0x20000
+    IgnoreArmor                = 1 << 18, // 0x40000
+    SuppressUtilRemove         = 1 << 19, // 0x80000
 }

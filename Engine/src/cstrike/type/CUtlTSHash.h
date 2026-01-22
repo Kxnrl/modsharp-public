@@ -35,10 +35,7 @@ protected:
 
     uint8_t pad_18[0x8];     // 0x18
     void*   pHeadOfFreeList; // 0x20
-    uint8_t pad_28[0x58];    // 0x28
-#ifndef PLATFORM_WINDOWS
-    uint8_t pad_70[0x10]; // 0x70
-#endif
+    uint8_t pad_28[0x38];    // 0x28
 };
 
 using UtlTSHashHandle_t = uintptr_t;
