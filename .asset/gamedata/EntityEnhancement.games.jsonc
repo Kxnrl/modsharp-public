@@ -8,7 +8,7 @@
     "CBasePlayerPawn::GetEyeAngles": {
       "library": "server",
       "linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 EC ? 48 8B BF ? ? ? ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 48 8D 15",
-      "windows": "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B F9 48 8B DA 48 8B 89"
+      "windows": "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B F9 48 8B DA 48 8B 89 ? ? ? ? 48 85 C9"
     },
     "CBasePlayerPawn::GetEyePosition": {
       "library": "server",
