@@ -32,8 +32,8 @@
     },
     // server.dll -> xref 'sv_phys_stop_at_collision' 最上面的 __fastcall
     "CVPhys2World::GetTouchingList": {
-      "linux": 120,
-      "windows": 120
+      "linux": 121,
+      "windows": 121
     },
     "IGameEventSystem::PostEventAbstract": {
       "linux": 15,
