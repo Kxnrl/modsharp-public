@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Helpers;
 using Sharp.Generator;
