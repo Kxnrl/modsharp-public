@@ -85,7 +85,7 @@ public:
     }
 };
 #ifdef PLATFORM_WINDOWS
-static_assert(sizeof(CTraceFilter) == 64);
+static_assert(sizeof(CTraceFilter) == 72);
 #endif
 
 class CTraceFilterIgnoreEntities : public CTraceFilter
