@@ -47,7 +47,7 @@ public unsafe ref struct RnQueryShapeAttr
     public fixed ushort m_nHierarchyIds[2];
 
     [FieldOffset(0x2C)]
-    private ushort m_nUnk1;
+    private ushort m_nIncludedDetailLayers;
 
     [FieldOffset(0x2F)]
     public RnQueryObjectSet m_nObjectSetMask;
@@ -71,7 +71,7 @@ public unsafe ref struct RnQueryShapeAttr
         Unknown                   = true;
         m_nCollisionGroup         = CollisionGroupType.ConditionallySolid;
 
-        m_nUnk1 = ushort.MaxValue;
+        m_nIncludedDetailLayers = ushort.MaxValue;
     }
 
     public void SetEntityToIgnore(IBaseEntity entityToIgnore, int index)
