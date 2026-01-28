@@ -41,8 +41,6 @@ using RolesDictionary = System.Collections.Generic.Dictionary<
 
 namespace Sharp.Modules.AdminManager;
 
-// https://www.doubao.com/thread/wc0f1c5cae120c2bb
-
 internal class AdminManager : IAdminManager, IModSharpModule
 {
     private const string CommandManagerAssemblyName  = "Sharp.Modules.CommandManager";
@@ -302,14 +300,57 @@ internal class AdminManager : IAdminManager, IModSharpModule
     {
         var manifest = call();
 
-        // Mount permission collections for this module
-        if (!_permissionCollections.TryGetValue(moduleIdentity, out var modulePermissionCollection))
+        if (manifest is null)
         {
+            _logger.LogWarning("Module '{Identity}' attempted to mount a null manifest.", moduleIdentity);
+
+            return;
+        }
+
+        // Cleanup old permissions for this module
+        if (_permissionCollections.TryGetValue(moduleIdentity, out var modulePermissionCollection))
+        {
+            foreach (var permissionSet in modulePermissionCollection.Values)
+            {
+                foreach (var permission in permissionSet ?? [])
+                {
+                    if (_permissionReferenceCounts.TryGetValue(permission, out var count))
+                    {
+                        if (count <= 1)
+                        {
+                            _permissionReferenceCounts.Remove(permission);
+                        }
+                        else
+                        {
+                            _permissionReferenceCounts[permission] = count - 1;
+                        }
+                    }
+                }
+            }
+
+            // Clear the collection to prepare for new data (avoids keeping stale keys)
+            modulePermissionCollection.Clear();
+        }
+        else
+        {
+            // Initialize if doesnt exist
             modulePermissionCollection             = new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase);
             _permissionCollections[moduleIdentity] = modulePermissionCollection;
         }
 
-        foreach (var kv in manifest.PermissionCollection)
+        if (!_roles.TryGetValue(moduleIdentity, out var moduleRoles))
+        {
+            moduleRoles            = new RolesDictionary(StringComparer.OrdinalIgnoreCase);
+            _roles[moduleIdentity] = moduleRoles;
+        }
+        else
+        {
+            // clear old roles
+            moduleRoles.Clear();
+        }
+
+        // apply new permissions and roles
+        foreach (var kv in manifest.PermissionCollection ?? [])
         {
             modulePermissionCollection[kv.Key] = kv.Value;
 
@@ -321,21 +362,27 @@ internal class AdminManager : IAdminManager, IModSharpModule
             }
         }
 
-        // Mount roles for this module
-        if (!_roles.TryGetValue(moduleIdentity, out var moduleRoles))
-        {
-            moduleRoles            = new RolesDictionary(StringComparer.OrdinalIgnoreCase);
-            _roles[moduleIdentity] = moduleRoles;
-        }
-
-        foreach (var role in manifest.Roles)
+        foreach (var role in manifest.Roles ?? [])
         {
             moduleRoles[role.Name] = role;
         }
 
         var usersToRebuild = new HashSet<ulong>();
 
-        foreach (var adminManifest in manifest.Admins)
+        // We will remove users from this set as we find them in the new manifest.
+        // Any user remaining in this set after processing the manifest is considered "stale" (removed from config) and must be cleaned up.
+        var potentialStaleUsers = new HashSet<ulong>();
+
+        foreach (var (steamId, sources) in _adminSources)
+        {
+            if (sources.ContainsKey(moduleIdentity))
+            {
+                potentialStaleUsers.Add(steamId);
+            }
+        }
+
+        // Process the new manifest
+        foreach (var adminManifest in manifest.Admins ?? [])
         {
             var (allowed, denied) = ResolvePermissions(moduleIdentity, adminManifest.Permissions);
             var calculatedImmunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
@@ -348,6 +395,24 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
             userSources[moduleIdentity] = new AdminSource(calculatedImmunity, allowed, denied);
             usersToRebuild.Add(adminManifest.Identity);
+
+            // User presents in the new manifest, remove them from the stale list.
+            potentialStaleUsers.Remove(adminManifest.Identity);
+        }
+
+        // Process stale users
+        foreach (var staleUserSteamId in potentialStaleUsers)
+        {
+            if (_adminSources.TryGetValue(staleUserSteamId, out var sources))
+            {
+                if (sources.Remove(moduleIdentity))
+                {
+                    // Add to rebuild list.
+                    // If this was their only source, RebuildAdmin will remove them globally.
+                    // If they have other sources (other modules), RebuildAdmin will recalculate without this module's contribution.
+                    usersToRebuild.Add(staleUserSteamId);
+                }
+            }
         }
 
         foreach (var steamId in usersToRebuild)
