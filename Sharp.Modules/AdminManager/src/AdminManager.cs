@@ -75,7 +75,8 @@ internal class AdminManager : IAdminManager, IModSharpModule
     // Represents what a specific module contributed to a user's admin state
     private record AdminSource(
         byte            CalculatedImmunity,
-        HashSet<string> RawPermissions
+        HashSet<string> ResolvedAllows,
+        HashSet<string> ResolvedDenies
     );
 
     private readonly ILogger<AdminManager> _logger;
@@ -228,30 +229,21 @@ internal class AdminManager : IAdminManager, IModSharpModule
         // Remove roles for this module
         _roles.Remove(moduleIdentity);
 
-        var usersToRemove = new List<ulong>();
+        // Find users with permissions from this module, and rebuild their permissions and immunity
+        var affectedUsers = new List<ulong>();
 
-        foreach (var (steamId, sources) in _adminSources)
+        foreach (var kvp in _adminSources)
         {
-            if (sources.Remove(moduleIdentity))
+            if (kvp.Value.Remove(moduleIdentity))
             {
-                // If the user has no sources left (no modules define them as admin), mark for removal
-                if (sources.Count == 0)
-                {
-                    usersToRemove.Add(steamId);
-                }
+                affectedUsers.Add(kvp.Key);
             }
         }
 
-        foreach (var id in usersToRemove)
+        foreach (var steamId in affectedUsers)
         {
-            _adminSources.Remove(id);
+            RebuildAdmin(steamId);
         }
-
-        // Invalidate Cache.
-        // Users need to be rebuilt because:
-        // 1. They might have lost permissions granted by this module.
-        // 2. They might have wildcards that previously matched permissions from this module.
-        _globalAdmins.Clear();
     }
 
     public void OnAllModulesLoaded()
@@ -283,21 +275,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
 #region IAdminManager
 
     public IAdmin? GetAdmin(SteamID identity)
-    {
-        if (_globalAdmins.TryGetValue(identity, out var admin))
-        {
-            return admin;
-        }
-
-        if (!_adminSources.ContainsKey(identity))
-        {
-            return null;
-        }
-
-        RebuildAdmin(identity);
-
-        return _globalAdmins.GetValueOrDefault(identity);
-    }
+        => _globalAdmins.GetValueOrDefault(identity);
 
     public IAdminCommandRegistry GetCommandRegistry(string moduleIdentity)
     {
@@ -389,15 +367,25 @@ internal class AdminManager : IAdminManager, IModSharpModule
             moduleRoles[role.Name] = role;
         }
 
-        var processedUsers = new HashSet<ulong>();
+        var usersToRebuild = new HashSet<ulong>();
 
+        // We will remove users from this set as we find them in the new manifest.
+        // Any user remaining in this set after processing the manifest is considered "stale" (removed from config) and must be cleaned up.
+        var potentialStaleUsers = new HashSet<ulong>();
+
+        foreach (var (steamId, sources) in _adminSources)
+        {
+            if (sources.ContainsKey(moduleIdentity))
+            {
+                potentialStaleUsers.Add(steamId);
+            }
+        }
+
+        // Process the new manifest
         foreach (var adminManifest in manifest.Admins ?? [])
         {
+            var (allowed, denied) = ResolvePermissions(moduleIdentity, adminManifest.Permissions);
             var calculatedImmunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
-
-            var rawPermissions = adminManifest.Permissions != null
-                ? new HashSet<string>(adminManifest.Permissions, StringComparer.OrdinalIgnoreCase)
-                : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             if (!_adminSources.TryGetValue(adminManifest.Identity, out var userSources))
             {
@@ -405,39 +393,32 @@ internal class AdminManager : IAdminManager, IModSharpModule
                 _adminSources[adminManifest.Identity] = userSources;
             }
 
-            userSources[moduleIdentity] = new AdminSource(calculatedImmunity, rawPermissions);
+            userSources[moduleIdentity] = new AdminSource(calculatedImmunity, allowed, denied);
+            usersToRebuild.Add(adminManifest.Identity);
 
-            processedUsers.Add(adminManifest.Identity);
+            // User presents in the new manifest, remove them from the stale list.
+            potentialStaleUsers.Remove(adminManifest.Identity);
         }
 
-        // Find users who have an entry for THIS module in _adminSources, but were not in the manifest we just processed.
-        var usersToRemove = new List<ulong>();
-
-        foreach (var (steamId, sources) in _adminSources)
+        // Process stale users
+        foreach (var staleUserSteamId in potentialStaleUsers)
         {
-            // If this user has data from this module, but wasn't in the new manifest...
-            if (sources.ContainsKey(moduleIdentity) && !processedUsers.Contains(steamId))
+            if (_adminSources.TryGetValue(staleUserSteamId, out var sources))
             {
-                sources.Remove(moduleIdentity);
-
-                // If they have no other sources left, mark for total removal
-                if (sources.Count == 0)
+                if (sources.Remove(moduleIdentity))
                 {
-                    usersToRemove.Add(steamId);
+                    // Add to rebuild list.
+                    // If this was their only source, RebuildAdmin will remove them globally.
+                    // If they have other sources (other modules), RebuildAdmin will recalculate without this module's contribution.
+                    usersToRebuild.Add(staleUserSteamId);
                 }
             }
         }
 
-        // Remove stale users
-        foreach (var id in usersToRemove)
+        foreach (var steamId in usersToRebuild)
         {
-            _adminSources.Remove(id);
+            RebuildAdmin(steamId);
         }
-
-        // Invalidate the entire cache.
-        // Since this module might have added new permissions
-        // users with "*" from OTHER modules need to be rebuilt to "see" these new permissions.
-        _globalAdmins.Clear();
     }
 
 #endregion
@@ -482,6 +463,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         {
             // No modules claim this user anymore, remove them.
             _globalAdmins.Remove(steamId);
+            _adminSources.Remove(steamId);
 
             return;
         }
@@ -491,7 +473,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         var globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var (moduleIdentity, source) in sources)
+        foreach (var source in sources.Values)
         {
             // we only take the max immunity
             if (source.CalculatedImmunity > maxImmunity)
@@ -499,14 +481,9 @@ internal class AdminManager : IAdminManager, IModSharpModule
                 maxImmunity = source.CalculatedImmunity;
             }
 
-            // Lazy Evaluation:
-            // We pass 'moduleIdentity' so that roles (@RoleName) are looked up 
-            // in the correct module's manifest.
-            // MatchWildcard will now see ALL permissions currently registered in the system.
-            var (modAllows, modDenies) = ResolvePermissions(moduleIdentity, source.RawPermissions);
-
-            globalAllows.UnionWith(modAllows);
-            globalDenies.UnionWith(modDenies);
+            // Merge this module's sources into the global pool
+            globalAllows.UnionWith(source.ResolvedAllows);
+            globalDenies.UnionWith(source.ResolvedDenies);
         }
 
         // If Module A grants 'kick' and Module B denies 'kick', 'kick' is removed here.
@@ -527,29 +504,15 @@ internal class AdminManager : IAdminManager, IModSharpModule
     /// </summary>
     private byte CalculateEffectiveImmunity(string moduleIdentity, AdminManifest adminManifest)
     {
-        var baseImmunity = adminManifest.Immunity;
+        var maxImmunity = adminManifest.Immunity;
 
+        // Check immunity in assigned Roles
         if (!_roles.TryGetValue(moduleIdentity, out var rolesDict))
         {
-            return baseImmunity;
+            return maxImmunity;
         }
 
-        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var roleMax = GetMaxRoleImmunity(adminManifest.Permissions, rolesDict, visited);
-
-        return Math.Max(roleMax, baseImmunity);
-    }
-
-    private static byte GetMaxRoleImmunity(IEnumerable<string>? rules, RolesDictionary rolesDict, HashSet<string> visited)
-    {
-        if (rules is null)
-        {
-            return 0;
-        }
-
-        byte max = 0;
-
-        foreach (var rule in rules)
+        foreach (var rule in adminManifest.Permissions)
         {
             if (!rule.StartsWith(IAdminManager.RolesOperator))
             {
@@ -557,42 +520,19 @@ internal class AdminManager : IAdminManager, IModSharpModule
             }
 
             var roleName = rule[1..];
-            var roleMax  = GetRoleImmunityRecursive(roleName, rolesDict, visited);
 
-            if (roleMax > max)
+            if (!rolesDict.TryGetValue(roleName, out var roleManifest))
             {
-                max = roleMax;
+                continue;
+            }
+
+            if (roleManifest.Immunity > maxImmunity)
+            {
+                maxImmunity = roleManifest.Immunity;
             }
         }
 
-        return max;
-    }
-
-    private static byte GetRoleImmunityRecursive(string roleName, RolesDictionary rolesDict, HashSet<string> visited)
-    {
-        if (!visited.Add(roleName))
-        {
-            return 0;
-        }
-
-        if (!rolesDict.TryGetValue(roleName, out var roleManifest))
-        {
-            visited.Remove(roleName);
-
-            return 0;
-        }
-
-        var max       = roleManifest.Immunity;
-        var nestedMax = GetMaxRoleImmunity(roleManifest.Permissions, rolesDict, visited);
-
-        if (nestedMax > max)
-        {
-            max = nestedMax;
-        }
-
-        visited.Remove(roleName);
-
-        return max;
+        return maxImmunity;
     }
 
     /// <summary>
@@ -664,7 +604,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
                     if (moduleRoles.TryGetValue(roleName, out var rolePermissions))
                     {
                         ResolvePermissionsRecursive(moduleIdentity,
-                                                    rolePermissions.Permissions ?? [],
+                                                    rolePermissions.Permissions,
                                                     visitedRoles,
                                                     collectedAllows,
                                                     collectedDenies);
