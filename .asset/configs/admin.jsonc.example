@@ -5,11 +5,16 @@
  */
 
 /*
+ * General Rules:
+ *   1. Case Insensitivity: 'Admin:Kick' is the same as 'admin:kick'.
+ *   2. Identity Format: Must be strictly SteamID64 format in integer (e.g. steamcommunity/profiles/76561198000000001).
+ *      Do not use legacy STEAM_0:X:Y formats, or SteamID3 format ([U:1:AccountId])
+ *
  * Permission Syntax:
- *   @RoleName   = Inherit permissions from role
+ *   @RoleName   = Inherit permissions from role (Recursive)
  *   !permission = Deny permission (global, overrides grants)
  *   *           = All permissions
- *   module:*    = All permissions in module
+ *   module:*    = All permissions in module (Recursive: matches 'module:a' and 'module:a:b')
  * 
  * Immunity: Higher = more protection. Takes max from all roles/direct.
  */
@@ -23,7 +28,7 @@
         {
             // Full access, highest immunity
             "Name": "root",
-            "Immunity": 100,
+            "Immunity": 255, // maximum immunity is 255
             "Permissions": ["*"]
         },
         {
@@ -33,9 +38,21 @@
             "Permissions": ["admin:*"]
         },
         {
+            // ROLE INHERITANCE & SUBTRACTION:
+            // Inherits 'admin' but specifically REMOVES the ban permission.
+            "Name": "junior_admin",
+            "Immunity": 25,
+            "Permissions": ["@admin", "!admin:ban"]
+        },
+        {
             // VIP perks only, no immunity specified (defaults to 0)
             "Name": "vip",
             "Permissions": ["vip:*"]
+        },
+        {
+            // Example of mixing wildcards and specific single permissions
+            "Name": "vip_plus",
+            "Permissions": ["vip:*", "custom:chat_color"]
         }
     ],
     

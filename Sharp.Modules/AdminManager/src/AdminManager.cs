@@ -381,11 +381,29 @@ internal class AdminManager : IAdminManager, IModSharpModule
         if (count <= 1)
         {
             _permissionReferenceCounts.Remove(permission);
-            RemoveFromPermissionBucket(permission);
+            RemoveFromPermissionBucket();
         }
         else
         {
             _permissionReferenceCounts[permission] = count - 1;
+        }
+
+        return;
+
+        void RemoveFromPermissionBucket()
+        {
+            var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
+            var root = idx < 0 ? permission : permission.Substring(0, idx);
+
+            if (_permissionBuckets.TryGetValue(root, out var list))
+            {
+                list.Remove(permission);
+
+                if (list.Count == 0)
+                {
+                    _permissionBuckets.Remove(root);
+                }
+            }
         }
     }
 
@@ -395,11 +413,27 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         if (!exists)
         {
-            AddToPermissionBucket(permission);
+            AddToPermissionBucket();
             count = 0;
         }
 
         count++;
+
+        return;
+
+        void AddToPermissionBucket()
+        {
+            var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
+            var root = idx < 0 ? permission : permission.Substring(0, idx);
+
+            if (!_permissionBuckets.TryGetValue(root, out var list))
+            {
+                list                     = [];
+                _permissionBuckets[root] = list;
+            }
+
+            list.Add(permission);
+        }
     }
 
     /// <summary>
@@ -505,12 +539,113 @@ internal class AdminManager : IAdminManager, IModSharpModule
         // users from OTHER modules who have "*" or "admin:*" need to be refreshed.
         if (newConcretePermissions.Count > 0)
         {
-            IdentifyUsersAffectedByWildcards(moduleIdentity, newConcretePermissions, usersToRefresh);
+            IdentifyAffectedWildcardUsers();
         }
 
         foreach (var uid in usersToRefresh)
         {
             RefreshSingleAdmin(uid);
+        }
+
+        return;
+
+        void IdentifyAffectedWildcardUsers()
+        {
+            foreach (var steamId in _usersWithWildcards)
+            {
+                if (usersToRefresh.Contains(steamId))
+                {
+                    continue;
+                }
+
+                if (!_adminSources.TryGetValue(steamId, out var sourceMap))
+                {
+                    continue;
+                }
+
+                foreach (var (modId, adminSource) in sourceMap)
+                {
+                    if (modId.Equals(moduleIdentity, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (UserHasMatchingRule(adminSource.RawRules))
+                    {
+                        usersToRefresh.Add(steamId);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        bool UserHasMatchingRule(HashSet<string> userRawRules)
+        {
+            foreach (var rule in userRawRules)
+            {
+                if (!rule.Contains(IAdminManager.WildCardOperator))
+                {
+                    continue;
+                }
+
+                if (CheckRuleMatch(rule.AsSpan()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool CheckRuleMatch(ReadOnlySpan<char> ruleRaw)
+        {
+            if (ruleRaw.IsWhiteSpace())
+            {
+                return false;
+            }
+
+            if (ruleRaw.StartsWith([IAdminManager.DenyOperator]) || ruleRaw.StartsWith([IAdminManager.RolesOperator]))
+            {
+                ruleRaw = ruleRaw.Slice(1);
+            }
+
+            if (ruleRaw.IsWhiteSpace())
+            {
+                return false;
+            }
+
+            var isPureWildcard = true;
+
+            foreach (var c in ruleRaw)
+            {
+                if (c != IAdminManager.WildCardOperator)
+                {
+                    isPureWildcard = false;
+
+                    break;
+                }
+            }
+
+            if (isPureWildcard)
+            {
+                return true;
+            }
+
+            foreach (var newPerm in newConcretePermissions)
+            {
+                if (string.IsNullOrEmpty(newPerm))
+                {
+                    continue;
+                }
+
+                if (IsWildcardMatch(newPerm.AsSpan(), ruleRaw))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
@@ -552,57 +687,6 @@ internal class AdminManager : IAdminManager, IModSharpModule
         {
             _usersWithWildcards.Remove(steamId);
         }
-    }
-
-    private void IdentifyUsersAffectedByWildcards(string          ignoringModuleIdentity,
-                                                  HashSet<string> newPermissions,
-                                                  HashSet<ulong>  usersToRefresh)
-    {
-        foreach (var steamId in _usersWithWildcards)
-        {
-            if (usersToRefresh.Contains(steamId))
-            {
-                continue; // Already refreshed
-            }
-
-            if (!_adminSources.TryGetValue(steamId, out var sourceMap))
-            {
-                continue;
-            }
-
-            foreach (var (modId, adminSource) in sourceMap)
-            {
-                if (modId.Equals(ignoringModuleIdentity, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (DoesUserHaveMatchingWildcard(adminSource.RawRules, newPermissions))
-                {
-                    usersToRefresh.Add(steamId);
-
-                    break;
-                }
-            }
-        }
-    }
-
-    private static bool DoesUserHaveMatchingWildcard(HashSet<string> userRawRules, HashSet<string> newPermissions)
-    {
-        foreach (var rule in userRawRules)
-        {
-            if (!rule.Contains(IAdminManager.WildCardOperator))
-            {
-                continue;
-            }
-
-            if (DoNewPermissionsMatchRule(newPermissions, rule.AsSpan()))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void RefreshSingleAdmin(ulong steamId)
@@ -662,22 +746,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         globalAllows.ExceptWith(globalDenies);
 
-        // Update Global Cache only if changed
-        if (_globalAdmins.TryGetValue(steamId, out var existingAdmin)
-            && existingAdmin.Immunity == maxImmunity
-            && existingAdmin.Permissions.SetEquals(globalAllows))
+        if (!_globalAdmins.TryGetValue(steamId, out var admin))
         {
-            return;
+            admin                  = new Admin(steamId, maxImmunity);
+            _globalAdmins[steamId] = admin;
         }
 
-        var mergedAdmin = new Admin(steamId, maxImmunity);
-
-        foreach (var perm in globalAllows)
-        {
-            mergedAdmin.AddPermission(perm);
-        }
-
-        _globalAdmins[steamId] = mergedAdmin;
+        admin.Update(maxImmunity, globalAllows);
     }
 
 #endregion
@@ -692,156 +767,86 @@ internal class AdminManager : IAdminManager, IModSharpModule
         var allows       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var denies       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        ResolvePermissionsRecursive(moduleIdentity, permissionRules, visitedRoles, allows, denies);
+        _roles.TryGetValue(moduleIdentity, out var moduleRoles);
+
+        Recurse(permissionRules);
 
         return (allows, denies);
-    }
 
-    private void ResolvePermissionsRecursive(
-        string          moduleIdentity,
-        HashSet<string> permissionRules,
-        HashSet<string> visitedRoles,
-        HashSet<string> collectedAllows,
-        HashSet<string> collectedDenies)
-    {
-        foreach (var rule in permissionRules)
+        void Recurse(HashSet<string> currentRules)
         {
-            if (string.IsNullOrWhiteSpace(rule))
+            foreach (var rule in currentRules)
             {
-                continue;
-            }
+                if (string.IsNullOrWhiteSpace(rule))
+                {
+                    continue;
+                }
 
-            if (rule.StartsWith(IAdminManager.DenyOperator))
-            {
-                MatchWildcard(moduleIdentity, rule[1..], collectedDenies);
-            }
-            else if (rule.StartsWith(IAdminManager.RolesOperator))
-            {
-                ProcessRoleInheritance(moduleIdentity, rule[1..], visitedRoles, collectedAllows, collectedDenies);
-            }
-            else
-            {
-                MatchWildcard(moduleIdentity, rule, collectedAllows);
-            }
-        }
-    }
+                if (rule.StartsWith(IAdminManager.DenyOperator))
+                {
+                    MatchWildcard(moduleIdentity, rule[1..], denies);
+                }
+                else if (rule.StartsWith(IAdminManager.RolesOperator))
+                {
+                    var roleName = rule[1..];
 
-    private void ProcessRoleInheritance(string          moduleIdentity,
-                                        string          roleName,
-                                        HashSet<string> visitedRoles,
-                                        HashSet<string> allows,
-                                        HashSet<string> denies)
-    {
-        if (!visitedRoles.Add(roleName))
-        {
-            return;
-        }
-
-        if (_roles.TryGetValue(moduleIdentity, out var moduleRoles))
-        {
-            if (moduleRoles.TryGetValue(roleName, out var rolePermissions))
-            {
-                ResolvePermissionsRecursive(moduleIdentity, rolePermissions.Permissions, visitedRoles, allows, denies);
-            }
-            else
-            {
-                _logger.LogWarning("Module '{Module}' refers to undefined Role '@{Role}'", moduleIdentity, roleName);
+                    if (visitedRoles.Add(roleName))
+                    {
+                        if (moduleRoles != null && moduleRoles.TryGetValue(roleName, out var rolePermissions))
+                        {
+                            Recurse(rolePermissions.Permissions);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Module '{Module}' refers to undefined Role '@{Role}'",
+                                               moduleIdentity,
+                                               roleName);
+                        }
+                    }
+                }
+                else
+                {
+                    MatchWildcard(moduleIdentity, rule, allows);
+                }
             }
         }
     }
 
     private byte CalculateEffectiveImmunity(string moduleIdentity, AdminManifest adminManifest)
     {
-        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        return CalculateImmunityRecursive(moduleIdentity, adminManifest.Immunity, adminManifest.Permissions, visitedRoles);
-    }
-
-    private byte CalculateImmunityRecursive(string          moduleIdentity,
-                                            byte            currentMax,
-                                            HashSet<string> permissions,
-                                            HashSet<string> visitedRoles)
-    {
         if (!_roles.TryGetValue(moduleIdentity, out var rolesDict))
         {
-            return currentMax;
+            return adminManifest.Immunity;
         }
 
-        foreach (var rule in permissions)
-        {
-            if (rule.StartsWith(IAdminManager.RolesOperator))
-            {
-                var roleName = rule[1..];
+        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                if (!visitedRoles.Add(roleName))
+        return Recurse(adminManifest.Immunity, adminManifest.Permissions);
+
+        byte Recurse(byte currentMax, HashSet<string> currentPermissions)
+        {
+            foreach (var rule in currentPermissions)
+            {
+                if (!rule.StartsWith(IAdminManager.RolesOperator))
                 {
                     continue;
                 }
 
-                if (rolesDict.TryGetValue(roleName, out var roleManifest))
+                var roleName = rule[1..];
+
+                if (visitedRoles.Add(roleName) && rolesDict.TryGetValue(roleName, out var roleManifest))
                 {
                     if (roleManifest.Immunity > currentMax)
                     {
                         currentMax = roleManifest.Immunity;
                     }
 
-                    currentMax = CalculateImmunityRecursive(moduleIdentity, currentMax, roleManifest.Permissions, visitedRoles);
+                    currentMax = Recurse(currentMax, roleManifest.Permissions);
                 }
             }
+
+            return currentMax;
         }
-
-        return currentMax;
-    }
-
-    private static bool DoNewPermissionsMatchRule(HashSet<string> newPermissions, ReadOnlySpan<char> ruleRaw)
-    {
-        if (ruleRaw.IsWhiteSpace())
-        {
-            return false;
-        }
-
-        // Strip prefixes
-        if (ruleRaw.StartsWith([IAdminManager.DenyOperator]) || ruleRaw.StartsWith([IAdminManager.RolesOperator]))
-        {
-            ruleRaw = ruleRaw.Slice(1);
-        }
-
-        if (ruleRaw.IsWhiteSpace())
-        {
-            return false;
-        }
-
-        var isPureWildcard = true;
-
-        foreach (var c in ruleRaw)
-        {
-            if (c != IAdminManager.WildCardOperator)
-            {
-                isPureWildcard = false;
-
-                break;
-            }
-        }
-
-        if (isPureWildcard)
-        {
-            return newPermissions.Count > 0;
-        }
-
-        foreach (var newPerm in newPermissions)
-        {
-            if (string.IsNullOrEmpty(newPerm))
-            {
-                continue;
-            }
-
-            if (IsWildcardMatch(newPerm.AsSpan(), ruleRaw))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /// <summary>
@@ -987,37 +992,6 @@ internal class AdminManager : IAdminManager, IModSharpModule
             // Move the span forward past the separator.
             pattern    = patSepIdx  == -1 ? ReadOnlySpan<char>.Empty : pattern.Slice(patSepIdx     + 1);
             permission = permSepIdx == -1 ? ReadOnlySpan<char>.Empty : permission.Slice(permSepIdx + 1);
-        }
-    }
-
-    private void AddToPermissionBucket(string permission)
-    {
-        var span = permission.AsSpan();
-        var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
-        var root = idx < 0 ? permission : permission.Substring(0, idx);
-
-        if (!_permissionBuckets.TryGetValue(root, out var list))
-        {
-            list                     = [];
-            _permissionBuckets[root] = list;
-        }
-
-        list.Add(permission);
-    }
-
-    private void RemoveFromPermissionBucket(string permission)
-    {
-        var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
-        var root = idx < 0 ? permission : permission.Substring(0, idx);
-
-        if (_permissionBuckets.TryGetValue(root, out var list))
-        {
-            list.Remove(permission);
-
-            if (list.Count == 0)
-            {
-                _permissionBuckets.Remove(root);
-            }
         }
     }
 

@@ -25,7 +25,7 @@ namespace Sharp.Modules.AdminManager;
 internal class Admin : IAdmin
 {
     public SteamID Identity { get; }
-    public byte    Immunity { get; }
+    public byte    Immunity { get; internal set; }
 
     private readonly HashSet<string> _permissions;
 
@@ -47,4 +47,11 @@ internal class Admin : IAdmin
 
     public bool RemovePermission(string permission)
         => _permissions.Remove(permission);
+
+    internal void Update(byte immunity, HashSet<string> permissions)
+    {
+        Immunity = immunity;
+        _permissions.Clear();
+        _permissions.UnionWith(permissions);
+    }
 }
