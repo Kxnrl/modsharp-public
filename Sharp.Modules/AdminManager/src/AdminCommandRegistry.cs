@@ -66,21 +66,15 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
         }
 
         var admin = _self.GetAdmin(client.SteamId);
-        if (admin is null)
+
+        if (admin is null || !HasPermission(admin, permissions))
         {
             PrintNoAccess(client, command, controller);
 
             return;
         }
 
-        if (HasPermission(admin, permissions))
-        {
-            call(client, command);
-
-            return;
-        }
-
-        PrintNoAccess(client, command, controller);
+        call(client, command);
     }
 
     private void PrintNoAccess(IGameClient client, StringCommand command, IPlayerController controller)

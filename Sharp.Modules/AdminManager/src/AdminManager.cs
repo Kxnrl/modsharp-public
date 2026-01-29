@@ -19,6 +19,8 @@
 
 // ReSharper disable UnusedParameter.Local
 
+using System.Buffers;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -76,8 +78,14 @@ internal class AdminManager : IAdminManager, IModSharpModule
     private record AdminSource(
         byte            CalculatedImmunity,
         HashSet<string> ResolvedAllows,
-        HashSet<string> ResolvedDenies
+        HashSet<string> ResolvedDenies,
+        HashSet<string> RawRules
     );
+
+    private readonly Dictionary<string, List<string>> _permissionBuckets  = new (StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<ulong>                   _usersWithWildcards = [];
+
+    private static readonly SearchValues<char> WildcardChars = SearchValues.Create(IAdminManager.WildCardOperator);
 
     private readonly ILogger<AdminManager> _logger;
 
@@ -135,6 +143,19 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
         else
         {
+            if (manifest.Admins is { Count: > 1 })
+            {
+                var mergedAdmins = manifest.Admins
+                                           .GroupBy(x => x.Identity)
+                                           .Select(g => new AdminManifest(g.Key,
+                                                                          g.Max(x => x.Immunity),
+                                                                          g.SelectMany(x => x.Permissions ?? [])
+                                                                           .ToHashSet()))
+                                           .ToList();
+
+                manifest = manifest with { Admins = mergedAdmins };
+            }
+
             manifest = new AdminTableManifest(manifest.PermissionCollection
                                               ?? new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase),
                                               manifest.Roles  ?? [],
@@ -198,52 +219,32 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public void OnLibraryDisconnect(string moduleIdentity)
     {
-        // Remove command registry for this module
         _commandRegistries.Remove(moduleIdentity);
 
-        // Clean up Permissions Collections & Global lookup
-        if (_permissionCollections.Remove(moduleIdentity, out var modulePermissionCollections))
-        {
-            // Flatten all permissions this module introduced
-            foreach (var permission in modulePermissionCollections.Values.SelectMany(permissionSet => permissionSet))
-            {
-                // Shouldn't be possible to have such case :innocent:
-                if (!_permissionReferenceCounts.TryGetValue(permission, out var count))
-                {
-                    continue;
-                }
+        // 1. Unregister Permissions & Ref Counts
+        UnregisterModulePermissions(moduleIdentity);
 
-                if (count <= 1)
-                {
-                    // This was the last module using this permission, remove
-                    _permissionReferenceCounts.Remove(permission);
-                }
-                else
-                {
-                    // Other modules still need this permission, just lower the count
-                    _permissionReferenceCounts[permission] = count - 1;
-                }
-            }
-        }
-
-        // Remove roles for this module
+        // 2. Unregister Roles
         _roles.Remove(moduleIdentity);
 
-        // Find users with permissions from this module, and rebuild their permissions and immunity
-        var affectedUsers = new List<ulong>();
+        // 3. Remove admin sources for this module
+        var usersToRefresh = RemoveModuleFromAdminSources(moduleIdentity);
 
-        foreach (var kvp in _adminSources)
+        // 4. Refresh users who lost permissions (or remove them if they have no sources left)
+        foreach (var steamId in usersToRefresh)
         {
-            if (kvp.Value.Remove(moduleIdentity))
+            if (_adminSources.ContainsKey(steamId))
             {
-                affectedUsers.Add(kvp.Key);
+                RefreshSingleAdmin(steamId);
+            }
+            else
+            {
+                _globalAdmins.Remove(steamId);
             }
         }
 
-        foreach (var steamId in affectedUsers)
-        {
-            RebuildAdmin(steamId);
-        }
+        // Note: We might need a full refresh here if users relied on wildcards matching removed permissions
+        RefreshAllAdmins();
     }
 
     public void OnAllModulesLoaded()
@@ -307,85 +308,183 @@ internal class AdminManager : IAdminManager, IModSharpModule
             return;
         }
 
-        // Cleanup old permissions for this module
-        if (_permissionCollections.TryGetValue(moduleIdentity, out var modulePermissionCollection))
+        UnregisterModulePermissions(moduleIdentity);
+        var newConcretePermissions = RegisterModuleData(moduleIdentity, manifest);
+        RefreshAffectedAdmins(moduleIdentity, manifest, newConcretePermissions);
+    }
+
+#endregion
+
+#region Module Definition Management (Register/Unregister)
+
+    private void UnregisterModulePermissions(string moduleIdentity)
+    {
+        if (!_permissionCollections.Remove(moduleIdentity, out var modulePermissionCollection))
         {
-            foreach (var permissionSet in modulePermissionCollection.Values)
+            return;
+        }
+
+        foreach (var permissionSet in modulePermissionCollection.Values)
+        {
+            foreach (var permission in permissionSet ?? [])
             {
-                foreach (var permission in permissionSet ?? [])
+                DecrementPermissionReference(permission);
+            }
+        }
+    }
+
+    private HashSet<string> RegisterModuleData(string moduleIdentity, AdminTableManifest manifest)
+    {
+        var modulePermissionCollection = new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase);
+        _permissionCollections[moduleIdentity] = modulePermissionCollection;
+
+        var newConcretePermissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (manifest.PermissionCollection != null)
+        {
+            foreach (var kv in manifest.PermissionCollection)
+            {
+                modulePermissionCollection[kv.Key] = kv.Value;
+
+                if (kv.Value == null)
                 {
-                    if (_permissionReferenceCounts.TryGetValue(permission, out var count))
-                    {
-                        if (count <= 1)
-                        {
-                            _permissionReferenceCounts.Remove(permission);
-                        }
-                        else
-                        {
-                            _permissionReferenceCounts[permission] = count - 1;
-                        }
-                    }
+                    continue;
+                }
+
+                newConcretePermissions.UnionWith(kv.Value);
+
+                foreach (var permission in kv.Value)
+                {
+                    IncrementPermissionReference(permission);
                 }
             }
-
-            // Clear the collection to prepare for new data (avoids keeping stale keys)
-            modulePermissionCollection.Clear();
-        }
-        else
-        {
-            // Initialize if doesnt exist
-            modulePermissionCollection             = new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase);
-            _permissionCollections[moduleIdentity] = modulePermissionCollection;
         }
 
-        if (!_roles.TryGetValue(moduleIdentity, out var moduleRoles))
-        {
-            moduleRoles            = new RolesDictionary(StringComparer.OrdinalIgnoreCase);
-            _roles[moduleIdentity] = moduleRoles;
-        }
-        else
-        {
-            // clear old roles
-            moduleRoles.Clear();
-        }
-
-        // apply new permissions and roles
-        foreach (var kv in manifest.PermissionCollection ?? [])
-        {
-            modulePermissionCollection[kv.Key] = kv.Value;
-
-            // Add all concrete permissions from this collection to the global set
-            foreach (var permission in kv.Value)
-            {
-                _permissionReferenceCounts.TryAdd(permission, 0);
-                _permissionReferenceCounts[permission]++;
-            }
-        }
+        var moduleRoles = new RolesDictionary(StringComparer.OrdinalIgnoreCase);
+        _roles[moduleIdentity] = moduleRoles;
 
         foreach (var role in manifest.Roles ?? [])
         {
             moduleRoles[role.Name] = role;
         }
 
-        var usersToRebuild = new HashSet<ulong>();
+        return newConcretePermissions;
+    }
 
-        // We will remove users from this set as we find them in the new manifest.
-        // Any user remaining in this set after processing the manifest is considered "stale" (removed from config) and must be cleaned up.
-        var potentialStaleUsers = new HashSet<ulong>();
-
-        foreach (var (steamId, sources) in _adminSources)
+    private void DecrementPermissionReference(string permission)
+    {
+        if (!_permissionReferenceCounts.TryGetValue(permission, out var count))
         {
-            if (sources.ContainsKey(moduleIdentity))
+            return;
+        }
+
+        if (count <= 1)
+        {
+            _permissionReferenceCounts.Remove(permission);
+            RemoveFromPermissionBucket(permission);
+        }
+        else
+        {
+            _permissionReferenceCounts[permission] = count - 1;
+        }
+    }
+
+    private void IncrementPermissionReference(string permission)
+    {
+        ref var count = ref CollectionsMarshal.GetValueRefOrAddDefault(_permissionReferenceCounts, permission, out var exists);
+
+        if (!exists)
+        {
+            AddToPermissionBucket(permission);
+            count = 0;
+        }
+
+        count++;
+    }
+
+    /// <summary>
+    ///     Removes a module from all users in _adminSources. Returns a list of SteamIDs that were affected.
+    /// </summary>
+    private HashSet<ulong> RemoveModuleFromAdminSources(string moduleIdentity)
+    {
+        var affectedUsers = new HashSet<ulong>();
+        var usersToRemove = new List<ulong>();
+
+        foreach (var (steamId, userSources) in _adminSources)
+        {
+            if (userSources.Remove(moduleIdentity))
             {
-                potentialStaleUsers.Add(steamId);
+                affectedUsers.Add(steamId);
+
+                UpdateUserWildcardStatus(steamId);
+
+                if (userSources.Count == 0)
+                {
+                    usersToRemove.Add(steamId);
+                }
             }
         }
 
-        // Process the new manifest
+        foreach (var id in usersToRemove)
+        {
+            _adminSources.Remove(id);
+            _globalAdmins.Remove(id);
+            affectedUsers.Remove(id); // handled by removal
+        }
+
+        return affectedUsers;
+    }
+
+#endregion
+
+#region Admin Refresh Logic
+
+    private void RefreshAffectedAdmins(string             moduleIdentity,
+                                       AdminTableManifest manifest,
+                                       HashSet<string>    newConcretePermissions)
+    {
+        var usersToRefresh = new HashSet<ulong>();
+        var newManifestIds = (manifest.Admins ?? []).Select(x => x.Identity).ToHashSet();
+
+        // Identify users who lost the module or rules changed
+        var usersToPurge = new List<ulong>();
+
+        foreach (var (steamId, userSources) in _adminSources)
+        {
+            if (!userSources.ContainsKey(moduleIdentity))
+            {
+                continue;
+            }
+
+            if (!newManifestIds.Contains(steamId))
+            {
+                // User removed from this specific module
+                userSources.Remove(moduleIdentity);
+                usersToRefresh.Add(steamId);
+
+                if (userSources.Count == 0)
+                {
+                    usersToPurge.Add(steamId);
+                }
+            }
+            else
+            {
+                // User still exists, rules might have changed
+                usersToRefresh.Add(steamId);
+            }
+        }
+
+        foreach (var id in usersToPurge)
+        {
+            _adminSources.Remove(id);
+            _globalAdmins.Remove(id);
+            usersToRefresh.Remove(id);
+        }
+
+        // 2. Handle New & Updated Admins from Manifest
         foreach (var adminManifest in manifest.Admins ?? [])
         {
-            var (allowed, denied) = ResolvePermissions(moduleIdentity, adminManifest.Permissions);
-            var calculatedImmunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
+            var immunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
 
             if (!_adminSources.TryGetValue(adminManifest.Identity, out var userSources))
             {
@@ -393,35 +492,538 @@ internal class AdminManager : IAdminManager, IModSharpModule
                 _adminSources[adminManifest.Identity] = userSources;
             }
 
-            userSources[moduleIdentity] = new AdminSource(calculatedImmunity, allowed, denied);
-            usersToRebuild.Add(adminManifest.Identity);
+            userSources[moduleIdentity] = new AdminSource(immunity,
+                                                          [],
+                                                          [],
+                                                          adminManifest.Permissions ?? []);
 
-            // User presents in the new manifest, remove them from the stale list.
-            potentialStaleUsers.Remove(adminManifest.Identity);
+            UpdateUserWildcardStatus(adminManifest.Identity);
+            usersToRefresh.Add(adminManifest.Identity);
         }
 
-        // Process stale users
-        foreach (var staleUserSteamId in potentialStaleUsers)
+        // If the module introduced new permissions (e.g., "admin:god"),
+        // users from OTHER modules who have "*" or "admin:*" need to be refreshed.
+        if (newConcretePermissions.Count > 0)
         {
-            if (_adminSources.TryGetValue(staleUserSteamId, out var sources))
+            IdentifyUsersAffectedByWildcards(moduleIdentity, newConcretePermissions, usersToRefresh);
+        }
+
+        foreach (var uid in usersToRefresh)
+        {
+            RefreshSingleAdmin(uid);
+        }
+    }
+
+    private void UpdateUserWildcardStatus(ulong steamId)
+    {
+        if (!_adminSources.TryGetValue(steamId, out var userSources) || userSources.Count == 0)
+        {
+            _usersWithWildcards.Remove(steamId);
+
+            return;
+        }
+
+        var hasWildcard = false;
+
+        foreach (var source in userSources.Values)
+        {
+            foreach (var rule in source.RawRules)
             {
-                if (sources.Remove(moduleIdentity))
+                // Fast check for wildcard
+                if (rule.AsSpan().ContainsAny(WildcardChars))
                 {
-                    // Add to rebuild list.
-                    // If this was their only source, RebuildAdmin will remove them globally.
-                    // If they have other sources (other modules), RebuildAdmin will recalculate without this module's contribution.
-                    usersToRebuild.Add(staleUserSteamId);
+                    hasWildcard = true;
+
+                    break;
+                }
+            }
+
+            if (hasWildcard)
+            {
+                break;
+            }
+        }
+
+        if (hasWildcard)
+        {
+            _usersWithWildcards.Add(steamId);
+        }
+        else
+        {
+            _usersWithWildcards.Remove(steamId);
+        }
+    }
+
+    private void IdentifyUsersAffectedByWildcards(string          ignoringModuleIdentity,
+                                                  HashSet<string> newPermissions,
+                                                  HashSet<ulong>  usersToRefresh)
+    {
+        foreach (var steamId in _usersWithWildcards)
+        {
+            if (usersToRefresh.Contains(steamId))
+            {
+                continue; // Already refreshed
+            }
+
+            if (!_adminSources.TryGetValue(steamId, out var sourceMap))
+            {
+                continue;
+            }
+
+            foreach (var (modId, adminSource) in sourceMap)
+            {
+                if (modId.Equals(ignoringModuleIdentity, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (DoesUserHaveMatchingWildcard(adminSource.RawRules, newPermissions))
+                {
+                    usersToRefresh.Add(steamId);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private static bool DoesUserHaveMatchingWildcard(HashSet<string> userRawRules, HashSet<string> newPermissions)
+    {
+        foreach (var rule in userRawRules)
+        {
+            if (!rule.Contains(IAdminManager.WildCardOperator))
+            {
+                continue;
+            }
+
+            if (DoNewPermissionsMatchRule(newPermissions, rule.AsSpan()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void RefreshSingleAdmin(ulong steamId)
+    {
+        if (!_adminSources.TryGetValue(steamId, out var userSources))
+        {
+            return;
+        }
+
+        foreach (var modId in userSources.Keys.ToList())
+        {
+            var source = userSources[modId];
+            var (newAllows, newDenies) = ResolvePermissions(modId, source.RawRules);
+
+            source.ResolvedAllows.Clear();
+            source.ResolvedAllows.UnionWith(newAllows);
+
+            source.ResolvedDenies.Clear();
+            source.ResolvedDenies.UnionWith(newDenies);
+        }
+
+        RebuildAdmin(steamId);
+    }
+
+    private void RefreshAllAdmins()
+    {
+        foreach (var id in _adminSources.Keys.ToList())
+        {
+            RefreshSingleAdmin(id);
+        }
+    }
+
+    private void RebuildAdmin(ulong steamId)
+    {
+        if (!_adminSources.TryGetValue(steamId, out var sources) || sources.Count == 0)
+        {
+            _globalAdmins.Remove(steamId);
+            _adminSources.Remove(steamId);
+
+            return;
+        }
+
+        byte maxImmunity  = 0;
+        var  globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var  globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var source in sources.Values)
+        {
+            if (source.CalculatedImmunity > maxImmunity)
+            {
+                maxImmunity = source.CalculatedImmunity;
+            }
+
+            globalAllows.UnionWith(source.ResolvedAllows);
+            globalDenies.UnionWith(source.ResolvedDenies);
+        }
+
+        globalAllows.ExceptWith(globalDenies);
+
+        // Update Global Cache only if changed
+        if (_globalAdmins.TryGetValue(steamId, out var existingAdmin)
+            && existingAdmin.Immunity == maxImmunity
+            && existingAdmin.Permissions.SetEquals(globalAllows))
+        {
+            return;
+        }
+
+        var mergedAdmin = new Admin(steamId, maxImmunity);
+
+        foreach (var perm in globalAllows)
+        {
+            mergedAdmin.AddPermission(perm);
+        }
+
+        _globalAdmins[steamId] = mergedAdmin;
+    }
+
+#endregion
+
+#region Permission Resolver & Wildcard Logic
+
+    private (HashSet<string> Allows, HashSet<string> Denies) ResolvePermissions(
+        string          moduleIdentity,
+        HashSet<string> permissionRules)
+    {
+        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var allows       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var denies       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        ResolvePermissionsRecursive(moduleIdentity, permissionRules, visitedRoles, allows, denies);
+
+        return (allows, denies);
+    }
+
+    private void ResolvePermissionsRecursive(
+        string          moduleIdentity,
+        HashSet<string> permissionRules,
+        HashSet<string> visitedRoles,
+        HashSet<string> collectedAllows,
+        HashSet<string> collectedDenies)
+    {
+        foreach (var rule in permissionRules)
+        {
+            if (string.IsNullOrWhiteSpace(rule))
+            {
+                continue;
+            }
+
+            if (rule.StartsWith(IAdminManager.DenyOperator))
+            {
+                MatchWildcard(moduleIdentity, rule[1..], collectedDenies);
+            }
+            else if (rule.StartsWith(IAdminManager.RolesOperator))
+            {
+                ProcessRoleInheritance(moduleIdentity, rule[1..], visitedRoles, collectedAllows, collectedDenies);
+            }
+            else
+            {
+                MatchWildcard(moduleIdentity, rule, collectedAllows);
+            }
+        }
+    }
+
+    private void ProcessRoleInheritance(string          moduleIdentity,
+                                        string          roleName,
+                                        HashSet<string> visitedRoles,
+                                        HashSet<string> allows,
+                                        HashSet<string> denies)
+    {
+        if (!visitedRoles.Add(roleName))
+        {
+            return;
+        }
+
+        if (_roles.TryGetValue(moduleIdentity, out var moduleRoles))
+        {
+            if (moduleRoles.TryGetValue(roleName, out var rolePermissions))
+            {
+                ResolvePermissionsRecursive(moduleIdentity, rolePermissions.Permissions, visitedRoles, allows, denies);
+            }
+            else
+            {
+                _logger.LogWarning("Module '{Module}' refers to undefined Role '@{Role}'", moduleIdentity, roleName);
+            }
+        }
+    }
+
+    private byte CalculateEffectiveImmunity(string moduleIdentity, AdminManifest adminManifest)
+    {
+        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        return CalculateImmunityRecursive(moduleIdentity, adminManifest.Immunity, adminManifest.Permissions, visitedRoles);
+    }
+
+    private byte CalculateImmunityRecursive(string          moduleIdentity,
+                                            byte            currentMax,
+                                            HashSet<string> permissions,
+                                            HashSet<string> visitedRoles)
+    {
+        if (!_roles.TryGetValue(moduleIdentity, out var rolesDict))
+        {
+            return currentMax;
+        }
+
+        foreach (var rule in permissions)
+        {
+            if (rule.StartsWith(IAdminManager.RolesOperator))
+            {
+                var roleName = rule[1..];
+
+                if (!visitedRoles.Add(roleName))
+                {
+                    continue;
+                }
+
+                if (rolesDict.TryGetValue(roleName, out var roleManifest))
+                {
+                    if (roleManifest.Immunity > currentMax)
+                    {
+                        currentMax = roleManifest.Immunity;
+                    }
+
+                    currentMax = CalculateImmunityRecursive(moduleIdentity, currentMax, roleManifest.Permissions, visitedRoles);
                 }
             }
         }
 
-        foreach (var steamId in usersToRebuild)
+        return currentMax;
+    }
+
+    private static bool DoNewPermissionsMatchRule(HashSet<string> newPermissions, ReadOnlySpan<char> ruleRaw)
+    {
+        if (ruleRaw.IsWhiteSpace())
         {
-            RebuildAdmin(steamId);
+            return false;
+        }
+
+        // Strip prefixes
+        if (ruleRaw.StartsWith([IAdminManager.DenyOperator]) || ruleRaw.StartsWith([IAdminManager.RolesOperator]))
+        {
+            ruleRaw = ruleRaw.Slice(1);
+        }
+
+        if (ruleRaw.IsWhiteSpace())
+        {
+            return false;
+        }
+
+        var isPureWildcard = true;
+
+        foreach (var c in ruleRaw)
+        {
+            if (c != IAdminManager.WildCardOperator)
+            {
+                isPureWildcard = false;
+
+                break;
+            }
+        }
+
+        if (isPureWildcard)
+        {
+            return newPermissions.Count > 0;
+        }
+
+        foreach (var newPerm in newPermissions)
+        {
+            if (string.IsNullOrEmpty(newPerm))
+            {
+                continue;
+            }
+
+            if (IsWildcardMatch(newPerm.AsSpan(), ruleRaw))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    ///     Matches a permission pattern against existing permissions.
+    ///     Includes optimizations to avoid scanning the entire permission list.
+    /// </summary>
+    private void MatchWildcard(string moduleIdentity, string pattern, HashSet<string> collected)
+    {
+        const char wildcard = IAdminManager.WildCardOperator;
+
+        if (!pattern.Contains(wildcard))
+        {
+            if (_permissionReferenceCounts.ContainsKey(pattern))
+            {
+                collected.Add(pattern);
+            }
+
+            return;
+        }
+
+        // If the pattern is just wildcards, it matches absolutely everything.
+        if (pattern.AsSpan().Trim(wildcard).IsEmpty)
+        {
+            collected.UnionWith(_permissionReferenceCounts.Keys);
+
+            return;
+        }
+
+        IEnumerable<string> candidates;
+
+        var patternSpan = pattern.AsSpan();
+
+        var firstSeparator = patternSpan.IndexOf(IAdminManager.SeparatorOperator);
+
+        if (firstSeparator > 0)
+        {
+            // Extract the prefix (e.g., "admin" from "admin:money")
+            var prefix = patternSpan.Slice(0, firstSeparator);
+
+            if (!prefix.Contains(wildcard))
+            {
+                if (_permissionBuckets.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(prefix, out var bucket))
+                {
+                    // Case A: The bucket exists. We scan ONLY these permissions.
+                    candidates = bucket;
+                }
+                else
+                {
+                    // Case B: The bucket does not exist.
+                    // This means no permissions start with this prefix.
+                    return;
+                }
+            }
+            else
+            {
+                // Prefix involves a wildcard (e.g. "ad*:money"). We must scan everything.
+                candidates = _permissionReferenceCounts.Keys;
+            }
+        }
+        else
+        {
+            // No separator found (e.g. "kick_command"). We must scan everything.
+            candidates = _permissionReferenceCounts.Keys;
+        }
+
+        foreach (var permission in candidates)
+        {
+            if (IsWildcardMatch(permission.AsSpan(), patternSpan))
+            {
+                collected.Add(permission);
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Validates if a concrete permission matches a pattern using Zero-Allocation Spans.
+    /// </summary>
+    /// <param name="permission">The concrete permission (e.g., "admin:money:give")</param>
+    /// <param name="pattern">The pattern (e.g., "admin:*:give")</param>
+    private static bool IsWildcardMatch(ReadOnlySpan<char> permission, ReadOnlySpan<char> pattern)
+    {
+        const char separator = IAdminManager.SeparatorOperator;
+        const char wildcard  = IAdminManager.WildCardOperator;
+
+        // Optimization: identical strings always match
+        if (permission.SequenceEqual(pattern))
+        {
+            return true;
+        }
+
+        while (true)
+        {
+            // If the pattern is exhausted, the permission must also be exhausted.
+            if (pattern.IsEmpty)
+            {
+                return permission.IsEmpty;
+            }
+
+            var patSepIdx  = pattern.IndexOf(separator);
+            var permSepIdx = permission.IndexOf(separator);
+
+            // If no separator is found (-1), take the rest of the string.
+            var currPatSeg = patSepIdx == -1 ? pattern : pattern.Slice(0, patSepIdx);
+
+            // Check if the current pattern segment is a pure wildcard (e.g. "*" or "**")
+            var isWildcardSegment = !currPatSeg.IsEmpty && currPatSeg.Trim(wildcard).IsEmpty;
+
+            if (isWildcardSegment)
+            {
+                // LOGIC: Trailing Wildcard (e.g. "admin:*")
+                // If this is the LAST segment in the pattern, it matches EVERYTHING remaining.
+                if (patSepIdx == -1)
+                {
+                    return true;
+                }
+
+                // LOGIC: Mid-Wildcard (e.g. "admin:*:give")
+                // The wildcard requires "something" to be here. 
+                // If the permission string runs out early, it's a fail.
+                if (permission.IsEmpty)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                // If permission runs out but pattern expects more -> Fail
+                if (permission.IsEmpty)
+                {
+                    return false;
+                }
+
+                // Get the permission segment to compare
+                var currPermSeg = permSepIdx == -1 ? permission : permission.Slice(0, permSepIdx);
+
+                // Compare ignoring case
+                if (!currPermSeg.Equals(currPatSeg, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            // Move the span forward past the separator.
+            pattern    = patSepIdx  == -1 ? ReadOnlySpan<char>.Empty : pattern.Slice(patSepIdx     + 1);
+            permission = permSepIdx == -1 ? ReadOnlySpan<char>.Empty : permission.Slice(permSepIdx + 1);
+        }
+    }
+
+    private void AddToPermissionBucket(string permission)
+    {
+        var span = permission.AsSpan();
+        var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
+        var root = idx < 0 ? permission : permission.Substring(0, idx);
+
+        if (!_permissionBuckets.TryGetValue(root, out var list))
+        {
+            list                     = [];
+            _permissionBuckets[root] = list;
+        }
+
+        list.Add(permission);
+    }
+
+    private void RemoveFromPermissionBucket(string permission)
+    {
+        var idx  = permission.IndexOf(IAdminManager.SeparatorOperator);
+        var root = idx < 0 ? permission : permission.Substring(0, idx);
+
+        if (_permissionBuckets.TryGetValue(root, out var list))
+        {
+            list.Remove(permission);
+
+            if (list.Count == 0)
+            {
+                _permissionBuckets.Remove(root);
+            }
         }
     }
 
 #endregion
+
+#region Module management
 
     public ILocalizerManager? GetLocalizerManager()
         => _localizerManager;
@@ -453,284 +1055,5 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
     }
 
-    /// <summary>
-    ///     Re-calculates the final concrete Admin object based on all module sources.
-    ///     Handles merging permissions and finding max immunity.
-    /// </summary>
-    private void RebuildAdmin(ulong steamId)
-    {
-        if (!_adminSources.TryGetValue(steamId, out var sources) || sources.Count == 0)
-        {
-            // No modules claim this user anymore, remove them.
-            _globalAdmins.Remove(steamId);
-            _adminSources.Remove(steamId);
-
-            return;
-        }
-
-        byte maxImmunity = 0;
-
-        var globalAllows = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var globalDenies = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var source in sources.Values)
-        {
-            // we only take the max immunity
-            if (source.CalculatedImmunity > maxImmunity)
-            {
-                maxImmunity = source.CalculatedImmunity;
-            }
-
-            // Merge this module's sources into the global pool
-            globalAllows.UnionWith(source.ResolvedAllows);
-            globalDenies.UnionWith(source.ResolvedDenies);
-        }
-
-        // If Module A grants 'kick' and Module B denies 'kick', 'kick' is removed here.
-        globalAllows.ExceptWith(globalDenies);
-
-        var mergedAdmin = new Admin(steamId, maxImmunity);
-
-        foreach (var perm in globalAllows)
-        {
-            mergedAdmin.AddPermission(perm);
-        }
-
-        _globalAdmins[steamId] = mergedAdmin;
-    }
-
-    /// <summary>
-    ///     Calculates immunity by comparing Admin Manifest definition vs referenced Roles.
-    /// </summary>
-    private byte CalculateEffectiveImmunity(string moduleIdentity, AdminManifest adminManifest)
-    {
-        var maxImmunity = adminManifest.Immunity;
-
-        // Check immunity in assigned Roles
-        if (!_roles.TryGetValue(moduleIdentity, out var rolesDict))
-        {
-            return maxImmunity;
-        }
-
-        foreach (var rule in adminManifest.Permissions)
-        {
-            if (!rule.StartsWith(IAdminManager.RolesOperator))
-            {
-                continue;
-            }
-
-            var roleName = rule[1..];
-
-            if (!rolesDict.TryGetValue(roleName, out var roleManifest))
-            {
-                continue;
-            }
-
-            if (roleManifest.Immunity > maxImmunity)
-            {
-                maxImmunity = roleManifest.Immunity;
-            }
-        }
-
-        return maxImmunity;
-    }
-
-    /// <summary>
-    ///     Resolves a list of permission rules into separate Allow and Deny sets.
-    ///     This does not apply the denial logic yet; it simply categorizes rules so
-    ///     that global merging can handle "Deny Wins" across different modules.
-    /// </summary>
-    /// <param name="moduleIdentity">The module identity to resolve permissions within.</param>
-    /// <param name="permissionRules">The raw list of permission rules (e.g. "admin.kick", "!admin.ban", "@SuperAdmin").</param>
-    /// <returns>
-    ///     A tuple containing:
-    ///     <br /><b>Allows:</b> Concrete permissions explicitly granted.
-    ///     <br /><b>Denies:</b> Concrete permissions explicitly revoked (prefixed with '!').
-    /// </returns>
-    private (HashSet<string> Allows, HashSet<string> Denies) ResolvePermissions(
-        string          moduleIdentity,
-        HashSet<string> permissionRules)
-    {
-        // a tracker for recursion
-        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var allows       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var denies       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        ResolvePermissionsRecursive(moduleIdentity, permissionRules, visitedRoles, allows, denies);
-
-        return (allows, denies);
-    }
-
-    /// <summary>
-    ///     Recursively traverses permission rules and role inheritance trees to populate the Allow/Deny sets.
-    /// </summary>
-    private void ResolvePermissionsRecursive(
-        string          moduleIdentity,
-        HashSet<string> permissionRules,
-        HashSet<string> visitedRoles,
-        HashSet<string> collectedAllows,
-        HashSet<string> collectedDenies)
-    {
-        foreach (var rule in permissionRules)
-        {
-            if (string.IsNullOrWhiteSpace(rule))
-            {
-                continue;
-            }
-
-            // Handle denial rules (!)
-            if (rule.StartsWith(IAdminManager.DenyOperator))
-            {
-                var deniedRule = rule[1..];
-
-                // Expand wildcards in denied rules
-                var matchedPermissions = MatchWildcard(moduleIdentity, deniedRule);
-                collectedDenies.UnionWith(matchedPermissions);
-            }
-
-            // Handle role inheritance (@)
-            else if (rule.StartsWith(IAdminManager.RolesOperator))
-            {
-                var roleName = rule[1..];
-
-                // if false it means we already visited this role, skip it to prevent infinite loop
-                if (!visitedRoles.Add(roleName))
-                {
-                    continue;
-                }
-
-                if (_roles.TryGetValue(moduleIdentity, out var moduleRoles))
-                {
-                    if (moduleRoles.TryGetValue(roleName, out var rolePermissions))
-                    {
-                        ResolvePermissionsRecursive(moduleIdentity,
-                                                    rolePermissions.Permissions,
-                                                    visitedRoles,
-                                                    collectedAllows,
-                                                    collectedDenies);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Module '{Module}' refers to Role '@{Role}', but it is not defined in the manifest!",
-                                           moduleIdentity,
-                                           roleName);
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning("Module '{Module}' refers to Role '@{Role}', but this module has no Roles defined!",
-                                       moduleIdentity,
-                                       roleName);
-                }
-
-                // BACKTRACKING:
-                // We are done processing this role for this specific path.
-                // We remove it so that other parallel branches can use this role again.
-                // (Allows Diamond Inheritance: A->B->D and A->C->D)
-                visitedRoles.Remove(roleName);
-            }
-
-            // Handle direct permissions and wildcards
-            else
-            {
-                var matchedPermissions = MatchWildcard(moduleIdentity, rule);
-
-                collectedAllows.UnionWith(matchedPermissions);
-            }
-        }
-    }
-
-    /// <summary>
-    ///     Matches a permission pattern (with wildcards) against all concrete permissions
-    /// </summary>
-    /// <param name="moduleIdentity">The module identity to match within, or empty to match globally</param>
-    /// <param name="pattern">The permission pattern to match</param>
-    private HashSet<string> MatchWildcard(string moduleIdentity, string pattern)
-    {
-        // Determine which permission collection to search in
-
-        // If a specific module is provided, we could optionally restrict to that module's permissions
-        // For now, we'll search globally but this can be modified if needed
-
-        const char wildcard  = IAdminManager.WildCardOperator;
-        const char separator = IAdminManager.SeparatorOperator;
-
-        // Concrete permission (no wildcard)
-        if (!pattern.Contains(wildcard))
-        {
-            var matches = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            if (_permissionReferenceCounts.ContainsKey(pattern))
-            {
-                matches.Add(pattern);
-            }
-
-            return matches;
-        }
-
-        // Global wildcard "*"
-        if (pattern is [wildcard])
-        {
-            return new HashSet<string>(_permissionReferenceCounts.Keys, StringComparer.OrdinalIgnoreCase);
-        }
-
-        var patternSegments = pattern.Split(separator);
-        var result          = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var permission in _permissionReferenceCounts.Keys)
-        {
-            if (IsWildcardMatch(permission, patternSegments))
-            {
-                result.Add(permission);
-            }
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    ///     Checks if a concrete permission matches a wildcard pattern
-    ///     Rule: pattern segments must match permission segments (segment count must be equal)
-    /// </summary>
-    private static bool IsWildcardMatch(string permission, string[] patternSegments)
-    {
-        var permSpan     = permission.AsSpan();
-        var patternIndex = 0;
-
-        const char separator = IAdminManager.SeparatorOperator;
-        const char wildcard  = IAdminManager.WildCardOperator;
-
-        while (true)
-        {
-            // permission has more segments than pattern, exit immediately
-            if (patternIndex >= patternSegments.Length)
-            {
-                return false;
-            }
-
-            var sepIndex       = permSpan.IndexOf(separator);
-            var currentPermSeg = sepIndex == -1 ? permSpan : permSpan.Slice(0, sepIndex);
-            var currentPatSeg  = patternSegments[patternIndex];
-
-            // if it is NOT a wildcard, we must check for equality
-            if (currentPatSeg is not [wildcard])
-            {
-                if (!currentPermSeg.Equals(currentPatSeg, StringComparison.OrdinalIgnoreCase))
-                {
-                    return false;
-                }
-            }
-
-            patternIndex++;
-
-            if (sepIndex == -1)
-            {
-                break;
-            }
-
-            permSpan = permSpan.Slice(sepIndex + 1);
-        }
-
-        return patternIndex == patternSegments.Length;
-    }
+#endregion
 }
