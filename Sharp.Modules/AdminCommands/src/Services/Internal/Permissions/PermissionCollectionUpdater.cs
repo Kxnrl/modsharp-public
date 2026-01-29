@@ -21,7 +21,7 @@ internal static class PermissionCollectionUpdater
                              IReadOnlyCollection<string> permissions,
                              ILogger                     logger)
     {
-        var configPath = Path.Combine(sharpPath, "configs", "admin.jsonc");
+        var configPath = Path.Combine(sharpPath, "configs", "admins.jsonc");
 
         try
         {
@@ -54,7 +54,7 @@ internal static class PermissionCollectionUpdater
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to update permission collection '{Collection}' in admin.jsonc.", collectionName);
+            logger.LogError(ex, "Failed to update permission collection '{Collection}' in admins.jsonc.", collectionName);
         }
     }
 }
