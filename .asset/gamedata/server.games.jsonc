@@ -770,7 +770,7 @@
     // m_nSubclassID + 4
     "CBaseWeapon::m_VData": {
       "linux": 1536,
-      "windows": 792
+      "windows": 800
     },
     // after m_nPersonaDataXpTrailLevel + 4
     "CCSPlayerController_InventoryServices::CCSPlayerInventory": {
