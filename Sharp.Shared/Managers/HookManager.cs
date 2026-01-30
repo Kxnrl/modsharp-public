@@ -56,6 +56,7 @@ public interface IHookManager
     /// <summary>
     ///     IServerGameClients::ClientConnect
     /// </summary>
+    [Obsolete("Use ConnectClient instead, will be removed in the future", true)]
     IHookType<IClientConnectHookParams, bool> ClientConnect { get; }
 
     /// <summary>

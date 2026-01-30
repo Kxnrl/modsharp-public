@@ -52,7 +52,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
             return;
         }
 
-        _bridge.HookManager.ClientConnect.InstallHookPre(OnClientConnectPre);
+        _bridge.HookManager.ConnectClient.InstallHookPre(OnConnectClientPre);
         _hooksRegistered = true;
     }
 
@@ -63,22 +63,23 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
             return;
         }
 
-        _bridge.HookManager.ClientConnect.RemoveHookPre(OnClientConnectPre);
+        _bridge.HookManager.ConnectClient.RemoveHookPre(OnConnectClientPre);
+
         _hooksRegistered = false;
     }
 
-    private HookReturnValue<bool> OnClientConnectPre(IClientConnectHookParams @params, HookReturnValue<bool> arg2)
+    private HookReturnValue<NetworkDisconnectionReason> OnConnectClientPre(IConnectClientHookParams                    @params,
+                                                                           HookReturnValue<NetworkDisconnectionReason> arg2)
     {
         var steamId = @params.SteamId;
 
         if (!IsBanned(steamId))
         {
-            return new HookReturnValue<bool>(EHookAction.Ignored);
+            return new HookReturnValue<NetworkDisconnectionReason>();
         }
 
-        @params.SetBlockReason("User is banned");
-
-        return new HookReturnValue<bool>(EHookAction.SkipCallReturnOverride, false);
+        return new HookReturnValue<NetworkDisconnectionReason>(EHookAction.SkipCallReturnOverride,
+                                                               NetworkDisconnectionReason.SteamBanned);
     }
 
     private bool IsBanned(SteamID steamId)
