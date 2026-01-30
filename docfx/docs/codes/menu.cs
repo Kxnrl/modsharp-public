@@ -1,5 +1,5 @@
-using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sharp.Modules.MenuManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -11,14 +11,17 @@ namespace MenuExample;
 
 internal class MenuExample : IModSharpModule
 {
-    private readonly ISharedSystem _sharedSystem;
+    private const string MenuManagerAssemblyName = "Sharp.Modules.MenuManager";
+
+    private readonly ISharedSystem        _sharedSystem;
+    private readonly ILogger<MenuExample> _logger;
 
     private readonly Menu _cachedSubMenu;
     private readonly Menu _cachedMenu;
 
     private bool _useCacheMenu = true;
 
-    private IModSharpModuleInterface<IMenuManager>? _menuManager;
+    private IMenuManager? _menuManager;
 
     public MenuExample(ISharedSystem  sharedSystem,
                        string         dllPath,
@@ -28,6 +31,7 @@ internal class MenuExample : IModSharpModule
                        bool           hotReload)
     {
         _sharedSystem = sharedSystem;
+        _logger       = sharedSystem.GetLoggerFactory().CreateLogger<MenuExample>();
 
         // Example 1: Cached Menu (Recommended for static menus)
         // You can precache menu in constructor.
@@ -66,10 +70,33 @@ internal class MenuExample : IModSharpModule
         return true;
     }
 
+    public void PostInit()
+    {
+        // we call it here just to prevent it fails to find **MenuManager** after our module is reloaded
+        // this is because OnAllModulesLoaded is only called once when every module is loaded at start up
+        TryResolveMenuManager();
+    }
+
+    public void OnLibraryConnected(string name)
+    {
+        if (name.Equals(MenuManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        {
+            TryResolveMenuManager();
+        }
+    }
+
+    public void OnLibraryDisconnect(string name)
+    {
+        if (name.Equals(MenuManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        {
+            _menuManager = null;
+        }
+    }
+
     public void OnAllModulesLoaded()
     {
-        _menuManager = _sharedSystem.GetSharpModuleManager()
-                                    .GetRequiredSharpModuleInterface<IMenuManager>(IMenuManager.Identity);
+        // we also call it here and see if the end user(module consumer) has menu manager installed, so we can inform them if they don't.
+        TryResolveMenuManager(true);
     }
 
     public void Shutdown()
@@ -92,7 +119,7 @@ internal class MenuExample : IModSharpModule
 
     private void OnPlayerSpawnPost(IPlayerSpawnForwardParams obj)
     {
-        if (_menuManager?.Instance is not { } menuManager)
+        if (_menuManager is not { } menuManager)
         {
             return;
         }
@@ -255,4 +282,28 @@ internal class MenuExample : IModSharpModule
 
         controller.Exit();
     }
+
+    private void TryResolveMenuManager(bool logFailure = false)
+    {
+        if (_menuManager is not null)
+        {
+            return;
+        }
+
+        _menuManager = GetExternalModule<IMenuManager>(IMenuManager.Identity);
+
+        if (_menuManager is null)
+        {
+            if (logFailure)
+            {
+                _logger.LogWarning("Failed to get MenuManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
+                                   MenuManagerAssemblyName);
+            }
+        }
+    }
+
+    private T? GetExternalModule<T>(string identity) where T : class
+        => _sharedSystem.GetSharpModuleManager()
+                        .GetOptionalSharpModuleInterface<T>(identity)
+                        ?.Instance;
 }
