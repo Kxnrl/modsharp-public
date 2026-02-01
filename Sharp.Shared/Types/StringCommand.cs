@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using Sharp.Shared.Utilities;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -35,19 +35,23 @@ public readonly record struct StringCommand
     public int    ArgCount    => _arguments?.Length ?? 0;
 
     private readonly string[]? _arguments;
-    private const    string    EmptyArg = "";
 
     public StringCommand(string command, bool chatTrigger, string? argumentString)
     {
         CommandName = command;
         ChatTrigger = chatTrigger;
-        ArgString   = string.IsNullOrWhiteSpace(argumentString) ? EmptyArg : argumentString;
-        _arguments  = string.IsNullOrWhiteSpace(argumentString) ? null : SplitCommandLine(argumentString).ToArray();
+        ArgString   = Sanitize(argumentString);
+
+        _arguments = SplitCommandLine(ArgString);
     }
 
     public string GetCommandString()
         => $"{CommandName} {ArgString}";
 
+    /// <summary>
+    ///     Get command argument as string
+    /// </summary>
+    /// <param name="index">Argument index, starts from <b>1</b></param>
     public string this[int index] => GetArg(index);
 
     /// <summary>
@@ -204,124 +208,130 @@ public readonly record struct StringCommand
         return EnumConverter<T>.Convert(value);
     }
 
-#region Parser
+    private const char   BadChar  = '\u200B';
+    private const char   Quote    = '"';
+    private const string EmptyArg = "";
 
-    private static IEnumerable<string> SplitCommandLine(string commandLine)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string Sanitize(string? input)
     {
-        ArgumentException.ThrowIfNullOrEmpty(commandLine);
-
-        var memory = commandLine.AsMemory();
-
-        var startTokenIndex = 0;
-
-        var pos = 0;
-
-        var seeking      = Boundary.TokenStart;
-        var seekingQuote = Boundary.QuoteStart;
-
-        while (pos < memory.Length)
+        if (string.IsNullOrEmpty(input))
         {
-            var c = memory.Span[pos];
-
-            if (char.IsWhiteSpace(c))
-            {
-                if (seekingQuote == Boundary.QuoteStart)
-                {
-                    switch (seeking)
-                    {
-                        case Boundary.WordEnd:
-                            yield return CurrentToken();
-
-                            startTokenIndex = pos;
-                            seeking         = Boundary.TokenStart;
-
-                            break;
-
-                        case Boundary.TokenStart:
-                            startTokenIndex = pos;
-
-                            break;
-                    }
-                }
-            }
-            else if (c == '\"')
-            {
-                if (seeking == Boundary.TokenStart)
-                {
-                    switch (seekingQuote)
-                    {
-                        case Boundary.QuoteEnd:
-                            yield return CurrentToken();
-
-                            startTokenIndex = pos;
-                            seekingQuote    = Boundary.QuoteStart;
-
-                            break;
-
-                        case Boundary.QuoteStart:
-                            startTokenIndex = pos + 1;
-                            seekingQuote    = Boundary.QuoteEnd;
-
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (seekingQuote)
-                    {
-                        case Boundary.QuoteEnd:
-                            seekingQuote = Boundary.QuoteStart;
-
-                            break;
-
-                        case Boundary.QuoteStart:
-                            seekingQuote = Boundary.QuoteEnd;
-
-                            break;
-                    }
-                }
-            }
-            else if (seeking == Boundary.TokenStart && seekingQuote == Boundary.QuoteStart)
-            {
-                seeking         = Boundary.WordEnd;
-                startTokenIndex = pos;
-            }
-
-            Advance();
-
-            if (IsAtEndOfInput())
-            {
-                switch (seeking)
-                {
-                    case Boundary.TokenStart:
-                        break;
-                    default:
-                        yield return CurrentToken();
-
-                        break;
-                }
-            }
+            return EmptyArg;
         }
 
-        void Advance()
-            => pos++;
+        var content = input.Contains(BadChar) ? input.Replace(BadChar, Quote) : input;
 
-        string CurrentToken()
-            => memory.Slice(startTokenIndex, IndexOfEndOfToken()).ToString().Replace("\"", "");
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return EmptyArg;
+        }
 
-        int IndexOfEndOfToken()
-            => pos - startTokenIndex;
-
-        bool IsAtEndOfInput()
-            => pos == memory.Length;
+        return content;
     }
 
-    private enum Boundary
+#region Parser
+
+    private static string[]? SplitCommandLine(string commandLine)
     {
-        TokenStart,
-        WordEnd,
-        QuoteStart,
-        QuoteEnd,
+        if (string.IsNullOrWhiteSpace(commandLine))
+        {
+            return null;
+        }
+
+        var results = new List<string>();
+        var span    = commandLine.AsSpan();
+        var len     = span.Length;
+        var i       = 0;
+
+        while (i < len)
+        {
+            while (i < len && char.IsWhiteSpace(span[i]))
+            {
+                i++;
+            }
+
+            if (i >= len)
+            {
+                break;
+            }
+
+            var start   = i;
+            var inQuote = false;
+            var escaped = false;
+
+            while (i < len)
+            {
+                var c = span[i];
+
+                if (escaped)
+                {
+                    escaped = false;
+                }
+                else if (c == '\\' && i + 1 < len && span[i + 1] == Quote)
+                {
+                    escaped = true;
+                }
+                else if (c == Quote)
+                {
+                    inQuote = !inQuote;
+                }
+                else if (char.IsWhiteSpace(c) && !inQuote)
+                {
+                    break;
+                }
+
+                i++;
+            }
+
+            results.Add(CleanToken(span.Slice(start, i - start)));
+        }
+
+        return results.ToArray();
+    }
+
+    private static string CleanToken(ReadOnlySpan<char> rawToken)
+    {
+        if (rawToken.IndexOf(Quote) < 0)
+        {
+            return rawToken.ToString();
+        }
+
+        var buffer  = new char[rawToken.Length];
+        var destIdx = 0;
+        var inQuote = false;
+        var escaped = false;
+
+        for (var i = 0; i < rawToken.Length; i++)
+        {
+            var c = rawToken[i];
+
+            if (escaped)
+            {
+                buffer[destIdx++] = c;
+                escaped           = false;
+
+                continue;
+            }
+
+            if (c == Quote)
+            {
+                inQuote = !inQuote;
+
+                continue;
+            }
+
+            if (c == '\\' && i + 1 < rawToken.Length && rawToken[i + 1] == Quote)
+            {
+                escaped = true;
+
+                continue;
+            }
+
+            buffer[destIdx++] = c;
+        }
+
+        return new string(buffer, 0, destIdx);
     }
 
 #endregion
