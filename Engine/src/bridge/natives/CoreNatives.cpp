@@ -28,10 +28,13 @@
 #include "memory/memory_access.h"
 #include "module.h"
 #include "sdkproxy.h"
+#include "strtool.h"
 #include "vhook/hook.h"
 
+#include "cstrike/interface/CDedicatedServerWorkshopManager.h"
 #include "cstrike/interface/ICommandLine.h"
 #include "cstrike/interface/IEngineServer.h"
+#include "cstrike/interface/IFileSystem.h"
 #include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/INetworkStringTable.h"
 #include "cstrike/interface/IServerGameClient.h"
@@ -93,7 +96,30 @@ static void ChangeLevel(const char* map)
 
 static bool IsMapValid(const char* map)
 {
-    return engine->IsMapValid(map);
+    // official map
+    if (g_pFullFileSystem->FileExists(FString("maps/%s.vpk", map), "GAME"))
+    {
+        return true;
+    }
+
+    // official community map
+    if (g_pFullFileSystem->IsDirectory(map, "OFFICIAL_ADDONS") && g_pFullFileSystem->FileExists(FString("%s/%s_dir.vpk", map, map), "OFFICIAL_ADDONS"))
+    {
+        return true;
+    }
+
+    // workshop
+    CUtlVector<WorkshopMap_t> workshopMaps;
+    g_pServerWorkshopManager->ListWorkshopMaps(&workshopMaps);
+
+    if (workshopMaps.Count() == 0) return false;
+
+    for (const auto& workshop : workshopMaps)
+    {
+        if (strcasecmp(workshop.m_pName, map) == 0) return true;
+    }
+
+    return false;
 }
 
 static void ServerCommand(const char* command)

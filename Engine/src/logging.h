@@ -104,18 +104,18 @@ template <typename... Args>
 void Warning(const char* buffer, Args...);
 */
 
-void ConsoleMessage(const char* function, const char* buffer, ...);
-void ConsoleWarning(const char* function, const char* buffer, ...);
-void ConsoleText(const Color& color, const char* buffer, ...);
+void ConsoleMessage(const char* function, const char* buffer, ...) MS_FMTFUNCTION(2, 3);
+void ConsoleWarning(const char* function, const char* buffer, ...) MS_FMTFUNCTION(2, 3);
+void ConsoleText(const Color& color, const char* buffer, ...) MS_FMTFUNCTION(2, 3);
 
-void LogFatal(const char* message, ...);
-void LogError(const char* message, ...);
-void LogInfo(const char* message, ...);
+void LogFatal(const char* message, ...) MS_FMTFUNCTION(1, 2);
+void LogError(const char* message, ...) MS_FMTFUNCTION(1, 2);
+void LogInfo(const char* message, ...) MS_FMTFUNCTION(1, 2);
 
-void LogFuncError(const char* function, const char* message, ...);
-void LogFuncInfo(const char* function, const char* message, ...);
+void LogFuncError(const char* function, const char* message, ...) MS_FMTFUNCTION(2, 3);
+void LogFuncInfo(const char* function, const char* message, ...) MS_FMTFUNCTION(2, 3);
 
-void FatalError(const char* message, ...);
+void FatalError(const char* message, ...) MS_FMTFUNCTION(1, 2);
 
 void CreateLogging();
 
