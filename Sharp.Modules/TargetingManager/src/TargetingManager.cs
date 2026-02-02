@@ -20,45 +20,45 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
     private readonly Dictionary<string, (string Owner, ITargetResolver Resolver)> _targetResolvers
         = new (StringComparer.OrdinalIgnoreCase);
 
+    private static readonly string CoreIdentity
+        = typeof(TargetingManager).Assembly.GetName().Name ?? "Sharp.Modules.TargetingManager";
+
 #region IModSharpModule
 
     public TargetingManager(
-        ISharedSystem sharedSystem,
-        string dllPath,
-        string sharpPath,
-        Version version,
+        ISharedSystem  sharedSystem,
+        string         dllPath,
+        string         sharpPath,
+        Version        version,
         IConfiguration coreConfiguration,
-        bool hotReload)
+        bool           hotReload)
     {
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<TargetingManager>();
-
-        var coreId = typeof(TargetingManager).Assembly.GetName().Name ?? "Sharp.Modules.TargetingManager";
 
         _sharedSystem = sharedSystem;
         var clientManager = sharedSystem.GetClientManager();
         _clientManager = clientManager;
 
-        RegisterResolver(coreId, new Alive(clientManager));
-        RegisterResolver(coreId, new All(clientManager));
-        RegisterResolver(coreId, new None(clientManager));
-        RegisterResolver(coreId, new Bots(clientManager));
-        RegisterResolver(coreId, new Ct(clientManager));
-        RegisterResolver(coreId, new Dead(clientManager));
-        RegisterResolver(coreId, new Me(clientManager));
-        RegisterResolver(coreId, new NotMe(clientManager));
-        RegisterResolver(coreId, new Spec(clientManager));
-        RegisterResolver(coreId, new T(clientManager));
+        RegisterResolver(CoreIdentity, new Alive(clientManager));
+        RegisterResolver(CoreIdentity, new All(clientManager));
+        RegisterResolver(CoreIdentity, new None(clientManager));
+        RegisterResolver(CoreIdentity, new Bots(clientManager));
+        RegisterResolver(CoreIdentity, new Ct(clientManager));
+        RegisterResolver(CoreIdentity, new Dead(clientManager));
+        RegisterResolver(CoreIdentity, new Me(clientManager));
+        RegisterResolver(CoreIdentity, new NotMe(clientManager));
+        RegisterResolver(CoreIdentity, new Spec(clientManager));
+        RegisterResolver(CoreIdentity, new T(clientManager));
+        RegisterResolver(CoreIdentity, new Aim(_sharedSystem));
     }
 
     public bool Init()
-    {
-        return true;
-    }
+        => true;
 
     public void PostInit()
     {
         _sharedSystem.GetSharpModuleManager()
-            .RegisterSharpModuleInterface<ITargetingManager>(this, ITargetingManager.Identity, this);
+                     .RegisterSharpModuleInterface<ITargetingManager>(this, ITargetingManager.Identity, this);
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -88,9 +88,9 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
     string IModSharpModule.DisplayName   => "Sharp.Modules.TargetingManager";
     string IModSharpModule.DisplayAuthor => "laper32";
 
-    #endregion
+#endregion
 
-    #region ITargetingManager
+#region ITargetingManager
 
     public IEnumerable<IGameClient> GetByTarget(IGameClient? activator, string target)
     {
@@ -105,7 +105,7 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
             // "@!ct" --> "@ct"
             var positiveTarget = target.Remove(1, 1);
 
-            var allClients      = _clientManager.GetGameClients(true);
+            var allClients = _clientManager.GetGameClients(true);
 
             var clientsToExclude = GetByTarget(activator, positiveTarget);
 
@@ -153,5 +153,5 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
         return true;
     }
 
-    #endregion
+#endregion
 }

@@ -5,6 +5,8 @@ public class PredefinedTargets
     public const string All  = "@all";
     public const string None = "@!all";
 
+    public const string Aim = "@aim";
+
     public const string Ct    = "@ct";
     public const string T     = "@t";
     public const string Spec  = "@spec";
