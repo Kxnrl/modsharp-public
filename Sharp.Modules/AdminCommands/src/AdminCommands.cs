@@ -1,13 +1,12 @@
-using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Commands;
 using Sharp.Modules.AdminCommands.Extensions;
 using Sharp.Modules.AdminCommands.Services;
+using Sharp.Modules.AdminCommands.Services.Handlers;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Modules.AdminCommands.Services.Internal.Permissions;
-using Sharp.Modules.AdminCommands.Services.Handlers;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminCommands.Storage;
 using Sharp.Modules.AdminManager.Shared;
@@ -158,9 +157,9 @@ public class AdminCommands : IModSharpModule
     {
         if (name.Equals(AdminManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
+            UnregisterCommands();
             _adminManager = null;
             _moduleContext.UpdateAdminManager(null);
-            _registered        = false;
         }
         else if (name.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
@@ -191,6 +190,7 @@ public class AdminCommands : IModSharpModule
         var engine = _serviceProvider.GetRequiredService<AdminOperationEngine>();
         engine.Shutdown();
 
+        UnregisterCommands();
         UnregisterHandlerHooks();
 
         _serviceProvider.Dispose();
@@ -203,6 +203,9 @@ public class AdminCommands : IModSharpModule
             return;
         }
 
+        var registeredCategories = new List<ICommandCategory>(_commandCategories.Count);
+        _permissionTracker.Clear();
+
         try
         {
             var inner = _adminManager.GetCommandRegistry(AssemblyName);
@@ -212,6 +215,7 @@ public class AdminCommands : IModSharpModule
             foreach (var category in _commandCategories)
             {
                 category.Register(registry);
+                registeredCategories.Add(category);
             }
 
             PermissionCollectionUpdater.Write(_adminManager, _sharpPath, "admin", _permissionTracker.Permissions, _logger);
@@ -220,9 +224,37 @@ public class AdminCommands : IModSharpModule
         }
         catch (Exception e)
         {
+            UnregisterCommands(registeredCategories);
+
             if (logFailture)
             {
                 _logger.LogError(e, "Failed to register commands");
+            }
+        }
+    }
+
+    private void UnregisterCommands()
+    {
+        if (!_registered)
+        {
+            return;
+        }
+
+        UnregisterCommands(_commandCategories);
+        _registered = false;
+    }
+
+    private void UnregisterCommands(IEnumerable<ICommandCategory> categories)
+    {
+        foreach (var category in categories)
+        {
+            try
+            {
+                category.Unregister();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to unregister command category '{Category}'.", category.GetType().Name);
             }
         }
     }

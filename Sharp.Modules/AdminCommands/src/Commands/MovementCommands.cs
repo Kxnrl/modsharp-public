@@ -4,6 +4,7 @@ using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
+using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Commands;
 
@@ -13,8 +14,12 @@ internal sealed class MovementCommands : ICommandCategory
     private readonly CommandContextFactory     _contextFactory;
     private readonly ILogger<MovementCommands> _logger;
 
+    private readonly float[] _speedFactors = new float[PlayerSlot.MaxPlayerCount];
+
     public MovementCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
     {
+        Array.Fill(_speedFactors, 1.0f);
+
         _bridge         = bridge;
         _contextFactory = contextFactory;
         _logger         = bridge.LoggerFactory.CreateLogger<MovementCommands>();
@@ -27,6 +32,10 @@ internal sealed class MovementCommands : ICommandCategory
         registry.RegisterAdminCommand("gravity", OnCommandGravity,  ["admin:gravity"]);
         registry.RegisterAdminCommand("tp",      OnCommandTeleport, ["admin:tp"]);
         registry.RegisterAdminCommand("bring",   OnCommandBring,    ["admin:bring"]);
+    }
+
+    public void Unregister()
+    {
     }
 
     private void OnCommandNoclip(IGameClient? issuer, StringCommand command)
@@ -100,20 +109,18 @@ internal sealed class MovementCommands : ICommandCategory
             return;
         }
 
-        ctx.Reply("Not implemented!!!");
-
-        /*var count = 0;
+        var count = 0;
 
         foreach (var target in targets)
         {
-            if (!CommandHelpers.TryGetPawn(ctx, target, out var pawn))
+            if (!CommandHelpers.TryGetPawn(target, out var pawn) || !pawn.IsAlive)
             {
                 continue;
             }
 
             if (target.GetPlayerController() is { } controller)
             {
-                controller.LaggedMovement *= speed;
+                controller.LaggedMovement = speed;
             }
 
             count++;
@@ -126,7 +133,7 @@ internal sealed class MovementCommands : ICommandCategory
                                 ctx.IssuerName,
                                 targetLabel,
                                 speed.ToString("0.##", CultureInfo.InvariantCulture));
-        }*/
+        }
     }
 
     private void OnCommandGravity(IGameClient? issuer, StringCommand command)

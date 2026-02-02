@@ -23,6 +23,11 @@ internal sealed class PermissionTracker
         }
     }
 
+    public void Clear()
+    {
+        _permissions.Clear();
+    }
+
     public IReadOnlyCollection<string> Permissions => _permissions;
 }
 
