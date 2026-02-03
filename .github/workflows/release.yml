@@ -138,20 +138,28 @@ jobs:
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminCommands/src/Sharp.Modules.AdminCommands.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminCommands -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AdminManager/src/Sharp.Modules.AdminManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/CommandManager/src/Sharp.Modules.CommandManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/CommandManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/TargetingManager/src/Sharp.Modules.TargetingManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/TargetingManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminCommands/Shared/Sharp.Modules.AdminCommands.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AdminCommands.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AdminManager/Shared/Sharp.Modules.AdminManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AdminManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/CommandManager/Shared/Sharp.Modules.CommandManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.CommandManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.TargetingManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
@@ -283,20 +291,28 @@ jobs:
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminCommands/src/Sharp.Modules.AdminCommands.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminCommands -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminFlatFile -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AdminManager/src/Sharp.Modules.AdminManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/AdminManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/ClientPreferences -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/CommandManager/src/Sharp.Modules.CommandManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/CommandManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/TargetingManager/src/Sharp.Modules.TargetingManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/TargetingManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
         run: |
+          dotnet publish Sharp.Modules/AdminCommands/Shared/Sharp.Modules.AdminCommands.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AdminCommands.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AdminManager/Shared/Sharp.Modules.AdminManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AdminManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/CommandManager/Shared/Sharp.Modules.CommandManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.CommandManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.TargetingManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
@@ -360,9 +376,13 @@ jobs:
           dotnet pack Sharp.Extensions/CommandManager/src/Sharp.Extensions.CommandManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Extensions/GameEventManager/src/Sharp.Extensions.GameEventManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Extensions/EntityHookManager/src/Sharp.Extensions.EntityHookManager.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/AdminCommands/Shared/Sharp.Modules.AdminCommands.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/AdminManager/Shared/Sharp.Modules.AdminManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/CommandManager/Shared/Sharp.Modules.CommandManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Publish
         shell: bash
