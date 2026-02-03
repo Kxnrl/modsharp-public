@@ -328,36 +328,20 @@ public class AdminCommands : IModSharpModule
     {
         try
         {
-            var iface = _shared.GetSharpModuleManager()
-                               .GetRequiredSharpModuleInterface<IAdminOperationStorageService>(IAdminOperationStorageService
-                                            .Identity);
-
-            var external = iface.Instance;
+            var external = GetExternalModule<IAdminOperationStorageService>(IAdminOperationStorageService.Identity);
 
             if (external is null)
             {
-                _logger.LogWarning("External storage is null");
-
                 return;
             }
 
             if (!ReferenceEquals(_adminOperationStorage.Current, external))
             {
-                _logger.LogInformation("Using external provider");
                 _adminOperationStorage.Use(external, providerName);
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            _logger.LogInformation("IAdminOperationStorageService: {name} | {loc} | ALC={alc}",
-                                   typeof(IAdminOperationStorageService).Assembly.FullName,
-                                   typeof(IAdminOperationStorageService).Assembly.Location,
-                                   System.Runtime.Loader.AssemblyLoadContext
-                                         .GetLoadContext(typeof(IAdminOperationStorageService).Assembly)
-                                         ?.Name);
-
-            _logger.LogError(e, "Error when trying to get external storage, using fallback");
-
             _adminOperationStorage.UseFallback();
         }
     }

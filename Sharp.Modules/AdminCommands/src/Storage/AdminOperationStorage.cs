@@ -32,13 +32,16 @@ internal sealed class AdminOperationStorage : IAdminOperationStorageService
 
         Volatile.Write(ref _current, storage);
 
-        if (!string.IsNullOrWhiteSpace(providerName))
+        if (!ReferenceEquals(storage, _fallback))
         {
-            _logger.LogInformation("Using external admin operation storage from {provider}.", providerName);
-        }
-        else if (!ReferenceEquals(storage, _fallback))
-        {
-            _logger.LogInformation("Using custom admin operation storage instance.");
+            if (!string.IsNullOrWhiteSpace(providerName))
+            {
+                _logger.LogInformation("Using external admin operation storage from {provider}.", providerName);
+            }
+            else
+            {
+                _logger.LogInformation("Using custom admin operation storage instance.");
+            }
         }
         else
         {
