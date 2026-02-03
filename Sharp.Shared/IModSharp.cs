@@ -83,7 +83,7 @@ public interface IModSharp
     nint GetIEngine();
 
     /// <summary>
-    ///     Get GameRules (not available in <see cref="GameListener.OnGameShutdown"/>)
+    ///     Get GameRules (not available in <see cref="IGameListener.OnGameShutdown"/>)
     /// </summary>
     IGameRules GetGameRules();
 

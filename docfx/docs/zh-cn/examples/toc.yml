@@ -1,23 +1,23 @@
 - name: Hello World
   href: hello-world.md
 
-- name: ConVar
+- name: 控制台变量 (Convar)
   href: convar.md
 
-- name: Command
+- name: 指令
   href: command.md
 
-- name: Dependency Injection
+- name: 依赖注入(Dependency Injection)
   href: dependency-injection.md
 
-- name: Module Shared API
+- name: 模组 API
   items:
-    - name: Shared API
+    - name: 共享 API
       href: module-api.md
     # - name: Dynamic API
     #   href: dynamic-api.md
 
-- name: Listeners
+- name: 监听器
   items:
     - name: IClientListener
       href: client-listener.md
@@ -32,18 +32,18 @@
     - name: Multi Listeners in One Module
       href: multi-listeners.md
 
-- name: Net Messages
+- name: 网络消息
   items:
-    - name: Send net message
+    - name: 发送
       href: net-message-send.md
-    - name: Hook net message
+    - name: Hook
       href: net-message-hook.md
 
-- name: Sound System
+- name: 音效相关
   items:
-    - name: Sound Emitter
+    - name: 播放音效
       href: sound-emitter.md
-    - name: Sound Hook
+    - name: Hook音频播放
       href: sound-hook.md
 
 - name: Transmit
@@ -51,24 +51,24 @@
     - name: Transmit Hook
       href: transmit.md
 
-- name: Game Calls
+- name: 调用游戏函数
   items:
     - name: Native Call
       href: native-call.md
 
-- name: Game Hooks
+- name: Hook游戏函数
   items:
     - name: Native Hook
       href: native-hook.md
 
-- name: Physics Query and Traces
+- name: 射线(Trace)
   items:
     - name: Traces (Warpper)
       href: trace-wrapper.md
     - name: Traces (Native)
       href: trace-native.md
 
-- name: Extensions
+- name: 拓展
   items:
     - name: Using Sharp Extensions
       href: sharp-extensions.md
@@ -81,7 +81,7 @@
     - name: ICommandManager
       href: command-manager.md
 
-- name: FirstParty Modules
+- name: 第一方模组
   items:
     - name: Client Preferences
       href: client-preferences.md
@@ -89,3 +89,7 @@
       href: localizer-manager.md
     - name: Menu
       href: menu.md
+    - name: Targeting Manager
+      href: targeting-manager.md
+    - name: Admin Manager
+      href: admin-example.md

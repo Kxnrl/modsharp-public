@@ -27,12 +27,12 @@ public enum ECommandAction : byte
     Skipped,
 
     /// <summary>
-    ///     Continue executing ExecuteStringCommand. If it is used in <see cref="ClientListener.OnClientSayCommand"/>, no message will be sent
+    ///     Continue executing ExecuteStringCommand. If it is used in <see cref="Sharp.Shared.Listeners.IClientListener.OnClientSayCommand"/>, no message will be sent
     /// </summary>
     Handled,
 
     /// <summary>
-    ///     Skip executing ExecuteStringCommand. If it is used in <see cref="ClientListener.OnClientSayCommand"/>, no message will be sent
+    ///     Skip executing ExecuteStringCommand. If it is used in <see cref="Sharp.Shared.Listeners.IClientListener.OnClientSayCommand"/>, no message will be sent
     /// </summary>
     Stopped,
 };

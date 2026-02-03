@@ -40,7 +40,7 @@ public interface ICommandRegistry
     /// <summary>
     ///     Registers a client command.<br />
     ///     The command can be invoked in the following ways:<br />
-    ///     1. Chat: Type .{<see cref="command" />} (e.g., <b>.ztele</b>).<br />
+    ///     1. Chat: Type .{<paramref name="command" />} (e.g., <b>.ztele</b>).<br />
     ///     (Note: You can replace "." with "!" or "/"; they function identically.)<br />
     ///     2. Client Console: Requires the `ms_` prefix (e.g., <b>ms_ztele</b>).<br />
     ///     Commands registered via this method CANNOT be used in the server console.

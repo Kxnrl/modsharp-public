@@ -11,6 +11,8 @@ namespace Sharp.Modules.AdminCommands.Commands;
 
 internal sealed class ChatCommands : ICommandCategory, IClientListener
 {
+    private const string SayPermission = "admin:say";
+
     private readonly InterfaceBridge       _bridge;
     private readonly CommandContextFactory _contextFactory;
     private readonly ModuleContext         _moduleContext;
@@ -28,7 +30,7 @@ internal sealed class ChatCommands : ICommandCategory, IClientListener
     {
         _bridge.ClientManager.InstallClientListener(this);
 
-        registry.RegisterAdminCommand("say",  OnCommandSay,  ["admin:say"]);
+        registry.RegisterAdminCommand("say",  OnCommandSay,  [SayPermission]);
         registry.RegisterAdminCommand("csay", OnCommandCsay, ["admin:csay"]);
         registry.RegisterAdminCommand("hsay", OnCommandHsay, ["admin:hsay"]);
         registry.RegisterAdminCommand("psay", OnCommandPsay, ["admin:psay"]);
@@ -150,12 +152,12 @@ internal sealed class ChatCommands : ICommandCategory, IClientListener
                                              string      commandName,
                                              string      message)
     {
-        if (_moduleContext.AdminManager is not { } adminManager || !message.StartsWith('@'))
+        if (!message.StartsWith('@') || _moduleContext.AdminManager is not { } adminManager)
         {
             return ECommandAction.Skipped;
         }
 
-        if (adminManager.GetAdmin(client.SteamId) is { } admin && admin.HasPermission("admin:say"))
+        if (adminManager.GetAdmin(client.SteamId) is { } admin && admin.HasPermission(SayPermission))
         {
             var actualMessage = message[1..].Trim();
 

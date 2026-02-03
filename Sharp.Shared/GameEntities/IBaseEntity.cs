@@ -370,8 +370,8 @@ public interface IBaseEntity : ISchemaObject
     /// <remarks>
     ///     This is the programmatic way to inflict damage.
     ///     <para>
-    ///     Calling this triggers <see cref="IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
-    ///     <see cref="IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
+    ///     Calling this triggers <see cref="Sharp.Shared.Managers.IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
+    ///     <see cref="Sharp.Shared.Managers.IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
     ///     </para>
     /// </remarks>
     /// <param name="info">The damage information to apply.</param>
@@ -385,8 +385,8 @@ public interface IBaseEntity : ISchemaObject
     /// <remarks>
     ///     This is the programmatic way to inflict damage using a raw pointer.
     ///     <para>
-    ///     Calling this triggers <see cref="IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
-    ///     <see cref="IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
+    ///     Calling this triggers <see cref="Sharp.Shared.Managers.IHookManager.PlayerDispatchTraceAttack"/> (for pawns) or 
+    ///     <see cref="Sharp.Shared.Managers.IHookManager.EntityDispatchTraceAttack"/> (for others), unless <paramref name="bypassHook"/> is <see langword="true"/>.
     ///     </para>
     /// </remarks>
     /// <param name="info">A pointer to the damage information struct. Must not be null.</param>

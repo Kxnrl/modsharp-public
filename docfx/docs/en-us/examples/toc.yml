@@ -89,3 +89,7 @@
       href: localizer-manager.md
     - name: Menu
       href: menu.md
+    - name: Targeting Manager
+      href: targeting-manager.md
+    - name: Admin Manager
+      href: admin-example.md

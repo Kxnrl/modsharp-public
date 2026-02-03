@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -72,7 +72,7 @@ public interface IGameListener
     }
 
     /// <summary>
-    ///     <see cref="IModSharp.GetGameRules"/> 在此处不可用!
+    ///     <see cref="Sharp.Shared.IModSharp.GetGameRules" /> is not usable here!
     /// </summary>
     void OnGameShutdown()
     {

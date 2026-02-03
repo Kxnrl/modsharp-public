@@ -41,7 +41,7 @@ public interface IDetourHook : IRuntimeNativeHook, IDisposable
     /// </summary>
     /// <example>
     ///     <code>
-    ///         (nint) (delegate* unmanaged<void>) &Test
+    ///         (nint) (delegate* unmanaged&lt;void&gt;) &amp;Test
     ///  </code>
     /// </example>
     /// <param name="pTargetFn">Native function address</param>
