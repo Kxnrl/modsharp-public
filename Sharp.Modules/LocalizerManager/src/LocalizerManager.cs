@@ -13,12 +13,15 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
+using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
 namespace Sharp.Modules.LocalizerManager;
 
 internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientListener
 {
+    private const string ReloadLocalesCommandName = "ms_locales_reload";
+
     private const string DefaultPrefix = "[MS]";
 
     public string DisplayName   => "LocalizerManager";
@@ -28,15 +31,18 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     private readonly IModSharp                 _modSharp;
     private readonly ISharpModuleManager       _modules;
     private readonly IClientManager            _clients;
+    private readonly IConVarManager            _conVar;
 
     // <language, <LKey, LValue>>
     private readonly Dictionary<string, Dictionary<string, string>> _locales;
     private readonly Dictionary<SteamID, Localizer>                 _localizers;
+    private readonly List<LocaleFileEntry>                          _loadedLocaleFiles;
     private readonly CultureInfo                                    _defaultCultureInfo;
     private readonly Localizer                                      _defaultLocalizer;
     private readonly string                                         _localePath;
 
-    private static readonly JsonSerializerOptions Option = new() { ReadCommentHandling = JsonCommentHandling.Skip };
+    private static readonly JsonSerializerOptions Option
+        = new () { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public LocalizerManager(ISharedSystem  sharedSystem,
                             string         dllPath,
@@ -47,13 +53,15 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
-        _logger   = loggerFactory.CreateLogger<LocalizerManager>();
-        _modSharp = sharedSystem.GetModSharp();
-        _modules  = sharedSystem.GetSharpModuleManager();
-        _clients  = sharedSystem.GetClientManager();
+        _logger         = loggerFactory.CreateLogger<LocalizerManager>();
+        _modSharp       = sharedSystem.GetModSharp();
+        _modules        = sharedSystem.GetSharpModuleManager();
+        _clients        = sharedSystem.GetClientManager();
+        _conVar         = sharedSystem.GetConVarManager();
 
-        _localizers = new Dictionary<SteamID, Localizer>(128);
-        _localePath = Path.Combine(sharpPath, "locales");
+        _localizers        = new Dictionary<SteamID, Localizer>(128);
+        _loadedLocaleFiles = [];
+        _localePath        = Path.Combine(sharpPath, "locales");
 
         var locales = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
 
@@ -100,11 +108,13 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     public void PostInit()
     {
         _modules.RegisterSharpModuleInterface<ILocalizerManager>(this, ILocalizerManager.Identity, this);
+        _conVar.CreateServerCommand(ReloadLocalesCommandName, OnCommandReloadLcales);
     }
 
     public void Shutdown()
     {
         _clients.RemoveClientListener(this);
+        _conVar.ReleaseCommand(ReloadLocalesCommandName);
     }
 
 #endregion
@@ -173,6 +183,9 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 #region ILocalizerManager
 
     public void LoadLocaleFile(string name, bool suppressDuplicationWarnings = false)
+        => LoadLocaleFileInternal(name, suppressDuplicationWarnings, true);
+
+    private void LoadLocaleFileInternal(string name, bool suppressDuplicationWarnings, bool trackLoadedFile)
     {
         var file = $"{name}.json";
         var path = Path.Combine(_localePath, file);
@@ -188,6 +201,11 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
                    ?? throw new InvalidDataException($"Invalid locale file: {name}");
 
         LoadLocaleFile(data, suppressDuplicationWarnings);
+
+        if (trackLoadedFile)
+        {
+            TrackLoadedLocaleFile(name, suppressDuplicationWarnings);
+        }
     }
 
     public ILocale For(IGameClient client)
@@ -203,6 +221,14 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
     private Localizer GetLocalizer(IGameClient client)
         => _localizers.GetValueOrDefault(client.SteamId, _defaultLocalizer);
+
+    private void ClearLocales()
+    {
+        foreach (var locale in _locales.Values)
+        {
+            locale.Clear();
+        }
+    }
 
     private void LoadLocaleFile(Dictionary<string, Dictionary<string, string>> data, bool suppressDuplicationWarnings)
     {
@@ -229,6 +255,23 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
                 locale[key] = value;
             }
         }
+    }
+
+    private void TrackLoadedLocaleFile(string name, bool suppressDuplicationWarnings)
+    {
+        for (var i = 0; i < _loadedLocaleFiles.Count; i++)
+        {
+            if (!_loadedLocaleFiles[i].Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            _loadedLocaleFiles.RemoveAt(i);
+
+            break;
+        }
+
+        _loadedLocaleFiles.Add(new LocaleFileEntry(name, suppressDuplicationWarnings));
     }
 
 #region ILocalizerManager - Server Formatting
@@ -282,4 +325,38 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     }
 
 #endregion
+
+    private ECommandAction OnCommandReloadLcales(StringCommand arg)
+    {
+        if (_loadedLocaleFiles.Count == 0)
+        {
+            return ECommandAction.Handled;
+        }
+
+        var total  = _loadedLocaleFiles.Count;
+        var loaded = 0;
+        var failed = 0;
+
+        ClearLocales();
+
+        foreach (var entry in _loadedLocaleFiles)
+        {
+            try
+            {
+                LoadLocaleFileInternal(entry.Name, entry.SuppressDuplicationWarnings, false);
+                loaded++;
+            }
+            catch (Exception ex)
+            {
+                failed++;
+                _logger.LogWarning(ex, "Failed to reload locale file '{LocaleFile}'.", entry.Name);
+            }
+        }
+
+        _modSharp.LogMessage($"Reloaded locale files: {loaded}/{total} (failed: {failed}).");
+
+        return ECommandAction.Handled;
+    }
+
+    private readonly record struct LocaleFileEntry(string Name, bool SuppressDuplicationWarnings);
 }
