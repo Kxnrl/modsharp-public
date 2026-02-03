@@ -178,19 +178,15 @@ internal sealed class ChatCommands : ICommandCategory, IClientListener
 
         if (_moduleContext.LocalizerManager is { } lm)
         {
-            var msgBuilder = lm.ForMany(_bridge.ClientManager.GetGameClients(true))
-                               .Message()
-                               .Prefix(null);
-
-            msgBuilder.Literal(useColors ? $" ({ChatColor.Red}" : "(");
-
-            msgBuilder.TextOrFallback("Admin.Tag", "ADMIN");
-
-            msgBuilder.Literal(useColors
-                                   ? $"{ChatColor.White}) {ChatColor.Green}{sender}{ChatColor.White}: {message}"
-                                   : $") {sender}: {message}");
-
-            msgBuilder.Print(channel);
+            lm.ForMany(_bridge.ClientManager.GetGameClients(true))
+              .Message()
+              .Prefix(null)
+              .Literal(useColors ? $" ({ChatColor.Red}" : "(")
+              .TextOrFallback("Admin.Tag", "ADMIN")
+              .Literal(useColors
+                           ? $"{ChatColor.White}) {ChatColor.Green}{sender}{ChatColor.White}: {message}"
+                           : $") {sender}: {message}")
+              .Print(channel);
         }
         else
         {
