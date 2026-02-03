@@ -4,6 +4,8 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<BaseOutputPath>../../../.build/Sharp.Modules/CommandManager.Shared/</BaseOutputPath>
+
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />

@@ -4,6 +4,8 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+
+		<BaseOutputPath>../../../.build/Sharp.Modules/CommandManager/</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -198,7 +198,7 @@ internal class AdminOperationEngine : IClientListener
         }
 
         LogOperation(admin, targetName, targetId, type, null, reason, "Removed");
-        _ = _operations.RemoveAsync(targetId, type);
+        _ = _operations.RemoveAsync(targetId, type, admin?.SteamId, reason);
     }
 
     private static AdminOperationRecord CreateRecord(SteamID            targetId,

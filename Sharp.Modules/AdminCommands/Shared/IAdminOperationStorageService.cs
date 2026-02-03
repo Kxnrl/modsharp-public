@@ -35,7 +35,7 @@ public interface IAdminOperationStorageService
     /// <summary>
     ///     Removes a record of the given type for the SteamID (no-op if missing).
     /// </summary>
-    Task RemoveAsync(SteamID steamId, AdminOperationType type);
+    Task RemoveAsync(SteamID targetId, AdminOperationType type, SteamID? removedBy, string? reason);
 
     /// <summary>
     ///     Returns true if there is an active (non-expired/non-removed) record of the given type.

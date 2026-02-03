@@ -21,6 +21,7 @@
     ]
   },
   "ConnectionStrings": {
-    "ClientPreferences": "litedb://Filename={sharp::data}/client-preferences.db;Mode=Exclusive;Flush=true"
+    "ClientPreferences": "litedb://Filename={sharp::data}/client-preferences.db;Mode=Exclusive;Flush=true",
+    "AdminCommands.SQLStorage": "mysql://Server=localhost;Port=3306;Database=modsharp;User ID=your_user_name_goes_here;Password=your_password_goes_here;"
   }
 }

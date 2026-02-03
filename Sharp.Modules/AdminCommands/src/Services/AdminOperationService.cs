@@ -78,13 +78,17 @@ internal sealed class AdminOperationService
         }
     }
 
-    public async Task RemoveAsync(SteamID steamId, AdminOperationType type, CancellationToken cancellationToken = default)
+    public async Task RemoveAsync(SteamID            steamId,
+                                  AdminOperationType type,
+                                  SteamID?           adminId,
+                                  string?            reason,
+                                  CancellationToken  cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         try
         {
-            await _storage.RemoveAsync(steamId, type).ConfigureAwait(false);
+            await _storage.RemoveAsync(steamId, type, adminId, reason).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

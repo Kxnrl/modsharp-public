@@ -58,8 +58,8 @@ internal sealed class AdminOperationStorage : IAdminOperationStorageService
     public Task AddAsync(AdminOperationRecord record)
         => Current.AddAsync(record);
 
-    public Task RemoveAsync(SteamID steamId, AdminOperationType type)
-        => Current.RemoveAsync(steamId, type);
+    public Task RemoveAsync(SteamID steamId, AdminOperationType type, SteamID? removedBy, string? reason)
+        => Current.RemoveAsync(steamId, type, removedBy, reason);
 
     public Task<bool> HasActiveAsync(SteamID steamId, AdminOperationType type)
         => Current.HasActiveAsync(steamId, type);

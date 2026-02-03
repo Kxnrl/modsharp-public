@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<BaseOutputPath>../../../.build/Sharp.Modules/AdminCommands.SQLStorage/</BaseOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="MySqlConnector" Version="2.5.0" />
+	  <PackageReference Include="Npgsql" Version="10.0.1" />
+	  <PackageReference Include="SqlSugarCoreNoDrive" Version="5.1.4.211" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+		<ProjectReference Include="..\..\AdminCommands\Shared\Sharp.Modules.AdminCommands.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+	</ItemGroup>
+
+
+</Project>

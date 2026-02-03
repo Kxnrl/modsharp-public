@@ -5,6 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AssemblyName>Sharp.Modules.AdminCommands</AssemblyName>
+		<BaseOutputPath>../../../.build/Sharp.Modules/AdminCommands/</BaseOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>

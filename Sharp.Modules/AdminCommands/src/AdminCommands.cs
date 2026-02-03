@@ -326,19 +326,40 @@ public class AdminCommands : IModSharpModule
 
     private void TryResolveAdminOperationStorage(string? providerName = null)
     {
-        var external = GetExternalModule<IAdminOperationStorageService>(IAdminOperationStorageService.Identity);
-
-        if (external is not null)
+        try
         {
-            if (!ReferenceEquals(_adminOperationStorage.Current, external))
+            var iface = _shared.GetSharpModuleManager()
+                               .GetRequiredSharpModuleInterface<IAdminOperationStorageService>(IAdminOperationStorageService
+                                            .Identity);
+
+            var external = iface.Instance;
+
+            if (external is null)
             {
-                _adminOperationStorage.Use(external, providerName);
+                _logger.LogWarning("External storage is null");
+
+                return;
             }
 
-            return;
+            if (!ReferenceEquals(_adminOperationStorage.Current, external))
+            {
+                _logger.LogInformation("Using external provider");
+                _adminOperationStorage.Use(external, providerName);
+            }
         }
+        catch (Exception e)
+        {
+            _logger.LogInformation("IAdminOperationStorageService: {name} | {loc} | ALC={alc}",
+                                   typeof(IAdminOperationStorageService).Assembly.FullName,
+                                   typeof(IAdminOperationStorageService).Assembly.Location,
+                                   System.Runtime.Loader.AssemblyLoadContext
+                                         .GetLoadContext(typeof(IAdminOperationStorageService).Assembly)
+                                         ?.Name);
 
-        _adminOperationStorage.UseFallback();
+            _logger.LogError(e, "Error when trying to get external storage, using fallback");
+
+            _adminOperationStorage.UseFallback();
+        }
     }
 
     private void LoadLocale()

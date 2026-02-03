@@ -142,14 +142,14 @@ internal class JsonAdminOperationStorage : IAdminOperationStorageService
         }
     }
 
-    public async Task RemoveAsync(SteamID steamId, AdminOperationType type)
+    public async Task RemoveAsync(SteamID targetId, AdminOperationType type, SteamID? removedBy, string? reason)
     {
         bool removed;
         await _lock.WaitAsync();
 
         try
         {
-            removed = _records.Remove((steamId, type));
+            removed = _records.Remove((targetId, type));
         }
         finally
         {
@@ -164,7 +164,7 @@ internal class JsonAdminOperationStorage : IAdminOperationStorageService
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "Failed to save punishments after removing record for {SteamId}", steamId);
+                _logger?.LogError(ex, "Failed to save punishments after removing record for {SteamId}", targetId);
             }
         }
     }

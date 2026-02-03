@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AssemblyName>Sharp.Modules.TargetingManager</AssemblyName>
+		<BaseOutputPath>../../../.build/Sharp.Modules/TargetingManager/</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
