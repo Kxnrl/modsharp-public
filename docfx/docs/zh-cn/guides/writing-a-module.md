@@ -173,6 +173,8 @@ public class Example : IModSharpModule
 > 1. 不能有空格
 > 2. 请使用大驼峰
 > 3. 模块路径加载规则为`{CS2}/game/sharp/modules/{AssemblyName}/{AssemblyName}.deps.json`，请确保路径匹配！
+> 4. 如果模块目录内存在 `.disabled` 文件，即使在 `sharp/modules` 下也会被跳过。
+> 5. 模块目录名以 `.disabled` 结尾也会被跳过。
 
 如果你还不能很好的理解以上内容, 那就看图吧：
 

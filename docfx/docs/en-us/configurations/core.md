@@ -74,3 +74,17 @@ Default configuration:
 ## ConnectionStrings
 
 Connection strings, as the name suggests, are provided for use by various modules.
+
+Common keys:
+
+- `ClientPreferences` (see *Client Preferences*)
+- `AdminCommands.SQLStorage` (see *Admin Commands SQL Storage*)
+
+Example:
+
+```json
+"ConnectionStrings": {
+  "ClientPreferences": "litedb://Filename={sharp::data}/client-preferences.db;Mode=Exclusive;Flush=true",
+  "AdminCommands.SQLStorage": "mysql://Server=localhost;Port=3306;Database=modsharp;User ID=modsharp;Password=secret;"
+}
+```

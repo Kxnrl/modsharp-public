@@ -173,6 +173,8 @@ After packaging is complete:
 > 1. Cannot contain spaces
 > 2. Use PascalCase
 > 3. Module path loading rule is `{CS2}/game/sharp/modules/{AssemblyName}/{AssemblyName}.deps.json`, make sure the paths match!
+> 4. If a `.disabled` file exists in the module directory, it will be skipped even if the folder is in `sharp/modules`.
+> 5. A module directory ending with `.disabled` is also skipped.
 
 If you still can't understand the above content well, let's look at pictures:
 

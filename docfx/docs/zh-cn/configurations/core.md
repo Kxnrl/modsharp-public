@@ -73,4 +73,18 @@ Key为Namespace, Value为日志级别
 
 ## ConnectionStrings
 
+常用键：
+
+- `ClientPreferences`（见 *Client Preferences*）
+- `AdminCommands.SQLStorage`（见 *Admin Commands SQL Storage*）
+
+示例：
+
+```json
+"ConnectionStrings": {
+  "ClientPreferences": "litedb://Filename={sharp::data}/client-preferences.db;Mode=Exclusive;Flush=true",
+  "AdminCommands.SQLStorage": "mysql://Server=localhost;Port=3306;Database=modsharp;User ID=modsharp;Password=secret;"
+}
+```
+
 连接字符串, 顾名思义, 这是提供于各种模块使用的连接字符串.

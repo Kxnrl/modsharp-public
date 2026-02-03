@@ -2,5 +2,7 @@
   href: core.md
 - name: Admin
   href: admin.md
+- name: Admin Commands SQL Storage
+  href: admin-commands-sqlstorage.md
 - name: Client Preferences
   href: client-preferences.md
