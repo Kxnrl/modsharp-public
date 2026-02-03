@@ -1,7 +1,31 @@
 {
+  "Admin.Tag": {
+    "en-us": "ADMIN",
+    "zh-cn": "管理员"
+  },
+  "Admin.Tag.PM": {
+    "en-us": "PM",
+    "zh-cn": "私聊"
+  },
   "Admin.TargetRequired": {
     "en-us": "Target is required.",
     "zh-cn": "必须指定目标。"
+  },
+  "Admin.God.Toggled": {
+    "en-us": "{0} toggled godmode on {1}.",
+    "zh-cn": "{0} 切换了 {1} 的无敌模式。"
+  },
+  "Admin.God.Enabled": {
+    "en-us": "{0} enabled godmode on {1}.",
+    "zh-cn": "{0} 已为 {1} 开启无敌模式。"
+  },
+  "Admin.God.Disabled": {
+    "en-us": "{0} disabled godmode on {1}.",
+    "zh-cn": "{0} 已为 {1} 关闭无敌模式。"
+  },
+  "Admin.Usage.God": {
+    "en-us": "Usage: ms_god <target> [on/off]",
+    "zh-cn": "用法: ms_god <目标> [on/off]"
   },
   "Admin.TargetNone": {
     "en-us": "No player found matching '{0}'.",
@@ -167,6 +191,10 @@
     "en-us": "{0} Disabled noclip for {1}.",
     "zh-cn": "{0} 已为 {1} 关闭穿墙模式。"
   },
+  "Admin.Noclip.Toggled": {
+    "en-us": "{0} toggled noclip for {1}.",
+    "zh-cn": "{0} 切换了 {1} 的穿墙模式。"
+  },
   "Admin.Usage.Slay": {
     "en-us": "Usage: ms_slay <target>",
     "zh-cn": "用法: ms_slay <目标>"
@@ -271,6 +299,10 @@
     "en-us": "{0} Teleported {1} to {2}.",
     "zh-cn": "{0} 将 {1} 传送到了 {2}。"
   },
+  "Admin.Teleport.Ambiguous": {
+    "en-us": "Destination must be a single target.",
+    "zh-cn": "目标玩家个数必须是单个。"
+  },
   "Admin.Usage.Bring": {
     "en-us": "Usage: ms_bring <target>",
     "zh-cn": "用法: ms_bring <目标>"
@@ -304,8 +336,8 @@
     "zh-cn": "地图 '{0}' 不可用。"
   },
   "Admin.MapChanged": {
-    "en-us": "Changing map to {0}...",
-    "zh-cn": "正在更换地图为 {0}..."
+    "en-us": "{0}: Changing map to {1}...",
+    "zh-cn": "{0}: 正在更换地图为 {1}..."
   },
   "Admin.MapFailed": {
     "en-us": "Failed to change map to {0}.",
@@ -356,7 +388,27 @@
     "zh-cn": "{0} 封禁了 {1} {2}。理由: {3}"
   },
   "Admin.BanRemoved": {
-    "en-us": "{0} unbanned {1}. Reason: {3}",
-    "zh-cn": "{0} 解封了 {1}。理由: {3}"
+    "en-us": "{0} unbanned {1}. Reason: {2}",
+    "zh-cn": "{0} 解封了 {1}。理由: {2}"
+  },
+  "Admin.Usage.Freeze": {
+    "en-us": "Usage: ms_freeze <target> [on/off]",
+    "zh-cn": "用法: ms_freeze <目标> [on/off]"
+  },
+  "Admin.Usage.Unfreeze": {
+    "en-us": "Usage: ms_unfreeze <target>",
+    "zh-cn": "用法: ms_unfreeze <目标>"
+  },
+  "Admin.Freeze.Enabled": {
+    "en-us": "{0} frozen {1}.",
+    "zh-cn": "{0} 冻结了 {1}。"
+  },
+  "Admin.Freeze.Disabled": {
+    "en-us": "{0} unfrozen {1}.",
+    "zh-cn": "{0} 解冻了 {1}。"
+  },
+  "Admin.Freeze.Toggled": {
+    "en-us": "{0} toggled freeze on {1}.",
+    "zh-cn": "{0} 切换了 {1} 的冻结状态。"
   }
 }

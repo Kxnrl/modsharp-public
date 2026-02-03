@@ -175,6 +175,47 @@ internal sealed class CommandContext
     }
 
     /// <summary>
+    ///     Tries to parse an on/off state from the argument at the specified index.
+    ///     Returns null if the argument is missing (implying a toggle).
+    ///     Returns true/false if explicitly set.
+    ///     Replies with error and returns false if the argument is present but invalid.
+    /// </summary>
+    public bool TryGetState(int argIndex, out bool? state)
+    {
+        state = null;
+
+        // If argument is missing, we consider this valid (it means "Toggle")
+        if (_command.ArgCount < argIndex)
+        {
+            return true;
+        }
+
+        var arg = _command.GetArg(argIndex).ToLower();
+
+        switch (arg)
+        {
+            case "on":
+            case "1":
+            case "true":
+            case "enable":
+                state = true;
+
+                return true;
+            case "off":
+            case "0":
+            case "false":
+            case "disable":
+                state = false;
+
+                return true;
+            default:
+                ReplyKey("Admin.InvalidState", "Invalid state '{0}'. Use 'on' or 'off'.", arg);
+
+                return false;
+        }
+    }
+
+    /// <summary>
     ///     Gets the reason string from the specified argument index, or returns the default reason if not provided.
     /// </summary>
     public string GetReason(int argIndex)

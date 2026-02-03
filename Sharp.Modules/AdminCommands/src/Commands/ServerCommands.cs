@@ -37,7 +37,6 @@ internal sealed class ServerCommands : ICommandCategory
 
         var map = command.GetArg(1);
 
-        // todo: use a different method to check if the given map is valid
         if (!_bridge.ModSharp.IsMapValid(map))
         {
             ctx.ReplyKey("Admin.InvalidMap", "Map '{0}' is not available.", map);
@@ -45,11 +44,27 @@ internal sealed class ServerCommands : ICommandCategory
             return;
         }
 
+        // hack, need to have something like ModSharp.GetMapType(map)
+        var isWorkshopMaps = _bridge.ModSharp.ListWorkshopMaps()
+                                    .Any(i => i.Name.Equals(map, StringComparison.OrdinalIgnoreCase));
+
         try
         {
             ctx.ReplySuccessKey("Admin.MapChanged", "{0}: Changing map to {1}...", ctx.IssuerName, map);
 
-            _bridge.ModSharp.PushTimer(() => _bridge.ModSharp.ChangeLevel(map), 3.0f, GameTimerFlags.StopOnMapEnd);
+            _bridge.ModSharp.PushTimer(() =>
+                                       {
+                                           if (isWorkshopMaps)
+                                           {
+                                               _bridge.ModSharp.ServerCommand($"ds_workshop_changelevel {map}");
+
+                                               return;
+                                           }
+
+                                           _bridge.ModSharp.ChangeLevel(map);
+                                       },
+                                       3.0f,
+                                       GameTimerFlags.StopOnMapEnd);
         }
         catch (Exception ex)
         {

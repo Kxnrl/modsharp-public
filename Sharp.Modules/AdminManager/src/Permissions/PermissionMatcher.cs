@@ -44,7 +44,6 @@ internal static class PermissionMatcher
     public static bool IsWildcardMatch(ReadOnlySpan<char> permission, ReadOnlySpan<char> pattern)
     {
         const char separator = IAdminManager.SeparatorOperator;
-        const char wildcard  = IAdminManager.WildCardOperator;
 
         // Optimization: identical strings always match
         if (permission.SequenceEqual(pattern))

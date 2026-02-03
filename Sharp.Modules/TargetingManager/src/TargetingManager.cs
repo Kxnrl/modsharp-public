@@ -8,6 +8,7 @@ using Sharp.Modules.TargetingManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
+using Sharp.Shared.Units;
 
 namespace Sharp.Modules.TargetingManager;
 
@@ -94,49 +95,76 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
 
     public IEnumerable<IGameClient> GetByTarget(IGameClient? activator, string target)
     {
-        if (_targetResolvers.TryGetValue(target, out var resolver))
+        // escape match
+        if (target.StartsWith('#'))
         {
-            return resolver.Resolver.Resolve(activator);
+            return GetClientLiteral(target[1..]);
         }
 
-        // invert
-        if (target.StartsWith("@!"))
+        if (target.StartsWith('@'))
         {
-            // "@!ct" --> "@ct"
-            var positiveTarget = target.Remove(1, 1);
-
-            var allClients = _clientManager.GetGameClients(true);
-
-            var clientsToExclude = GetByTarget(activator, positiveTarget);
-
-            return allClients.Except(clientsToExclude);
-        }
-
-        // check for 76561198... and @76561198...
-        if (target.Length is 17 or 18)
-        {
-            var span = target.AsSpan();
-
-            if (span[0] == '@')
+            if (_targetResolvers.TryGetValue(target, out var resolver))
             {
-                span = span[1..];
+                return resolver.Resolver.Resolve(activator);
             }
 
-            if (span.Length == 17 && ulong.TryParse(span, out var steamId))
+            // invert
+            if (target.StartsWith("@!"))
             {
-                if (_clientManager.GetGameClient(steamId) is { } client)
+                // "@!ct" --> "@ct"
+                var positiveTarget = string.Concat("@", target.AsSpan(2));
+
+                var allClients = _clientManager.GetGameClients(true);
+
+                var clientsToExclude = GetByTarget(activator, positiveTarget);
+
+                return allClients.Except(clientsToExclude);
+            }
+
+            // check for @76561198...
+            if (target.Length is 18 && ulong.TryParse(target.AsSpan(1), out var steamId))
+            {
+                if (_clientManager.GetGameClient(new SteamID(steamId)) is { } client)
                 {
                     return [client];
                 }
             }
+
+            return GetClientLiteral(target);
         }
 
-        return [];
+        if (target.Length is 17 && ulong.TryParse(target, out var directSteamId))
+        {
+            if (_clientManager.GetGameClient(new SteamID(directSteamId)) is { } client)
+            {
+                return [client];
+            }
+        }
+
+        return GetClientLiteral(target);
     }
 
     public bool RegisterResolver(string ownerIdentity, ITargetResolver resolver)
     {
         var target = resolver.GetTarget();
+
+        if (string.IsNullOrWhiteSpace(target))
+        {
+            _logger.LogError("Failed to register target '{target}' for module '{owner}': empty target name",
+                             target,
+                             ownerIdentity);
+
+            return false;
+        }
+
+        if (!target.StartsWith('@'))
+        {
+            _logger.LogError("Failed to register target '{target}' for module '{owner}': does not start with '@'",
+                             target,
+                             ownerIdentity);
+
+            return false;
+        }
 
         if (_targetResolvers.TryGetValue(target, out var existingEntry))
         {
@@ -154,4 +182,33 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
     }
 
 #endregion
+
+    private IEnumerable<IGameClient> GetClientLiteral(string name)
+    {
+        var allClients = _clientManager.GetGameClients(true);
+
+        var gameClients = allClients as IGameClient[] ?? allClients.ToArray();
+
+        // Exact Matches, target ALL players with this exact name
+        var exactMatches = gameClients
+                           .Where(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+                           .ToList();
+
+        if (exactMatches.Count > 0)
+        {
+            return exactMatches;
+        }
+
+        // Partial Matches, only return if exactly ONE person matches the partial string.
+        var partialMatches = gameClients
+                             .Where(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                             .ToList();
+
+        if (partialMatches.Count == 1)
+        {
+            return [partialMatches[0]];
+        }
+
+        return [];
+    }
 }

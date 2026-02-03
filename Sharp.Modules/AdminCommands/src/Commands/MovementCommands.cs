@@ -4,7 +4,6 @@ using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
-using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Commands;
 
@@ -14,12 +13,8 @@ internal sealed class MovementCommands : ICommandCategory
     private readonly CommandContextFactory     _contextFactory;
     private readonly ILogger<MovementCommands> _logger;
 
-    private readonly float[] _speedFactors = new float[PlayerSlot.MaxPlayerCount];
-
     public MovementCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
     {
-        Array.Fill(_speedFactors, 1.0f);
-
         _bridge         = bridge;
         _contextFactory = contextFactory;
         _logger         = bridge.LoggerFactory.CreateLogger<MovementCommands>();
@@ -27,11 +22,13 @@ internal sealed class MovementCommands : ICommandCategory
 
     public void Register(IAdminCommandRegistry registry)
     {
-        registry.RegisterAdminCommand("noclip",  OnCommandNoclip,   ["admin:noclip"]);
-        registry.RegisterAdminCommand("speed",   OnCommandSpeed,    ["admin:speed"]);
-        registry.RegisterAdminCommand("gravity", OnCommandGravity,  ["admin:gravity"]);
-        registry.RegisterAdminCommand("tp",      OnCommandTeleport, ["admin:tp"]);
-        registry.RegisterAdminCommand("bring",   OnCommandBring,    ["admin:bring"]);
+        registry.RegisterAdminCommand("noclip",   OnCommandNoclip,   ["admin:noclip"]);
+        registry.RegisterAdminCommand("speed",    OnCommandSpeed,    ["admin:speed"]);
+        registry.RegisterAdminCommand("gravity",  OnCommandGravity,  ["admin:gravity"]);
+        registry.RegisterAdminCommand("tp",       OnCommandTeleport, ["admin:tp"]);
+        registry.RegisterAdminCommand("bring",    OnCommandBring,    ["admin:bring"]);
+        registry.RegisterAdminCommand("freeze",   OnCommandFreeze,   ["admin:freeze"]);
+        registry.RegisterAdminCommand("unfreeze", OnCommandUnfreeze, ["admin:unfreeze"]);
     }
 
     public void Unregister()
@@ -52,19 +49,12 @@ internal sealed class MovementCommands : ICommandCategory
             return;
         }
 
-        var current = false;
-
-        foreach (var target in targets)
+        // If index 2 is missing, forcedState is null (Toggle mode).
+        // If index 2 is invalid, it auto-replies error and returns false.
+        if (!ctx.TryGetState(2, out var forcedState))
         {
-            if (CommandHelpers.TryGetPawn(target, out var pawn, true))
-            {
-                current = pawn.MoveType == MoveType.NoClip;
-
-                break;
-            }
+            return;
         }
-
-        var enable = CommandHelpers.ShouldEnable(command, 2, current);
 
         var count = 0;
 
@@ -75,16 +65,30 @@ internal sealed class MovementCommands : ICommandCategory
                 continue;
             }
 
-            pawn.SetMoveType(enable ? MoveType.NoClip : MoveType.Walk);
+            var isNoClip = pawn.MoveType == MoveType.NoClip;
+            var newState = forcedState ?? !isNoClip;
+
+            pawn.SetMoveType(newState ? MoveType.NoClip : MoveType.Walk);
             count++;
         }
 
         if (count > 0)
         {
-            ctx.ReplySuccessKey(enable ? "Admin.Noclip.Enabled" : "Admin.Noclip.Disabled",
-                                enable ? "{0} Enabled noclip for {1}." : "{0} Disabled noclip for {1}.",
-                                ctx.IssuerName,
-                                targetLabel);
+            if (forcedState.HasValue)
+            {
+                if (forcedState.Value)
+                {
+                    ctx.ReplySuccessKey("Admin.Noclip.Enabled", "{0} enabled noclip for {1}.", ctx.IssuerName, targetLabel);
+                }
+                else
+                {
+                    ctx.ReplySuccessKey("Admin.Noclip.Disabled", "{0} disabled noclip for {1}.", ctx.IssuerName, targetLabel);
+                }
+            }
+            else
+            {
+                ctx.ReplySuccessKey("Admin.Noclip.Toggled", "{0} toggled noclip for {1}.", ctx.IssuerName, targetLabel);
+            }
         }
     }
 
@@ -189,65 +193,61 @@ internal sealed class MovementCommands : ICommandCategory
             return;
         }
 
-        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
+        if (!ctx.TryGetTargets(1, out var sources, out var sourceLabel))
         {
             return;
         }
 
+        Vector destPos;
+        string destLabel;
+
         if (CommandHelpers.TryParseVector(command, 2, out var position))
         {
-            var count = 0;
-
-            foreach (var target in targets)
-            {
-                if (!CommandHelpers.TryGetPawn(target, out var pawn))
-                {
-                    continue;
-                }
-
-                pawn.Teleport(position);
-                count++;
-            }
-
-            if (count > 0)
-            {
-                ctx.ReplySuccessKey("Admin.Teleport",
-                                    "Teleported {0} to {1}.",
-                                    targetLabel,
-                                    CommandHelpers.FormatVector(position));
-            }
+            destPos   = position;
+            destLabel = CommandHelpers.FormatVector(position);
         }
         else
         {
-            if (!ctx.TryGetTargets(2, out var destinations, out var destLabel))
+            if (!ctx.TryGetTargets(2, out var destTargets, out var destTargetLabel))
             {
                 return;
             }
 
-            var destination = destinations[0];
+            // We can't teleport TO multiple people at once.
+            if (destTargets.Count != 1)
+            {
+                ctx.ReplyKey("Admin.Teleport.Ambiguous", "Destination must be a single target.");
 
-            if (!CommandHelpers.TryGetPawn(destination, out var destPawn))
+                return;
+            }
+
+            if (!CommandHelpers.TryGetPawn(destTargets[0], out var destPawn, true))
             {
                 return;
             }
 
-            var count = 0;
+            destPos   = destPawn.GetAbsOrigin();
+            destLabel = destTargetLabel;
+        }
 
-            foreach (var target in targets)
+        var count = 0;
+
+        var emptyVector = new Vector(0, 0, 0);
+
+        foreach (var target in sources)
+        {
+            if (!CommandHelpers.TryGetPawn(target, out var pawn, true))
             {
-                if (!CommandHelpers.TryGetPawn(target, out var pawn))
-                {
-                    continue;
-                }
-
-                pawn.Teleport(destPawn.GetAbsOrigin(), destPawn.GetAbsAngles(), destPawn.GetAbsVelocity());
-                count++;
+                continue;
             }
 
-            if (count > 0)
-            {
-                ctx.ReplySuccessKey("Admin.Teleport", "{0} Teleported {1} to {2}.", ctx.IssuerName, targetLabel, destLabel);
-            }
+            pawn.Teleport(destPos, null, emptyVector);
+            count++;
+        }
+
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Teleport", "{0} Teleported {1} to {2}.", ctx.IssuerName, sourceLabel, destLabel);
         }
     }
 
@@ -300,6 +300,89 @@ internal sealed class MovementCommands : ICommandCategory
         if (count > 0)
         {
             ctx.ReplySuccessKey("Admin.Bring", "{0} Brought {1} to them.", ctx.IssuerName, targetLabel);
+        }
+    }
+
+    private void OnCommandFreeze(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(1, "Admin.Usage.Freeze", "Usage: ms_freeze <target> [on/off]"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetState(2, out var forcedState))
+        {
+            return;
+        }
+
+        var count = 0;
+
+        foreach (var target in targets)
+        {
+            if (!CommandHelpers.TryGetPawn(target, out var pawn) || !pawn.IsAlive)
+            {
+                continue;
+            }
+
+            var isCurrentlyFrozen = pawn.ActualMoveType == MoveType.None;
+            var shouldFreeze      = forcedState ?? !isCurrentlyFrozen;
+
+            pawn.SetMoveType(shouldFreeze ? MoveType.None : MoveType.Walk);
+            count++;
+        }
+
+        if (count > 0)
+        {
+            if (forcedState.HasValue)
+            {
+                var key = forcedState.Value ? "Admin.Freeze.Enabled" : "Admin.Freeze.Disabled";
+                var def = forcedState.Value ? "{0} frozen {1}." : "{0} unfrozen {1}.";
+                ctx.ReplySuccessKey(key, def, ctx.IssuerName, targetLabel);
+            }
+            else
+            {
+                ctx.ReplySuccessKey("Admin.Freeze.Toggled", "{0} toggled frozen on {1}.", ctx.IssuerName, targetLabel);
+            }
+        }
+    }
+
+    private void OnCommandUnfreeze(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(1, "Admin.Usage.Unfreeze", "Usage: ms_unfreeze <target>"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
+        {
+            return;
+        }
+
+        var count = 0;
+
+        foreach (var target in targets)
+        {
+            if (!CommandHelpers.TryGetPawn(target, out var pawn) || !pawn.IsAlive)
+            {
+                continue;
+            }
+
+            pawn.SetMoveType(MoveType.Walk);
+            count++;
+        }
+
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Freeze.Disabled", "{0} unfrozen {1}.", ctx.IssuerName, targetLabel);
         }
     }
 }

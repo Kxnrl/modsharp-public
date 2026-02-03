@@ -36,58 +36,43 @@ internal static class CommandHelpers
     {
         vector = default;
 
-        // three separate args (startIndex, startIndex+1, startIndex+2)
+        // Three separate arguments (e.g., "100" "50" "25")
         if (command.ArgCount >= startIndex + 2)
         {
-            if (float.TryParse(command.GetArg(startIndex),        NumberStyles.Float, CultureInfo.InvariantCulture, out var x)
-                && float.TryParse(command.GetArg(startIndex + 1), NumberStyles.Float, CultureInfo.InvariantCulture, out var y)
-                && float.TryParse(command.GetArg(startIndex + 2), NumberStyles.Float, CultureInfo.InvariantCulture, out var z))
-            {
-                vector = new Vector(x, y, z);
+            return TryParseRaw(command.GetArg(startIndex),
+                               command.GetArg(startIndex + 1),
+                               command.GetArg(startIndex + 2),
+                               out vector);
+        }
 
-                return true;
+        //  One argument with delimiters (e.g., "100,50,25")
+        if (command.ArgCount >= startIndex)
+        {
+            var arg   = command.GetArg(startIndex);
+            var parts = arg.Split(VectorSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 3)
+            {
+                return TryParseRaw(parts[0], parts[1], parts[2], out vector);
             }
         }
-        else if (command.ArgCount >= startIndex)
+
+        return false;
+    }
+
+    private static bool TryParseRaw(string sX, string sY, string sZ, out Vector vec)
+    {
+        vec = default;
+        const NumberStyles style   = NumberStyles.Float;
+        var                culture = CultureInfo.InvariantCulture;
+
+        if (float.TryParse(sX,    style, culture, out var x)
+            && float.TryParse(sY, style, culture, out var y)
+            && float.TryParse(sZ, style, culture, out var z))
         {
-            // single token with delimiters: "x,y,z" or "x y z"
-            var token = command.GetArg(startIndex).AsSpan();
-            
-            // Fast path for simple parsing without Split
-            var sep1 = token.IndexOfAny(VectorSeparators);
-            if (sep1 > 0)
-            {
-                var part1 = token[..sep1];
-                var remainder = token[(sep1 + 1)..];
-                
-                // Skip consecutive separators if any (though Split(RemoveEmptyEntries) handled this, manual parsing needs care)
-                // For simplicity and performance on well-formed inputs:
-                while (remainder.Length > 0 && (remainder[0] == ',' || remainder[0] == ' '))
-                {
-                    remainder = remainder[1..];
-                }
+            vec = new Vector(x, y, z);
 
-                var sep2 = remainder.IndexOfAny(VectorSeparators);
-                if (sep2 > 0)
-                {
-                    var part2 = remainder[..sep2];
-                    var part3 = remainder[(sep2 + 1)..];
-                    
-                    // Trim part3 potentially
-                    while (part3.Length > 0 && (part3[0] == ',' || part3[0] == ' '))
-                    {
-                        part3 = part3[1..];
-                    }
-
-                    if (float.TryParse(part1, NumberStyles.Float, CultureInfo.InvariantCulture, out var x)
-                        && float.TryParse(part2, NumberStyles.Float, CultureInfo.InvariantCulture, out var y)
-                        && float.TryParse(part3, NumberStyles.Float, CultureInfo.InvariantCulture, out var z))
-                    {
-                        vector = new Vector(x, y, z);
-                        return true;
-                    }
-                }
-            }
+            return true;
         }
 
         return false;
@@ -151,22 +136,5 @@ internal static class CommandHelpers
         pawn = playerPawn;
 
         return true;
-    }
-
-    public static bool ShouldEnable(StringCommand command, int index, bool current)
-    {
-        if (command.ArgCount < index)
-        {
-            return !current;
-        }
-
-        var token = command.GetArg(index).Trim().ToLowerInvariant();
-
-        return token switch
-        {
-            "on" or "1" or "true" or "enable" or "enabled"     => true,
-            "off" or "0" or "false" or "disable" or "disabled" => false,
-            _                                                  => !current,
-        };
     }
 }

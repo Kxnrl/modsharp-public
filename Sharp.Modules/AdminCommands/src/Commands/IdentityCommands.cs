@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
@@ -96,7 +97,15 @@ internal sealed class IdentityCommands : ICommandCategory
                 continue;
             }
 
-            controller.ChangeTeam(team);
+            if (team <= CStrikeTeam.Spectator)
+            {
+                controller.ChangeTeam(team);
+            }
+            else
+            {
+                controller.SwitchTeam(team);
+            }
+
             count++;
         }
 

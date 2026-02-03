@@ -11,13 +11,18 @@ public interface ITargetingManager
     /// </summary>
     /// <param name="activator">The client who initiated the targeting (can be null).</param>
     /// <param name="target">
-    ///     The target string. Examples:
+    ///     The target string. Resolution order:
     ///     <list type="bullet">
-    ///         <item><c>@me</c>, <c>@t</c>, <c>@ct</c> - Standard resolvers.</item>
-    ///         <item><c>76561198...</c> or <c>@76561198...</c> - SteamID64.</item>
+    ///         <item><c>#name</c> - Forces a literal name match (escapes special characters like @).</item>
+    ///         <item><c>@resolver_name</c> - Registered resolvers (e.g., <c>@me</c>, <c>@t</c>, <c>@ct</c>).</item>
+    ///         <item><c>@!resolver_name</c> - Inversion (targets all players EXCEPT those matching the target).</item>
+    ///         <item><c>7656...</c> or <c>@7656...</c> - Targeted by SteamID64.</item>
     ///         <item>
-    ///             <c>@!target</c> - Inversion (e.g., <c>@!ct</c> targets everyone who is NOT CT, also supports
-    ///             <c>@!76561198...</c>).
+    ///             <term>Player Name</term>
+    ///             <description>
+    ///                 If input is not special, matches by Name (Exact matches return all; Partial matches return only if
+    ///                 unique).
+    ///             </description>
     ///         </item>
     ///     </list>
     /// </param>

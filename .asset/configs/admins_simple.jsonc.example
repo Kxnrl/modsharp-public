@@ -6,18 +6,17 @@
  * Format: "SteamID64": "RoleName"
  * 
  * Note: 
- * 1. Role names (like "root", "admin", "vip") must be defined in admin.jsonc.
- * 2. If a user is listed in BOTH this file and admin.jsonc, 
- *    it will use the settings in admin.jsonc instead.
+ * 1. Role names (like "root", "admin") must be defined in admins.jsonc.
+ * 2. If a user is listed in BOTH this file and admins.jsonc, 
+ *    it will use the settings in admins.jsonc instead.
  */
 {
     // Owner / Root
     "76561198000000001": "root",
 
-    // Moderators
     "76561198000000002": "admin",
     "76561198000000003": "admin",
 
     // Donators
-    "76561198000000004": "vip"
+    // "76561198000000004": "vip"
 }

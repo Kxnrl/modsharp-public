@@ -23,6 +23,56 @@ internal sealed class CombatCommands : ICommandCategory
         registry.RegisterAdminCommand("slap",    OnCommandSlap,    ["admin:slap"]);
         registry.RegisterAdminCommand("hp",      OnCommandHp,      ["admin:hp"]);
         registry.RegisterAdminCommand("respawn", OnCommandRespawn, ["admin:respawn"]);
+        registry.RegisterAdminCommand("god",     OnCommandGod,     ["admin:god"]);
+    }
+
+    private void OnCommandGod(IGameClient? issuer, StringCommand command)
+    {
+        var ctx = _contextFactory.Create(issuer, command, _logger);
+
+        if (!ctx.RequireArgs(1, "Admin.Usage.God", "Usage: ms_god <target> [on/off]"))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
+        {
+            return;
+        }
+
+        if (!ctx.TryGetState(2, out var forcedState))
+        {
+            return;
+        }
+
+        var count = 0;
+
+        foreach (var target in targets)
+        {
+            if (!CommandHelpers.TryGetPawn(target, out var pawn, true))
+            {
+                continue;
+            }
+
+            var isGodModeNow = forcedState ?? pawn.AllowTakesDamage;
+
+            pawn.AllowTakesDamage = !isGodModeNow;
+            count++;
+        }
+
+        if (count > 0)
+        {
+            if (forcedState.HasValue)
+            {
+                var key = forcedState.Value ? "Admin.God.Enabled" : "Admin.God.Disabled";
+                var def = forcedState.Value ? "{0} enabled godmode on {1}." : "{0} disabled godmode on {1}.";
+                ctx.ReplySuccessKey(key, def, ctx.IssuerName, targetLabel);
+            }
+            else
+            {
+                ctx.ReplySuccessKey("Admin.God.Toggled", "{0} toggled godmode on {1}.", ctx.IssuerName, targetLabel);
+            }
+        }
     }
 
     private void OnCommandSlay(IGameClient? issuer, StringCommand command)
@@ -48,6 +98,7 @@ internal sealed class CombatCommands : ICommandCategory
                 continue;
             }
 
+            pawn.AllowTakesDamage = true;
             pawn.Slay();
             count++;
         }
@@ -166,11 +217,6 @@ internal sealed class CombatCommands : ICommandCategory
                 continue;
             }
 
-            if (controller.GetPlayerPawn() is not { IsAlive: false })
-            {
-                continue;
-            }
-
             controller.Respawn();
             count++;
         }
@@ -185,8 +231,10 @@ internal sealed class CombatCommands : ICommandCategory
     {
         try
         {
-            var horizontal = Random.Shared.NextSingle() * 200f;
-            var direction  = Random.Shared.NextSingle() > 0.5f ? 1f : -1f;
+            var rnd = Random.Shared;
+
+            var horizontal = rnd.NextSingle() * 200f;
+            var direction  = rnd.NextSingle() > 0.5f ? 1f : -1f;
             var velocity   = new Vector(horizontal * direction, horizontal * -direction, 250f);
 
             pawn.ApplyAbsVelocityImpulse(velocity);
