@@ -7,6 +7,18 @@
     "en-us": "PM",
     "zh-cn": "私聊"
   },
+  "Admin.Usage.BanIp": {
+    "en-us": "ms_banip <target> <duration> [reason]",
+    "zh-cn": "用法: ms_banip <目标> <时长> [理由]"
+  },
+  "Admin.BanIp.NoIp": {
+    "en-us": "Cannot ban {0}: Can't get their ip.",
+    "zh-cn": "无法封禁 {0}: 无法获取其 IP。"
+  },
+  "Admin.Usage.BanSubnet": {
+    "en-us": "ms_bansubnet <target> <duration> [reason]",
+    "zh-cn": "用法: ms_bansubnet <目标> <时长> [理由]"
+  },
   "Admin.TargetRequired": {
     "en-us": "Target is required.",
     "zh-cn": "必须指定目标。"

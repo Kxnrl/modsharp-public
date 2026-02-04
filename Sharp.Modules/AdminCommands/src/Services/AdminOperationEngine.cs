@@ -86,16 +86,18 @@ internal class AdminOperationEngine : IClientListener
                             AdminOperationType type,
                             TimeSpan?          duration,
                             string             reason,
-                            bool               silent = false)
-        => ApplyCore(admin, target, target.SteamId, target.Name, target.Slot, type, duration, reason, silent);
+                            bool               silent   = false,
+                            string?            metadata = null)
+        => ApplyCore(admin, target, target.SteamId, target.Name, target.Slot, type, duration, reason, metadata, silent);
 
     public void ApplyOffline(IGameClient?       admin,
                              SteamID            steamId,
                              string             targetName,
                              AdminOperationType type,
                              TimeSpan?          duration,
-                             string             reason)
-        => ApplyCore(admin, null, steamId, targetName, null, type, duration, reason, true);
+                             string             reason,
+                             string?            metadata = null)
+        => ApplyCore(admin, null, steamId, targetName, null, type, duration, reason, metadata, true);
 
     public void RemoveOnline(IGameClient?       admin,
                              IGameClient        target,
@@ -141,6 +143,7 @@ internal class AdminOperationEngine : IClientListener
                            AdminOperationType type,
                            TimeSpan?          duration,
                            string             reason,
+                           string?            metadata,
                            bool               silent)
     {
         if (!_handlers.TryGetValue(type, out var entry))
@@ -152,7 +155,7 @@ internal class AdminOperationEngine : IClientListener
             return;
         }
 
-        var record = CreateRecord(targetId, type, admin?.SteamId, duration, reason);
+        var record = CreateRecord(targetId, type, admin?.SteamId, duration, reason, metadata);
 
         entry.Handler.OnApplied(record, target);
 

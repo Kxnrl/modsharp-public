@@ -150,6 +150,7 @@ jobs:
         run: |
           cp -r ./.asset/configs  ./build/sharp
           cp -r ./.asset/gamedata ./build/sharp
+          cp -r ./.asset/locales ./build/sharp
 
       # Upload ModSharp artifact
       - name: Upload ModSharp artifact

@@ -1,16 +1,19 @@
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
+using Sharp.Shared.Listeners;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Services.Handlers;
 
-internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
+internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar, IClientListener
 {
-    private readonly Dictionary<SteamID, DateTime?> _bans = new ();
+    private readonly Dictionary<SteamID, BanEntry> _bans   = new ();
+    private readonly Dictionary<string, DateTime?> _ipBans = new ();
 
     private readonly InterfaceBridge     _bridge;
     private readonly ILogger<BanHandler> _logger;
@@ -26,7 +29,11 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 
     public void OnApplied(AdminOperationRecord record, IGameClient? targetClient)
     {
-        SetBanned(record.SteamId, true, record.ExpiresAt);
+        var metadata = record.GetMetadata<BanMetadata>();
+        var type     = (BanType?) metadata?.Bantype ?? BanType.SteamId;
+        var ip       = metadata?.Ip;
+
+        SetBanned(record.SteamId, true, type, ip, record.ExpiresAt);
 
         if (targetClient is not null)
         {
@@ -53,6 +60,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         }
 
         _bridge.HookManager.ConnectClient.InstallHookPre(OnConnectClientPre);
+        _bridge.ClientManager.InstallClientListener(this);
         _hooksRegistered = true;
     }
 
@@ -64,8 +72,32 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         }
 
         _bridge.HookManager.ConnectClient.RemoveHookPre(OnConnectClientPre);
+        _bridge.ClientManager.RemoveClientListener(this);
 
         _hooksRegistered = false;
+    }
+
+    // TODO: remove once IConnectClientHookParams has Ip param
+    public void OnClientConnected(IGameClient client)
+    {
+        if (client.IsFakeClient)
+        {
+            return;
+        }
+
+        var ip = client.GetAddress(false);
+
+        if (string.IsNullOrWhiteSpace(ip))
+        {
+            return;
+        }
+
+        if (IsBanned(client.SteamId, ip))
+        {
+            _bridge.ModSharp.InvokeFrameAction(() => _bridge.ClientManager.KickClient(client,
+                                                        "Banned",
+                                                        NetworkDisconnectionReason.SteamBanned));
+        }
     }
 
     private HookReturnValue<NetworkDisconnectionReason> OnConnectClientPre(IConnectClientHookParams                    @params,
@@ -73,7 +105,8 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     {
         var steamId = @params.SteamId;
 
-        if (!IsBanned(steamId))
+        // todo: use @params.Ip
+        if (!IsBanned(steamId, null))
         {
             return new HookReturnValue<NetworkDisconnectionReason>();
         }
@@ -82,16 +115,28 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
                                                                NetworkDisconnectionReason.SteamBanned);
     }
 
-    private bool IsBanned(SteamID steamId)
+    private bool IsBanned(SteamID steamId, string? ip)
     {
-        if (!_bans.TryGetValue(steamId, out var expiresAt))
+        if (!string.IsNullOrWhiteSpace(ip) && _ipBans.TryGetValue(ip, out var expiresAt))
+        {
+            if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
+            {
+                _ipBans.Remove(ip);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        if (!_bans.TryGetValue(steamId, out var entry))
         {
             return false;
         }
 
-        if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
+        if (entry.ExpiresAt.HasValue && entry.ExpiresAt.Value < DateTime.UtcNow)
         {
-            _bans.Remove(steamId);
+            SetBanned(steamId, false); // cleanup both cache
 
             return false;
         }
@@ -99,15 +144,65 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         return true;
     }
 
-    private void SetBanned(SteamID steamId, bool banned, DateTime? expiresAt = null)
+    private void SetBanned(SteamID   steamId,
+                           bool      banned,
+                           BanType   type      = BanType.SteamId,
+                           string?   ip        = null,
+                           DateTime? expiresAt = null)
     {
         if (banned)
         {
-            _bans[steamId] = expiresAt;
+            _bans[steamId] = new BanEntry(expiresAt, type, ip);
+
+            if (!string.IsNullOrWhiteSpace(ip))
+            {
+                if (type == BanType.Ip)
+                {
+                    _ipBans[ip] = expiresAt;
+                }
+
+                else if (type == BanType.IpRange)
+                {
+                    // Subnet ban: "1.1.1."
+                    _ipBans[GetSubnet(ip)] = expiresAt;
+                }
+            }
         }
         else
         {
-            _bans.Remove(steamId);
+            if (_bans.Remove(steamId, out var entry))
+            {
+                if (entry.Type == BanType.Ip && !string.IsNullOrWhiteSpace(entry.Ip))
+                {
+                    _ipBans.Remove(entry.Ip);
+                }
+            }
         }
     }
+
+    private static string GetSubnet(string ip)
+    {
+        var lastDotIndex = ip.LastIndexOf('.');
+
+        if (lastDotIndex == -1)
+        {
+            return ip;
+        }
+
+        return ip.Substring(0, lastDotIndex + 1);
+    }
+
+    private record struct BanEntry(DateTime? ExpiresAt, BanType Type, string? Ip);
+
+    private class BanMetadata
+    {
+        [JsonPropertyName("ip")]
+        public string? Ip { get; set; }
+
+        [JsonPropertyName("bantype")]
+        public int Bantype { get; set; }
+    }
+
+    public int ListenerVersion  => IClientListener.ApiVersion;
+    public int ListenerPriority => 0;
 }
