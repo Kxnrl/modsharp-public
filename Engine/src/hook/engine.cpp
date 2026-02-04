@@ -39,6 +39,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlBuffer.h"
+#include "cstrike/type/netadr_t.h"
 #include "cstrike/type/VProf.h"
 
 #include <proto/connectionless_netmessages.pb.h>
@@ -222,7 +223,7 @@ BeginMemberHookScope(CNetworkGameServer)
         return nullptr;
     }
 
-    DeclareMemberDetourHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, void* pNetAddress, void* pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
+    DeclareMemberDetourHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, netadr_t* pNetAddress, void* pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
     {
 #ifdef CONNECT_HOOK_ASSERT
         WARN("%10s: 0x%p\n" // CNetworkGameServer*
@@ -266,7 +267,9 @@ BeginMemberHookScope(CNetworkGameServer)
             return nullptr;
         }
 
-        switch (forwards::OnConnectClient->Invoke(steamId, pName, pNetInfo))
+        auto ip = pNetAddress->GetIPHostByteOrder();
+
+        switch (forwards::OnConnectClient->Invoke(steamId, pName, pNetInfo, ip))
         {
         case EHookAction::SkipCallReturnOverride:
             return nullptr;

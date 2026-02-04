@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
@@ -30,14 +31,14 @@ internal class ConnectClientHook : HookType<ConnectClientHookParams, NetworkDisc
     public ConnectClientHook(ILoggerFactory factory) : base(factory)
         => Bridges.Forwards.Client.OnConnectClient += CNetworkGameServer_ConnectClient;
 
-    private HookReturnValue<NetworkDisconnectionReason> CNetworkGameServer_ConnectClient(SteamID steamId, string name)
+    private HookReturnValue<NetworkDisconnectionReason> CNetworkGameServer_ConnectClient(SteamID steamId, string name, uint ip)
     {
         if (!IsHookInvokeRequired(false))
         {
             return new HookReturnValue<NetworkDisconnectionReason>(EHookAction.Ignored);
         }
 
-        var param  = new ConnectClientHookParams(false, steamId, name);
+        var param  = new ConnectClientHookParams(false, steamId, name, ip);
         var result = InvokeHookPre(param);
 
         param.MarkAsDisposed();
@@ -51,12 +52,21 @@ internal class ConnectClientHook : HookType<ConnectClientHookParams, NetworkDisc
 
 internal sealed class ConnectClientHookParams : FunctionParams, IConnectClientHookParams
 {
-    public ConnectClientHookParams(bool postHook, SteamID steamId, string name) : base(postHook)
+    private          string? _ipAddressCache;
+    private readonly uint    _rawIp;
+
+    public ConnectClientHookParams(bool postHook, SteamID steamId, string name, uint rawIp) : base(postHook)
     {
         SteamId = steamId;
         Name    = name;
+        _rawIp  = rawIp;
     }
 
     public SteamID SteamId { get; }
     public string  Name    { get; }
+    public string  Ip      => _ipAddressCache ??= ParseIpAddress(_rawIp);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string ParseIpAddress(uint rawIp)
+        => $"{rawIp >> 24}.{(rawIp >> 16) & 0xFF}.{(rawIp >> 8) & 0xFF}.{rawIp & 0xFF}";
 }

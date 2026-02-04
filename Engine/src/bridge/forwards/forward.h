@@ -97,7 +97,7 @@ DECLARE_FORWARD(Network, OnTextMsg, EHookAction, FORWARD_ARG(uint32_t, const cha
 DECLARE_FORWARD(Network, OnPostEventAbstract, EHookAction, FORWARD_ARG(uint16_t, const void*, NetworkReceiver_t, bool*, NetworkReceiver_t*));
 
 // Client
-DECLARE_FORWARD(Client, OnConnectClient, EHookAction, FORWARD_ARG(SteamId_t, const char*, void*));
+DECLARE_FORWARD(Client, OnConnectClient, EHookAction, FORWARD_ARG(SteamId_t, const char*, void*, uint32_t));
 DECLARE_FORWARD(Client, OnClientConnect, EHookAction, FORWARD_ARG(SteamId_t, const char*, char*, int, bool*));
 DECLARE_FORWARD(Client, OnClientConnected, void, FORWARD_ARG(CServerSideClient*));
 DECLARE_FORWARD(Client, OnClientActive, void, FORWARD_ARG(CServerSideClient*));

@@ -17,13 +17,28 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Sharp.Shared.Units;
+#ifndef CSTRIKE_TYPE_NETADR_H
+#define CSTRIKE_TYPE_NETADR_H
 
-namespace Sharp.Shared.HookParams;
+#pragma once
+#include "platform.h"
 
-public interface IConnectClientHookParams : IFunctionParams
+#include <string>
+
+enum netadrtype_t : int32_t
 {
-    SteamID SteamId { get; }
-    string  Name    { get; }
-    string  Ip      { get; }
-}
+    NA_NULL = 0,
+    NA_LOOPBACK,
+    NA_BROADCAST,
+    NA_IP,
+};
+
+struct netadr_t
+{
+    netadrtype_t   type;
+    unsigned char  ip[4];
+    unsigned short port;
+
+    MS_CLASS_IMPORT unsigned int GetIPHostByteOrder() const;
+};
+#endif

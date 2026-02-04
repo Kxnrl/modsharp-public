@@ -27,7 +27,7 @@ namespace Sharp.Core.Bridges.Forwards;
 
 internal static class Client
 {
-    public delegate HookReturnValue<NetworkDisconnectionReason> DelegateOnConnectClient(SteamID steamId, string name);
+    public delegate HookReturnValue<NetworkDisconnectionReason> DelegateOnConnectClient(SteamID steamId, string name, uint ip);
 
     public delegate HookReturnValue<bool> DelegateOnClientConnect(SteamID steamId, string name, ref string rejectReason);
 
@@ -83,7 +83,7 @@ internal static class Client
     public static event DelegateOnClientQueryConVar?    OnClientQueryConVar;
 
     [UnmanagedCallersOnly]
-    public static unsafe EHookAction OnConnectClientExport(SteamID steamId, sbyte* pName, nint pNetInfo)
+    public static unsafe EHookAction OnConnectClientExport(SteamID steamId, sbyte* pName, nint pNetInfo, uint ip)
     {
         if (OnConnectClient is null)
         {
@@ -91,7 +91,7 @@ internal static class Client
         }
 
         var name   = Utils.ReadString(pName);
-        var action = OnConnectClient.Invoke(steamId, name);
+        var action = OnConnectClient.Invoke(steamId, name, ip);
 
         if (action.Action is EHookAction.SkipCallReturnOverride)
         {

@@ -10,7 +10,7 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Services.Handlers;
 
-internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar, IClientListener
+internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 {
     private readonly Dictionary<SteamID, BanEntry> _bans   = new ();
     private readonly Dictionary<string, DateTime?> _ipBans = new ();
@@ -60,7 +60,6 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         }
 
         _bridge.HookManager.ConnectClient.InstallHookPre(OnConnectClientPre);
-        _bridge.ClientManager.InstallClientListener(this);
         _hooksRegistered = true;
     }
 
@@ -72,32 +71,8 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         }
 
         _bridge.HookManager.ConnectClient.RemoveHookPre(OnConnectClientPre);
-        _bridge.ClientManager.RemoveClientListener(this);
 
         _hooksRegistered = false;
-    }
-
-    // TODO: remove once IConnectClientHookParams has Ip param
-    public void OnClientConnected(IGameClient client)
-    {
-        if (client.IsFakeClient)
-        {
-            return;
-        }
-
-        var ip = client.GetAddress(false);
-
-        if (string.IsNullOrWhiteSpace(ip))
-        {
-            return;
-        }
-
-        if (IsBanned(client.SteamId, ip))
-        {
-            _bridge.ModSharp.InvokeFrameAction(() => _bridge.ClientManager.KickClient(client,
-                                                        "Banned",
-                                                        NetworkDisconnectionReason.SteamBanned));
-        }
     }
 
     private HookReturnValue<NetworkDisconnectionReason> OnConnectClientPre(IConnectClientHookParams                    @params,
@@ -106,7 +81,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         var steamId = @params.SteamId;
 
         // todo: use @params.Ip
-        if (!IsBanned(steamId, null))
+        if (!IsBanned(steamId, @params.Ip))
         {
             return new HookReturnValue<NetworkDisconnectionReason>();
         }
