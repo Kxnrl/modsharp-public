@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Shared.Enums;
@@ -220,12 +221,31 @@ internal sealed class CommandContext
     /// </summary>
     public string GetReason(int argIndex)
     {
-        if (_command.ArgCount >= argIndex)
+        var argCount = _command.ArgCount;
+
+        if (argIndex > argCount)
+        {
+            return LocalizeOrFallback(DefaultReasonKey, DefaultReasonFallback);
+        }
+
+        if (argIndex == argCount)
         {
             return _command.GetArg(argIndex);
         }
 
-        return LocalizeOrFallback(DefaultReasonKey, DefaultReasonFallback);
+        var sb = new StringBuilder();
+
+        for (var i = argIndex; i <= _command.ArgCount; i++)
+        {
+            sb.Append(_command.GetArg(i));
+
+            if (i < argCount)
+            {
+                sb.Append(' ');
+            }
+        }
+
+        return sb.ToString();
     }
 
     /// <summary>
