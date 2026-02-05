@@ -29,7 +29,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     private readonly IEventManager                               _eventManager;
     private          IModSharpModuleInterface<ILocalizerManager> _localizerManager = null!;
 
-    private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerSlot];
+    private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerCount];
 
     public MenuManager(ISharedSystem sharedSystem,
         string                       dllPath,

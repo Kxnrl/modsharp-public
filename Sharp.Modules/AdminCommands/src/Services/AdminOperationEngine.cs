@@ -115,9 +115,10 @@ internal class AdminOperationEngine : IClientListener
 
     public void NotifySilenceApplied(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
     {
+        var adminName         = ResolveAdminName(admin);
         var formattedDuration = FormatDuration(duration);
 
-        Notify(admin,
+        Notify(adminName,
                target,
                "Admin.SilenceApplied",
                $"silenced {target.Name} {formattedDuration.ToString()}",
@@ -126,7 +127,7 @@ internal class AdminOperationEngine : IClientListener
     }
 
     public void NotifySilenceRemoved(IGameClient? admin, IGameClient target, string reason)
-        => Notify(admin,
+        => Notify(ResolveAdminName(admin),
                   target,
                   "Admin.SilenceRemoved",
                   $"unsilenced {target.Name}",
@@ -146,6 +147,9 @@ internal class AdminOperationEngine : IClientListener
                            string?            metadata,
                            bool               silent)
     {
+        var adminName    = ResolveAdminName(admin);
+        var adminDisplay = ResolveAdminDisplay(admin);
+
         if (!_handlers.TryGetValue(type, out var entry))
         {
             _logger.LogWarning("Operation '{type}' does not exist in the handler.", type.Value);
@@ -166,10 +170,10 @@ internal class AdminOperationEngine : IClientListener
 
             var (key, fallback) = entry.Handler.GetAppliedNotification(target, durationText);
 
-            Notify(admin, target, key, fallback, formattedDuration, reason);
+            Notify(adminName, target, key, fallback, formattedDuration, reason);
         }
 
-        LogOperation(admin, targetName, targetId, type, duration, reason, "Applied");
+        LogOperation(adminDisplay, targetName, targetId, type, duration, reason, "Applied");
         _ = _operations.AddAsync(record);
     }
 
@@ -182,6 +186,9 @@ internal class AdminOperationEngine : IClientListener
                             string             reason,
                             bool               silent)
     {
+        var adminName    = ResolveAdminName(admin);
+        var adminDisplay = ResolveAdminDisplay(admin);
+
         if (!_handlers.TryGetValue(type, out var entry))
         {
             _logger.LogWarning("Operation '{type}' does not exist in the handler.", type.Value);
@@ -197,10 +204,10 @@ internal class AdminOperationEngine : IClientListener
         {
             var (key, fallback) = entry.Handler.GetRemovedNotification(target);
 
-            Notify(admin, target, key, fallback, FormatDuration(null), reason);
+            Notify(adminName, target, key, fallback, FormatDuration(null), reason);
         }
 
-        LogOperation(admin, targetName, targetId, type, null, reason, "Removed");
+        LogOperation(adminDisplay, targetName, targetId, type, null, reason, "Removed");
         _ = _operations.RemoveAsync(targetId, type, admin?.SteamId, reason);
     }
 
@@ -217,7 +224,7 @@ internal class AdminOperationEngine : IClientListener
         return new AdminOperationRecord(targetId, type, adminId, now, expiresAt, reason, metadata);
     }
 
-    private void Notify(IGameClient?      admin,
+    private void Notify(string            adminName,
                         IGameClient?      target,
                         string            locKey,
                         string            fallback,
@@ -226,8 +233,6 @@ internal class AdminOperationEngine : IClientListener
     {
         _bridge.ModSharp.InvokeFrameAction(() =>
         {
-            var adminName = admin?.Name ?? "Console";
-
             if (target is not null && _moduleContext.LocalizerManager is { } localizer)
             {
                 var locale = localizer.ForMany(_bridge.ClientManager.GetGameClients(true));
@@ -244,7 +249,7 @@ internal class AdminOperationEngine : IClientListener
     private LocalizedDuration FormatDuration(TimeSpan? duration)
         => new (duration, _moduleContext.LocalizerManager);
 
-    private void LogOperation(IGameClient?       admin,
+    private void LogOperation(string             adminDisplay,
                               string             targetName,
                               SteamID            targetId,
                               AdminOperationType type,
@@ -255,11 +260,33 @@ internal class AdminOperationEngine : IClientListener
         _logger.LogInformation("{Action} {Type}: {Admin} -> {Target} ({SteamId}). Duration: {Duration}. Reason: {Reason}",
                                action,
                                type,
-                               admin?.Name ?? "Console",
+                               adminDisplay,
                                targetName,
                                targetId,
                                duration?.ToString() ?? "Permanent",
                                reason);
+    }
+
+    private static string ResolveAdminName(IGameClient? admin)
+    {
+        if (admin is null)
+        {
+            return "Console";
+        }
+
+        return string.IsNullOrWhiteSpace(admin.Name) ? "Unknown" : admin.Name;
+    }
+
+    private static string ResolveAdminDisplay(IGameClient? admin)
+    {
+        if (admin is null)
+        {
+            return "Console";
+        }
+
+        var adminName = ResolveAdminName(admin);
+
+        return $"{adminName} ({admin.SteamId})";
     }
 
     private async Task LoadAndApplyOperationsAsync(SteamID steamId)
