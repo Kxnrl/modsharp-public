@@ -349,7 +349,7 @@ void InstallPlayerHooks()
     InstallVirtualHookAutoWithVTableAuto(CCSPlayer_WeaponServices, CanUse, server);
 
     InstallVirtualHookManualWithVTableAuto(CCSPlayerPawn, Event_Killed, server, "CBaseEntity::Event_Killed");
-    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerSpawn, server);
+    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerSpawn);
     InstallVirtualHookAutoWithVTableAuto(CCSPlayerPawn, PlayerPreThink, server);
-    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerPostThink, server);
+    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerPostThink);
 }

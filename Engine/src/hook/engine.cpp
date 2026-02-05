@@ -317,13 +317,13 @@ void InstallEngineHooks()
     InstallMemberDetourAutoSig(CNetworkGameServer, PrintStatus);
     InstallMemberDetourAutoSig(CNetworkGameServer, GetFreeClient);
 
-    InstallMemberDetourAutoSig(CNetworkGameServer, ActiveServer, engine);
+    InstallMemberDetourAutoSig(CNetworkGameServer, ActiveServer);
 
     // BUG 运行在客户端模式下时, 该功能会导致游戏无法启动
     if (CommandLine()->HasParam("-dedicated"))
     {
         InstallVirtualHookAutoWithVTableAuto(CNetworkGameServer, DisconnectClient, engine);
-        InstallMemberDetourAutoSig(CNetworkGameServer, ConnectClient, engine);
+        InstallMemberDetourAutoSig(CNetworkGameServer, ConnectClient);
     }
 
     // TODO steamnetworkingsockets -> str 'SendServerBrowserPacket' patch MTU

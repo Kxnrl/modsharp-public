@@ -846,7 +846,7 @@ public:
 
 void InstallTransmitHook()
 {
-    InstallMemberDetourAutoSig(ISource2GameEntities, CheckTransmit, server, CSource2GameEntities);
+    InstallMemberDetourAutoSig(ISource2GameEntities, CheckTransmit);
 
     g_pGameEntitySystem->AddListenerEntity(&s_listener);
 

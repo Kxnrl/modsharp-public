@@ -307,7 +307,7 @@ static void PatchEnableVScript()
 
 void InstallServerHooks()
 {
-    InstallMemberDetourAutoSig(CSource2Server, GameFrame, server);
+    InstallMemberDetourAutoSig(CSource2Server, GameFrame);
     InstallVirtualHookAutoWithVTableAuto(CSource2Server, GameServerSteamAPIActivated, server);
     InstallVirtualHookAutoWithVTableAuto(CSource2Server, GameServerSteamAPIDeactivated, server);
 

@@ -71,6 +71,7 @@ set(modsharp_SOURCES
 	"src/cstrike/interface/IResourceSystem.cpp"
 	"src/cstrike/interface/ISchemaSystem.cpp"
 	"src/cstrike/interface/ISoundOpSystem.cpp"
+	"src/cstrike/interfaces.cpp"
 	"src/cstrike/schema.cpp"
 	"src/cstrike/type/CCommand.cpp"
 	"src/cstrike/type/CEconItemView.cpp"
