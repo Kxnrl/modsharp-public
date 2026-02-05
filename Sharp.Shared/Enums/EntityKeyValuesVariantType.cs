@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,23 +17,13 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_ENTITY_BASETRIGGER_H
-#define CSTRIKE_ENTITY_BASETRIGGER_H
+namespace Sharp.Shared.Enums;
 
-#include "cstrike/entity/CBaseModelEntity.h"
-#include "cstrike/type/CUtlVector.h"
-
-class CBaseTrigger : public CBaseModelEntity
+public enum EntityKeyValuesVariantType : uint
 {
-    DECLARE_SCHEMA_CLASS(CBaseTrigger)
-public:
-    SCHEMA_POINTER_FIELD(CUtlVector<CBaseHandle>, m_hTouchingEntities)
-    SCHEMA_FIELD(char*, m_iFilterName)
-    SCHEMA_FIELD(CBaseHandle, m_hFilter)
-};
-
-class CTriggerGravity : public CBaseModelEntity
-{
-};
-
-#endif
+    Bool,
+    Int32,
+    Float,
+    String,
+    Pointer,
+}

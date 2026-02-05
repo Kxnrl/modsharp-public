@@ -97,7 +97,7 @@ CBaseEntity* CGameEntitySystem::FindInSphere(CBaseEntity* startEntity, Vector* c
     return address::server::CGameEntitySystem_FindInSphere(this, startEntity, center, radius);
 }
 
-CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classname, CUtlVector<KeyValuesVariantItem*>* kv) const
+CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classname, const KeyValuesVariantItem* items, int count) const
 {
     const auto entity = address::server::CreateEntityByName(classname, -1);
     if (entity == nullptr)
@@ -105,36 +105,31 @@ CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classna
 
     CEntityKeyValues* pKeyValues = CEntityKeyValues::Create();
 
-    if (kv && kv->Count() > 0)
+    for (int i = 0; i < count; i++)
     {
-        for (int i = 0; i < kv->Count(); i++)
-        {
-            const auto item = kv->Element(i);
+        const auto& item = items[i];
 
-            if (item->Value.type == KeyValuesVariantValueItemType_Bool)
-            {
-                pKeyValues->SetBool(item->Key, item->Value.bValue);
-            }
-            else if (item->Value.type == KeyValuesVariantValueItemType_Int32)
-            {
-                pKeyValues->SetInt(item->Key, item->Value.i32Value);
-            }
-            else if (item->Value.type == KeyValuesVariantValueItemType_Float)
-            {
-                pKeyValues->SetFloat(item->Key, item->Value.flValue);
-            }
-            else if (item->Value.type == KeyValuesVariantValueItemType_String)
-            {
-                pKeyValues->SetString(item->Key, item->Value.szValue);
-            }
-            else if (item->Value.type == KeyValuesVariantValueItemType_Pointer)
-            {
-                pKeyValues->SetPointer(item->Key, item->Value.pValue);
-            }
-            else
-            {
-                FatalError("Not support KeyValuesVariantValueItemType");
-            }
+        switch (item.Value.type)
+        {
+            case KeyValuesVariantValueItemType_Bool:
+                pKeyValues->SetBool(item.Key, item.Value.bValue);
+                break;
+            case KeyValuesVariantValueItemType_Int32:
+                pKeyValues->SetInt(item.Key, item.Value.i32Value);
+                break;
+            case KeyValuesVariantValueItemType_Float:
+                pKeyValues->SetFloat(item.Key, item.Value.flValue);
+                break;
+            case KeyValuesVariantValueItemType_String:
+                pKeyValues->SetString(item.Key, item.Value.szValue);
+                break;
+            case KeyValuesVariantValueItemType_Pointer:
+                pKeyValues->SetPointer(item.Key, item.Value.pValue);
+                break;
+            default: 
+                FatalError("Not supported KeyValuesVariantValueItemType");
+                break;
+            
         }
     }
 

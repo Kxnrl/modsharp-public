@@ -18,40 +18,19 @@
  */
 
 using System;
-using System.Runtime.InteropServices;
-using Sharp.Shared.Utilities;
+using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.Types;
 
-internal enum KeyValuesVariantValueItemType : uint
+public struct KeyValuesVariantValueItem
 {
-    Bool,
-    Int32,
-    Float,
-    String,
-    Pointer,
-}
+    public EntityKeyValuesVariantType Type;
 
-[StructLayout(LayoutKind.Explicit, Size = 264)]
-public unsafe struct KeyValuesVariantValueItem
-{
-    [FieldOffset(0)]
-    private KeyValuesVariantValueItemType _type;
-
-    [FieldOffset(8)]
-    private byte _bValue; // bool
-
-    [FieldOffset(8)]
-    private int _i32Value;
-
-    [FieldOffset(8)]
-    private float _flValue;
-
-    [FieldOffset(8)]
-    private fixed byte _szValue[KeyValuesVariantItem.MaxStringLength];
-
-    [FieldOffset(8)]
-    private nint _pValue;
+    private bool    _bValue  = false;
+    private int     _iValue  = 0;
+    private float   _flValue = 0;
+    private string? _szValue = null;
+    private nint    _pValue  = nint.Zero;
 
     public static implicit operator KeyValuesVariantValueItem(int value)
         => new (value);
@@ -70,70 +49,44 @@ public unsafe struct KeyValuesVariantValueItem
 
     public KeyValuesVariantValueItem(bool value)
     {
-        _type   = KeyValuesVariantValueItemType.Bool;
-        _bValue = (byte) (value ? 1 : 0);
+        Type    = EntityKeyValuesVariantType.Bool;
+        _bValue = value;
     }
 
     public KeyValuesVariantValueItem(int value)
     {
-        _type     = KeyValuesVariantValueItemType.Int32;
-        _i32Value = value;
+        Type    = EntityKeyValuesVariantType.Int32;
+        _iValue = value;
     }
 
     public KeyValuesVariantValueItem(float value)
     {
-        _type    = KeyValuesVariantValueItemType.Float;
+        Type     = EntityKeyValuesVariantType.Float;
         _flValue = value;
     }
 
     public KeyValuesVariantValueItem(nint value)
     {
-        _type   = KeyValuesVariantValueItemType.Pointer;
+        Type    = EntityKeyValuesVariantType.Pointer;
         _pValue = value;
     }
 
     public KeyValuesVariantValueItem(string value)
     {
-        _type = KeyValuesVariantValueItemType.String;
-
-        fixed (byte* ptr = _szValue)
-        {
-            var bytes = new Span<byte>(ptr, KeyValuesVariantItem.MaxStringLength);
-
-            bytes.WriteStringUtf8(value);
-        }
-    }
-}
-
-public unsafe struct KeyValuesVariantItem
-{
-    public const int MaxStringLength = 256;
-
-    public fixed byte Key[MaxStringLength];
-
-    public KeyValuesVariantValueItem Value;
-
-    public KeyValuesVariantItem(string key, KeyValuesVariantValueItem val)
-    {
-        fixed (byte* ptr = Key)
-        {
-            var bytes = new Span<byte>(ptr, MaxStringLength);
-
-            bytes.WriteStringUtf8(key);
-        }
-
-        Value = val;
+        Type     = EntityKeyValuesVariantType.String;
+        _szValue = value;
     }
 
-    public KeyValuesVariantItem(string key, ref KeyValuesVariantValueItem val)
-    {
-        fixed (byte* ptr = Key)
-        {
-            var bytes = new Span<byte>(ptr, MaxStringLength);
+    public bool BoolValue => Type is EntityKeyValuesVariantType.Bool ? _bValue : throw new TypeAccessException("Wrong Type");
 
-            bytes.WriteStringUtf8(key);
-        }
+    public int IntValue => Type is EntityKeyValuesVariantType.Int32 ? _iValue : throw new TypeAccessException("Wrong Type");
 
-        Value = val;
-    }
+    public float FloatValue
+        => Type is EntityKeyValuesVariantType.Float ? _flValue : throw new TypeAccessException("Wrong Type");
+
+    public string StringValue
+        => Type is EntityKeyValuesVariantType.String && _szValue is { } str ? str : throw new TypeAccessException("Wrong Type");
+
+    public nint PointerValue
+        => Type is EntityKeyValuesVariantType.Pointer ? _pValue : throw new TypeAccessException("Wrong Type");
 }

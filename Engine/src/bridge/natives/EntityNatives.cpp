@@ -78,20 +78,9 @@ static CBaseEntity* FindEntityInSphere(CBaseEntity* pStart, Vector* vCenter, flo
     return g_pGameEntitySystem->FindInSphere(pStart, vCenter, radius);
 }
 
-static CBaseEntity* SpawnEntitySync(const char* classname, KeyValuesVariantItem* item, int count)
+static CBaseEntity* SpawnEntitySync(const char* classname, KeyValuesVariantItem* items, int count)
 {
-    CUtlVector<KeyValuesVariantItem*> vector;
-
-    while (count--)
-    {
-        vector.AddToTail(item);
-
-        item++;
-    }
-
-    auto* pEntity = g_pGameEntitySystem->SpawnEntityFromKeyValuesSync(classname, &vector);
-
-    return pEntity;
+    return g_pGameEntitySystem->SpawnEntityFromKeyValuesSync(classname, items, count);
 }
 
 static CBaseEntity* CreateEntityByName(const char* classname)
@@ -378,21 +367,9 @@ static void EntitySetAbsVelocity(CBaseEntity* pEntity, Vector* vVelocity)
     return pEntity->SetAbsVelocity(vVelocity);
 }
 
-static void EntityDispatchSpawn(CBaseEntity* pEntity, KeyValuesVariantItem* item, int count)
+static void EntityDispatchSpawn(CBaseEntity* pEntity, const KeyValuesVariantItem* items, int count)
 {
-    if (!item)
-        return pEntity->DispatchSpawn();
-
-    CUtlVector<KeyValuesVariantItem*> vector;
-
-    while (count--)
-    {
-        vector.AddToTail(item);
-
-        item++;
-    }
-
-    pEntity->DispatchSpawn(&vector);
+    pEntity->DispatchSpawn(items, count);
 }
 
 static bool EntityIsPlayerController(CBaseEntity* pEntity)

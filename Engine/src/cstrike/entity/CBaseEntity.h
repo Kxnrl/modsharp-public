@@ -191,7 +191,7 @@ public:
     static void               SetBypassHook(bool state) { s_bBypassDamageHook = state; }
 
     void DispatchSpawn(CEntityKeyValues* pEntityKeyValues);
-    void DispatchSpawn(CUtlVector<KeyValuesVariantItem*>* kv = nullptr);
+    void DispatchSpawn(const KeyValuesVariantItem* items, int count);
 
 private:
     static bool s_bBypassDamageHook;

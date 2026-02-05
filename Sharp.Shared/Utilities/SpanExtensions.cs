@@ -18,18 +18,35 @@
  */
 
 using System;
+using System.Buffers;
 using System.Text.Unicode;
 
 namespace Sharp.Shared.Utilities;
 
 public static class SpanExtensions
 {
-    public static int WriteStringUtf8(this Span<byte> span, string value)
+    public static int WriteStringUtf8(this Span<byte> span, string value, out bool truncated)
     {
-        Utf8.FromUtf16(value, span, out _, out var bytesWritten);
+        if (span.IsEmpty)
+        {
+            truncated = true;
 
+            return 0;
+        }
+
+        var destination = span[..^1];
+
+        var status = Utf8.FromUtf16(value,
+                                    destination,
+                                    out _,
+                                    out var bytesWritten);
+
+        truncated          = status == OperationStatus.DestinationTooSmall;
         span[bytesWritten] = 0;
 
         return bytesWritten + 1;
     }
+
+    public static int WriteStringUtf8(this Span<byte> span, string value)
+        => WriteStringUtf8(span, value, out _);
 }

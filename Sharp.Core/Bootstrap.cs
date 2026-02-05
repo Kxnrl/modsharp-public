@@ -37,6 +37,7 @@ using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
 using Sharp.Core.Managers;
+using Sharp.Core.Pools;
 using Sharp.Core.Utilities;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -67,7 +68,7 @@ public static class Bootstrap
     public static void Shutdown()
     {
         ShutdownMonitor.Shutdown();
-
+        StringPool.Shutdown();
         Console.WriteLine("MS: Shutdown Bootstrap!");
     }
 
@@ -254,6 +255,9 @@ public static class Bootstrap
         try
         {
             var benchmark = Environment.GetCommandLineArgs().Any(x => x.Contains("benchmark"));
+
+            // pooling
+            StringPool.Initialize(10240);
 
             var sw = Stopwatch.StartNew();
             var ap = Stopwatch.StartNew();

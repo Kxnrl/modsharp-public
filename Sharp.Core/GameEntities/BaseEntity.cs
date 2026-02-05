@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -27,6 +26,7 @@ using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
+using Sharp.Core.Types;
 using Sharp.Core.Utilities;
 using Sharp.Core.VirtualCalls;
 using Sharp.Generator;
@@ -302,22 +302,34 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
     public IBaseGrenadeProjectile? AsBaseGrenadeProjectile()
         => Classname.EndsWith("_projectile", StringComparison.OrdinalIgnoreCase) ? BaseGrenadeProjectile.Create(_this) : null;
 
+    [SkipLocalsInit]
     public unsafe void DispatchSpawn(IReadOnlyDictionary<string, KeyValuesVariantValueItem>? keyValues = null)
     {
-        if (keyValues is null)
+        if (keyValues is null || keyValues.Count == 0)
         {
             Entity.DispatchSpawn(_this, null, 0);
-
             return;
         }
 
-        var items = keyValues.Select((x) => new KeyValuesVariantItem(x.Key, x.Value)).ToArray();
-        var count = items.Length;
+        var count = keyValues.Count;
 
-        fixed (KeyValuesVariantItem* ptr = items)
+        if (count > 128)
         {
-            Entity.DispatchSpawn(_this, ptr, count);
+            throw new ArgumentException("Too many key values");
         }
+
+        var items = stackalloc EntityKeyValuesVariant[count];
+
+        var index = 0;
+
+        foreach (var (key, value) in keyValues)
+        {
+            ref var item = ref items[index];
+            item.Update(key, value);
+            index++;
+        }
+
+        Entity.DispatchSpawn(_this, items, count);
     }
 
     public string GlobalName

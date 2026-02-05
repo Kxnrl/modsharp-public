@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -17,23 +17,30 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_ENTITY_BASETRIGGER_H
-#define CSTRIKE_ENTITY_BASETRIGGER_H
+using System.Runtime.InteropServices;
+using Sharp.Core.Pools;
+using Sharp.Shared.Types;
 
-#include "cstrike/entity/CBaseModelEntity.h"
-#include "cstrike/type/CUtlVector.h"
+namespace Sharp.Core.Types;
 
-class CBaseTrigger : public CBaseModelEntity
+[StructLayout(LayoutKind.Explicit, Size = 24)]
+public unsafe struct EntityKeyValuesVariant
 {
-    DECLARE_SCHEMA_CLASS(CBaseTrigger)
-public:
-    SCHEMA_POINTER_FIELD(CUtlVector<CBaseHandle>, m_hTouchingEntities)
-    SCHEMA_FIELD(char*, m_iFilterName)
-    SCHEMA_FIELD(CBaseHandle, m_hFilter)
-};
+    [FieldOffset(0)]
+    public byte* Key;
 
-class CTriggerGravity : public CBaseModelEntity
-{
-};
+    [FieldOffset(8)]
+    public EntityKeyValuesVariantValue Value;
 
-#endif
+    public EntityKeyValuesVariant(string key, in KeyValuesVariantValueItem value)
+    {
+        Key   = StringPool.Instance.AllocPooledString(key);
+        Value = value;
+    }
+
+    public void Update(string key, in KeyValuesVariantValueItem value)
+    {
+        Key   = StringPool.Instance.AllocPooledString(key);
+        Value = value;
+    }
+}
