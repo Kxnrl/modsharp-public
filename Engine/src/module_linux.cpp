@@ -344,6 +344,11 @@ void CModule::DumpVtables()
 
     std::vector<TypeInfo> known_typeinfos;
 
+    // originally inspired by praydog & cursey's kananlib https://github.com/cursey/kananlib/blob/main/src/RTTI.cpp
+    // but made some improvements based on our usage.
+    // hopefully no one copies or recodes this function in another language and claims they coded it without giving credit 😭🙏
+
+    // find every address that points to the typeinfo vtable, used for brutefocing vtable later
     auto collect_typeinfos = [&](CAddress root_rtti_vtable) {
         auto instances = FindPtrs(root_rtti_vtable.GetPtr());
         known_typeinfos.reserve(known_typeinfos.size() + instances.size());
@@ -364,6 +369,7 @@ void CModule::DumpVtables()
     ti_to_vtable_map.reserve(known_typeinfos.size() / 2);
     _vtables.reserve(known_typeinfos.size());
 
+    // bruteforcing vtable
     for (const auto& segment : _segments)
     {
         if (segment.flags & FLAG_X)
@@ -550,6 +556,12 @@ void CModule::BuildFunctionIndexAndReferences()
     std::vector<ChunkResult> chunk_results(num_threads);
     std::vector<std::thread> threads;
     threads.reserve(num_threads);
+    
+    // multithreaded solution inspired by the code snippet @angelfor3v3r gave me a long time ago.
+    // to be honest i could have used yaxpeax-x86, which is the fastest decoder i have found yet (it takes about 100ms to decode libserver.so .text section
+    // while zydis takes ~450ms), but i dont think it is worth the effort to replace zydis with it,
+    // not to mention safetyhook also uses zydis and i use the encoder feature from zydis too.
+    // hopefully no one copies or recodes this function in another language and claims they coded it without giving credit 😭🙏
 
     auto disassemble_chunk = [&](std::uint32_t idx, std::uintptr_t decode_start, std::uintptr_t chunk_start, std::uintptr_t chunk_end) {
         ZydisDecoder decoder{};
@@ -610,7 +622,7 @@ void CModule::BuildFunctionIndexAndReferences()
                         // jmp label instructions and nullsub_xxx functions
                         if ((target & 15) == 0 && is_function_pointer(target))
                         {
-                            // detect tail calls by checking for stack cleanup before jump
+                            // detect tail calls by checking stack cleanup before jmp instruction.
                             // there are other ways to detect tail call function but it is
                             // very likely to have false positive so we dont add it here
                             if (has_prev && (prev_category == ZYDIS_CATEGORY_POP || prev_mnemonic == ZYDIS_MNEMONIC_LEAVE))
@@ -640,9 +652,11 @@ void CModule::BuildFunctionIndexAndReferences()
         std::ranges::sort(result.functions);
     };
 
-    // each chunk decodes 16 bytes early to handle boundaries landing in the middle of an instruction
+    // each chunk decodes 24 bytes early to handle boundaries landing in the middle of an instruction
     // so we would not get garbage results which can cause missing references
-    constexpr std::size_t warmup_bytes = 16;
+    // technically we can go with 16 bytes, which handles the maximum instruction lenth(15), but we use
+    // 24 here to ensure the decoder has fully synchronized before the chunk for actual decoding start
+    constexpr std::size_t warmup_bytes = 24;
 
     for (auto i = 0u; i < num_threads; ++i)
     {

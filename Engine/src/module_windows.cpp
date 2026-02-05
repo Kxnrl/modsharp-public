@@ -193,6 +193,12 @@ void CModule::BuildFunctionIndexAndReferences()
     std::vector<std::thread>                 threads;
     threads.reserve(num_threads);
 
+    // multithreaded solution inspired by the code snippet @angelfor3v3r gave me a long time ago.
+    // to be honest i could have used yaxpeax-x86, which is the fastest decoder i have found yet (it takes about 100ms to decode the entire .text section
+    // in libserver.so while zydis takes ~450ms), but i dont think it is worth the effort to replace zydis with it,
+    // not to mention safetyhook also uses zydis and i use the encoder feature from zydis too.
+    // hopefully no one copies or recodes this function in another language and claims they coded it without giving credit 😭🙏
+
     auto disassemble_chunk = [&](std::uint32_t idx, std::size_t start_idx, std::size_t end_idx) {
         ZydisDecoder decoder{};
         if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64))) return;
@@ -275,6 +281,10 @@ void CModule::BuildFunctionIndexAndReferences()
 
 void CModule::DumpVtables()
 {
+    // originally inspired by praydog & cursey's kananlib https://github.com/cursey/kananlib/blob/main/src/RTTI.cpp
+    // but made some improvements based on our usage.
+    // hopefully no one copies or recodes this function in another language and claims they coded it without giving credit 😭🙏
+
     constexpr auto type_info_type_descriptor_name = ".?AVtype_info@@";
 
     auto type_descriptor_address = FindString(type_info_type_descriptor_name, false);
@@ -293,6 +303,7 @@ void CModule::DumpVtables()
     valid_type_rvas.reserve(type_info_xrefs.size());
 
     for (auto xref : type_info_xrefs) valid_type_rvas.push_back(static_cast<uint32_t>(xref.GetPtr() - _base_address));
+
     // sort for binary search
     std::ranges::sort(valid_type_rvas);
 
