@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
 

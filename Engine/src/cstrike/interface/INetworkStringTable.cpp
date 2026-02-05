@@ -17,23 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MS_COREBRIDGE_H
-#define MS_COREBRIDGE_H
+#include "gamedata.h"
+#include "global.h"
+#include "vhook/call.h"
 
-// 很多不可变的Object可以直接走这个拿
+#include "cstrike/cstrike.h"
+#include "cstrike/interface/INetworkStringTable.h"
 
-class CoreBridge
-{
-public:
-    class IFileSystem*                    FullFileSystem;
-    class ISteamApiProxy*                 SteamApi;
-    class CSharpNetworkStringTableHelper* NetworkStringTableHelper;
-    class CSharpKeyValuesHelper*          KeyValuesHelper;
-    class IMemAlloc*                      MemAlloc;
-    class CSharpKeyValues3Helper*         KeyValues3Helper;
-    class IEngineServer*                  EngineServer;
-};
-
-void InitCoreBridge();
-
-#endif
+static CSharpNetworkStringTableHelper s_CSharpNetworkStringTableHelper;
+CSharpNetworkStringTableHelper*       g_pNetworkStringTableHelper = &s_CSharpNetworkStringTableHelper;

@@ -401,6 +401,11 @@ public interface IModSharp
     nint GetVTableByClass(string module, string className);
 
     /// <summary>
+    ///     Find StringTable
+    /// </summary>
+    INetworkingStringTable? FindStringTable(string name);
+
+    /// <summary>
     ///     Create KeyValues
     /// </summary>
     IKeyValues CreateKeyValues(string name);

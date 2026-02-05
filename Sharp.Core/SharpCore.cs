@@ -945,6 +945,9 @@ internal partial class SharpCore : ISharpCore
     public IntPtr GetVTableByClass(string module, string className)
         => Bridges.Natives.Core.GetVTableByClass(module, className);
 
+    public INetworkingStringTable? FindStringTable(string name)
+        => NetworkingStringTable.Create(Bridges.Natives.Core.FindStringTable(name));
+
     public IKeyValues CreateKeyValues(string name)
     {
         var kv = KeyValues.Create(CoreBridge.KeyValuesHelperInstance.CreateKeyValues(name))!;
@@ -1083,7 +1086,7 @@ internal partial class SharpCore : ISharpCore
     public void RadioTextAll(PlayerSlot slot, string name, string? params1, string? params2, string? params3, string? params4)
         => NetMessageHelper.PrintRadioMessage(default, slot, name, params1, params2, params3, params4);
 
-    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage
+    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage
         => NetMessageHelper.SendNetMessage(filter, data);
 
     public void HookNetMessage(ProtobufNetMessageType msgId)

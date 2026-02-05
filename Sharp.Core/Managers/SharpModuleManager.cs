@@ -29,6 +29,7 @@ using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
 using Sharp.Shared;

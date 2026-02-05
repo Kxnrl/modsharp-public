@@ -27,6 +27,7 @@
     <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameTypes.cpp" />
     <ClCompile Include="src\cstrike\Interface\INetChannel.cpp" />
+    <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp" />
     <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp" />
     <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp" />
     <ClCompile Include="src\cstrike\type\CCommand.cpp" />

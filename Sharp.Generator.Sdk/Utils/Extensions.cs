@@ -215,17 +215,7 @@ public class MethodSymbolParamContext
         // cleanupBytes
         foreach (var arg in Params.Where(x => x.Type is "string" or "string?"))
         {
-            if (arg.Type == "string?")
-            {
-                using (builder.BeginScope($"if ({arg.Name}Bytes is not null)"))
-                {
-                    builder.AppendLine($"pool.Return({arg.Name}Bytes);");
-                }
-            }
-            else
-            {
-                builder.AppendLine($"pool.Return({arg.Name}Bytes);");
-            }
+            builder.AppendLine($"if ({arg.Name}Rented is not null) pool.Return({arg.Name}Rented);");
         }
 
         if (returnStr.Contains("__result"))
