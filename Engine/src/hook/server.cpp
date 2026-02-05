@@ -50,8 +50,8 @@ static CConVarBaseData* ms_fix_spawngroups_leak = nullptr;
 
 BeginMemberHookScope(CSource2Server)
 {
-DeclareMemberDetourHook(GameFrame, void, (CSource2Server * pServer, bool bSimulating, bool bFirstTick, bool bLastTick))
-{
+    DeclareMemberDetourHook(GameFrame, void, (CSource2Server * pServer, bool bSimulating, bool bFirstTick, bool bLastTick))
+    {
 #ifdef SERVER_HOOK_ASSERT
         LOG("%10s: 0x%p\n", "this", pServer);
 #endif

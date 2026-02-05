@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -285,8 +285,8 @@ BeginMemberHookScope(CSource2GameClients)
 
 BeginMemberHookScope(CServerSideClient)
 {
-DeclareMemberDetourHook(ExecuteStringCommand, bool, (CServerSideClient * pClient, CNetMessagePB<CNETMsg_StringCmd> * pConCommand))
-{
+    DeclareMemberDetourHook(ExecuteStringCommand, bool, (CServerSideClient * pClient, CNetMessagePB<CNETMsg_StringCmd> * pConCommand))
+    {
         VPROF_MS_HOOK();
 
         const auto pCommandString = pConCommand->command().c_str();

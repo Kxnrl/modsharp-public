@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -95,8 +95,8 @@ enum FireBulletState_t : int32_t
 
 static uint64_t g_bitsBlockTempEnt[BT_Count];
 
-static CConVarBaseData*                                ms_transmit_block_dead_player_pawn    = nullptr;
-static CConVarBaseData*                                ms_transmit_block_ownerless_pawn      = nullptr;
+static CConVarBaseData*                                ms_transmit_block_dead_player_pawn = nullptr;
+static CConVarBaseData*                                ms_transmit_block_ownerless_pawn   = nullptr;
 static std::unordered_map<uint32_t, FireBulletState_t> s_fire_bullet_state;
 
 static uint32_t GetEHandleProtobufHandle(EHandle_t value)
@@ -600,8 +600,8 @@ void Init()
 
 BeginMemberHookScope(ISource2GameEntities)
 {
-DeclareMemberDetourHook(CheckTransmit, void, (ISource2GameEntities * pGameEntities, CCheckTransmitInfo * *ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts1, CBitVec<16384>& unionTransmitEdicts2, const Entity2Networkable_t** pNetworkables, const uint16_t* pEntityIndicies, uint32_t nEntities))
-{
+    DeclareMemberDetourHook(CheckTransmit, void, (ISource2GameEntities * pGameEntities, CCheckTransmitInfo * *ppInfoList, int infoCount, CBitVec<16384>& unionTransmitEdicts1, CBitVec<16384>& unionTransmitEdicts2, const Entity2Networkable_t** pNetworkables, const uint16_t* pEntityIndicies, uint32_t nEntities))
+    {
 #ifdef HOOK_EXTERN_TRANSMITMANAGER_ASSERT
         WARN("%10s: 0x%p\n" // ISource2GameEntities*
              "%10s: 0x%p\n" // CCheckTransmitInfo**
@@ -964,8 +964,8 @@ void InstallTransmitHook()
         g_bEverSpawned[pClient->GetSlot()] = true;
     });
 
-    ms_transmit_block_dead_player_pawn    = g_ConVarManager.CreateConVar("ms_transmit_block_dead_player_pawn", false, "Block transmit for dead player pawn.", FCVAR_RELEASE);
-    ms_transmit_block_ownerless_pawn      = g_ConVarManager.CreateConVar("ms_transmit_block_ownerless_pawn", false, "Block transmit for ownerless player pawn.", FCVAR_RELEASE);
+    ms_transmit_block_dead_player_pawn = g_ConVarManager.CreateConVar("ms_transmit_block_dead_player_pawn", false, "Block transmit for dead player pawn.", FCVAR_RELEASE);
+    ms_transmit_block_ownerless_pawn   = g_ConVarManager.CreateConVar("ms_transmit_block_ownerless_pawn", false, "Block transmit for ownerless player pawn.", FCVAR_RELEASE);
 }
 
 void TransmitCheckFireBullets(const NetworkReceiver_t* clients)

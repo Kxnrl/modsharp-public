@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -55,8 +55,8 @@ static std::unordered_map<uint64_t, int32_t> s_bBannedSteamIds;
 
 BeginMemberHookScope(CNetworkGameServer)
 {
-DeclareMemberDetourHook(ActiveServer, bool, (CNetworkGameServer * pServer))
-{
+    DeclareMemberDetourHook(ActiveServer, bool, (CNetworkGameServer * pServer))
+    {
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
              "%10s: %f\n"
@@ -285,8 +285,8 @@ DeclareMemberDetourHook(ActiveServer, bool, (CNetworkGameServer * pServer))
 
 BeginMemberHookScope(INetworkServerService)
 {
-DeclareVirtualHook(StartupServer, void, (INetworkServerService * pService, const GameSessionConfiguration_t& config, ISource2WorldSession* pWorldSession, const char* pszMapName))
-{
+    DeclareVirtualHook(StartupServer, void, (INetworkServerService * pService, const GameSessionConfiguration_t& config, ISource2WorldSession* pWorldSession, const char* pszMapName))
+    {
         g_pSpawnGroupMgr = nullptr;
 
 #ifdef ENGINE_HOOK_ASSERT
