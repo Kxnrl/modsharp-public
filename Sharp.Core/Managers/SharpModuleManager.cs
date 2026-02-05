@@ -185,12 +185,7 @@ internal class SharpModuleManager : ICoreSharpModuleManager
         else
         {
             var receiver = new RecipientFilter(client.Slot);
-
-            unsafe
-            {
-                // TODO use protobuf message instead
-                Bridges.Natives.Game.PrintChannelFilter(HudPrintChannel.Console, builder.ToString(), &receiver);
-            }
+            NetMessageHelper.PrintChannelFilter(receiver, HudPrintChannel.Console, builder.ToString());
         }
     }
 

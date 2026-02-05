@@ -235,7 +235,7 @@ public interface IModSharp
     /// <summary>
     ///     Send NetMessage
     /// </summary>
-    bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage;
+    bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage;
 
     /// <summary>
     ///     Install HookNetMessage

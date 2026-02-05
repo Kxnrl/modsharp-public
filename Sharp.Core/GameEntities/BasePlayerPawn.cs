@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Utilities;
@@ -47,12 +48,19 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
     }
 
     public void Print(HudPrintChannel channel,
-        string                        message,
-        string?                       param1 = null,
-        string?                       param2 = null,
-        string?                       param3 = null,
-        string?                       param4 = null)
-        => Player.PawnPrint(_this, channel, message, param1, param2, param3, param4);
+                      string          message,
+                      string?         param1 = null,
+                      string?         param2 = null,
+                      string?         param3 = null,
+                      string?         param4 = null)
+    {
+        if (GetController() is not { } controller)
+        {
+            throw new EntryPointNotFoundException("Controller is null");
+        }
+
+        controller.Print(channel, message, param1, param2, param3, param4);
+    }
 
     protected abstract bool IsObserver();
 

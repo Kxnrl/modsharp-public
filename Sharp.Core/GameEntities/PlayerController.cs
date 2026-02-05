@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
@@ -37,12 +38,14 @@ namespace Sharp.Core.GameEntities;
 internal partial class PlayerController : BaseEntity, IPlayerController
 {
     public void Print(HudPrintChannel channel,
-        string                        message,
-        string?                       param1 = null,
-        string?                       param2 = null,
-        string?                       param3 = null,
-        string?                       param4 = null)
-        => Player.ControllerPrint(_this, channel, message, param1, param2, param3, param4);
+                      string          message,
+                      string?         param1 = null,
+                      string?         param2 = null,
+                      string?         param3 = null,
+                      string?         param4 = null)
+    {
+        NetMessageHelper.PrintChannelFilter(new RecipientFilter(Index), channel, message, param1, param2, param3, param4);
+    }
 
     public float LaggedMovement
     {

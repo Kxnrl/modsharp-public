@@ -151,7 +151,8 @@ public class MethodSymbolParamContext
                          {
                              var arg = x.Type switch
                              {
-                                 "string" or "string?" => $"{x.Name}Ptr",
+                                 "string" => $"{x.Name}Ptr",
+                                 "string?" => $"{x.Name} is null ? null : {x.Name}Ptr",
 
                                  // "bool"                  => $"(byte)({x.Name} ? 1 : 0)",
                                  _ when x.IsNativeObject => $"{x.Name}.GetAbsPtr()",
@@ -245,31 +246,45 @@ public class MethodSymbolParamContext
 
         foreach (var p in items)
         {
+            builder.AppendLine($"byte[]? {p.Name}Rented = null;");
+
+            var sizeCalc = p.Utf8Size > 0 
+                ? $"{p.Utf8Size} + 1" 
+                : $"Encoding.UTF8.GetMaxByteCount({p.Name}.Length) + 1";
+            
             if (p.Type is "string?")
             {
-                builder.AppendLine($"byte[]? {p.Name}Bytes;");
+                builder.AppendLine($"int {p.Name}Size = {p.Name} is null ? 0 : {sizeCalc};");
             }
             else
             {
-                builder.AppendLine($"byte[] {p.Name}Bytes;");
+                builder.AppendLine($"int {p.Name}Size = {sizeCalc};");
+            }
+
+            var allocExpr = $"{p.Name}Size <= 256 ? stackalloc byte[{p.Name}Size] : ({p.Name}Rented = pool.Rent({p.Name}Size))";
+            
+            if (p.Type is "string?")
+            {
+                builder.AppendLine($"Span<byte> {p.Name}Bytes = {p.Name} is null ? default : ({allocExpr});");
+            }
+            else
+            {
+                builder.AppendLine($"Span<byte> {p.Name}Bytes = {allocExpr};");
             }
 
             if (p.Type is "string?")
             {
-                using (builder.BeginScope($"if ({p.Name} is null)"))
-                {
-                    builder.AppendLine($"{p.Name}Bytes = null;");
-                }
+                builder.AppendLine($"if ({p.Name} is not null)");
+                builder.AppendLine("{");
             }
 
-            using (p.Type is "string?" ? builder.BeginScope("else") : builder.BeginScope())
+            builder.AppendLine($"Utf8.FromUtf16({p.Name}, {p.Name}Bytes, out _, out var {p.Name}BytesWritten);");
+            
+            builder.AppendLine($"{p.Name}Bytes[{p.Name}BytesWritten] = 0;");
+
+            if (p.Type is "string?")
             {
-                var byteLength = p.Utf8Size > 0 ? $"{p.Utf8Size}" : $"Encoding.UTF8.GetMaxByteCount({p.Name}.Length)";
-                builder.AppendLine($"{p.Name}Bytes = pool.Rent({byteLength});");
-
-                builder.AppendLine($"Utf8.FromUtf16({p.Name}, {p.Name}Bytes, out _, out var bytesWritten);");
-
-                builder.AppendLine($"{p.Name}Bytes[bytesWritten] = 0;");
+                builder.AppendLine("}");
             }
 
             builder.AppendLine();

@@ -31,23 +31,27 @@
 
 namespace natives::net
 {
-static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, const char* name, uint8_t* pData, int32_t size)
+static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessageInternal* pNetMessage, uint8_t* pData, int32_t size)
 {
+    if (!pNetMessage) [[unlikely]]
+        return false;
+
     int32_t           bitWide = 0;
     NetworkReceiver_t clients = 0;
     if (!ParseNetworkReceivers(pFilter, &bitWide, &clients))
         return false;
 
-    const auto csharpNet = GetRuntimeProtobufSerializable(name);
-    if (!csharpNet)
-        return false;
-
-    const CSharpNetworkDataWrapper data(pData, size, csharpNet);
+    const CSharpNetworkDataWrapper data(pData, size, pNetMessage);
     SetNetworkMessageBypassHook(true);
-    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &clients, csharpNet, &data, 0, true);
+    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &clients, pNetMessage, &data, 0, true);
     SetNetworkMessageBypassHook(false);
 
     return true;
+}
+
+static void* GetNetMessageHandle(const char* name)
+{
+    return GetRuntimeProtobufSerializable(name);
 }
 
 static void HookNetMessage(uint16_t netMsgId)
@@ -289,7 +293,8 @@ static bool CopyFromOtherMessage(google::protobuf::Message* message, uint8_t* da
 void Init()
 {
     bridge::CreateNative("Net.SendNetMessage", reinterpret_cast<void*>(SendNetMessage));
-
+    bridge::CreateNative("Net.GetNetMessageHandle", reinterpret_cast<void*>(GetNetMessageHandle));
+    
     bridge::CreateNative("Net.HookNetMessage", reinterpret_cast<void*>(HookNetMessage));
     bridge::CreateNative("Net.UnhookNetMessage", reinterpret_cast<void*>(UnhookNetMessage));
 

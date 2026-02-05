@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
@@ -215,11 +216,21 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     /// </summary>
     public void Normalize()
     {
-        var length = MathF.Sqrt((X * X) + (Y * Y) + (Z * Z));
+        var lenSqr = (X * X) + (Y * Y) + (Z * Z);
 
-        X /= length;
-        Y /= length;
-        Z /= length;
+        if (lenSqr > 1e-10f)
+        {
+            var inv = 1f / MathF.Sqrt(lenSqr);
+            X *= inv;
+            Y *= inv;
+            Z *= inv;
+        }
+        else
+        {
+            X = 0;
+            Y = 0;
+            Z = 0;
+        }
     }
 
     /// <summary>
@@ -238,6 +249,7 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     public Vector2D AsVector2D()
         => new (X, Y);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void SinCos(float value, out float sin, out float cos)
     {
         var cv = value * (MathF.PI / 180.0f);
@@ -337,6 +349,24 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
         => MathF.Abs(X    - other.X) < float.Epsilon
            && MathF.Abs(Y - other.Y) < float.Epsilon
            && MathF.Abs(Z - other.Z) < float.Epsilon;
+
+    public CMsgVector ToMsgVector()
+        => new ()
+        {
+            X = X,
+            Y = Y,
+            Z = Z,
+            W = 0f,
+        };
+
+    public CMsgVector2D ToMsgVector2D()
+        => new () { X = X, Y = Y };
+
+    public CMsgQAngle ToMsgQAngle()
+        => new ()
+        {
+            X = X, Y = Y, Z = Z,
+        };
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -410,6 +440,9 @@ public struct Vector2D : IComparable, IComparable<Vector2D>, IEquatable<Vector2D
     public bool Equals(Vector2D other)
         => MathF.Abs(X    - other.X) < float.Epsilon
            && MathF.Abs(Y - other.Y) < float.Epsilon;
+
+    public CMsgVector2D ToMsgVector2D()
+        => new () { X = X, Y = Y };
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -475,4 +508,16 @@ public struct Vector4D : IEquatable<Vector4D>
            && MathF.Abs(Y - other.Y) < float.Epsilon
            && MathF.Abs(Z - other.Z) < float.Epsilon
            && MathF.Abs(W - other.W) < float.Epsilon;
+
+    public CMsgVector ToMsgVector()
+        => new ()
+        {
+            X = X,
+            Y = Y,
+            Z = Z,
+            W = W,
+        };
+
+    public CMsgVector2D ToMsgVector2D()
+        => new () { X = X, Y = Y };
 }

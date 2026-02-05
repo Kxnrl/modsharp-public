@@ -63,11 +63,18 @@ public readonly struct RecipientFilter
         ReceiverSlot = client.Slot.AsPrimitive();
     }
 
+    public RecipientFilter(IPlayerController controller)
+    {
+        Type         = RecipientFilterType.Single;
+        Team         = 0;
+        ReceiverSlot = (ulong) (controller.Index.AsPrimitive() - 1);
+    }
+
     public RecipientFilter(EntityIndex index)
     {
         Type         = RecipientFilterType.Single;
         Team         = 0;
-        ReceiverSlot = (ulong) index.AsPrimitive() - 1;
+        ReceiverSlot = (ulong) (index.AsPrimitive() - 1);
     }
 
     public RecipientFilter(NetworkReceiver receiver)
