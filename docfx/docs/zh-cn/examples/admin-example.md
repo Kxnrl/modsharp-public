@@ -15,6 +15,11 @@
 > [!WARNING]
 > 请确保你安全地处理依赖注入。参考完整源代码中的 `TryResolveAdminManager` 方法，了解如何优雅地处理模块的加载/卸载。
 
+> [!TIP]
+> `MountAdminManifest` 和 `GetCommandRegistry` 请使用同一个、稳定的 `moduleIdentity`，并在多次调用中保持不变。
+> 推荐使用模块的 `AssemblyName`：
+> `private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";`
+
 ## 1. 定义权限
 
 ModSharp 对权限使用 `组:动作` (group:action) 的字符串格式。这种结构对于支持 **通配符** 至关重要。

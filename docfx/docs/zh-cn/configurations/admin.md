@@ -5,6 +5,16 @@ ModSharp 将管理员配置分为两个文件，以便于实现“快速分配�
 1.  **简易分配:** `{CS2}/sharp/configs/admins_simple.jsonc`
 2.  **高级配置:** `{CS2}/sharp/configs/admins.jsonc`
 
+## 编程接入提示
+
+如果你的模块还会调用 `IAdminManager.MountAdminManifest(...)` 和 `GetCommandRegistry(...)`，请在两处使用同一个、稳定的 `moduleIdentity`，并在多次调用中保持不变。
+
+推荐使用模块的 `AssemblyName`，例如：
+
+```csharp
+private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";
+```
+
 ## 简易配置 (`admins_simple.jsonc`)
 
 使用此文件可通过简单的 **键值对 (Key-Value)** 格式快速将现有的 **身份组 (Roles)** 分配给用户。

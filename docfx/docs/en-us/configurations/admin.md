@@ -5,6 +5,16 @@ ModSharp separates administrator configuration into two files to allow for both 
 1.  **Simple Assignment:** `{CS2}/sharp/configs/admins_simple.jsonc`
 2.  **Advanced Configuration:** `{CS2}/sharp/configs/admins.jsonc`
 
+## Programmatic Integration Note
+
+If your module also uses `IAdminManager.MountAdminManifest(...)` and `GetCommandRegistry(...)`, use one stable `moduleIdentity` value for both calls and keep it unchanged across calls.
+
+Prefer your module `AssemblyName`, for example:
+
+```csharp
+private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";
+```
+
 ## Simple Configuration (`admins_simple.jsonc`)
 
 Use this file to quickly assign existing **Roles** to users using a simple Key-Value pair format.

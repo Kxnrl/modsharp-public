@@ -15,6 +15,11 @@ Your module must reference and resolve `Sharp.Modules.AdminManager`.
 > [!WARNING]
 > Ensure you handle the dependency injection safely. Refer to the `TryResolveAdminManager` method in the full source code to see how to handle module loading/unloading gracefully.
 
+> [!TIP]
+> Use one stable `moduleIdentity` value for both `MountAdminManifest` and `GetCommandRegistry`, and keep it unchanged across calls.
+> Prefer your module `AssemblyName`:
+> `private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";`
+
 ## 1. Defining Permissions
 
 ModSharp uses a `group:action` string format for permissions. This structure is vital for **Wildcard** support.

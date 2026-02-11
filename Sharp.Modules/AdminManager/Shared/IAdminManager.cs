@@ -33,16 +33,107 @@ public interface IAdminManager
 
     public const string Identity = nameof(IAdminManager);
 
+    /// <summary>
+    ///     Gets the resolved admin snapshot for a Steam identity.
+    /// </summary>
+    /// <param name="identity">Target SteamID to query.</param>
+    /// <returns>
+    ///     The merged <see cref="IAdmin" /> view (all mounted module sources applied),
+    ///     or <see langword="null" /> when the identity has no admin source.
+    /// </returns>
+    /// <remarks>
+    ///     Returned data is the latest cached result after manifest refresh logic,
+    ///     including cross-module merges and global deny precedence.
+    /// </remarks>
     public IAdmin? GetAdmin(SteamID identity);
 
+    /// <summary>
+    ///     Mounts (or remounts) one module's admin manifest snapshot into the global admin graph.
+    /// </summary>
+    /// <param name="moduleIdentity">
+    ///     Stable module identity used as the ownership scope.
+    ///     Prefer using your module <c>AssemblyName</c> (for example:
+    ///     <c>typeof(MyModule).Assembly.GetName().Name</c>) and keep it unchanged across calls.
+    /// </param>
+    /// <param name="call">
+    ///     Factory callback that returns the full <see cref="AdminTableManifest" /> for this module at call time.
+    /// </param>
+    /// <remarks>
+    ///     Behavior summary:
+    ///     <list type="bullet">
+    ///         <item>
+    ///             <description>
+    ///                 Replace semantics per module: calling this method again with the same
+    ///                 <paramref name="moduleIdentity" /> replaces that module's previous
+    ///                 PermissionCollection, Roles, and Admin entries.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 Cross-module merge semantics by SteamID: when the same user appears in multiple modules,
+    ///                 allows are unioned, immunity becomes the highest value, and denies (for example,
+    ///                 <c>!admin:ban</c>) override grants globally.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 Role resolution is module-scoped: <c>@RoleName</c> is resolved against roles owned by
+    ///                 the same <paramref name="moduleIdentity" />.
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 Wildcard/direct rules resolve only against known concrete permissions registered in
+    ///                 PermissionCollection (for example, <c>module:*</c> or <c>*</c> expands from this index).
+    ///             </description>
+    ///         </item>
+    ///         <item>
+    ///             <description>
+    ///                 The refresh is immediate: users removed from this module are detached, users still present
+    ///                 are recalculated, and users with wildcard rules in other modules are also refreshed if new
+    ///                 concrete permissions are introduced.
+    ///             </description>
+    ///         </item>
+    ///     </list>
+    ///     Recommended startup order (see <c>docfx/docs/codes/admin-example.cs</c>):
+    ///     call <see cref="MountAdminManifest" /> first, then register admin commands via
+    ///     <see cref="GetCommandRegistry" />.
+    /// </remarks>
     void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call);
 
+    /// <summary>
+    ///     Gets the admin command registry for a module scope.
+    /// </summary>
+    /// <param name="moduleIdentity">
+    ///     The module identity that owns command registrations.
+    ///     Prefer using the same <c>AssemblyName</c> value used in <see cref="MountAdminManifest" />.
+    /// </param>
+    /// <returns>A module-scoped <see cref="IAdminCommandRegistry" /> instance.</returns>
+    /// <exception cref="NullReferenceException">
+    ///     Thrown when <c>Sharp.Modules.CommandManager</c> is not available.
+    /// </exception>
+    /// <remarks>
+    ///     Use the same <paramref name="moduleIdentity" /> you pass to <see cref="MountAdminManifest" />
+    ///     so permission ownership, wildcard expansion, and lifecycle behavior stay aligned.
+    /// </remarks>
     public IAdminCommandRegistry GetCommandRegistry(string moduleIdentity);
 }
 
 
 public interface IAdminCommandRegistry
 {
+    /// <summary>
+    ///     Registers an admin-protected command and its required permissions.
+    /// </summary>
+    /// <param name="command">The command name to register.</param>
+    /// <param name="call">
+    ///     Callback executed when authorization succeeds.
+    ///     <see cref="IGameClient" /> can be <see langword="null" /> for server-console execution.
+    /// </param>
+    /// <param name="permissions">
+    ///     Permission rules required to execute this command.
+    ///     Any deny rule still overrides grants at runtime.
+    /// </param>
     public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call,
         ImmutableArray<string> permissions);
 }
