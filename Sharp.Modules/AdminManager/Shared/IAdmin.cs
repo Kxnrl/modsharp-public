@@ -24,38 +24,24 @@ namespace Sharp.Modules.AdminManager.Shared;
 public interface IAdmin
 {
     /// <summary>
-    ///     SteamID
+    ///     The admin's Steam identity.
     /// </summary>
     SteamID Identity { get; }
 
     /// <summary>
-    ///     权限级别
+    ///     Immunity level (0–255). Higher value = more protection against other admins.
     /// </summary>
     byte Immunity { get; }
 
     /// <summary>
-    ///     权限
+    ///     The resolved set of granted permissions (after merge and deny processing).
     /// </summary>
     IReadOnlySet<string> Permissions { get; }
 
     /// <summary>
-    ///     是否拥有权限
+    ///     Checks whether this admin has the specified permission.
     /// </summary>
-    /// <param name="permission">权限字段</param>
-    /// <returns></returns>
+    /// <param name="permission">The permission string to check (e.g. <c>"admin:kick"</c>).</param>
+    /// <returns><see langword="true"/> if the permission is granted; otherwise <see langword="false"/>.</returns>
     bool HasPermission(string permission);
-
-    /// <summary>
-    ///     添加权限
-    /// </summary>
-    /// <param name="permission">权限字段</param>
-    /// <returns></returns>
-    bool AddPermission(string permission);
-
-    /// <summary>
-    ///     删除权限
-    /// </summary>
-    /// <param name="permission">权限字段</param>
-    /// <returns></returns>
-    bool RemovePermission(string permission);
 }

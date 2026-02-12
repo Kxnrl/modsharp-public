@@ -2,13 +2,24 @@
  * Simple Admin Configuration
  * --------------------------
  * Use this file to quickly assign Roles to users.
- * 
- * Format: "SteamID64": "RoleName"
- * 
- * Note: 
- * 1. Role names (like "root", "admin") must be defined in admins.jsonc.
- * 2. If a user is listed in BOTH this file and admins.jsonc, 
- *    it will use the settings in admins.jsonc instead.
+ *
+ * Format:
+ *   "SteamID64": "RoleName"              (single role)
+ *   "SteamID64": ["Role1", "Role2"]      (multiple roles)
+ *
+ * ⚠ WARNING:
+ *   Role names used here (e.g. "root", "admin") MUST be defined in the
+ *   "Roles" section of admins.jsonc. If a role name doesn't exist there,
+ *   the admin will load with NO permissions from that role — no error,
+ *   just a warning in the server log that's easy to miss.
+ *
+ * Note:
+ * 1. JSON keys MUST be strings — wrap SteamID64 in quotes
+ *    (e.g. "76561198000000001").
+ * 2. If a user is listed in BOTH this file and admins.jsonc,
+ *    the entry here will be skipped (admins.jsonc takes precedence).
+ *
+ * TIP: Run 'ms_perms' in the server console to see all available permissions.
  */
 {
     // Owner / Root
@@ -19,4 +30,7 @@
 
     // Donators
     // "76561198000000004": "vip"
+
+    // Multiple roles: admin + vip
+    // "76561198000000005": ["admin", "vip"]
 }

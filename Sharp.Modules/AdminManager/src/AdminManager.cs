@@ -21,6 +21,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminManager.Commands;
 using Sharp.Modules.AdminManager.IO;
 using Sharp.Modules.AdminManager.Permissions;
 using Sharp.Modules.AdminManager.Shared;
@@ -50,6 +51,9 @@ internal class AdminManager : IAdminManager, IModSharpModule
     private readonly PermissionIndex       _permissionIndex;
     private readonly AdminRepository       _repository;
     private readonly AdminResolver         _resolver;
+    private readonly ServerCommands        _serverCommands;
+
+    private static readonly string ModuleIdentity = typeof(AdminManager).Assembly.GetName().Name ?? "Sharp.Modules.AdminManager";
 
     public AdminManager(
         ISharedSystem  sharedSystem,
@@ -59,22 +63,23 @@ internal class AdminManager : IAdminManager, IModSharpModule
         IConfiguration coreConfiguration,
         bool           hotReload)
     {
-        var moduleIdentity = Path.GetFileName(dllPath);
         _shared = sharedSystem;
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<AdminManager>();
 
         _permissionIndex = new PermissionIndex();
         _repository      = new AdminRepository();
         _resolver        = new AdminResolver(_repository, _permissionIndex, _logger);
+        _serverCommands  = new ServerCommands(_repository, _logger);
 
         var configLoader = new AdminConfigLoader(_logger);
 
         var manifest = configLoader.LoadMergedManifest(sharpPath);
 
-        // 2. Mount (if valid)
-        if (manifest.Admins.Count > 0 || manifest.Roles.Count > 0)
+        // Mount config manifest (PermissionCollection + Roles + Admins) under AdminManager's identity.
+        // PermissionCollectionUpdater will remount under this same identity when updating at runtime.
+        if (manifest.PermissionCollection is { Count: > 0 } || manifest.Admins is { Count: > 0 } || manifest.Roles is { Count: > 0 })
         {
-            MountAdminManifest(moduleIdentity, () => manifest);
+            MountAdminManifest(ModuleIdentity, () => manifest);
         }
     }
 
@@ -88,11 +93,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
         _shared.GetSharpModuleManager().RegisterSharpModuleInterface<IAdminManager>(this, IAdminManager.Identity, this);
 
         RefreshModuleManagers(force: true);
+        _serverCommands.TryRegister(_commandManager, ModuleIdentity);
     }
 
     public void OnLibraryConnected(string name)
     {
         RefreshModuleManagers(name, true);
+        _serverCommands.TryRegister(_commandManager, ModuleIdentity);
     }
 
     public void OnLibraryDisconnect(string moduleIdentity)
@@ -137,6 +144,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
             _logger.LogWarning("Failed to get CommandManager, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
                                CommandManagerAssemblyName);
         }
+
+        _serverCommands.TryRegister(_commandManager, ModuleIdentity);
+
+        _resolver.ValidateAllPermissions();
+
+        _logger.LogInformation("AdminManager: {AdminCount} admin(s), {RoleCount} role(s), {PermCount} permission collection(s) loaded.",
+            _repository.AdminCount, _repository.RoleCount, _repository.GetAllPermissionCollections().Count);
     }
 
     public void Shutdown()
@@ -162,7 +176,8 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         if (_commandManager is null)
         {
-            throw new NullReferenceException($"CommandManager is null! Did you have '{CommandManagerAssemblyName}' installed?");
+            throw new InvalidOperationException(
+                $"CommandManager is not available. Ensure '{CommandManagerAssemblyName}' is installed and loaded before calling {nameof(IAdminManager.GetCommandRegistry)}.");
         }
 
         var commandRegistry = _commandManager.GetRegistry(moduleIdentity);
@@ -181,6 +196,32 @@ internal class AdminManager : IAdminManager, IModSharpModule
             _logger.LogWarning("Module '{Identity}' attempted to mount a null manifest.", moduleIdentity);
 
             return;
+        }
+
+        if (manifest.Admins is { Count: > 0 })
+        {
+            var validCount = manifest.Admins.Count;
+
+            manifest.Admins.RemoveAll(a =>
+            {
+                SteamID steamId = a.Identity;
+
+                if (steamId.IsValidUserId())
+                    return false;
+
+                _logger.LogWarning(
+                    "Module '{Module}': Ignoring admin with invalid SteamID64 '{SteamId}'.",
+                    moduleIdentity, a.Identity);
+
+                return true;
+            });
+
+            if (manifest.Admins.Count < validCount)
+            {
+                _logger.LogWarning(
+                    "Module '{Module}': {Removed} admin(s) removed due to invalid SteamID64.",
+                    moduleIdentity, validCount - manifest.Admins.Count);
+            }
         }
 
         var removedPermissions = _repository.UnregisterModulePermissions(moduleIdentity);

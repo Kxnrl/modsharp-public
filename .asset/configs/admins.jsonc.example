@@ -1,88 +1,202 @@
 /*
- * PermissionCollection: The base data of the permission, all 'access' will be checked against this collection.
- * Roles: Collections of permissions, which can be assigned to Admins.
- * Admins: Users with assigned roles and permissions.
- */
-
-/*
- * General Rules:
- *   1. Case Insensitivity: 'Admin:Kick' is the same as 'admin:kick'.
- *   2. Identity Format: Must be strictly SteamID64 format in integer (e.g. steamcommunity/profiles/76561198000000001).
- *      Do not use legacy STEAM_0:X:Y formats, or SteamID3 format ([U:1:AccountId])
+ * admins.jsonc - Admin Configuration
+ * ===================================
  *
- * Permission Syntax:
- *   @RoleName   = Inherit permissions from role (Recursive)
- *   !permission = Deny permission (global, overrides grants)
- *   *           = All permissions
- *   module:*    = All permissions in module (Recursive: matches 'module:a' and 'module:a:b')
- * 
- * Immunity: Higher = more protection. Takes max from all roles/direct.
+ * QUICK START:
+ *   1. Edit the "Roles" section below to match your server's admin hierarchy.
+ *   2. Edit the "Admins" section to assign roles to your staff (use SteamID64).
+ *   3. Rename this file to admins.jsonc.
+ *
+ * Or use admins_simple.jsonc for an even simpler format (just SteamID -> Role mapping).
+ *
+ * ─── SECTIONS ───────────────────────────────────────────────────────────
+ *
+ * PermissionCollection:
+ *   A registry of permission strings, grouped by a key name (e.g. "admin").
+ *   Each string (e.g. "admin:kick") represents a grantable/deniable action.
+ *   Registered permissions are used for:
+ *     - Wildcard expansion ("admin:*" expands to all "admin:" permissions)
+ *     - Validation (unregistered references trigger warnings at load time)
+ *     - Console listing via "ms_perms"
+ *   ℹ Server operators usually don't need to modify this section —
+ *     the default set covers all built-in admin commands.
+ *
+ * Roles:
+ *   Named groups of permissions + immunity level.
+ *   Assignable to Admins via "@RoleName".
+ *
+ * Admins:
+ *   Individual users identified by SteamID64 (integer format).
+ *
+ * ─── PERMISSION SYNTAX ─────────────────────────────────────────────────
+ *
+ *   @RoleName    Inherit all permissions from a role (recursive)
+ *   !permission  Deny a permission (global, overrides any grant from ANY module)
+ *   *            All permissions from every module
+ *   module:*     All permissions under a module prefix
+ *                (trailing wildcard: matches "module:a", "module:a:b", etc.)
+ *
+ * ─── WILDCARD DETAILS ────────────────────────────────────────────────
+ *
+ *   Trailing wildcard (end of pattern):
+ *     "admin:*"       → matches "admin:ban", "admin:ban:extended", etc.
+ *     "*"             → matches everything
+ *
+ *   Mid-segment wildcard:
+ *     "admin:*:give"  → matches exactly one segment, e.g. "admin:items:give"
+ *                       but NOT "admin:items:sub:give"
+ *
+ * ─── GENERAL RULES ─────────────────────────────────────────────────────
+ *
+ *   - Case insensitive: "Admin:Kick" == "admin:kick"
+ *   - Identity: SteamID64 (e.g. 76561198000000001).
+ *     Accepts both integer and string format in JSON.
+ *     Do NOT use STEAM_0:X:Y or [U:1:AccountId] formats.
+ *   - Immunity: higher value = more protection. An admin with higher immunity
+ *     cannot be targeted by admins with lower immunity (e.g. kick, ban, slay).
+ *     The highest value across all roles and direct assignments is used.
+ *
+ * ─── MULTI-MODULE MERGE ────────────────────────────────────────────────
+ *
+ *   If the same SteamID appears in multiple module configs:
+ *     1. Permissions are MERGED (union of all grants)
+ *     2. Immunity takes the HIGHEST value
+ *     3. Denials ("!perm") override grants from ANY module
+ *
+ * TIP: Run "ms_perms" in the server console to list all
+ *      registered permissions, and "ms_admins" to inspect loaded admins.
  */
 {
+    // ── PermissionCollection ─────────────────────────────────────────
+    // Registers permission strings for wildcard expansion & validation.
+    // Modules can also register permissions at runtime via MountAdminManifest.
     "PermissionCollection": {
-        "admin": ["admin:kick", "admin:ban", "admin:slay"],
-        "vip": ["vip:skins", "vip:reserved_slot"]
+        "admin": [
+            "admin:ban",
+            "admin:unban",
+            "admin:mute",
+            "admin:silence",
+            "admin:gag",
+            "admin:kick",
+            "admin:say",
+            "admin:csay",
+            "admin:hsay",
+            "admin:psay",
+            "admin:noclip",
+            "admin:speed",
+            "admin:gravity",
+            "admin:tp",
+            "admin:bring",
+            "admin:freeze",
+            "admin:unfreeze",
+            "admin:slay",
+            "admin:slap",
+            "admin:hp",
+            "admin:respawn",
+            "admin:god",
+            "admin:give",
+            "admin:strip",
+            "admin:rename",
+            "admin:team",
+            "admin:money",
+            "admin:map",
+            "admin:rcon",
+            "admin:cvar"
+        ]
     },
 
+    // ── Roles ────────────────────────────────────────────────────────
+    // Hierarchy: root > senior_admin > admin > moderator > helper
     "Roles": [
         {
-            // Full access, highest immunity
+            // Full access across all modules
             "Name": "root",
-            "Immunity": 255, // maximum immunity is 255
+            "Immunity": 255,
             "Permissions": ["*"]
         },
         {
-            // All admin permissions
+            // Admin baseline + server config
+            "Name": "senior_admin",
+            "Immunity": 80,
+            "Permissions": [
+                "@admin",
+                "admin:rcon",
+                "admin:cvar"
+            ]
+        },
+        {
+            // Daily administration without rcon/cvar
             "Name": "admin",
-            "Immunity": 50,
-            "Permissions": ["admin:*"]
+            "Immunity": 60,
+            "Permissions": [
+                "@moderator",
+                "admin:hsay",
+                "admin:csay",
+                "admin:map",
+                "admin:team",
+                "admin:noclip",
+                "admin:god",
+                "admin:hp",
+                "admin:give",
+                "admin:strip",
+                "admin:money",
+                "admin:slay",
+                "admin:respawn",
+                "admin:gravity",
+                "admin:speed"
+            ]
         },
         {
-            // ROLE INHERITANCE & SUBTRACTION:
-            // Inherits 'admin' but specifically REMOVES the ban permission.
-            "Name": "junior_admin",
-            "Immunity": 25,
-            "Permissions": ["@admin", "!admin:ban"]
+            // Core moderation and player management
+            "Name": "moderator",
+            "Immunity": 40,
+            "Permissions": [
+                "@helper",
+                "admin:ban",
+                "admin:unban",
+                "admin:freeze",
+                "admin:unfreeze",
+                "admin:tp",
+                "admin:bring",
+                "admin:slap",
+                "admin:rename"
+            ]
         },
         {
-            // VIP perks only, no immunity specified (defaults to 0)
-            "Name": "vip",
-            "Permissions": ["vip:*"]
-        },
-        {
-            // Example of mixing wildcards and specific single permissions
-            "Name": "vip_plus",
-            "Permissions": ["vip:*", "custom:chat_color"]
+            // Entry-level: chat moderation only
+            "Name": "helper",
+            "Immunity": 20,
+            "Permissions": [
+                "admin:kick",
+                "admin:mute",
+                "admin:gag",
+                "admin:silence",
+                "admin:say",
+                "admin:psay"
+            ]
         }
     ],
-    
-    /*
-     * MULTI-MODULE BEHAVIOR FOR ADMINS:
-     * If the same Identity (SteamID) appears in multiple module configs:
-     * 1. MERGING: The user gets the combined permissions of ALL entries.
-     * 2. IMMUNITY: The user gets the HIGHEST immunity value found across all entries.
-     * 3. DENIALS: A '!permission' here overrides grants from ANY other module.
-     */
+
+    // ── Admins ───────────────────────────────────────────────────────
     "Admins": [
         {
-            // Server owner with root access
+            // Server owner — full access
             "Identity": 76561198000000001,
             "Permissions": ["@root"]
         },
         {
             // Admin who cannot ban
-            // NOTE: If another module tries to give this user "admin:ban", 
-            // the "!admin:ban" here will override it and force a denial.
+            // The "!admin:ban" denial overrides grants from ANY module.
             "Identity": 76561198000000002,
             "Permissions": ["@admin", "!admin:ban"]
         },
         {
-            // VIP with extra kick permission and custom immunity
-            // NOTE: If another module defines this user with Immunity 10,
-            // the value 20 here will take precedence (Max wins).
+            // Helper with custom immunity override
+            // If another module defines this user with Immunity 10,
+            // the value 30 here wins (max takes precedence).
             "Identity": 76561198000000003,
-            "Immunity": 20,
-            "Permissions": ["@vip", "admin:kick"]
+            "Immunity": 30,
+            "Permissions": ["@helper"]
         }
     ]
 }

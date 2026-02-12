@@ -22,7 +22,7 @@ public class AdminCommands : IModSharpModule
                                                  ?? "Sharp.Modules.AdminCommands";
 
     private const string LocalizeManagerAssemblyName  = "Sharp.Modules.LocalizerManager";
-    private const string AdminManagerAssemblyName     = "Sharp.Modules.AdminManager";
+    internal const string AdminManagerAssemblyName     = "Sharp.Modules.AdminManager";
     private const string TargetingManagerAssemblyName = "Sharp.Modules.TargetingManager";
     private const string AdminCommandsLocaleName      = "admin_commands";
 

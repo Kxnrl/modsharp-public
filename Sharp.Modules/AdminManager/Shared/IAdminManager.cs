@@ -132,7 +132,9 @@ public interface IAdminCommandRegistry
     /// </param>
     /// <param name="permissions">
     ///     Permission rules required to execute this command.
-    ///     Any deny rule still overrides grants at runtime.
+    ///     Uses <b>OR</b> logic: the player needs <b>any one</b> of the listed permissions
+    ///     to pass the check (not all of them).
+    ///     Any deny rule (e.g. <c>!admin:ban</c>) still overrides grants at runtime.
     /// </param>
     public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call,
         ImmutableArray<string> permissions);

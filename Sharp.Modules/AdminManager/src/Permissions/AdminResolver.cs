@@ -29,6 +29,7 @@ internal sealed class AdminResolver
     private readonly PermissionIndex _index;
     private readonly ILogger<AdminManager> _logger;
     private readonly HashSet<ulong> _usersWithWildcards = [];
+    private readonly HashSet<string> _warnedUnknownPermissions = new(StringComparer.OrdinalIgnoreCase);
 
     public AdminResolver(AdminRepository repo, PermissionIndex index, ILogger<AdminManager> logger)
     {
@@ -107,115 +108,16 @@ internal sealed class AdminResolver
 
         // If the module introduced new permissions (e.g., "admin:god"),
         // users from OTHER modules who have "*" or "admin:*" need to be refreshed.
+        // Also refresh users with direct (non-wildcard) references to the new permissions,
+        // since those references may have been unresolved when the user was first mounted.
         if (newConcretePermissions.Count > 0)
         {
-            IdentifyAffectedWildcardUsers();
+            CollectUsersAffectedByNewPermissions(newConcretePermissions, usersToRefresh, moduleIdentity);
         }
 
         foreach (var uid in usersToRefresh)
         {
             RefreshSingleAdmin(uid);
-        }
-
-        return;
-
-        void IdentifyAffectedWildcardUsers()
-        {
-            foreach (var steamId in _usersWithWildcards)
-            {
-                if (usersToRefresh.Contains(steamId))
-                {
-                    continue;
-                }
-
-                if (!_repo.TryGetUserSources(steamId, out var sourceMap))
-                {
-                    continue;
-                }
-
-                foreach (var (modId, adminSource) in sourceMap)
-                {
-                    if (modId.Equals(moduleIdentity, StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    if (UserHasMatchingRule(adminSource.RawRules))
-                    {
-                        usersToRefresh.Add(steamId);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        bool UserHasMatchingRule(HashSet<string> userRawRules)
-        {
-            foreach (var rule in userRawRules)
-            {
-                if (!rule.Contains(IAdminManager.WildCardOperator))
-                {
-                    continue;
-                }
-
-                if (CheckRuleMatch(rule.AsSpan()))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        bool CheckRuleMatch(ReadOnlySpan<char> ruleRaw)
-        {
-            if (ruleRaw.IsWhiteSpace())
-            {
-                return false;
-            }
-
-            if (ruleRaw.StartsWith([IAdminManager.DenyOperator]) || ruleRaw.StartsWith([IAdminManager.RolesOperator]))
-            {
-                ruleRaw = ruleRaw.Slice(1);
-            }
-
-            if (ruleRaw.IsWhiteSpace())
-            {
-                return false;
-            }
-
-            var isPureWildcard = true;
-
-            foreach (var c in ruleRaw)
-            {
-                if (c != IAdminManager.WildCardOperator)
-                {
-                    isPureWildcard = false;
-
-                    break;
-                }
-            }
-
-            if (isPureWildcard)
-            {
-                return true;
-            }
-
-            foreach (var newPerm in newConcretePermissions)
-            {
-                if (string.IsNullOrEmpty(newPerm))
-                {
-                    continue;
-                }
-
-                if (PermissionMatcher.IsWildcardMatch(newPerm.AsSpan(), ruleRaw))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 
@@ -247,6 +149,197 @@ internal sealed class AdminResolver
         {
             RefreshSingleAdmin(id);
         }
+    }
+
+    public void ValidateAllPermissions()
+    {
+        var unresolvedPerms = new Dictionary<ulong, HashSet<string>>();
+        var emptyWildcards  = new Dictionary<ulong, HashSet<string>>();
+        var unresolvedRoles = new Dictionary<ulong, HashSet<string>>();
+
+        foreach (var (steamId, userSources) in _repo.EnumerateAdminSources())
+        {
+            foreach (var (moduleId, adminSource) in userSources)
+            {
+                _repo.TryGetModuleRoles(moduleId, out var moduleRoles);
+                var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                CheckRules(adminSource.RawRules);
+
+                void CheckRules(HashSet<string> rules)
+                {
+                    foreach (var rule in rules)
+                    {
+                        if (string.IsNullOrWhiteSpace(rule))
+                        {
+                            continue;
+                        }
+
+                        var effective = rule;
+
+                        if (effective.StartsWith(IAdminManager.DenyOperator))
+                        {
+                            effective = effective[1..];
+                        }
+
+                        if (effective.StartsWith(IAdminManager.RolesOperator))
+                        {
+                            var roleName = effective[1..];
+
+                            if (!visitedRoles.Add(roleName))
+                            {
+                                continue;
+                            }
+
+                            if (moduleRoles != null && moduleRoles.TryGetValue(roleName, out var roleManifest))
+                            {
+                                CheckRules(roleManifest.Permissions);
+                            }
+                            else
+                            {
+                                AddToSet(unresolvedRoles, steamId, roleName);
+                            }
+
+                            continue;
+                        }
+
+                        if (effective.Contains(IAdminManager.WildCardOperator))
+                        {
+                            // Pure wildcards ("*") always match everything — skip.
+                            if (effective.AsSpan().Trim(IAdminManager.WildCardOperator).IsEmpty)
+                            {
+                                continue;
+                            }
+
+                            if (!WildcardHasAnyMatch(effective))
+                            {
+                                AddToSet(emptyWildcards, steamId, effective);
+                            }
+
+                            continue;
+                        }
+
+                        if (!_index.ContainsPermission(effective))
+                        {
+                            AddToSet(unresolvedPerms, steamId, effective);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (unresolvedPerms.Count == 0 && emptyWildcards.Count == 0 && unresolvedRoles.Count == 0)
+        {
+            return;
+        }
+
+        var issueCount   = unresolvedPerms.Values.Sum(s => s.Count)
+                         + emptyWildcards.Values.Sum(s => s.Count)
+                         + unresolvedRoles.Values.Sum(s => s.Count);
+        var affectedUsers = unresolvedPerms.Keys
+                            .Union(emptyWildcards.Keys)
+                            .Union(unresolvedRoles.Keys)
+                            .Count();
+
+        _logger.LogWarning(
+            "=== AdminManager: Post-load permission validation — {IssueCount} issue(s) across {UserCount} admin(s) ===",
+            issueCount, affectedUsers);
+
+        foreach (var (steamId, perms) in unresolvedPerms)
+        {
+            foreach (var perm in perms)
+            {
+                var suggestion = FindClosestPermission(perm);
+
+                if (suggestion != null)
+                {
+                    _logger.LogWarning(
+                        "  User {SteamId}: Permission '{Permission}' is not defined by any loaded module. Did you mean '{Suggestion}'?",
+                        steamId, perm, suggestion);
+                }
+                else
+                {
+                    _logger.LogWarning(
+                        "  User {SteamId}: Permission '{Permission}' is not defined by any loaded module. "
+                      + "Check that the module providing it is installed and loaded.",
+                        steamId, perm);
+                }
+            }
+        }
+
+        foreach (var (steamId, patterns) in emptyWildcards)
+        {
+            foreach (var pattern in patterns)
+            {
+                _logger.LogWarning(
+                    "  User {SteamId}: Wildcard '{Pattern}' matched 0 registered permissions. Check for typos in the prefix.",
+                    steamId, pattern);
+            }
+        }
+
+        foreach (var (steamId, roles) in unresolvedRoles)
+        {
+            foreach (var role in roles)
+            {
+                _logger.LogWarning(
+                    "  User {SteamId}: Role '@{Role}' is not defined.",
+                    steamId, role);
+            }
+        }
+
+        _logger.LogWarning("=== End of permission validation ===");
+
+        return;
+
+        static void AddToSet(Dictionary<ulong, HashSet<string>> dict, ulong key, string value)
+        {
+            if (!dict.TryGetValue(key, out var set))
+            {
+                set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                dict[key] = set;
+            }
+
+            set.Add(value);
+        }
+    }
+
+    private bool WildcardHasAnyMatch(string pattern)
+    {
+        if (!_index.TryGetCandidatesForPattern(pattern, out var candidates))
+        {
+            return false;
+        }
+
+        var patternSpan = pattern.AsSpan();
+
+        foreach (var candidate in candidates)
+        {
+            if (PermissionMatcher.IsWildcardMatch(candidate.AsSpan(), patternSpan))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private string? FindClosestPermission(string unresolved)
+    {
+        var sepIdx = unresolved.IndexOf(IAdminManager.SeparatorOperator);
+
+        if (sepIdx <= 0)
+        {
+            return null;
+        }
+
+        var prefix = unresolved[..sepIdx];
+
+        if (!_index.TryGetCandidatesForPattern($"{prefix}:*", out var candidates))
+        {
+            return null;
+        }
+
+        return candidates.FirstOrDefault();
     }
 
     private void UpdateUserWildcardStatus(ulong steamId)
@@ -342,7 +435,7 @@ internal sealed class AdminResolver
 
                 if (rule.StartsWith(IAdminManager.DenyOperator))
                 {
-                    MatchWildcard(rule[1..], denies);
+                    MatchWildcard(moduleIdentity, rule[1..], denies);
                 }
                 else if (rule.StartsWith(IAdminManager.RolesOperator))
                 {
@@ -364,7 +457,7 @@ internal sealed class AdminResolver
                 }
                 else
                 {
-                    MatchWildcard(rule, allows);
+                    MatchWildcard(moduleIdentity, rule, allows);
                 }
             }
         }
@@ -411,7 +504,7 @@ internal sealed class AdminResolver
     ///     Matches a permission pattern against existing permissions.
     ///     Includes optimizations to avoid scanning the entire permission list.
     /// </summary>
-    private void MatchWildcard(string pattern, HashSet<string> collected)
+    private void MatchWildcard(string moduleIdentity, string pattern, HashSet<string> collected)
     {
         const char wildcard = IAdminManager.WildCardOperator;
 
@@ -420,6 +513,10 @@ internal sealed class AdminResolver
             if (_index.ContainsPermission(pattern))
             {
                 collected.Add(pattern);
+            }
+            else
+            {
+                WarnUnknownPermission(moduleIdentity, pattern);
             }
 
             return;
@@ -447,5 +544,192 @@ internal sealed class AdminResolver
                 collected.Add(permission);
             }
         }
+    }
+
+    private void WarnUnknownPermission(string moduleIdentity, string permission)
+    {
+        var key = $"{moduleIdentity}:{permission}";
+
+        if (_warnedUnknownPermissions.Add(key))
+        {
+            _logger.LogWarning("Module '{Module}' refers to undefined permission '{Permission}'",
+                               moduleIdentity,
+                               permission);
+        }
+    }
+
+    private void CollectUsersAffectedByNewPermissions(HashSet<string> newConcretePermissions,
+                                                      HashSet<ulong>  usersToRefresh,
+                                                      string?         excludeModuleIdentity = null)
+    {
+        // Wildcard users
+        foreach (var steamId in _usersWithWildcards)
+        {
+            if (usersToRefresh.Contains(steamId))
+            {
+                continue;
+            }
+
+            if (!_repo.TryGetUserSources(steamId, out var sourceMap))
+            {
+                continue;
+            }
+
+            foreach (var (modId, adminSource) in sourceMap)
+            {
+                if (modId == excludeModuleIdentity)
+                {
+                    continue;
+                }
+
+                if (HasMatchingWildcardRule(adminSource.RawRules, newConcretePermissions))
+                {
+                    usersToRefresh.Add(steamId);
+
+                    break;
+                }
+            }
+        }
+
+        // Direct-reference users
+        foreach (var (steamId, userSources) in _repo.EnumerateAdminSources())
+        {
+            if (usersToRefresh.Contains(steamId))
+            {
+                continue;
+            }
+
+            foreach (var (modId, adminSource) in userSources)
+            {
+                if (modId == excludeModuleIdentity)
+                {
+                    continue;
+                }
+
+                if (HasDirectMatchForPermissions(modId, adminSource.RawRules, newConcretePermissions))
+                {
+                    usersToRefresh.Add(steamId);
+
+                    break;
+                }
+            }
+        }
+
+        ClearResolvedWarnings(newConcretePermissions);
+    }
+
+    private void ClearResolvedWarnings(HashSet<string> newConcretePermissions)
+    {
+        _warnedUnknownPermissions.RemoveWhere(key =>
+        {
+            var sepIdx = key.IndexOf(IAdminManager.SeparatorOperator);
+
+            if (sepIdx < 0)
+            {
+                return false;
+            }
+
+            var permPart = key[(sepIdx + 1)..];
+
+            return newConcretePermissions.Contains(permPart);
+        });
+    }
+
+    private static bool HasMatchingWildcardRule(HashSet<string> rawRules, HashSet<string> newConcretePermissions)
+    {
+        foreach (var rule in rawRules)
+        {
+            if (!rule.Contains(IAdminManager.WildCardOperator))
+            {
+                continue;
+            }
+
+            var ruleRaw = rule.AsSpan();
+
+            if (ruleRaw.IsWhiteSpace())
+            {
+                continue;
+            }
+
+            if (ruleRaw.StartsWith([IAdminManager.DenyOperator]) || ruleRaw.StartsWith([IAdminManager.RolesOperator]))
+            {
+                ruleRaw = ruleRaw[1..];
+            }
+
+            if (ruleRaw.IsWhiteSpace())
+            {
+                continue;
+            }
+
+            if (PermissionMatcher.IsPureWildcardSegment(ruleRaw))
+            {
+                return true;
+            }
+
+            foreach (var newPerm in newConcretePermissions)
+            {
+                if (!string.IsNullOrEmpty(newPerm) && PermissionMatcher.IsWildcardMatch(newPerm.AsSpan(), ruleRaw))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private bool HasDirectMatchForPermissions(string sourceModuleId, HashSet<string> rawRules, HashSet<string> newConcretePermissions)
+    {
+        var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        return CheckRulesForDirectMatch(sourceModuleId, rawRules, visitedRoles, newConcretePermissions);
+    }
+
+    private bool CheckRulesForDirectMatch(string sourceModuleId, HashSet<string> rules,
+                                          HashSet<string> visitedRoles, HashSet<string> newConcretePermissions)
+    {
+        foreach (var rule in rules)
+        {
+            if (string.IsNullOrWhiteSpace(rule))
+            {
+                continue;
+            }
+
+            var effective = rule.AsSpan();
+
+            if (effective.StartsWith([IAdminManager.DenyOperator]))
+            {
+                effective = effective[1..];
+            }
+
+            if (effective.StartsWith([IAdminManager.RolesOperator]))
+            {
+                var roleName = effective[1..].ToString();
+
+                if (visitedRoles.Add(roleName)
+                 && _repo.TryGetModuleRoles(sourceModuleId, out var roles)
+                 && roles.TryGetValue(roleName, out var roleManifest))
+                {
+                    if (CheckRulesForDirectMatch(sourceModuleId, roleManifest.Permissions, visitedRoles, newConcretePermissions))
+                    {
+                        return true;
+                    }
+                }
+
+                continue;
+            }
+
+            if (effective.Contains(IAdminManager.WildCardOperator))
+            {
+                continue;
+            }
+
+            if (newConcretePermissions.Contains(effective.ToString()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

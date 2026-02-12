@@ -116,6 +116,7 @@
   "Admins": [
     // Example: replace with real SteamID
     {
+      "Identity": 76561198000000001,
       "Immunity": 0, // Ignored because they have role "root"
       "Permissions": [
         "@root"

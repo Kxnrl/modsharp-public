@@ -204,4 +204,18 @@ internal sealed class AdminRepository
     {
         _adminEntries.Remove(steamId);
     }
+
+    public IReadOnlyDictionary<string, PermissionCollectionDictionary> GetAllPermissionCollections()
+        => _permissionCollections;
+
+    public int AdminCount => _adminEntries.Count;
+    public int RoleCount  => _roles.Values.Sum(r => r.Count);
+
+    public IEnumerable<(ulong SteamId, Admin? CachedAdmin, Dictionary<string, AdminSource> Sources)> EnumerateAdmins()
+    {
+        foreach (var (steamId, entry) in _adminEntries)
+        {
+            yield return (steamId, entry.CachedAdmin, entry.Sources);
+        }
+    }
 }

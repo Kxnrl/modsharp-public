@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
 
@@ -13,6 +14,7 @@ internal static class PermissionCollectionUpdater
             AllowTrailingCommas         = true,
             PropertyNameCaseInsensitive = true,
             WriteIndented               = true,
+            NumberHandling              = JsonNumberHandling.AllowReadingFromString,
         };
 
     public static void Write(IAdminManager               adminManager,
@@ -50,7 +52,9 @@ internal static class PermissionCollectionUpdater
             var serialized = JsonSerializer.Serialize(normalized, Options);
             File.WriteAllText(configPath, serialized);
 
-            adminManager.MountAdminManifest(AdminCommands.AssemblyName, () => normalized);
+            // Remount full config manifest under AdminManager's identity (replace semantics).
+            // This keeps runtime state in sync with the file on disk.
+            adminManager.MountAdminManifest(AdminCommands.AdminManagerAssemblyName, () => normalized);
         }
         catch (Exception ex)
         {

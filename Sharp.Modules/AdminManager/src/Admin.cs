@@ -42,12 +42,6 @@ internal class Admin : IAdmin
     public bool HasPermission(string permission)
         => _permissions.Contains(permission);
 
-    public bool AddPermission(string permission)
-        => _permissions.Add(permission);
-
-    public bool RemovePermission(string permission)
-        => _permissions.Remove(permission);
-
     internal void Update(byte immunity, HashSet<string> permissions)
     {
         Immunity = immunity;
