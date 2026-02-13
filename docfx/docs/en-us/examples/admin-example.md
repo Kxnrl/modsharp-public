@@ -53,6 +53,17 @@ registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);
 // Example: registry.RegisterAdminCommand("vip_gold", OnGoldGun, ["vip:gold_gun"]);
 ```
 
+### Registering Permissions
+
+`RegisterAdminCommand` does **not** automatically register its permissions into the global index. If you want admins with wildcard rules (e.g. `admin_offensive:*`) to be correctly granted your command permissions, maintain your own list and call `RegisterPermissions`:
+
+```csharp
+registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
+```
+
+> [!NOTE]
+> This is optional. If your permissions are already registered via `MountAdminManifest`'s `PermissionCollection`, you don't need to call `RegisterPermissions` again. Use it when you want a lightweight way to index permissions without building a full manifest.
+
 ## 3. Building the Manifest
 
 The `BuildAdminManifest` function is where you define the hierarchy of your server. This relies on `AdminTableManifest`, which consists of three parts:

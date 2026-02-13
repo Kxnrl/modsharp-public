@@ -138,4 +138,19 @@ public interface IAdminCommandRegistry
     /// </param>
     public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call,
         ImmutableArray<string> permissions);
+
+    /// <summary>
+    ///     Registers concrete permissions into the global permission index under this module's scope.
+    ///     Registered permissions become visible to wildcard expansion, diagnostics, and validation.
+    /// </summary>
+    /// <param name="permissions">
+    ///     Concrete permission strings to register (e.g. <c>"admin:kick"</c>, <c>"admin:ban"</c>).
+    ///     Duplicates within the same module are ignored.
+    /// </param>
+    /// <remarks>
+    ///     This is independent of <see cref="RegisterAdminCommand" />: calling
+    ///     <see cref="RegisterAdminCommand" /> does <b>not</b> automatically register its permissions.
+    ///     Registered permissions are automatically unregistered when the owning module disconnects.
+    /// </remarks>
+    public void RegisterPermissions(ImmutableArray<string> permissions);
 }

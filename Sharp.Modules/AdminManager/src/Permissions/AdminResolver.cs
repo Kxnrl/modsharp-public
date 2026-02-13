@@ -151,6 +151,25 @@ internal sealed class AdminResolver
         }
     }
 
+    /// <summary>
+    ///     Refreshes admins whose wildcard or direct rules now match newly registered permissions.
+    /// </summary>
+    public void OnNewPermissionsRegistered(HashSet<string> newPermissions)
+    {
+        if (newPermissions.Count == 0)
+        {
+            return;
+        }
+
+        var usersToRefresh = new HashSet<ulong>();
+        CollectUsersAffectedByNewPermissions(newPermissions, usersToRefresh);
+
+        foreach (var uid in usersToRefresh)
+        {
+            RefreshSingleAdmin(uid);
+        }
+    }
+
     public void ValidateAllPermissions()
     {
         var unresolvedPerms = new Dictionary<ulong, HashSet<string>>();

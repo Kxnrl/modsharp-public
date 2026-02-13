@@ -121,6 +121,16 @@ internal class AdminExample : IModSharpModule
             // then we add commands
             var registry = _adminManager.GetCommandRegistry(ModuleIdentity);
 
+            // Register permissions into the global index so that admins with wildcard rules
+            // (e.g. "admin_offensive:*") can be correctly granted these permissions.
+            // RegisterAdminCommand does NOT do this automatically — if you want your
+            // command permissions indexed, maintain your own list and call RegisterPermissions.
+            //
+            // NOTE: In this example, MountAdminManifest above already registers these
+            // permissions via PermissionCollection, so this call is redundant here.
+            // It is shown for demonstration — you only need one of the two approaches.
+            registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
+
             registry.RegisterAdminCommand("slay", OnCommandSlay,   [SlayPermission]);
             registry.RegisterAdminCommand("kill", OnCommandKill,   [KillPermission]);
             registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);

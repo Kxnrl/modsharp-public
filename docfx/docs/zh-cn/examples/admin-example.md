@@ -53,6 +53,17 @@ registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);
 // 示例: registry.RegisterAdminCommand("vip_gold", OnGoldGun, ["vip:gold_gun"]);
 ```
 
+### 注册权限
+
+`RegisterAdminCommand` **不会**自动将权限注册到全局索引中。如果你希望拥有通配符规则（如 `admin_offensive:*`）的管理员能正确获得你的指令权限，需要自己维护一个权限列表并调用 `RegisterPermissions`：
+
+```csharp
+registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
+```
+
+> [!NOTE]
+> 这是可选的。如果你的权限已经通过 `MountAdminManifest` 的 `PermissionCollection` 注册过了，就不需要再调用 `RegisterPermissions`。当你想用轻量的方式将权限加入索引、而不需要构建完整的 manifest 时，可以使用它。
+
 ## 3. 构建清单 (Manifest)
 
 `BuildAdminManifest` 函数用于定义服务器的层级结构。它依赖于 `AdminTableManifest`，主要包含三个部分：

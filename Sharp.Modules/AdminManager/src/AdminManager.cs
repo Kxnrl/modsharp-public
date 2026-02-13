@@ -181,7 +181,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
 
         var commandRegistry = _commandManager.GetRegistry(moduleIdentity);
-        var registry        = new AdminCommandRegistry(commandRegistry, this, _shared);
+        var registry        = new AdminCommandRegistry(commandRegistry, this, _shared, moduleIdentity);
         _commandRegistries[moduleIdentity] = registry;
 
         return registry;
@@ -224,7 +224,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
             }
         }
 
-        var removedPermissions = _repository.UnregisterModulePermissions(moduleIdentity);
+        var removedPermissions = _repository.UnregisterManifestPermissions(moduleIdentity);
         _permissionIndex.Unregister(removedPermissions);
 
         var permissionsToRegister = _repository.RegisterModuleData(moduleIdentity, manifest, out var newConcretePermissions);
@@ -236,6 +236,19 @@ internal class AdminManager : IAdminManager, IModSharpModule
 #endregion
 
 #region Module management
+
+    internal void RegisterModulePermissions(string moduleIdentity, IEnumerable<string> permissions)
+    {
+        var newPermissions = _repository.RegisterStandalonePermissions(moduleIdentity, permissions);
+
+        if (newPermissions.Count == 0)
+        {
+            return;
+        }
+
+        _permissionIndex.Register(newPermissions);
+        _resolver.OnNewPermissionsRegistered(newPermissions);
+    }
 
     public ILocalizerManager? GetLocalizerManager()
         => _localizerManager;

@@ -42,6 +42,9 @@ internal sealed class AdminRepository
     private readonly Dictionary<string, PermissionCollectionDictionary> _permissionCollections
         = new(StringComparer.OrdinalIgnoreCase);
 
+    private readonly Dictionary<string, HashSet<string>> _standalonePermissions
+        = new(StringComparer.OrdinalIgnoreCase);
+
     private readonly Dictionary<string, RolesDictionary> _roles
         = new(StringComparer.OrdinalIgnoreCase);
 
@@ -97,24 +100,68 @@ internal sealed class AdminRepository
     public void RemoveModuleRoles(string moduleIdentity)
         => _roles.Remove(moduleIdentity);
 
-    public List<string> UnregisterModulePermissions(string moduleIdentity)
+    /// <summary>
+    ///     Unregisters only manifest-sourced permissions for a module.
+    ///     Standalone permissions (from <see cref="RegisterStandalonePermissions"/>) are preserved.
+    ///     Used during <c>MountAdminManifest</c> remount.
+    /// </summary>
+    public List<string> UnregisterManifestPermissions(string moduleIdentity)
     {
         var removed = new List<string>();
 
-        if (!_permissionCollections.Remove(moduleIdentity, out var modulePermissionCollection))
+        if (_permissionCollections.Remove(moduleIdentity, out var modulePermissionCollection))
         {
-            return removed;
-        }
-
-        foreach (var permissionSet in modulePermissionCollection.Values)
-        {
-            foreach (var permission in permissionSet ?? [])
+            foreach (var permissionSet in modulePermissionCollection.Values)
             {
-                removed.Add(permission);
+                foreach (var permission in permissionSet ?? [])
+                {
+                    removed.Add(permission);
+                }
             }
         }
 
         return removed;
+    }
+
+    /// <summary>
+    ///     Unregisters all permissions for a module (manifest + standalone).
+    ///     Used during module disconnect.
+    /// </summary>
+    public List<string> UnregisterModulePermissions(string moduleIdentity)
+    {
+        var removed = UnregisterManifestPermissions(moduleIdentity);
+
+        if (_standalonePermissions.Remove(moduleIdentity, out var standalone))
+        {
+            removed.AddRange(standalone);
+        }
+
+        return removed;
+    }
+
+    /// <summary>
+    ///     Registers standalone permissions for a module (outside of manifest flow).
+    ///     Returns only the permissions that were truly new (not already tracked).
+    /// </summary>
+    public HashSet<string> RegisterStandalonePermissions(string moduleIdentity, IEnumerable<string> permissions)
+    {
+        if (!_standalonePermissions.TryGetValue(moduleIdentity, out var existing))
+        {
+            existing = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _standalonePermissions[moduleIdentity] = existing;
+        }
+
+        var newPermissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var permission in permissions)
+        {
+            if (existing.Add(permission))
+            {
+                newPermissions.Add(permission);
+            }
+        }
+
+        return newPermissions;
     }
 
     public List<string> RegisterModuleData(string moduleIdentity,
