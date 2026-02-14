@@ -67,6 +67,7 @@ set(modsharp_SOURCES
 	"src/cstrike/interface/IGameSystem.cpp"
 	"src/cstrike/interface/IGameTypes.cpp"
 	"src/cstrike/interface/INetChannel.cpp"
+	"src/cstrike/interface/INetworkStringTable.cpp"
 	"src/cstrike/interface/IResourceSystem.cpp"
 	"src/cstrike/interface/ISchemaSystem.cpp"
 	"src/cstrike/interface/ISoundOpSystem.cpp"
