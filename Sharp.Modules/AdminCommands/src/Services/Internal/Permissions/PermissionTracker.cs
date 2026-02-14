@@ -49,4 +49,8 @@ internal sealed class TrackingPermissionCommandRegistry : IAdminCommandRegistry
         _tracker.Track(permissions);
         _inner.RegisterAdminCommand(command, call, permissions);
     }
+
+    public void RegisterPermissions(ImmutableArray<string> permissions)
+    {
+    }
 }
