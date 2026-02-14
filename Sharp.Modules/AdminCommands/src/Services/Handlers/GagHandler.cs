@@ -60,7 +60,7 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
                                              bool        isCommand,
                                              string      commandName,
                                              string      message)
-        => IsGagged(client.SteamId) && !isCommand ? ECommandAction.Stopped : ECommandAction.Handled;
+        => IsGagged(client.SteamId) && !isCommand ? ECommandAction.Stopped : ECommandAction.Skipped;
 
     private bool IsGagged(SteamID steamId)
     {
