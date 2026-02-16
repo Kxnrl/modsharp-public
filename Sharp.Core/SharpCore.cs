@@ -1091,6 +1091,9 @@ internal partial class SharpCore : ISharpCore
     public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage
         => NetMessageHelper.SendNetMessage(filter, data);
 
+    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data, bool bypassHook = true) where T : class, IMessage
+        => NetMessageHelper.SendNetMessage(filter, data, bypassHook);
+
     public void HookNetMessage(ProtobufNetMessageType msgId)
     {
         ref var count = ref CollectionsMarshal.GetValueRefOrAddDefault(_hookedNetMessages, msgId, out var exists);

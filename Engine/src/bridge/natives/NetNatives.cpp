@@ -31,7 +31,7 @@
 
 namespace natives::net
 {
-static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessageInternal* pNetMessage, uint8_t* pData, int32_t size)
+static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessageInternal* pNetMessage, uint8_t* pData, int32_t size, bool bypass)
 {
     if (!pNetMessage) [[unlikely]]
         return false;
@@ -42,9 +42,12 @@ static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessag
         return false;
 
     const CSharpNetworkDataWrapper data(pData, size, pNetMessage);
-    SetNetworkMessageBypassHook(true);
+    
+    if (bypass)
+        SetNetworkMessageBypassHook(true);
     g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &clients, pNetMessage, &data, 0, true);
-    SetNetworkMessageBypassHook(false);
+    if (bypass)
+        SetNetworkMessageBypassHook(false);
 
     return true;
 }

@@ -235,7 +235,17 @@ public interface IModSharp
     /// <summary>
     ///     Send NetMessage
     /// </summary>
-    bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage;
+    [Obsolete("Use SendNetMessage<T>(RecipientFilter, T, bool) instead. This overload will be removed in a future version.")]
+    bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage
+        => SendNetMessage(filter, data, bypassHook: true);
+
+    /// <summary>
+    ///     Send NetMessage
+    /// </summary>
+    /// <param name="filter">Recipient filter</param>
+    /// <param name="data">Protobuf message</param>
+    /// <param name="bypassHook">Whether to bypass the net message hook</param>
+    bool SendNetMessage<T>(RecipientFilter filter, T data, bool bypassHook = true) where T : class, IMessage;
 
     /// <summary>
     ///     Install HookNetMessage
