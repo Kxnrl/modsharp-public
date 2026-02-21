@@ -37,7 +37,7 @@ internal class MenuExample : IModSharpModule
         // You can precache menu in constructor.
         _cachedSubMenu = Menu.Create()
                              .Title("Sub Menu")
-                             .Cursor(">>", "<<") // Custom cursor
+                             .Cursor("»", "«") // Custom cursor (avoid raw < > which conflict with HTML tags)
                              .DisabledItem("This item is not selectable")
                              .Spacer()
                              .Item("Do something", _ => { /* ... */ })

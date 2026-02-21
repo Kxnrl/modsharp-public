@@ -12,6 +12,10 @@ namespace Sharp.Modules.MenuManager.Shared;
 /// Represents a menu that can be displayed to a game client.
 /// Items are built per-client at display time via <see cref="MenuItemGenerator"/> delegates,
 /// allowing dynamic content based on player state.
+/// <para>
+/// All title and cursor values are embedded directly into HTML output.
+/// Raw <c>&lt;</c> or <c>&gt;</c> characters may interfere with markup.
+/// </para>
 /// </summary>
 public class Menu
 {
@@ -59,6 +63,7 @@ public class Menu
     /// Sets a static menu title.
     /// </summary>
     /// <param name="name">The title text.</param>
+    /// <remarks>The value is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void SetTitle(string name)
         => _titleFactory = _ => name;
 
@@ -68,6 +73,7 @@ public class Menu
     /// </summary>
     /// <param name="left">The left cursor indicator.</param>
     /// <param name="right">The right cursor indicator.</param>
+    /// <remarks>The resulting values are embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void SetCursor(string left, string right)
     {
         CursorLeft  = WebUtility.HtmlDecode(left);
@@ -85,6 +91,7 @@ public class Menu
     /// Sets a per-client title factory that resolves the menu title at display time.
     /// </summary>
     /// <param name="factory">A function that receives the viewing client and returns the title. Useful for localized titles.</param>
+    /// <remarks>The resolved value is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void SetTitle(Func<IGameClient, string> factory)
         => _titleFactory = factory;
 
@@ -109,6 +116,7 @@ public class Menu
     /// </summary>
     /// <param name="name">The item title.</param>
     /// <param name="action">The action invoked when the item is selected, or <c>null</c> for a disabled item.</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddItem(string name, Action<IMenuController>? action = null)
         => _items.Add(new ((IGameClient _, ref MenuItemContext context) =>
         {
@@ -122,6 +130,7 @@ public class Menu
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
     /// <param name="action">The action invoked when the item is selected, or <c>null</c> for a disabled item.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddItem(Func<IGameClient, string> titleFactory, Action<IMenuController>? action = null)
         => _items.Add(new ((IGameClient client, ref MenuItemContext context) =>
         {
@@ -160,6 +169,7 @@ public class Menu
     /// Adds a disabled item with a static title. Disabled items are visible but not selectable.
     /// </summary>
     /// <param name="name">The item title.</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddDisabledItem(string name)
         => _items.Add(new ((IGameClient _, ref MenuItemContext context) =>
         {
@@ -171,6 +181,7 @@ public class Menu
     /// Adds a disabled item with a per-client dynamic title. Disabled items are visible but not selectable.
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddDisabledItem(Func<IGameClient, string> titleFactory)
         => _items.Add(new ((IGameClient client, ref MenuItemContext context) =>
         {
@@ -183,6 +194,7 @@ public class Menu
     /// </summary>
     /// <param name="name">The item title.</param>
     /// <param name="subMenu">The sub-menu to navigate to.</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddSubMenu(string name, Menu subMenu)
         => AddItem(name, controller => controller.Next(subMenu));
 
@@ -191,6 +203,7 @@ public class Menu
     /// </summary>
     /// <param name="name">The item title.</param>
     /// <param name="menuFactory">A factory that receives the client and returns the sub-menu.</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddSubMenu(string name, Func<IGameClient, Menu> menuFactory)
         => AddItem(name, controller => controller.Next(menuFactory));
 
@@ -199,6 +212,7 @@ public class Menu
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
     /// <param name="subMenu">The sub-menu to navigate to.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddSubMenu(Func<IGameClient, string> titleFactory, Menu subMenu)
         => AddItem(titleFactory, controller => controller.Next(subMenu));
 
@@ -207,6 +221,7 @@ public class Menu
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
     /// <param name="menuFactory">A factory that receives the client and returns the sub-menu.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddSubMenu(Func<IGameClient, string> titleFactory, Func<IGameClient, Menu> menuFactory)
         => AddItem(titleFactory, controller => controller.Next(menuFactory));
 
@@ -215,6 +230,7 @@ public class Menu
     /// If there is no previous menu, the menu will be closed instead.
     /// </summary>
     /// <param name="name">The item title. Defaults to "Back".</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddBackItem(string name = "Back")
         => AddItem(name, controller => controller.GoBack());
 
@@ -223,6 +239,7 @@ public class Menu
     /// If there is no previous menu, the menu will be closed instead.
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddBackItem(Func<IGameClient, string> titleFactory)
         => AddItem(titleFactory, controller => controller.GoBack());
 
@@ -230,6 +247,7 @@ public class Menu
     /// Adds an item that closes the menu when selected.
     /// </summary>
     /// <param name="name">The item title. Defaults to "Exit".</param>
+    /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddExitItem(string name = "Exit")
         => AddItem(name, controller => controller.Exit());
 
@@ -237,6 +255,7 @@ public class Menu
     /// Adds an item with a per-client dynamic title that closes the menu when selected.
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
+    /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddExitItem(Func<IGameClient, string> titleFactory)
         => AddItem(titleFactory, controller => controller.Exit());
 
@@ -472,6 +491,8 @@ public record struct MenuItemContext
 {
     /// <summary>
     /// The display title. If <c>null</c> or whitespace after generation, the item is skipped.
+    /// The value is embedded directly into HTML output, so raw
+    /// <c>&lt;</c> or <c>&gt;</c> characters may interfere with markup.
     /// </summary>
     public string?                  Title;
 
