@@ -21,7 +21,7 @@ internal class MenuExample : IModSharpModule
 
     private bool _useCacheMenu = true;
 
-    private IMenuManager? _menuManager;
+    private IModSharpModuleInterface<IMenuManager>? _menuManager;
 
     public MenuExample(ISharedSystem  sharedSystem,
                        string         dllPath,
@@ -38,24 +38,23 @@ internal class MenuExample : IModSharpModule
         _cachedSubMenu = Menu.Create()
                              .Title("Sub Menu")
                              .Cursor(">>", "<<") // Custom cursor
-                             .Item("Back", controller => controller.GoBack())
+                             .DisabledItem("This item is not selectable")
+                             .Spacer()
+                             .Item("Do something", _ => { /* ... */ })
+                             .BackItem()  // Navigates back to the parent menu, or exits if none
+                             .ExitItem()  // Closes the menu entirely
                              .Build();
 
         _cachedMenu = Menu.Create()
                           .Title("Main Menu (Cached)")
                           .HideIndex() // Hide item indices, so it wont display "1.", "2." before the item name
-                          .Item("Open Sub Menu",     OnMenuItemOpenSubMenu)
+                          .SubMenu("Open Sub Menu",   _cachedSubMenu)
                           .Item("Give me a deagle!", OnMenuItemGiveDeagle)
                           .Item(gameClient =>
-                                {
-                                    // you can use LocalizeManager to get the localized title if you want to
-                                    if (gameClient.IsAuthenticated)
-                                    {
-                                        return "Give me a deagle! (authenticated)";
-                                    }
-
-                                    return "Give me a deagle..?";
-                                },
+                                    // Title factory — useful for localized titles via LocalizeManager
+                                    gameClient.IsAuthenticated
+                                        ? "Give me a deagle! (authenticated)"
+                                        : "Give me a deagle..?",
                                 OnMenuItemGiveDeagle)
                           .Item(OnMenuItemGiveAk47)
                           .OnExit(OnExitMenu)
@@ -72,8 +71,8 @@ internal class MenuExample : IModSharpModule
 
     public void PostInit()
     {
-        // we call it here just to prevent it fails to find **MenuManager** after our module is reloaded
-        // this is because OnAllModulesLoaded is only called once when every module is loaded at start up
+        // Also resolve here in case our module is hot-reloaded after initial startup,
+        // since OnAllModulesLoaded is only called once at first load.
         TryResolveMenuManager();
     }
 
@@ -87,15 +86,13 @@ internal class MenuExample : IModSharpModule
 
     public void OnLibraryDisconnect(string name)
     {
-        if (name.Equals(MenuManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
-        {
-            _menuManager = null;
-        }
+        // No need to null out _menuManager here — the framework sets .Instance to null
+        // when the module is unloaded via IModSharpModuleInterface<T>.Dispose().
     }
 
     public void OnAllModulesLoaded()
     {
-        // we also call it here and see if the end user(module consumer) has menu manager installed, so we can inform them if they don't.
+        // Try again here and warn if MenuManager is not installed
         TryResolveMenuManager(true);
     }
 
@@ -119,7 +116,7 @@ internal class MenuExample : IModSharpModule
 
     private void OnPlayerSpawnPost(IPlayerSpawnForwardParams obj)
     {
-        if (_menuManager is not { } menuManager)
+        if (_menuManager?.Instance is not { } menuManager)
         {
             return;
         }
@@ -138,11 +135,11 @@ internal class MenuExample : IModSharpModule
 
         obj.Controller.Print(HudPrintChannel.Chat, "Menu opened, it will be closed in 10 seconds");
 
-        // we stop displaying the menu after 10 seconds
+        // Auto-close the menu after 10 seconds
         _sharedSystem.GetModSharp()
                      .PushTimer(() =>
                                 {
-                                    // Must validate before calling QuitMenu, otherwise it will throw exception.
+                                    // Must check IsInMenu before calling QuitMenu
                                     if (menuManager.IsInMenu(client))
                                     {
                                         menuManager.QuitMenu(client);
@@ -153,42 +150,32 @@ internal class MenuExample : IModSharpModule
 
     private void CreateAndDisplayMenuOnTheFly(IGameClient client, IMenuManager menuManager)
     {
-        // example 2
-        var menu = Menu.Create().Build();
+        // Example 2: Imperative menu construction (useful when items depend on runtime state)
+        var menu = new Menu();
 
-        // or this way
-        // var menu = new Menu();
+        // Title factory — useful for localized titles via LocalizeManager
         menu.SetTitle(gameClient =>
-        {
-            // you can use LocalizeManager to get the localized title if you want to
-            return gameClient.IsAuthenticated ? "Main menu (authenticated)" : "Main menu";
-        });
+            gameClient.IsAuthenticated ? "Main menu (authenticated)" : "Main menu");
 
-        // or if you prefer the simplest way
+        // or if you prefer a static title
         // menu.SetTitle("My menu title");
 
-        menu.AddItem("Open sub menu",     OnMenuItemOpenSubMenu);
+        menu.AddSubMenu("Open sub menu",  _cachedSubMenu);
         menu.AddItem("Give me a deagle!", OnMenuItemGiveDeagle);
 
-        menu.AddItem(gameClient =>
-                     {
-                         // you can use LocalizeManager to get the localized title if you want to
-                         return gameClient.IsAuthenticated ? "Give me a deagle! (authenticated)" : "Give me a deagle..?";
-                     },
+        // Disabled item — visible but not selectable
+        menu.AddDisabledItem("Coming soon...");
 
-                     // if the action, OnMenuItemGiveDeagle in this case, is null,
-                     // this item will be treated as Disabled
+        menu.AddItem(gameClient =>
+                         gameClient.IsAuthenticated ? "Give me a deagle! (authenticated)" : "Give me a deagle..?",
+                     // If the action is null, the item will be treated as Disabled
                      client.IsAuthenticated ? OnMenuItemGiveDeagle : null);
 
+        // Generator-based item for full control over title, state, color, and action
         menu.AddItem(OnMenuItemGiveAk47);
         menu.OnExit = OnExitMenu;
 
         menuManager.DisplayMenu(client, menu);
-    }
-
-    private void OnMenuItemOpenSubMenu(IMenuController controller)
-    {
-        controller.Next(_cachedSubMenu);
     }
 
     private void OnExitMenu(IGameClient cl)
@@ -198,65 +185,59 @@ internal class MenuExample : IModSharpModule
 
     private void OnMenuItemGiveAk47(IGameClient client, ref MenuItemContext context)
     {
-        // a more flexible way to add a menu item
+        // Generator-based item: full control over the MenuItemContext.
+        // This is useful when the item's title, state, or action depends on the player's state.
 
         if (client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
         {
-            // if we return here, this item won't be added, because .Title is null
-            // and .State is MenuItemState.Default; the purpose of this is to prevent ghost item...
-            // if you want to add a spacer/padding item please do as the following code
-            // context.State = MenuItemState.Spacer;
+            // Returning without setting Title causes the item to be skipped entirely.
+            // To add an empty line instead, use: context.State = MenuItemState.Spacer;
             return;
         }
 
-        // you can use LocalizeManager to get the localized value
         context.Title = "Give me an AK47!";
 
-        // player is not on Terrorist team, we don't allow that
         if (playerPawn.Team != CStrikeTeam.TE)
         {
+            // Disabled items are visible but cannot be selected
             context.State = MenuItemState.Disabled;
         }
         else
         {
-            // we can change the color here.
-            // PS: it does not work for disabled item
+            // Custom color (does not apply to disabled items)
             context.Color = "#FFCCCB";
         }
 
         if (!playerPawn.IsAlive)
         {
-            // or we just don't set the action here, so this item
-            // can be treated as disabled
-            // note: if the player respawns and want to use this item they have to reopen it again
+            // Not setting Action leaves the item disabled automatically
             return;
         }
 
         context.Action = menuController =>
         {
-            if (!playerPawn.IsAlive)
+            if (playerPawn.IsAlive)
+            {
+                if (playerPawn.GiveNamedItem(EconItemId.Ak47) is null)
+                {
+                    playerPawn.Print(HudPrintChannel.Chat,
+                                     "Can't give you an AK47 for some reason...?");
+                }
+            }
+            else
             {
                 playerPawn.Print(HudPrintChannel.Chat,
                                  "You are not alive, so no weapon for you haha!");
-
-                goto exit;
             }
 
-            if (playerPawn.GiveNamedItem(EconItemId.Ak47) is null)
-            {
-                playerPawn.Print(HudPrintChannel.Chat,
-                                 "Can't give you an AK47 for some reason...?");
-            }
-
-        exit:
             menuController.Exit();
         };
     }
 
     private void OnMenuItemGiveDeagle(IMenuController controller)
     {
-        // simple action example, this should cover most of the use cases
-        // noted that this action code is only called when the player selects this item
+        // Simple action example — this pattern covers most use cases.
+        // Action code only runs when the player selects this item.
         if (controller.Client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
         {
             controller.Exit();
@@ -285,7 +266,8 @@ internal class MenuExample : IModSharpModule
 
     private void TryResolveMenuManager(bool logFailure = false)
     {
-        if (_menuManager is not null)
+        // Re-resolve if the wrapper is null or the instance was disposed (e.g. after hot-reload)
+        if (_menuManager?.Instance is not null)
         {
             return;
         }
@@ -302,8 +284,7 @@ internal class MenuExample : IModSharpModule
         }
     }
 
-    private T? GetExternalModule<T>(string identity) where T : class
+    private IModSharpModuleInterface<T>? GetExternalModule<T>(string identity) where T : class
         => _sharedSystem.GetSharpModuleManager()
-                        .GetOptionalSharpModuleInterface<T>(identity)
-                        ?.Instance;
+                        .GetOptionalSharpModuleInterface<T>(identity);
 }
