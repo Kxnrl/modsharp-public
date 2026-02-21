@@ -203,9 +203,9 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         g_flReplaceMaxSpeed     = CStrikeMaxSpeed;
     }
 
-    DeclareMemberDetourHook(Accelerate, void, (CCSPlayer_MovementServices * pService, CMoveData * pMoveData, float a3, float* a4, float a5, float a6))
+    DeclareMemberDetourHook(Accelerate, void, (CCSPlayer_MovementServices * pService, CMoveData * pMoveData, float flFrameTime, Vector* vecRight, float flWishSpeed, float flAccelerate))
     {
-        Accelerate(pService, pMoveData, a3, a4, a5, a6);
+        Accelerate(pService, pMoveData, flFrameTime, vecRight, flWishSpeed, flAccelerate);
 
         if (g_bInWalkMove)
         {

@@ -59,7 +59,6 @@ struct SubtickAttack
     uint64_t button;
     bool     pressed;
 };
-
 #pragma pack(push, 1)
 class CMoveData
 {
@@ -102,24 +101,32 @@ public:
     int32_t                 m_nFullMoveEndTick;        // 0xd8
     float                   m_flFullMoveStartFraction; // 0xdc
     float                   m_flFullMoveEndFraction;   // 0xe0
-
+#ifdef PLATFORM_WINDOWS
 private:
     [[maybe_unused]] uint8_t m_pad_0xe4[4]; // 0xe4
+#endif
 
 public:
-    Vector m_outWishVel;           // 0xe8
-    Vector m_vecOldAngles;         // 0xf4
-    Vector m_vecInputRotated;      // 0x100
-    Vector m_vecAccel;             // 0x10c
-    Vector m_vecAccelPerSecond;    // 0x118
-    float  m_flMaxSpeed;           // 0x124
-    float  m_flClientMaxSpeed;     // 0x128
-    float  m_flSubtickFraction;    // 0x12c
-    bool   m_bInAir;               // 0x130
-    bool   m_bGameCodeMovedPlayer; // 0x131
+    Vector m_outWishVel;        // Win: 0xe8  | Lin: 0xe4
+    Vector m_vecOldAngles;      // Win: 0xf4  | Lin: 0xf0
+    Vector m_vecInputRotated;   // Win: 0x100 | Lin: 0xfc
+    Vector m_vecAccel;          // Win: 0x10c | Lin: 0x108
+    Vector m_vecAccelPerSecond; // Win: 0x118 | Lin: 0x114
+    float  m_flMaxSpeed;        // Win: 0x124 | Lin: 0x120
+    float  m_flClientMaxSpeed;  // Win: 0x128 | Lin: 0x124
+    float  m_flSubtickFraction; // Win: 0x12c | Lin: 0x128
+private:
+    char pad_130[12]; // Win: 0x130 | Lin: 0x12c
 
-}; // Size: 0x132
+public:
+    bool m_bInAir;               // Win: 0x13C | Lin: 0x138
+    bool m_bGameCodeMovedPlayer; // Win: 0x13D | Lin: 0x139
+
+}; // Size Win: 0x13E | Lin: 0x13A
 #pragma pack(pop)
-static_assert(sizeof(CMoveData) == 0x132, "sizeof(CMoveData) != 0x132");
+
+#ifdef PLATFORM_WINDOWS
+static_assert(sizeof(CMoveData) == 0x13E, "sizeof(CMoveData) != 0x13E");
+#endif
 
 #endif
