@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types.Tier;
@@ -77,25 +78,25 @@ public struct MoveData
         }
     }
 
-    public unsafe Vector OutWishVel // Win: 0xe8
+    public Vector OutWishVel // Win: 0xe8
     {
         get => Unsafe.ReadUnaligned<Vector>(ref Unsafe.AddByteOffset(ref Base, 0xe8 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,        0xe8 + PlatformOffset), value);
     }
 
-    public unsafe float MaxSpeed // Win: 0x124
+    public float MaxSpeed // Win: 0x124
     {
         get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x124 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x124 + PlatformOffset), value);
     }
 
-    public unsafe float ClientMaxSpeed // Win: 0x128
+    public float ClientMaxSpeed // Win: 0x128
     {
         get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x128 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x128 + PlatformOffset), value);
     }
 
-    public unsafe bool InAir // Win: 0x13C
+    public bool InAir // Win: 0x13C
     {
         get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, 0x13C + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      0x13C + PlatformOffset), value);
