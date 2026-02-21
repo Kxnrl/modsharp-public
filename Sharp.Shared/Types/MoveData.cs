@@ -77,25 +77,25 @@ public struct MoveData
         }
     }
 
-    public Vector OutWishVel // Win: 0xe8
+    public unsafe Vector OutWishVel // Win: 0xe8
     {
         get => Unsafe.ReadUnaligned<Vector>(ref Unsafe.AddByteOffset(ref Base, 0xe8 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,        0xe8 + PlatformOffset), value);
     }
 
-    public float MaxSpeed // Win: 0x124
+    public unsafe float MaxSpeed // Win: 0x124
     {
         get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x124 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x124 + PlatformOffset), value);
     }
 
-    public float ClientMaxSpeed // Win: 0x128
+    public unsafe float ClientMaxSpeed // Win: 0x128
     {
         get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x128 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x128 + PlatformOffset), value);
     }
 
-    public bool InAir // Win: 0x13C
+    public unsafe bool InAir // Win: 0x13C
     {
         get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, 0x13C + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      0x13C + PlatformOffset), value);
