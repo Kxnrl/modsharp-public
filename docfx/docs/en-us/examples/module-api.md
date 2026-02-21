@@ -21,6 +21,9 @@ This article only teaches how to write a Module API.
 
 In `SharedInterface.Shared`, make the following definitions:
 
+> [!WARNING]
+> The `Identity` constant is used as a global key to register and look up module interfaces. Using `nameof(IMyInterface)` only produces the short type name (e.g. `"IMySharedModule"`), which can collide if another module defines an interface with the same name in a different namespace. For modules intended for wide distribution, consider using a fully-qualified identity such as `"SharedInterface.Shared.IMySharedModule"` or `typeof(IMySharedModule).FullName!` to guarantee uniqueness.
+
 [!code-csharp[SharedInterface.Shared.cs](../../codes/module-api.cs)]
 
 Then, write the following implementation in `SharedInterface`:

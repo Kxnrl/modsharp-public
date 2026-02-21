@@ -21,6 +21,9 @@
 
 在`SharedInterface.Shared`中，做如下定义
 
+> [!WARNING]
+> `Identity` 常量用作注册和查找模块接口的全局键。使用 `nameof(IMyInterface)` 只会生成短类型名（如 `"IMySharedModule"`），如果另一个模块在不同命名空间下定义了同名接口，就会发生冲突。对于需要公开发布的模块，建议使用唯一 identity，例如 `"SharedInterface.Shared.IMySharedModule"` 或 `typeof(IMySharedModule).FullName!`，以确保唯一性。
+
 [!code-csharp[SharedInterface.Shared.cs](../../codes/module-api.cs)]
 
 然后，你在`SharedInterface`中编写如下实现
