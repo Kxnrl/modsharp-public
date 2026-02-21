@@ -38,9 +38,9 @@ public class AdminCommands : IModSharpModule
     private readonly IReadOnlyCollection<ICommandCategory> _commandCategories;
     private readonly string                                _sharpPath;
 
-    private IAdminManager?     _adminManager;
-    private ILocalizerManager? _localizerManager;
-    private ITargetingManager? _targetingManager;
+    private IModSharpModuleInterface<IAdminManager>?     _adminManager;
+    private IModSharpModuleInterface<ILocalizerManager>? _localizerManager;
+    private IModSharpModuleInterface<ITargetingManager>? _targetingManager;
 
     private bool _registered;
 
@@ -198,7 +198,7 @@ public class AdminCommands : IModSharpModule
 
     private void RegisterCommands(bool logFailture = false)
     {
-        if (_adminManager is null || _registered)
+        if (_adminManager?.Instance is not { } adminManager || _registered)
         {
             return;
         }
@@ -208,7 +208,7 @@ public class AdminCommands : IModSharpModule
 
         try
         {
-            var inner = _adminManager.GetCommandRegistry(AssemblyName);
+            var inner = adminManager.GetCommandRegistry(AssemblyName);
 
             var registry = new TrackingPermissionCommandRegistry(inner, _permissionTracker);
 
@@ -218,7 +218,7 @@ public class AdminCommands : IModSharpModule
                 registeredCategories.Add(category);
             }
 
-            PermissionCollectionUpdater.Write(_adminManager, _sharpPath, "admin", _permissionTracker.Permissions, _logger);
+            PermissionCollectionUpdater.Write(adminManager, _sharpPath, "admin", _permissionTracker.Permissions, _logger);
 
             _registered = true;
         }
@@ -261,19 +261,20 @@ public class AdminCommands : IModSharpModule
 
     private void TryResolvePermissionManager(bool logFailure = false)
     {
-        if (_adminManager is not null)
+        if (_adminManager?.Instance is not null)
         {
-            _moduleContext.UpdateAdminManager(_adminManager);
+            _moduleContext.UpdateAdminManager(_adminManager.Instance);
             RegisterCommands();
 
             return;
         }
 
-        _adminManager = GetExternalModule<IAdminManager>(IAdminManager.Identity);
+        _adminManager = _shared.GetSharpModuleManager()
+                               .GetOptionalSharpModuleInterface<IAdminManager>(IAdminManager.Identity);
 
-        if (_adminManager is not null)
+        if (_adminManager?.Instance is not null)
         {
-            _moduleContext.UpdateAdminManager(_adminManager);
+            _moduleContext.UpdateAdminManager(_adminManager.Instance);
             RegisterCommands();
         }
         else if (logFailure)
@@ -285,15 +286,16 @@ public class AdminCommands : IModSharpModule
 
     private void TryResolveLocalizer(bool logFailure = false)
     {
-        if (_localizerManager is not null)
+        if (_localizerManager?.Instance is not null)
         {
             return;
         }
 
-        _localizerManager = GetExternalModule<ILocalizerManager>(ILocalizerManager.Identity);
-        _moduleContext.UpdateLocalizer(_localizerManager);
+        _localizerManager = _shared.GetSharpModuleManager()
+                                   .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
+        _moduleContext.UpdateLocalizer(_localizerManager?.Instance);
 
-        if (_localizerManager is null)
+        if (_localizerManager?.Instance is null)
         {
             if (logFailure)
             {
@@ -309,15 +311,16 @@ public class AdminCommands : IModSharpModule
 
     private void TryResolveTargetingManager(bool logFailure = false)
     {
-        if (_targetingManager is not null)
+        if (_targetingManager?.Instance is not null)
         {
             return;
         }
 
-        _targetingManager = GetExternalModule<ITargetingManager>(ITargetingManager.Identity);
-        _moduleContext.UpdateTargeting(_targetingManager);
+        _targetingManager = _shared.GetSharpModuleManager()
+                                   .GetOptionalSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity);
+        _moduleContext.UpdateTargeting(_targetingManager?.Instance);
 
-        if (_targetingManager is null && logFailure)
+        if (_targetingManager?.Instance is null && logFailure)
         {
             _logger.LogWarning("Failed to get TargetingManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
                                TargetingManagerAssemblyName);
@@ -328,7 +331,9 @@ public class AdminCommands : IModSharpModule
     {
         try
         {
-            var external = GetExternalModule<IAdminOperationStorageService>(IAdminOperationStorageService.Identity);
+            var external = _shared.GetSharpModuleManager()
+                                  .GetOptionalSharpModuleInterface<IAdminOperationStorageService>(IAdminOperationStorageService.Identity)
+                                  ?.Instance;
 
             if (external is null)
             {
@@ -350,7 +355,7 @@ public class AdminCommands : IModSharpModule
     {
         try
         {
-            _localizerManager?.LoadLocaleFile(AdminCommandsLocaleName, true);
+            _localizerManager?.Instance?.LoadLocaleFile(AdminCommandsLocaleName, true);
         }
         catch (Exception ex)
         {
@@ -412,8 +417,4 @@ public class AdminCommands : IModSharpModule
         }
     }
 
-    private T? GetExternalModule<T>(string identity) where T : class
-        => _shared.GetSharpModuleManager()
-                  .GetOptionalSharpModuleInterface<T>(identity)
-                  ?.Instance;
 }
