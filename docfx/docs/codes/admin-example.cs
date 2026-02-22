@@ -17,8 +17,8 @@ internal class AdminExample : IModSharpModule
 
     private static readonly string ModuleIdentity = typeof(AdminExample).Assembly.GetName().Name ?? "AdminExample";
 
-    private IAdminManager? _adminManager;
-    private bool           _initialized;
+    private IModSharpModuleInterface<IAdminManager>? _adminManager;
+    private bool                                     _initialized;
 
     public AdminExample(ISharedSystem  sharedSystem,
                         string         dllPath,
@@ -36,8 +36,6 @@ internal class AdminExample : IModSharpModule
 
     public void PostInit()
     {
-        // we call it here just to prevent it fails to find **AdminManager** after our module is reloaded
-        // this is because OnAllModulesLoaded is only called once when every module is loaded at start up
         TryResolveAdminManager();
     }
 
@@ -49,18 +47,8 @@ internal class AdminExample : IModSharpModule
         }
     }
 
-    public void OnLibraryDisconnect(string name)
-    {
-        if (name.Equals(AdminManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
-        {
-            _adminManager = null;
-            _initialized  = false;
-        }
-    }
-
     public void OnAllModulesLoaded()
     {
-        // we also call it here and see if the end user(module consumer) has admin manager installed, so we can inform them if they don't.
         TryResolveAdminManager(true);
     }
 
@@ -73,19 +61,19 @@ internal class AdminExample : IModSharpModule
 
     private void TryResolveAdminManager(bool logFailure = false)
     {
-        if (_adminManager is not null)
+        if (_adminManager?.Instance is not null)
         {
             return;
         }
 
-        _adminManager = GetExternalModule<IAdminManager>(IAdminManager.Identity);
+        _adminManager = _sharedSystem.GetSharpModuleManager()
+                                     .GetOptionalSharpModuleInterface<IAdminManager>(IAdminManager.Identity);
 
-        if (_adminManager is null)
+        if (_adminManager?.Instance is null)
         {
             if (logFailure)
             {
-                _logger.LogWarning("Failed to get AdminManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
-                                   AdminManagerAssemblyName);
+                _logger.LogWarning("AdminManager is not installed. Admin commands will not work.");
             }
 
             return;
@@ -94,41 +82,30 @@ internal class AdminExample : IModSharpModule
         InitializePermissions();
     }
 
-    // Group 1: "admin_offensive"
-    // Commands: Slay, Kill
+    // Group 1: "admin_offensive" — Slay, Kill
     private const string SlayPermission = "admin_offensive:slay";
     private const string KillPermission = "admin_offensive:kill";
 
-    // Group 2: "admin_medic"
-    // Commands: Heal
-    // Because this starts with "admin_medic", a wildcard for "admin_offensive:*" will NOT include this.
+    // Group 2: "admin_medic" — Heal
+    // Different prefix means "admin_offensive:*" will NOT match this.
     private const string HealPermission = "admin_medic:heal";
 
     private void InitializePermissions()
     {
-        if (_adminManager is null || _initialized)
+        if (_adminManager?.Instance is not { } adminManager || _initialized)
         {
             return;
         }
 
         try
         {
-            Console.WriteLine("Building manifest...");
+            adminManager.MountAdminManifest(ModuleIdentity, BuildAdminManifest);
 
-            // we build manifest first
-            _adminManager.MountAdminManifest(ModuleIdentity, BuildAdminManifest);
+            var registry = adminManager.GetCommandRegistry(ModuleIdentity);
 
-            // then we add commands
-            var registry = _adminManager.GetCommandRegistry(ModuleIdentity);
-
-            // Register permissions into the global index so that admins with wildcard rules
-            // (e.g. "admin_offensive:*") can be correctly granted these permissions.
-            // RegisterAdminCommand does NOT do this automatically — if you want your
-            // command permissions indexed, maintain your own list and call RegisterPermissions.
-            //
-            // NOTE: In this example, MountAdminManifest above already registers these
-            // permissions via PermissionCollection, so this call is redundant here.
-            // It is shown for demonstration — you only need one of the two approaches.
+            // RegisterAdminCommand does NOT auto-register permissions into the global index.
+            // Call RegisterPermissions so wildcard rules (e.g. "admin_offensive:*") work.
+            // If MountAdminManifest already covers them via PermissionCollection, this is optional.
             registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
 
             registry.RegisterAdminCommand("slay", OnCommandSlay,   [SlayPermission]);
@@ -137,16 +114,18 @@ internal class AdminExample : IModSharpModule
 
             _initialized = true;
         }
+        catch (InvalidOperationException)
+        {
+            // CommandManager isn't loaded yet — will retry when it connects.
+        }
         catch (Exception e)
         {
-            // ignored.
-            // if we initialize first but CommandManager isn't loaded yet, it will throw exception in AdminManager
+            _logger.LogError(e, "Failed to initialize admin permissions.");
         }
     }
 
     private void OnCommandSlay(IGameClient? issuer, StringCommand cmd)
     {
-        // for the sake of simplicity, we will just slay every alive player
         foreach (var controller in _sharedSystem.GetEntityManager().GetPlayerControllers())
         {
             if (controller.GetPlayerPawn() is { IsAlive: true } pawn)
@@ -158,7 +137,6 @@ internal class AdminExample : IModSharpModule
 
     private void OnCommandKill(IGameClient? issuer, StringCommand cmd)
     {
-        // is issued by console, ignoring
         if (issuer?.GetPlayerController()?.GetPlayerPawn() is not { } pawn)
         {
             Console.WriteLine("You can't kill console");
@@ -178,7 +156,6 @@ internal class AdminExample : IModSharpModule
 
     private void OnCommandHealth(IGameClient? issuer, StringCommand cmd)
     {
-        // for the sake of simplicity, we will just give health to every alive player
         foreach (var controller in _sharedSystem.GetEntityManager().GetPlayerControllers())
         {
             if (controller.GetPlayerPawn() is { IsAlive: true } pawn)
@@ -189,71 +166,38 @@ internal class AdminExample : IModSharpModule
         }
     }
 
-    // Change this function to your own need
-    // To know more about AdminTableManifest, please refer to admins.jsonc.example, which explains in detail
     private AdminTableManifest BuildAdminManifest()
     {
-        // if you have other sources for permissions, you can do something like
-        // var permissionCollection = _requestManager.GetPermissionCollections();
-        // you can leave it empty if you want to use existing permission sets
-
-        // Any permission used in 'Admins' or 'Roles' MUST be defined here first!
         var permissionCollection = new Dictionary<string, HashSet<string>>
         {
-            // "Offensive" group has legacy slay/kill
             ["admin_group_offensive"] = [SlayPermission, KillPermission],
-
-            // "Medic" group has the new heal
-            ["admin_group_medic"] = [HealPermission],
+            ["admin_group_medic"]     = [HealPermission],
         };
-
-        List<RoleManifest>  roles;
-        List<AdminManifest> admins;
 
         const string exampleRoleName = "GeneralAdmin";
         const byte   exampleImmunity = 1;
 
-        // if you have other sources for permissions, you can do something like
-        // var roles = _requestManager.GetPermissionRoles();
-        // you can leave it empty if you want to use existing permission roles.
-        // HOWEVER, when you assign roles to admins, you have to ensure the roles
-        // you want to give them exist
-
-        // assigning roles
+        HashSet<string> rolePermissions = [SlayPermission, KillPermission, HealPermission];
+        var roles = new List<RoleManifest>
         {
-            // This role gets EVERYTHING (Both offensive and medic)
-            HashSet<string> rolePermissions = [SlayPermission, KillPermission, HealPermission];
-            roles = [new (exampleRoleName, exampleImmunity, rolePermissions)];
-        }
+            new (exampleRoleName, exampleImmunity, rolePermissions)
+        };
 
-        // if you have other sources for admin, you can do something like
-        // var adminIdentities = _requestManager.GetAdmins();
-
+        var admins = new List<AdminManifest>
         {
-            admins =
-            [
-                // Example 1: Use the Role (Gets Slay, Kill, AND Heal)
-                new (76561198000000001, exampleImmunity, [$"@{exampleRoleName}"]),
+            // Role inheritance — gets Slay, Kill, and Heal
+            new (76561198000000001, exampleImmunity, [$"@{exampleRoleName}"]),
 
-                // Example 2: Grants ONLY Heal (Raw permission)
-                new (76561198000000002, exampleImmunity, [HealPermission]),
+            // Raw permission — Heal only
+            new (76561198000000002, exampleImmunity, [HealPermission]),
 
-                // Example 3: Use Role, but REMOVE Heal (Negation)
-                // They can Slay/Kill, but cannot Heal.
-                new (76561198000000003, exampleImmunity, [$"@{exampleRoleName}", $"!{HealPermission}"]),
+            // Role + negation — Slay/Kill but NOT Heal
+            new (76561198000000003, exampleImmunity, [$"@{exampleRoleName}", $"!{HealPermission}"]),
 
-                // Example 4: Wildcard "group_offensive"
-                // Matches "admin_offensive:slay" and "admin_offensive:kill"
-                // Does NOT match "admin_medic:heal"
-                new (76561198000000004, exampleImmunity, ["admin_offensive:*"]),
-            ];
-        }
+            // Wildcard — matches admin_offensive:slay and :kill, not admin_medic:heal
+            new (76561198000000004, exampleImmunity, ["admin_offensive:*"]),
+        };
 
         return new AdminTableManifest(permissionCollection, roles, admins);
     }
-
-    private T? GetExternalModule<T>(string identity) where T : class
-        => _sharedSystem.GetSharpModuleManager()
-                        .GetOptionalSharpModuleInterface<T>(identity)
-                        ?.Instance;
 }

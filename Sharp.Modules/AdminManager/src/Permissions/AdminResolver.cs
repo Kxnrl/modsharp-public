@@ -29,6 +29,12 @@ internal sealed class AdminResolver
     private readonly PermissionIndex _index;
     private readonly ILogger<AdminManager> _logger;
     private readonly HashSet<ulong> _usersWithWildcards = [];
+    /// <summary>
+    ///     Tracks "module:permission" keys that have already been warned about to avoid log spam.
+    ///     Entries are cleared when the missing permission is later registered by another module
+    ///     (see <see cref="ClearResolvedWarnings"/>), so the warning can fire again if the
+    ///     permission disappears and reappears across hot-reload cycles.
+    /// </summary>
     private readonly HashSet<string> _warnedUnknownPermissions = new(StringComparer.OrdinalIgnoreCase);
 
     public AdminResolver(AdminRepository repo, PermissionIndex index, ILogger<AdminManager> logger)
@@ -133,11 +139,8 @@ internal sealed class AdminResolver
             var source = userSources[modId];
             var (newAllows, newDenies) = ResolvePermissions(modId, source.RawRules);
 
-            source.ResolvedAllows.Clear();
-            source.ResolvedAllows.UnionWith(newAllows);
-
-            source.ResolvedDenies.Clear();
-            source.ResolvedDenies.UnionWith(newDenies);
+            source.ResolvedAllows = newAllows;
+            source.ResolvedDenies = newDenies;
         }
 
         RebuildAdmin(steamId);
@@ -148,6 +151,19 @@ internal sealed class AdminResolver
         foreach (var id in _repo.GetAllSteamIds().ToList())
         {
             RefreshSingleAdmin(id);
+        }
+    }
+
+    /// <summary>
+    ///     Refreshes only admins whose rules contain wildcards.
+    ///     Use this instead of <see cref="RefreshAllAdmins"/> when a module disconnects,
+    ///     since only wildcard users can be affected by the removal of permissions from the index.
+    /// </summary>
+    public void RefreshWildcardAdmins()
+    {
+        foreach (var steamId in _usersWithWildcards.ToList())
+        {
+            RefreshSingleAdmin(steamId);
         }
     }
 

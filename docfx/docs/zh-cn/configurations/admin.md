@@ -1,13 +1,65 @@
 # 管理员配置文件 (Admin FlatFile)
 
-ModSharp 将管理员配置分为两个文件，以便于实现“快速分配”和“复杂权限管理”两种需求。
+ModSharp 将管理员配置分为两个文件，以便于实现"快速分配"和"复杂权限管理"两种需求。
 
 1.  **简易分配:** `{CS2}/sharp/configs/admins_simple.jsonc`
 2.  **高级配置:** `{CS2}/sharp/configs/admins.jsonc`
 
+## 5 分钟快速上手 — 添加一个 Root 管理员
+
+如果你只是想尽快给自己加上最高权限，只需 3 步：
+
+**第 1 步：复制配置文件**
+
+将 `admins_simple.jsonc.example` 复制并重命名为 `admins_simple.jsonc`（位于 `{CS2}/sharp/configs/` 目录下）。
+
+**第 2 步：填入你的 SteamID64**
+
+打开 `admins_simple.jsonc`，将示例中的 SteamID 替换为你自己的：
+
+```json
+{
+    "你的SteamID64": "root"
+}
+```
+
+> [!TIP]
+> **如何获取 SteamID64？**
+> - 打开 Steam 客户端 → 个人资料 → 右键复制页面 URL，其中的数字即为 SteamID64。
+> - 或者访问 [steamid.io](https://steamid.io) 或 [steamid.xyz](https://steamid.xyz)，输入你的 Steam 个人资料链接即可查询。
+> - SteamID64 是一串 17 位数字，形如 `76561198000000001`。请勿使用 `STEAM_0:X:Y` 或 `[U:1:...]` 格式。
+
+**第 3 步：让服务器加载配置**
+
+在服务器控制台执行：
+
+```
+ms_reload_admins
+```
+
+或者直接重启服务器。完成后你就拥有 root 权限了。
+
+> [!NOTE]
+> `admins_simple.jsonc` 中使用的身份组名称（如 `root`、`admin`）必须在 `admins.jsonc` 中定义。默认的 `admins.jsonc.example` 已经预定义了 `root`、`senior_admin`、`admin`、`moderator`、`helper` 五个身份组。如果你需要使用这些身份组，请同时将 `admins.jsonc.example` 复制为 `admins.jsonc`。
+
+---
+
+## 服务器控制台命令速查
+
+| 命令 | 说明 |
+|------|------|
+| `ms_perms` | 列出所有已注册的权限字符串 |
+| `ms_admins` | 查看当前已加载的管理员及其权限 |
+| `ms_reload_admins` | 热重载管理员配置（无需重启服务器） |
+
+---
+
 ## 编程接入提示
 
 如果你的模块还会调用 `IAdminManager.MountAdminManifest(...)` 和 `GetCommandRegistry(...)`，请在两处使用同一个、稳定的 `moduleIdentity`，并在多次调用中保持不变。
+
+> [!IMPORTANT]
+> `MountAdminManifest` 和 `GetCommandRegistry` 必须在游戏线程内调用。如果你在异步上下文或后台线程中（例如数据库查询回调后），请先通过 `IModSharp.InvokeFrameAction` 或 `IModSharp.InvokeFrameActionAsync` 回到游戏线程再调用。
 
 推荐使用模块的 `AssemblyName`，例如：
 
@@ -25,8 +77,6 @@ private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetNam
 **注意:**
 1.  身份组名称（例如 "root", "admin"）**必须**在主文件 `admins.jsonc` 中定义。如果身份组名称不存在，该管理员将不会获得该身份组的任何权限，仅在服务器日志中输出警告。
 2.  如果某个用户同时出现在此文件和主文件 `admins.jsonc` 中，此文件中的条目将被**跳过**（`admins.jsonc` 优先）。系统会输出日志提示以帮助你注意到这一点。
-
-**提示:** 在服务器控制台运行 `ms_perms` 可查看所有已注册的权限，运行 `ms_admins` 可查看已加载的管理员。
 
 **示例:**
 ```json

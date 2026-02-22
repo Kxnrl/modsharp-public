@@ -63,8 +63,19 @@
  *     2. Immunity takes the HIGHEST value
  *     3. Denials ("!perm") override grants from ANY module
  *
+ * ─── USING BOTH CONFIG FILES ────────────────────────────────────────────
+ *
+ *   admins.jsonc and admins_simple.jsonc can be used simultaneously.
+ *   Priority rules:
+ *     - admins.jsonc is loaded first and takes precedence.
+ *     - admins_simple.jsonc is loaded second; if a SteamID already exists
+ *       in admins.jsonc, the entry in admins_simple.jsonc is SKIPPED.
+ *     - Role names used in admins_simple.jsonc MUST be defined in the
+ *       "Roles" section of admins.jsonc.
+ *
  * TIP: Run "ms_perms" in the server console to list all
- *      registered permissions, and "ms_admins" to inspect loaded admins.
+ *      registered permissions, "ms_admins" to inspect loaded admins,
+ *      and "ms_reload_admins" to reload this file without restarting the server.
  */
 {
     // ── PermissionCollection ─────────────────────────────────────────

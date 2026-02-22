@@ -19,9 +19,20 @@
 
 namespace Sharp.Modules.AdminManager.Storage;
 
-internal sealed record AdminSource(
-    byte            CalculatedImmunity,
-    HashSet<string> ResolvedAllows,
-    HashSet<string> ResolvedDenies,
-    HashSet<string> RawRules
-);
+
+internal sealed class AdminSource
+{
+    public byte            CalculatedImmunity { get; }
+    public HashSet<string> ResolvedAllows     { get; set; }
+    public HashSet<string> ResolvedDenies     { get; set; }
+    public HashSet<string> RawRules           { get; }
+
+    public AdminSource(byte calculatedImmunity, HashSet<string> resolvedAllows, HashSet<string> resolvedDenies, HashSet<string> rawRules)
+    {
+        CalculatedImmunity = calculatedImmunity;
+        ResolvedAllows     = resolvedAllows;
+        ResolvedDenies     = resolvedDenies;
+        RawRules           = rawRules;
+    }
+}
+

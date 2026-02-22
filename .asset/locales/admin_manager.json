@@ -1,0 +1,6 @@
+{
+  "AdminManager.NoPermission": {
+    "en-us": "You do not have access to do this command.",
+    "zh-cn": "你没有权限执行此命令。"
+  }
+}

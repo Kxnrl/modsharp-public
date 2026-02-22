@@ -5,9 +5,61 @@ ModSharp separates administrator configuration into two files to allow for both 
 1.  **Simple Assignment:** `{CS2}/sharp/configs/admins_simple.jsonc`
 2.  **Advanced Configuration:** `{CS2}/sharp/configs/admins.jsonc`
 
+## Quick Start — Add a Root Admin in 3 Steps
+
+Just want to give yourself full access? Here's the fastest way:
+
+**Step 1: Copy the config file**
+
+Copy `admins_simple.jsonc.example` and rename it to `admins_simple.jsonc` (located in `{CS2}/sharp/configs/`).
+
+**Step 2: Enter your SteamID64**
+
+Open `admins_simple.jsonc` and replace the example SteamID with your own:
+
+```json
+{
+    "YOUR_STEAMID64_HERE": "root"
+}
+```
+
+> [!TIP]
+> **How to find your SteamID64?**
+> - Open Steam → go to your profile → right-click and copy the page URL. The number in the URL is your SteamID64.
+> - Or visit [steamid.io](https://steamid.io) or [steamid.xyz](https://steamid.xyz) and paste your Steam profile link to look it up.
+> - A SteamID64 is a 17-digit number like `76561198000000001`. Do NOT use `STEAM_0:X:Y` or `[U:1:...]` formats.
+
+**Step 3: Load the config**
+
+Run the following in the server console:
+
+```
+ms_reload_admins
+```
+
+Or simply restart the server. You now have root access.
+
+> [!NOTE]
+> Role names used in `admins_simple.jsonc` (e.g. `root`, `admin`) must be defined in `admins.jsonc`. The default `admins.jsonc.example` already includes `root`, `senior_admin`, `admin`, `moderator`, and `helper`. If you need these roles, also copy `admins.jsonc.example` to `admins.jsonc`.
+
+---
+
+## Server Console Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `ms_perms` | List all registered permission strings |
+| `ms_admins` | Inspect currently loaded admins and their permissions |
+| `ms_reload_admins` | Hot-reload admin config without restarting the server |
+
+---
+
 ## Programmatic Integration Note
 
 If your module also uses `IAdminManager.MountAdminManifest(...)` and `GetCommandRegistry(...)`, use one stable `moduleIdentity` value for both calls and keep it unchanged across calls.
+
+> [!IMPORTANT]
+> `MountAdminManifest` and `GetCommandRegistry` must be called on the game thread. If you are calling from an async context or a background thread (e.g. after a database query), use `IModSharp.InvokeFrameAction` or `IModSharp.InvokeFrameActionAsync` to dispatch back to the game thread first.
 
 Prefer your module `AssemblyName`, for example:
 
@@ -25,8 +77,6 @@ Use this file to quickly assign existing **Roles** to users using a simple Key-V
 **Notes:**
 1. The Role name (e.g., "root", "admin") **must** be defined in the main `admins.jsonc` file. If a role name doesn't exist there, the admin will load with no permissions from that role — only a warning in the server log.
 2. If a user is defined in both this file and the main `admins.jsonc`, the entry here will be **skipped** (`admins.jsonc` takes precedence). A log message will be emitted to help you notice this.
-
-**Tip:** Run `ms_perms` in the server console to see all available permissions, and `ms_admins` to inspect loaded admins.
 
 **Example:**
 ```json

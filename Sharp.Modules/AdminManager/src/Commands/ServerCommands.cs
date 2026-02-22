@@ -27,13 +27,15 @@ namespace Sharp.Modules.AdminManager.Commands;
 
 internal sealed class ServerCommands
 {
+    private readonly AdminManager          _adminManager;
     private readonly AdminRepository       _repository;
     private readonly ILogger<AdminManager> _logger;
 
-    public ServerCommands(AdminRepository repository, ILogger<AdminManager> logger)
+    public ServerCommands(AdminManager adminManager, AdminRepository repository, ILogger<AdminManager> logger)
     {
-        _repository = repository;
-        _logger     = logger;
+        _adminManager = adminManager;
+        _repository   = repository;
+        _logger       = logger;
     }
 
     private bool _registered;
@@ -48,8 +50,15 @@ internal sealed class ServerCommands
             "Lists all registered permissions grouped by module.");
         registry.RegisterServerCommand("admins", OnAdminsCommand,
             "Lists all loaded admins. Usage: ms_admins [steamid64]");
+        registry.RegisterServerCommand("reload_admins", OnReloadAdminsCommand,
+            "Reloads admin configuration from admins.jsonc and admins_simple.jsonc.");
 
         _registered = true;
+    }
+
+    private void OnReloadAdminsCommand()
+    {
+        _adminManager.ReloadAdmins();
     }
 
     private void OnPermissionsCommand()

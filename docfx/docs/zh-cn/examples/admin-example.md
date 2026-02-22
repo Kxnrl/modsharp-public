@@ -20,6 +20,42 @@
 > 推荐使用模块的 `AssemblyName`：
 > `private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";`
 
+> [!IMPORTANT]
+> `MountAdminManifest` 和 `GetCommandRegistry` 必须在游戏线程内调用。如果你在异步上下文或后台线程中（例如数据库查询回调后），请先通过 `IModSharp.InvokeFrameAction` 或 `IModSharp.InvokeFrameActionAsync` 回到游戏线程再调用。
+
+## 快速开始 — 最简示例
+
+如果你只想注册一个受权限保护的指令，而不需要自己管理管理员或身份组，只需使用 `GetCommandRegistry`：
+
+```csharp
+private IModSharpModuleInterface<IAdminManager>? _adminManager;
+
+private static readonly string ModuleIdentity
+    = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";
+
+private void InitializeCommands()
+{
+    if (_adminManager?.Instance is not { } adminManager)
+        return;
+
+    var registry = adminManager.GetCommandRegistry(ModuleIdentity);
+
+    registry.RegisterAdminCommand("mycommand", OnMyCommand, ["myplugin:mycommand"]);
+    registry.RegisterPermissions(["myplugin:mycommand"]);
+}
+
+private void OnMyCommand(IGameClient? issuer, StringCommand cmd)
+{
+    // 你的逻辑
+}
+```
+
+服务器管理员通过 `admins.jsonc` 中的 Roles 或 Admins 部分将 `myplugin:mycommand` 分配给对应的管理员。该权限会在你的模块加载并调用 `RegisterPermissions` 后生效——在此之前，服务器日志中会显示为 "unresolved"，这是正常现象。
+
+如果你需要从代码中分配管理员或管理权限，请参阅下方的[注册权限](#注册权限)和[构建清单 (Manifest)](#3-构建清单-manifest)。
+
+如需完整控制身份组、权限集合以及从代码中分配管理员，请继续阅读。
+
 ## 1. 定义权限
 
 ModSharp 对权限使用 `组:动作` (group:action) 的字符串格式。这种结构对于支持 **通配符** 至关重要。
@@ -52,6 +88,11 @@ registry.RegisterAdminCommand("kill", OnCommandKill,   [KillPermission]);
 registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);
 // 示例: registry.RegisterAdminCommand("vip_gold", OnGoldGun, ["vip:gold_gun"]);
 ```
+
+> [!IMPORTANT]
+> `permissions` 参数使用的是 **OR（或）** 逻辑：玩家只需拥有列表中的**任意一个**权限即可执行该指令，而非全部。
+> 例如，`["admin:mute", "admin:silence"]` 表示拥有 `admin:mute` *或* `admin:silence` 的玩家都可以执行该指令。
+> 如果你需要 AND（与）逻辑（要求玩家拥有指定权限），请在指令处理函数内通过 `IAdmin.HasPermission` 进行额外检查。
 
 ### 注册权限
 

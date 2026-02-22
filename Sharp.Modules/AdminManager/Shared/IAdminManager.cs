@@ -57,6 +57,7 @@ public interface IAdminManager
     /// </param>
     /// <param name="call">
     ///     Factory callback that returns the full <see cref="AdminTableManifest" /> for this module at call time.
+    ///     If the callback returns <see langword="null" />, the call is silently ignored and a warning is logged.
     /// </param>
     /// <remarks>
     ///     Behavior summary:
@@ -98,8 +99,12 @@ public interface IAdminManager
     ///     Recommended startup order (see <c>docfx/docs/codes/admin-example.cs</c>):
     ///     call <see cref="MountAdminManifest" /> first, then register admin commands via
     ///     <see cref="GetCommandRegistry" />.
+    ///     <para>
+    ///         <b>Threading:</b> Must be called on the game thread. From an async or background
+    ///         context, use <see cref="IModSharp.InvokeFrameAction"/> or
+    ///         <see cref="IModSharp.InvokeFrameActionAsync{T}"/> to dispatch back first.
+    ///     </para>
     /// </remarks>
-    void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call);
 
     /// <summary>
     ///     Gets the admin command registry for a module scope.
@@ -109,12 +114,17 @@ public interface IAdminManager
     ///     Prefer using the same <c>AssemblyName</c> value used in <see cref="MountAdminManifest" />.
     /// </param>
     /// <returns>A module-scoped <see cref="IAdminCommandRegistry" /> instance.</returns>
-    /// <exception cref="NullReferenceException">
+    /// <exception cref="InvalidOperationException">
     ///     Thrown when <c>Sharp.Modules.CommandManager</c> is not available.
     /// </exception>
     /// <remarks>
     ///     Use the same <paramref name="moduleIdentity" /> you pass to <see cref="MountAdminManifest" />
     ///     so permission ownership, wildcard expansion, and lifecycle behavior stay aligned.
+    ///     <para>
+    ///         <b>Threading:</b> Must be called on the game thread. From an async or background
+    ///         context, use <see cref="IModSharp.InvokeFrameAction"/> or
+    ///         <see cref="IModSharp.InvokeFrameActionAsync{T}"/> to dispatch back first.
+    ///     </para>
     /// </remarks>
     public IAdminCommandRegistry GetCommandRegistry(string moduleIdentity);
 }
@@ -131,10 +141,23 @@ public interface IAdminCommandRegistry
     ///     <see cref="IGameClient" /> can be <see langword="null" /> for server-console execution.
     /// </param>
     /// <param name="permissions">
-    ///     Permission rules required to execute this command.
-    ///     Uses <b>OR</b> logic: the player needs <b>any one</b> of the listed permissions
-    ///     to pass the check (not all of them).
-    ///     Any deny rule (e.g. <c>!admin:ban</c>) still overrides grants at runtime.
+    ///     <para>
+    ///         Permission rules required to execute this command.
+    ///     </para>
+    ///     <para>
+    ///         <b>IMPORTANT — OR logic:</b> the player needs <b>any one</b> of the listed
+    ///         permissions to pass the check, not all of them. For example,
+    ///         <c>["admin:mute", "admin:silence"]</c> means a player with <em>either</em>
+    ///         <c>admin:mute</c> or <c>admin:silence</c> can execute the command.
+    ///     </para>
+    ///     <para>
+    ///         If you need AND logic (require <em>all</em> permissions), perform additional
+    ///         checks inside your <paramref name="call"/> handler via
+    ///         <see cref="IAdmin.HasPermission"/>.
+    ///     </para>
+    ///     <para>
+    ///         Any deny rule (e.g. <c>!admin:ban</c>) still overrides grants at runtime.
+    ///     </para>
     /// </param>
     public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call,
         ImmutableArray<string> permissions);

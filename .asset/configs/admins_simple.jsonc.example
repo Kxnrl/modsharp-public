@@ -18,8 +18,12 @@
  *    (e.g. "76561198000000001").
  * 2. If a user is listed in BOTH this file and admins.jsonc,
  *    the entry here will be skipped (admins.jsonc takes precedence).
+ * 3. Both files can be used simultaneously — admins.jsonc is loaded
+ *    first and defines Roles/Permissions, admins_simple.jsonc is loaded
+ *    second as a convenient shorthand for role assignment only.
  *
- * TIP: Run 'ms_perms' in the server console to see all available permissions.
+ * TIP: Run 'ms_perms' in the server console to see all available permissions,
+ *      and 'ms_reload_admins' to reload admin config without restarting.
  */
 {
     // Owner / Root

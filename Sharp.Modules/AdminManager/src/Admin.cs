@@ -25,27 +25,24 @@ namespace Sharp.Modules.AdminManager;
 internal class Admin : IAdmin
 {
     public SteamID Identity { get; }
-    public byte    Immunity { get; private set; }
 
-    private readonly HashSet<string> _permissions;
+    public byte Immunity { get; private set; }
+
+    public IReadOnlySet<string> Permissions { get; private set; }
 
     public Admin(SteamID identity, byte immunity)
     {
-        Identity = identity;
-        Immunity = immunity;
-
-        _permissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        Identity    = identity;
+        Immunity    = immunity;
+        Permissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 
-    public IReadOnlySet<string> Permissions => _permissions;
-
     public bool HasPermission(string permission)
-        => _permissions.Contains(permission);
+        => Permissions.Contains(permission);
 
     internal void Update(byte immunity, HashSet<string> permissions)
     {
-        Immunity = immunity;
-        _permissions.Clear();
-        _permissions.UnionWith(permissions);
+        Immunity    = immunity;
+        Permissions = new HashSet<string>(permissions, StringComparer.OrdinalIgnoreCase);
     }
 }

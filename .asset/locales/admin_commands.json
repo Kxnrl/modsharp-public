@@ -261,7 +261,7 @@
   },
   "Admin.Gravity": {
     "en-us": "{0} Set {1}'s gravity scale to {2}.",
-    "zh-cn": "{1} 将 {1} 的重力比例设为 {2}。"
+    "zh-cn": "{0} 将 {1} 的重力比例设为 {2}。"
   },
   "Admin.Usage.Money": {
     "en-us": "Usage: ms_money <target> <amount>",
@@ -400,8 +400,8 @@
     "zh-cn": "{0} 封禁了 {1} {2}。理由: {3}"
   },
   "Admin.BanRemoved": {
-    "en-us": "{0} unbanned {1}. Reason: {2}",
-    "zh-cn": "{0} 解封了 {1}。理由: {2}"
+    "en-us": "{0} unbanned {1}. Reason: {3}",
+    "zh-cn": "{0} 解封了 {1}。理由: {3}"
   },
   "Admin.Usage.Freeze": {
     "en-us": "Usage: ms_freeze <target> [on/off]",
