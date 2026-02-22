@@ -153,7 +153,7 @@ internal sealed class AdminConfigLoader
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to load admins_simple.jsonc");
+                _logger.LogError(ex, "Failed to parse admins_simple.jsonc — entries from this file will be skipped. Fix the JSON syntax and reload.");
             }
         }
 

@@ -196,39 +196,67 @@ internal class AdminManager : IAdminManager, IModSharpModule
             return;
         }
 
+        var permissionCollection = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+
+        if (manifest.PermissionCollection is { Count: > 0 })
+        {
+            foreach (var (key, perms) in manifest.PermissionCollection)
+            {
+                permissionCollection[key] = perms is not null
+                    ? new HashSet<string>(perms, StringComparer.OrdinalIgnoreCase)
+                    : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        var roles = manifest.Roles is { Count: > 0 }
+            ? manifest.Roles.Select(r => r with
+                      {
+                          Permissions = new HashSet<string>(r.Permissions ?? [],
+                                                            StringComparer.OrdinalIgnoreCase),
+                      })
+                      .ToList()
+            : [];
+
+        var admins = new List<AdminManifest>();
+
         if (manifest.Admins is { Count: > 0 })
         {
-            var validCount = manifest.Admins.Count;
-
-            manifest.Admins.RemoveAll(a =>
+            foreach (var a in manifest.Admins)
             {
                 SteamID steamId = a.Identity;
 
                 if (steamId.IsValidUserId())
-                    return false;
+                {
+                    admins.Add(a with
+                    {
+                        Permissions = new HashSet<string>(a.Permissions ?? [], StringComparer.OrdinalIgnoreCase),
+                    });
+                }
+                else
+                {
+                    _logger.LogWarning("Module '{Module}': Ignoring admin with invalid SteamID64 '{SteamId}'.",
+                                       moduleIdentity,
+                                       a.Identity);
+                }
+            }
 
-                _logger.LogWarning(
-                    "Module '{Module}': Ignoring admin with invalid SteamID64 '{SteamId}'.",
-                    moduleIdentity, a.Identity);
-
-                return true;
-            });
-
-            if (manifest.Admins.Count < validCount)
+            if (admins.Count < manifest.Admins.Count)
             {
-                _logger.LogWarning(
-                    "Module '{Module}': {Removed} admin(s) removed due to invalid SteamID64.",
-                    moduleIdentity, validCount - manifest.Admins.Count);
+                _logger.LogWarning("Module '{Module}': {Removed} admin(s) removed due to invalid SteamID64.",
+                                   moduleIdentity,
+                                   manifest.Admins.Count - admins.Count);
             }
         }
+
+        var sanitized = new AdminTableManifest(permissionCollection, roles, admins);
 
         var removedPermissions = _repository.UnregisterManifestPermissions(moduleIdentity);
         _permissionIndex.Unregister(removedPermissions);
 
-        var permissionsToRegister = _repository.RegisterModuleData(moduleIdentity, manifest, out var newConcretePermissions);
+        var permissionsToRegister = _repository.RegisterModuleData(moduleIdentity, sanitized, out var newConcretePermissions);
         _permissionIndex.Register(permissionsToRegister);
 
-        _resolver.RefreshModuleScope(moduleIdentity, manifest, newConcretePermissions);
+        _resolver.RefreshModuleScope(moduleIdentity, sanitized, newConcretePermissions);
     }
 
 #endregion

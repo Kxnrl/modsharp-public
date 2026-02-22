@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Immutable;
+using Sharp.Shared;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
@@ -101,10 +102,11 @@ public interface IAdminManager
     ///     <see cref="GetCommandRegistry" />.
     ///     <para>
     ///         <b>Threading:</b> Must be called on the game thread. From an async or background
-    ///         context, use <see cref="IModSharp.InvokeFrameAction"/> or
-    ///         <see cref="IModSharp.InvokeFrameActionAsync{T}"/> to dispatch back first.
+    ///         context, use <see cref="IModSharp.InvokeFrameAction" /> or
+    ///         <see cref="IModSharp.InvokeFrameActionAsync{T}" /> to dispatch back first.
     ///     </para>
     /// </remarks>
+    void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call);
 
     /// <summary>
     ///     Gets the admin command registry for a module scope.
