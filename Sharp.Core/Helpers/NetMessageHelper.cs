@@ -36,7 +36,7 @@ internal static class NetMessageHelper
     }
 
     [SkipLocalsInit]
-    public static unsafe bool SendNetMessage<T>(RecipientFilter filter, T data, bool bypass = true) where T : class, IMessage
+    public static unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage
     {
         var handle = NetMessageCache<T>.Handle;
 
@@ -52,7 +52,7 @@ internal static class NetMessageHelper
             var pBytes = stackalloc byte[1024];
             data.WriteTo(new Span<byte>(pBytes, size));
 
-            return Net.SendNetMessage(&filter, handle, pBytes, size, bypass);
+            return Net.SendNetMessage(&filter, handle, pBytes, size);
         }
 
         var rentedBuffer = ArrayPool<byte>.Shared.Rent(size);
@@ -63,7 +63,7 @@ internal static class NetMessageHelper
 
             fixed (byte* pBytes = rentedBuffer)
             {
-                return Net.SendNetMessage(&filter, handle, pBytes, size, bypass);
+                return Net.SendNetMessage(&filter, handle, pBytes, size);
             }
         }
         finally
@@ -86,7 +86,7 @@ internal static class NetMessageHelper
         msg.Param.Add(string.IsNullOrWhiteSpace(param3) ? "" : param3);
         msg.Param.Add(string.IsNullOrWhiteSpace(param4) ? "" : param4);
 
-        SendNetMessage(filter, msg, false);
+        SendNetMessage(filter, msg);
     }
 
     public static void PrintRadioMessage(RecipientFilter filter,
@@ -104,12 +104,12 @@ internal static class NetMessageHelper
         msg.Params.Add(string.IsNullOrWhiteSpace(param3) ? "" : param3);
         msg.Params.Add(string.IsNullOrWhiteSpace(param4) ? "" : param4);
 
-        SendNetMessage(filter, msg, false);
+        SendNetMessage(filter, msg);
     }
 
     public static void ServerMessagePrint(RecipientFilter filter, string message)
     {
         var msg = new CSVCMsg_Print { Text = message };
-        SendNetMessage(filter, msg, false);
+        SendNetMessage(filter, msg);
     }
 }
