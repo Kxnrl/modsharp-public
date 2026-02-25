@@ -249,7 +249,7 @@ BeginMemberHookScope(CNetworkGameServer)
         VPROF_MS_HOOK();
 
         CUtlBuffer buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
-        SteamId_t  steamId = *(SteamId_t*)(buffer.PeekGet(sizeof(SteamId_t), 0));
+        const SteamId_t steamId = *(SteamId_t*)(buffer.PeekGet(sizeof(SteamId_t), 0));
 
         // 无法获取SteamId直接拒绝连接
         if (steamId == 0 || (steamId & 0xFFFFFFFF) == 0) [[unlikely]]
@@ -267,7 +267,7 @@ BeginMemberHookScope(CNetworkGameServer)
             return nullptr;
         }
 
-        auto ip = pNetAddress->GetIPHostByteOrder();
+        const auto ip = pNetAddress->GetIPHostByteOrder();
 
         switch (forwards::OnConnectClient->Invoke(steamId, pName, pNetInfo, ip))
         {
@@ -278,9 +278,6 @@ BeginMemberHookScope(CNetworkGameServer)
         default:
             FatalError("Not impl yet");
         }
-
-        // const auto challenge = *reinterpret_cast<uint32_t*>(reinterpret_cast<intptr_t>(pMsg) + 88);
-        // LOG("ConnectClient -> %s -> %llu |-> protocol: %d challenge: %d unknown: %d", pName, steamId, pMsg->auth_protocol(), pMsg->challenge_number(), unknown);
 
         return ConnectClient(pServer, pName, pNetAddress, pNetInfo, pMsg, pszPassword, hashedCdKey, cdkeyLength, bLowViolence);
     }

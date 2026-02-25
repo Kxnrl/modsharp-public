@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -116,7 +116,8 @@ static bool IsMapValid(const char* map)
 
     for (const auto& workshop : workshopMaps)
     {
-        if (strcasecmp(workshop.m_pName, map) == 0) return true;
+        if (strcasecmp(workshop.m_pName, map) == 0)
+            return true;
     }
 
     return false;

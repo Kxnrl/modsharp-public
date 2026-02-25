@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -20,12 +20,10 @@
 #ifndef CSTRIKE_TYPE_NETADR_H
 #define CSTRIKE_TYPE_NETADR_H
 
-#pragma once
+#include "definitions.h"
 #include "platform.h"
 
-#include <string>
-
-enum netadrtype_t : int32_t
+enum class netadrtype_t : int32_t
 {
     NA_NULL = 0,
     NA_LOOPBACK,
@@ -35,10 +33,11 @@ enum netadrtype_t : int32_t
 
 struct netadr_t
 {
-    netadrtype_t   type;
-    unsigned char  ip[4];
-    unsigned short port;
+    netadrtype_t type;
+    uint8_t      ip[4];
+    uint16_t     port;
 
     MS_CLASS_IMPORT unsigned int GetIPHostByteOrder() const;
 };
+
 #endif
