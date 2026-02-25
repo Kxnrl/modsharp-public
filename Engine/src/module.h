@@ -138,22 +138,22 @@ class IModule
 public:
     virtual ~IModule() = default;
 
-    [[nodiscard]] virtual void* FindPatternEx(const char* svPattern) = 0;
-    [[nodiscard]] virtual void* GetVirtualTableByNameEx(const char* svTableName, bool is_raw_name = false) = 0;
-    [[nodiscard]] virtual void* GetFunctionByNameEx(const char* svFunctionName) noexcept = 0;
-    [[nodiscard]] virtual void* FindInterfaceEx(const char* svInterfaceName) = 0;
+    [[nodiscard]] virtual void* FindPatternEx(const char* svPattern)                                               = 0;
+    [[nodiscard]] virtual void* GetVirtualTableByNameEx(const char* svTableName, bool is_raw_name = false)         = 0;
+    [[nodiscard]] virtual void* GetFunctionByNameEx(const char* svFunctionName) noexcept                           = 0;
+    [[nodiscard]] virtual void* FindInterfaceEx(const char* svInterfaceName)                                       = 0;
     [[nodiscard]] virtual bool  FindPatternMultiEx(const char* svPattern, CUtlLeanVector<std::uintptr_t>* results) = 0;
-    [[nodiscard]] virtual void* FindStringEx(const char* str) = 0;
-    [[nodiscard]] virtual void* FindDataEx(const uint8_t* needle, std::size_t needle_size, bool read_only) = 0;
-    [[nodiscard]] virtual void* FindPtrEx(const void* ptr) = 0;
+    [[nodiscard]] virtual void* FindStringEx(const char* str)                                                      = 0;
+    [[nodiscard]] virtual void* FindDataEx(const uint8_t* needle, std::size_t needle_size, bool read_only)         = 0;
+    [[nodiscard]] virtual void* FindPtrEx(const void* ptr)                                                         = 0;
 
     virtual void FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info) = 0;
-    virtual bool IsPointerDerivedFromEx(void* ptr, const char* name) = 0;
+    virtual bool IsPointerDerivedFromEx(void* ptr, const char* name)                          = 0;
 
-    [[nodiscard]] virtual bool GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results) = 0;
-    [[nodiscard]] virtual bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVector<CUtlString>* strs, CUtlLeanVector<std::uintptr_t>* results) = 0;
+    [[nodiscard]] virtual bool GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results)                                      = 0;
+    [[nodiscard]] virtual bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVector<CUtlString>* strs, CUtlLeanVector<std::uintptr_t>* results)      = 0;
     [[nodiscard]] virtual bool FindAllFunctionsFromPointersRefsEx(CUtlLeanVector<std::uintptr_t>* ptrs, CUtlLeanVector<std::uintptr_t>* results) = 0;
-    virtual bool               GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end) = 0;
+    virtual bool               GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end)                             = 0;
 };
 
 enum SegmentFlags : uint8_t
@@ -184,14 +184,10 @@ public:
         _s_RTTICompleteObjectLocator* object_locator;
 
         VTable(std::type_info* ti, uintptr_t vtable, std::string name, uint64_t off, _s_RTTICompleteObjectLocator* locator) :
-            type_info(ti), vtable_address(vtable), demangled_name(std::move(name)), offset(off), object_locator(locator)
-        {
-        }
+            type_info(ti), vtable_address(vtable), demangled_name(std::move(name)), offset(off), object_locator(locator) {}
 #else
         VTable(std::type_info* ti, uintptr_t vtable, std::string name, uint64_t off) :
-            type_info(ti), vtable_address(vtable), demangled_name(std::move(name)), offset(off)
-        {
-        }
+            type_info(ti), vtable_address(vtable), demangled_name(std::move(name)), offset(off) {}
 #endif
     };
 
@@ -322,12 +318,14 @@ public:
     [[nodiscard]] bool FindPatternMultiEx(const char* svPattern, CUtlLeanVector<std::uintptr_t>* results) override
     {
         auto pattern_result = FindPatternMulti(svPattern);
-        if (pattern_result.empty()) return false;
+        if (pattern_result.empty())
+            return false;
 
         auto size = pattern_result.size();
         results->SetSize(static_cast<int32_t>(size));
 
-        for (auto i = 0u; i < size; i++) results->Element(static_cast<int32_t>(i)) = pattern_result[i];
+        for (auto i = 0u; i < size; i++)
+            results->Element(static_cast<int32_t>(i)) = pattern_result[i];
 
         return true;
     }
@@ -348,7 +346,6 @@ public:
     }
 
     void FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info) override;
-
     bool IsPointerDerivedFromEx(void* ptr, const char* name) override
     {
         return IsPointerDerivedFrom(ptr, name);
@@ -357,12 +354,14 @@ public:
     [[nodiscard]] bool GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results) override
     {
         auto range = GetReferenceRange(ptr);
-        if (range.empty()) return false;
+        if (range.empty())
+            return false;
 
         auto size = range.size();
         results->SetSize(static_cast<int32_t>(size));
 
-        for (auto i = 0u; i < size; i++) results->Element(static_cast<int32_t>(i)) = range[i].source_ip;
+        for (auto i = 0u; i < size; i++)
+            results->Element(static_cast<int32_t>(i)) = range[i].source_ip;
 
         return true;
     }
@@ -375,13 +374,16 @@ public:
         std::vector<std::string> temp_strs{};
         temp_strs.reserve(strs->Count());
 
-        for (int i = 0; i < strs->Count(); ++i) temp_strs.emplace_back(strs->Element(i).Get());
+        for (int i = 0; i < strs->Count(); ++i)
+            temp_strs.emplace_back(strs->Element(i).Get());
 
         auto temp_results = FindAllFunctionsFromStringRefs(temp_strs);
-        if (temp_results.empty()) return false;
+        if (temp_results.empty())
+            return false;
 
         results->SetCount(static_cast<int32_t>(temp_results.size()));
-        for (auto i = 0u; i < temp_results.size(); i++) results->Element(static_cast<int32_t>(i)) = temp_results[i];
+        for (auto i = 0u; i < temp_results.size(); i++)
+            results->Element(static_cast<int32_t>(i)) = temp_results[i];
 
         return true;
     }
@@ -400,10 +402,12 @@ public:
         }
 
         auto temp_results = FindAllFunctionsFromPointerRefs(temp_strs);
-        if (temp_results.empty()) return false;
+        if (temp_results.empty())
+            return false;
 
         results->SetCount(static_cast<int32_t>(temp_results.size()));
-        for (auto i = 0u; i < temp_results.size(); i++) results->Element(static_cast<int32_t>(i)) = temp_results[i];
+        for (auto i = 0u; i < temp_results.size(); i++)
+            results->Element(static_cast<int32_t>(i)) = temp_results[i];
 
         return true;
     }
@@ -412,7 +416,8 @@ public:
     {
         auto it = std::ranges::upper_bound(_function_entries, middle, {}, &FunctionEntry::start);
 
-        if (it == _function_entries.begin()) return nullptr;
+        if (it == _function_entries.begin())
+            return nullptr;
 
         auto candidate = std::prev(it);
         return (middle < candidate->end) ? &(*candidate) : nullptr;

@@ -61,19 +61,19 @@ static std::vector<uint8_t> ParseStringToBytesVector(const std::string& content)
 CModule* GetModuleByName(std::string_view module_name)
 {
     static const std::unordered_map<std::string_view, CModule*> module_map = {
-        {"engine", modules::engine},
-        {"server", modules::server},
-        {"tier0", modules::tier0},
-        {"schemasystem", modules::schemas},
-        {"resourcesystem", modules::resource},
-        {"vscript", modules::vscript},
-        {"vphysics2", modules::vphysics2},
-        {"soundsystem", modules::sound},
-        {"networksystem", modules::network},
-        {"worldrenderer", modules::worldrenderer},
-        {"matchmaking", modules::matchmaking},
-        {"filesystem", modules::filesystem},
-        {"steamsockets", modules::steamsockets},
+        {"engine",          modules::engine         },
+        {"server",          modules::server         },
+        {"tier0",           modules::tier0          },
+        {"schemasystem",    modules::schemas        },
+        {"resourcesystem",  modules::resource       },
+        {"vscript",         modules::vscript        },
+        {"vphysics2",       modules::vphysics2      },
+        {"soundsystem",     modules::sound          },
+        {"networksystem",   modules::network        },
+        {"worldrenderer",   modules::worldrenderer  },
+        {"matchmaking",     modules::matchmaking    },
+        {"filesystem",      modules::filesystem     },
+        {"steamsockets",    modules::steamsockets   },
         {"materialsystem2", modules::materialsystem2},
         {"animationsystem", modules::animationsystem}
     };
@@ -97,12 +97,14 @@ static bool FindPattern(std::string_view module_name, std::string_view pattern, 
         return false;
     }
 
-    if (pattern.empty()) return false;
+    if (pattern.empty())
+        return false;
 
     // a sane symbol name should not contain a whitespace
     if (pattern.starts_with('@') && pattern.find(' ') == std::string_view::npos) [[unlikely]]
-        address  = module_ptr->GetFunctionByName(pattern.substr(1));
-    else address = module_ptr->FindPatternStrict(pattern);
+        address = module_ptr->GetFunctionByName(pattern.substr(1));
+    else
+        address = module_ptr->FindPatternStrict(pattern);
 
     return address != 0;
 }
@@ -158,9 +160,11 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
     };
 
     auto trim = [&](std::string_view str) -> std::string_view {
-        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.front()))) str.remove_prefix(1);
+        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.front())))
+            str.remove_prefix(1);
 
-        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.back()))) str.remove_suffix(1);
+        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.back())))
+            str.remove_suffix(1);
 
         return str;
     };
@@ -170,8 +174,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         if (raw_str.find("[ptr]") == std::string::npos)
         {
             if (!collect_refs(raw_str, "String", [&]() -> CAddress {
-                return module_ptr->FindString(raw_str, false);
-            }))
+                    return module_ptr->FindString(raw_str, false);
+                }))
                 return RefResult::Failed;
 
             continue;
@@ -226,7 +230,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         {
             std::string search_name(ref_sv);
 
-            if (!collect_refs(search_name, "VTable", [&]() -> CAddress { return module_ptr->GetVirtualTableByName(search_name); })) return RefResult::Failed;
+            if (!collect_refs(search_name, "VTable", [&]() -> CAddress { return module_ptr->GetVirtualTableByName(search_name); }))
+                return RefResult::Failed;
 
             continue;
         }
@@ -234,13 +239,15 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         auto        name_part = trim(ref_sv.substr(0, ref_sv.size() - suffix.size()));
         std::string search_name(name_part);
 
-        if (!collect_refs(search_name, "TypeInfo", [&]() -> CAddress { return module_ptr->GetTypeInfoFromName(search_name); })) return RefResult::Failed;
+        if (!collect_refs(search_name, "TypeInfo", [&]() -> CAddress { return module_ptr->GetTypeInfoFromName(search_name); }))
+            return RefResult::Failed;
     }
 
     for (const auto& cvar : game_data.m_CvarRefs)
     {
         std::string_view cvar_view = trim(cvar);
-        if (cvar_view.empty()) continue;
+        if (cvar_view.empty())
+            continue;
 
         const auto last_space_index = cvar_view.rfind(' ');
 
@@ -291,7 +298,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
             add_handle = (is_handle || is_both);
 
             // if suffix exists but is invalid, use ptr instead
-            if (!add_ptr && !add_handle) add_ptr = true;
+            if (!add_ptr && !add_handle)
+                add_ptr = true;
         }
 
         std::vector<CModule::ReferenceEntry> merged_refs;
@@ -299,13 +307,15 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         if (add_ptr)
         {
             auto refs = module_ptr->GetReferenceRange(ptr_to_cvar);
-            if (!refs.empty()) merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
+            if (!refs.empty())
+                merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
         }
 
         if (add_handle)
         {
             auto refs = module_ptr->GetReferenceRange(ptr_to_cvar - sizeof(void*));
-            if (!refs.empty()) merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
+            if (!refs.empty())
+                merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
         }
 
         if (merged_refs.empty())
@@ -397,7 +407,8 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringH
     uintptr_t address = 0;
     if (!item.m_Base.empty())
     {
-        if (!FindAddress(addresses, item.m_Base, address)) return false;
+        if (!FindAddress(addresses, item.m_Base, address))
+            return false;
     }
     else if (!item.m_Module.empty())
     {
@@ -495,8 +506,10 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringH
 
                 if (ec == std::errc())
                 {
-                    if (cmd == '-') address -= offset;
-                    else address            += offset;
+                    if (cmd == '-')
+                        address -= offset;
+                    else
+                        address += offset;
                 }
             }
         }
@@ -693,13 +706,15 @@ static void ParseAddresses(const std::filesystem::path& path, std::string_view p
             const auto& refs = entry_object["refs"];
 
             auto parse_ref_list = [](const nlohmann::json& node, const char* ref_key, std::vector<std::string>& out_vec) {
-                if (!node.contains(ref_key)) return;
+                if (!node.contains(ref_key))
+                    return;
 
                 const auto& val = node[ref_key];
 
                 if (val.is_string())
                 {
-                    if (auto str = val.get<std::string>(); !str.empty()) out_vec.emplace_back(str);
+                    if (auto str = val.get<std::string>(); !str.empty())
+                        out_vec.emplace_back(str);
                 }
                 else if (val.is_array())
                 {
@@ -707,7 +722,8 @@ static void ParseAddresses(const std::filesystem::path& path, std::string_view p
                     {
                         if (element.is_string())
                         {
-                            if (auto str = element.get<std::string>(); !str.empty()) out_vec.emplace_back(str);
+                            if (auto str = element.get<std::string>(); !str.empty())
+                                out_vec.emplace_back(str);
                         }
                     }
                 }
@@ -723,7 +739,8 @@ static void ParseAddresses(const std::filesystem::path& path, std::string_view p
                     const auto& val = refs["vtable"];
                     if (val.is_string())
                     {
-                        if (auto str = val.get<std::string>(); !str.empty()) item.m_FromVTable = std::move(str);
+                        if (auto str = val.get<std::string>(); !str.empty())
+                            item.m_FromVTable = std::move(str);
                     }
                 }
             }
@@ -910,7 +927,7 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 
     try
     {
-        auto json = nlohmann::json::parse(content, /*callback*/ nullptr, /*allow_exception*/ true, /*ignore_comments*/ true, /*ignore_trailing_commas*/ true);
+        auto json = nlohmann::json::parse(content, /*callback*/ nullptr, /*allow_exception*/ true, /*ignore_comments*/ true);
 
         ParseAddresses(path, platform_name, json, temp_addresses);
         ParseData(path, platform_name, json, "Offsets", temp_offsets);
@@ -1006,7 +1023,8 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 
     for (auto& [name, patch] : temp_patches)
     {
-        if (!InitPatch(name, &patch)) return false;
+        if (!InitPatch(name, &patch))
+            return false;
 
         m_Patches[name] = std::move(patch);
     }

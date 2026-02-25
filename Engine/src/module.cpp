@@ -99,7 +99,8 @@ CAddress CModule::FindData(const uint8_t* needle, std::size_t needle_size, bool 
 
         if (auto result = scan::FindData(reinterpret_cast<uint8_t*>(segment.address), segment.size, needle, needle_size))
         {
-            if (result > 0) return segment.address + result;
+            if (result > 0)
+                return segment.address + result;
         }
     }
 
@@ -116,7 +117,8 @@ CAddress CModule::FindPtr(uintptr_t ptr) const
             continue;
 
         auto res = scan::FindPtr(segment.address, segment.size, ptr);
-        if (res > 0) return res + segment.address;
+        if (res > 0)
+            return res + segment.address;
     }
 
     return {};
@@ -241,23 +243,27 @@ CAddress CModule::GetVirtualTableByName(const std::string& name, bool is_raw_nam
 
     auto it = std::ranges::find_if(_vtables, [&](const std::unique_ptr<VTable>& vtable) {
         // 只需要final class
-        if (vtable->offset != 0) return false;
+        if (vtable->offset != 0)
+            return false;
 
         std::string_view demangled_name = vtable->demangled_name;
 
 #ifdef PLATFORM_WINDOWS
-        if (vtable->type_info->raw_name() == vtable_name || demangled_name == vtable_name) return true;
+        if (vtable->type_info->raw_name() == vtable_name || demangled_name == vtable_name)
+            return true;
 
         const std::string_view target_name = is_raw_name ? vtable_name : name;
 
         if (const auto idx = demangled_name.find(class_prefix); idx != std::string_view::npos)
         {
-            if (demangled_name.substr(idx + class_prefix.length()) == target_name) return true;
+            if (demangled_name.substr(idx + class_prefix.length()) == target_name)
+                return true;
         }
 
         if (const auto idx = demangled_name.find(struct_prefix); idx != std::string_view::npos)
         {
-            if (demangled_name.substr(idx + struct_prefix.length()) == target_name) return true;
+            if (demangled_name.substr(idx + struct_prefix.length()) == target_name)
+                return true;
         }
 
         return false;
@@ -283,11 +289,13 @@ void CModule::FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableIn
     {
         std::string_view vtable_name = vtable->demangled_name;
 
-        if (vtable_name.find(name) != std::string_view::npos) result.emplace_back(*vtable);
+        if (vtable_name.find(name) != std::string_view::npos)
+            result.emplace_back(*vtable);
     }
 
     std::ranges::sort(result, [](const VTable& a, const VTable& b) {
-        if (a.offset == b.offset) return a.demangled_name < b.demangled_name;
+        if (a.offset == b.offset)
+            return a.demangled_name < b.demangled_name;
         return a.offset < b.offset;
     });
 
@@ -314,7 +322,8 @@ bool CModule::IsPointerDerivedFrom(void* ptr, std::string_view vtable_name)
         return a->vtable_address == vtable_address;
     });
 
-    if (it == _vtables.end()) return false;
+    if (it == _vtables.end())
+        return false;
 
     auto vtable = it->get();
 
@@ -330,17 +339,20 @@ CAddress CModule::GetTypeInfoFromName(std::string_view name) const
     {
         std::string_view demangled_name = vtable->demangled_name;
 
-        if (demangled_name == name) return vtable->type_info;
+        if (demangled_name == name)
+            return vtable->type_info;
 
 #ifdef PLATFORM_WINDOWS
         if (demangled_name.starts_with(class_prefix))
         {
-            if (demangled_name.substr(class_prefix.size()) == name) return vtable->type_info;
+            if (demangled_name.substr(class_prefix.size()) == name)
+                return vtable->type_info;
         }
 
         if (demangled_name.starts_with(struct_prefix))
         {
-            if (demangled_name.substr(struct_prefix.size()) == name) return vtable->type_info;
+            if (demangled_name.substr(struct_prefix.size()) == name)
+                return vtable->type_info;
         }
 #endif
     }
@@ -382,7 +394,8 @@ std::vector<uintptr_t> CModule::IntersectFunctionReferences(std::vector<std::spa
 
         for (const auto& entry : refs)
         {
-            if (auto f = GetFunctionEntry(entry.source_ip); f != 0) funcs.emplace_back(f);
+            if (auto f = GetFunctionEntry(entry.source_ip); f != 0)
+                funcs.emplace_back(f);
         }
 
         std::ranges::sort(funcs);
@@ -397,7 +410,8 @@ std::vector<uintptr_t> CModule::IntersectFunctionReferences(std::vector<std::spa
     // intersect with remaining sets
     for (size_t i = 1; i < reference_sets.size(); ++i)
     {
-        if (candidates.empty()) break;
+        if (candidates.empty())
+            break;
 
         auto                        next_funcs = get_unique_funcs(reference_sets[i]);
         std::vector<std::uintptr_t> intersection;
@@ -414,7 +428,8 @@ std::span<const CModule::ReferenceEntry> CModule::GetReferenceRange(uintptr_t ad
 {
     auto subrange = std::ranges::equal_range(_references, address, std::less{}, &ReferenceEntry::target);
 
-    if (subrange.empty()) return {};
+    if (subrange.empty())
+        return {};
 
     return {subrange.begin(), subrange.end()};
 }

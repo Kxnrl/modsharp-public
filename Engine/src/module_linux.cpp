@@ -556,7 +556,7 @@ void CModule::BuildFunctionIndexAndReferences()
     std::vector<ChunkResult> chunk_results(num_threads);
     std::vector<std::thread> threads;
     threads.reserve(num_threads);
-    
+
     // multithreaded solution inspired by the code snippet @angelfor3v3r gave me a long time ago.
     // to be honest i could have used yaxpeax-x86, which is the fastest decoder i have found yet (it takes about 100ms to decode libserver.so .text section
     // while zydis takes ~450ms), but i dont think it is worth the effort to replace zydis with it,

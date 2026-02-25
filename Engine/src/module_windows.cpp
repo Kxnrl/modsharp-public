@@ -127,11 +127,11 @@ void CModule::BuildFunctionIndexAndReferences()
     struct UNWIND_INFO
     {
         uint8_t Version : 3;
-        uint8_t Flags   : 5;
+        uint8_t Flags : 5;
         uint8_t SizeOfProlog;
         uint8_t CountOfCodes;
         uint8_t FrameRegister : 4;
-        uint8_t FrameOffset   : 4;
+        uint8_t FrameOffset : 4;
     };
 
     for (size_t i = 0; i < entries;)

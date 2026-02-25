@@ -945,11 +945,11 @@ internal partial class SharpCore : ISharpCore
     public IntPtr GetVTableByClass(string module, string className)
         => Bridges.Natives.Core.GetVTableByClass(module, className);
 
-    public INetworkingStringTable? FindStringTable(string name)
-        => NetworkingStringTable.Create(Bridges.Natives.Core.FindStringTable(name));
-        
     public IntPtr GetVirtualTableByClass(string module, string className)
         => Bridges.Natives.Core.GetVTableByClass(module, className);
+
+    public INetworkingStringTable? FindStringTable(string name)
+        => NetworkingStringTable.Create(Bridges.Natives.Core.FindStringTable(name));
 
     public IKeyValues CreateKeyValues(string name)
     {

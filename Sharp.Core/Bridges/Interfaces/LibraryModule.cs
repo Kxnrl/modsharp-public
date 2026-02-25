@@ -64,10 +64,10 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
     public partial bool GetReferencesEx(nint ptr, CUtlLeanVectorBase<nint, int>* result);
 
     public partial bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVectorBase<CUtlString, int>* strs,
-                                                          CUtlLeanVectorBase<nint, int>*       result);
+        CUtlLeanVectorBase<nint, int>*                                                         result);
 
     public partial bool FindAllFunctionsFromPointersRefsEx(CUtlLeanVectorBase<nint, int>* strs,
-                                                           CUtlLeanVectorBase<nint, int>* result);
+        CUtlLeanVectorBase<nint, int>*                                                    result);
 
     public partial bool GetFunctionRangeEx(nint middle, nint* start, nint* end);
 
