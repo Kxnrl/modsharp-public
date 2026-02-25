@@ -637,9 +637,11 @@ internal class ClientManager : ICoreClientManager
         _admins.Clear();
     }
 
+    [Obsolete]
     public IAdmin? FindAdmin(SteamID identity)
         => _admins.GetValueOrDefault(identity);
 
+    [Obsolete]
     public IAdmin? FindAdmin(string name)
     {
         foreach (var (_, admin) in _admins)
@@ -653,6 +655,7 @@ internal class ClientManager : ICoreClientManager
         return null;
     }
 
+    [Obsolete]
     public IAdmin CreateAdmin(SteamID identity, string name, byte immunity = 0)
     {
         if (FindAdmin(identity) is not null)
@@ -672,6 +675,7 @@ internal class ClientManager : ICoreClientManager
             : admin;
     }
 
+    [Obsolete]
     public void DeleteAdmin(IAdmin admin)
     {
         if (!_admins.Remove(admin.Identity, out _))
@@ -680,6 +684,7 @@ internal class ClientManager : ICoreClientManager
         }
     }
 
+    [Obsolete]
     public IReadOnlyCollection<IAdmin> GetAdmins()
         => _admins.Values;
 
