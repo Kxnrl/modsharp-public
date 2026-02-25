@@ -17,11 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "gamedata.h"
 #include "global.h"
-#include "vhook/call.h"
 
-#include "cstrike/cstrike.h"
 #include "cstrike/interface/INetworkStringTable.h"
 
 static CSharpNetworkStringTableHelper s_CSharpNetworkStringTableHelper;

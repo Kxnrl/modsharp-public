@@ -25,8 +25,8 @@
 #include <cstdint>
 
 class INetworkStringTable;
-class INetworkStringTableContainer;
 class CNetworkStringTableItem;
+class INetworkStringDict;
 
 class INetworkStringTableContainer : public IAppSystem
 {
@@ -46,8 +46,6 @@ public:
     virtual void SetAllowClientSideAddString(INetworkStringTable* table, bool bAllowClientSideAddString) = 0;
     virtual void CreateDictionary(const char* pchMapName)                                                = 0;
 };
-
-class INetworkStringDict;
 
 struct StringTableUserData
 {
@@ -80,7 +78,16 @@ public:
     virtual void                 SetStringUserData(int32_t index, const StringTableUserData* data, bool forceOverride) = 0;
     virtual StringTableUserData* GetStringUserData(int32_t index) const                                                = 0;
     virtual int32_t              FindStringIndex(const char* value) const                                              = 0;
+
+private:
+    virtual void Method_012() = 0;
+
+public:
+    virtual void SetAllowClientSideAddString(bool state) = 0;
 };
+
+using CNetworkStringTableContainer = INetworkStringTableContainer;
+using CNetworkStringTable          = INetworkStringTable;
 
 class CSharpNetworkStringTableHelper
 {
