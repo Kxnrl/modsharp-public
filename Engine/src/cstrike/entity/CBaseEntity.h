@@ -23,7 +23,6 @@
 #include "cstrike/consts.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CEntityInstance.h"
-#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/QAngle.h"
 #include "cstrike/type/Vector.h"
 
