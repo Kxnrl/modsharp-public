@@ -39,7 +39,7 @@ public interface ICommandManager
     ///     注册仅限客户端且需要管理员权限的<b>控制台</b>和<b>聊天框</b>命令 <br />
     ///     <remarks>控制台会自动加上<c>ms_</c>前缀</remarks>
     /// </summary>
-    [Obsolete("This has been merged into AdminManager. Will be removed at 2.3.")]
+    [Obsolete("This has been merged into AdminManager. Will be removed at 2.2")]
     void RegisterAdminCommand(string command, DelegateOnClientCommand callback, string permission);
 
     /// <summary>

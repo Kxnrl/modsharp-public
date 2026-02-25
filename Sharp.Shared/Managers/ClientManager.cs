@@ -119,37 +119,37 @@ public interface IClientManager
     /// <summary>
     ///     Clear Admins and re-trigger OnAdminReload
     /// </summary>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     void ReloadAdmins();
 
     /// <summary>
     ///     Find Admin by SteamID
     /// </summary>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     IAdmin? FindAdmin(SteamID identity);
 
     /// <summary>
     ///     Find Admin by name
     /// </summary>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     IAdmin? FindAdmin(string name);
 
     /// <summary>
     ///     Create Admin
     /// </summary>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     IAdmin CreateAdmin(SteamID identity, string name, byte immunity = 0);
 
     /// <summary>
     ///     Delete Admin
     /// </summary>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     void DeleteAdmin(IAdmin admin);
 
     /// <summary>
     ///     Get all Admins
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Migrated to AdminManager. Will be removed at 2.3.")]
+    [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     IReadOnlyCollection<IAdmin> GetAdmins();
 }

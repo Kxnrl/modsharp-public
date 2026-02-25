@@ -51,7 +51,6 @@ public sealed class AdminFlatFile : IModSharpModule, IClientListener
         _logger        = sharedSystem.GetLoggerFactory().CreateLogger<AdminFlatFile>();
         _clientManager = sharedSystem.GetClientManager();
         _configPath    = Path.Combine(sharpPath, "configs", "admins.json");
-        _logger.LogWarning("This module has been deprecated. Will be removed at 2.3.");
     }
 
     public bool Init()
@@ -59,6 +58,8 @@ public sealed class AdminFlatFile : IModSharpModule, IClientListener
 
     public void PostInit()
     {
+        _logger.LogWarning("This module has been deprecated. Will be removed at 2.2");
+
         _clientManager.InstallClientListener(this);
 
         ReadAdminFile();
