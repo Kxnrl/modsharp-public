@@ -23,9 +23,7 @@
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
-#include "vhook/hook.h"
 
-#include "cstrike/component/CGameSceneNode.h"
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/entity/CBaseWeapon.h"
@@ -35,7 +33,6 @@
 #include "cstrike/type/CBitVec.h"
 #include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CNetworkGameServer.h"
-#include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
 

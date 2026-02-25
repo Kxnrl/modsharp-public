@@ -213,6 +213,12 @@ BeginMemberHookScope(CSource2GameClients)
 
     DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId))
     {
+        g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
+
+        PutInServer(pServerGameClient, slot, pszName, steamId);
+
+        g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
+
 #ifdef CLIENT_HOOK_ASSERT
         const auto pController = CCSPlayerController::FindBySlot(slot);
 
@@ -223,15 +229,6 @@ BeginMemberHookScope(CSource2GameClients)
             "%10s: %f",
             "this", pServerGameClient, "Slot", slot, "Name", pController->GetName(), "SteamId", pController->GetSteamID(), "flCurTime", gpGlobals->flCurTime);
 #endif
-
-        g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
-
-        PutInServer(pServerGameClient, slot, pszName, steamId);
-
-        // TODO Forwards
-        // forwards::OnClientPutInServer->Invoke(sv->GetClient(slot));
-
-        g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
     }
 
     DeclareMemberDetourHook(Active, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, bool bLoadGame, const char* pszName, SteamId_t steamId))
