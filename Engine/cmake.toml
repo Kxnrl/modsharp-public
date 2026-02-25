@@ -34,6 +34,10 @@ gcc.compile-options = [
 
 linux.compile-options = [
     "-Wall",
+    
+    "-Wformat",
+    "-Werror=format-insufficient-args",
+    
     "-Wno-uninitialized",
     "-Wno-switch",
     "-Wno-unused",
@@ -69,12 +73,12 @@ linux.compile-options = [
     "-fvisibility=default",
 ]
 
-linux.link-options = [
+linux.link-options=[
     "-fuse-ld=mold",
     "-static-libgcc",
     "-Wl,-Bstatic",
     "-lstdc++",
-    "-Wl,-Bdynamic",
+    "-Wl,-Bdynamic"
 ]
 
 # define
