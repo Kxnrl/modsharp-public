@@ -79,7 +79,6 @@ internal partial class SharpCore : ISharpCore
     private readonly List<GameSimulateHookInfo>                _gameSimulateHooks;
     private readonly ConcurrentQueue<AssemblyAction>           _actionQueue;
     private readonly ConcurrentDictionary<Guid, AssemblyTimer> _timers;
-    private readonly Dictionary<ProtobufNetMessageType, int>   _hookedNetMessages;
     private readonly string                                    _gamePath;
     private readonly FrozenDictionary<string, string?>         _commandLines;
 
@@ -108,7 +107,6 @@ internal partial class SharpCore : ISharpCore
         _gameSimulateHooks = [];
         _actionQueue       = [];
         _timers            = [];
-        _hookedNetMessages = [];
 
         _precacheContext = nint.Zero;
         _commandLines    = ParseCommandLine();
@@ -1092,24 +1090,10 @@ internal partial class SharpCore : ISharpCore
         => NetMessageHelper.SendNetMessage(filter, data);
 
     public void HookNetMessage(ProtobufNetMessageType msgId)
-    {
-        ref var count = ref CollectionsMarshal.GetValueRefOrAddDefault(_hookedNetMessages, msgId, out var exists);
-        if (!exists)
-            Net.HookNetMessage(msgId);
-        count++;
-    }
+        => Net.HookNetMessage(msgId);
 
     public void UnhookNetMessage(ProtobufNetMessageType msgId)
-    {
-        ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(_hookedNetMessages, msgId);
-        if (Unsafe.IsNullRef(ref count) || count <= 0)
-            return;
-        if (--count == 0)
-        {
-            _hookedNetMessages.Remove(msgId);
-            Net.UnhookNetMessage(msgId);
-        }
-    }
+        => _logger.LogWarning("Attempt unhook net message: {id}", msgId);
 
 #endregion
 

@@ -245,6 +245,7 @@ public interface IModSharp
     /// <summary>
     ///     Remove HookNetMessage
     /// </summary>
+    [Obsolete("This is deprecated and do nothing, will be removed in 2.2", true)]
     void UnhookNetMessage(ProtobufNetMessageType msgId);
 
 #endregion

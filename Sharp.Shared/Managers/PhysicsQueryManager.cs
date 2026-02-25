@@ -156,7 +156,7 @@ public interface IPhysicsQueryManager
     /// <param name="end">End position</param>
     /// <param name="interactsWith">Generally, using InteractsWith from CollisionProperty is sufficient</param>
     /// <param name="pawn">Player pawn</param>
-    [Obsolete("Does not work, will be removed", true)]
+    [Obsolete("Does not work, will be removed in 2.2", true)]
     TraceResult TraceShapePlayerMovement(TraceShapeRay ray,
         Vector                                         start,
         Vector                                         end,
