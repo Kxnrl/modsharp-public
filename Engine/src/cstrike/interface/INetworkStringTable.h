@@ -26,7 +26,6 @@
 
 class INetworkStringTable;
 class CNetworkStringTableItem;
-class INetworkStringDict;
 
 class INetworkStringTableContainer : public IAppSystem
 {
