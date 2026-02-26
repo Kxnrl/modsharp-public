@@ -91,7 +91,7 @@ internal sealed class LocalizedMessageBuilder : ILocalizedMessage
     }
 
     public void Print(HudPrintChannel channel = HudPrintChannel.Chat)
-        => _client?.GetPlayerController()?.Print(channel, Build());
+        => _client?.Print(channel, Build());
 
     private static Func<string, string> Chain(Func<string, string> first, Func<string, string> next)
     {

@@ -94,7 +94,7 @@ internal sealed class MultiLocalizedMessageBuilder : ILocalizedMessageMany
                 cache[culture] = message;
             }
 
-            client.GetPlayerController()?.Print(channel, message);
+            client.Print(channel, message);
         }
     }
 
