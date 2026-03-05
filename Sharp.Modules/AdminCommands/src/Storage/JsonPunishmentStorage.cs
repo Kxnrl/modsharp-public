@@ -6,7 +6,7 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Storage;
 
-internal class JsonAdminOperationStorage : IAdminOperationStorageService
+internal class JsonAdminOperationStorage : IAdminOperationStorageService, IDisposable
 {
     private readonly string                              _filePath;
     private readonly ILogger<JsonAdminOperationStorage>? _logger;
@@ -274,5 +274,10 @@ internal class JsonAdminOperationStorage : IAdminOperationStorageService
                 ArrayPool<AdminOperationRecord>.Shared.Return(snapshotArray, true);
             }
         }
+    }
+
+    public void Dispose()
+    {
+        _lock.Dispose();
     }
 }

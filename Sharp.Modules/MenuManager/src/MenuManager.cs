@@ -98,7 +98,17 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void Shutdown()
     {
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
+        _clientManager.RemoveCommandListener("autobuy", OnAutoBuyCommand);
+        _clientManager.RemoveCommandListener("rebuy",   OnReBuyCommand);
         _clientManager.RemoveClientListener(this);
+
+        for (var i = 0; i < _controllers.Length; i++)
+        {
+            _controllers[i]?.Dispose();
+            _controllers[i] = null;
+        }
+
+        SurvivalStatusMenuController.ReleaseSharedEvent();
     }
 
 #endregion

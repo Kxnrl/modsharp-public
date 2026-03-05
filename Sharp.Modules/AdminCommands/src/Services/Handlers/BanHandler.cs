@@ -104,6 +104,23 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(ip))
+        {
+            var subnet = GetSubnet(ip);
+
+            if (_ipBans.TryGetValue(subnet, out expiresAt))
+            {
+                if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
+                {
+                    _ipBans.Remove(subnet);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         if (!_bans.TryGetValue(steamId, out var entry))
         {
             return false;
@@ -150,6 +167,10 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
                 if (entry.Type == BanType.Ip && !string.IsNullOrWhiteSpace(entry.Ip))
                 {
                     _ipBans.Remove(entry.Ip);
+                }
+                else if (entry.Type == BanType.IpRange && !string.IsNullOrWhiteSpace(entry.Ip))
+                {
+                    _ipBans.Remove(GetSubnet(entry.Ip));
                 }
             }
         }

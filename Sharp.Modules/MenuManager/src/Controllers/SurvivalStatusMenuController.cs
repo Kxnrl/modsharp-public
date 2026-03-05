@@ -219,4 +219,10 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         ModSharp.StopTimer(_timer);
     }
+
+    internal static void ReleaseSharedEvent()
+    {
+        _showSurvivalRespawnStatusEvent?.Dispose();
+        _showSurvivalRespawnStatusEvent = null;
+    }
 }

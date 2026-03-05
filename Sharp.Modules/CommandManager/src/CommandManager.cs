@@ -53,6 +53,13 @@ internal class CommandManager : IModSharpModule, ICommandManager
 
     public void Shutdown()
     {
+        foreach (var registry in _registries.Values)
+        {
+            registry.Clear();
+        }
+
+        _registries.Clear();
+        _registerCommands.Clear();
     }
 
     string IModSharpModule.DisplayName => "Sharp.Modules.CommandManager";
