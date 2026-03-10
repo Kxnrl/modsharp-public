@@ -67,11 +67,18 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         var oldBindings = KeyBindings;
         KeyBindings = MenuKeyBindings.Load(_configuration, _logger);
-
-        RemoveCommandBindings(oldBindings);
-        InstallCommandBindings(KeyBindings);
-
         _configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
+
+        _modSharp.InvokeFrameAction(() =>
+        {
+            RemoveCommandBindings(oldBindings);
+            InstallCommandBindings(KeyBindings);
+
+            foreach (var controller in _controllers)
+            {
+                controller?.Refresh();
+            }
+        });
     }
 
     private void InstallCommandBindings(MenuKeyBindings bindings)
