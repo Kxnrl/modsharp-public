@@ -4,6 +4,8 @@ namespace Sharp.Modules.MenuManager.Core.Controllers;
 
 public interface IInternalMenuController : IMenuController
 {
+    ulong SessionId { get; }
+
     bool MoveUpCursor();
 
     bool MoveDownCursor();
@@ -13,4 +15,8 @@ public interface IInternalMenuController : IMenuController
     void GoToPreviousPage();
 
     void GoToNextPage();
+
+    bool IsInMenu(Menu menuInstance);
+
+    bool IsInCurrentMenu(Menu menuInstance);
 }

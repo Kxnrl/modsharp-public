@@ -6,6 +6,7 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
+using System;
 
 namespace MenuExample;
 
@@ -13,25 +14,26 @@ internal class MenuExample : IModSharpModule
 {
     private const string MenuManagerAssemblyName = "Sharp.Modules.MenuManager";
 
-    private readonly ISharedSystem        _sharedSystem;
+    private readonly ISharedSystem _sharedSystem;
     private readonly ILogger<MenuExample> _logger;
 
     private readonly Menu _cachedSubMenu;
     private readonly Menu _cachedMenu;
 
     private bool _useCacheMenu = true;
+    private bool _isGodModeOn;
 
     private IModSharpModuleInterface<IMenuManager>? _menuManager;
 
-    public MenuExample(ISharedSystem  sharedSystem,
-                       string         dllPath,
-                       string         sharpPath,
-                       Version        version,
+    public MenuExample(ISharedSystem sharedSystem,
+                       string dllPath,
+                       string sharpPath,
+                       Version version,
                        IConfiguration configuration,
-                       bool           hotReload)
+                       bool hotReload)
     {
         _sharedSystem = sharedSystem;
-        _logger       = sharedSystem.GetLoggerFactory().CreateLogger<MenuExample>();
+        _logger = sharedSystem.GetLoggerFactory().CreateLogger<MenuExample>();
 
         // Example 1: Cached Menu (Recommended for static menus)
         // You can precache menu in constructor.
@@ -41,14 +43,27 @@ internal class MenuExample : IModSharpModule
                              .DisabledItem("This item is not selectable")
                              .Spacer()
                              .Item("Do something", _ => { /* ... */ })
-                             .BackItem()  // Navigates back to the parent menu, or exits if none
+                             .BackItem()  // Navigates back to the parent menu
                              .ExitItem()  // Closes the menu entirely
                              .Build();
 
         _cachedMenu = Menu.Create()
                           .Title("Main Menu (Cached)")
                           .HideIndex() // Hide item indices, so it wont display "1.", "2." before the item name
-                          .SubMenu("Open Sub Menu",   _cachedSubMenu)
+                          .SubMenu("Open Sub Menu", _cachedSubMenu)
+                          // Example 3: Toggle button + Refresh
+                          .Item(_ => $"God Mode: {(_isGodModeOn ? "ON" : "OFF")}",
+                                controller =>
+                                {
+                                    _isGodModeOn = !_isGodModeOn;
+
+                                    controller.Client
+                                              .Print(HudPrintChannel.Chat,
+                                                      $"God mode switched to {_isGodModeOn}");
+
+                                    // Re-evaluate item text/state and redraw the current page
+                                    controller.Refresh();
+                                })
                           .Item("Give me a deagle!", OnMenuItemGiveDeagle)
                           .Item(gameClient =>
                                     // Title factory — useful for localized titles via LocalizeManager
@@ -57,6 +72,10 @@ internal class MenuExample : IModSharpModule
                                         : "Give me a deagle..?",
                                 OnMenuItemGiveDeagle)
                           .Item(OnMenuItemGiveAk47)
+                          // Note: OnEnter runs when opening the menu or navigating into it via Next().
+                          // It does not run when returning via GoBack() from a child menu.
+                          .OnEnter(OnEnterMenu)
+                          // Note: OnExit runs when this menu is closed or replaced.
                           .OnExit(OnExitMenu)
                           .Build();
     }
@@ -102,7 +121,7 @@ internal class MenuExample : IModSharpModule
         _sharedSystem.GetConVarManager().ReleaseCommand("menu_type_toggle");
     }
 
-    public string DisplayName   => "MenuExample";
+    public string DisplayName => "MenuExample";
     public string DisplayAuthor => "ModSharp Dev Team";
 
     private ECommandAction OnCommandMenuTypeToggle(StringCommand arg)
@@ -126,11 +145,24 @@ internal class MenuExample : IModSharpModule
         // Method 1: Display the cached menu
         if (_useCacheMenu)
         {
-            menuManager.DisplayMenu(client, _cachedMenu);
+            menuManager.DisplayMenu(client, _cachedMenu, out var sessionId);
+
+            // Menu state checks (instance + current session)
+            _logger.LogInformation("[Menu Example] IsInMenu(instance): {InCached}; IsInCurrentMenu(instance): {InCurrentCached}",
+                                   menuManager.IsInMenu(client, _cachedMenu),
+                                   menuManager.IsInCurrentMenu(client, _cachedMenu));
+
+            _logger.LogInformation("[Menu Example] Current session: {SessionId}; IsInMenu: {InMenuSession}",
+                                   sessionId,
+                                   menuManager.IsInMenu(client, sessionId));
         }
         else
         {
-            CreateAndDisplayMenuOnTheFly(client, menuManager);
+            var dynamicMenu = CreateAndDisplayMenuOnTheFly(client, menuManager);
+
+            _logger.LogInformation("[Menu Example] IsInMenu(instance): {InDynamic}; IsInCurrentMenu(instance): {InCurrentDynamic}",
+                                   menuManager.IsInMenu(client, dynamicMenu),
+                                   menuManager.IsInCurrentMenu(client, dynamicMenu));
         }
 
         obj.Controller.Print(HudPrintChannel.Chat, "Menu opened, it will be closed in 10 seconds");
@@ -138,17 +170,17 @@ internal class MenuExample : IModSharpModule
         // Auto-close the menu after 10 seconds
         _sharedSystem.GetModSharp()
                      .PushTimer(() =>
-                                {
-                                    // Must check IsInMenu before calling QuitMenu
-                                    if (menuManager.IsInMenu(client))
-                                    {
-                                        menuManager.QuitMenu(client);
-                                    }
-                                },
+                     {
+                         // Must check IsInMenu before calling QuitMenu
+                         if (menuManager.IsInMenu(client))
+                         {
+                             menuManager.QuitMenu(client);
+                         }
+                     },
                                 10.0);
     }
 
-    private void CreateAndDisplayMenuOnTheFly(IGameClient client, IMenuManager menuManager)
+    private Menu CreateAndDisplayMenuOnTheFly(IGameClient client, IMenuManager menuManager)
     {
         // Example 2: Imperative menu construction (useful when items depend on runtime state)
         var menu = new Menu();
@@ -156,15 +188,30 @@ internal class MenuExample : IModSharpModule
         // Title factory — useful for localized titles via LocalizeManager
         menu.SetTitle(gameClient =>
             gameClient.IsAuthenticated ? "Main menu (authenticated)" : "Main menu");
-
         // or if you prefer a static title
         // menu.SetTitle("My menu title");
 
-        menu.AddSubMenu("Open sub menu",  _cachedSubMenu);
+        menu.AddSubMenu("Open sub menu", _cachedSubMenu);
         menu.AddItem("Give me a deagle!", OnMenuItemGiveDeagle);
 
         // Disabled item — visible but not selectable
         menu.AddDisabledItem("Coming soon...");
+
+        // Example 4: Programmatic navigation using controller.Next(menu)
+        menu.AddItem("Dynamically generate next menu...",
+                     controller =>
+                     {
+                         var targetSlot = controller.Client.Slot;
+
+                         var specificMenu = Menu.Create()
+                                                .Title($"Settings for Slot {targetSlot}")
+                                                .Item("Kick", c => c.Exit())
+                                                .Item("Ban", c => c.Exit())
+                                                .BackItem()
+                                                .Build();
+
+                         controller.Next(specificMenu);
+                     });
 
         menu.AddItem(gameClient =>
                          gameClient.IsAuthenticated ? "Give me a deagle! (authenticated)" : "Give me a deagle..?",
@@ -176,11 +223,18 @@ internal class MenuExample : IModSharpModule
         menu.OnExit = OnExitMenu;
 
         menuManager.DisplayMenu(client, menu);
+
+        return menu;
     }
 
     private void OnExitMenu(IGameClient cl)
     {
-        cl.GetPlayerController()?.Print(HudPrintChannel.Chat, "Menu closed.");
+        cl.Print(HudPrintChannel.Chat, "Menu closed.");
+    }
+
+    private void OnEnterMenu(IGameClient cl)
+    {
+        cl.Print(HudPrintChannel.Chat, "Menu opened.");
     }
 
     private void OnMenuItemGiveAk47(IGameClient client, ref MenuItemContext context)

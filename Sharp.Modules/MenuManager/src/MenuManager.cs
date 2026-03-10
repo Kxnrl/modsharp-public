@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.LocalizerManager.Shared;
@@ -27,16 +28,20 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     private readonly IHookManager                                _hooks;
     private readonly IEntityManager                              _entityManager;
     private readonly IEventManager                               _eventManager;
+    private readonly IConfiguration                              _configuration;
     private          IModSharpModuleInterface<ILocalizerManager> _localizerManager = null!;
 
     private readonly IInternalMenuController?[] _controllers = new IInternalMenuController[PlayerSlot.MaxPlayerCount];
+    private          ulong                      _nextSessionId;
 
-    public MenuManager(ISharedSystem sharedSystem,
-        string                       dllPath,
-        string                       sharpPath,
-        Version                      version,
-        IConfiguration               configuration,
-        bool                         hotReload)
+    internal MenuKeyBindings KeyBindings { get; private set; }
+
+    public MenuManager(ISharedSystem  sharedSystem,
+                       string         dllPath,
+                       string         sharpPath,
+                       Version        version,
+                       IConfiguration configuration,
+                       bool           hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
@@ -47,22 +52,95 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         _hooks         = sharedSystem.GetHookManager();
         _entityManager = sharedSystem.GetEntityManager();
         _eventManager  = sharedSystem.GetEventManager();
+        _configuration = configuration;
 
-        _clientManager.InstallCommandListener("autobuy", OnAutoBuyCommand);
-        _clientManager.InstallCommandListener("rebuy",   OnReBuyCommand);
+        KeyBindings = MenuKeyBindings.Load(configuration, _logger);
+
+        InstallCommandBindings(KeyBindings);
         _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
+
+        configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
     }
 
-    private ECommandAction OnAutoBuyCommand(IGameClient client, StringCommand command)
+
+    private void OnConfigReload()
+    {
+        var oldBindings = KeyBindings;
+        KeyBindings = MenuKeyBindings.Load(_configuration, _logger);
+
+        RemoveCommandBindings(oldBindings);
+        InstallCommandBindings(KeyBindings);
+
+        _configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
+    }
+
+    private void InstallCommandBindings(MenuKeyBindings bindings)
+    {
+        if (bindings.MoveUpCursor.Type == MenuBindingType.Command)
+            _clientManager.InstallCommandListener(bindings.MoveUpCursor.Command!, OnMoveUpCommand);
+
+        if (bindings.MoveDownCursor.Type == MenuBindingType.Command)
+            _clientManager.InstallCommandListener(bindings.MoveDownCursor.Command!, OnMoveDownCommand);
+
+        if (bindings.GoBack.Type == MenuBindingType.Command)
+            _clientManager.InstallCommandListener(bindings.GoBack.Command!, OnGoBackCommand);
+
+        if (bindings.Confirm.Type == MenuBindingType.Command)
+            _clientManager.InstallCommandListener(bindings.Confirm.Command!, OnConfirmCommand);
+
+        if (bindings.Exit.Type == MenuBindingType.Command)
+            _clientManager.InstallCommandListener(bindings.Exit.Command!, OnExitCommand);
+    }
+
+    private void RemoveCommandBindings(MenuKeyBindings bindings)
+    {
+        if (bindings.MoveUpCursor.Type == MenuBindingType.Command)
+            _clientManager.RemoveCommandListener(bindings.MoveUpCursor.Command!, OnMoveUpCommand);
+
+        if (bindings.MoveDownCursor.Type == MenuBindingType.Command)
+            _clientManager.RemoveCommandListener(bindings.MoveDownCursor.Command!, OnMoveDownCommand);
+
+        if (bindings.GoBack.Type == MenuBindingType.Command)
+            _clientManager.RemoveCommandListener(bindings.GoBack.Command!, OnGoBackCommand);
+
+        if (bindings.Confirm.Type == MenuBindingType.Command)
+            _clientManager.RemoveCommandListener(bindings.Confirm.Command!, OnConfirmCommand);
+
+        if (bindings.Exit.Type == MenuBindingType.Command)
+            _clientManager.RemoveCommandListener(bindings.Exit.Command!, OnExitCommand);
+    }
+
+    private ECommandAction OnMoveUpCommand(IGameClient client, StringCommand command)
     {
         _controllers[client.Slot]?.MoveUpCursor();
 
         return ECommandAction.Stopped;
     }
 
-    private ECommandAction OnReBuyCommand(IGameClient client, StringCommand command)
+    private ECommandAction OnMoveDownCommand(IGameClient client, StringCommand command)
     {
         _controllers[client.Slot]?.MoveDownCursor();
+
+        return ECommandAction.Stopped;
+    }
+
+    private ECommandAction OnGoBackCommand(IGameClient client, StringCommand command)
+    {
+        _controllers[client.Slot]?.GoBack();
+
+        return ECommandAction.Stopped;
+    }
+
+    private ECommandAction OnConfirmCommand(IGameClient client, StringCommand command)
+    {
+        _controllers[client.Slot]?.Confirm();
+
+        return ECommandAction.Stopped;
+    }
+
+    private ECommandAction OnExitCommand(IGameClient client, StringCommand command)
+    {
+        _controllers[client.Slot]?.Exit();
 
         return ECommandAction.Stopped;
     }
@@ -98,8 +176,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     public void Shutdown()
     {
         _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
-        _clientManager.RemoveCommandListener("autobuy", OnAutoBuyCommand);
-        _clientManager.RemoveCommandListener("rebuy",   OnReBuyCommand);
+        RemoveCommandBindings(KeyBindings);
         _clientManager.RemoveClientListener(this);
 
         for (var i = 0; i < _controllers.Length; i++)
@@ -132,29 +209,52 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
     {
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Speed)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Speed))
+        var bindings = KeyBindings;
+        var changed  = @params.Service.KeyChangedButtons;
+        var pressed  = @params.Service.KeyButtons;
+
+        if ((changed & bindings.GetButtonMask()) == 0)
         {
-            _controllers[@params.Client.Slot]
-                ?.GoBack();
+            return;
         }
 
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.Scoreboard)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.Scoreboard))
+        if (bindings.MoveUpCursor is { Type: MenuBindingType.Button, Button: { } moveUpBtn }
+            && changed.HasFlag(moveUpBtn) && pressed.HasFlag(moveUpBtn))
         {
-            _controllers[@params.Client.Slot]
-                ?.Exit();
+            _controllers[@params.Client.Slot]?.MoveUpCursor();
         }
 
-        if (@params.Service.KeyChangedButtons.HasFlag(UserCommandButtons.LookAtWeapon)
-            && @params.Service.KeyButtons.HasFlag(UserCommandButtons.LookAtWeapon))
+        if (bindings.MoveDownCursor is { Type: MenuBindingType.Button, Button: { } moveDownBtn }
+            && changed.HasFlag(moveDownBtn) && pressed.HasFlag(moveDownBtn))
         {
-            _controllers[@params.Client.Slot]
-                ?.Confirm();
+            _controllers[@params.Client.Slot]?.MoveDownCursor();
+        }
+
+        if (bindings.GoBack is { Type: MenuBindingType.Button, Button: { } goBackBtn }
+            && changed.HasFlag(goBackBtn) && pressed.HasFlag(goBackBtn))
+        {
+            _controllers[@params.Client.Slot]?.GoBack();
+        }
+
+        if (bindings.Confirm is { Type: MenuBindingType.Button, Button: { } confirmBtn }
+            && changed.HasFlag(confirmBtn) && pressed.HasFlag(confirmBtn))
+        {
+            _controllers[@params.Client.Slot]?.Confirm();
+        }
+
+        if (bindings.Exit is { Type: MenuBindingType.Button, Button: { } exitBtn }
+            && changed.HasFlag(exitBtn) && pressed.HasFlag(exitBtn))
+        {
+            _controllers[@params.Client.Slot]?.Exit();
         }
     }
 
     public void DisplayMenu(IGameClient client, Menu menu)
+    {
+        DisplayMenu(client, menu, out _);
+    }
+
+    public void DisplayMenu(IGameClient client, Menu menu, out ulong sessionId)
     {
         DisposeClientMenu(client);
 
@@ -170,8 +270,17 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
             instance = value;
         }
 
+        sessionId = Interlocked.Increment(ref _nextSessionId);
+
         var controller
-            = new SurvivalStatusMenuController(this, _modSharp, _eventManager, _entityManager, _ => menu, client, instance);
+            = new SurvivalStatusMenuController(this,
+                                               _modSharp,
+                                               _eventManager,
+                                               _entityManager,
+                                               sessionId,
+                                               _ => menu,
+                                               client,
+                                               instance);
 
         _controllers[client.Slot] = controller;
         controller.Render();
@@ -189,6 +298,44 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     public bool IsInMenu(IGameClient client)
         => _controllers[client.Slot] is not null;
+
+    public bool IsInMenu(IGameClient client, Menu menuInstance)
+    {
+        ArgumentNullException.ThrowIfNull(menuInstance);
+
+        return _controllers[client.Slot]?.IsInMenu(menuInstance) ?? false;
+    }
+
+    public bool IsInMenu(IGameClient client, ulong sessionId)
+    {
+        if (sessionId == 0 || _controllers[client.Slot] is not { } controller)
+        {
+            return false;
+        }
+
+        return controller.SessionId == sessionId;
+    }
+
+    public bool IsInCurrentMenu(IGameClient client, Menu menuInstance)
+    {
+        ArgumentNullException.ThrowIfNull(menuInstance);
+
+        return _controllers[client.Slot]?.IsInCurrentMenu(menuInstance) ?? false;
+    }
+
+    public bool TryGetCurrentMenuSessionId(IGameClient client, out ulong sessionId)
+    {
+        if (_controllers[client.Slot] is not { } controller)
+        {
+            sessionId = 0;
+
+            return false;
+        }
+
+        sessionId = controller.SessionId;
+
+        return true;
+    }
 
     public void CloseClientMenu(IGameClient client)
     {

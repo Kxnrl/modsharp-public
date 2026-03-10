@@ -18,12 +18,14 @@ internal class SurvivalStatusMenuController : BaseMenuController
         IModSharp                                   modSharp,
         IEventManager                               eventManager,
         IEntityManager                              entityManager,
+        ulong                                       sessionId,
         Func<IGameClient, Menu>                     menuFactory,
         IGameClient                                 player,
         ILocalizerManager?                          localization) : base(menuManager,
                                                                              modSharp,
                                                                              eventManager,
                                                                              entityManager,
+                                                                             sessionId,
                                                                              menuFactory,
                                                                              player)
     {
@@ -156,9 +158,31 @@ internal class SurvivalStatusMenuController : BaseMenuController
         }
 
         // pad empty line
-        for (var i = itemIndex; i <= MaxPageItems; i++)
+        for (var i = itemIndex; i < MaxPageItems; i++)
         {
             sb.Append("<br/>");
+        }
+
+        var hasBackItem = false;
+        var hasExitItem = false;
+
+        for (var i = 0; i < span.Length; i++)
+        {
+            ref readonly var builtMenuItem = ref span[i];
+
+            if (builtMenuItem.ActionKind == MenuItemActionKind.Back)
+            {
+                hasBackItem = true;
+            }
+            else if (builtMenuItem.ActionKind == MenuItemActionKind.Exit)
+            {
+                hasExitItem = true;
+            }
+
+            if (hasBackItem && hasExitItem)
+            {
+                break;
+            }
         }
 
         const string confirmKey  = "MenuSelection.Confirm";
@@ -193,9 +217,31 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         // sb.Append("<font class='fontSize-s'>");
 
-        sb.Append($"{Key("F")} {Text(confirm)} / {Key("F3")} {Text(prevItem)} / {Key("F4")} {Text(nextItem)}");
-        sb.Append("<br>"); // without this it won't show this hint
-        sb.Append($"{Key("Tab")} {Text(exit)} / {Key("Shift")} {Text(back)}");
+        sb.Append($"{Key(MenuManager.KeyBindings.Confirm.GetBindHint())} {Text(confirm)} / {Key(MenuManager.KeyBindings.MoveUpCursor.GetBindHint())} {Text(prevItem)} / {Key(MenuManager.KeyBindings.MoveDownCursor.GetBindHint())} {Text(nextItem)}");
+
+        var showBottomHint = !(hasBackItem && hasExitItem);
+        var showExitHint   = !hasExitItem;
+        var showBackHint   = !hasBackItem && PreviousMenus.Count > 0;
+
+        if (showBottomHint && (showExitHint || showBackHint))
+        {
+            sb.Append("<br>");
+
+            if (showExitHint)
+            {
+                sb.Append($"{Key(MenuManager.KeyBindings.Exit.GetBindHint())} {Text(exit)}");
+            }
+
+            if (showBackHint)
+            {
+                if (showExitHint)
+                {
+                    sb.Append(" / ");
+                }
+
+                sb.Append($"{Key(MenuManager.KeyBindings.GoBack.GetBindHint())} {Text(back)}");
+            }
+        }
 
         // sb.Append("</font>");
 

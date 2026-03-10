@@ -227,21 +227,31 @@ public class Menu
 
     /// <summary>
     /// Adds an item that navigates back to the previous menu when selected.
-    /// If there is no previous menu, the menu will be closed instead.
+    /// Built-in renderers hide this item when there is no previous menu.
     /// </summary>
     /// <param name="name">The item title. Defaults to "Back".</param>
     /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddBackItem(string name = "Back")
-        => AddItem(name, controller => controller.GoBack());
+        => AddItem((IGameClient _, ref MenuItemContext context) =>
+        {
+            context.Title      = name;
+            context.Action     = controller => controller.GoBack();
+            context.ActionKind = MenuItemActionKind.Back;
+        });
 
     /// <summary>
     /// Adds an item with a per-client dynamic title that navigates back to the previous menu when selected.
-    /// If there is no previous menu, the menu will be closed instead.
+    /// Built-in renderers hide this item when there is no previous menu.
     /// </summary>
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
     /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddBackItem(Func<IGameClient, string> titleFactory)
-        => AddItem(titleFactory, controller => controller.GoBack());
+        => AddItem((IGameClient client, ref MenuItemContext context) =>
+        {
+            context.Title      = titleFactory(client);
+            context.Action     = controller => controller.GoBack();
+            context.ActionKind = MenuItemActionKind.Back;
+        });
 
     /// <summary>
     /// Adds an item that closes the menu when selected.
@@ -249,7 +259,12 @@ public class Menu
     /// <param name="name">The item title. Defaults to "Exit".</param>
     /// <remarks>The title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddExitItem(string name = "Exit")
-        => AddItem(name, controller => controller.Exit());
+        => AddItem((IGameClient _, ref MenuItemContext context) =>
+        {
+            context.Title      = name;
+            context.Action     = controller => controller.Exit();
+            context.ActionKind = MenuItemActionKind.Exit;
+        });
 
     /// <summary>
     /// Adds an item with a per-client dynamic title that closes the menu when selected.
@@ -257,7 +272,12 @@ public class Menu
     /// <param name="titleFactory">A function that receives the viewing client and returns the item title. Useful for localized titles.</param>
     /// <remarks>The resolved title is embedded directly into HTML — avoid raw <c>&lt;</c> or <c>&gt;</c> characters.</remarks>
     public void AddExitItem(Func<IGameClient, string> titleFactory)
-        => AddItem(titleFactory, controller => controller.Exit());
+        => AddItem((IGameClient client, ref MenuItemContext context) =>
+        {
+            context.Title      = titleFactory(client);
+            context.Action     = controller => controller.Exit();
+            context.ActionKind = MenuItemActionKind.Exit;
+        });
 
     /// <summary>
     /// Creates a new <see cref="Builder"/> for fluent menu construction.
@@ -478,7 +498,8 @@ public readonly record struct MenuItem(MenuItemGenerator? Generator = null);
 /// <summary>
 /// Delegate invoked per-client to populate a <see cref="MenuItemContext"/>.
 /// Set <see cref="MenuItemContext.Title"/>, <see cref="MenuItemContext.State"/>,
-/// <see cref="MenuItemContext.Color"/>, and <see cref="MenuItemContext.Action"/> as needed.
+/// <see cref="MenuItemContext.Color"/>, <see cref="MenuItemContext.Action"/>,
+/// and <see cref="MenuItemContext.ActionKind"/> as needed.
 /// </summary>
 /// <param name="client">The client viewing the menu.</param>
 /// <param name="context">The mutable item context to populate.</param>
@@ -513,4 +534,20 @@ public record struct MenuItemContext
     /// the item is automatically treated as disabled.
     /// </summary>
     public Action<IMenuController>? Action;
+
+    /// <summary>
+    /// Semantic action kind used by built-in navigation helpers.
+    /// Defaults to <see cref="MenuItemActionKind.None"/>.
+    /// </summary>
+    public MenuItemActionKind       ActionKind;
+}
+
+/// <summary>
+/// Semantic item action kind used by the menu renderer.
+/// </summary>
+public enum MenuItemActionKind
+{
+    None,
+    Back,
+    Exit,
 }

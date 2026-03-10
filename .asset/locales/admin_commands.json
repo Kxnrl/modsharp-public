@@ -280,8 +280,8 @@
     "zh-cn": "队伍必须是以下之一: ct, t, spec。"
   },
   "Admin.Team": {
-    "en-us": "Moved {0} to {1}.",
-    "zh-cn": "将 {0} 移动到了 {1}。"
+    "en-us": "{0} Moved {1} to {2}.",
+    "zh-cn": "{0} 将 {1} 移动到了 {2}。"
   },
   "Admin.Usage.Give": {
     "en-us": "Usage: ms_give <target> <weapon>",

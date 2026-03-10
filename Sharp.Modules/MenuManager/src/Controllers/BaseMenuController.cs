@@ -13,6 +13,7 @@ internal abstract class BaseMenuController : IInternalMenuController
     protected const int MaxPageItems = 5;
 
     public IGameClient Client { get; }
+    public ulong       SessionId { get; }
 
     protected readonly Stack<PreviousMenu> PreviousMenus  = new ();
     protected readonly List<BuiltMenuItem> BuiltMenuItems = [];
@@ -30,6 +31,7 @@ internal abstract class BaseMenuController : IInternalMenuController
         IModSharp                         modSharp,
         IEventManager                     eventManager,
         IEntityManager                    entityManager,
+        ulong                             sessionId,
         Func<IGameClient, Menu>           menuFactory,
         IGameClient                       player)
     {
@@ -37,6 +39,7 @@ internal abstract class BaseMenuController : IInternalMenuController
         MenuManager   = menuManager;
         ModSharp      = modSharp;
         EventManager  = eventManager;
+        SessionId     = sessionId;
 
         MenuFactory = menuFactory;
 
@@ -49,10 +52,18 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         // build current menu items
         BuildItems();
+        SetCursor(0, false);
     }
 
-    private bool SetCursor(int cursor)
+    private bool SetCursor(int cursor, bool render = true)
     {
+        if (BuiltMenuItems.Count == 0)
+        {
+            Cursor = -1;
+
+            return false;
+        }
+
         if (cursor >= BuiltMenuItems.Count || cursor < 0)
         {
             cursor = BuiltMenuItems.Count - 1;
@@ -81,7 +92,10 @@ internal abstract class BaseMenuController : IInternalMenuController
 
         Cursor = cursor;
 
-        Render();
+        if (render)
+        {
+            Render();
+        }
 
         return true;
     }
@@ -194,8 +208,14 @@ internal abstract class BaseMenuController : IInternalMenuController
             {
                 BuiltMenuItems.Add(new (string.Empty,
                                         MenuItemState.Spacer,
-                                        0));
+                                        0,
+                                        ActionKind: context.ActionKind));
 
+                continue;
+            }
+
+            if (context.ActionKind == MenuItemActionKind.Back && PreviousMenus.Count == 0)
+            {
                 continue;
             }
 
@@ -217,22 +237,107 @@ internal abstract class BaseMenuController : IInternalMenuController
                                     context.State,
                                     0,
                                     context.Action,
-                                    context.Color));
+                                    context.Color,
+                                    context.ActionKind));
         }
     }
 
     public void Refresh()
     {
         BuildItems();
-        Render();
+
+        var maxItemSkipCount = Math.Max(0, BuiltMenuItems.Count - MaxPageItems);
+        ItemSkipCount = Math.Clamp(ItemSkipCount, 0, maxItemSkipCount);
+
+        if (!SetCursor(Cursor))
+        {
+            Render();
+        }
     }
 
     public void GoToPreviousPage()
     {
+        MoveCursorByPage(-1);
     }
 
     public void GoToNextPage()
     {
+        MoveCursorByPage(1);
+    }
+
+    private bool MoveCursorByPage(int direction)
+    {
+        if (Cursor == -1 || BuiltMenuItems.Count == 0)
+        {
+            return false;
+        }
+
+        var selectableIndices = new List<int>(BuiltMenuItems.Count);
+        var currentPosition   = -1;
+
+        for (var i = 0; i < BuiltMenuItems.Count; i++)
+        {
+            if (BuiltMenuItems[i].State != MenuItemState.Default)
+            {
+                continue;
+            }
+
+            if (i == Cursor)
+            {
+                currentPosition = selectableIndices.Count;
+            }
+
+            selectableIndices.Add(i);
+        }
+
+        if (selectableIndices.Count == 0)
+        {
+            Cursor = -1;
+
+            return false;
+        }
+
+        if (currentPosition == -1)
+        {
+            currentPosition = 0;
+        }
+
+        var offset         = direction * MaxPageItems;
+        var targetPosition = Math.Clamp(currentPosition + offset, 0, selectableIndices.Count - 1);
+        var targetCursor   = selectableIndices[targetPosition];
+
+        if (targetCursor == Cursor)
+        {
+            return false;
+        }
+
+        Cursor = targetCursor;
+        Render();
+
+        return true;
+    }
+
+    public bool IsInMenu(Menu menuInstance)
+    {
+        if (ReferenceEquals(Menu, menuInstance))
+        {
+            return true;
+        }
+
+        foreach (var previousMenu in PreviousMenus)
+        {
+            if (ReferenceEquals(previousMenu.Menu, menuInstance))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool IsInCurrentMenu(Menu menuInstance)
+    {
+        return ReferenceEquals(Menu, menuInstance);
     }
 
     public void Confirm()
@@ -251,7 +356,7 @@ internal abstract class BaseMenuController : IInternalMenuController
 
     public void Next(Func<IGameClient, Menu> menuFactory)
     {
-        PreviousMenus.Push(new PreviousMenu(MenuFactory, Menu, 0, Cursor));
+        PreviousMenus.Push(new PreviousMenu(MenuFactory, Menu, ItemSkipCount, Cursor));
 
         MenuFactory = menuFactory;
 
@@ -259,8 +364,12 @@ internal abstract class BaseMenuController : IInternalMenuController
         Menu.OnEnter?.Invoke(Client);
 
         BuildItems();
-        SetCursor(0);
-        Render();
+        ItemSkipCount = 0;
+
+        if (!SetCursor(0))
+        {
+            Render();
+        }
     }
 
     public void Exit()
@@ -272,8 +381,6 @@ internal abstract class BaseMenuController : IInternalMenuController
     {
         if (!PreviousMenus.TryPop(out var previousMenu))
         {
-            Exit();
-
             return;
         }
 
@@ -283,8 +390,12 @@ internal abstract class BaseMenuController : IInternalMenuController
         Menu        = previousMenu.Menu;
 
         BuildItems();
-        SetCursor(previousMenu.Cursor);
-        Render();
+        ItemSkipCount = Math.Clamp(previousMenu.Page, 0, Math.Max(0, BuiltMenuItems.Count - MaxPageItems));
+
+        if (!SetCursor(previousMenu.Cursor))
+        {
+            Render();
+        }
     }
 
     public virtual void Dispose()

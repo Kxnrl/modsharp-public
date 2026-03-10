@@ -11,4 +11,5 @@ public readonly record struct BuiltMenuItem(
     MenuItemState            State,
     float                    Width,
     Action<IMenuController>? Action = null,
-    string?                  Color  = null);
+    string?                  Color  = null,
+    MenuItemActionKind       ActionKind = MenuItemActionKind.None);
