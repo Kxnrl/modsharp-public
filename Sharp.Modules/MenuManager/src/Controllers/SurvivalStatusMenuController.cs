@@ -217,29 +217,41 @@ internal class SurvivalStatusMenuController : BaseMenuController
 
         // sb.Append("<font class='fontSize-s'>");
 
-        sb.Append($"{Key(MenuManager.KeyBindings.Confirm.GetBindHint())} {Text(confirm)} / {Key(MenuManager.KeyBindings.MoveUpCursor.GetBindHint())} {Text(prevItem)} / {Key(MenuManager.KeyBindings.MoveDownCursor.GetBindHint())} {Text(nextItem)}");
+        // Use per-item custom hint if the current item defines one, otherwise default hints
+        string? customHint = Cursor >= 0 && Cursor < BuiltMenuItems.Count
+            ? BuiltMenuItems[Cursor].HintText
+            : null;
 
-        var showBottomHint = !(hasBackItem && hasExitItem);
-        var showExitHint   = !hasExitItem;
-        var showBackHint   = !hasBackItem && PreviousMenus.Count > 0;
-
-        if (showBottomHint && (showExitHint || showBackHint))
+        if (customHint is not null)
         {
-            sb.Append("<br>");
+            sb.Append(customHint);
+        }
+        else
+        {
+            sb.Append($"{Key(MenuManager.KeyBindings.Confirm.GetBindHint())} {Text(confirm)} / {Key(MenuManager.KeyBindings.MoveUpCursor.GetBindHint())} {Text(prevItem)} / {Key(MenuManager.KeyBindings.MoveDownCursor.GetBindHint())} {Text(nextItem)}");
 
-            if (showExitHint)
-            {
-                sb.Append($"{Key(MenuManager.KeyBindings.Exit.GetBindHint())} {Text(exit)}");
-            }
+            var showBottomHint = !(hasBackItem && hasExitItem);
+            var showExitHint   = !hasExitItem;
+            var showBackHint   = !hasBackItem && PreviousMenus.Count > 0;
 
-            if (showBackHint)
+            if (showBottomHint && (showExitHint || showBackHint))
             {
+                sb.Append("<br>");
+
                 if (showExitHint)
                 {
-                    sb.Append(" / ");
+                    sb.Append($"{Key(MenuManager.KeyBindings.Exit.GetBindHint())} {Text(exit)}");
                 }
 
-                sb.Append($"{Key(MenuManager.KeyBindings.GoBack.GetBindHint())} {Text(back)}");
+                if (showBackHint)
+                {
+                    if (showExitHint)
+                    {
+                        sb.Append(" / ");
+                    }
+
+                    sb.Append($"{Key(MenuManager.KeyBindings.GoBack.GetBindHint())} {Text(back)}");
+                }
             }
         }
 

@@ -10,6 +10,7 @@ public readonly record struct BuiltMenuItem(
     string                   Title,
     MenuItemState            State,
     float                    Width,
-    Action<IMenuController>? Action = null,
-    string?                  Color  = null,
-    MenuItemActionKind       ActionKind = MenuItemActionKind.None);
+    Action<IMenuController>? Action     = null,
+    string?                  Color      = null,
+    MenuItemActionKind       ActionKind = MenuItemActionKind.None,
+    string?                  HintText   = null);

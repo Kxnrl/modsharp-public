@@ -540,6 +540,13 @@ public record struct MenuItemContext
     /// Defaults to <see cref="MenuItemActionKind.None"/>.
     /// </summary>
     public MenuItemActionKind       ActionKind;
+
+    /// <summary>
+    /// Optional custom hint text displayed at the bottom of the menu when this item is selected.
+    /// If <c>null</c>, the default navigation hints are shown.
+    /// The value is embedded directly into HTML output.
+    /// </summary>
+    public string?                  HintText;
 }
 
 /// <summary>

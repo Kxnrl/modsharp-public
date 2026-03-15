@@ -209,7 +209,8 @@ internal abstract class BaseMenuController : IInternalMenuController
                 BuiltMenuItems.Add(new (string.Empty,
                                         MenuItemState.Spacer,
                                         0,
-                                        ActionKind: context.ActionKind));
+                                        ActionKind: context.ActionKind,
+                                        HintText: context.HintText));
 
                 continue;
             }
@@ -238,7 +239,8 @@ internal abstract class BaseMenuController : IInternalMenuController
                                     0,
                                     context.Action,
                                     context.Color,
-                                    context.ActionKind));
+                                    context.ActionKind,
+                                    context.HintText));
         }
     }
 
