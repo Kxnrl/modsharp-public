@@ -20,19 +20,11 @@
 #ifndef MS_ROOT_LOGGING_H
 #define MS_ROOT_LOGGING_H
 
+#include <source_location>
+#include <stacktrace>
+#include <type_traits>
+
 #define BOOLVAL(v) v ? "" #v : "not " #v
-
-#define AssertPtr(ptr)                 \
-    if ((ptr) == nullptr) [[unlikely]] \
-    FatalError("MS: %s is nullptr in %s\n", #ptr, __FUNCTION__)
-
-#define AssertBool(v)      \
-    if (!(v)) [[unlikely]] \
-    FatalError("MS: %s is false in %s\n", #v, __FUNCTION__)
-
-#define AssertVal(v)       \
-    if (!(v)) [[unlikely]] \
-    FatalError("MS: %s is default in %s\n", #v, __FUNCTION__)
 
 #define BooleanSTR(v) \
     v ? "true" : "false"
@@ -116,6 +108,40 @@ void LogFuncError(const char* function, const char* message, ...);
 void LogFuncInfo(const char* function, const char* message, ...);
 
 void FatalError(const char* message, ...);
+
+template <typename T>
+    requires std::is_pointer_v<T>
+inline void AssertPtr(T ptr, const char* expr,
+    std::source_location loc = std::source_location::current())
+{
+    if (ptr == nullptr) [[unlikely]]
+        FatalError("MS: %s is nullptr in %s (%s:%d)\nStacktrace:\n%s\n",
+            expr, loc.function_name(), loc.file_name(), static_cast<int>(loc.line()),
+            std::to_string(std::stacktrace::current()).c_str());
+}
+
+inline void AssertBool(bool v, const char* expr,
+    std::source_location loc = std::source_location::current())
+{
+    if (!v) [[unlikely]]
+        FatalError("MS: %s is false in %s (%s:%d)\nStacktrace:\n%s\n",
+            expr, loc.function_name(), loc.file_name(), static_cast<int>(loc.line()),
+            std::to_string(std::stacktrace::current()).c_str());
+}
+
+template <typename T>
+inline void AssertVal(T v, const char* expr,
+    std::source_location loc = std::source_location::current())
+{
+    if (!v) [[unlikely]]
+        FatalError("MS: %s is default in %s (%s:%d)\nStacktrace:\n%s\n",
+            expr, loc.function_name(), loc.file_name(), static_cast<int>(loc.line()),
+            std::to_string(std::stacktrace::current()).c_str());
+}
+
+#define AssertPtr(ptr)  AssertPtr((ptr), #ptr)
+#define AssertBool(v)   AssertBool(static_cast<bool>(v), #v)
+#define AssertVal(v)    AssertVal((v), #v)
 
 void CreateLogging();
 

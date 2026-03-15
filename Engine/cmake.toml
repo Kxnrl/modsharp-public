@@ -15,7 +15,7 @@ debug = "CMAKE_BUILD_TYPE STREQUAL \"Debug\""
 
 [target.modsharp]
 type = "shared"
-compile-features = ["cxx_std_20"]
+compile-features = ["cxx_std_23"]
 
 # link
 private-link-libraries = ["protobuf"]
@@ -78,6 +78,7 @@ linux.link-options=[
     "-static-libgcc",
     "-Wl,-Bstatic",
     "-lstdc++",
+    "-lstdc++exp",
     "-Wl,-Bdynamic"
 ]
 

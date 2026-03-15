@@ -209,7 +209,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug") # debug
 endif()
 
 target_compile_features(modsharp PUBLIC
-	cxx_std_20
+	cxx_std_23
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
@@ -293,6 +293,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		-static-libgcc
 		-Wl,-Bstatic
 		-lstdc++
+		-lstdc++exp
 		-Wl,-Bdynamic
 	)
 endif()
