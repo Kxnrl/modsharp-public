@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Text;
 using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Shared.Objects;
 
@@ -42,17 +43,20 @@ internal sealed class Locale : ILocale
         if (format is null)
         {
             value = key;
+
             return false;
         }
 
         try
         {
             value = string.Format(_localizer.Culture, format, args);
+
             return true;
         }
         catch (FormatException)
         {
             value = format;
+
             return false;
         }
     }
@@ -64,17 +68,20 @@ internal sealed class Locale : ILocale
         if (format is null)
         {
             value = key;
+
             return false;
         }
 
         try
         {
             value = string.Format(_localizer.Culture, format, arg0);
+
             return true;
         }
         catch (FormatException)
         {
             value = format;
+
             return false;
         }
     }
@@ -86,17 +93,20 @@ internal sealed class Locale : ILocale
         if (format is null)
         {
             value = key;
+
             return false;
         }
 
         try
         {
             value = string.Format(_localizer.Culture, format, arg0, arg1);
+
             return true;
         }
         catch (FormatException)
         {
             value = format;
+
             return false;
         }
     }
@@ -108,17 +118,20 @@ internal sealed class Locale : ILocale
         if (format is null)
         {
             value = key;
+
             return false;
         }
 
         try
         {
             value = string.Format(_localizer.Culture, format, arg0, arg1, arg2);
+
             return true;
         }
         catch (FormatException)
         {
             value = format;
+
             return false;
         }
     }
@@ -131,4 +144,28 @@ internal sealed class Locale : ILocale
 
     public ILocalizedMessage Literal(string text)
         => Message().Literal(text);
+
+    internal void FormatTo(StringBuilder sb, string key, params ReadOnlySpan<object?> args)
+        => _localizer.AppendFormat(sb, key, args);
+
+    internal void FormatTo(StringBuilder sb, string key, object? arg0)
+        => _localizer.AppendFormat(sb, key, arg0);
+
+    internal void FormatTo(StringBuilder sb, string key, object? arg0, object? arg1)
+        => _localizer.AppendFormat(sb, key, arg0, arg1);
+
+    internal void FormatTo(StringBuilder sb, string key, object? arg0, object? arg1, object? arg2)
+        => _localizer.AppendFormat(sb, key, arg0, arg1, arg2);
+
+    internal bool TryFormatTo(StringBuilder sb, string key, params ReadOnlySpan<object?> args)
+        => _localizer.TryAppendFormat(sb, key, args);
+
+    internal bool TryFormatTo(StringBuilder sb, string key, object? arg0)
+        => _localizer.TryAppendFormat(sb, key, arg0);
+
+    internal bool TryFormatTo(StringBuilder sb, string key, object? arg0, object? arg1)
+        => _localizer.TryAppendFormat(sb, key, arg0, arg1);
+
+    internal bool TryFormatTo(StringBuilder sb, string key, object? arg0, object? arg1, object? arg2)
+        => _localizer.TryAppendFormat(sb, key, arg0, arg1, arg2);
 }

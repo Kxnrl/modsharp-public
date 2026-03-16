@@ -36,6 +36,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     // <language, <LKey, LValue>>
     private readonly Dictionary<string, Dictionary<string, string>> _locales;
     private readonly Dictionary<SteamID, Localizer>                 _localizers;
+    private readonly Dictionary<SteamID, Locale>                    _localeCache;
     private readonly List<LocaleFileEntry>                          _loadedLocaleFiles;
     private readonly CultureInfo                                    _defaultCultureInfo;
     private readonly Localizer                                      _defaultLocalizer;
@@ -60,6 +61,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         _conVar         = sharedSystem.GetConVarManager();
 
         _localizers        = new Dictionary<SteamID, Localizer>(128);
+        _localeCache       = new Dictionary<SteamID, Locale>(128);
         _loadedLocaleFiles = [];
         _localePath        = Path.Combine(sharpPath, "locales");
 
@@ -91,7 +93,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
             }
         }
 
-        _defaultCultureInfo = new CultureInfo(selectedKey);
+        _defaultCultureInfo = Internationalization.GetCulture(selectedKey);
         var defaultLocale = _locales[selectedKey];
         _defaultLocalizer = new Localizer(defaultLocale, defaultLocale, _defaultCultureInfo);
     }
@@ -128,7 +130,10 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         => _modSharp.PushTimer(() => TryQueryLanguage(client), 1, GameTimerFlags.StopOnMapEnd);
 
     public void OnClientDisconnected(IGameClient client, NetworkDisconnectionReason reason)
-        => _localizers.Remove(client.SteamId);
+    {
+        _localizers.Remove(client.SteamId);
+        _localeCache.Remove(client.SteamId);
+    }
 
     private void TryQueryLanguage(IGameClient client)
     {
@@ -164,13 +169,12 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         var i18n = Internationalization.SteamLanguageToI18N.GetValueOrDefault(value, _defaultCultureInfo.Name);
 
         _localizers[identity] = CreateLocalize(i18n);
+        _localeCache.Remove(identity);
     }
 
     private Localizer CreateLocalize(string cultureName)
     {
-        var culture = Internationalization.SteamLanguageToI18N.TryGetValue(cultureName, out var i18n)
-            ? new CultureInfo(i18n)
-            : new CultureInfo(cultureName);
+        var culture = Internationalization.GetCulture(cultureName);
 
         var def   = _locales[_defaultCultureInfo.Name];
         var local = _locales.GetValueOrDefault(culture.Name, def);
@@ -209,7 +213,17 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     }
 
     public ILocale For(IGameClient client)
-        => new Locale(GetLocalizer(client), client, DefaultPrefix);
+    {
+        var id = client.SteamId;
+
+        if (_localeCache.TryGetValue(id, out var cached))
+            return cached;
+
+        var locale = new Locale(GetLocalizer(client), client, DefaultPrefix);
+        _localeCache[id] = locale;
+
+        return locale;
+    }
 
     public IMultiLocale ForMany(IEnumerable<IGameClient> clients)
         => new MultiLocale(clients.ToArray(), this, DefaultPrefix);
@@ -228,6 +242,8 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
         {
             locale.Clear();
         }
+
+        _localeCache.Clear();
     }
 
     private void LoadLocaleFile(Dictionary<string, Dictionary<string, string>> data, bool suppressDuplicationWarnings)
@@ -285,11 +301,9 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
 
     public string Format(string cultureName, string key, params ReadOnlySpan<object?> args)
     {
-        var culture = Internationalization.SteamLanguageToI18N.TryGetValue(cultureName, out var i18n)
-            ? new CultureInfo(i18n)
-            : new CultureInfo(cultureName);
+        var culture = Internationalization.GetCulture(cultureName);
 
-        return FormatInternal(culture, cultureName, key, args);
+        return FormatInternal(culture, culture.Name, key, args);
     }
 
     private string FormatInternal(CultureInfo culture, string cultureName, string key, ReadOnlySpan<object?> args)

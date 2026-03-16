@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Sharp.Modules.LocalizerManager;
 
@@ -39,4 +40,37 @@ internal static class Internationalization
             { "ukrainian", "uk-UA" },
             { "vietnamese", "vi-VN" },
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+
+    private static readonly FrozenDictionary<string, CultureInfo> CultureInfoCache
+        = BuildCultureInfoCache();
+
+    private static FrozenDictionary<string, CultureInfo> BuildCultureInfoCache()
+    {
+        var dict = new Dictionary<string, CultureInfo>(SteamLanguageToI18N.Count, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var (_, cultureName) in SteamLanguageToI18N)
+        {
+            dict.TryAdd(cultureName, new CultureInfo(cultureName));
+        }
+
+        return dict.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+    }
+
+    internal static CultureInfo GetCulture(string name)
+    {
+        // Direct i18n name hit (e.g. "en-us")
+        if (CultureInfoCache.TryGetValue(name, out var culture))
+        {
+            return culture;
+        }
+
+        // Steam language name (e.g. "english" → "en-us")
+        if (SteamLanguageToI18N.TryGetValue(name, out var i18n) && CultureInfoCache.TryGetValue(i18n, out culture))
+        {
+            return culture;
+        }
+
+        // Unknown — fallback (rare, only for custom/unsupported cultures)
+        return new CultureInfo(name);
+    }
 }
