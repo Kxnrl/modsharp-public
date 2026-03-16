@@ -28,24 +28,33 @@ internal static class MessageRenderHelper
         {
             ref readonly var only = ref span[0];
 
-            // Resolve the single segment's content (null means we can't short-circuit).
-            // When a prefix is present, only short-circuit for kinds that don't allocate
-            // an intermediate string (Literal/Value), because for Text/TextWithFallback
-            // the Concat would add a second allocation on top of string.Format's result.
+            if (!hasPrefix)
+            {
+                // No prefix: always short-circuit, no Concat overhead possible.
+                return only.Kind switch
+                {
+                    SegmentKind.Literal          => only.Text ?? string.Empty,
+                    SegmentKind.Value            => only.Args.Arg0?.ToString() ?? string.Empty,
+                    SegmentKind.Text             => RenderText(only, locale),
+                    SegmentKind.TextWithFallback => RenderTextWithFallback(only, locale),
+                    _                            => string.Empty,
+                };
+            }
+
+            // With prefix: only short-circuit when the content itself doesn't allocate
+            // an intermediate string, so Concat is the sole allocation.
             var content = only.Kind switch
             {
-                SegmentKind.Literal => only.Text ?? string.Empty,
-                SegmentKind.Value => only.Args.Arg0?.ToString() ?? string.Empty,
-                SegmentKind.Text when only.Args.Count             <= 1 && !hasPrefix => RenderText(only, locale),
-                SegmentKind.TextWithFallback when only.Args.Count <= 1 && !hasPrefix => RenderTextWithFallback(only, locale),
-                _ => null,
+                SegmentKind.Literal                              => only.Text ?? string.Empty,
+                SegmentKind.Value when only.Args.Arg0 is string s => s,
+                SegmentKind.Text             when only.Args.Count == 0 => RenderText(only, locale),
+                SegmentKind.TextWithFallback when only.Args.Count == 0 => RenderTextWithFallback(only, locale),
+                _ => (string?)null,
             };
 
             if (content is not null)
             {
-                return hasPrefix
-                    ? string.Concat(" ", prefix, " ", content)
-                    : content;
+                return string.Concat(" ", prefix, " ", content);
             }
         }
 
@@ -226,12 +235,24 @@ internal static class MessageRenderHelper
                 sb.Append(s);
 
                 break;
+            case char c:
+                sb.Append(c);
+
+                break;
             case int i:
                 sb.Append(i);
 
                 break;
+            case uint ui:
+                sb.Append(ui);
+
+                break;
             case long l:
                 sb.Append(l);
+
+                break;
+            case ulong ul:
+                sb.Append(ul);
 
                 break;
             case float f:
@@ -246,6 +267,22 @@ internal static class MessageRenderHelper
                 sb.Append(b);
 
                 break;
+            case byte by:
+                sb.Append(by);
+
+                break;
+            case sbyte sby:
+                sb.Append(sby);
+
+                break;
+            case short sh:
+                sb.Append(sh);
+
+                break;
+            case ushort ush:
+                sb.Append(ush);
+
+                break;
             default:
                 sb.Append(value);
 
@@ -254,6 +291,7 @@ internal static class MessageRenderHelper
     }
 }
 
+[StructLayout(LayoutKind.Auto)]
 internal readonly record struct MessageSegment(
     SegmentKind Kind,
     string?     Text,
@@ -287,6 +325,7 @@ internal enum SegmentKind : byte
     Value,
 }
 
+[StructLayout(LayoutKind.Auto)]
 internal readonly struct SegmentArgs
 {
     private readonly byte _count;
