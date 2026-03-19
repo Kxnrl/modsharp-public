@@ -31,7 +31,9 @@ bool IGameRules::PlayerCanHearChat(CCSPlayerController* pReceiverController, CCS
 void IGameRules::TerminateRound(float flDelay, uint32_t iReason, bool bypassHook, TeamRewardInfo* reward_info, uint32_t reward_size)
 {
     s_bBypassTerminateRoundHook = bypassHook;
-    address::server::CCSGameRules_TerminateRound(this, flDelay, iReason, reward_info, reward_size);
+    CUtlVector<TeamRewardInfo> rewards(reward_info, reward_size, reward_size);
+
+    address::server::CCSGameRules_TerminateRound(this, flDelay, iReason, &rewards);
     s_bBypassTerminateRoundHook = false;
 }
 
