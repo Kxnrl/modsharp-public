@@ -212,14 +212,9 @@
       "linux": 29,
       "windows": 29
     },
-    // str 'CNetworkGameServerBase::ConnectClient( name='%s', remote='%s' )\n'
-    "CNetworkGameServer::ConnectClient": {
-      "linux": 80,
-      "windows": 75
-    },
     "CNetworkGameServer::DisconnectClient": {
-      "linux": 75,
-      "windows": 70
+      "linux": 76,
+      "windows": 71
     },
     "CNetworkGameServer::GetAddonName": {
       "linux": 26,
