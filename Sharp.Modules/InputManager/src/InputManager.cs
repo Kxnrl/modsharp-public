@@ -12,53 +12,9 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace Sharp.Modules.InputManager.Core;
+namespace Sharp.Modules.InputManager;
 
-internal class ListenerInfo
-{
-    public Action<IGameClient> Callback     { get; }
-    public float               HoldDuration { get; }
-
-    public ListenerInfo(Action<IGameClient> callback, float holdDuration)
-    {
-        Callback     = callback;
-        HoldDuration = holdDuration;
-    }
-}
-
-internal class InputListenerInfo
-{
-    private readonly List<ListenerInfo> _keyDownListeners = [];
-    private readonly List<ListenerInfo> _keyHoldListeners = [];
-    private readonly List<ListenerInfo> _keyUpListeners   = [];
-
-    public List<ListenerInfo> GetListeners(InputState state)
-    {
-        return state switch
-        {
-            InputState.KeyDown => _keyDownListeners,
-            InputState.KeyHold => _keyHoldListeners,
-            InputState.KeyUp   => _keyUpListeners,
-            _                  => throw new ArgumentException($"Unsupported input state: {state}"),
-        };
-    }
-}
-
-internal class CombinationListenerInfo
-{
-    public InputKey[]          Keys     { get; }
-    public Action<IGameClient> Callback { get; }
-    public InputState          State    { get; }
-
-    public CombinationListenerInfo(InputKey[] keys, Action<IGameClient> callback, InputState state)
-    {
-        Keys     = keys;
-        Callback = callback;
-        State    = state;
-    }
-}
-
-internal class InputManager : IModSharpModule, IInputManager
+internal sealed class InputManager : IModSharpModule, IInputManager
 {
     private readonly ILogger<InputManager> _logger;
     private readonly IModSharp             _modSharp;
@@ -66,28 +22,10 @@ internal class InputManager : IModSharpModule, IInputManager
     private readonly IClientManager        _clients;
     private readonly IHookManager          _hooks;
 
-    private readonly Dictionary<(IGameClient Client, InputKey Key), (DateTime PressedTime, bool HasTriggered)> _keyPressStates
-        = new ();
-
-    private readonly Dictionary<InputKey, InputListenerInfo> _inputListeners = new ()
-    {
-        [InputKey.W]       = new InputListenerInfo(),
-        [InputKey.S]       = new InputListenerInfo(),
-        [InputKey.A]       = new InputListenerInfo(),
-        [InputKey.D]       = new InputListenerInfo(),
-        [InputKey.E]       = new InputListenerInfo(),
-        [InputKey.Tab]     = new InputListenerInfo(),
-        [InputKey.Space]   = new InputListenerInfo(),
-        [InputKey.Shift]   = new InputListenerInfo(),
-        [InputKey.Attack1] = new InputListenerInfo(),
-        [InputKey.Attack2] = new InputListenerInfo(),
-        [InputKey.R]       = new InputListenerInfo(),
-        [InputKey.F]       = new InputListenerInfo(),
-    };
-
-    private readonly List<CombinationListenerInfo> _combinationListeners = [];
-
-    private readonly Dictionary<string, InputListenerRegistry> _registries = [];
+    private readonly Dictionary<(IGameClient Client, InputKey Key), (DateTime PressedTime, bool HasTriggered)> _keyPressStates;
+    private readonly Dictionary<InputKey, InputListenerInfo> _inputListeners;
+    private readonly List<CombinationListenerInfo> _combinationListeners;
+    private readonly Dictionary<string, InputListenerRegistry> _registries;
 
     public InputManager(ISharedSystem sharedSystem,
         string                        dllPath,
@@ -103,6 +41,26 @@ internal class InputManager : IModSharpModule, IInputManager
         _modules  = sharedSystem.GetSharpModuleManager();
         _clients  = sharedSystem.GetClientManager();
         _hooks    = sharedSystem.GetHookManager();
+
+        _keyPressStates       = [];
+        _combinationListeners = [];
+        _registries           = [];
+
+        _inputListeners = new Dictionary<InputKey, InputListenerInfo>
+        {
+            [InputKey.W]       = new (),
+            [InputKey.S]       = new (),
+            [InputKey.A]       = new (),
+            [InputKey.D]       = new (),
+            [InputKey.E]       = new (),
+            [InputKey.Tab]     = new (),
+            [InputKey.Space]   = new (),
+            [InputKey.Shift]   = new (),
+            [InputKey.Attack1] = new (),
+            [InputKey.Attack2] = new (),
+            [InputKey.R]       = new (),
+            [InputKey.F]       = new (),
+        };
     }
 
 #region IModSharpModule
@@ -428,8 +386,10 @@ internal class InputManager : IModSharpModule, IInputManager
         }
     }
 
-    private bool TryGetUserCommandButton(InputKey key, out UserCommandButtons button)
+    private static bool TryGetUserCommandButton(InputKey key, out UserCommandButtons button)
     {
+        const UserCommandButtons none = 0;
+
         button = key switch
         {
             InputKey.W       => UserCommandButtons.Forward,
@@ -444,9 +404,9 @@ internal class InputManager : IModSharpModule, IInputManager
             InputKey.Attack2 => UserCommandButtons.Attack2,
             InputKey.R       => UserCommandButtons.Reload,
             InputKey.F       => UserCommandButtons.LookAtWeapon,
-            _                => default,
+            _                => none,
         };
 
-        return button != default;
+        return button != none;
     }
 }

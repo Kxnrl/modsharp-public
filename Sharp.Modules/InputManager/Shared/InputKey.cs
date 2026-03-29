@@ -3,8 +3,8 @@ using System;
 namespace Sharp.Modules.InputManager.Shared;
 
 /// <summary>
-///     输入键位。 <br />
-///     这里的键位为「CS2本身的默认键位」，不考虑你改键的情况。换句话说这里都是「约定」。
+///     Input Keys <br />
+///     the keys in here is「CS2 Original binds」
 /// </summary>
 public enum InputKey
 {

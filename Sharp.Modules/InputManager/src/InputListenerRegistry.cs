@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using Sharp.Modules.InputManager.Shared;
 using Sharp.Shared.Objects;
 
-namespace Sharp.Modules.InputManager.Core;
+namespace Sharp.Modules.InputManager;
 
 public class InputListenerRegistry : IInputListenerRegistry
 {
     private readonly InputManager                                                            _manager;
-    private readonly List<(InputKey Key, Action<IGameClient> Callback, InputState State)>    _inputListeners       = [];
-    private readonly List<(InputKey[] Keys, Action<IGameClient> Callback, InputState State)> _combinationListeners = [];
+    private readonly List<(InputKey Key, Action<IGameClient> Callback, InputState State)>    _inputListeners;
+    private readonly List<(InputKey[] Keys, Action<IGameClient> Callback, InputState State)> _combinationListeners;
 
     internal InputListenerRegistry(InputManager manager)
-        => _manager = manager;
+    {
+        _manager = manager;
+
+        _inputListeners       = [];
+        _combinationListeners = [];
+    }
 
     public void AddInputListener(InputKey key,
         Action<IGameClient>               action,

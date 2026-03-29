@@ -38,7 +38,5 @@ public interface IInputListenerRegistry
     /// <param name="keys">Array of keys for the combination</param>
     /// <param name="action">Callback function to invoke</param>
     /// <param name="state">The key state to listen for, defaults to KeyDown</param>
-    void AddCombinationListener(InputKey[] keys,
-        Action<IGameClient>                action,
-        InputState                         state = InputState.KeyDown);
+    void AddCombinationListener(InputKey[] keys, Action<IGameClient> action, InputState state = InputState.KeyDown);
 }
