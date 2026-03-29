@@ -126,6 +126,8 @@
     <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h" />
     <ClInclude Include="src\cstrike\component\CGameSceneNode.h" />
     <ClInclude Include="src\cstrike\entity\CEconEntity.h" />
+    <ClInclude Include="src\cstrike\entity\CLogicCase.h" />
+    <ClInclude Include="src\cstrike\entity\CPointHurt.h" />
     <ClInclude Include="src\cstrike\interfaces.h" />
     <ClInclude Include="src\cstrike\Interface\ICommandLine.h" />
     <ClInclude Include="src\cstrike\Interface\IFileSystem.h" />
