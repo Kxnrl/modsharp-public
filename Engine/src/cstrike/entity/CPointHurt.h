@@ -17,8 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_ENTITY_CPOINTHURT_H
-#define CSTRIKE_ENTITY_CPOINTHURT_H
+#ifndef CSTRIKE_ENTITY_POINTHURT_H
+#define CSTRIKE_ENTITY_POINTHURT_H
 
 #include "cstrike/entity/CBaseEntity.h"
 

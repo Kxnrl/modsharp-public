@@ -17,8 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_ENTITY_CLOGICCASE_H
-#define CSTRIKE_ENTITY_CLOGICCASE_H
+#ifndef CSTRIKE_ENTITY_LOGICCASE_H
+#define CSTRIKE_ENTITY_LOGICCASE_H
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/type/CUtlSymbolLarge.h"

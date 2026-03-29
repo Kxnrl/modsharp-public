@@ -580,19 +580,18 @@ using AddOutputHandler_t = void (*)(const CEntityIdentity* pInstance, const char
 
 struct AddOutputKey_t
 {
-    AddOutputKey_t(const char* pName, size_t parts, bool prefix = false)
-    {
-        m_sName   = std::string(pName);
-        m_nParts  = parts;
-        m_bPrefix = prefix;
-    }
+    AddOutputKey_t()                            = delete;
+    AddOutputKey_t(const AddOutputKey_t& other) = default;
 
-    AddOutputKey_t(const AddOutputKey_t& other) :
-        m_sName(other.m_sName), m_nParts(other.m_nParts), m_bPrefix(other.m_bPrefix) {}
+    AddOutputKey_t(const char* pName, size_t parts) :
+        AddOutputKey_t(pName, parts, false) {}
+
+    AddOutputKey_t(const char* pName, size_t parts, bool prefix) :
+        m_sName(pName), m_nParts(parts), m_bPrefix(prefix) {}
 
     std::string m_sName;
     size_t      m_nParts;
-    bool        m_bPrefix = false;
+    bool        m_bPrefix;
 };
 
 inline static bool GetVariantInt(const Variant_t* pValue, int& value)
@@ -643,6 +642,8 @@ inline static bool GetVariantFloat(const Variant_t* pValue, float& value)
 
 struct AddOutputInfo_t
 {
+    AddOutputInfo_t() = delete;
+
     AddOutputInfo_t(const AddOutputKey_t& key, const AddOutputHandler_t& handler) :
         m_Key(key), m_Handler(handler) {}
 
@@ -991,7 +992,7 @@ static void AddOutputCustom_Case(const CEntityIdentity* pInstance, const char* p
             return;
         }
 
-        const auto& pValue                   = g_pGameEntitySystem->AllocPooledString(vecArgs[1].c_str());
+        const auto& pValue            = g_pGameEntitySystem->AllocPooledString(vecArgs[1].c_str());
         pEntity->m_nCase()[iCase - 1] = pValue;
 
         if (ms_entity_io_verbose_logging->GetValue<bool>())
@@ -1005,7 +1006,8 @@ static void AddOutputCustom_Case(const CEntityIdentity* pInstance, const char* p
     }
 }
 
-const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
+static const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
+
     {{"targetname", 2},     AddOutputCustom_Targetname    },
     {{"origin", 4},         AddOutputCustom_Origin        },
     {{"angles", 4},         AddOutputCustom_Angles        },
@@ -1029,6 +1031,8 @@ const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
     {{"damage", 2},         AddOutputCustom_Damage        },
     {{"damagetype", 2},     AddOutputCustom_DamageType    },
     {{"damageradius", 2},   AddOutputCustom_DamageRadius  },
+
+    // Prefix
     {{"Case", 2, true},     AddOutputCustom_Case          },
 };
 
@@ -1036,23 +1040,12 @@ static bool CustomInput_CustomAddOutput(const CEntityIdentity* pInstance, const 
 {
     if (const auto param = pValue->AutoCastString())
     {
-        const auto split = StringSplit(param, " ");
-
-        if (!split.empty())
+        if (const auto split = StringSplit(param, " "); split.size() >= 2)
         {
             for (const auto& [input, handler] : s_AddOutputHandlers)
             {
-                bool matched = false;
-                if (input.m_bPrefix)
-                {
-                    matched = strncasecmp(split[0].c_str(), input.m_sName.c_str(), input.m_sName.size()) == 0;
-                }
-                else
-                {
-                    matched = strcasecmp(split[0].c_str(), input.m_sName.c_str()) == 0;
-                }
-
-                if (matched)
+                if ((input.m_bPrefix && strncasecmp(split[0].c_str(), input.m_sName.c_str(), input.m_sName.size()) == 0)
+                    || (!input.m_bPrefix && strcasecmp(split[0].c_str(), input.m_sName.c_str()) == 0))
                 {
                     if (split.size() == input.m_nParts)
                     {
@@ -1328,7 +1321,7 @@ static bool CustomInput_SetMessage(const CEntityIdentity* pInstance, const char*
     return false;
 }
 
-const std::vector<CustomInputInfo_t> s_InputEnhancementInputs = {
+static const std::vector<CustomInputInfo_t> s_InputEnhancementInputs = {
     {"CustomAddOutput", CustomInput_CustomAddOutput},
     {"AddCustomOutput", CustomInput_CustomAddOutput},
     {"KeyValues",       CustomInput_CustomAddOutput},
