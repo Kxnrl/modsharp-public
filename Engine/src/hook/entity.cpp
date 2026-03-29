@@ -216,12 +216,11 @@ BeginMemberHookScope(CTriggerPush)
         if (!pEntity->PassesTriggerFilters(pOther))
             return;
 
-        Vector vecAbsDir;
-        vecAbsDir.Init();
+        Vector vecAbsDir(0,0,0);
 
         auto mat = pEntity->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
 
-        const auto pushDir = pEntity->m_vecPushDirEntitySpace();
+        const auto& pushDir = pEntity->m_vecPushDirEntitySpace();
 
         // I had issues with VectorRotate on linux, so I did it here
         vecAbsDir.x = pushDir.x * mat[0][0] + pushDir.y * mat[0][1] + pushDir.z * mat[0][2];
@@ -239,7 +238,8 @@ BeginMemberHookScope(CTriggerPush)
         if (vecPush.z > 0 && (flags & FL_ONGROUND))
         {
             pOther->SetGroundEntity(nullptr, nullptr);
-            auto origin = pOther->GetAbsOrigin();
+
+            Vector origin = pOther->GetAbsOrigin();
             origin.z += 1.0f;
 
 #ifdef USE_ABS
@@ -918,7 +918,8 @@ static void AddOutputCustom_Damage(const CEntityIdentity* pInstance, const char*
 
     if (strcasecmp(pEntity->GetClassname(), "point_hurt") == 0)
     {
-        const auto value = std::clamp((int)atoi(vecArgs[1].c_str()), 0, INT_MAX);
+        // damage max to 99999999 or damage will be broken, idk how the valve work.
+        const auto value = std::clamp(atoi(vecArgs[1].c_str()), 0, 99999999);
         pEntity->m_nDamage(value);
 
         if (ms_entity_io_verbose_logging->GetValue<bool>())
@@ -938,7 +939,7 @@ static void AddOutputCustom_DamageType(const CEntityIdentity* pInstance, const c
 
     if (strcasecmp(pEntity->GetClassname(), "point_hurt") == 0)
     {
-        const auto value = std::clamp((int)atoi(vecArgs[1].c_str()), 0, INT_MAX);
+        const auto value = std::clamp(atoi(vecArgs[1].c_str()), 0, INT_MAX);
         pEntity->m_bitsDamageType(value);
 
         if (ms_entity_io_verbose_logging->GetValue<bool>())
@@ -984,16 +985,17 @@ static void AddOutputCustom_Case(const CEntityIdentity* pInstance, const char* p
             return;
         }
 
-        const int iCase = atoi(vecArgs[0].substr(4).c_str());
+        const auto caseIndex = atoi(vecArgs[0].substr(4).c_str());
 
-        if (iCase < 1 || iCase > 32)
+        if (caseIndex < 1 || caseIndex > 32)
         {
             WARN("%d.%s Error Input '%s': case number must be between 01-32", pInstance->GetEntityIndex(), pInstance->GetName(), vecArgs[0].c_str());
             return;
         }
 
-        const auto& pValue            = g_pGameEntitySystem->AllocPooledString(vecArgs[1].c_str());
-        pEntity->m_nCase()[iCase - 1] = pValue;
+        const auto& pValue = g_pGameEntitySystem->AllocPooledString(vecArgs[1].c_str());
+
+        pEntity->m_nCase()[caseIndex - 1] = pValue;
 
         if (ms_entity_io_verbose_logging->GetValue<bool>())
         {
