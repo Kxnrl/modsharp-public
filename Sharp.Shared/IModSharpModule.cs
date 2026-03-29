@@ -48,15 +48,23 @@ public interface IModSharpModule
     void Shutdown();
 
     /// <summary>
-    ///     Called after library loaded
+    ///     Called after modules loaded, this does not call for the current module itself.
     /// </summary>
+    /// <remarks>
+    ///     This only fires for modules loaded AFTER the current module. 
+    ///     If ModuleA loads first and then ModuleB loads, ModuleA will receive <see cref="OnLibraryConnected"/> for ModuleB, 
+    ///     but ModuleB will NOT receive <see cref="OnLibraryConnected"/> for ModuleA (since ModuleA was already loaded).
+    ///     Use <see cref="OnAllModulesLoaded"/> to safely access all modules regardless of load order.
+    /// </remarks>
+    /// <param name="name">The assembly file name, without extension(.dll), of the loaded module (e.g., "Sharp.Modules.LocalizerManager")</param>
     void OnLibraryConnected(string name)
     {
     }
 
     /// <summary>
-    ///     Called before library unloaded
+    ///     Called before library unloaded, this does not call for the current module itself
     /// </summary>
+    /// <param name="name">The assembly file name, without extension(.dll), of the unloading module (e.g., "Sharp.Modules.LocalizerManager")</param>
     void OnLibraryDisconnect(string name)
     {
     }

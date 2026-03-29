@@ -25,12 +25,12 @@ namespace Sharp.Shared.Managers;
 public interface ISoundManager
 {
     /// <summary>
-    ///     获取SoundEvent时长
+    ///     Gets the duration of a SoundEvent
     /// </summary>
     float GetSoundDuration(string soundEvent);
 
     /// <summary>
-    ///     发射SoundEvent
+    ///     Starts a SoundEvent
     /// </summary>
     SoundOpEventGuid StartSoundEvent(string sound,
         IBaseEntity?                        entity = null,
@@ -38,42 +38,42 @@ public interface ISoundManager
         RecipientFilter                     filter = default);
 
     /// <summary>
-    ///     停止SoundEvent
+    ///     Stops a SoundEvent
     /// </summary>
     void StopSoundEvent(SoundOpEventGuid guid);
 
     /// <summary>
-    ///     停止SoundEvent
+    ///     Stops a SoundEvent
     /// </summary>
     void StopSoundEvent(SoundOpEventGuid guid, RecipientFilter filter);
 
     /// <summary>
-    ///     设置SoundEvent参数
+    ///     Sets a SoundEvent parameter
     /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, float value, RecipientFilter filter = default);
 
     /// <summary>
-    ///     设置SoundEvent参数
+    ///     Sets a SoundEvent parameter
     /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, Vector value, RecipientFilter filter = default);
 
     /// <summary>
-    ///     设置SoundEvent参数
+    ///     Sets a SoundEvent parameter
     /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, int value, RecipientFilter filter = default);
 
     /// <summary>
-    ///     设置SoundEvent参数
+    ///     Sets a SoundEvent parameter
     /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, uint value, RecipientFilter filter = default);
 
     /// <summary>
-    ///     设置SoundEvent参数
+    ///     Sets a SoundEvent parameter
     /// </summary>
     bool SetSoundEventParam(SoundOpEventGuid guid, string param, ulong value, RecipientFilter filter = default);
 
     /// <summary>
-    ///     判断SoundEvent是否有效
+    ///     Checks if a SoundEvent is valid
     /// </summary>
     bool IsSoundEventValid(string soundEvent);
 }

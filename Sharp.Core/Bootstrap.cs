@@ -37,6 +37,7 @@ using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
 using Sharp.Core.Managers;
+using Sharp.Core.Pools;
 using Sharp.Core.Utilities;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -67,7 +68,7 @@ public static class Bootstrap
     public static void Shutdown()
     {
         ShutdownMonitor.Shutdown();
-
+        StringPool.Shutdown();
         Console.WriteLine("MS: Shutdown Bootstrap!");
     }
 
@@ -165,6 +166,12 @@ public static class Bootstrap
         }
 
         SharedGameObject.SchemaInfo = schema.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        
+        if (Debugger.IsAttached)
+        {
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "data", "schema.dump.json"),
+                              System.Text.Json.JsonSerializer.Serialize(SharedGameObject.SchemaInfo));
+        }
 
         // validate used schema field
         return SchemaValidate.SchemaValidator.Validate();
@@ -248,6 +255,9 @@ public static class Bootstrap
         try
         {
             var benchmark = Environment.GetCommandLineArgs().Any(x => x.Contains("benchmark"));
+
+            // pooling
+            StringPool.Initialize(10240);
 
             var sw = Stopwatch.StartNew();
             var ap = Stopwatch.StartNew();
@@ -523,6 +533,7 @@ public static class Bootstrap
         services.AddSingleton<ICoreSoundManager, SoundManager>();
         services.AddSingleton<ICorePhysicsQueryManager, PhysicsQueryManager>();
         services.AddSingleton<ICoreSharpModuleManager, SharpModuleManager>();
+        services.AddSingleton<ICoreParticleManager, ParticleManager>();
         services.AddSingleton<ISharedManager, SharedManager>();
     }
 
@@ -541,7 +552,8 @@ public static class Bootstrap
         services.GetRequiredService<ICoreSoundManager>();
         services.GetRequiredService<ICorePhysicsQueryManager>();
         services.GetRequiredService<ICoreSharpModuleManager>();
-
+        services.GetRequiredService<ICoreParticleManager>();
+        
         services.GetRequiredService<ExceptionHandler>().Start();
         services.GetRequiredService<ISharpCore>().InitMainThread();
     }

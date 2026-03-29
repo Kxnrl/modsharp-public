@@ -22,27 +22,27 @@ namespace Sharp.Shared.Enums;
 public enum LifeState : byte
 {
     /// <summary>
-    ///     活着
+    ///     Alive
     /// </summary>
     Alive,
 
     /// <summary>
-    ///     死亡时处理阶段
+    ///     Death processing stage
     /// </summary>
     Dying,
 
     /// <summary>
-    ///     死了
+    ///     Dead
     /// </summary>
     Dead,
 
     /// <summary>
-    ///     不知道
+    ///     Can be respawned
     /// </summary>
     Respawnable,
 
     /// <summary>
-    ///     复活时处理阶段
+    ///     Respawn processing stage
     /// </summary>
     Respawning,
 }

@@ -18,13 +18,21 @@
  */
 
 #include "address.h"
+
 #include "gamedata.h"
 #include "global.h"
 #include "logging.h"
 #include "module.h"
+#include "scopetimer.h"
 #include "types.h"
 
+#include "cstrike/interface/IGameSystem.h"
+
+#include <Zydis.h>
+
 #include <array>
+
+class CBaseGameSystemFactory;
 
 #define RESOLVE_GAMEDATA_ADDRESS(name, variable) \
     (variable) = g_pGameData->GetAddress<decltype(variable)>(name)
@@ -35,13 +43,170 @@
 #    define RELATE_SERVER_LIB_FILE_PATH "../../csgo/bin/linuxsteamrt64/"
 #endif
 
-GameData* g_pGameData;
+GameData*   g_pGameData;
+extern void InitializeInterfaces();
+
+CBaseGameSystemFactory** CBaseGameSystemFactory::sm_ppFirst = nullptr;
+
+static void FindCEntityIdentity_SetEntityName()
+{
+    const auto set_entity_name_functions = modules::server->FindAllFunctionsFromStringRefs({"CEntityIdentity::SetEntityName called, but there is no entity name string table pointer!\n"});
+    if (set_entity_name_functions.empty()) [[unlikely]]
+    {
+        FatalError("Failed to find CEntityIdentity::SetEntityName");
+        return;
+    }
+
+    const auto point_script_set_entity_name = modules::server->FindFunctionFromStringRefs({"SetEntityName",
+                                                                                           "(name: string)"});
+    if (!point_script_set_entity_name.IsValid())
+    {
+        FatalError("Failed to find CPointScript::SetEntityName");
+        return;
+    }
+
+    const auto range = modules::server->GetFunctionRange(point_script_set_entity_name);
+    if (!range)
+    {
+        FatalError("Failed to get function range for CPointScript::SetEntityName");
+        return;
+    }
+
+    ZydisDecoder decoder{};
+    if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
+    {
+        FatalError("Failed to initialize Zydis decoder");
+        return;
+    }
+
+    ZydisDecodedInstruction instr;
+
+    for (auto ip = range->start; ip < range->end;)
+    {
+        if (ZYAN_FAILED(ZydisDecoderDecodeInstruction(&decoder, nullptr, reinterpret_cast<const void*>(ip), range->end - ip, &instr)))
+        {
+            ip++;
+            continue;
+        }
+
+        if (instr.opcode == 0xE8)
+        {
+            auto target = ip + instr.length + static_cast<std::int32_t>(instr.raw.imm[0].value.s);
+            for (const auto& func : set_entity_name_functions)
+            {
+                if (target == func)
+                {
+                    FLOG("Found CEntityIdentity::SetEntityName at server+0x%llx", func - modules::server->Base());
+                    address::server::CEntityIdentity_SetEntityName = reinterpret_cast<address::server::CEntityIdentity_SetEntityName_t>(func);
+                    return;
+                }
+            }
+        }
+
+        ip += instr.length;
+    }
+
+    FatalError("Failed to find CEntityIdentity::SetEntityName call in CPointScript::SetEntityName");
+}
+
+static void FindGameSystemFactory()
+{
+    const auto function_address = modules::server->FindFunctionFromStringRef("Game System %s is defined twice!\n");
+    if (!function_address.IsValid()) [[unlikely]]
+    {
+        FatalError("Failed to find IGameSystem::InitAllSystems");
+        return;
+    }
+
+    ZydisDecoder decoder;
+    if (!ZYAN_SUCCESS(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64))) [[unlikely]]
+    {
+        FatalError("Failed to initialize Zydis decoder.");
+        return;
+    }
+
+    ZydisDecodedInstruction instr;
+    ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
+
+    std::uintptr_t ip = function_address;
+
+    std::uintptr_t pending_addr = 0;
+    ZydisRegister  pending_reg  = ZYDIS_REGISTER_NONE;
+
+    for (auto i = 0; i < 50; ++i)
+    {
+        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder,
+            reinterpret_cast<const void*>(ip),
+            ZYDIS_MAX_INSTRUCTION_LENGTH,
+            &instr,
+            operands))) [[unlikely]]
+            break;
+
+        // mov reg, cs:CBaseGameSystemFactory::sm_pFirst
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) && instr.operand_count_visible == 2)
+        {
+            const auto& dst = operands[0];
+            const auto& src = operands[1];
+
+            if (dst.type == ZYDIS_OPERAND_TYPE_REGISTER && src.type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                pending_reg  = dst.reg.value;
+                pending_addr = ip + instr.length + src.mem.disp.value;
+            }
+        }
+        // test reg, reg
+        else if (pending_reg != ZYDIS_REGISTER_NONE && instr.mnemonic == ZYDIS_MNEMONIC_TEST && instr.operand_count_visible == 2)
+        {
+            const auto& op1 = operands[0];
+            const auto& op2 = operands[1];
+
+            if (op1.type == ZYDIS_OPERAND_TYPE_REGISTER && op1.reg.value == pending_reg && op2.type == ZYDIS_OPERAND_TYPE_REGISTER && op2.reg.value == pending_reg)
+            {
+                auto temp  = reinterpret_cast<CBaseGameSystemFactory**>(pending_addr);
+                auto first = *temp;
+                if (first == nullptr)
+                {
+                    WARN("Candidate at server+0x%llx rejected: factory pointer is null", pending_addr - modules::server->Base());
+                    pending_reg  = ZYDIS_REGISTER_NONE;
+                    pending_addr = 0;
+                    continue;
+                }
+
+                if (!modules::server->IsPointerDerivedFrom(first->m_pInstance, "IGameSystem"))
+                {
+                    WARN("Candidate at server+0x%llx rejected: m_pInstance is not derived from IGameSystem", pending_addr - modules::server->Base());
+                    pending_reg  = ZYDIS_REGISTER_NONE;
+                    pending_addr = 0;
+                    continue;
+                }
+
+                FLOG("Found CBaseGameSystemFactory::sm_ppFirst at sever+0x%llx", pending_addr - modules::server->Base());
+                CBaseGameSystemFactory::sm_ppFirst = temp;
+                return;
+            }
+
+            pending_reg = ZYDIS_REGISTER_NONE;
+        }
+        else if (pending_reg != ZYDIS_REGISTER_NONE && instr.operand_count_visible > 0)
+        {
+            if (operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER && operands[0].reg.value == pending_reg && (operands[0].actions & ZYDIS_OPERAND_ACTION_WRITE))
+            {
+                pending_reg  = ZYDIS_REGISTER_NONE;
+                pending_addr = 0;
+            }
+        }
+
+        ip += instr.length;
+    }
+
+    FatalError("Found IGameSystem::InitAllSystems but failed to find instruction sequence within limit(50 times)");
+}
 
 bool address::Initialize()
 {
-    modules::server          = new CModule(RELATE_SERVER_LIB_FILE_PATH LIB_FILE_PREFIX "server");
-    modules::engine          = new CModule(LIB_FILE_PREFIX "engine2");
     modules::tier0           = new CModule(LIB_FILE_PREFIX "tier0");
+    modules::engine          = new CModule(LIB_FILE_PREFIX "engine2");
+    modules::server          = new CModule(RELATE_SERVER_LIB_FILE_PATH LIB_FILE_PREFIX "server");
     modules::schemas         = new CModule(LIB_FILE_PREFIX "schemasystem");
     modules::resource        = new CModule(LIB_FILE_PREFIX "resourcesystem");
     modules::vscript         = new CModule(LIB_FILE_PREFIX "vscript");
@@ -55,9 +220,11 @@ bool address::Initialize()
     modules::materialsystem2 = new CModule(LIB_FILE_PREFIX "materialsystem2");
     modules::animationsystem = new CModule(LIB_FILE_PREFIX "animationsystem");
 
+    InitializeInterfaces();
+
     g_pGameData = new GameData();
 
-    constexpr std::array gamedataFiles = {
+    constexpr std::array gamedata_files = {
         "core.games.jsonc",
         "tier0.games.jsonc",
         "engine.games.jsonc",
@@ -67,11 +234,14 @@ bool address::Initialize()
 
     bool all_succeeded = true;
 
-    for (const auto& path : gamedataFiles)
     {
-        if (!g_pGameData->Register(path))
+        ScopedTimer timer("Register gamedata");
+        for (const auto& path : gamedata_files)
         {
-            all_succeeded = false;
+            if (!g_pGameData->Register(path))
+            {
+                all_succeeded = false;
+            }
         }
     }
 
@@ -79,6 +249,9 @@ bool address::Initialize()
     {
         FatalError("Failed to load one or more gamedata files. See log for details.");
     }
+
+    FindGameSystemFactory();
+    FindCEntityIdentity_SetEntityName();
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 
@@ -89,9 +262,6 @@ bool address::Initialize()
 
     RESOLVE_GAMEDATA_ADDRESS("NetworkStateChanged", address::server::NetworkStateChanged);
     RESOLVE_GAMEDATA_ADDRESS("StateChanged", address::server::StateChanged);
-
-    // CEntityIdentity
-    RESOLVE_GAMEDATA_ADDRESS("CEntityIdentity::SetEntityName", address::server::CEntityIdentity_SetEntityName);
 
     // CBaseEntity
     RESOLVE_GAMEDATA_ADDRESS("CreateEntityByName", address::server::CreateEntityByName);
@@ -199,6 +369,5 @@ bool address::Initialize()
 
     // ResourceSystem
     RESOLVE_GAMEDATA_ADDRESS("CResourceNameTyped::ResolveResourceName", address::resource::CResourceNameTyped_ResolveResourceName);
-
     return true;
 }

@@ -227,7 +227,7 @@ void CSharpKeyValues3Helper::GetQAngle(KeyValues3* kv, Vector* vector)
 void CSharpKeyValues3Helper::GetMatrix(KeyValues3* kv, matrix3x4_t* matrix)
 {
     const auto v = kv->GetMatrix3x4();
-    memcpy(matrix, &v, sizeof(matrix3x4_t));
+    *matrix      = v;
 }
 
 IMPL_KV3_SETTER(bool, Bool);

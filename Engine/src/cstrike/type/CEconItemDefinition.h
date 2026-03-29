@@ -20,6 +20,8 @@
 #ifndef CSTRIKE_TYPE_CECON_ITEM_DEFINITION_H
 #define CSTRIKE_TYPE_CECON_ITEM_DEFINITION_H
 
+#include "cstrike/type/CUtlVector.h"
+
 #include <cstdint>
 
 struct CItemSelectionCriteria;

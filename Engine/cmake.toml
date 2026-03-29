@@ -34,6 +34,10 @@ gcc.compile-options = [
 
 linux.compile-options = [
     "-Wall",
+    
+    "-Wformat",
+    "-Werror=format-insufficient-args",
+    
     "-Wno-uninitialized",
     "-Wno-switch",
     "-Wno-unused",
@@ -138,6 +142,7 @@ sources = [
     "src/proto/netmessages.pb.cc",
     "src/proto/cs_usercmd.pb.cc",
     "src/proto/usercmd.pb.cc",
+    "src/proto/source2_steam_stats.pb.cc",
 ]
 
 # windows release will use /MT then with this memoverride

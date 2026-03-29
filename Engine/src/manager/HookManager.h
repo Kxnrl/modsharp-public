@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -33,7 +33,8 @@ class InlineHook;
 enum HookType_t
 {
     HookType_Pre,
-    HookType_Post
+    HookType_Post,
+    HookType_Max,
 };
 
 class CServerSideClient;
@@ -94,11 +95,11 @@ public:
 
     virtual void Call_RoundRestart(HookType_t hook) = 0;
 
-    virtual void Call_ClientConnect(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId, bool isFakeClient)  = 0;
-    virtual void Call_ClientPutInServer(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId)                 = 0;
-    virtual void Call_ClientActivate(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId)                    = 0;
-    virtual void Call_ClientFullyConnect(HookType_t hook, PlayerSlot_t slot)                                                     = 0;
-    virtual void Call_ClientDisconnect(HookType_t hook, PlayerSlot_t slot, int32_t reason, const char* name, SteamId_t steamId)  = 0;
+    virtual void Call_ClientConnect(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId, bool isFakeClient) = 0;
+    virtual void Call_ClientPutInServer(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId)                = 0;
+    virtual void Call_ClientActivate(HookType_t hook, PlayerSlot_t slot, const char* name, SteamId_t steamId)                   = 0;
+    virtual void Call_ClientFullyConnect(HookType_t hook, PlayerSlot_t slot)                                                    = 0;
+    virtual void Call_ClientDisconnect(HookType_t hook, PlayerSlot_t slot, int32_t reason, const char* name, SteamId_t steamId) = 0;
 
     virtual void Call_PlayerSpawned(HookType_t hook, CCSPlayerPawn* player, CServerSideClient* client) = 0;
     virtual void Call_PlayerKilled(HookType_t hook, CCSPlayerPawn* player, CServerSideClient* client)  = 0;

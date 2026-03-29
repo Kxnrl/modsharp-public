@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -297,28 +297,7 @@ internal unsafe partial class PhysicsQueryManager : ICorePhysicsQueryManager
         Vector                                                end,
         InteractionLayers                                     interactsWith,
         IPlayerPawn                                           pawn)
-    {
-        var result = stackalloc TraceResultStruct[1];
-
-        Game.TraceShapePlayerMovement(&ray, &start, &end, interactsWith, pawn.GetAbsPtr(), result);
-
-        return new TraceResult(BaseEntity.Create(result->HitEntity),
-                               result->Fraction,
-                               result->RayType,
-                               result->StartInSolid,
-                               result->Triangle,
-                               result->StartPosition,
-                               result->EndPosition,
-                               result->PlaneNormal,
-                               result->SurfaceProp,
-                               result->HitBoxData,
-                               result->PhysicsBody,
-                               result->PhysicsShape,
-                               result->HitPoint,
-                               result->HitOffset,
-                               result->Contents,
-                               result->HitGroupHitBoxBoneIndex);
-    }
+        => throw new NotImplementedException();
 
     private Func<IBaseEntity, bool>? _traceFilterCallback;
 
@@ -345,7 +324,7 @@ internal unsafe partial class PhysicsQueryManager : ICorePhysicsQueryManager
     }
 
     public GameTrace TraceShapePlayerMovement(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query)
-        => TraceInternal(&ray, start, end, in query, _vtable);
+        => TraceInternal(&ray, start, end, in query, _movementTraceFilterVtable);
 
     public GameTrace TraceShapeNoPlayers(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query)
     {
@@ -374,8 +353,8 @@ internal unsafe partial class PhysicsQueryManager : ICorePhysicsQueryManager
 internal unsafe partial class PhysicsQueryManager
 {
     // ReSharper disable InconsistentNaming
-    private static readonly CTraceFilterVTableDescriptor* _vtable;
-    private static readonly nint                          _interface;
+    private static readonly CTraceFilterVirtualTableDescriptor* _movementTraceFilterVtable;
+    private static readonly nint                                _interface;
 
     private static readonly delegate* unmanaged<nint, TraceShapeRay*, Vector*, Vector*, CTraceFilter*, GameTrace*, bool>
         _traceShape;
@@ -388,7 +367,10 @@ internal unsafe partial class PhysicsQueryManager
 
     static PhysicsQueryManager()
     {
-        _vtable = (CTraceFilterVTableDescriptor*) CoreGameData.Core.GetRequiredVTable("server", "CTraceFilterPlayerMovementCS");
+        _movementTraceFilterVtable
+            = (CTraceFilterVirtualTableDescriptor*) CoreGameData.Core.GetRequiredVirtualTable("server",
+                "CTraceFilterPlayerMovementCS");
+
         _interface = CoreGameData.Core.GetRequiredAddress("g_pPhysicsQuery");
 
         _traceShape
@@ -411,7 +393,7 @@ internal unsafe partial class PhysicsQueryManager
             return TraceInternal(pRay, start, end, in query, vtable: null);
         }
 
-        var vtable = stackalloc CTraceFilterVTableDescriptor[1];
+        var vtable = stackalloc CTraceFilterVirtualTableDescriptor[1];
         vtable->ShouldHitEntity = (delegate* unmanaged<CTraceFilter*, nint, bool>) callback;
 
         return TraceInternal(pRay, start, end, in query, vtable);
@@ -421,7 +403,7 @@ internal unsafe partial class PhysicsQueryManager
         Vector                                            start,
         Vector                                            end,
         in RnQueryShapeAttr                               query,
-        CTraceFilterVTableDescriptor*                     vtable)
+        CTraceFilterVirtualTableDescriptor*               vtable)
     {
         var traceFilter = stackalloc CTraceFilter[1];
 
@@ -451,7 +433,7 @@ internal unsafe partial class PhysicsQueryManager
 
         if (callback is not null)
         {
-            var vtable = stackalloc CTraceFilterVTableDescriptor[1];
+            var vtable = stackalloc CTraceFilterVirtualTableDescriptor[1];
             vtable->ShouldHitEntity = (delegate* unmanaged<CTraceFilter*, nint, bool>) callback;
             traceFilter->Vtable     = vtable;
         }
@@ -488,11 +470,9 @@ internal unsafe partial class PhysicsQueryManager
     }
 
     [UnmanagedCallersOnly]
-    private static bool NoPlayer_ShouldHitEntity(CTraceFilter* filter, nint entityPtr)
+    private static bool NoPlayer_ShouldHitEntity(CTraceFilter* filter, nint pEntity)
     {
-        var entity = BaseEntity.Create(entityPtr);
-
-        if (entity == null || entity.IsValidEntity)
+        if (BaseEntity.Create(pEntity) is not { } entity)
         {
             return false;
         }

@@ -23,22 +23,22 @@ namespace Sharp.Shared.Enums;
 public enum CStrikeTeam : byte
 {
     /// <summary>
-    ///     没选边
+    ///     No team assigned
     /// </summary>
     UnAssigned,
 
     /// <summary>
-    ///     观察者
+    ///     Spectator
     /// </summary>
     Spectator,
 
     /// <summary>
-    ///     恐怖分子
+    ///     Terrorist
     /// </summary>
     TE,
 
     /// <summary>
-    ///     反恐精英
+    ///     Counter-Terrorist
     /// </summary>
     CT,
 }

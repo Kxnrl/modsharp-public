@@ -17,15 +17,20 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x132)]
+[StructLayout(LayoutKind.Explicit, Pack = 1)]
 public struct MoveData
 {
+    // Windows has a 4-byte pad at 0xe4 that Linux does not
+    private static readonly nint PlatformOffset =
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? -4 : 0;
+
     [FieldOffset(0x0)]
     public byte MoveDataFlags;
 
@@ -62,17 +67,40 @@ public struct MoveData
     [FieldOffset(0xc8)]
     public Vector AbsOrigin;
 
-    [FieldOffset(0xe8)]
-    public Vector OutWishVel;
+    private unsafe ref byte Base
+    {
+        get
+        {
+            fixed (void* ptr = &this)
+            {
+                return ref Unsafe.AsRef<byte>(ptr);
+            }
+        }
+    }
 
-    [FieldOffset(0x124)]
-    public float MaxSpeed;
+    public Vector OutWishVel // Win: 0xe8
+    {
+        get => Unsafe.ReadUnaligned<Vector>(ref Unsafe.AddByteOffset(ref Base, 0xe8 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,        0xe8 + PlatformOffset), value);
+    }
 
-    [FieldOffset(0x118)]
-    public float ClientMaxSpeed;
+    public float MaxSpeed // Win: 0x124
+    {
+        get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x124 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x124 + PlatformOffset), value);
+    }
 
-    [FieldOffset(0x130)]
-    public bool InAir;
+    public float ClientMaxSpeed // Win: 0x128
+    {
+        get => Unsafe.ReadUnaligned<float>(ref Unsafe.AddByteOffset(ref Base, 0x128 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,       0x128 + PlatformOffset), value);
+    }
+
+    public bool InAir // Win: 0x13C
+    {
+        get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, 0x13C + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      0x13C + PlatformOffset), value);
+    }
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 24, Pack = 8)]

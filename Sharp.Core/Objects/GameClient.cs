@@ -20,6 +20,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;
@@ -27,6 +28,7 @@ using Sharp.Core.Helpers;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
+using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 using Sharp.Shared.Utilities;
 
@@ -56,7 +58,7 @@ internal partial class GameClient : NativeObject, IGameClient
     public void ConsolePrint(string message)
     {
         CheckDisposed();
-        Client.ConsolePrint(this, message);
+        NetMessageHelper.ServerMessagePrint(new RecipientFilter(this), message);
     }
 
     /// <summary>
@@ -177,6 +179,17 @@ internal partial class GameClient : NativeObject, IGameClient
             : controller;
     }
 
+    public void Print(HudPrintChannel channel,
+                      string          message,
+                      string?         param1 = null,
+                      string?         param2 = null,
+                      string?         param3 = null,
+                      string?         param4 = null)
+    {
+        CheckDisposed();
+        NetMessageHelper.PrintChannelFilter(new RecipientFilter(this), channel, message, param1, param2, param3, param4);
+    }
+
     // identity
     private readonly ushort _defaultUserId;
     private readonly byte   _defaultSlot;
@@ -199,7 +212,7 @@ internal partial class GameClient : NativeObject, IGameClient
            && _defaultSlot   == GetSlot(_this)                       // default slot not changed
            && SignOnState    >= SignOnState.Connected;
 
-    public bool IsConnected => IsValid && SignOnState < SignOnState.Challenge;
+    public bool IsConnected => IsValid && SignOnState < SignOnState.ChangeLevel;
 
     public bool IsInGame => IsValid && SignOnState is SignOnState.Full;
 

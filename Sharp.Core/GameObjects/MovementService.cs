@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Helpers;
 using Sharp.Generator;
@@ -85,7 +86,17 @@ internal partial class MovementService : PlayerPawnComponent, IMovementService
 }
 
 internal partial class PlayerMovementService : MovementService, IPlayerMovementService
-{
+{    
+    private static readonly Lazy<int> LegacyJumpOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayer_MovementServices", "m_LegacyJump"));
+
+    private static readonly Lazy<int> OldJumpPressedOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerLegacyJump", "m_bOldJumpPressed"));
+
+    private static readonly Lazy<int> JumpPressedTimeOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerLegacyJump", "m_flJumpPressedTime"));
+
+
     public void TransientChangeStamina(float stamina)
         => SetStaminaLocal(stamina);
 
@@ -94,15 +105,21 @@ internal partial class PlayerMovementService : MovementService, IPlayerMovementS
 
 #region Schemas
 
+    public bool OldJumpPressed
+    {
+        get => _this.GetBool(LegacyJumpOffset.Value   + OldJumpPressedOffset.Value);
+        set => _this.WriteBool(LegacyJumpOffset.Value + OldJumpPressedOffset.Value, value);
+    }
+
+    public float JumpPressedTime
+    {
+        get => _this.GetFloat(LegacyJumpOffset.Value   + JumpPressedTimeOffset.Value);
+        set => _this.WriteFloat(LegacyJumpOffset.Value + JumpPressedTimeOffset.Value, value);
+    }
+
     [NativeSchemaField("CCSPlayer_MovementServices", "m_flDuckSpeed", typeof(float), IsStruct = true)]
     private partial SchemaField GetDuckSpeedField();
-
-    [NativeSchemaField("CCSPlayer_MovementServices", "m_bOldJumpPressed", typeof(bool), IsStruct = true)]
-    private partial SchemaField GetOldJumpPressedField();
-
-    [NativeSchemaField("CCSPlayer_MovementServices", "m_flJumpPressedTime", typeof(float), IsStruct = true)]
-    private partial SchemaField GetJumpPressedTimeField();
-
+    
     [NativeSchemaField("CCSPlayer_MovementServices", "m_flStamina", typeof(float))]
     private partial SchemaField GetStaminaField();
 

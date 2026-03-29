@@ -22,7 +22,7 @@ namespace Sharp.Shared.Enums;
 public enum MoveType : byte
 {
     /// <summary>
-    ///     静止
+    ///     Stationary
     /// </summary>
     None,
 
@@ -32,7 +32,7 @@ public enum MoveType : byte
     Isometric,
 
     /// <summary>
-    ///     行走状态 (玩家默认)
+    ///     Walking state (player default)
     /// </summary>
     Walk,
 
@@ -47,7 +47,7 @@ public enum MoveType : byte
     FlyGravity,
 
     /// <summary>
-    ///     物理 (物理实体默认)
+    ///     Physics (physics entity default)
     /// </summary>
     VPhysics,
 
@@ -57,22 +57,22 @@ public enum MoveType : byte
     Push,
 
     /// <summary>
-    ///     穿墙
+    ///     No collision/clip through walls
     /// </summary>
     NoClip,
 
     /// <summary>
-    ///     观察者
+    ///     Observer
     /// </summary>
     Observer,
 
     /// <summary>
-    ///     挂在梯子上
+    ///     Climbing on ladder
     /// </summary>
     Ladder,
 
     /// <summary>
-    ///     自定义
+    ///     Custom
     /// </summary>
     Custom,
 }

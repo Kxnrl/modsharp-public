@@ -33,18 +33,24 @@ struct CTakeDamageResult
     float            m_flPreModifiedDamage;
     int32_t          m_nTotalledHealthLost;
     int32_t          m_nTotalledDamageDealt;
+    float            m_flTotalledPreModifiedDamage;
     bool             m_bWasDamageSuppressed;
+    bool             m_bSuppressFlinch;
+    HitGroup_t       m_nOverrideFlinchHitGroup;
 
     void CopyFrom(CTakeDamageInfo* pInfo)
     {
-        m_pOriginatingInfo     = pInfo;
-        m_nHealthLost          = static_cast<int32_t>(pInfo->m_flDamage);
-        m_nHealthBefore        = 0;
-        m_nDamageDealt         = static_cast<int32_t>(pInfo->m_flDamage);
-        m_flPreModifiedDamage  = pInfo->m_flDamage;
-        m_nTotalledHealthLost  = static_cast<int32_t>(pInfo->m_flDamage);
-        m_nTotalledDamageDealt = static_cast<int32_t>(pInfo->m_flDamage);
-        m_bWasDamageSuppressed = false;
+        m_pOriginatingInfo            = pInfo;
+        m_nHealthLost                 = static_cast<int32_t>(pInfo->m_flDamage);
+        m_nHealthBefore               = 0;
+        m_nDamageDealt                = static_cast<int32_t>(pInfo->m_flDamage);
+        m_flPreModifiedDamage         = pInfo->m_flDamage;
+        m_nTotalledHealthLost         = static_cast<int32_t>(pInfo->m_flDamage);
+        m_nTotalledDamageDealt        = static_cast<int32_t>(pInfo->m_flDamage);
+        m_flTotalledPreModifiedDamage = pInfo->m_flDamage;
+        m_bWasDamageSuppressed        = false;
+        m_bSuppressFlinch             = false;
+        m_nOverrideFlinchHitGroup     = HITGROUP_INVALID;
     }
 
     CTakeDamageResult() = delete;
@@ -57,10 +63,13 @@ struct CTakeDamageResult
         m_flPreModifiedDamage(damage),
         m_nTotalledHealthLost(static_cast<int32_t>(damage)),
         m_nTotalledDamageDealt(static_cast<int32_t>(damage)),
-        m_bWasDamageSuppressed(false)
+        m_flTotalledPreModifiedDamage(damage),
+        m_bWasDamageSuppressed(false),
+        m_bSuppressFlinch(false),
+        m_nOverrideFlinchHitGroup(HITGROUP_INVALID)
     {
     }
 };
-static_assert(sizeof(CTakeDamageResult) == 40);
+static_assert(sizeof(CTakeDamageResult) == 48);
 
 #endif

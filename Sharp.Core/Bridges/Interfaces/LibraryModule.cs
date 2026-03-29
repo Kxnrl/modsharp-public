@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -19,43 +19,70 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Sharp.Core.CStrike;
 using Sharp.Generator;
 using Sharp.Shared;
+using Sharp.Shared.Types;
+using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Core.Bridges.Interfaces;
 
 [NativeVirtualObject(HasDestructors = true)]
-internal partial class LibraryModule : NativeObject, ILibraryModule
+internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 {
 #region Native
 
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct RuntimeVirtualTableInfo
+    {
+        public CUtlString DemangledName { get; set; }
+        public nint       Address       { get; set; }
+        public ulong      Offset        { get; set; }
+    }
+
     public partial nint FindPatternEx(string svPattern, nint startAddress = 0);
 
-    public partial nint GetVirtualTableByNameEx(string svTableName, bool decorated = false);
+    public partial nint GetVTableByNameEx(string svTableName, bool decorated = false);
 
     public partial nint GetFunctionByNameEx(string svFunctionName);
 
     public partial nint FindInterfaceEx(string svInterfaceName);
 
-    public partial nint FindPatternMultiEx(string svPattern, nint count);
+    public partial bool FindPatternMultiEx(string svPattern, CUtlLeanVectorBase<nint, int>* count);
 
     public partial nint FindStringEx(string str);
 
+    public partial nint FindDataEx(byte* needle, ulong needleSize, bool readOnly);
+
     public partial nint FindPtrEx(nint ptr);
+
+    public partial void FindVTablePartialEx(string str, CUtlLeanVectorBase<RuntimeVirtualTableInfo, int>* list);
+
+    public partial bool IsPointerDerivedFromEx(nint ptr, string name);
+
+    public partial bool GetReferencesEx(nint ptr, CUtlLeanVectorBase<nint, int>* result);
+
+    public partial bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVectorBase<CUtlString, int>* strs,
+        CUtlLeanVectorBase<nint, int>*                                                         result);
+
+    public partial bool FindAllFunctionsFromPointersRefsEx(CUtlLeanVectorBase<nint, int>* strs,
+        CUtlLeanVectorBase<nint, int>*                                                    result);
+
+    public partial bool GetFunctionRangeEx(nint middle, nint* start, nint* end);
 
 #endregion
 
-    public IntPtr FindPattern(string pattern, nint startAddress = 0)
+    public nint FindPattern(string pattern, nint startAddress = 0)
         => FindPatternEx(pattern);
 
-    public IntPtr GetVirtualTableByName(string tableName, bool decorated = false)
-        => GetVirtualTableByNameEx(tableName, decorated);
+    public nint GetVirtualTableByName(string tableName, bool decorated = false)
+        => GetVTableByNameEx(tableName, decorated);
 
-    public IntPtr GetFunctionByName(string functionName)
+    public nint GetFunctionByName(string functionName)
         => GetFunctionByNameEx(functionName);
 
-    public IntPtr FindPatternExactly(string pattern)
+    public nint FindPatternExactly(string pattern)
     {
         var results = FindPatternMulti(pattern);
 
@@ -67,25 +94,22 @@ internal partial class LibraryModule : NativeObject, ILibraryModule
         };
     }
 
-    public IntPtr FindInterface(string interfaceName)
+    public nint FindInterface(string interfaceName)
         => FindInterfaceEx(interfaceName);
 
-    public unsafe List<nint> FindPatternMulti(string pattern)
+    public List<nint> FindPatternMulti(string pattern)
     {
-        var count  = 0;
-        var result = FindPatternMultiEx(pattern, (nint) (&count));
+        using var vector = new CUtlLeanVectorBase<nint, int>();
 
-        if (count == 0)
+        if (!FindPatternMultiEx(pattern, &vector))
         {
             return [];
         }
 
-        var results = new List<IntPtr>();
+        var results    = new List<nint>(vector.Count);
+        var nativeSpan = new ReadOnlySpan<nint>(vector.Base(), vector.Count);
 
-        for (var i = 0; i < count; i++)
-        {
-            results.Add(*(nint*) (result + (sizeof(nint) * i)));
-        }
+        results.AddRange(nativeSpan);
 
         return results;
     }
@@ -95,4 +119,219 @@ internal partial class LibraryModule : NativeObject, ILibraryModule
 
     public nint FindPtr(nint ptr)
         => FindPtrEx(ptr);
+
+    public VirtualTableInfo[] FindVirtualTablesPartial(string str)
+    {
+        using var leanVector = new CUtlLeanVectorBase<RuntimeVirtualTableInfo, int>();
+
+        FindVTablePartialEx(str, &leanVector);
+        var count = leanVector.Count;
+
+        if (count == 0)
+        {
+            return [];
+        }
+
+        var results = new VirtualTableInfo[count];
+
+        for (var i = 0; i < count; i++)
+        {
+            ref var current = ref leanVector[i];
+
+            results[i] = new VirtualTableInfo
+            {
+                DemangledName = current.DemangledName.Get(), Address = current.Address, Offset = current.Offset,
+            };
+
+            current.DemangledName.Dispose();
+        }
+
+        return results;
+    }
+
+    public bool IsPointerDerivedFrom(nint ptr, string name)
+        => IsPointerDerivedFromEx(ptr, name);
+
+    public nint[] GetReferencesFromPointer(nint ptr)
+    {
+        using var resultVector = new CUtlLeanVectorBase<nint, int>();
+
+        if (!GetReferencesEx(ptr, &resultVector))
+        {
+            return [];
+        }
+
+        var result = new nint[resultVector.Count];
+        new Span<nint>(resultVector.Base(), resultVector.Count).CopyTo(result);
+
+        return result;
+    }
+
+    public nint FindFunction(string str)
+        => FindFunction(new ReadOnlySpan<string>(ref str));
+
+    public nint FindFunction(ReadOnlySpan<string> strs)
+    {
+        using var strVector = new CUtlLeanVectorBase<CUtlString, int>();
+        strVector.EnsureCapacity(strs.Length);
+
+        try
+        {
+            foreach (var str in strs)
+            {
+                strVector.AddToTail(new CUtlString(str));
+            }
+
+            using var resultVector = new CUtlLeanVectorBase<nint, int>();
+
+            if (!FindAllFunctionsFromStringsRefsEx(&strVector, &resultVector) || resultVector.Count == 0)
+            {
+                throw new Exception($"No function entries found.");
+            }
+
+            return *resultVector.Base();
+        }
+        finally
+        {
+            var vectorSpan = new Span<CUtlString>(strVector.Base(), strVector.Count);
+
+            foreach (ref var utlString in vectorSpan)
+            {
+                utlString.Dispose();
+            }
+        }
+    }
+
+    public nint[] FindFunctions(string str)
+        => FindFunctions(new ReadOnlySpan<string>(ref str));
+
+    public nint[] FindFunctions(ReadOnlySpan<string> strs)
+    {
+        using var strVector = new CUtlLeanVectorBase<CUtlString, int>();
+        strVector.EnsureCapacity(strs.Length);
+
+        try
+        {
+            foreach (var str in strs)
+            {
+                strVector.AddToTail(new CUtlString(str));
+            }
+
+            using var resultVector = new CUtlLeanVectorBase<nint, int>();
+
+            if (!FindAllFunctionsFromStringsRefsEx(&strVector, &resultVector))
+            {
+                var preview = strs.Length > 0 ? strs[0] : "empty";
+
+                if (strs.Length > 1)
+                {
+                    preview += ", ...";
+                }
+
+                throw new Exception($"No function entries found for {strs.Length} strings. (First: {preview})");
+            }
+
+            var result = new nint[resultVector.Count];
+            new Span<nint>(resultVector.Base(), resultVector.Count).CopyTo(result);
+
+            return result;
+        }
+        finally
+        {
+            var vectorSpan = new Span<CUtlString>(strVector.Base(), strVector.Count);
+
+            foreach (ref var utlString in vectorSpan)
+            {
+                utlString.Dispose();
+            }
+        }
+    }
+
+    public nint FindFunction(nint ptr)
+    {
+        Span<nint> ptrSpan = [ptr];
+
+        return FindFunction(ptrSpan);
+    }
+
+    public nint FindFunction(ReadOnlySpan<nint> ptrs)
+    {
+        if (ptrs.Length == 0)
+        {
+            throw new InvalidOperationException("No pointer was passed in");
+        }
+
+        using var ptrVector = new CUtlLeanVectorBase<nint, int>();
+        ptrVector.EnsureCapacity(ptrs.Length);
+
+        foreach (var t in ptrs)
+        {
+            ptrVector.AddToTail(t);
+        }
+
+        using var resultVector = new CUtlLeanVectorBase<nint, int>();
+
+        if (!FindAllFunctionsFromPointersRefsEx(&ptrVector, &resultVector) || resultVector.Count == 0)
+        {
+            throw new Exception("No result was found for pointer.");
+        }
+
+        return *resultVector.Base();
+    }
+
+    public nint[] FindFunctions(nint ptr)
+    {
+        Span<nint> ptrSpan = [ptr];
+
+        return FindFunctions(ptrSpan);
+    }
+
+    public nint[] FindFunctions(ReadOnlySpan<nint> ptrs)
+    {
+        if (ptrs.Length == 0)
+        {
+            throw new InvalidOperationException("No pointer was passed in");
+        }
+
+        using var ptrVector = new CUtlLeanVectorBase<nint, int>();
+        ptrVector.EnsureCapacity(ptrs.Length);
+
+        foreach (var t in ptrs)
+        {
+            ptrVector.AddToTail(t);
+        }
+
+        using var resultVector = new CUtlLeanVectorBase<nint, int>();
+
+        if (!FindAllFunctionsFromPointersRefsEx(&ptrVector, &resultVector))
+        {
+            var firstPtr = ptrs.IsEmpty ? "empty" : $"0x{ptrs[0]:X}...";
+
+            throw new Exception($"No result was found for pointers ({ptrs.Length} items, starting with {firstPtr})");
+        }
+
+        var result = new nint[resultVector.Count];
+        new Span<nint>(resultVector.Base(), resultVector.Count).CopyTo(result);
+
+        return result;
+    }
+
+    public nint FindData(ReadOnlySpan<byte> data, bool readOnly)
+    {
+        unchecked
+        {
+            fixed (byte* ptr = data)
+            {
+                return FindDataEx(ptr, (ulong) data.Length, readOnly);
+            }
+        }
+    }
+
+    public bool GetFunctionRange(nint middle, out nint start, out nint end)
+    {
+        fixed (nint* pStart = &start, pEnd = &end)
+        {
+            return GetFunctionRangeEx(middle, pStart, pEnd);
+        }
+    }
 }

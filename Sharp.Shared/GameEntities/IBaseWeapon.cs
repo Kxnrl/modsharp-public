@@ -29,7 +29,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IBaseWeapon : IEconEntity
 {
     /// <summary>
-    ///     是不是匕首
+    ///     Check if it is knife
     /// </summary>
     bool IsKnife { get; }
 
@@ -40,22 +40,22 @@ public interface IBaseWeapon : IEconEntity
     ushort ItemDefinitionIndex { get; }
 
     /// <summary>
-    ///     武器的Classname
+    ///     weapon classname
     /// </summary>
-    /// <returns>基于ItemDefinitionIndex换算的Classname</returns>
-    /// <exception cref="InvalidOperationException">如果没有判断是否是武器就会直接报错</exception>
+    /// <returns>The classname is based on ItemDefinitionIndex</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the entity is not a weapon</exception>
     string GetWeaponClassname();
 
     /// <summary>
     ///     ItemDefinitionName
     /// </summary>
-    /// <exception cref="InvalidOperationException">无效的Item或者Weapon会抛这个</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the entity is not a valid weapon/item</exception>
     string GetItemDefinitionName();
 
     /// <summary>
     ///     ItemDefinition
     /// </summary>
-    /// <exception cref="InvalidOperationException">无效的Item或者Weapon会抛这个</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the entity is not a valid weapon/item</exception>
     IEconItemDefinition GetItemDefinition();
 
     /// <summary>
@@ -74,29 +74,29 @@ public interface IBaseWeapon : IEconEntity
     int NextSecondaryAttackTick { get; set; }
 
     /// <summary>
-    ///     武器弹匣, -1为不使用Clip1, 不是枪时返回-2 <br />
-    ///     <remarks>如果超过MaxClip上限, 开枪时会直接刷新为最大值</remarks>
+    ///     Weapon clip, -1 means it does not use Clip1, -2 when it is not a weapon <br />
+    ///     <remarks>If exceeds <see cref="MaxClip"/> limit, will be reset to <see cref="MaxClip"/> when firing</remarks>
     /// </summary>
     int Clip { get; set; }
 
     /// <summary>
-    ///     武器备弹, -1为不使用ReserveAmmo1, 不是枪时返回-2 <br />
-    ///     <remarks>如果超过ReserveAmmo上限, 开枪时会直接刷新为最大值</remarks>
+    ///     Weapon reserve ammunition. Returns -1 if ReserveAmmo1 is not used, -2 if not a gun <br />
+    ///     <remarks>If exceeds ReserveAmmo limit, will be reset to <see cref="PrimaryReserveAmmoMax"/> when firing</remarks>
     /// </summary>
     int ReserveAmmo { get; set; }
 
     /// <summary>
-    ///     弹匣最大子弹数 (From VData)
+    ///     Maximum bullets in magazine (from VData)
     /// </summary>
     int MaxClip { get; }
 
     /// <summary>
-    ///     最大备弹数 (From VData)
+    ///     Max primary reserve ammo (From VData)
     /// </summary>
     int PrimaryReserveAmmoMax { get; }
 
     /// <summary>
-    ///     武器槽位 (From VData)
+    ///     Weapon slot (From VData)
     /// </summary>
     GearSlot Slot { get; }
 

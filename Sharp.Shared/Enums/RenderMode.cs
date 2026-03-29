@@ -21,17 +21,8 @@ namespace Sharp.Shared.Enums;
 
 public enum RenderMode : byte
 {
-    Normal             = 0x0,
-    TransColor         = 0x1,
-    TransTexture       = 0x2,
-    Glow               = 0x3,
-    TransAlpha         = 0x4,
-    TransAdd           = 0x5,
-    Environmental      = 0x6,
-    TransAddFrameBlend = 0x7,
-    TransAlphaAdd      = 0x8,
-    WorldGlow          = 0x9,
-    None               = 0xa,
-    DevVisualizer      = 0xb,
-    ModeCount          = 0xc,
+    Normal     = 0x0,
+    TransAlpha = 0x1,
+    None       = 0x2,
+    ModeCount  = 0x3,
 }

@@ -24,6 +24,7 @@ using System.Linq;
 using Google.Protobuf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
@@ -615,15 +616,9 @@ internal class ClientManager : ICoreClientManager
 
         var msg = new CSVCMsg_GetCvarValue { Cookie = _sQueryCookie, CvarName = name };
 
-        var bytes = msg.ToByteArray();
-        var size  = bytes.Length;
-
         var filter = new RecipientFilter(client.Slot);
 
-        fixed (byte* pBytes = bytes)
-        {
-            Net.SendNetMessage(&filter, nameof(CSVCMsg_GetCvarValue), pBytes, size);
-        }
+        NetMessageHelper.SendNetMessage(filter, msg);
 
         _queryConVarInfos.Add(_sQueryCookie, new QueryConVarInfo(name, client.SteamId, callback));
 

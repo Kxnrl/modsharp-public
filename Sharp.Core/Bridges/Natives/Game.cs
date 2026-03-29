@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -94,13 +94,6 @@ public static unsafe partial class Game
         InteractionLayers                                      excludeLayers,
         TraceResultStruct*                                     result);
 
-    public static partial void TraceShapePlayerMovement(TraceShapeRay* ray,
-        Vector*                                                        start,
-        Vector*                                                        end,
-        InteractionLayers                                              interactsWith,
-        nint                                                           entityPtr,
-        TraceResultStruct*                                             result);
-
     public static partial int DispatchParticleEffectPosition(string particle,
         Vector*                                                     origin,
         Vector*                                                     angles,
@@ -129,6 +122,8 @@ public static unsafe partial class Game
     public static partial nint GetAddonName();
 
     public static partial nint GetMapName();
+
+    public static partial nint GetGameSystemFactory();
 
     public static partial nint FindWeaponVDataByName(string name);
 

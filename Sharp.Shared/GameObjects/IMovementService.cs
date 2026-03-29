@@ -26,36 +26,36 @@ namespace Sharp.Shared.GameObjects;
 public interface IMovementService : IPlayerPawnComponent
 {
     /// <summary>
-    ///     MV中最大移动速度
+    ///     MaxSpeed in MoveData
     /// </summary>
     float MaxSpeed { get; set; }
 
     /// <summary>
-    ///     按键
+    ///     Pressed keyboard buttons
     /// </summary>
     UserCommandButtons KeyButtons { get; set; }
 
     /// <summary>
-    ///     变化的按键
+    ///     Changed keyboard buttons
     /// </summary>
     UserCommandButtons KeyChangedButtons { get; set; }
 
     /// <summary>
-    ///     滚轮的按键
+    ///     Buttons that are done by scrolling
     /// </summary>
     UserCommandButtons ScrollButtons { get; set; }
 
     /// <summary>
-    ///     转换为CCSPlayer_MovementServices
+    ///     Cast to CCSPlayer_MovementServices
     /// </summary>
     /// <param name="reinterpret">
-    ///     False: 如果当前MovementService不是CCSPlayer_MovementServices则返回null<br />True:
-    ///     使用指针重新解析为CCSPlayer_MovementServices
+    ///     False: Returns null if current MovementService is not CCSPlayer_MovementServices<br />True:
+    ///     Reinterpret pointer as CCSPlayer_MovementServices
     /// </param>
     IPlayerMovementService? AsPlayerMovementService(bool reinterpret = false);
 
     /// <summary>
-    ///     临时修改MaxSpeed, 不发送
+    ///     Temporarily change MaxSpeed without sending network update
     /// </summary>
     void TransientChangeMaxSpeed(float speed);
 }
@@ -64,32 +64,32 @@ public interface IMovementService : IPlayerPawnComponent
 public interface IPlayerMovementService : IMovementService
 {
     /// <summary>
-    ///     下蹲疲劳速度
+    ///     Duck speed, the lower it is the longer it takes to fully duck
     /// </summary>
     float DuckSpeed { get; set; }
 
     /// <summary>
-    ///     按住Jump
+    ///     Jump button held down
     /// </summary>
     bool OldJumpPressed { get; set; }
 
     /// <summary>
-    ///     上次按下Jump的时间
+    ///     When does the player press their jump button
     /// </summary>
     float JumpPressedTime { get; set; }
 
     /// <summary>
-    ///     耐力值
+    ///     Stamina value
     /// </summary>
     float Stamina { get; set; }
 
     /// <summary>
-    ///     强制下蹲
+    ///     Force duck/crouch
     /// </summary>
     bool DuckOverride { get; set; }
 
     /// <summary>
-    ///     临时修改耐力值, 不发送
+    ///     Temporarily change stamina without sending network update
     /// </summary>
     void TransientChangeStamina(float stamina);
 }

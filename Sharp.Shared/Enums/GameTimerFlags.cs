@@ -25,48 +25,48 @@ namespace Sharp.Shared.Enums;
 public enum GameTimerFlags
 {
     /// <summary>
-    ///     无
+    ///     None
     /// </summary>
     None = 0,
 
     /// <summary>
-    ///     可重复调用
+    ///     Called repeatedly
     /// </summary>
     Repeatable = 1 << 0,
 
     /// <summary>
-    ///     需要实现IDisposable
+    ///     Requires IDisposable implementation
     /// </summary>
     [Obsolete("Removed since 1.6", true)]
     Disposable = 1 << 1,
 
     /// <summary>
-    ///     回合交替时停止
+    ///     Stop when round ends
     /// </summary>
     StopOnRoundEnd = 1 << 2,
 
     /// <summary>
-    ///     地图交替时停止
+    ///     Stop when map changes
     /// </summary>
     StopOnMapEnd = 1 << 3,
 
     /// <summary>
-    ///     模块退出时强制执行一次
+    ///     Force execute callback once before module shutdown
     /// </summary>
     ForceCallBeforeShutdown = 1 << 4,
 
     /// <summary>
-    ///     在 Timer 被强制停止前强制执行一次
+    ///     Force execute callback once before timer is forcibly stopped
     /// </summary>
     /// <remarks>
-    ///     仅在以下情况生效:
+    ///     Only takes effect in the following cases:
     ///     <list type="bullet">
-    ///         <item>直接调用<see cref="IModSharp.StopTimer"/></item>
-    ///         <item>Flag里包含<see cref="GameTimerFlags.StopOnMapEnd"/>, 并在服务器更换地图时</item>
-    ///         <item>Flag里包含<see cref="GameTimerFlags.StopOnRoundEnd"/>, 并在回合结束时</item>
+    ///         <item>Timer is stopped by <see cref="IModSharp.StopTimer"/></item>
+    ///         <item>Flag contains <see cref="GameTimerFlags.StopOnMapEnd"/> and server changes map</item>
+    ///         <item>Flag contains <see cref="GameTimerFlags.StopOnRoundEnd"/> and round ends</item>
     ///     </list>
     ///     <para>
-    ///         重要提示：如果计时器是因其回调函数返回 <see cref="TimerAction.Stop"/> 而正常结束的, 则不会触发此强制执行.
+    ///         Note: If the timer ends normally where the callback function returns <see cref="TimerAction.Stop"/>, it will not call the callback even the flag is set.
     ///     </para>
     /// </remarks>
     ForceCallOnStop = 1 << 5,

@@ -32,6 +32,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlMap.h"
+#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/VProf.h"
 
 #include <safetyhook.hpp>
@@ -77,26 +78,26 @@ BeginMemberHookScope(CCSGameRules)
         Constructor(pGameRules);
     }
 
-    DeclareMemberDetourHook(TerminateRound, void, (CCSGameRules * pGameRules, float flDelay, uint32_t nReason, TeamRewardInfo* pRewardInfo, int32_t nRewardSize))
+    DeclareMemberDetourHook(TerminateRound, void, (CCSGameRules * pGameRules, float flDelay, uint32_t nReason, CUtlVector<TeamRewardInfo>* pRewardInfo))
     {
         if (CCSGameRules::IsBypassHook())
         {
-            return TerminateRound(pGameRules, flDelay, nReason, pRewardInfo, nRewardSize);
+            return TerminateRound(pGameRules, flDelay, nReason, pRewardInfo);
         }
-
-        constexpr int CS_MAX_TEAM_REWARD_INFO = 8;
-
-        AssertBool(nRewardSize < CS_MAX_TEAM_REWARD_INFO);
 
         auto delay  = flDelay;
         auto reason = nReason;
+
+        const auto nRewardSize = pRewardInfo ? pRewardInfo->Count() : 0;
+
+        constexpr int CS_MAX_TEAM_REWARD_INFO = 8;
 
         TeamRewardInfo defaultArray[CS_MAX_TEAM_REWARD_INFO] = {};
         TeamRewardInfo changedArray[CS_MAX_TEAM_REWARD_INFO] = {};
         for (auto i = 0; i < CS_MAX_TEAM_REWARD_INFO && i < nRewardSize; ++i)
         {
-            defaultArray[i] = pRewardInfo[i];
-            changedArray[i] = pRewardInfo[i];
+            defaultArray[i] = pRewardInfo->Element(i);
+            changedArray[i] = pRewardInfo->Element(i);
         }
 
         NativeFixedSpan defaultRewards(defaultArray, nRewardSize, CS_MAX_TEAM_REWARD_INFO);
@@ -118,16 +119,26 @@ BeginMemberHookScope(CCSGameRules)
 
         auto result = &defaultRewards;
 
+        CUtlVector<TeamRewardInfo> tempRewardInfo;
+
         if (action == EHookAction::ChangeParamReturnDefault)
         {
-            flDelay     = delay;
-            nReason     = reason;
-            pRewardInfo = changedRewards.m_pData;
-            nRewardSize = changedRewards.m_nCount;
+            flDelay = delay;
+            nReason = reason;
+
+            auto* pTarget = pRewardInfo ? pRewardInfo : &tempRewardInfo;
+
+            pTarget->RemoveAll();
+            for (auto i = 0; i < changedRewards.m_nCount; ++i)
+            {
+                pTarget->AddToTail(changedRewards.m_pData[i]);
+            }
+
+            pRewardInfo = pTarget;
             result      = &changedRewards;
         }
 
-        TerminateRound(pGameRules, flDelay, nReason, pRewardInfo, nRewardSize);
+        TerminateRound(pGameRules, flDelay, nReason, pRewardInfo);
 
         forwards::OnTerminateRoundPost->Invoke(pGameRules, flDelay, nReason, result, action);
     }

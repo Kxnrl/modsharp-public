@@ -18,6 +18,7 @@
  */
 
 using System.Runtime.InteropServices;
+using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.Types;
 
@@ -46,5 +47,14 @@ public unsafe struct TakeDamageResult
     public int TotalledDamageDealt;
 
     [FieldOffset(32)]
+    public float m_flTotalledPreModifiedDamage;
+
+    [FieldOffset(36)]
     public bool WasDamageSuppressed;
+
+    [FieldOffset(37)]
+    public bool SuppressFlinch;
+
+    [FieldOffset(40)]
+    private HitGroupType OverrideFlinchHitGroup;
 }

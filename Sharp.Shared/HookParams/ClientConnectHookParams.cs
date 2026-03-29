@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Shared.Enums;
 using Sharp.Shared.Units;
 
 namespace Sharp.Shared.HookParams;
@@ -26,5 +27,12 @@ public interface IClientConnectHookParams : IFunctionParams
     SteamID SteamId { get; }
     string  Name    { get; }
 
+    /// <summary>
+    ///     Set the reason to reject this client's connection
+    ///     <br />
+    ///     <b>Note:</b> You must also return <see cref="EHookAction.SkipCallReturnOverride" /> for this to take effect.
+    ///     <br />If rejected, the reason is logged to the server console.
+    /// </summary>
+    /// <param name="reason">The message to show in the server console.</param>
     void SetBlockReason(string reason);
 }

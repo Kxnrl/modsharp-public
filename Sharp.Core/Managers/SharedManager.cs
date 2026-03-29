@@ -82,4 +82,7 @@ internal class SharedManager : ISharedManager
 
     public ISharpModuleManager GetSharpModuleManager()
         => _serviceProvider.GetRequiredService<ICoreSharpModuleManager>();
+
+    public IParticleManager GetParticleManager()
+        => _serviceProvider.GetRequiredService<ICoreParticleManager>();
 }

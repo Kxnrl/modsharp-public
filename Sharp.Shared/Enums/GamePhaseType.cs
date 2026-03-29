@@ -22,33 +22,33 @@ namespace Sharp.Shared.Enums;
 public enum GamePhase
 {
     /// <summary>
-    ///     热身
+    ///     Warmup round
     /// </summary>
     WarmupRound,
 
     /// <summary>
-    ///     不分上下半场的标准游戏 <br />
-    ///     <remarks>多用于<b>mp_maxround</b>为0时的游戏</remarks>
+    ///     Standard game without first/second half division <br />
+    ///     <remarks>Commonly used when <b>mp_maxround</b> is 0</remarks>
     /// </summary>
     PlayingStandard,
 
     /// <summary>
-    ///     上半场
+    ///     First half
     /// </summary>
     PlayingFirstHalf,
 
     /// <summary>
-    ///     下半场
+    ///     Second half
     /// </summary>
     PlayingSecondHalf,
 
     /// <summary>
-    ///     半场休息时间
+    ///     Halftime break
     /// </summary>
     Halftime,
 
     /// <summary>
-    ///     游戏结束Intermission时间
+    ///     Match ended intermission time
     /// </summary>
     MatchEnded,
 }

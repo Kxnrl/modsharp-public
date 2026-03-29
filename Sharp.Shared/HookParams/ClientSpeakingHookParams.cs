@@ -22,22 +22,22 @@ namespace Sharp.Shared.HookParams;
 public interface IClientSpeakingHookParams : IFunctionParams, IClientFunctionParams
 {
     /// <summary>
-    ///     用户 Xuid
+    ///     User steamid
     /// </summary>
     ulong Xuid { get; }
 
     /// <summary>
-    ///     语音数据区间Id
+    ///     Voice section id
     /// </summary>
     uint SectionNumber { get; }
 
     /// <summary>
-    ///     语音数据
+    ///     Voice data
     /// </summary>
     nint PVoiceData { get; }
 
     /// <summary>
-    ///     语音数据长度
+    ///     Size of voice data
     /// </summary>
     int Size { get; }
 }

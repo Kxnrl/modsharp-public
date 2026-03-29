@@ -24,7 +24,7 @@ namespace Sharp.Shared.Managers;
 public interface ISharpModuleManager
 {
     /// <summary>
-    ///     把你当前模块注册为库, 以允许其他模块引用
+    ///     Register your current module as a library to allow other modules to use the interface
     /// </summary>
     public void RegisterSharpModuleInterface<T>(IModSharpModule owner, string identity, T impl) where T : class;
 
@@ -35,19 +35,19 @@ public interface ISharpModuleManager
     public IModSharpModuleInterface<T> GetRequiredSharpModuleInterface<T>(string identity) where T : class;
 
     /// <summary>
-    ///     Get the required sharp module interface.
+    ///     Get the optional sharp module interface.
     /// </summary>
     public IModSharpModuleInterface<T>? GetOptionalSharpModuleInterface<T>(string identity) where T : class;
 
     /// <summary>
-    ///     注册动态本地函数, 方便调试, 其实性能也还OK<br />
-    ///     <remarks>跟SM里面一样, 你想怎么玩就怎么玩</remarks>
+    ///     Register dynamic native functions for convenient debugging, performance is actually decent too<br />
+    ///     <remarks>It is the same as SourceMod, you can use it however you want</remarks>
     /// </summary>
     public void RegisterDynamicNative(IModSharpModule owner, string name, Delegate function);
 
     /// <summary>
-    ///     获取动态本地函数
-    ///     <remarks>这里获取到之后需要你自己调用 is 进行转换以保证类型安全</remarks>
+    ///     Get dynamic native function
+    ///     <remarks>After retrieving, you need to use 'is' operator for type conversion to ensure type safety</remarks>
     /// </summary>
     /// <code>
     /// var func = moduleManager.GetDynamicNative("MyFunction");

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -189,7 +189,7 @@ public:
     template <typename T>
     inline T GetValue()
     {
-        return *reinterpret_cast<T*>(reinterpret_cast<intptr_t>(this) + 0x50);
+        return *reinterpret_cast<T*>(reinterpret_cast<intptr_t>(this) + 0x58);
     }
 
 protected:
@@ -209,6 +209,7 @@ protected:
 
 private:
     uint8_t pad_64[4]{};
+    void*   pad;
 
 public:
     int32_t m_UserInfoByteIndex;

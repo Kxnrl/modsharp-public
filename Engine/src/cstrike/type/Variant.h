@@ -233,7 +233,7 @@ public:
     int          nOutputID;
 };
 
-enum KeyValuesVariantValueItemType : uint32_t
+enum KeyValuesVariantValueItemType : uint64_t
 {
     KeyValuesVariantValueItemType_Bool,
     KeyValuesVariantValueItemType_Int32,
@@ -242,8 +242,6 @@ enum KeyValuesVariantValueItemType : uint32_t
     KeyValuesVariantValueItemType_Pointer,
 };
 
-#define KEY_VALUES_VARIANT_VALUE_ITEM_MAX_STRING_LENGTH 256
-
 struct KeyValuesVariantValueItem
 {
     KeyValuesVariantValueItemType type;
@@ -251,7 +249,7 @@ struct KeyValuesVariantValueItem
         bool    bValue;
         int32_t i32Value;
         float   flValue;
-        char    szValue[KEY_VALUES_VARIANT_VALUE_ITEM_MAX_STRING_LENGTH];
+        char*   szValue;
         void*   pValue;
     };
 
@@ -283,12 +281,13 @@ struct KeyValuesVariantValueItem
         return val;
     }
 };
-static_assert(sizeof(KeyValuesVariantValueItem) == 264);
+static_assert(sizeof(KeyValuesVariantValueItem) == 16);
 
 struct KeyValuesVariantItem
 {
-    char                      Key[KEY_VALUES_VARIANT_VALUE_ITEM_MAX_STRING_LENGTH];
+    char*                     Key;
     KeyValuesVariantValueItem Value;
 };
+static_assert(sizeof(KeyValuesVariantItem) == 24);
 
 #endif

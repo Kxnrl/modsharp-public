@@ -21,6 +21,7 @@
 #define CSTRIKE_ENTITY_BASETRIGGER_H
 
 #include "cstrike/entity/CBaseModelEntity.h"
+#include "cstrike/type/CUtlVector.h"
 
 class CBaseTrigger : public CBaseModelEntity
 {

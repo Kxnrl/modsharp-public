@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x5C)]
+[StructLayout(LayoutKind.Explicit, Pack = 4, Size = 0x58)]
 public struct ShootInfo
 {
     [FieldOffset(0)]
@@ -71,7 +71,4 @@ public struct ShootInfo
 
     [FieldOffset(0x54)]
     private int Unknown1;
-
-    [FieldOffset(0x58)]
-    private int Unknown2;
 }

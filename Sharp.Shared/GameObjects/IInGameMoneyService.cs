@@ -25,7 +25,7 @@ namespace Sharp.Shared.GameObjects;
 public interface IInGameMoneyService : IPlayerControllerComponent
 {
     /// <summary>
-    ///     玩家金钱
+    ///     The amount of money
     /// </summary>
     int Account { get; set; }
 }

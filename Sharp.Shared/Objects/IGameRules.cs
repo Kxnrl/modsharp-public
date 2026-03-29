@@ -30,178 +30,178 @@ namespace Sharp.Shared.Objects;
 public interface IGameRules : ISchemaObject
 {
     /// <summary>
-    ///     当前CT阵营人数
+    ///     Current number of CT players
     /// </summary>
     int NumCT { get; }
 
     /// <summary>
-    ///     当前TE阵营人数
+    ///     Current number of terrorist players
     /// </summary>
     int NumTE { get; }
 
     /// <summary>
-    ///     CT阵营剩余暂停
+    ///     Remaining timeouts for CT team
     /// </summary>
     int CTTimeOuts { get; }
 
     /// <summary>
-    ///     TE阵营剩余暂停
+    ///     Remaining timeouts for terrorist team
     /// </summary>
     int TETimeOuts { get; }
 
     /// <summary>
-    ///     TE阵营最大允许的人数
+    ///     Maximum allowed terrorist players
     /// </summary>
     int MaxNumTEs { get; set; }
 
     /// <summary>
-    ///     CT阵营允许的最大人数
+    ///     Maximum allowed CT players
     /// </summary>
     int MaxNumCTs { get; set; }
 
     /// <summary>
-    ///     在回合交替时交换队伍
+    ///     Switch teams at round reset
     /// </summary>
     bool SwitchingTeamsAtRoundReset { get; set; }
 
     /// <summary>
-    ///     不发消息的交换队伍
+    ///     Force team change without message
     /// </summary>
     bool ForceTeamChangeSilent { get; set; }
 
     /// <summary>
-    ///     游戏进程
+    ///     Current game phase
     /// </summary>
     GamePhase GamePhase { get; }
 
     /// <summary>
-    ///     冻结阶段
+    ///     Whether in freeze period
     /// </summary>
     bool IsFreezePeriod { get; }
 
     /// <summary>
-    ///     热身阶段
+    ///     Whether in warmup period
     /// </summary>
     bool IsWarmupPeriod { get; }
 
     /// <summary>
-    ///     游戏暂停
+    ///     Whether game is paused
     /// </summary>
     bool IsGamePaused { get; }
 
     /// <summary>
-    ///     Team Intro
+    ///     Whether in team intro period
     /// </summary>
     bool IsTeamIntroPeriod { get; }
 
     /// <summary>
-    ///     回合时间
+    ///     Round time in seconds
     /// </summary>
     int RoundTime { get; set; }
 
     /// <summary>
-    ///     游戏开始时间
+    ///     Game start time
     /// </summary>
     float GameStartTime { get; set; }
 
     /// <summary>
-    ///     回合开始时间 (基于CurTime)
+    ///     Round start time (based on CurTime)
     /// </summary>
     float RoundStartTime { get; set; }
 
     /// <summary>
-    ///     比赛是否暂停
+    ///     Whether match is waiting for resume
     /// </summary>
     bool MatchWaitingForResume { get; set; }
 
     /// <summary>
-    ///     回合重置时间 (基于CurTime)
+    ///     Round restart time (based on CurTime)
     /// </summary>
     float RestartRoundTime { get; }
 
     /// <summary>
-    ///     已经游玩的回合数
+    ///     Total rounds played
     /// </summary>
     int TotalRoundsPlayed { get; }
 
     /// <summary>
-    ///     比赛开始
+    ///     Whether match has started
     /// </summary>
     bool IsMatchStarted { get; }
 
     /// <summary>
-    ///     选择队伍时隐藏提示
+    ///     Hide team selection messages
     /// </summary>
     bool IsForceTeamChangeSilent { get; }
 
     /// <summary>
-    ///     官方服务器?
+    ///     Whether this is a Valve dedicated server
     /// </summary>
     bool IsValveDS { get; set; }
 
     /// <summary>
-    ///     m_bGameRestart
+    ///     Game restart flag (m_bGameRestart)
     /// </summary>
     bool IsGameRestart { get; set; }
 
     /// <summary>
-    ///     重启游戏
+    ///     Restart the game
     /// </summary>
     void RestartGame();
 
     /// <summary>
-    ///     当前Phase已经游玩的回合数
+    ///     Rounds played in current phase
     /// </summary>
     int RoundsPlayedThisPhase { get; set; }
 
     /// <summary>
-    ///     是否已经播放过开场队伍POSE
+    ///     Whether team intro voice-over has been played
     /// </summary>
     bool PlayedTeamIntroVO { get; set; }
 
     /// <summary>
-    ///     回合结束原因
+    ///     Reason for round end
     /// </summary>
     RoundEndReason RoundWinReason { get; }
 
     /// <summary>
-    ///     回合胜利者
+    ///     Team that won the round
     /// </summary>
     CStrikeTeam RoundWinStatus { get; }
 
     /// <summary>
-    ///     结束回合
+    ///     End the current round
     /// </summary>
     void TerminateRound(float delay, RoundEndReason reason, bool bypassHook = false, TeamRewardInfo[]? info = null);
 
     /// <summary>
-    ///     获取回合剩余时间
+    ///     Get remaining time in current round
     /// </summary>
     float GetRoundRemainingTime();
 
     /// <summary>
-    ///     获取回合进行的时间
+    ///     Get elapsed time in current round
     /// </summary>
     float GetRoundElapsedTime();
 
     /// <summary>
-    ///     获取地图剩余时间<br />
+    ///     Get remaining time on map<br />
     ///     <remarks>
-    ///         &lt; 0 = * No Time Limit *<br />
-    ///         = 0 =* Last Round *<br />
+    ///         &lt; 0 = No Time Limit<br />
+    ///         = 0 = Last Round<br />
     ///         &gt; 0 = Time Remaining
     ///     </remarks>
     /// </summary>
     float GetMapRemainingTime();
 
     /// <summary>
-    ///     m_nEndMatchMapGroupVoteTypes
+    ///     End match map group vote types (m_nEndMatchMapGroupVoteTypes)
     /// </summary>
     /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteTypes();
 
     /// <summary>
-    ///     m_nEndMatchMapGroupVoteOptions
+    ///     End match map group vote options (m_nEndMatchMapGroupVoteOptions)
     /// </summary>
     /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteOptions();

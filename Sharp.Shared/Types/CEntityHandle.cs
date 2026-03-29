@@ -34,6 +34,9 @@ public readonly struct CEntityHandle<T> :
     public CEntityHandle(uint value = uint.MaxValue)
         => _value = value;
 
+    public CEntityHandle(int index, int serial)
+        => _value = ((uint) index & 0x7FFF) | (((uint) serial & 0x1FFFF) << 15);
+
     public bool IsValid()
         => _value != uint.MaxValue;
 
@@ -56,8 +59,10 @@ public readonly struct CEntityHandle<T> :
     public int GetEHandleInt()
         => unchecked((int) _value);
 
+    
     /// <summary>
-    ///     泛型不支持显示/隐式转换，所以这里只能用 As&lt;TOut&gt;() 来转换类型
+    ///     Casts the handle to a different entity type. 
+    ///     (Required because generic structs do not support implicit variance).
     /// </summary>
     public CEntityHandle<TOut> As<TOut>() where TOut : class, IBaseEntity
         => new (_value);
@@ -95,4 +100,39 @@ public readonly struct CEntityHandle<T> :
 
     public bool Equals(CEntityHandle<T> other)
         => _value == other._value;
+
+    /// <summary>
+    ///     Compresses the handle into a 24-bit integer (Index + Truncated Serial).
+    ///     Used for network transmission (Dispatch effect, etc.)
+    /// </summary>
+    public uint GetPackedValue()
+    {
+        if (_value == uint.MaxValue)
+        {
+            return 0xFFFFFF;
+        }
+
+        return (_value & 0x7FFF) | (((_value >> 15) & 0x3FF) << 14);
+    }
+
+    /// <summary>
+    ///     Reconstructs a CEntityHandle from a compressed 24-bit integer.
+    ///     Typically used when reading handles from network packets.
+    /// </summary>
+    /// <param name="packed">The 24-bit packed value.</param>
+    public static CEntityHandle<T> FromPackedValue(uint packed)
+    {
+        if (packed == 0xFFFFFF)
+        {
+            return new CEntityHandle<T>(uint.MaxValue);
+        }
+
+        // extract index from lower 14 bits
+        var index = packed & 0x3FFF;
+
+        // extract serial from bit 14
+        var serial = (packed >> 14) & 0x3FF;
+
+        return new CEntityHandle<T>(index | (serial << 15));
+    }
 }

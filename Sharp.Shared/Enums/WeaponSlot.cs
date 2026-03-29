@@ -22,30 +22,10 @@ namespace Sharp.Shared.Enums;
 public enum GearSlot
 {
     Invalid = -1,
-
-    /// <summary>
-    ///     步枪
-    /// </summary>
     Rifle = 0,
-
-    /// <summary>
-    ///     手枪
-    /// </summary>
     Pistol = 1,
-
-    /// <summary>
-    ///     刀
-    /// </summary>
     Knife = 2,
-
-    /// <summary>
-    ///     手雷
-    /// </summary>
     Grenades = 3,
-
-    /// <summary>
-    ///     C4
-    /// </summary>
     C4 = 4,
 
     ReservedSlot6  = 5,

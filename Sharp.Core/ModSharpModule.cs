@@ -21,11 +21,10 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
+using Sharp.Core.Helpers;
 using Sharp.Core.Utilities;
 using Sharp.Shared;
 
@@ -60,7 +59,7 @@ internal sealed class ModSharpModule
     public ModuleLoadState State { get; private set; }
 
     private PluginLoader?    _loader;
-    private Mutex?           _mutex;
+    private IProcessLock?    _processLock;
     private IModSharpModule? _instance;
 
     internal ModSharpModule(
@@ -144,17 +143,20 @@ internal sealed class ModSharpModule
             throw new InvalidOperationException("Shutdown must be called from the same thread as the constructor.");
         }
 
-        _mutex?.ReleaseMutex();
-        _mutex?.Close();
-        _mutex = null;
+        if (_processLock is null)
+        {
+            return;
+        }
+
+        _processLock.Dispose();
+        _processLock = null;
     }
 
     public void Unload(Action<string> onUnload)
     {
         try
         {
-            _mutex?.ReleaseMutex();
-            _mutex?.Close();
+            _processLock?.Dispose();
 
             State = ModuleLoadState.Unloading;
 
@@ -177,9 +179,9 @@ internal sealed class ModSharpModule
         }
         finally
         {
-            _mutex    = null;
-            _instance = null;
-            _loader   = null;
+            _processLock = null;
+            _instance    = null;
+            _loader      = null;
         }
     }
 
@@ -196,6 +198,14 @@ internal sealed class ModSharpModule
                 throw new ApplicationException("Failed to update module while starting");
             }
 
+            _processLock = ProcessLock.CreateByRaw(_dllFile);
+
+            if (!_processLock.IsAcquired)
+            {
+                throw new AbandonedMutexException(
+                    $"Module '{Name}' is already loaded by another process. Ensure no other instance is running.");
+            }
+
             loader = PluginLoader.CreateFromAssemblyFile(_dllFile,
                                                          config =>
                                                          {
@@ -210,27 +220,12 @@ internal sealed class ModSharpModule
 
             var module = assembly.GetTypes()
                                  .FirstOrDefault(t => typeof(IModSharpModule).IsAssignableFrom(t) && !t.IsAbstract)
-                         ?? throw new BadImageFormatException("IModSharpModule is not implemented.");
+                         ?? throw new
+                             BadImageFormatException($"Assembly '{assembly.GetName().Name}' does not contain a valid IModSharpModule implementation. Ensure a non-abstract class implements IModSharpModule.");
 
             if (assembly.GetName().Version is not { } version)
             {
-                throw new VersionNotFoundException("Could not versioning");
-            }
-
-            var matches = Regex.Matches(_dllFile, "[a-zA-Z0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
-            var builder = new StringBuilder();
-
-            foreach (Match m in matches)
-            {
-                builder.Append(m.Value);
-            }
-
-            var key = builder.ToString();
-            _mutex = new Mutex(true, key, out var success);
-
-            if (!success)
-            {
-                throw new AbandonedMutexException("Double load!");
+                throw new VersionNotFoundException($"Assembly '{assembly.GetName().Name}' does not have a version defined..");
             }
 
             if (Activator.CreateInstance(module, shared, _dllPath, _rootPath, version, configuration, hotReload)
@@ -279,16 +274,11 @@ internal sealed class ModSharpModule
 
             try
             {
-                _mutex?.ReleaseMutex();
-                _mutex?.Close();
-            }
-            catch
-            {
-                // empty
+                _processLock?.Dispose();
             }
             finally
             {
-                _mutex = null;
+                _processLock = null;
             }
 
             _instance = null;

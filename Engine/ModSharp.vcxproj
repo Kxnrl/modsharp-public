@@ -22,11 +22,13 @@
     <ClCompile Include="src\cstrike\econitem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp" />
     <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp" />
+    <ClCompile Include="src\cstrike\interfaces.cpp" />
     <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />
     <ClCompile Include="src\cstrike\Interface\ICvar.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameTypes.cpp" />
     <ClCompile Include="src\cstrike\Interface\INetChannel.cpp" />
+    <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp" />
     <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp" />
     <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp" />
     <ClCompile Include="src\cstrike\type\CCommand.cpp" />
@@ -44,6 +46,7 @@
     <ClCompile Include="src\memoverride_ms.cpp" />
     <ClCompile Include="src\module_windows.cpp" />
     <ClCompile Include="src\proto\cs_usercmd.pb.cc" />
+    <ClCompile Include="src\proto\source2_steam_stats.pb.cc" />
     <ClCompile Include="src\proto\usercmd.pb.cc" />
     <ClCompile Include="src\sdkproxy.cpp" />
     <ClCompile Include="src\address.cpp" />
@@ -123,6 +126,7 @@
     <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h" />
     <ClInclude Include="src\cstrike\component\CGameSceneNode.h" />
     <ClInclude Include="src\cstrike\entity\CEconEntity.h" />
+    <ClInclude Include="src\cstrike\interfaces.h" />
     <ClInclude Include="src\cstrike\Interface\ICommandLine.h" />
     <ClInclude Include="src\cstrike\Interface\IFileSystem.h" />
     <ClInclude Include="src\cstrike\Interface\IGameEvent.h" />
@@ -267,6 +271,7 @@
     <ClInclude Include="src\module.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\protobufproxy.h" />
+    <ClInclude Include="src\scopetimer.h" />
     <ClInclude Include="src\sdkproxy.h" />
     <ClInclude Include="src\steamproxy.h" />
     <ClInclude Include="src\steamworks.h" />
@@ -289,7 +294,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{2e9e0584-8b32-4e94-ba17-20febbbed37c}</ProjectGuid>
     <RootNamespace>ModSharp</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -332,7 +337,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

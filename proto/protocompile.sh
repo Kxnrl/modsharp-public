@@ -27,7 +27,8 @@ pushd temp
     usermessages.proto \
     cs_gameevents.proto \
     cs_usercmd.proto \
-    netmessages.proto
+    netmessages.proto \
+    source2_steam_stats.proto
 
 popd
 

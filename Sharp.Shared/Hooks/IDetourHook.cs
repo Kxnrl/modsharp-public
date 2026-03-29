@@ -25,26 +25,26 @@ namespace Sharp.Shared.Hooks;
 public interface IDetourHook : IRuntimeNativeHook, IDisposable
 {
     /// <summary>
-    ///     准备Hook
+    ///     Prepare hook
     /// </summary>
     /// <param name="gamedata">gamedata key</param>
-    /// <param name="hookFn">UnmanagedCallersOnly 静态函数</param>
-    /// <exception cref="EntryPointNotFoundException">GameData找不到/空指针/无效字段</exception>
-    /// <exception cref="KeyNotFoundException">GameData 找不到</exception>
+    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <exception cref="EntryPointNotFoundException">Thrown when GameData is not found / null pointer / invalid field</exception>
+    /// <exception cref="KeyNotFoundException">Thrown when faiils to find gamedata</exception>
     void Prepare(string gamedata, nint hookFn);
 
     /// <summary>
-    ///     准备Hook <br />
+    ///     Prepare Hook <br />
     ///     <remarks>
-    ///         需要自行转换为 nint <br />
+    ///         Need to manually convert to nint <br />
     ///     </remarks>
     /// </summary>
     /// <example>
     ///     <code>
-    ///         (nint) (delegate* unmanaged&lt;void&gt;) &amp;Test
+    ///         (nint) (delegate* unmanaged<void>) &Test
     ///  </code>
     /// </example>
-    /// <param name="pTargetFn">原生函数地址</param>
-    /// <param name="hookFn"> UnmanagedCallersOnly 静态函数</param>
+    /// <param name="pTargetFn">Native function address</param>
+    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     void Prepare(nint pTargetFn, nint hookFn);
 }

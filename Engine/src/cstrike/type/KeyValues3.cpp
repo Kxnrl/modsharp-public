@@ -18,9 +18,8 @@
  */
 
 #include "gamedata.h"
-#include "strtool.h"
+#include "global.h"
 
-#include "cstrike/entity/CEnvEntityMaker.h"
 #include "cstrike/type/KeyValues3.h"
 #include "cstrike/type/matrix3x4.h"
 

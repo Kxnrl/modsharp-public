@@ -19,6 +19,7 @@
 
 #include "memory_access.h"
 
+#include <Zydis.h>
 #include <safetyhook.hpp>
 
 bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access)
@@ -30,4 +31,46 @@ bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access)
     const auto result = safetyhook::vm_protect(address, size, safetyhook::VmAccess{.read = read, .write = write, .execute = execute});
 
     return result.has_value();
+}
+
+uintptr_t ResolveCallTarget(ZydisDecoder* decoder, ZydisDecodedInstruction* instr, ZydisDecodedOperand* operands, uintptr_t current_ip)
+{
+    ZyanU64 raw_target = 0;
+    if (!ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(instr, &operands[0], current_ip, &raw_target))) return 0;
+
+    if (instr->opcode == 0xFF && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
+    {
+        return *reinterpret_cast<uintptr_t*>(raw_target);
+    }
+
+    if (instr->opcode == 0xE8)
+    {
+        uintptr_t target_addr = raw_target;
+
+        ZydisDecodedInstruction plt_instr;
+        ZydisDecodedOperand     plt_operands[ZYDIS_MAX_OPERAND_COUNT];
+        auto                    plt_cursor = reinterpret_cast<uint8_t*>(target_addr);
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(decoder, plt_cursor, ZYDIS_MAX_INSTRUCTION_LENGTH, &plt_instr, plt_operands))) break;
+
+            if (plt_instr.mnemonic == ZYDIS_MNEMONIC_JMP && plt_cursor[plt_instr.raw.modrm.offset] == 0x25 && plt_operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                ZyanU64 got_entry = 0;
+                if (ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(&plt_instr, &plt_operands[0], (ZyanU64)plt_cursor, &got_entry)))
+                {
+                    return *reinterpret_cast<uintptr_t*>(got_entry);
+                }
+            }
+
+            if (plt_instr.mnemonic == ZYDIS_MNEMONIC_RET || plt_instr.mnemonic == ZYDIS_MNEMONIC_INT3) break;
+
+            plt_cursor += plt_instr.length;
+        }
+
+        return target_addr;
+    }
+
+    return 0;
 }

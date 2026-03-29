@@ -26,24 +26,24 @@ public interface IEventListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     Hook并修改时间, 如果只是需要监听, 不要实现此功能
+    ///     Hook and modify event, if you only need to listen, do not implement this function
     /// </summary>
-    /// <returns>False = Block Event Fire</returns>
+    /// <returns>False = Block event from firing</returns>
     bool HookFireEvent(IGameEvent @event, ref bool serverOnly)
         => true;
 
     /// <summary>
-    ///     监听事件触发器, 请勿在此修改事件
+    ///     Event listener, do not modify event here
     /// </summary>
     /// <param name="event"></param>
     void FireGameEvent(IGameEvent @event);

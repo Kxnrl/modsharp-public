@@ -22,12 +22,12 @@ namespace Sharp.Shared.Enums;
 public enum SolidType : byte
 {
     /// <summary>
-    ///     无
+    ///     None
     /// </summary>
     None,
 
     /// <summary>
-    ///     Bsp 地图
+    ///     Bsp map
     /// </summary>
     Bsp,
 
@@ -52,7 +52,7 @@ public enum SolidType : byte
     Point,
 
     /// <summary>
-    ///     物理
+    ///     Physics
     /// </summary>
     VPhysics,
 

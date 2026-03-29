@@ -1,15 +1,5 @@
 {
   "Addresses": {
-    "CBufferString::AppendFormat": {
-      "library": "tier0",
-      "linux": "@_ZN13CBufferString12AppendFormatEPKcz",
-      "windows": "@?AppendFormat@CBufferString@@QEAAHPEBDZZ"
-    },
-    "CBufferString::Insert": {
-      "library": "tier0",
-      "linux": "@_ZN13CBufferString6InsertEiPKcib",
-      "windows": "@?Insert@CBufferString@@QEAAPEBDHPEBDH_N@Z"
-    },
     "CCommand::CCommand": {
       "library": "tier0",
       "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 33 ED 48 8D B1"
@@ -17,82 +7,12 @@
     "CCommand::Tokenize": {
       "library": "tier0",
       "linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 55 41 54 53 48 89 F3 48 83 EC ? 8B 57",
-      "windows": "48 89 6C 24 20 4C 89 44 24 18 56 57 41 54"
-    },
-    "CUtlBuffer::CheckGet": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer8CheckGetEi",
-      "windows": "@?CheckGet@CUtlBuffer@@IEAA_NH@Z"
-    },
-    "CUtlBuffer::CUtlBuffer_buffer": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBufferC2EPKviNS_13BufferFlags_tE",
-      "windows": "@??0CUtlBuffer@@QEAA@PEBXHW4BufferFlags_t@0@@Z"
-    },
-    "CUtlBuffer::CUtlBuffer_int": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBufferC2EiiNS_13BufferFlags_tE",
-      "windows": "@??0CUtlBuffer@@QEAA@HHW4BufferFlags_t@0@@Z"
-    },
-    "CUtlBuffer::Get": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer3GetEPvi",
-      "windows": "@?Get@CUtlBuffer@@QEAA_NPEAXH@Z"
-    },
-    "CUtlBuffer::GetString_CBufferString": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer9GetStringEP13CBufferString",
-      "windows": "@?GetString@CUtlBuffer@@QEAAXPEAVCBufferString@@@Z"
-    },
-    "CUtlBuffer::GetString_char": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer9GetStringEPci",
-      "windows": "@?GetString@CUtlBuffer@@QEAAXPEADH@Z"
-    },
-    "CUtlBuffer::SeekGet": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer7SeekGetENS_10SeekType_tEi",
-      "windows": "@?SeekGet@CUtlBuffer@@QEAAXW4SeekType_t@1@H@Z"
-    },
-    "CUtlBuffer::SeekPut": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlBuffer7SeekPutENS_10SeekType_tEi",
-      "windows": "@?SeekPut@CUtlBuffer@@QEAAXW4SeekType_t@1@H@Z"
-    },
-    "CutlString::Append": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString6AppendEPKc",
-      "windows": "@?Append@CUtlString@@QEAAXPEBD@Z"
-    },
-    "CUtlString::CUtlString": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlStringC2ERK13CBufferString",
-      "windows": "@??0CUtlString@@QEAA@AEBVCBufferString@@@Z"
-    },
-    "CUtlString::Purge": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString5PurgeEv",
-      "windows": "@?Purge@CUtlString@@QEAAXXZ"
-    },
-    "CUtlString::Set": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString3SetEPKc",
-      "windows": "@?Set@CUtlString@@QEAAXPEBD@Z"
-    },
-    "CUtlString::SetDirect": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString9SetDirectEPKci",
-      "windows": "@?SetDirect@CUtlString@@QEAAXPEBDH@Z"
-    },
-    "CUtlString::ToLowerFast": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString11ToLowerFastEv",
-      "windows": "@?ToLowerFast@CUtlString@@QEAAXXZ"
-    },
-    "CUtlString::ToUpperFast": {
-      "library": "tier0",
-      "linux": "@_ZN10CUtlString11ToUpperFastEv",
-      "windows": "@?ToUpperFast@CUtlString@@QEAAXXZ"
+      "windows": "48 89 6C 24 20 4C 89 44 24 18 56 57 41 54",
+      "refs": {
+        "strings": [
+          "CCommand::Tokenize: Encountered command which overflows the tokenizer buffer.. Skipping!\n"
+        ]
+      }
     },
     "CVProfile::OutputReport": {
       "library": "tier0",
@@ -102,10 +22,6 @@
     "LoadKV3FromFileUtlString": {
       "library": "tier0",
       "windows": "@?LoadKV3FromFile@@YA_NPEAVKeyValues3@@PEAVCUtlString@@PEBD2AEBUKV3ID_t@@I@Z"
-    },
-    "LoadKV3UtlBuffer": {
-      "library": "tier0",
-      "windows": "@?LoadKV3@@YA_NPEAVKeyValues3@@PEAVCUtlString@@PEAVCUtlBuffer@@AEBUKV3ID_t@@PEBDI@Z"
     }
   }
 }

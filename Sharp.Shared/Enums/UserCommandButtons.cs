@@ -25,27 +25,27 @@ namespace Sharp.Shared.Enums;
 public enum UserCommandButtons : ulong
 {
     /// <summary>
-    ///     开火
+    ///     Primary attack
     /// </summary>
     Attack = 1 << 0,
 
     /// <summary>
-    ///     跳
+    ///     Jump
     /// </summary>
     Jump = 1 << 1,
 
     /// <summary>
-    ///     蹲
+    ///     Duck
     /// </summary>
     Duck = 1 << 2,
 
     /// <summary>
-    ///     前进
+    ///     Move forward
     /// </summary>
     Forward = 1 << 3,
 
     /// <summary>
-    ///     后退
+    ///     Move backwards
     /// </summary>
     Back = 1 << 4,
 
@@ -55,44 +55,39 @@ public enum UserCommandButtons : ulong
     Use = 1 << 5,
 
     /// <summary>
-    ///     左转
+    ///     Turn left
     /// </summary>
     TurnLeft = 1 << 7,
 
     /// <summary>
-    ///     右转
+    ///     Turn right
     /// </summary>
     TurnRight = 1 << 8,
 
     /// <summary>
-    ///     左移
+    ///     Move left
     /// </summary>
     MoveLeft = 1 << 9,
 
     /// <summary>
-    ///     右移
+    ///     Move right
     /// </summary>
     MoveRight = 1 << 10,
 
     /// <summary>
-    ///     武器特殊模式
+    ///     Secondary attack
     /// </summary>
     Attack2 = 1 << 11,
 
     /// <summary>
-    ///     换弹
+    ///     Reload
     /// </summary>
     Reload = 1 << 13,
 
     /// <summary>
-    ///     静步
+    ///     Walk
     /// </summary>
     Speed = 1 << 16,
-
-    /// <summary>
-    ///     假蹲?
-    /// </summary>
-    BullRush = 1 << 22,
 
     /// <summary>
     ///     User or Reload
@@ -100,7 +95,7 @@ public enum UserCommandButtons : ulong
     UserOrReload = 1ul << 32,
 
     /// <summary>
-    ///     计分板
+    ///     Show scoreboard
     /// </summary>
     Scoreboard = 1ul << 33,
 
@@ -110,7 +105,7 @@ public enum UserCommandButtons : ulong
     Zoom = 1ul << 34,
 
     /// <summary>
-    ///     监视
+    ///     Inspect
     /// </summary>
     LookAtWeapon = 1ul << 35,
 }

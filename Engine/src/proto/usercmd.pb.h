@@ -45,6 +45,9 @@ struct TableStruct_usercmd_2eproto {
   static const uint32_t offsets[];
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_usercmd_2eproto;
+class CBaseUserCmdExecutionNotes;
+struct CBaseUserCmdExecutionNotesDefaultTypeInternal;
+extern CBaseUserCmdExecutionNotesDefaultTypeInternal _CBaseUserCmdExecutionNotes_default_instance_;
 class CBaseUserCmdPB;
 struct CBaseUserCmdPBDefaultTypeInternal;
 extern CBaseUserCmdPBDefaultTypeInternal _CBaseUserCmdPB_default_instance_;
@@ -58,6 +61,7 @@ class CUserCmdBasePB;
 struct CUserCmdBasePBDefaultTypeInternal;
 extern CUserCmdBasePBDefaultTypeInternal _CUserCmdBasePB_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
+template<> ::CBaseUserCmdExecutionNotes* Arena::CreateMaybeMessage<::CBaseUserCmdExecutionNotes>(Arena*);
 template<> ::CBaseUserCmdPB* Arena::CreateMaybeMessage<::CBaseUserCmdPB>(Arena*);
 template<> ::CInButtonStatePB* Arena::CreateMaybeMessage<::CInButtonStatePB>(Arena*);
 template<> ::CSubtickMoveStep* Arena::CreateMaybeMessage<::CSubtickMoveStep>(Arena*);
@@ -506,6 +510,171 @@ class CSubtickMoveStep /*final*/ :
 };
 // -------------------------------------------------------------------
 
+class CBaseUserCmdExecutionNotes /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CBaseUserCmdExecutionNotes) */ {
+ public:
+  inline CBaseUserCmdExecutionNotes() : CBaseUserCmdExecutionNotes(nullptr) {}
+  ~CBaseUserCmdExecutionNotes() override;
+  explicit PROTOBUF_CONSTEXPR CBaseUserCmdExecutionNotes(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CBaseUserCmdExecutionNotes(const CBaseUserCmdExecutionNotes& from);
+  CBaseUserCmdExecutionNotes(CBaseUserCmdExecutionNotes&& from) noexcept
+    : CBaseUserCmdExecutionNotes() {
+    *this = ::std::move(from);
+  }
+
+  inline CBaseUserCmdExecutionNotes& operator=(const CBaseUserCmdExecutionNotes& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CBaseUserCmdExecutionNotes& operator=(CBaseUserCmdExecutionNotes&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CBaseUserCmdExecutionNotes& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CBaseUserCmdExecutionNotes* internal_default_instance() {
+    return reinterpret_cast<const CBaseUserCmdExecutionNotes*>(
+               &_CBaseUserCmdExecutionNotes_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(CBaseUserCmdExecutionNotes& a, CBaseUserCmdExecutionNotes& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CBaseUserCmdExecutionNotes* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CBaseUserCmdExecutionNotes* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CBaseUserCmdExecutionNotes* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CBaseUserCmdExecutionNotes>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CBaseUserCmdExecutionNotes& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CBaseUserCmdExecutionNotes& from) {
+    CBaseUserCmdExecutionNotes::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CBaseUserCmdExecutionNotes* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CBaseUserCmdExecutionNotes";
+  }
+  protected:
+  explicit CBaseUserCmdExecutionNotes(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIgnoredReasonFieldNumber = 1,
+  };
+  // optional string ignored_reason = 1;
+  bool has_ignored_reason() const;
+  private:
+  bool _internal_has_ignored_reason() const;
+  public:
+  void clear_ignored_reason();
+  const std::string& ignored_reason() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_ignored_reason(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_ignored_reason();
+  PROTOBUF_NODISCARD std::string* release_ignored_reason();
+  void set_allocated_ignored_reason(std::string* ignored_reason);
+  private:
+  const std::string& _internal_ignored_reason() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_ignored_reason(const std::string& value);
+  std::string* _internal_mutable_ignored_reason();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CBaseUserCmdExecutionNotes)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr ignored_reason_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usercmd_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CBaseUserCmdPB /*final*/ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CBaseUserCmdPB) */ {
  public:
@@ -561,7 +730,7 @@ class CBaseUserCmdPB /*final*/ :
                &_CBaseUserCmdPB_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(CBaseUserCmdPB& a, CBaseUserCmdPB& b) {
     a.Swap(&b);
@@ -638,6 +807,7 @@ class CBaseUserCmdPB /*final*/ :
     kMoveCrcFieldNumber = 19,
     kButtonsPbFieldNumber = 3,
     kViewanglesFieldNumber = 4,
+    kExecutionNotesFieldNumber = 22,
     kLegacyCommandNumberFieldNumber = 1,
     kClientTickFieldNumber = 2,
     kForwardmoveFieldNumber = 5,
@@ -724,6 +894,24 @@ class CBaseUserCmdPB /*final*/ :
   void unsafe_arena_set_allocated_viewangles(
       ::CMsgQAngle* viewangles);
   ::CMsgQAngle* unsafe_arena_release_viewangles();
+
+  // optional .CBaseUserCmdExecutionNotes execution_notes = 22;
+  bool has_execution_notes() const;
+  private:
+  bool _internal_has_execution_notes() const;
+  public:
+  void clear_execution_notes();
+  const ::CBaseUserCmdExecutionNotes& execution_notes() const;
+  PROTOBUF_NODISCARD ::CBaseUserCmdExecutionNotes* release_execution_notes();
+  ::CBaseUserCmdExecutionNotes* mutable_execution_notes();
+  void set_allocated_execution_notes(::CBaseUserCmdExecutionNotes* execution_notes);
+  private:
+  const ::CBaseUserCmdExecutionNotes& _internal_execution_notes() const;
+  ::CBaseUserCmdExecutionNotes* _internal_mutable_execution_notes();
+  public:
+  void unsafe_arena_set_allocated_execution_notes(
+      ::CBaseUserCmdExecutionNotes* execution_notes);
+  ::CBaseUserCmdExecutionNotes* unsafe_arena_release_execution_notes();
 
   // optional int32 legacy_command_number = 1;
   bool has_legacy_command_number() const;
@@ -921,6 +1109,7 @@ class CBaseUserCmdPB /*final*/ :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr move_crc_;
     ::CInButtonStatePB* buttons_pb_;
     ::CMsgQAngle* viewangles_;
+    ::CBaseUserCmdExecutionNotes* execution_notes_;
     int32_t legacy_command_number_;
     int32_t client_tick_;
     float forwardmove_;
@@ -996,7 +1185,7 @@ class CUserCmdBasePB /*final*/ :
                &_CUserCmdBasePB_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    4;
 
   friend void swap(CUserCmdBasePB& a, CUserCmdBasePB& b) {
     a.Swap(&b);
@@ -1401,11 +1590,83 @@ inline void CSubtickMoveStep::set_yaw_delta(float value) {
 
 // -------------------------------------------------------------------
 
+// CBaseUserCmdExecutionNotes
+
+// optional string ignored_reason = 1;
+inline bool CBaseUserCmdExecutionNotes::_internal_has_ignored_reason() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CBaseUserCmdExecutionNotes::has_ignored_reason() const {
+  return _internal_has_ignored_reason();
+}
+inline void CBaseUserCmdExecutionNotes::clear_ignored_reason() {
+  _impl_.ignored_reason_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CBaseUserCmdExecutionNotes::ignored_reason() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdExecutionNotes.ignored_reason)
+  return _internal_ignored_reason();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CBaseUserCmdExecutionNotes::set_ignored_reason(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.ignored_reason_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CBaseUserCmdExecutionNotes.ignored_reason)
+}
+inline std::string* CBaseUserCmdExecutionNotes::mutable_ignored_reason() {
+  std::string* _s = _internal_mutable_ignored_reason();
+  // @@protoc_insertion_point(field_mutable:CBaseUserCmdExecutionNotes.ignored_reason)
+  return _s;
+}
+inline const std::string& CBaseUserCmdExecutionNotes::_internal_ignored_reason() const {
+  return _impl_.ignored_reason_.Get();
+}
+inline void CBaseUserCmdExecutionNotes::_internal_set_ignored_reason(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.ignored_reason_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CBaseUserCmdExecutionNotes::_internal_mutable_ignored_reason() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.ignored_reason_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CBaseUserCmdExecutionNotes::release_ignored_reason() {
+  // @@protoc_insertion_point(field_release:CBaseUserCmdExecutionNotes.ignored_reason)
+  if (!_internal_has_ignored_reason()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.ignored_reason_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.ignored_reason_.IsDefault()) {
+    _impl_.ignored_reason_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CBaseUserCmdExecutionNotes::set_allocated_ignored_reason(std::string* ignored_reason) {
+  if (ignored_reason != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.ignored_reason_.SetAllocated(ignored_reason, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.ignored_reason_.IsDefault()) {
+    _impl_.ignored_reason_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CBaseUserCmdExecutionNotes.ignored_reason)
+}
+
+// -------------------------------------------------------------------
+
 // CBaseUserCmdPB
 
 // optional int32 legacy_command_number = 1;
 inline bool CBaseUserCmdPB::_internal_has_legacy_command_number() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_legacy_command_number() const {
@@ -1413,7 +1674,7 @@ inline bool CBaseUserCmdPB::has_legacy_command_number() const {
 }
 inline void CBaseUserCmdPB::clear_legacy_command_number() {
   _impl_.legacy_command_number_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline int32_t CBaseUserCmdPB::_internal_legacy_command_number() const {
   return _impl_.legacy_command_number_;
@@ -1423,7 +1684,7 @@ inline int32_t CBaseUserCmdPB::legacy_command_number() const {
   return _internal_legacy_command_number();
 }
 inline void CBaseUserCmdPB::_internal_set_legacy_command_number(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.legacy_command_number_ = value;
 }
 inline void CBaseUserCmdPB::set_legacy_command_number(int32_t value) {
@@ -1433,7 +1694,7 @@ inline void CBaseUserCmdPB::set_legacy_command_number(int32_t value) {
 
 // optional int32 client_tick = 2;
 inline bool CBaseUserCmdPB::_internal_has_client_tick() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_client_tick() const {
@@ -1441,7 +1702,7 @@ inline bool CBaseUserCmdPB::has_client_tick() const {
 }
 inline void CBaseUserCmdPB::clear_client_tick() {
   _impl_.client_tick_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int32_t CBaseUserCmdPB::_internal_client_tick() const {
   return _impl_.client_tick_;
@@ -1451,7 +1712,7 @@ inline int32_t CBaseUserCmdPB::client_tick() const {
   return _internal_client_tick();
 }
 inline void CBaseUserCmdPB::_internal_set_client_tick(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.client_tick_ = value;
 }
 inline void CBaseUserCmdPB::set_client_tick(int32_t value) {
@@ -1461,7 +1722,7 @@ inline void CBaseUserCmdPB::set_client_tick(int32_t value) {
 
 // optional uint32 prediction_offset_ticks_x256 = 17;
 inline bool CBaseUserCmdPB::_internal_has_prediction_offset_ticks_x256() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_prediction_offset_ticks_x256() const {
@@ -1469,7 +1730,7 @@ inline bool CBaseUserCmdPB::has_prediction_offset_ticks_x256() const {
 }
 inline void CBaseUserCmdPB::clear_prediction_offset_ticks_x256() {
   _impl_.prediction_offset_ticks_x256_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CBaseUserCmdPB::_internal_prediction_offset_ticks_x256() const {
   return _impl_.prediction_offset_ticks_x256_;
@@ -1479,7 +1740,7 @@ inline uint32_t CBaseUserCmdPB::prediction_offset_ticks_x256() const {
   return _internal_prediction_offset_ticks_x256();
 }
 inline void CBaseUserCmdPB::_internal_set_prediction_offset_ticks_x256(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.prediction_offset_ticks_x256_ = value;
 }
 inline void CBaseUserCmdPB::set_prediction_offset_ticks_x256(uint32_t value) {
@@ -1666,7 +1927,7 @@ inline void CBaseUserCmdPB::set_allocated_viewangles(::CMsgQAngle* viewangles) {
 
 // optional float forwardmove = 5;
 inline bool CBaseUserCmdPB::_internal_has_forwardmove() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_forwardmove() const {
@@ -1674,7 +1935,7 @@ inline bool CBaseUserCmdPB::has_forwardmove() const {
 }
 inline void CBaseUserCmdPB::clear_forwardmove() {
   _impl_.forwardmove_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline float CBaseUserCmdPB::_internal_forwardmove() const {
   return _impl_.forwardmove_;
@@ -1684,7 +1945,7 @@ inline float CBaseUserCmdPB::forwardmove() const {
   return _internal_forwardmove();
 }
 inline void CBaseUserCmdPB::_internal_set_forwardmove(float value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.forwardmove_ = value;
 }
 inline void CBaseUserCmdPB::set_forwardmove(float value) {
@@ -1694,7 +1955,7 @@ inline void CBaseUserCmdPB::set_forwardmove(float value) {
 
 // optional float leftmove = 6;
 inline bool CBaseUserCmdPB::_internal_has_leftmove() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_leftmove() const {
@@ -1702,7 +1963,7 @@ inline bool CBaseUserCmdPB::has_leftmove() const {
 }
 inline void CBaseUserCmdPB::clear_leftmove() {
   _impl_.leftmove_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline float CBaseUserCmdPB::_internal_leftmove() const {
   return _impl_.leftmove_;
@@ -1712,7 +1973,7 @@ inline float CBaseUserCmdPB::leftmove() const {
   return _internal_leftmove();
 }
 inline void CBaseUserCmdPB::_internal_set_leftmove(float value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.leftmove_ = value;
 }
 inline void CBaseUserCmdPB::set_leftmove(float value) {
@@ -1722,7 +1983,7 @@ inline void CBaseUserCmdPB::set_leftmove(float value) {
 
 // optional float upmove = 7;
 inline bool CBaseUserCmdPB::_internal_has_upmove() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_upmove() const {
@@ -1730,7 +1991,7 @@ inline bool CBaseUserCmdPB::has_upmove() const {
 }
 inline void CBaseUserCmdPB::clear_upmove() {
   _impl_.upmove_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline float CBaseUserCmdPB::_internal_upmove() const {
   return _impl_.upmove_;
@@ -1740,7 +2001,7 @@ inline float CBaseUserCmdPB::upmove() const {
   return _internal_upmove();
 }
 inline void CBaseUserCmdPB::_internal_set_upmove(float value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.upmove_ = value;
 }
 inline void CBaseUserCmdPB::set_upmove(float value) {
@@ -1750,7 +2011,7 @@ inline void CBaseUserCmdPB::set_upmove(float value) {
 
 // optional int32 impulse = 8;
 inline bool CBaseUserCmdPB::_internal_has_impulse() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_impulse() const {
@@ -1758,7 +2019,7 @@ inline bool CBaseUserCmdPB::has_impulse() const {
 }
 inline void CBaseUserCmdPB::clear_impulse() {
   _impl_.impulse_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline int32_t CBaseUserCmdPB::_internal_impulse() const {
   return _impl_.impulse_;
@@ -1768,7 +2029,7 @@ inline int32_t CBaseUserCmdPB::impulse() const {
   return _internal_impulse();
 }
 inline void CBaseUserCmdPB::_internal_set_impulse(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.impulse_ = value;
 }
 inline void CBaseUserCmdPB::set_impulse(int32_t value) {
@@ -1778,7 +2039,7 @@ inline void CBaseUserCmdPB::set_impulse(int32_t value) {
 
 // optional int32 weaponselect = 9;
 inline bool CBaseUserCmdPB::_internal_has_weaponselect() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_weaponselect() const {
@@ -1786,7 +2047,7 @@ inline bool CBaseUserCmdPB::has_weaponselect() const {
 }
 inline void CBaseUserCmdPB::clear_weaponselect() {
   _impl_.weaponselect_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
 }
 inline int32_t CBaseUserCmdPB::_internal_weaponselect() const {
   return _impl_.weaponselect_;
@@ -1796,7 +2057,7 @@ inline int32_t CBaseUserCmdPB::weaponselect() const {
   return _internal_weaponselect();
 }
 inline void CBaseUserCmdPB::_internal_set_weaponselect(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00000400u;
   _impl_.weaponselect_ = value;
 }
 inline void CBaseUserCmdPB::set_weaponselect(int32_t value) {
@@ -1806,7 +2067,7 @@ inline void CBaseUserCmdPB::set_weaponselect(int32_t value) {
 
 // optional int32 random_seed = 10;
 inline bool CBaseUserCmdPB::_internal_has_random_seed() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_random_seed() const {
@@ -1814,7 +2075,7 @@ inline bool CBaseUserCmdPB::has_random_seed() const {
 }
 inline void CBaseUserCmdPB::clear_random_seed() {
   _impl_.random_seed_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
 }
 inline int32_t CBaseUserCmdPB::_internal_random_seed() const {
   return _impl_.random_seed_;
@@ -1824,7 +2085,7 @@ inline int32_t CBaseUserCmdPB::random_seed() const {
   return _internal_random_seed();
 }
 inline void CBaseUserCmdPB::_internal_set_random_seed(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000800u;
   _impl_.random_seed_ = value;
 }
 inline void CBaseUserCmdPB::set_random_seed(int32_t value) {
@@ -1834,7 +2095,7 @@ inline void CBaseUserCmdPB::set_random_seed(int32_t value) {
 
 // optional int32 mousedx = 11;
 inline bool CBaseUserCmdPB::_internal_has_mousedx() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_mousedx() const {
@@ -1842,7 +2103,7 @@ inline bool CBaseUserCmdPB::has_mousedx() const {
 }
 inline void CBaseUserCmdPB::clear_mousedx() {
   _impl_.mousedx_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline int32_t CBaseUserCmdPB::_internal_mousedx() const {
   return _impl_.mousedx_;
@@ -1852,7 +2113,7 @@ inline int32_t CBaseUserCmdPB::mousedx() const {
   return _internal_mousedx();
 }
 inline void CBaseUserCmdPB::_internal_set_mousedx(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.mousedx_ = value;
 }
 inline void CBaseUserCmdPB::set_mousedx(int32_t value) {
@@ -1862,7 +2123,7 @@ inline void CBaseUserCmdPB::set_mousedx(int32_t value) {
 
 // optional int32 mousedy = 12;
 inline bool CBaseUserCmdPB::_internal_has_mousedy() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_mousedy() const {
@@ -1870,7 +2131,7 @@ inline bool CBaseUserCmdPB::has_mousedy() const {
 }
 inline void CBaseUserCmdPB::clear_mousedy() {
   _impl_.mousedy_ = 0;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
 }
 inline int32_t CBaseUserCmdPB::_internal_mousedy() const {
   return _impl_.mousedy_;
@@ -1880,7 +2141,7 @@ inline int32_t CBaseUserCmdPB::mousedy() const {
   return _internal_mousedy();
 }
 inline void CBaseUserCmdPB::_internal_set_mousedy(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00002000u;
   _impl_.mousedy_ = value;
 }
 inline void CBaseUserCmdPB::set_mousedy(int32_t value) {
@@ -1890,7 +2151,7 @@ inline void CBaseUserCmdPB::set_mousedy(int32_t value) {
 
 // optional uint32 pawn_entity_handle = 14 [default = 16777215];
 inline bool CBaseUserCmdPB::_internal_has_pawn_entity_handle() const {
-  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_pawn_entity_handle() const {
@@ -1898,7 +2159,7 @@ inline bool CBaseUserCmdPB::has_pawn_entity_handle() const {
 }
 inline void CBaseUserCmdPB::clear_pawn_entity_handle() {
   _impl_.pawn_entity_handle_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00010000u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
 }
 inline uint32_t CBaseUserCmdPB::_internal_pawn_entity_handle() const {
   return _impl_.pawn_entity_handle_;
@@ -1908,7 +2169,7 @@ inline uint32_t CBaseUserCmdPB::pawn_entity_handle() const {
   return _internal_pawn_entity_handle();
 }
 inline void CBaseUserCmdPB::_internal_set_pawn_entity_handle(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_._has_bits_[0] |= 0x00020000u;
   _impl_.pawn_entity_handle_ = value;
 }
 inline void CBaseUserCmdPB::set_pawn_entity_handle(uint32_t value) {
@@ -2026,7 +2287,7 @@ inline void CBaseUserCmdPB::set_allocated_move_crc(std::string* move_crc) {
 
 // optional uint32 consumed_server_angle_changes = 20;
 inline bool CBaseUserCmdPB::_internal_has_consumed_server_angle_changes() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_consumed_server_angle_changes() const {
@@ -2034,7 +2295,7 @@ inline bool CBaseUserCmdPB::has_consumed_server_angle_changes() const {
 }
 inline void CBaseUserCmdPB::clear_consumed_server_angle_changes() {
   _impl_.consumed_server_angle_changes_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
 }
 inline uint32_t CBaseUserCmdPB::_internal_consumed_server_angle_changes() const {
   return _impl_.consumed_server_angle_changes_;
@@ -2044,7 +2305,7 @@ inline uint32_t CBaseUserCmdPB::consumed_server_angle_changes() const {
   return _internal_consumed_server_angle_changes();
 }
 inline void CBaseUserCmdPB::_internal_set_consumed_server_angle_changes(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00008000u;
   _impl_.consumed_server_angle_changes_ = value;
 }
 inline void CBaseUserCmdPB::set_consumed_server_angle_changes(uint32_t value) {
@@ -2054,7 +2315,7 @@ inline void CBaseUserCmdPB::set_consumed_server_angle_changes(uint32_t value) {
 
 // optional int32 cmd_flags = 21;
 inline bool CBaseUserCmdPB::_internal_has_cmd_flags() const {
-  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
 }
 inline bool CBaseUserCmdPB::has_cmd_flags() const {
@@ -2062,7 +2323,7 @@ inline bool CBaseUserCmdPB::has_cmd_flags() const {
 }
 inline void CBaseUserCmdPB::clear_cmd_flags() {
   _impl_.cmd_flags_ = 0;
-  _impl_._has_bits_[0] &= ~0x00008000u;
+  _impl_._has_bits_[0] &= ~0x00010000u;
 }
 inline int32_t CBaseUserCmdPB::_internal_cmd_flags() const {
   return _impl_.cmd_flags_;
@@ -2072,12 +2333,102 @@ inline int32_t CBaseUserCmdPB::cmd_flags() const {
   return _internal_cmd_flags();
 }
 inline void CBaseUserCmdPB::_internal_set_cmd_flags(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_._has_bits_[0] |= 0x00010000u;
   _impl_.cmd_flags_ = value;
 }
 inline void CBaseUserCmdPB::set_cmd_flags(int32_t value) {
   _internal_set_cmd_flags(value);
   // @@protoc_insertion_point(field_set:CBaseUserCmdPB.cmd_flags)
+}
+
+// optional .CBaseUserCmdExecutionNotes execution_notes = 22;
+inline bool CBaseUserCmdPB::_internal_has_execution_notes() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.execution_notes_ != nullptr);
+  return value;
+}
+inline bool CBaseUserCmdPB::has_execution_notes() const {
+  return _internal_has_execution_notes();
+}
+inline void CBaseUserCmdPB::clear_execution_notes() {
+  if (_impl_.execution_notes_ != nullptr) _impl_.execution_notes_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const ::CBaseUserCmdExecutionNotes& CBaseUserCmdPB::_internal_execution_notes() const {
+  const ::CBaseUserCmdExecutionNotes* p = _impl_.execution_notes_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CBaseUserCmdExecutionNotes&>(
+      ::_CBaseUserCmdExecutionNotes_default_instance_);
+}
+inline const ::CBaseUserCmdExecutionNotes& CBaseUserCmdPB::execution_notes() const {
+  // @@protoc_insertion_point(field_get:CBaseUserCmdPB.execution_notes)
+  return _internal_execution_notes();
+}
+inline void CBaseUserCmdPB::unsafe_arena_set_allocated_execution_notes(
+    ::CBaseUserCmdExecutionNotes* execution_notes) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.execution_notes_);
+  }
+  _impl_.execution_notes_ = execution_notes;
+  if (execution_notes) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CBaseUserCmdPB.execution_notes)
+}
+inline ::CBaseUserCmdExecutionNotes* CBaseUserCmdPB::release_execution_notes() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CBaseUserCmdExecutionNotes* temp = _impl_.execution_notes_;
+  _impl_.execution_notes_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CBaseUserCmdExecutionNotes* CBaseUserCmdPB::unsafe_arena_release_execution_notes() {
+  // @@protoc_insertion_point(field_release:CBaseUserCmdPB.execution_notes)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CBaseUserCmdExecutionNotes* temp = _impl_.execution_notes_;
+  _impl_.execution_notes_ = nullptr;
+  return temp;
+}
+inline ::CBaseUserCmdExecutionNotes* CBaseUserCmdPB::_internal_mutable_execution_notes() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.execution_notes_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CBaseUserCmdExecutionNotes>(GetArenaForAllocation());
+    _impl_.execution_notes_ = p;
+  }
+  return _impl_.execution_notes_;
+}
+inline ::CBaseUserCmdExecutionNotes* CBaseUserCmdPB::mutable_execution_notes() {
+  ::CBaseUserCmdExecutionNotes* _msg = _internal_mutable_execution_notes();
+  // @@protoc_insertion_point(field_mutable:CBaseUserCmdPB.execution_notes)
+  return _msg;
+}
+inline void CBaseUserCmdPB::set_allocated_execution_notes(::CBaseUserCmdExecutionNotes* execution_notes) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.execution_notes_;
+  }
+  if (execution_notes) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(execution_notes);
+    if (message_arena != submessage_arena) {
+      execution_notes = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, execution_notes, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.execution_notes_ = execution_notes;
+  // @@protoc_insertion_point(field_set_allocated:CBaseUserCmdPB.execution_notes)
 }
 
 // -------------------------------------------------------------------
@@ -2177,6 +2528,8 @@ inline void CUserCmdBasePB::set_allocated_base(::CBaseUserCmdPB* base) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

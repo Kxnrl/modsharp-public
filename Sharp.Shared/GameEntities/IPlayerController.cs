@@ -31,7 +31,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IPlayerController : IBaseEntity
 {
     /// <summary>
-    ///     取得Controller对应的PlayerPawn
+    ///     Gets the PlayerPawn for this Controller
     /// </summary>
     /// <returns>
     ///     <see cref="IBasePlayerPawn" />
@@ -39,7 +39,7 @@ public interface IPlayerController : IBaseEntity
     IBasePlayerPawn? GetPawn();
 
     /// <summary>
-    ///     取得Controller对应的PlayerPawn
+    ///     Gets the PlayerPawn for this Controller
     /// </summary>
     /// <returns>
     ///     <see cref="IPlayerPawn" />
@@ -47,7 +47,7 @@ public interface IPlayerController : IBaseEntity
     IPlayerPawn? GetPlayerPawn();
 
     /// <summary>
-    ///     取得Controller对应的ObserverPawn
+    ///     Gets the ObserverPawn for this Controller
     /// </summary>
     /// <returns>
     ///     <see cref="IObserverPawn" />
@@ -55,19 +55,19 @@ public interface IPlayerController : IBaseEntity
     IObserverPawn? GetObserverPawn();
 
     /// <summary>
-    ///     设置PlayerPawn <br />
-    ///     <remarks>你调用之前最好知道你在做什么</remarks>
+    ///     Sets the PlayerPawn <br />
+    ///     <remarks>You should know what you're doing before calling this</remarks>
     /// </summary>
     void SetPlayerPawn(IPlayerPawn pawn);
 
     /// <summary>
-    ///     获取<see cref="IGameClient" /> <br />
-    ///     <remarks>如果玩家不在游戏内, 哪怕是实体存在, 也会返回<c>null</c></remarks>
+    ///     Gets the <see cref="IGameClient" /> <br />
+    ///     <remarks>Returns <c>null</c> if the player is not in-game, even if the entity exists</remarks>
     /// </summary>
     IGameClient? GetGameClient();
 
     /// <summary>
-    ///     打印对应的消息 (HudMsg)
+    ///     Print message to this player
     /// </summary>
     void Print(HudPrintChannel channel,
         string                 message,
@@ -77,44 +77,44 @@ public interface IPlayerController : IBaseEntity
         string?                param4 = null);
 
     /// <summary>
-    ///     切换队伍 (存活状态)
+    ///     Change team without slaying
     /// </summary>
     void SwitchTeam(CStrikeTeam team);
 
     /// <summary>
-    ///     复活
+    ///     Respawn player
     /// </summary>
     void Respawn();
 
     /// <summary>
-    ///     设置组标
+    ///     Set clantag
     /// </summary>
     void SetClanTag(string tag);
 
     /// <summary>
-    ///     检查Pawn
+    ///     Check awn
     /// </summary>
     void CheckPawn();
 
     /// <summary>
-    ///     设置PlayerPawn
+    ///     Set PlayerPawn
     /// </summary>
     void SetPawn(IBasePlayerPawn pawn, bool unknown1, bool unknown2, bool unknown3, bool unknown4);
 
     /// <summary>
-    ///     是否已在游戏
+    ///     Is the player connected
     /// </summary>
     bool IsConnected()
         => ConnectedState is PlayerConnectedState.PlayerConnected;
 
     /// <summary>
-    ///     正在退游戏
+    ///     Is the player disconnecting
     /// </summary>
     bool IsDisconnecting()
         => ConnectedState is PlayerConnectedState.PlayerDisconnecting;
 
     /// <summary>
-    ///     SteamId 64位
+    ///     Returns a SteamID64 (7656119xxxxxxxxxx)
     /// </summary>
     SteamID SteamId { get; }
 
@@ -124,12 +124,12 @@ public interface IPlayerController : IBaseEntity
     PlayerSlot PlayerSlot { get; }
 
     /// <summary>
-    ///     组标
+    ///     Clantag
     /// </summary>
     string ClanTag { get; }
 
     /// <summary>
-    ///     名字 (Set不提供StateChange)
+    ///     PlayerName, setting the value does not call StateChanged
     /// </summary>
     string PlayerName { get; set; }
 
@@ -148,32 +148,32 @@ public interface IPlayerController : IBaseEntity
     uint PawnHealth { get; }
 
     /// <summary>
-    ///     是否为Hltv
+    ///     Is controller in HLTV
     /// </summary>
     bool IsHltv { get; }
 
     /// <summary>
-    ///     是否是机器人
+    ///     Is this controller for FakeClient(Bots)
     /// </summary>
     bool IsFakeClient => Flags.HasFlag(EntityFlags.FakeClient);
 
     /// <summary>
-    ///     计分板Score
+    ///     Score on scoreboard
     /// </summary>
     int Score { get; set; }
 
     /// <summary>
-    ///     计分板MVP
+    ///     MVP on scoreboard
     /// </summary>
     int MvpCount { get; set; }
 
     /// <summary>
-    ///     更新计数器
+    ///     Scoreboard update count
     /// </summary>
     int UpdaterCount { get; set; }
 
     /// <summary>
-    ///     对应Source1里的 m_flLaggedMovementValue
+    ///     m_flLaggedMovementValue in source1
     /// </summary>
     float LaggedMovement { get; set; }
 
@@ -198,12 +198,12 @@ public interface IPlayerController : IBaseEntity
     uint DesiredFOV { get; set; }
 
     /// <summary>
-    ///     连线状态
+    ///     Connection state
     /// </summary>
     PlayerConnectedState ConnectedState { get; }
 
     /// <summary>
-    ///     是否在下一回合切换队伍
+    ///     Will the player switch team when a new round starts
     /// </summary>
     bool SwitchTeamsOnNextRoundReset { get; set; }
 
@@ -213,7 +213,7 @@ public interface IPlayerController : IBaseEntity
     bool RemoveAllItemsOnNextRoundReset { get; set; }
 
     /// <summary>
-    ///     期望的OB模式
+    ///     Desired observer mode
     /// </summary>
     int DesiredObserverMode { get; set; }
 
@@ -238,32 +238,34 @@ public interface IPlayerController : IBaseEntity
     int RoundsWon { get; set; }
 
     /// <summary>
-    ///     DamageService实例
+    ///     DamageService
     /// </summary>
     IDamageService? GetDamageService();
 
     /// <summary>
-    ///     MoneyService实例
+    ///     MoneyService
     /// </summary>
     IInGameMoneyService? GetInGameMoneyService();
 
     /// <summary>
-    ///     InventoryService实例
+    ///     InventoryService
     /// </summary>
     IInventoryService? GetInventoryService();
 
     /// <summary>
-    ///     ActionTrackingService实例
+    ///     ActionTrackingService
     /// </summary>
     IControllerActionTrackingService? GetActionTrackingService();
 
     /// <summary>
-    ///     只给当前玩家播放本地音频
+    ///     Play a soundevent only for this player
     /// </summary>
+    /// <param name="sound">The sound event name to play (e.g., "Player.DamageKevlar")</param>
+    /// <param name="volume">Volume. If null, uses default volume (1.0f)</param>
     SoundOpEventGuid EmitSoundClient(string sound, float? volume = null);
 
     /// <summary>
-    ///     获取装备的库存物品
+    ///     Gets the equipped inventory item from loadout
     /// </summary>
     IEconItemView? GetItemInLoadoutFromInventory(CStrikeTeam team, int slot);
 }

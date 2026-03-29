@@ -26,7 +26,7 @@ namespace Sharp.Shared.CStrike;
 public interface ISchemaList<T> : INativeObject where T : unmanaged
 {
     /// <summary>
-    ///     元素的数量
+    ///     Number of elements
     /// </summary>
     int Count { get; }
 
@@ -36,33 +36,33 @@ public interface ISchemaList<T> : INativeObject where T : unmanaged
     T this[int index] { get; set; }
 
     /// <summary>
-    ///     用<paramref name="index"></paramref>获取元素的引用 <br />
-    ///     <remarks>请使用<c>ref</c>关键字</remarks>
+    ///     Gets a reference to the element at the specified <paramref name="index"/> <br />
+    ///     <remarks>Use the <c>ref</c> keyword</remarks>
     /// </summary>
     ref T GetRef(int index);
 
     /// <summary>
-    ///     获取<see cref="Shared.Types.Tier.CUtlVector{T}" />指针
+    ///     Gets the <see cref="Shared.Types.Tier.CUtlVector{T}" /> pointer
     /// </summary>
     unsafe CUtlVector<T>* GetUtlVector();
 
     /// <summary>
-    ///     转换为 <see cref="IEnumerable{T}" /> 以使用 Linq/ZLinq
+    ///     Converts to <see cref="IEnumerable{T}" /> for use with Linq/ZLinq
     /// </summary>
     IEnumerator<T> AsEnumerable();
 
     /// <summary>
-    ///     通常情况下你不需要使用它, 因为这是为<c>foreach</c>提供的0分配 <seealso cref="Enumerator" />
+    ///     You typically don't need to use this, as it provides zero-allocation enumeration for <c>foreach</c> <seealso cref="Enumerator" />
     /// </summary>
     Enumerator GetEnumerator();
 
     /// <summary>
-    ///     调用Schema StateChanged
+    ///     Invokes Schema StateChanged
     /// </summary>
     void SetStateChanged();
 
     /// <summary>
-    ///     你不需要使用它
+    ///     You don't need to use this
     /// </summary>
     public struct Enumerator : IEnumerator<T>
     {

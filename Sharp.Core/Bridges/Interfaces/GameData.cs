@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -154,7 +154,7 @@ internal unsafe partial class GameData : NativeObject, IGameData
         throw new KeyNotFoundException($"Failed to find MemSig \"{name}\" with classname \"{classname}\" in GameData");
     }
 
-    internal nint GetRequiredVTable(string module, string classname)
+    internal nint GetRequiredVirtualTable(string module, string classname)
     {
         var entry = LibraryModule.Create(Natives.Core.GetLibraryModule(module))
                     ?? throw new EntryPointNotFoundException($"Model '{module}' is nullptr");

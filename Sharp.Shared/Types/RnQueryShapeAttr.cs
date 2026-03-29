@@ -28,31 +28,34 @@ namespace Sharp.Shared.Types;
 [StructLayout(LayoutKind.Explicit, Pack = 8, Size = 48)]
 public unsafe ref struct RnQueryShapeAttr
 {
-    [FieldOffset(0)]
+    [FieldOffset(0x0)]
     public InteractionLayers m_nInteractsWith;
 
-    [FieldOffset(8)]
+    [FieldOffset(0x8)]
     public InteractionLayers m_nInteractsExclude;
 
-    [FieldOffset(16)]
+    [FieldOffset(0x10)]
     public InteractionLayers m_nInteractsAs;
 
-    [FieldOffset(24)]
+    [FieldOffset(0x18)]
     public fixed uint m_nEntityIdsToIgnore[2];
 
-    [FieldOffset(32)]
+    [FieldOffset(0x20)]
     public fixed uint m_nOwnerIdsToIgnore[2];
 
-    [FieldOffset(40)]
+    [FieldOffset(0x28)]
     public fixed ushort m_nHierarchyIds[2];
 
-    [FieldOffset(44)]
+    [FieldOffset(0x2C)]
+    private ushort m_nIncludedDetailLayers;
+
+    [FieldOffset(0x2F)]
     public RnQueryObjectSet m_nObjectSetMask;
 
-    [FieldOffset(45)]
+    [FieldOffset(0x30)]
     public CollisionGroupType m_nCollisionGroup;
 
-    [FieldOffset(46)]
+    [FieldOffset(0x31)]
     private byte _flags;
 
     public RnQueryShapeAttr()
@@ -67,6 +70,8 @@ public unsafe ref struct RnQueryShapeAttr
         ShouldIgnoreDisabledPairs = true;
         Unknown                   = true;
         m_nCollisionGroup         = CollisionGroupType.ConditionallySolid;
+
+        m_nIncludedDetailLayers = ushort.MaxValue;
     }
 
     public void SetEntityToIgnore(IBaseEntity entityToIgnore, int index)

@@ -3593,8 +3593,8 @@ const char descriptor_table_protodef_usermessages_2eproto[] PROTOBUF_SECTION_VAR
   "ion_DataDriven\022\020\n\010filename\030\001 \001(\t\022\034\n\020atta"
   "ch_ent_index\030\002 \001(\005:\002-1\022\020\n\010duration\030\003 \001(\002"
   "\"\252=\n\030CUserMsg_ParticleManager\022C\n\004type\030\001 "
-  "\002(\0162\021.PARTICLE_MESSAGE:\"GAME_PARTICLE_MA"
-  "NAGER_EVENT_CREATE\022\r\n\005index\030\002 \002(\r\022N\n\026rel"
+  "\001(\0162\021.PARTICLE_MESSAGE:\"GAME_PARTICLE_MA"
+  "NAGER_EVENT_CREATE\022\r\n\005index\030\002 \001(\r\022N\n\026rel"
   "ease_particle_index\030\003 \001(\0132..CUserMsg_Par"
   "ticleManager.ReleaseParticleIndex\022A\n\017cre"
   "ate_particle\030\004 \001(\0132(.CUserMsg_ParticleMa"
@@ -25697,9 +25697,6 @@ class CUserMsg_ParticleManager::_Internal {
   static void set_has_remove_fan(HasBits* has_bits) {
     (*has_bits)[1] |= 64u;
   }
-  static bool MissingRequiredFields(const HasBits& has_bits) {
-    return ((has_bits[1] & 0x00000180) ^ 0x00000180) != 0;
-  }
 };
 
 const ::CUserMsg_ParticleManager_ReleaseParticleIndex&
@@ -26334,7 +26331,7 @@ const char* CUserMsg_ParticleManager::_InternalParse(const char* ptr, ::_pbi::Pa
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
+      // optional .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
@@ -26347,7 +26344,7 @@ const char* CUserMsg_ParticleManager::_InternalParse(const char* ptr, ::_pbi::Pa
         } else
           goto handle_unusual;
         continue;
-      // required uint32 index = 2;
+      // optional uint32 index = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_index(&_impl_._has_bits_);
@@ -26703,14 +26700,14 @@ uint8_t* CUserMsg_ParticleManager::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[1];
-  // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
+  // optional .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
   if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
       1, this->_internal_type(), target);
   }
 
-  // required uint32 index = 2;
+  // optional uint32 index = 2;
   if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_index(), target);
@@ -27003,40 +27000,12 @@ uint8_t* CUserMsg_ParticleManager::_InternalSerialize(
   return target;
 }
 
-size_t CUserMsg_ParticleManager::RequiredFieldsByteSizeFallback() const {
-// @@protoc_insertion_point(required_fields_byte_size_fallback_start:CUserMsg_ParticleManager)
-  size_t total_size = 0;
-
-  if (_internal_has_type()) {
-    // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
-  }
-
-  if (_internal_has_index()) {
-    // required uint32 index = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
-  }
-
-  return total_size;
-}
 size_t CUserMsg_ParticleManager::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:CUserMsg_ParticleManager)
   size_t total_size = 0;
 
   total_size += _impl_._extensions_.ByteSize();
 
-  if (((_impl_._has_bits_[1] & 0x00000180) ^ 0x00000180) == 0) {  // All required fields are present.
-    // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
-
-    // required uint32 index = 2;
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
-
-  } else {
-    total_size += RequiredFieldsByteSizeFallback();
-  }
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -27275,7 +27244,7 @@ size_t CUserMsg_ParticleManager::ByteSizeLong() const {
 
   }
   cached_has_bits = _impl_._has_bits_[1];
-  if (cached_has_bits & 0x0000007fu) {
+  if (cached_has_bits & 0x000000ffu) {
     // optional .CUserMsg_ParticleManager.DestroyPhysicsSim destroy_physics_sim = 36;
     if (cached_has_bits & 0x00000001u) {
       total_size += 2 +
@@ -27325,7 +27294,18 @@ size_t CUserMsg_ParticleManager::ByteSizeLong() const {
           *_impl_.remove_fan_);
     }
 
+    // optional .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
+    if (cached_has_bits & 0x00000080u) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
+    }
+
   }
+  // optional uint32 index = 2;
+  if (cached_has_bits & 0x00000100u) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -27535,7 +27515,6 @@ bool CUserMsg_ParticleManager::IsInitialized() const {
     return false;
   }
 
-  if (_Internal::MissingRequiredFields(_impl_._has_bits_)) return false;
   return true;
 }
 

@@ -22,7 +22,7 @@ namespace Sharp.Shared.CStrike;
 public interface IEntitySubclassVData : ISchemaObject
 {
     /// <summary>
-    ///     VData文件中的Key
+    ///     Key in vdata file
     /// </summary>
     string Key { get; }
 

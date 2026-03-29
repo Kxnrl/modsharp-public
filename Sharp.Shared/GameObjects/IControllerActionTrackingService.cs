@@ -101,22 +101,22 @@ public interface IMatchStats : IPerRoundStats
 public interface IControllerActionTrackingService : IPlayerControllerComponent
 {
     /// <summary>
-    ///     当前回合击杀数
+    ///     Number of kills in current round
     /// </summary>
     int NumRoundKills { get; set; }
 
     /// <summary>
-    ///     当前回合爆头数
+    ///     Number of headshot kills in current round
     /// </summary>
     int NumRoundKillsHeadshots { get; set; }
 
     /// <summary>
-    ///     当前回合造成的总伤害
+    ///     Total damage dealt in current round
     /// </summary>
     float TotalRoundDamageDealt { get; set; }
 
     /// <summary>
-    ///     MatchStats实例
+    ///     Gets the MatchStats instance
     /// </summary>
     IMatchStats GetMatchStats();
 }

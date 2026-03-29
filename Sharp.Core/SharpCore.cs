@@ -918,7 +918,7 @@ internal partial class SharpCore : ISharpCore
         Utf8.FromUtf16(name, new Span<byte>(pName, 256), out _, out var bytesWritten);
         pName[bytesWritten] = 0;
 
-        var factory = (CGameSystemFactory*) GetGameData().GetAddress("GameSystemFactory::m_FactoryList");
+        var factory = (CGameSystemFactory*) Game.GetGameSystemFactory();
 
         while (factory is not null)
         {
@@ -944,6 +944,12 @@ internal partial class SharpCore : ISharpCore
 
     public IntPtr GetVTableByClass(string module, string className)
         => Bridges.Natives.Core.GetVTableByClass(module, className);
+
+    public IntPtr GetVirtualTableByClass(string module, string className)
+        => Bridges.Natives.Core.GetVTableByClass(module, className);
+
+    public INetworkingStringTable? FindStringTable(string name)
+        => NetworkingStringTable.Create(Bridges.Natives.Core.FindStringTable(name));
 
     public IKeyValues CreateKeyValues(string name)
     {
@@ -1057,19 +1063,19 @@ internal partial class SharpCore : ISharpCore
 #region NetMessages
 
     public void PrintToChatAll(string message)
-        => Game.PrintChannelAll(HudPrintChannel.Chat, message);
+        => NetMessageHelper.PrintChannelFilter(default, HudPrintChannel.Chat, message);
 
     public void PrintToChat(CStrikeTeam team, string message)
-        => Game.PrintChannelTeam(HudPrintChannel.Chat, team, message);
+        => NetMessageHelper.PrintChannelFilter(new RecipientFilter(team), HudPrintChannel.Chat, message);
 
     public void PrintChannelAll(HudPrintChannel channel, string message)
-        => Game.PrintChannelAll(channel, message);
+        => NetMessageHelper.PrintChannelFilter(default, channel, message);
 
     public unsafe void PrintChannelFilter(HudPrintChannel channel, string message, RecipientFilter receiver)
-        => Game.PrintChannelFilter(channel, message, &receiver);
+        => NetMessageHelper.PrintChannelFilter(receiver, channel, message);
 
     public void PrintChannelTeam(HudPrintChannel channel, CStrikeTeam team, string message)
-        => Game.PrintChannelTeam(channel, team, message);
+        => NetMessageHelper.PrintChannelFilter(new RecipientFilter(team), channel, message);
 
     public void RadioTextTeam(CStrikeTeam team,
         PlayerSlot                        slot,
@@ -1078,27 +1084,19 @@ internal partial class SharpCore : ISharpCore
         string?                           params2,
         string?                           params3,
         string?                           params4)
-        => Game.RadioMessageTeam(team, slot, name, params1, params2, params3, params4);
+        => NetMessageHelper.PrintRadioMessage(new RecipientFilter(team), slot, name, params1, params2, params3, params4);
 
     public void RadioTextAll(PlayerSlot slot, string name, string? params1, string? params2, string? params3, string? params4)
-        => Game.RadioMessageAll(slot, name, params1, params2, params3, params4);
+        => NetMessageHelper.PrintRadioMessage(default, slot, name, params1, params2, params3, params4);
 
-    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : IMessage
-    {
-        var bytes = data.ToByteArray();
-        var size  = bytes.Length;
-
-        fixed (byte* pBytes = bytes)
-        {
-            return Net.SendNetMessage(&filter, data.GetType().Name, pBytes, size);
-        }
-    }
+    public unsafe bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage
+        => NetMessageHelper.SendNetMessage(filter, data);
 
     public void HookNetMessage(ProtobufNetMessageType msgId)
         => Net.HookNetMessage(msgId);
 
     public void UnhookNetMessage(ProtobufNetMessageType msgId)
-        => Net.UnhookNetMessage(msgId);
+        => _logger.LogWarning("Attempt unhook net message: {id}", msgId);
 
 #endregion
 

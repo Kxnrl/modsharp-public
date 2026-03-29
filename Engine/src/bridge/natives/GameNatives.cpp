@@ -32,6 +32,7 @@
 
 #include "cstrike/interface/CDedicatedServerWorkshopManager.h"
 #include "cstrike/interface/IGameRules.h"
+#include "cstrike/interface/IGameSystem.h"
 #include "cstrike/interface/IGameTypes.h"
 #include "cstrike/interface/IResourceManifest.h"
 #include "cstrike/interface/IResourceSystem.h"
@@ -186,20 +187,6 @@ static void TraceShape(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t lay
     result.Init(trace);
 }
 
-static void TraceShapePlayerMovement(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t interactsWith, CBaseEntity* entity, CTraceResult_t& result)
-{
-    static auto physicsQuery = g_pGameData->GetAddress<CGamePhysicsQueryInterface*>("g_pPhysicsQuery");
-    AssertPtr(physicsQuery);
-
-    CGameTrace                   trace;
-    CTraceFilterPlayerMovementCS filter;
-    address::server::CTraceFilterPlayerMovementCS_ctor(filter, entity, interactsWith, 11 /*COLLISONGROUP_PLAYER_MOVEMENT*/);
-
-    physicsQuery->TraceShape(ray, start, end, &filter, &trace);
-
-    result.Init(trace);
-}
-
 static void TraceShapeFilter(ShapeRay_t* ray, Vector* start, Vector* end, uint64_t layers, uint8_t collisionGroup, RnQueryObjectFlags flag, uint64_t excludeLayers, CTraceResult_t& result)
 {
     static auto physicsQuery = g_pGameData->GetAddress<CGamePhysicsQueryInterface*>("g_pPhysicsQuery");
@@ -286,6 +273,11 @@ static const char* GetMapName()
     return sv->GetMapName();
 }
 
+static void* GetGameSystemFactory()
+{
+    return CBaseGameSystemFactory::GetFirst();
+}
+
 static CCSWeaponBaseVData* FindWeaponVDataByName(const char* name)
 {
     return address::server::FindWeaponVDataByName(1, name);
@@ -341,7 +333,6 @@ void Init()
     bridge::CreateNative("Game.TraceLineFilter", reinterpret_cast<void*>(TraceLineFilter));
     bridge::CreateNative("Game.TraceShape", reinterpret_cast<void*>(TraceShape));
     bridge::CreateNative("Game.TraceShapeFilter", reinterpret_cast<void*>(TraceShapeFilter));
-    bridge::CreateNative("Game.TraceShapePlayerMovement", reinterpret_cast<void*>(TraceShapePlayerMovement));
 
     bridge::CreateNative("Game.DispatchParticleEffectPosition", reinterpret_cast<void*>(DispatchParticleEffectPosition));
     bridge::CreateNative("Game.DispatchParticleEffectEntityPosition", reinterpret_cast<void*>(DispatchParticleEffectEntityPosition));
@@ -356,6 +347,8 @@ void Init()
     bridge::CreateNative("Game.GetMapName", reinterpret_cast<void*>(GetMapName));
 
     bridge::CreateNative("Game.FindWeaponVDataByName", reinterpret_cast<void*>(FindWeaponVDataByName));
+
+    bridge::CreateNative("Game.GetGameSystemFactory", reinterpret_cast<void*>(GetGameSystemFactory));
 
     bridge::CreateNative("Game.DualAddonPurgeCheck", reinterpret_cast<void*>(DualAddonPurgeCheck));
     bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));

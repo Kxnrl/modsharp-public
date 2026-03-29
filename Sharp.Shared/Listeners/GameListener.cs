@@ -26,12 +26,12 @@ public interface IGameListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 
@@ -72,7 +72,7 @@ public interface IGameListener
     }
 
     /// <summary>
-    ///     gameRules 在此处不可用!
+    ///     <see cref="IModSharp.GetGameRules"/> 在此处不可用!
     /// </summary>
     void OnGameShutdown()
     {
@@ -96,7 +96,7 @@ public interface IGameListener
 //    OnGameInit            -> safe to get GameRules
 //    OnGamePostInit
 //    OnResourcePrecache
-//    OnSpawnServer         -> safe to execute .cfg
+//    OnServerSpawn         -> safe to execute .cfg
 //    OnGameActivate
 //    OnActivateServer
 //    ...

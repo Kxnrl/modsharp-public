@@ -18,13 +18,34 @@
  */
 
 using System.Runtime.InteropServices;
+using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared;
 
 /// <summary>
-///     如果你不知道你在做什么, 你就不要用这个 <br />
-///     <remarks>手贱可能会导致意想不到的结果</remarks>
+///     Provides direct access to the Source Engine's internal memory allocator.
 /// </summary>
+/// <remarks>
+///     <b>DANGER: HIGH RISK API</b>
+///     <br />
+///     This class interacts directly with the Game's Native Heap.
+///     <list type="bullet">
+///         <item>
+///             <description>
+///                 Memory allocated here <b>MUST</b> be freed using <see cref="Free(void*)" />. Do NOT use
+///                 <see cref="System.Runtime.InteropServices.Marshal.FreeHGlobal(nint)" />.
+///             </description>
+///         </item>
+///         <item>
+///             <description>You cannot pass pointers created here to standard .NET marshalling without manual management.</description>
+///         </item>
+///         <item>
+///             <description>
+///                 Use this only when you need to pass raw memory ownership <b>to</b> the game engine.
+///             </description>
+///         </item>
+///     </list>
+/// </remarks>
 public static unsafe class MemoryAllocator
 {
     [DllImport("tier0", CallingConvention = CallingConvention.Cdecl)]
@@ -45,21 +66,47 @@ public static unsafe class MemoryAllocator
     [DllImport("tier0", CallingConvention = CallingConvention.Cdecl)]
     private static extern void* UtlVectorMemory_Alloc(void* pMem, bool bRealloc, int nNewSize, int nOldSize);
 
+    /// <summary>
+    ///     Allocates a block of memory on the native game heap.
+    /// </summary>
+    /// <param name="size">The size of the memory block, in bytes.</param>
+    /// <returns>A pointer to the allocated memory, or null if allocation failed.</returns>
     public static void* Alloc(nuint size)
         => MemAlloc_AllocFunc(size);
 
+    /// <summary>
+    ///     Reallocates a block of memory on the native game heap, preserving its content.
+    /// </summary>
+    /// <param name="ptr">Pointer to the existing memory block.</param>
+    /// <param name="size">The new size in bytes.</param>
+    /// <returns>A pointer to the reallocated memory (which may have moved), or null if failed.</returns>
     public static void* Realloc(void* ptr, nuint size)
         => MemAlloc_ReallocFunc(ptr, size);
 
+    /// <summary>
+    ///     Frees a memory block previously allocated by <see cref="Alloc" /> or <see cref="Realloc" />.
+    /// </summary>
+    /// <param name="ptr">The pointer to free. If null, this method does nothing.</param>
     public static void Free(void* ptr)
         => MemAlloc_FreeFunc(ptr);
 
+    /// <summary>
+    ///     Gets the size of a memory block allocated on the native game heap.
+    /// </summary>
     public static nuint GetSize(void* ptr)
         => MemAlloc_GetSizeFunc(ptr);
 
+    /// <summary>
+    ///     Copies bytes from a source to a destination. Handles overlapping memory regions correctly.
+    /// </summary>
     public static void MemMove(void* dest, void* src, nuint count)
         => V_tier0_memmove(dest, src, count);
 
+    /// <summary>
+    ///     Internal allocator used specifically for Source Engine's <see cref="CUtlVector{T}" /> growth strategy.
+    ///     <br />
+    ///     You likely do not need this unless you are manually implementing <see cref="CUtlVector{T}" /> logic.
+    /// </summary>
     public static void* VectorMemory_Alloc(void* pMem, bool bRealloc, int nNewSize, int nOldSize)
         => UtlVectorMemory_Alloc(pMem, bRealloc, nNewSize, nOldSize);
 }

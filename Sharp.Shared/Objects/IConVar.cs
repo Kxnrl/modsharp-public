@@ -30,27 +30,27 @@ namespace Sharp.Shared.Objects;
 public interface IConVar : INativeObject
 {
     /// <summary>
-    ///     ConVar名
+    ///     ConVar name
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     默认值
+    ///     Default value
     /// </summary>
     string DefaultValue { get; }
 
     /// <summary>
-    ///     提示文本
+    ///     Help description text
     /// </summary>
     string HelpString { get; }
 
     /// <summary>
-    ///     Flags
+    ///     ConVar flags
     /// </summary>
     ConVarFlags Flags { get; set; }
 
     /// <summary>
-    ///     ConVar的值类型
+    ///     ConVar value type
     /// </summary>
     ConVarType Type { get; }
 
@@ -89,20 +89,28 @@ public interface IConVar : INativeObject
     bool SetMaxBound(ConVarVariantValue value);
 
     /// <summary>
-    ///     将字符串自动解析为ConVar对应的类型并设置 <br />
-    ///     <remarks>不符合类型解析失败将设置对应类型默认值</remarks>
+    ///     Universal method to set the ConVar value by parsing a string.
+    ///     <para>
+    ///         Use this if you do not know the underlying type of the ConVar.
+    ///         It attempts to parse the string and set the ConVar to the corresponding typed value.
+    ///     </para>
+    ///     <para>
+    ///         Falls back to the default value if parsing fails.
+    ///     </para>
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">The string value to parse and set.</param>
     void SetString(string value);
 
     /// <summary>
-    ///     将各种ConVar的值转换为字符串表达方式 <br />
+    ///     Returns the ConVar value as a string.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The string representation of the current value.</returns>
     string GetString();
 
     /// <summary>
-    ///     ReplicateToClient 而不修改值
+    ///     Sends the specified value to the client without changing the server-side ConVar.
     /// </summary>
+    /// <param name="client">The target client.</param>
+    /// <param name="value">The value to replicate.</param>
     void ReplicateToClient(IGameClient client, string value);
 }

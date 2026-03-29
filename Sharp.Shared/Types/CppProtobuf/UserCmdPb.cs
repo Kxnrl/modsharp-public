@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -84,6 +84,12 @@ public unsafe struct CCSGOInputHistoryEntryPb
 
     [FieldOffset(0x6C)]
     public float PlayerTickFraction;
+
+    [FieldOffset(0x70)]
+    public int FrameNumber;
+
+    [FieldOffset(0x74)]
+    public int TargetEntIndex;
 }
 
 [StructLayout(LayoutKind.Explicit, Pack = 8, Size = 0x38)]
@@ -124,7 +130,7 @@ public ref struct CInButtonStatePb
     public UserCommandButtons ButtonScroll;
 }
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 0x7C)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 0x88)]
 public unsafe ref struct CBaseUserCmdPb
 {
     [FieldOffset(0x18)]
@@ -137,42 +143,48 @@ public unsafe ref struct CBaseUserCmdPb
     public CMsgVector* ViewAngles;
 
     [FieldOffset(0x48)]
-    public int LegacyCommandNumber;
-
-    [FieldOffset(0x4C)]
-    public int ClientTick;
+    public void* ExecutionNotes;
 
     [FieldOffset(0x50)]
-    public float ForwardMove;
+    public int LegacyCommandNumber;
 
     [FieldOffset(0x54)]
-    public float SideMove;
+    public int ClientTick;
 
     [FieldOffset(0x58)]
-    public float UpMove;
+    public float ForwardMove;
 
     [FieldOffset(0x5C)]
-    public int Impulse;
+    public float SideMove;
 
     [FieldOffset(0x60)]
-    public int WeaponSelect;
+    public float UpMove;
 
     [FieldOffset(0x64)]
-    public int RandomSeed;
+    public int Impulse;
 
     [FieldOffset(0x68)]
-    public int MouseX;
+    public int WeaponSelect;
 
     [FieldOffset(0x6C)]
-    public int MouseY;
+    public int RandomSeed;
 
     [FieldOffset(0x70)]
-    public uint ConsumedServerAngleChanges;
+    public int MouseX;
 
     [FieldOffset(0x74)]
-    public int CmdFlags;
+    public int MouseY;
 
     [FieldOffset(0x78)]
+    public uint PredictionOffsetTicks;
+
+    [FieldOffset(0x7C)]
+    public uint ConsumedServerAngleChanges;
+
+    [FieldOffset(0x80)]
+    public int CmdFlags;
+
+    [FieldOffset(0x84)]
     public CEntityHandle<IPlayerPawn> PawnEntityHandle;
 }
 

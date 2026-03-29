@@ -29,141 +29,144 @@ namespace Sharp.Shared.GameEntities;
 public interface IPlayerPawn : IBasePlayerPawn
 {
     /// <summary>
-    ///     处死
+    ///     Slay
     /// </summary>
-    /// <param name="explode">原地爆炸</param>
     void Slay(bool explode = false);
 
     /// <summary>
-    ///     自动识别存活状态就拿Controller, 否则Original
+    ///     Automatically gets Controller if alive, otherwise OriginalController
     /// </summary>
     /// <returns></returns>
     IPlayerController? GetControllerAuto();
 
     /// <summary>
-    ///     发枪
+    ///     Give weapon to player
     /// </summary>
     IBaseWeapon? GiveNamedItem(string weapon);
 
     /// <summary>
-    ///     发枪
+    ///     Give weapon to player
     /// </summary>
     IBaseWeapon? GiveNamedItem(EconItemId item);
 
     /// <summary>
-    ///     获取当前手上的武器
+    ///     Gets the currently held weapon
     /// </summary>
     /// <returns></returns>
     IBaseWeapon? GetActiveWeapon();
 
     /// <summary>
-    ///     通过槽位获取身上的武器
+    ///     Gets weapon from inventory by slot
     /// </summary>
     IBaseWeapon? GetWeaponBySlot(GearSlot slot, int position = -1);
 
     /// <summary>
-    ///     移除武器并立即销毁
+    ///     Remove weapon and destroy it immediately
     /// </summary>
+    /// <remarks>
+    ///     When looping through <see cref="IWeaponService.GetMyWeapons"/>, use <see cref="IModSharp.InvokeFrameAction"/> 
+    ///     to avoid modifying the collection while iterating
+    /// </remarks>
     void RemovePlayerItem(IBaseWeapon item);
 
     /// <summary>
-    ///     移除所有物品
+    ///     Remove all items
     /// </summary>
-    /// <param name="removeSuit">包括护甲</param>
+    /// <param name="removeSuit">Include armor</param>
     void RemoveAllItems(bool removeSuit = false);
 
     /// <summary>
-    ///     强制丢掉武器
+    ///     Force drop weapon
     /// </summary>
     void DropWeapon(IBaseWeapon item);
 
     /// <summary>
-    ///     切换武器/道具
+    ///     Switch to weapon/item
     /// </summary>
     bool SelectItem(IBaseWeapon item);
 
     /// <summary>
-    ///     分离武器
+    ///     Detach weapon from player
     /// </summary>
     bool DetachWeapon(IBaseWeapon item);
 
     /// <summary>
-    ///     强制切换武器或空手 (无视一切检测/条件判断)
+    ///     Force switch weapon or go empty-handed (bypasses all checks/conditions)
     /// </summary>
     void SwitchWeapon(IBaseWeapon? weapon);
 
     /// <summary>
-    ///     发手套
+    ///     Give gloves to player
     /// </summary>
     void GiveGloves(int itemDefIndex, int prefab, float wear, int seed);
 
     /// <summary>
-    ///     发手套
+    ///     Give gloves to player
     /// </summary>
     void GiveGloves(EconGlovesId id, int prefab, float wear, int seed);
 
     /// <summary>
-    ///     瞬态修改VelocityModifier,不发送网络消息
+    ///     Change VelocityModifier without calling StateChanged, player won't receive new value
     /// </summary>
     void TransientChangeVelocityModifier(float velocityModifier);
 
     /// <summary>
-    ///     ItemService实例
+    ///     ItemService
     /// </summary>
     IItemService? GetItemService();
 
     /// <summary>
-    ///     WeaponService实例
+    ///     WeaponService
     /// </summary>
     IWeaponService? GetWeaponService();
 
     /// <summary>
-    ///     PlayerMoveService实例
+    ///     PlayerMoveService
     /// </summary>
     IPlayerMovementService? GetPlayerMovementService();
 
     /// <summary>
-    ///     PlayerUseService实例
+    ///     PlayerUseService
     /// </summary>
     IPlayerUseService? GetPlayerUseService();
 
     /// <summary>
-    ///     PingServices实例
+    ///     PingServices
     /// </summary>
     IPingService? GetPingService();
 
     /// <summary>
-    ///     WaterService实例
+    ///     WaterService
     /// </summary>
     IWaterService? GetWaterService();
 
     /// <summary>
-    ///     BulletService实例
+    ///     BulletService
     /// </summary>
     IBulletService? GetBulletService();
 
     /// <summary>
-    ///     HostageService实例
+    ///     HostageService
     /// </summary>
     IHostageService? GetHostageService();
 
     /// <summary>
-    ///     BuyService实例
+    ///     BuyService
     /// </summary>
     IBuyService? GetBuyService();
 
     /// <summary>
-    ///     ActionTrackingService实例
+    ///     ActionTrackingService
     /// </summary>
     IPlayerActionTrackingService? GetActionTrackingService();
 
     /// <summary>
-    ///     RadioService实例
+    ///     RadioService
     /// </summary>
     IRadioService? GetRadioService();
 
     /// <summary>
-    ///     DamageReactService实例
+    ///     DamageReactService
     /// </summary>
     IDamageReactService? GetDamageReactService();
 
@@ -173,7 +176,7 @@ public interface IPlayerPawn : IBasePlayerPawn
     IEconItemView GetEconGloves();
 
     /// <summary>
-    ///     护甲值
+    ///     Armor value
     /// </summary>
     int ArmorValue { get; set; }
 

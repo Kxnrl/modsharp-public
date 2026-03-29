@@ -9,8 +9,8 @@ namespace Sharp.Shared.CStrike;
 public interface IContextObject
 {
     /// <summary>
-    ///     判断指针是否已经离开Context <br />
-    ///     该功能仅为避免被释放后仍然调用Native
+    ///     Check if the pointer is no longer valid within the current context. <br />
+    ///     Used to prevent calling native methods on objects that are already released.
     /// </summary>
     bool IsDisposed { get; }
 }
@@ -18,7 +18,7 @@ public interface IContextObject
 public interface INativeObject : IContextObject, IEquatable<INativeObject>
 {
     /// <summary>
-    ///     获取指针
+    ///     Get pointer address
     /// </summary>
     nint GetAbsPtr();
 

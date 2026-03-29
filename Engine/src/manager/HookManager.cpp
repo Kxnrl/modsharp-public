@@ -19,6 +19,7 @@
 
 #include "manager/HookManager.h"
 
+#include <array>
 #include <safetyhook.hpp>
 
 #include <unordered_map>
@@ -207,22 +208,22 @@ public:
     }
 
 private:
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_ServerInit;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_ServerSpawn;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_ServerActivate;
-    std::unordered_map<HookType_t, std::vector<GameFrameCallback_t>>          m_GameFrame;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_GameInit;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_GameShutdown;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_GameActivate;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_GameDeactivate;
-    std::unordered_map<HookType_t, std::vector<HookCallback_t>>               m_RoundStart;
-    std::unordered_map<HookType_t, std::vector<ClientConnectCallback_t>>      m_ClientConnect;
-    std::unordered_map<HookType_t, std::vector<ClientPutInServerCallback_t>>  m_ClientPutInServer;
-    std::unordered_map<HookType_t, std::vector<ClientActivateCallback_t>>     m_ClientActivate;
-    std::unordered_map<HookType_t, std::vector<ClientFullyConnectCallback_t>> m_ClientFullyConnect;
-    std::unordered_map<HookType_t, std::vector<ClientDisconnectCallback_t>>   m_ClientDisconnect;
-    std::unordered_map<HookType_t, std::vector<PlayerSpawnedCallback_t>>      m_PlayerSpawned;
-    std::unordered_map<HookType_t, std::vector<PlayerKilledCallback_t>>       m_PlayerKilled;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_ServerInit;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_ServerSpawn;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_ServerActivate;
+    std::array<std::vector<GameFrameCallback_t>, HookType_Max>          m_GameFrame;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_GameInit;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_GameShutdown;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_GameActivate;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_GameDeactivate;
+    std::array<std::vector<HookCallback_t>, HookType_Max>               m_RoundStart;
+    std::array<std::vector<ClientConnectCallback_t>, HookType_Max>      m_ClientConnect;
+    std::array<std::vector<ClientPutInServerCallback_t>, HookType_Max>  m_ClientPutInServer;
+    std::array<std::vector<ClientActivateCallback_t>, HookType_Max>     m_ClientActivate;
+    std::array<std::vector<ClientFullyConnectCallback_t>, HookType_Max> m_ClientFullyConnect;
+    std::array<std::vector<ClientDisconnectCallback_t>, HookType_Max>   m_ClientDisconnect;
+    std::array<std::vector<PlayerSpawnedCallback_t>, HookType_Max>      m_PlayerSpawned;
+    std::array<std::vector<PlayerKilledCallback_t>, HookType_Max>       m_PlayerKilled;
 };
 
 static CHookManager manager;

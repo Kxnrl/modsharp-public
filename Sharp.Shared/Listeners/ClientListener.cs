@@ -27,17 +27,17 @@ public interface IClientListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     是否允许检查Admin
+    ///     Is allowed to check for Admin
     /// </summary>
     /// <returns>True = Block Check</returns>
     bool OnClientPreAdminCheck(IGameClient client)
@@ -63,6 +63,18 @@ public interface IClientListener
     {
     }
 
+    /// <summary>
+    ///     Called when a client changes a ConVar in <see cref="IGameClient.GetConVars" /> that has the <see cref="ConVarFlags.UserInfo"/> flag set.
+    /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This is commonly triggered when a player changes their name or other user info settings.
+    ///     </para>
+    ///     <para>
+    ///         You can use this to validate or revert changes, such as enforcing name restrictions.
+    ///     </para>
+    /// </remarks>
+    /// <param name="client">The client who changed the setting.</param>
     void OnClientSettingChanged(IGameClient client)
     {
     }

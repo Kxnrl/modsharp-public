@@ -30,17 +30,17 @@ namespace Sharp.Shared.Managers;
 public interface IHookManager
 {
     /// <summary>
-    ///     创建 DetourHook
+    ///     Create DetourHook
     /// </summary>
     IDetourHook CreateDetourHook();
 
     /// <summary>
-    ///     创建vmt hook
+    ///     Create VMThook
     /// </summary>
     IVirtualHook CreateVirtualHook();
 
     /// <summary>
-    ///     创建 MidFuncHook
+    ///     Create MidFuncHook
     /// </summary>
     IMidFuncHook CreateMidFuncHook();
 
@@ -85,10 +85,10 @@ public interface IHookManager
     /// <summary>
     ///     CCSPlayerPawn->WeaponService::CanEquip <br />
     ///     <remarks>
-    ///         这里实际上Hook ValidateLineOfSight  <br />
-    ///         CS2实际上不止检查LOS, 还检查VIS <br />
-    ///         强制true也不能捡起来VIS不通过的武器 <br />
-    ///         这里只是为了方便Hook CanEquip
+    ///         This actually hooks ValidateLineOfSight  <br />
+    ///         CS2 doesn't just check LOS, it also checks VIS <br />
+    ///         Forcing true still won't allow picking up weapons that fail VIS check <br />
+    ///         This is just for convenience to hook CanEquip
     ///     </remarks>
     /// </summary>
     IHookType<IPlayerWeaponCanEquipHookParams, bool> PlayerWeaponCanEquip { get; }
@@ -104,7 +104,7 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayer_ItemServices::CanAcquire
-    ///     <remarks>是否能捡起或者购买物品,包括武器</remarks>
+    ///     <remarks>Used for checking if the player can acquire an item or weapon</remarks>
     /// </summary>
     IHookType<IPlayerCanAcquireHookParams, EAcquireResult> PlayerCanAcquire { get; }
 
@@ -124,7 +124,7 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayerPawn->MovementService::RunCommand <br />
-    ///     <remarks>Pre中 MovementService数据都是上一帧的, 还没有填充, Buttons 可以从参数拿</remarks>
+    ///     <remarks>Fields in MovementService is from the last frame. To get Buttons you can get it from <see cref="IPlayerRunCommandHookParams"/></remarks>
     /// </summary>
     IHookType<IPlayerRunCommandHookParams, EmptyHookReturn> PlayerRunCommand { get; }
 
@@ -147,15 +147,33 @@ public interface IHookManager
 #region Damage
 
     /// <summary>
-    ///     CBasePlayer::DispatchTraceAttack (PlayerPawn Only)
-    ///     <remarks>不关心返回值, 如果return SkipCall, 返回值则为0</remarks>
+    ///     CBaseEntity::DispatchTraceAttack (PlayerPawn Only)
     /// </summary>
+    /// <remarks>
+    ///     This hook is only fired when the entity that takes damage is a player pawn.
+    ///     <para>
+    ///     This hook should only return <see cref="EHookAction.Ignored"/> or <see cref="EHookAction.SkipCallReturnOverride"/>.
+    ///     If <see cref="EHookAction.SkipCallReturnOverride"/> is used, the function returns 0 (the specific return value provided by the hook is ignored).
+    ///     </para>
+    ///     <para>
+    ///     To make a player take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack"/> on the player pawn entity.
+    ///     </para>
+    /// </remarks>
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
 
     /// <summary>
-    ///     CBasePlayer::DispatchTraceAttack (No PlayerPawn)
-    ///     <remarks>不关心返回值, 如果return SkipCall, 返回值则为0</remarks>
+    ///     CBaseEntity::DispatchTraceAttack (No PlayerPawn)
     /// </summary>
+    /// <remarks>
+    ///     This hook is only fired when the entity that takes damage is <b>not</b> a player pawn.
+    ///     <para>
+    ///     This hook should only return <see cref="EHookAction.Ignored"/> or <see cref="EHookAction.SkipCallReturnOverride"/>.
+    ///     If <see cref="EHookAction.SkipCallReturnOverride"/> is used, the function returns 0 (the specific return value provided by the hook is ignored).
+    ///     </para>
+    ///     <para>
+    ///     To make an entity take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack"/> on the target entity.
+    ///     </para>
+    /// </remarks>
     IHookType<IEntityDispatchTraceAttackHookParams, long> EntityDispatchTraceAttack { get; }
 
 #endregion
@@ -169,20 +187,20 @@ public interface IHookManager
 
     /// <summary>
     ///     'status' Command <br />
-    ///     <remarks>Client为空时, 是Server发送</remarks>
+    ///     <remarks>When client is null means it is sent by server</remarks>
     /// </summary>
     IHookType<IPrintStatusHookParams, EmptyHookReturn> PrintStatus { get; }
 
     /// <summary>
-    ///     NetworkMessages::CUserMsgTextMSG<br />
-    ///     <remarks>返回值为新的Receiver Bits</remarks>
+    ///     NetworkMessages::CUserMsgTextMSG
     /// </summary>
+    /// <returns>The new Receiver Bits</returns>
     IHookType<ITextMsgHookParams, NetworkReceiver> TextMsg { get; }
 
     /// <summary>
     ///     IGameEventSystem::PostEventAbstract
-    ///     <remarks>返回值为新的Receiver Bits</remarks>
     /// </summary>
+    /// <returns>The new Receiver Bits</returns>
     IHookType<IPostEventAbstractHookParams, NetworkReceiver> PostEventAbstract { get; }
 
     /// <summary>
@@ -200,7 +218,7 @@ public interface IHookManager
 
     /// <summary>
     ///     SoundOpGameSystem::DoStartSoundEvent <br />
-    ///     <remarks>仅当视为音乐触发时</remarks>
+    ///     <remarks>Only fires when the sound event is treated as music</remarks>
     /// </summary>
     IForwardType<IEmitMusicForwardParams> EmitMusic { get; }
 
@@ -231,11 +249,19 @@ public interface IHookManager
     /// <summary>
     ///     CCSPlayerPawn::PreThink
     /// </summary>
+    /// <remarks>
+    ///     Invoked only for living players. Executes after internal pre-processing logic is complete, 
+    ///     such as handling mp_autokick, domination updates, and healthshot recovery.
+    /// </remarks>
     IForwardType<IPlayerThinkForwardParams> PlayerPreThink { get; }
 
     /// <summary>
     ///     CCSPlayerPawn::PostThink
     /// </summary>
+    /// <remarks>
+    ///     Invoked only for living players. Runs after the game has done processing movement, attack
+    ///     animation update for the player.
+    /// </remarks>
     IForwardType<IPlayerThinkForwardParams> PlayerPostThink { get; }
 
 #endregion
@@ -252,18 +278,28 @@ public interface IHookManager
 #region Player Movement
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::WalkMove
+    ///     CPlayer_MovementService::WalkMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is only called when the player is on the ground with (<see cref="MoveType.Walk"/>) and before the engine runs its own logic.
+    ///     You can use <see cref="IPlayerWalkMoveForwardParams.SetSpeed"/> to override the maximum prestrafe speed.
+    /// </remarks>
     IForwardType<IPlayerWalkMoveForwardParams> PlayerWalkMove { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::ProcessMove
+    ///     CPlayer_MovementService::ProcessMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is called regardless of the player's <see cref="MoveType"/>, executing before specific movement functions (like WalkMove, AirMove).
+    /// </remarks>
     IForwardType<IPlayerProcessMoveForwardParams> PlayerProcessMovePre { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::ProcessMove
+    ///     CPlayer_MovementService::ProcessMove
     /// </summary>
+    /// <remarks>
+    ///     This forward is called regardless of the player's <see cref="MoveType"/>, executing after the game has processed movement functions (like WalkMove, AirMove).
+    /// </remarks>
     IForwardType<IPlayerProcessMoveForwardParams> PlayerProcessMovePost { get; }
 
 #endregion
@@ -302,24 +338,24 @@ public interface IHookManager
 public interface IHookType<out TParams, THookReturn> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     监听这个Hook的Pre <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Hook's Pre <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre, int priority = 0);
 
     /// <summary>
-    ///     监听这个Hook的Post <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Hook's Post <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallHookPost(Action<TParams, HookReturnValue<THookReturn>> post, int priority = 0);
 
     /// <summary>
-    ///     停止监听这个Hook的Pre
+    ///     Stop listening to this Hook's Pre
     /// </summary>
     void RemoveHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre);
 
     /// <summary>
-    ///     停止监听这个Hook的Post
+    ///     Stop listening to this Hook's Post
     /// </summary>
     void RemoveHookPost(Action<TParams, HookReturnValue<THookReturn>> post);
 }
@@ -327,13 +363,13 @@ public interface IHookType<out TParams, THookReturn> where TParams : class, IFun
 public interface IForwardType<out TParams> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     监听这个Forward调用 <br />
-    ///     <remarks>priority 值越大, 优先级越高</remarks>
+    ///     Listen to this Forward call <br />
+    ///     <remarks>Higher priority value means higher priority</remarks>
     /// </summary>
     void InstallForward(Action<TParams> func, int priority = 0);
 
     /// <summary>
-    ///     停止监听这个Forward调用
+    ///     Stop listening to this Forward call
     /// </summary>
     void RemoveForward(Action<TParams> func);
 }

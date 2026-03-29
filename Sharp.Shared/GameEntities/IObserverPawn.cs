@@ -26,7 +26,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IObserverPawn : IBasePlayerPawn
 {
     /// <summary>
-    ///     ObserverService实例
+    ///     ObserverService instance
     /// </summary>
     IObserverService? GetObserverService();
 }

@@ -36,16 +36,20 @@ internal static unsafe class CoreBridge
         return _coreBridgeStruct;
     }
 
-    private static FullFileSystem?   _fullFileSystem;
-    private static SteamApi?         _steamApi;
-    private static KeyValuesHelper?  _keyValuesHelper;
-    private static MemAlloc?         _memAlloc;
-    private static KeyValues3Helper? _keyValues3Helper;
+    private static FullFileSystem?              _fullFileSystem;
+    private static SteamApi?                    _steamApi;
+    private static NetworkingStringTableHelper? _networkingStringTableHelper;
+    private static KeyValuesHelper?             _keyValuesHelper;
+    private static MemAlloc?                    _memAlloc;
+    private static KeyValues3Helper?            _keyValues3Helper;
 
     public static FullFileSystem FullFileSystemInstance
         => _fullFileSystem ??= FullFileSystem.Create(GetCoreBridge()->FullFileSystem)!;
 
     public static SteamApi SteamApiInstance => _steamApi ??= SteamApi.Create(GetCoreBridge()->SteamApi)!;
+
+    public static NetworkingStringTableHelper NetworkingStringTableHelperInstance
+        => _networkingStringTableHelper ??= NetworkingStringTableHelper.Create(GetCoreBridge()->NetworkingStringTableHelper)!;
 
     public static KeyValuesHelper KeyValuesHelperInstance
         => _keyValuesHelper ??= KeyValuesHelper.Create(GetCoreBridge()->KeyValuesHelper)!;
@@ -61,11 +65,12 @@ internal static unsafe class CoreBridge
     [StructLayout(LayoutKind.Sequential)]
     internal readonly struct ModSharpInterface
     {
-        public nint FullFileSystem   { get; init; }
-        public nint SteamApi         { get; init; }
-        public nint KeyValuesHelper  { get; init; }
-        public nint MemAllocator     { get; init; }
-        public nint KeyValues3Helper { get; init; }
-        public nint EngineServer     { get; init; }
+        public nint FullFileSystem              { get; init; }
+        public nint SteamApi                    { get; init; }
+        public nint NetworkingStringTableHelper { get; init; }
+        public nint KeyValuesHelper             { get; init; }
+        public nint MemAllocator                { get; init; }
+        public nint KeyValues3Helper            { get; init; }
+        public nint EngineServer                { get; init; }
     }
 }

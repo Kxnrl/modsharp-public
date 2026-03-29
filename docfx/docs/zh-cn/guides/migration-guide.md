@@ -18,7 +18,7 @@
 - ``OnGameInit``: 可以安全的访问 ``GameRules``
 - ``OnGamePostInit``
 - ``OnResourcePrecache``: 你只能在这里 ``PrecacheResource``
-- ``OnSpawnServer``: 从这里开始你可以加载*.cfg*
+- ``OnServerSpawn``: 从这里开始你可以加载*.cfg*
 - ``OnGameActivate``
 - ``OnServerActivate``
 - ...

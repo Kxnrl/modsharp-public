@@ -29,6 +29,7 @@ void InitCoreBridge()
     g_pCoreBridge->FullFileSystem           = g_pFullFileSystem;
     g_pCoreBridge->SteamApi                 = g_pSteamApiProxy;
     g_pCoreBridge->KeyValuesHelper          = g_pKeyValuesHelper;
+    g_pCoreBridge->NetworkStringTableHelper = g_pNetworkStringTableHelper;
     g_pCoreBridge->KeyValues3Helper         = g_pKeyValues3Helper;
     g_pCoreBridge->MemAlloc                 = g_pMemAlloc;
     g_pCoreBridge->EngineServer             = engine;

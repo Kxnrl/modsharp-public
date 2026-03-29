@@ -16952,7 +16952,7 @@ class CUserMsg_ParticleManager /*final*/ :
       ::CUserMsg_ParticleManager_RemoveFan* remove_fan);
   ::CUserMsg_ParticleManager_RemoveFan* unsafe_arena_release_remove_fan();
 
-  // required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
+  // optional .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
   bool has_type() const;
   private:
   bool _internal_has_type() const;
@@ -16965,7 +16965,7 @@ class CUserMsg_ParticleManager /*final*/ :
   void _internal_set_type(::PARTICLE_MESSAGE value);
   public:
 
-  // required uint32 index = 2;
+  // optional uint32 index = 2;
   bool has_index() const;
   private:
   bool _internal_has_index() const;
@@ -17171,9 +17171,6 @@ class CUserMsg_ParticleManager /*final*/ :
   // @@protoc_insertion_point(class_scope:CUserMsg_ParticleManager)
  private:
   class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
@@ -33974,7 +33971,7 @@ inline void CUserMsg_ParticleManager_SetParticleClusterGrowth::set_allocated_ori
 
 // CUserMsg_ParticleManager
 
-// required .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
+// optional .PARTICLE_MESSAGE type = 1 [default = GAME_PARTICLE_MANAGER_EVENT_CREATE];
 inline bool CUserMsg_ParticleManager::_internal_has_type() const {
   bool value = (_impl_._has_bits_[1] & 0x00000080u) != 0;
   return value;
@@ -34003,7 +34000,7 @@ inline void CUserMsg_ParticleManager::set_type(::PARTICLE_MESSAGE value) {
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.type)
 }
 
-// required uint32 index = 2;
+// optional uint32 index = 2;
 inline bool CUserMsg_ParticleManager::_internal_has_index() const {
   bool value = (_impl_._has_bits_[1] & 0x00000100u) != 0;
   return value;

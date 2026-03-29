@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -132,7 +132,7 @@ BeginMemberHookScope(CSource2GameClients)
         return allow;
     }
 
-    DeclareVirtualHook(Connected, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId, const char* pszNetworkId, const char* pszAddress, bool bFakeClient))
+    DeclareMemberDetourHook(Connected, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId, const char* pszNetworkId, const char* pszAddress, bool bFakeClient))
     {
         const auto pClient = sv->GetClient(slot);
         AssertPtr(pClient);
@@ -165,7 +165,7 @@ BeginMemberHookScope(CSource2GameClients)
             forwards::OnClientConnected->Invoke(pClient);
     }
 
-    DeclareVirtualHook(Disconnect, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, IServerGameClient::ENetworkDisconnectionReason eReason, const char* pszName, SteamId_t steamId, const char* pszNetworkId))
+    DeclareMemberDetourHook(Disconnect, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, IServerGameClient::ENetworkDisconnectionReason eReason, const char* pszName, SteamId_t steamId, const char* pszNetworkId))
     {
 #ifdef CLIENT_HOOK_ASSERT
         LOG("%10s: %d\n"
@@ -191,7 +191,7 @@ BeginMemberHookScope(CSource2GameClients)
         forwards::OnClientDisconnected->Invoke(pClient, eReason);
     }
 
-    DeclareVirtualHook(FullyConnected, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot))
+    DeclareMemberDetourHook(FullyConnected, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot))
     {
 #ifdef CLIENT_HOOK_ASSERT
         const auto pController = CCSPlayerController::FindBySlot(slot);
@@ -211,8 +211,14 @@ BeginMemberHookScope(CSource2GameClients)
         g_pHookManager->Call_ClientFullyConnect(HookType_Post, slot);
     }
 
-    DeclareVirtualHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId))
+    DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId))
     {
+        g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
+
+        PutInServer(pServerGameClient, slot, pszName, steamId);
+
+        g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
+
 #ifdef CLIENT_HOOK_ASSERT
         const auto pController = CCSPlayerController::FindBySlot(slot);
 
@@ -223,18 +229,9 @@ BeginMemberHookScope(CSource2GameClients)
             "%10s: %f",
             "this", pServerGameClient, "Slot", slot, "Name", pController->GetName(), "SteamId", pController->GetSteamID(), "flCurTime", gpGlobals->flCurTime);
 #endif
-
-        g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
-
-        PutInServer(pServerGameClient, slot, pszName, steamId);
-
-        // TODO Forwards
-        // forwards::OnClientPutInServer->Invoke(sv->GetClient(slot));
-
-        g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
     }
 
-    DeclareVirtualHook(Active, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, bool bLoadGame, const char* pszName, SteamId_t steamId))
+    DeclareMemberDetourHook(Active, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, bool bLoadGame, const char* pszName, SteamId_t steamId))
     {
 #ifdef CLIENT_HOOK_ASSERT
         const auto pController = CCSPlayerController::FindBySlot(slot);
@@ -269,7 +266,7 @@ BeginMemberHookScope(CSource2GameClients)
 
     // 为什么用这个Hook?
     // 因为里面判断了是否是已经注册ConCommand且符合FCVAR_CHEAT | FCVAR_CLIENT_CAN_EXECUTE等判断
-    DeclareVirtualHook(Command, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const CCommand* pCommand))
+    DeclareMemberDetourHook(Command, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const CCommand* pCommand))
     {
         AssertPtr(s_pCommandContextClient);
         AssertBool((s_pCommandContextClient->GetSlot() == slot));
@@ -285,7 +282,7 @@ BeginMemberHookScope(CSource2GameClients)
 
 BeginMemberHookScope(CServerSideClient)
 {
-    DeclareVirtualHook(ExecuteStringCommand, bool, (CServerSideClient * pClient, CNetMessagePB<CNETMsg_StringCmd> * pConCommand))
+    DeclareMemberDetourHook(ExecuteStringCommand, bool, (CServerSideClient * pClient, CNetMessagePB<CNETMsg_StringCmd> * pConCommand))
     {
         VPROF_MS_HOOK();
 
@@ -309,7 +306,7 @@ BeginMemberHookScope(CServerSideClient)
         return result;
     }
 
-    DeclareVirtualHook(IsHearingClient, bool, (CServerSideClient * pClient, int32_t nSlot))
+    DeclareMemberDetourHook(IsHearingClient, bool, (CServerSideClient * pClient, int32_t nSlot))
     {
         if (pClient->GetSlot() == nSlot)
             return IsHearingClient(pClient, nSlot);
@@ -378,7 +375,7 @@ BeginMemberHookScope(CServerSideClient)
         return true;
     }
 
-    DeclareVirtualHook(SendNetMessage, bool, (CServerSideClient * pClient, CNetMessage * pData, int8_t bufType))
+    DeclareMemberDetourHook(SendNetMessage, bool, (CServerSideClient * pClient, CNetMessage * pData, int8_t bufType))
     {
         if (const auto info = pData->GetNetMessage()->GetNetMessageInfo())
         {
@@ -522,19 +519,19 @@ void InstallClientHooks()
     s_RandomSeed = (0 + std::rand() % (65535 - 0 + 1)) * (0 + std::rand() % (65535 - 0 + 1)) * 4357;
 
     InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, CheckConnect, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, Connected, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, Disconnect, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, PutInServer, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, Active, server);
+    InstallMemberDetourAutoSig(CSource2GameClients, Connected);
+    InstallMemberDetourAutoSig(CSource2GameClients, Disconnect);
+    InstallMemberDetourAutoSig(CSource2GameClients, PutInServer);
+    InstallMemberDetourAutoSig(CSource2GameClients, Active);
     InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, SettingsChanged, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, Command, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, FullyConnected, server);
+    InstallMemberDetourAutoSig(CSource2GameClients, Command);
+    InstallMemberDetourAutoSig(CSource2GameClients, FullyConnected);
 
-    InstallVirtualHookAutoWithVTableAuto(CServerSideClient, ExecuteStringCommand, engine);
-    InstallVirtualHookAutoWithVTableAuto(CServerSideClient, IsHearingClient, engine);
+    InstallMemberDetourAutoSig(CServerSideClient, ExecuteStringCommand);
+    InstallMemberDetourAutoSig(CServerSideClient, IsHearingClient);
     InstallVirtualHookAutoWithVTableAuto(CServerSideClient, CLCMsg_VoiceData, engine);
     InstallVirtualHookAutoWithVTableAuto(CServerSideClient, CLCMsg_RespondCvarValue, engine);
-    InstallVirtualHookAutoWithVTableAuto(CServerSideClient, SendNetMessage, engine);
+    InstallMemberDetourAutoSig(CServerSideClient, SendNetMessage);
 
     InstallStaticDetourAutoSig(HostSay);
     InstallStaticDetourAutoSig(ScriptPrintMessageChatAll);

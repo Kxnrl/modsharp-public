@@ -35,9 +35,7 @@ public enum RenderFx : byte
     StrobeFaster   = 0xB,
     FlickerSlow    = 0xC,
     FlickerFast    = 0xD,
-    NoDissipation  = 0xE,
-    FadeOut        = 0xF,
-    FadeIn         = 0x10,
-    PulseFastWider = 0x11,
-    GlowShell      = 0x12,
+    FadeOut        = 0xE,
+    FadeIn         = 0xF,
+    PulseFastWider = 0x10,
 }

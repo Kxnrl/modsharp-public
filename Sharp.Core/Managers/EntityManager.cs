@@ -20,10 +20,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
 using Sharp.Core.Objects;
+using Sharp.Core.Types;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Listeners;
@@ -308,16 +310,34 @@ internal class EntityManager : ICoreEntityManager
     public unsafe IBaseEntity? FindEntityInSphere(IBaseEntity? start, Vector center, float radius)
         => BaseEntity.Create(Native.FindInSphere(start?.GetAbsPtr() ?? IntPtr.Zero, &center, radius));
 
+    [SkipLocalsInit]
     public unsafe IBaseEntity? SpawnEntitySync(string          classname,
         IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues)
     {
-        var items = keyValues.Select((x) => new KeyValuesVariantItem(x.Key, x.Value)).ToArray();
-        var count = items.Length;
+        var count = keyValues.Count;
 
-        fixed (KeyValuesVariantItem* ptr = items)
+        if (count == 0)
         {
-            return BaseEntity.Create(Native.SpawnEntitySync(classname, ptr, count));
+            return BaseEntity.Create(Native.SpawnEntitySync(classname, null, 0));
         }
+
+        if (count > 128)
+        {
+            throw new ArgumentException("Too many key values");
+        }
+
+        var items = stackalloc EntityKeyValuesVariant[count];
+
+        var index = 0;
+
+        foreach (var (key, value) in keyValues)
+        {
+            ref var item = ref items[index];
+            item.Update(key, value);
+            index++;
+        }
+
+        return BaseEntity.Create(Native.SpawnEntitySync(classname, items, count));
     }
 
     public T? SpawnEntitySync<T>(string                        classname,

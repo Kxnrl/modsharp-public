@@ -25,7 +25,7 @@
 #        define WIN32_LEAN_AND_MEAN
 #    endif
 #    include <windows.h>
-#elif PLATFORM_POSIX
+#elif defined PLATFORM_POSIX
 #    include <dlfcn.h>
 #else
 #    error "Unsupported platform"

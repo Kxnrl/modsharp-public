@@ -18,6 +18,7 @@
  */
 
 using System;
+using Sharp.Core.Types;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 
@@ -54,7 +55,7 @@ public static unsafe partial class Entity
     public static partial IntPtr FindInSphere(IntPtr start, Vector* center, float radius);
 
     public static partial IntPtr SpawnEntitySync(string classname,
-        KeyValuesVariantItem*                           lumps,
+        EntityKeyValuesVariant*                         lumps,
         int                                             count);
 
     public static partial IntPtr CreateByName(string classname);
@@ -182,5 +183,5 @@ public static unsafe partial class Entity
 
     public static partial nint GetGlobalCStrikeTeam(CStrikeTeam team);
 
-    public static partial void DispatchSpawn(IntPtr entity, KeyValuesVariantItem* lumps, int count);
+    public static partial void DispatchSpawn(IntPtr entity, EntityKeyValuesVariant* lumps, int count);
 }

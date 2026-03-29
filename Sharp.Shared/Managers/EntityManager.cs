@@ -30,138 +30,138 @@ namespace Sharp.Shared.Managers;
 public interface IEntityManager
 {
     /// <summary>
-    ///     添加EntityListener以监听事件
+    ///     Add <see cref="IEntityListener"/> to listen for events
     /// </summary>
     void InstallEntityListener(IEntityListener listener);
 
     /// <summary>
-    ///     移除EntityListener
+    ///     Remove <see cref="IEntityListener"/>
     /// </summary>
     void RemoveEntityListener(IEntityListener listener);
 
     /// <summary>
-    ///     通过EHandle查找实体
+    ///     Find entity by EHandle
     /// </summary>
     T? FindEntityByHandle<T>(CEntityHandle<T> eHandle) where T : class, IBaseEntity;
 
     /// <summary>
-    ///     通过Index查找实体
+    ///     Find entity by Index
     /// </summary>
     IBaseEntity? FindEntityByIndex(EntityIndex index);
 
     /// <summary>
-    ///     通过指针构建实体 <br />
+    ///     Build entity from pointer <br />
     ///     <remarks>
-    ///         不确保正确类型, 类型以入参为准 <br />
-    ///         如若需要判断<c>Pawn</c>请自行调用<see cref="IBaseEntity.AsPlayerPawn" /> <br />
-    ///         如若需要判断<c>Controller</c>请自行调用<see cref="IBaseEntity.AsPlayerController" /> <br />
+    ///         Does not guarantee correct type, type is based on input parameter <br />
+    ///         If you need to check <c>Pawn</c> please call <see cref="IBaseEntity.AsPlayerPawn" /> yourself <br />
+    ///         If you need to check <c>Controller</c> please call <see cref="IBaseEntity.AsPlayerController" /> yourself <br />
     ///     </remarks>
     /// </summary>
     T MakeEntityFromPointer<T>(nint entity) where T : class, IBaseEntity;
 
     /// <summary>
-    ///     通过Index查找实体
+    ///     Find entity by Index
     /// </summary>
     T? FindEntityByIndex<T>(EntityIndex index) where T : class, IBaseEntity;
 
     /// <summary>
-    ///     通过Classname查找实体
+    ///     Find entity by Classname
     /// </summary>
-    /// <param name="start">实体游标, null则为从头开始</param>
-    /// <param name="classname">实体Classname</param>
+    /// <param name="start">Entity cursor, null to start from beginning</param>
+    /// <param name="classname">Entity Classname</param>
     IBaseEntity? FindEntityByClassname(IBaseEntity? start, string classname);
 
     /// <summary>
-    ///     通过Targetname查找实体
+    ///     Find entity by Targetname
     /// </summary>
-    /// <param name="start">实体游标, null则为从头开始</param>
-    /// <param name="name">实体Targetname</param>
+    /// <param name="start">Entity cursor, null to start from beginning</param>
+    /// <param name="name">Entity Targetname</param>
     IBaseEntity? FindEntityByName(IBaseEntity? start, string name);
 
     /// <summary>
-    ///     通过中心坐标查找实体
+    ///     Find entity by center coordinates
     /// </summary>
-    /// <param name="start">实体游标, null则为从头开始</param>
-    /// <param name="center">中心坐标</param>
-    /// <param name="radius">半径</param>
+    /// <param name="start">Entity cursor, null to start from beginning</param>
+    /// <param name="center">Center coordinates</param>
+    /// <param name="radius">Radius</param>
     IBaseEntity? FindEntityInSphere(IBaseEntity? start, Vector center, float radius);
 
     /// <summary>
-    ///     创建并生成实体 <br />
+    ///     Create and spawn entity <br />
     ///     <remarks>
-    ///         无需调用<see cref="IBaseEntity.DispatchSpawn" />
+    ///         No need to call <see cref="IBaseEntity.DispatchSpawn" />
     ///     </remarks>
     /// </summary>
     IBaseEntity? SpawnEntitySync(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues);
 
     /// <summary>
-    ///     创建并生成实体 <br />
+    ///     Create and spawn entity <br />
     ///     <remarks>
-    ///         无需调用<see cref="IBaseEntity.DispatchSpawn" /> <br />
-    ///         <b>&lt;T&gt;</b>并不会进行检查, 由调用者自己保证类型
+    ///         No need to call <see cref="IBaseEntity.DispatchSpawn" /> <br />
+    ///         <b>&lt;T&gt;</b> is not checked, caller must ensure type correctness
     ///     </remarks>
     /// </summary>
     T? SpawnEntitySync<T>(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues)
         where T : class, IBaseEntity;
 
     /// <summary>
-    ///     创建实体 <br />
+    ///     Create entity <br />
     ///     <remarks>
-    ///         不能创建武器相关的实体, 否则崩溃
+    ///         Cannot create weapon-related entities, otherwise it will crash
     ///     </remarks>
     /// </summary>
     IBaseEntity? CreateEntityByName(string classname);
 
     /// <summary>
-    ///     创建实体 <br />
+    ///     Create entity <br />
     ///     <remarks>
-    ///         不能创建武器相关的实体, 否则崩溃 <br />
-    ///         <b>&lt;T&gt;</b>并不会进行检查, 由调用者自己保证类型
+    ///         Cannot create weapon-related entities, otherwise it will crash <br />
+    ///         <b>&lt;T&gt;</b> is not checked, caller must ensure type correctness
     ///     </remarks>
     /// </summary>
     T? CreateEntityByName<T>(string classname) where T : class, IBaseEntity;
 
     /// <summary>
-    ///     创建游戏内持久化CString
+    ///     Create persistent CString in game
     /// </summary>
     CUtlSymbolLarge AllocPooledString(string content);
 
     /// <summary>
-    ///     监听实体Output
+    ///     Listen for entity Output
     /// </summary>
     void HookEntityOutput(string classname, string output);
 
     /// <summary>
-    ///     监听实体Input
+    ///     Listen for entity Input
     /// </summary>
     void HookEntityInput(string classname, string input);
 
     /*  Player  */
 
     /// <summary>
-    ///     通过PlayerSlot查找PlayerPawn
+    ///     Find PlayerPawn by PlayerSlot
     /// </summary>
     IBasePlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot);
 
     /// <summary>
-    ///     通过PlayerSlot查找PlayerController
+    ///     Find PlayerController by PlayerSlot
     /// </summary>
     IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot);
 
     /// <summary>
-    ///     查找所有存在的PlayerController
+    ///     Find all existing PlayerControllers
     /// </summary>
-    /// <param name="inGame">是否在游戏中</param>
+    /// <param name="inGame">Whether in game</param>
     IEnumerable<IPlayerController> GetPlayerControllers(bool inGame = true);
 
     /// <summary>
-    ///     列出所有存在的PlayerController
+    ///     List all existing PlayerControllers
     /// </summary>
-    /// <param name="inGame">是否在游戏中</param>
+    /// <param name="inGame">Whether in game</param>
     List<IPlayerController> FindPlayerControllers(bool inGame = true);
 
     /// <summary>
-    ///     更新Econ实体的属性
+    ///     Update Econ entity attributes
     /// </summary>
     bool UpdateEconItemAttributes(IBaseEntity entity,
         uint                                  accountId,
@@ -179,7 +179,7 @@ public interface IEntityManager
         float                                 flSticker4);
 
     /// <summary>
-    ///     获取CCSTeam
+    ///     Get CCSTeam
     /// </summary>
     IBaseTeam? GetGlobalCStrikeTeam(CStrikeTeam team);
 }

@@ -22,13 +22,11 @@
 
 #include "definitions.h"
 
-#include "cstrike/type/CUtlVector.h"
-#include "cstrike/type/Vector.h"
-
 struct KeyValuesVariantItem;
 class CBaseHandle;
 class CBaseEntity;
 class Variant_t;
+class Vector;
 
 class IEntityListener
 {
@@ -77,8 +75,8 @@ public:
     CBaseEntity* FindByName(CBaseEntity* startEntity, const char* name);
     CBaseEntity* FindInSphere(CBaseEntity* startEntity, Vector* center, float radius);
 
-    CBaseEntity* SpawnEntityFromKeyValuesSync(const char* classname, CUtlVector<KeyValuesVariantItem*>* kv = nullptr) const;
-
+    CBaseEntity* SpawnEntityFromKeyValuesSync(const char* classname, const KeyValuesVariantItem* items = nullptr, int count = 0) const;
+    
     CBaseEntity* CreateEntityByName(const char* classname) const;
 
     void AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID);

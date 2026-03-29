@@ -1,0 +1,22 @@
+{
+  "MenuSelection.Confirm": {
+    "zh-cn": "选择",
+    "en-us": "Select"
+  },
+  "MenuSelection.PrevItem": {
+    "zh-cn": "上一项",
+    "en-us": "Previous"
+  },
+  "MenuSelection.NextItem": {
+    "zh-cn": "下一项",
+    "en-us": "Next"
+  },
+  "MenuSelection.Exit": {
+    "zh-cn": "退出",
+    "en-us": "Exit"
+  },
+  "MenuSelection.Back": {
+    "zh-cn": "返回上一级",
+    "en-us": "Back"
+  }
+}

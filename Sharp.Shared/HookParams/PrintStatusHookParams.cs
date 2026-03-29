@@ -23,5 +23,8 @@ namespace Sharp.Shared.HookParams;
 
 public interface IPrintStatusHookParams : IFunctionParams
 {
+    /// <summary>
+    /// The client that triggers PrintStatus. if it is null that means it is triggered by console
+    /// </summary>
     IGameClient? Client { get; }
 }

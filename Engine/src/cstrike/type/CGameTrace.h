@@ -469,6 +469,8 @@ public:
         m_bIgnoreIfBothInteractWithHitBoxes = false;
         m_bForceHitEverything               = false;
         m_bUnknown                          = true;
+
+        m_nIncludedDetailLayers = 0xFFFF;
     }
 
     bool HasInteractsAsLayer(int nLayerIndex) const { return (m_nInteractsAs & (1ull << nLayerIndex)) != 0; }
@@ -496,8 +498,10 @@ public:
     CBaseHandle        m_nEntityIdsToIgnore[2]; // this is the ID of the game entity which should be ignored
     CBaseHandle        m_nOwnerIdsToIgnore[2];  // this is the ID of the owner of the game entity which should be ignored
     uint16_t           m_nHierarchyIds[2];      // this is an ID for the hierarchy of game entities (used to disable collision among objects in a hierarchy)
-    RnQueryObjectFlags m_nObjectSetMask;        // set of RnQueryObjectSet bits
-    uint8_t            m_nCollisionGroup;       // one of the registered collision groups
+    uint16_t           m_nIncludedDetailLayers = 0xFFFF;
+    uint8_t            m_nTargetDetailLayer;
+    RnQueryObjectFlags m_nObjectSetMask;  // set of RnQueryObjectSet bits
+    uint8_t            m_nCollisionGroup; // one of the registered collision groups
 
     bool m_bHitSolid : 1;                         // if true, then query will hit solid
     bool m_bHitSolidRequiresGenerateContacts : 1; // if true, the FCOLLISION_FUNC_ENABLE_SOLID_CONTACT flag will be checked to hit solid

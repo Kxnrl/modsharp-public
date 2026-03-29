@@ -27,92 +27,92 @@ namespace Sharp.Shared.GameObjects;
 public interface IWeaponData : IEntitySubclassVData
 {
     /// <summary>
-    ///     最大弹匣子弹
+    ///     Maximum bullets in magazine
     /// </summary>
     int MaxClip { get; set; }
 
     /// <summary>
-    ///     类型
+    ///     Weapon type
     /// </summary>
     CStrikeWeaponType WeaponType { get; }
 
     /// <summary>
-    ///     种类
+    ///     Weapon category
     /// </summary>
     CStrikeWeaponCategory WeaponCategory { get; }
 
     /// <summary>
-    ///     槽位
+    ///     Equipment slot
     /// </summary>
     GearSlot GearSlot { get; }
 
     /// <summary>
-    ///     购买价格
+    ///     Purchase price
     /// </summary>
     int Price { get; set; }
 
     /// <summary>
-    ///     最大备单数量
+    ///     Maximum reserve ammunition
     /// </summary>
     int PrimaryReserveAmmoMax { get; set; }
 
     /// <summary>
-    ///     是否是近战武器
+    ///     Whether this is a melee weapon
     /// </summary>
     bool IsMeleeWeapon { get; }
 
     /// <summary>
-    ///     是否全自动
+    ///     Whether weapon is fully automatic
     /// </summary>
     bool IsFullAuto { get; }
 
     /// <summary>
-    ///     弹丸数量
+    ///     Number of projectiles per shot
     /// </summary>
     int NumBullets { get; set; }
 
     /// <summary>
-    ///     Primary射击循环周期
+    ///     How long does it take to perform a primary attack
     /// </summary>
     float CycleTime { get; set; }
 
     /// <summary>
-    ///     Secondary射击循环周期
+    ///     How long does it take to perform a secondary attack
     /// </summary>
     float CycleTimeAlt { get; set; }
 
     /// <summary>
-    ///     抓在手上时的最大移动速度
+    ///     Max walk speed when holding it
     /// </summary>
     float MaxSpeed { get; set; }
 
     /// <summary>
-    ///     Max Player Speed Alt
+    ///     Max alt walk speed when holding it, for example awp with scope on
     /// </summary>
     float MaxSpeedAlt { get; set; }
 
     /// <summary>
-    ///     伤害
+    ///     Damage
     /// </summary>
     int Damage { get; set; }
 
     /// <summary>
-    ///     爆头倍率
+    ///     Headshot damage multiplier
     /// </summary>
     float HeadshotMultiplier { get; set; }
 
     /// <summary>
-    ///     护甲穿透倍率
+    ///     Armor penetration ratio
     /// </summary>
     float ArmorRatio { get; set; }
 
     /// <summary>
-    ///     射程
+    ///     Weapon range
     /// </summary>
     float Range { get; set; }
 
     /// <summary>
-    ///     距离衰减倍率
+    ///     Distance damage falloff modifier
     /// </summary>
     float RangeModifier { get; set; }
 }

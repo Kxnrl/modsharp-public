@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <bit>
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <memory>
 
@@ -149,7 +150,7 @@ void CUtlLeanVectorBase<T, I, A>::EnsureCapacity(int32_t num, bool force)
     if (IsExternallyAllocated())
     {
         new_ptr = static_cast<T*>(AllocateMemory(new_allocate_cound * sizeof(T)));
-        memmove(new_ptr, Base(), m_nCount * sizeof(T));
+        memmove(static_cast<void*>(new_ptr), Base(), m_nCount * sizeof(T));
     }
     else
     {

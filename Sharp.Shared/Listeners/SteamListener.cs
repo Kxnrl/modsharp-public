@@ -27,54 +27,54 @@ public interface ISteamListener
     const int ApiVersion = 2;
 
     /// <summary>
-    ///     接口实现的版本号
+    ///     Listenver version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     优先级
+    ///     Priority
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     调用 RequestUserGroupStatus 后触发
+    ///     Triggered after calling RequestUserGroupStatus
     /// </summary>
     void OnGroupStatusResult(SteamID steamId, SteamID groupId, bool isMember, bool isOfficer)
     {
     }
 
     /// <summary>
-    ///     服务器连上Steam
+    ///     Server connected to Steam
     /// </summary>
     void OnSteamServersConnected()
     {
     }
 
     /// <summary>
-    ///     服务器断联Steam
+    ///     Server disconnected from Steam
     /// </summary>
     void OnSteamServersDisconnected(SteamApiResult reason)
     {
     }
 
     /// <summary>
-    ///     服务器连不上Steam
+    ///     Server failed to connect to Steam
     /// </summary>
     void OnSteamServersConnectFailure(SteamApiResult reason, bool stillRetrying)
     {
     }
 
     /// <summary>
-    ///     UGC下载
+    ///     UGC download
     /// </summary>
     void OnDownloadItemResult(ulong sharedFileId, SteamApiResult result)
     {
     }
 
     /// <summary>
-    ///     UGC安装
+    ///     UGC installation
     /// </summary>
-    /// <param name="publishedFileId">创意工坊ID</param>
+    /// <param name="publishedFileId">Workshop ID</param>
     void OnItemInstalled(ulong publishedFileId)
     {
     }

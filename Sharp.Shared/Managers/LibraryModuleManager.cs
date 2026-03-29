@@ -19,6 +19,17 @@
 
 namespace Sharp.Shared.Managers;
 
+/// <summary>
+///     Provides access to loaded game libraries (modules) for memory scanning and address retrieval.
+/// </summary>
+/// <remarks>
+///     <para>
+///         This interface exposes handles to common game modules like <c>server.dll</c> (Windows) or <c>libserver.so</c> (Linux).
+///     </para>
+///     <para>
+///         Use the returned <see cref="ILibraryModule"/> instances to perform operations such as <c>FindPattern</c>, or accessing exported functions.
+///     </para>
+/// </remarks>
 public interface ILibraryModuleManager
 {
     ILibraryModule Server                { get; }

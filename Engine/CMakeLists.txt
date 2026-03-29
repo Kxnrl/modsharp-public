@@ -3,13 +3,12 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-# Enable support for MSVC_RUNTIME_LIBRARY
-cmake_policy(SET CMP0091 NEW)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 	message(FATAL_ERROR "In-tree builds are not supported. Run CMake from a separate directory: cmake -B build")
 endif()
+
+# Enable support for MSVC_RUNTIME_LIBRARY
+cmake_policy(SET CMP0091 NEW)
 
 set(CMKR_ROOT_PROJECT OFF)
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -25,15 +24,18 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 	set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 	# Create a configure-time dependency on cmake.toml to improve IDE support
-	configure_file(cmake.toml cmake.toml COPYONLY)
+	set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS cmake.toml)
+	if(NOT DEFINED CMAKE_MSVC_RUNTIME_LIBRARY)
+		set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+	endif()
+
 endif()
 
 project(ModSharp)
 
 # Target: modsharp
 set(modsharp_SOURCES
-	"vendors/zydis/Zydis.c"
-	"vendors/safetyhook/safetyhook.cpp"
+	cmake.toml
 	"src/CoreCLR/RuntimeProtobufMessage.cpp"
 	"src/CoreCLR/coreclr.cpp"
 	"src/address.cpp"
@@ -67,9 +69,11 @@ set(modsharp_SOURCES
 	"src/cstrike/interface/IGameSystem.cpp"
 	"src/cstrike/interface/IGameTypes.cpp"
 	"src/cstrike/interface/INetChannel.cpp"
+	"src/cstrike/interface/INetworkStringTable.cpp"
 	"src/cstrike/interface/IResourceSystem.cpp"
 	"src/cstrike/interface/ISchemaSystem.cpp"
 	"src/cstrike/interface/ISoundOpSystem.cpp"
+	"src/cstrike/interfaces.cpp"
 	"src/cstrike/schema.cpp"
 	"src/cstrike/type/CCommand.cpp"
 	"src/cstrike/type/CEconItemView.cpp"
@@ -115,23 +119,25 @@ set(modsharp_SOURCES
 	"src/module_linux.cpp"
 	"src/module_windows.cpp"
 	"src/netmessage.cpp"
+	"src/proto/cs_usercmd.pb.cc"
+	"src/proto/cstrike15_gcmessages.pb.cc"
+	"src/proto/cstrike15_usermessages.pb.cc"
+	"src/proto/engine_gcmessages.pb.cc"
+	"src/proto/gcsdk_gcmessages.pb.cc"
+	"src/proto/netmessages.pb.cc"
+	"src/proto/network_connection.pb.cc"
+	"src/proto/networkbasetypes.pb.cc"
+	"src/proto/source2_steam_stats.pb.cc"
+	"src/proto/steammessages.pb.cc"
+	"src/proto/usercmd.pb.cc"
+	"src/proto/usermessages.pb.cc"
 	"src/protobufproxy.cpp"
 	"src/sdkproxy.cpp"
 	"src/steamproxy.cpp"
 	"src/steamworks.cpp"
 	"src/strtool.cpp"
-	"src/proto/network_connection.pb.cc"
-	"src/proto/networkbasetypes.pb.cc"
-	"src/proto/usermessages.pb.cc"
-	"src/proto/cstrike15_gcmessages.pb.cc"
-	"src/proto/cstrike15_usermessages.pb.cc"
-	"src/proto/engine_gcmessages.pb.cc"
-	"src/proto/gcsdk_gcmessages.pb.cc"
-	"src/proto/steammessages.pb.cc"
-	"src/proto/netmessages.pb.cc"
-	"src/proto/cs_usercmd.pb.cc"
-	"src/proto/usercmd.pb.cc"
-	cmake.toml
+	"vendors/safetyhook/safetyhook.cpp"
+	"vendors/zydis/Zydis.c"
 )
 
 add_library(modsharp SHARED)
@@ -209,6 +215,8 @@ target_compile_features(modsharp PUBLIC
 if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 	target_compile_options(modsharp PUBLIC
 		-Wall
+		-Wformat
+		-Werror=format-insufficient-args
 		-Wno-uninitialized
 		-Wno-switch
 		-Wno-unused

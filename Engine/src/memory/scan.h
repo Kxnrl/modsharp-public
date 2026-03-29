@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -37,6 +37,9 @@ std::vector<CAddress> FindRVAs(std::uintptr_t data, std::size_t size, uint32_t r
 
 CAddress              FindPtr(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept;
 std::vector<CAddress> FindPtrs(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept;
+
+CAddress              FindData(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept;
+std::vector<CAddress> FindDataMulti(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept;
 } // namespace scan
 
 #endif

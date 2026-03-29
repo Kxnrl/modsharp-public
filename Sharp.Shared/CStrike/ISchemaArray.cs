@@ -25,7 +25,7 @@ namespace Sharp.Shared.CStrike;
 public interface ISchemaArray<T> : INativeObject where T : unmanaged
 {
     /// <summary>
-    ///     数组大小
+    ///     Array size
     /// </summary>
     int Size { get; }
 
@@ -35,23 +35,23 @@ public interface ISchemaArray<T> : INativeObject where T : unmanaged
     T this[int index] { get; set; }
 
     /// <summary>
-    ///     用<paramref name="index"></paramref>获取元素的引用 <br />
-    ///     <remarks>请使用<c>ref</c>关键字</remarks>
+    ///     Gets a reference to the element at the specified <paramref name="index"/> <br />
+    ///     <remarks>Use the <c>ref</c> keyword</remarks>
     /// </summary>
     ref T GetRef(int index);
 
     /// <summary>
-    ///     转换为 <see cref="IEnumerable{T}" /> 以使用 Linq/ZLinq
+    ///     Converts to <see cref="IEnumerable{T}" /> for use with Linq/ZLinq
     /// </summary>
     IEnumerator<T> AsEnumerable();
 
     /// <summary>
-    ///     通常情况下你不需要使用它, 因为这是为<c>foreach</c>提供的0分配 <seealso cref="Enumerator" />
+    ///     You typically don't need to use this, as it provides zero-allocation enumeration for <c>foreach</c> <seealso cref="Enumerator" />
     /// </summary>
     Enumerator GetEnumerator();
 
     /// <summary>
-    ///     你不需要使用它
+    ///     You don't need to use this directly
     /// </summary>
     public struct Enumerator : IEnumerator<T>
     {

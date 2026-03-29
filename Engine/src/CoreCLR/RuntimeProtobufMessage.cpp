@@ -26,7 +26,7 @@ static std::unordered_map<uint32_t, INetworkMessageInternal*> s_CachedCSharpNetw
 
 INetworkMessageInternal* GetRuntimeProtobufSerializable(const char* name)
 {
-    uint32_t hash = MurmurHash2(name, MURMURHASH_SEED);
+    const auto hash = MurmurHash2(name, MURMURHASH_SEED);
 
     if (const auto it = s_CachedCSharpNetworkSerializable.find(hash); it != s_CachedCSharpNetworkSerializable.end())
     {
@@ -34,11 +34,19 @@ INetworkMessageInternal* GetRuntimeProtobufSerializable(const char* name)
     }
 
     const auto net = g_pNetworkMessages->FindNetworkMessagePartial(name);
+
     if (net == nullptr)
         return nullptr;
 
     const auto csharpNet = new CSharpNetworkSerializable(net);
-    s_CachedCSharpNetworkSerializable.emplace(hash, csharpNet);
+
+    auto [it, inserted] = s_CachedCSharpNetworkSerializable.try_emplace(hash, csharpNet);
+
+    if (!inserted)
+    {
+        delete csharpNet;
+        return it->second;
+    }
 
     return csharpNet;
 }

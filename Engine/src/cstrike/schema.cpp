@@ -228,11 +228,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
 
 static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
 {
-#ifdef PLATFORM_WINDOWS
-    static constexpr int32_t class_bindings_offset = 0x500;
-#else
     static constexpr int32_t class_bindings_offset = 0x560;
-#endif
 
     const auto class_bindings = reinterpret_cast<CUtlTSHash<SchemaClassInfoData_t*, 256, unsigned int>*>(
         reinterpret_cast<std::uintptr_t>(type_scope) + class_bindings_offset);

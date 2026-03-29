@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -176,9 +176,9 @@ public:
 private:
     void* callback_96  = nullptr;
     void* callback_104 = nullptr;
-
+    void* callback_112 = nullptr; // 0x70
 public:
-    EConVarType m_eVarType; // 0x70
+    EConVarType m_eVarType; // 0x78
 };
 
 class ICvar : public IAppSystem
@@ -233,7 +233,7 @@ public:
     virtual int32_t GetTotalUserInfoCvarsByteSize()                                                           = 0;
     virtual void    CopyUserInfoCvarDefaults(uint8_t* buffer, int32_t from, int32_t to, bool copy_or_cleanup) = 0;
 
-    virtual void Method_40() = 0;
+    virtual void Method_39() = 0;
 
     // Register, unregister vars
     virtual void             RegisterConVar(const ConVarCreation_t& setup, int64_t nAdditionalFlags, ConVarHandle* pCvarRef, CConVarBaseData** pCvar) = 0;

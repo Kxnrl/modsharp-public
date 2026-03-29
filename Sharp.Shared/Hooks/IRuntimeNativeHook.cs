@@ -22,17 +22,17 @@ namespace Sharp.Shared.Hooks;
 public interface IRuntimeNativeHook
 {
     /// <summary>
-    ///     实装Hook
+    ///     Install hook
     /// </summary>
     bool Install();
 
     /// <summary>
-    ///     卸载Hook
+    ///     Uninstall hook
     /// </summary>
     void Uninstall();
 
     /// <summary>
-    ///     原始方法的指针
+    ///     Original address
     /// </summary>
     nint Trampoline { get; }
 }

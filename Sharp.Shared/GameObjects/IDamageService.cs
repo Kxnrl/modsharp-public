@@ -48,27 +48,27 @@ public interface IDamageRecord : INativeObject
     SteamID RecipientXuid { get; }
 
     /// <summary>
-    ///     子弹上海
+    ///     Bullet damage
     /// </summary>
     float BulletsDamage { get; }
 
     /// <summary>
-    ///     伤害
+    ///     Total damage
     /// </summary>
     float Damage { get; }
 
     /// <summary>
-    ///     实际掉血
+    ///     Actual health removed
     /// </summary>
     float ActualHealthRemoved { get; }
 
     /// <summary>
-    ///     命中数
+    ///     Number of hits
     /// </summary>
     int NumHits { get; }
 
     /// <summary>
-    ///     击杀类型
+    ///     Kill type
     /// </summary>
     KillTypes KillType { get; }
 }
@@ -77,7 +77,7 @@ public interface IDamageRecord : INativeObject
 public interface IDamageService : IPlayerControllerComponent
 {
     /// <summary>
-    ///     伤害统计列表
+    ///     Gets the damage statistics list
     /// </summary>
     ISchemaEmbeddedList<IDamageRecord> GetDamageList();
 }

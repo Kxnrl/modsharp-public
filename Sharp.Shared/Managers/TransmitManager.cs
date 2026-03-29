@@ -26,92 +26,95 @@ namespace Sharp.Shared.Managers;
 public interface ITransmitManager
 {
     /// <summary>
-    ///     Hook 实体
+    ///     Hook an entity
     /// </summary>
-    /// <param name="entity">实体Instance</param>
-    /// <param name="defaultTransmit">默认全部Channel状态</param>
+    /// <param name="entity">Entity instance</param>
+    /// <param name="defaultTransmit">Default state for all channels</param>
     bool AddEntityHooks(IBaseEntity entity, bool defaultTransmit);
 
     /// <summary>
-    ///     手动移除Hook
-    ///     <remarks>Hook会在实体删除时自动销毁</remarks>
+    ///     Manually remove hooks
+    ///     <remarks>Hooks are automatically destroyed when the entity is deleted</remarks>
     /// </summary>
     bool RemoveEntityHooks(IBaseEntity entity);
 
     /// <summary>
-    ///     实体是否已经被Hook
+    ///     Check if entity is already hooked
     /// </summary>
-    /// <param name="entity">实体Instance</param>
+    /// <param name="entity">Entity instance</param>
     bool IsEntityHooked(IBaseEntity entity);
 
     /// <summary>
-    ///     获取实体的Controller可见状态
+    ///     Get entity visibility state for a controller
     /// </summary>
-    /// <param name="entity">实体Index</param>
-    /// <param name="controllerIndex">ControllerIndex</param>
-    /// <param name="channel">Channel, -1为读取全局状态</param>
+    /// <param name="entity">Entity index</param>
+    /// <param name="controllerIndex">Controller index</param>
+    /// <param name="channel">Channel, -1 to read global state</param>
     bool GetEntityState(EntityIndex entity, EntityIndex controllerIndex, int channel = -1);
 
     /// <summary>
-    ///     设置实体的Controller可见状态
+    ///     Set entity visibility state for a controller
     /// </summary>
-    /// <param name="entity">实体Index</param>
-    /// <param name="controllerIndex">ControllerIndex</param>
-    /// <param name="transmit">是否可见</param>
+    /// <param name="entity">Entity index</param>
+    /// <param name="controllerIndex">Controller index</param>
+    /// <param name="transmit">Whether visible</param>
     /// <param name="channel">Channel</param>
     bool SetEntityState(EntityIndex entity, EntityIndex controllerIndex, bool transmit, int channel);
 
     /// <summary>
-    ///     获取实体是否被Block
+    ///     Get whether entity is blocked
     /// </summary>
     bool GetEntityBlock(EntityIndex entity);
 
     /// <summary>
-    ///     设置实体Block State
+    ///     Set entity block state
     /// </summary>
     bool SetEntityBlock(EntityIndex entity, bool state);
 
     /// <summary>
-    ///     获取Hook中的实体Owner
+    ///     Get entity owner from hook
     /// </summary>
     /// <returns>-2 = NoHook | -1 = Null | other = Entity Index</returns>
     int GetEntityOwner(EntityIndex entity);
 
     /// <summary>
-    ///     设置Hook中的实体Owner
+    ///     Set entity owner in hook
     /// </summary>
-    /// <param name="entity">实体Index</param>
-    /// <param name="owner">Owner实体的Index</param>
+    /// <param name="entity">Entity index</param>
+    /// <param name="owner">Owner entity index</param>
     bool SetEntityOwner(EntityIndex entity, EntityIndex owner);
 
     /// <summary>
-    ///     TempEnt的状态
+    ///     Checks if a specific temporary entity type is currently blocked for a player.
     /// </summary>
-    /// <param name="type">TE类型</param>
-    /// <param name="slot">IGameClient Slot</param>
+    /// <param name="type">Temporary entity type</param>
+    /// <param name="slot">IGameClient slot</param>
+    /// <returns><see langword="true"/> if the entity type is blocked; otherwise, <see langword="false"/>.</returns>
     bool GetTempEntState(BlockTempEntType type, PlayerSlot slot);
 
     /// <summary>
-    ///     设置TempEnt的状态
+    ///     Configures whether a specific temporary entity type is blocked for a player.
     /// </summary>
-    /// <param name="type">TE类型</param>
-    /// <param name="slot">IGameClient Slot</param>
-    /// <param name="state">可见状态</param>
+    /// <param name="type">Temporary entity type</param>
+    /// <param name="slot">IGameClient slot</param>
+    /// <param name="state">If <see langword="true"/>, the entity type will be blocked (not sent to the client). If <see langword="false"/>, it will be allowed.</param>
     void SetTempEntState(BlockTempEntType type, PlayerSlot slot, bool state);
 
     /// <summary>
-    ///     重置接受者的所有实体状态
+    ///     Reset all entity states for a receiver
     /// </summary>
-    /// <param name="receiverIndex">receiver controller index</param>
+    /// <param name="receiverIndex">Receiver controller index</param>
     void ClearReceiverState(EntityIndex receiverIndex);
 
     /// <summary>
-    ///     检查武器屏蔽FireBullet
+    ///     Gets the blocking state for fire bullet effects (e.g., sound, visual effects).
     /// </summary>
+    /// <param name="weapon">The weapon instance to check.</param>
+    /// <returns>The current transmission or blocking state.</returns>
     TransmitFireBulletState GetWeaponFireBulletState(IBaseWeapon weapon);
 
     /// <summary>
-    ///     设置武器FireBullet状态
+    ///     Sets the blocking state for fire bullet effects (e.g., sound, visual effects).
     /// </summary>
     void SetWeaponFireBulletState(IBaseWeapon weapon, TransmitFireBulletState state);
 }

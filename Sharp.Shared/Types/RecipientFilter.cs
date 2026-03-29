@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
 
@@ -63,11 +64,18 @@ public readonly struct RecipientFilter
         ReceiverSlot = client.Slot.AsPrimitive();
     }
 
+    public RecipientFilter(IPlayerController controller)
+    {
+        Type         = RecipientFilterType.Single;
+        Team         = 0;
+        ReceiverSlot = (ulong) (controller.Index.AsPrimitive() - 1);
+    }
+
     public RecipientFilter(EntityIndex index)
     {
         Type         = RecipientFilterType.Single;
         Team         = 0;
-        ReceiverSlot = (ulong) index.AsPrimitive() - 1;
+        ReceiverSlot = (ulong) (index.AsPrimitive() - 1);
     }
 
     public RecipientFilter(NetworkReceiver receiver)

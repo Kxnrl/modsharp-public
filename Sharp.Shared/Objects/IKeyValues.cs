@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -26,38 +26,41 @@ namespace Sharp.Shared.Objects;
 public interface IKeyValues : INativeObject
 {
     /// <summary>
-    ///     销毁实例 <br />
-    ///     <remarks>只有创建出来的实例和Clone的是可以销毁的</remarks>
+    ///     Destroy this instance <br />
+    ///     <remarks>
+    ///         Only instances created by <see cref="IModSharp.CreateKeyValues" /> or <see cref="IKeyValues.Clone" /> can
+    ///         be destroyed
+    ///     </remarks>
     /// </summary>
     void DeleteThis();
 
     /// <summary>
-    ///     克隆一个新的kv
+    ///     Clone this KeyValues instance
     /// </summary>
     IKeyValues Clone();
 
     /// <summary>
-    ///     清空所有Key和SubKey
+    ///     Clear all keys and sub-keys
     /// </summary>
     void Clear();
 
     /// <summary>
-    ///     从文件加载
+    ///     Load from file
     /// </summary>
     bool LoadFromFile(string filename, string? pathId = null);
 
     /// <summary>
-    ///     保存到文件
+    ///     Save to file
     /// </summary>
     bool SaveToFile(string filename, string? pathId = null, bool allowEmptyString = false);
 
     /// <summary>
-    ///     从文本加载
+    ///     Load from string
     /// </summary>
     bool LoadFromString(string buffer);
 
     /// <summary>
-    ///     导出为String
+    ///     Export to string
     /// </summary>
     bool SaveToString(int size,
         out string        result,
@@ -66,59 +69,59 @@ public interface IKeyValues : INativeObject
         bool              allowEmptyString = false);
 
     /// <summary>
-    ///     当前Section名
+    ///     Get current section name
     /// </summary>
     string GetSectionName();
 
     /// <summary>
-    ///     设置Section名
+    ///     Set section name
     /// </summary>
     void SetSectionName(string name);
 
     /// <summary>
-    ///     获取第一个SubKey (不限制为Key, 可能是KV)
+    ///     Get first sub-key (includes both keys and key-value pairs)
     /// </summary>
     IKeyValues? GetFirstSubKey();
 
     /// <summary>
-    ///     获取最后一个SubKey (不限制为Key, 可能是KV)
+    ///     Get last sub-key (includes both keys and key-value pairs)
     /// </summary>
     IKeyValues? FindLastSubKey();
 
     /// <summary>
-    ///     获取下一个Key
+    ///     Get next key
     /// </summary>
     IKeyValues? GetNextKey();
 
     /// <summary>
-    ///     获取第一个SubKey (限制为Key)
+    ///     Get first sub-key (keys only, not key-value pairs)
     /// </summary>
     IKeyValues? GetFirstTrueSubKey();
 
     /// <summary>
-    ///     获取下一个SubKey (限制为Key)
+    ///     Get next sub-key (keys only, not key-value pairs)
     /// </summary>
     IKeyValues? GetNextTrueSubKey();
 
     /// <summary>
-    ///     直接查找Key, 可创建
+    ///     Find key by name, optionally create if not found
     /// </summary>
-    /// <param name="name">name</param>
-    /// <param name="bCreate">如果不存在则创建</param>
+    /// <param name="name">Key name</param>
+    /// <param name="bCreate">Create if key doesn't exist</param>
     IKeyValues? FindKey(string name, bool bCreate = false);
 
     /// <summary>
-    ///     查找并删除指定名字的SubKey
+    ///     Find and delete sub-key by name
     /// </summary>
     bool FindAndDeleteSubKey(string name);
 
     /// <summary>
-    ///     添加Key
+    ///     Add new key
     /// </summary>
     IKeyValues AddKey(string name);
 
     /// <summary>
-    ///     获取值的类型
+    ///     Get data type of value
     /// </summary>
     KeyValuesDataType GetDataType(string? name = null);
 
@@ -152,8 +155,8 @@ public interface IKeyValues : INativeObject
 public interface IKeyValues3 : INativeObject
 {
     /// <summary>
-    ///     销毁实例 <br />
-    ///     <remarks>只有创建出来的实例和Clone的是可以销毁的</remarks>
+    ///     Destroy this instance <br />
+    ///     <remarks>Only instances created by <see cref="IModSharp.CreateKeyValues3" /> can be destroyed</remarks>
     /// </summary>
     void DeleteThis();
 
@@ -185,10 +188,6 @@ public interface IKeyValues3 : INativeObject
 
     bool IsString();
 
-    /// <summary>
-    ///     不知道干啥的
-    /// </summary>
-    /// <returns></returns>
     bool IsBinaryBlob();
 
     bool IsArray();

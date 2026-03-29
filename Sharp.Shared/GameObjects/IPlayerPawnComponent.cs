@@ -25,7 +25,7 @@ namespace Sharp.Shared.GameObjects;
 public interface IPlayerPawnComponent : ISchemaObject
 {
     /// <summary>
-    ///     获取玩家
+    ///     Get player pawn
     /// </summary>
     IBasePlayerPawn? GetPlayer();
 }

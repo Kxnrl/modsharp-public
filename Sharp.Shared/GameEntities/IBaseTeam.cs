@@ -25,7 +25,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IBaseTeam : IBaseEntity
 {
     /// <summary>
-    ///     比分
+    ///     Score
     /// </summary>
     int Score { get; set; }
 

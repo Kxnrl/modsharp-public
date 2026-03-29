@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -22,17 +22,16 @@
 #include "logging.h"
 #include "memory/memory_access.h"
 #include "module.h"
+#include "sdkproxy.h"
 #include "strtool.h"
 
-#include "cstrike/type/CBufferString.h"
-#include "cstrike/type/CUtlBuffer.h"
-#include "cstrike/type/KeyValues.h"
+#include "cstrike/interface/ICvar.h"
 
 #include <json.hpp>
 
-#include <cstring>
+#include <charconv>
+#include <deque>
 #include <fstream>
-#include <iostream>
 
 // #define DEBUG
 
@@ -59,100 +58,341 @@ static std::vector<uint8_t> ParseStringToBytesVector(const std::string& content)
     return items;
 }
 
-static bool FindPattern(const std::string& module, const char* pattern, std::uintptr_t& address)
+CModule* GetModuleByName(std::string_view module_name)
 {
-    auto FindPatternOrGetExport = [&address](CModule* module, std::string_view pattern) {
-        if (pattern.empty())
+    static const std::unordered_map<std::string_view, CModule*> module_map = {
+        {"engine",          modules::engine         },
+        {"server",          modules::server         },
+        {"tier0",           modules::tier0          },
+        {"schemasystem",    modules::schemas        },
+        {"resourcesystem",  modules::resource       },
+        {"vscript",         modules::vscript        },
+        {"vphysics2",       modules::vphysics2      },
+        {"soundsystem",     modules::sound          },
+        {"networksystem",   modules::network        },
+        {"worldrenderer",   modules::worldrenderer  },
+        {"matchmaking",     modules::matchmaking    },
+        {"filesystem",      modules::filesystem     },
+        {"steamsockets",    modules::steamsockets   },
+        {"materialsystem2", modules::materialsystem2},
+        {"animationsystem", modules::animationsystem}
+    };
+
+    auto it = module_map.find(module_name);
+
+    if (it != module_map.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
+}
+
+static bool FindPattern(std::string_view module_name, std::string_view pattern, std::uintptr_t& address)
+{
+    auto module_ptr = GetModuleByName(module_name);
+    if (module_ptr == nullptr)
+    {
+        FERROR("Unknown module name \"%s\"", module_name.data());
+        return false;
+    }
+
+    if (pattern.empty())
+        return false;
+
+    // a sane symbol name should not contain a whitespace
+    if (pattern.starts_with('@') && pattern.find(' ') == std::string_view::npos) [[unlikely]]
+        address = module_ptr->GetFunctionByName(pattern.substr(1));
+    else
+        address = module_ptr->FindPatternStrict(pattern);
+
+    return address != 0;
+}
+
+enum class RefResult : uint8_t
+{
+    NoReferences,
+    Failed,
+    Success
+};
+
+static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, std::string_view key, std::uintptr_t& out_address)
+{
+    out_address = 0;
+
+    std::string_view module_name = game_data.m_Module;
+    if (module_name.empty()) [[unlikely]]
+    {
+        FERROR("Empty module name in \"%s\"", key.data());
+        return RefResult::Failed;
+    }
+
+    auto module_ptr = GetModuleByName(module_name);
+    if (!module_ptr) [[unlikely]]
+    {
+        FERROR("Unknown module name \"%s\" in %s", module_name.data(), key.data());
+        return RefResult::Failed;
+    }
+
+    std::vector<std::span<const CModule::ReferenceEntry>> ref_sets;
+    ref_sets.reserve(game_data.m_StringRefs.size() + game_data.m_CvarRefs.size() + game_data.m_FromVTable.size());
+
+    std::deque<std::vector<CModule::ReferenceEntry>> union_reference_storage;
+
+    auto collect_refs = [&](const std::string& name, const char* type_desc, auto find_target_fn) -> bool {
+        auto target_addr = find_target_fn();
+
+        if (!target_addr.IsValid())
+        {
+            FERROR("Failed to find %s \"%s\".", type_desc, name.c_str());
             return false;
+        }
 
-        address = pattern[0] == '@' ? module->GetFunctionByName(pattern.substr(1)) : module->FindPatternStrict(pattern);
+        auto references = module_ptr->GetReferenceRange(target_addr);
+        if (references.empty())
+        {
+            FERROR("%s \"%s\" (at %s+0x%llx) has no references in code.", type_desc, name.c_str(), module_name.data(), target_addr.GetPtr() - module_ptr->Base());
+            return false;
+        }
 
+        ref_sets.push_back(references);
         return true;
     };
 
-    if (module == "engine")
+    auto trim = [&](std::string_view str) -> std::string_view {
+        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.front())))
+            str.remove_prefix(1);
+
+        while (!str.empty() && std::isspace(static_cast<unsigned char>(str.back())))
+            str.remove_suffix(1);
+
+        return str;
+    };
+
+    for (const auto& raw_str : game_data.m_StringRefs)
     {
-        return FindPatternOrGetExport(modules::engine, pattern);
+        if (raw_str.find("[ptr]") == std::string::npos)
+        {
+            if (!collect_refs(raw_str, "String", [&]() -> CAddress {
+                    return module_ptr->FindString(raw_str, false);
+                }))
+                return RefResult::Failed;
+
+            continue;
+        }
+
+        std::string_view str_sv = trim(raw_str);
+        if (str_sv.empty()) continue;
+
+        auto ptr_idx = str_sv.find("[ptr]");
+
+        auto        substr_sv = trim(str_sv.substr(0, ptr_idx));
+        std::string search_str(substr_sv);
+
+        auto str_address = module_ptr->FindString(search_str, false);
+        if (!str_address)
+        {
+            continue;
+        }
+
+        auto str_ptrs = module_ptr->FindPtrs(str_address);
+
+        std::vector<CModule::ReferenceEntry> merged_refs;
+
+        for (auto str_ptr : str_ptrs)
+        {
+            auto references = module_ptr->GetReferenceRange(str_ptr);
+            if (!references.empty())
+            {
+                merged_refs.insert(merged_refs.end(), references.begin(), references.end());
+            }
+        }
+
+        if (merged_refs.empty())
+        {
+            FERROR("String ptr \"%s\" (at %s+0x%llx) has no references in code.",
+                   search_str.c_str(), module_name.data(), str_address.GetPtr() - module_ptr->Base());
+            return RefResult::Failed;
+        }
+
+        union_reference_storage.emplace_back(std::move(merged_refs));
+        ref_sets.emplace_back(union_reference_storage.back());
     }
 
-    if (module == "server")
+    for (const auto& raw_ref : game_data.m_VTableRefs)
     {
-        return FindPatternOrGetExport(modules::server, pattern);
+        constexpr std::string_view suffix = "[typeinfo]";
+
+        std::string_view ref_sv = trim(raw_ref);
+        if (ref_sv.empty()) continue;
+
+        if (!ref_sv.ends_with(suffix))
+        {
+            std::string search_name(ref_sv);
+
+            if (!collect_refs(search_name, "VTable", [&]() -> CAddress { return module_ptr->GetVirtualTableByName(search_name); }))
+                return RefResult::Failed;
+
+            continue;
+        }
+
+        auto        name_part = trim(ref_sv.substr(0, ref_sv.size() - suffix.size()));
+        std::string search_name(name_part);
+
+        if (!collect_refs(search_name, "TypeInfo", [&]() -> CAddress { return module_ptr->GetTypeInfoFromName(search_name); }))
+            return RefResult::Failed;
     }
 
-    if (module == "tier0")
+    for (const auto& cvar : game_data.m_CvarRefs)
     {
-        return FindPatternOrGetExport(modules::tier0, pattern);
+        std::string_view cvar_view = trim(cvar);
+        if (cvar_view.empty())
+            continue;
+
+        const auto last_space_index = cvar_view.rfind(' ');
+
+        std::string      cvar_name;
+        std::string_view suffix;
+
+        if (last_space_index == std::string_view::npos)
+        {
+            cvar_name = cvar;
+        }
+        else
+        {
+            std::string_view name_view = trim(cvar_view.substr(0, last_space_index));
+            cvar_name                  = std::string(name_view);
+
+            suffix = cvar_view.substr(last_space_index + 1);
+        }
+
+        auto convar_ptr = icvar->FindConVarIterator(cvar_name.c_str());
+        if (!convar_ptr)
+        {
+            FLOG("Invalid cvar ptr \"%s\"", cvar_name.c_str());
+            return RefResult::Failed;
+        }
+
+        auto ptr_to_cvar = module_ptr->FindPtr(reinterpret_cast<uintptr_t>(convar_ptr));
+        if (!ptr_to_cvar.IsValid())
+        {
+            FLOG("Cannot find ptr to cvar \"%s\"", cvar_name.c_str());
+            return RefResult::Failed;
+        }
+
+        bool add_ptr{};
+        bool add_handle{};
+
+        if (suffix.empty())
+        {
+            // use ptr for default behavior
+            add_ptr = true;
+        }
+        else
+        {
+            const bool is_ptr    = (suffix == "[ptr]");
+            const bool is_handle = (suffix == "[handle]");
+            const bool is_both   = (suffix == "[*]" || suffix == "[both]");
+
+            add_ptr    = (is_ptr || is_both);
+            add_handle = (is_handle || is_both);
+
+            // if suffix exists but is invalid, use ptr instead
+            if (!add_ptr && !add_handle)
+                add_ptr = true;
+        }
+
+        std::vector<CModule::ReferenceEntry> merged_refs;
+
+        if (add_ptr)
+        {
+            auto refs = module_ptr->GetReferenceRange(ptr_to_cvar);
+            if (!refs.empty())
+                merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
+        }
+
+        if (add_handle)
+        {
+            auto refs = module_ptr->GetReferenceRange(ptr_to_cvar - sizeof(void*));
+            if (!refs.empty())
+                merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
+        }
+
+        if (merged_refs.empty())
+        {
+            std::string type_str = (add_ptr && add_handle) ? "Ptr or Handle" : (add_handle ? "Handle" : "Ptr");
+            FERROR("Cvar %s \"%s\" has no references in code.", type_str.c_str(), cvar_name.c_str());
+            return RefResult::Failed;
+        }
+
+        union_reference_storage.emplace_back(std::move(merged_refs));
+        ref_sets.emplace_back(union_reference_storage.back());
     }
 
-    if (module == "schemasystem")
+    if (ref_sets.empty())
     {
-        return FindPatternOrGetExport(modules::schemas, pattern);
+        return RefResult::NoReferences;
     }
 
-    if (module == "resourcesystem")
+    auto matches = module_ptr->IntersectFunctionReferences(ref_sets);
+
+    if (matches.empty())
     {
-        return FindPatternOrGetExport(modules::resource, pattern);
+        FERROR("No references was found for %s", key.data());
+        return RefResult::Failed;
     }
 
-    if (module == "vscript")
+    if (auto vtable_name = game_data.m_FromVTable; vtable_name.empty())
     {
-        return FindPatternOrGetExport(modules::vscript, pattern);
+        if (matches.size() > 1)
+        {
+            FERROR("Ambiguous: %zu functions matched for %s.", matches.size(), key.data());
+            return RefResult::Failed;
+        }
+    }
+    else
+    {
+        std::vector<std::uintptr_t> vfuncs = module_ptr->GetVFunctionsFromVTable(vtable_name);
+        if (vfuncs.empty())
+        {
+            FERROR("No vfuncs was found from %s for %s", vtable_name.c_str(), key.data());
+            return RefResult::Failed;
+        }
+
+        std::ranges::sort(matches);
+        std::ranges::sort(vfuncs);
+
+        std::vector<std::uintptr_t> intersection;
+        intersection.reserve(matches.size());
+
+        std::ranges::set_intersection(matches, vfuncs, std::back_inserter(intersection));
+
+        matches = std::move(intersection);
+
+        if (matches.empty())
+        {
+            FERROR("Candidates found, but none exist in VTable %s for %s.", vtable_name.data(), key.data());
+            return RefResult::Failed;
+        }
+
+        if (matches.size() > 1)
+        {
+            FERROR("Ambiguous: %zu functions matched within VTable %s for %s.", matches.size(), vtable_name.data(), key.data());
+            return RefResult::Failed;
+        }
     }
 
-    if (module == "vphysics2")
-    {
-        return FindPatternOrGetExport(modules::vphysics2, pattern);
-    }
-
-    if (module == "soundsystem")
-    {
-        return FindPatternOrGetExport(modules::sound, pattern);
-    }
-
-    if (module == "networksystem")
-    {
-        return FindPatternOrGetExport(modules::network, pattern);
-    }
-
-    if (module == "worldrenderer")
-    {
-        return FindPatternOrGetExport(modules::worldrenderer, pattern);
-    }
-
-    if (module == "matchmaking")
-    {
-        return FindPatternOrGetExport(modules::matchmaking, pattern);
-    }
-
-    if (module == "filesystem")
-    {
-        return FindPatternOrGetExport(modules::filesystem, pattern);
-    }
-
-    if (module == "steamsockets")
-    {
-        return FindPatternOrGetExport(modules::steamsockets, pattern);
-    }
-
-    if (module == "materialsystem2")
-    {
-        return FindPatternOrGetExport(modules::materialsystem2, pattern);
-    }
-
-    if (module == "animationsystem")
-    {
-        return FindPatternOrGetExport(modules::animationsystem, pattern);
-    }
-
-    return false;
+    out_address = matches[0];
+    return RefResult::Success;
 }
 
-static bool FindAddress(std::unordered_map<std::string, GameDataAddress>& addresses, const char* name, std::uintptr_t& pAddress)
+static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>>& addresses, std::string_view name, std::uintptr_t& pAddress)
 {
     auto it = addresses.find(name);
+
     if (it == addresses.end())
     {
+        FERROR("Key '%s' does not exist", name.data());
         return false;
     }
 
@@ -165,50 +405,112 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress>& addres
     }
 
     uintptr_t address = 0;
-    if (item.m_Base.has_value())
+    if (!item.m_Base.empty())
     {
-        FindAddress(addresses, item.m_Base.value().c_str(), address);
+        if (!FindAddress(addresses, item.m_Base, address))
+            return false;
     }
-    else if (item.m_Signature.has_value() && item.m_Module.has_value())
+    else if (!item.m_Module.empty())
     {
-        FindPattern(item.m_Module.value(), item.m_Signature.value().c_str(), address);
+        auto has_signature = item.m_Signature.empty() == false;
+
+        std::uintptr_t ref_addr   = 0;
+        auto           ref_result = FindFunctionFromReferences(item, name, ref_addr);
+
+        if (ref_result == RefResult::Success)
+        {
+            address = ref_addr;
+        }
+
+        std::uintptr_t sig_addr  = 0;
+        bool           sig_found = false;
+
+        if (has_signature && (address == 0 || IsDebugMode()))
+        {
+            sig_found = FindPattern(item.m_Module, item.m_Signature, sig_addr);
+        }
+
+        if (address == 0)
+        {
+            if (ref_result == RefResult::Failed && has_signature)
+            {
+                WARN("Failed to find address for '%s', falling back to signature.", name.data());
+            }
+
+            if (sig_found)
+            {
+                address = sig_addr;
+            }
+        }
+
+        if (IsDebugMode() && address != 0 && sig_found && address != sig_addr)
+        {
+            auto module       = GetModuleByName(item.m_Module);
+            auto base_address = module->Base();
+
+            auto rva_scan = address > base_address ? address - base_address : 0;
+            auto rva_sig  = sig_addr > base_address ? sig_addr - base_address : 0;
+
+            WARN("Address mismatch for %s!\n"
+                 " > [Ref Scan]: %s+0x%llx\n"
+                 " > [Sig Scan]: %s+0x%llx",
+                 name.data(),
+                 item.m_Module.c_str(), rva_scan,
+                 item.m_Module.c_str(), rva_sig);
+        }
     }
 
     if (address == 0)
     {
-        printf("MS: Failed to find address for %s\n", name);
         return false;
     }
 
     // factory
-    if (item.m_Factory.has_value())
+    if (!item.m_Factory.empty())
     {
-        const auto ops = StringSplit(item.m_Factory.value().c_str(), " ");
+        auto factory_view = std::string_view(item.m_Factory);
 
-        for (auto& op : ops)
+        for (const auto subrange : factory_view | std::views::split(' '))
         {
-            if (op.empty())
+            if (subrange.empty())
                 continue;
 
-            if (op.starts_with("r")) // resolve relative address
+            std::string_view op(subrange.begin(), subrange.end());
+
+            if (op.empty()) [[unlikely]]
+                continue;
+
+            if (address < 0x10000) [[unlikely]]
+                return false;
+
+            if (const auto cmd = op.front(); cmd == 'r')
             {
-                address = address + sizeof(int) + *reinterpret_cast<int*>(address);
+                address = address + sizeof(int32_t) + *reinterpret_cast<int32_t*>(address);
             }
-            else if (op.starts_with("d")) // dereference
+            else if (cmd == 'd') // Dereference
             {
                 address = *reinterpret_cast<uintptr_t*>(address);
             }
-            else if (op.starts_with("-")) // offset -
+            else
             {
-                address = address - strtol(op.c_str() + 1, nullptr, 10);
-            }
-            else if (op.starts_with("+")) // offset +
-            {
-                address = address + strtol(op.c_str() + 1, nullptr, 10);
-            }
-            else // offset +
-            {
-                address = address + strtol(op.c_str(), nullptr, 10);
+                int32_t offset    = 0;
+                auto    num_start = op.data();
+                auto    num_end   = op.data() + op.size();
+
+                if (cmd == '+' || cmd == '-')
+                {
+                    num_start++;
+                }
+
+                auto [ptr, ec] = std::from_chars(num_start, num_end, offset);
+
+                if (ec == std::errc())
+                {
+                    if (cmd == '-')
+                        address -= offset;
+                    else
+                        address += offset;
+                }
             }
         }
     }
@@ -216,30 +518,29 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress>& addres
     pAddress            = address;
     item.m_FoundAddress = address;
 
-    return true;
+    return address > 0;
 }
 
-static bool LoadGameDataFile(const std::filesystem::path& base_path, std::string& output_content, std::string& error_msg)
+static bool LoadGameDataFile(const std::filesystem::path& file_path, std::string& output_content, std::string& error_msg)
 {
-    auto jsonc_path = base_path;
-    jsonc_path.replace_extension("jsonc");
-
-    const bool jsonc_exists = std::filesystem::exists(jsonc_path);
-
-    if (!jsonc_exists)
-    {
-        error_msg = "Gamedata not found: " + jsonc_path.filename().generic_string();
-        return false;
-    }
-
-    std::ifstream f(jsonc_path);
+    std::ifstream f(file_path, std::ios::in | std::ios::binary | std::ios::ate);
     if (!f.is_open())
     {
-        error_msg = "Failed to open file: " + jsonc_path.generic_string();
+        error_msg = "Failed to open file: " + file_path.generic_string();
         return false;
     }
 
-    output_content.assign(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
+    const auto file_size = f.tellg();
+    if (file_size == -1 || file_size == 0)
+    {
+        error_msg = "Failed to read file size, or it is empty.";
+        return false;
+    }
+
+    output_content.resize(file_size);
+
+    f.seekg(0, std::ios::beg);
+    f.read(output_content.data(), file_size);
     return true;
 }
 
@@ -247,6 +548,7 @@ bool GameData::Register(const char* name, char* error, int maxlen)
 {
     std::filesystem::path path = "../../sharp/gamedata/";
     path /= name;
+    path.replace_extension("jsonc");
 
     std::string content{};
     std::string error_string{};
@@ -257,15 +559,7 @@ bool GameData::Register(const char* name, char* error, int maxlen)
         return false;
     }
 
-    if (content.empty())
-    {
-        snprintf(error, maxlen, "File '%s' is empty.", path.filename().generic_string().c_str());
-        return false;
-    }
-
-    path.replace_extension("jsonc");
-
-    return LoadRawTextJson(content.c_str(), path.generic_string().c_str(), error, maxlen);
+    return LoadRawTextJson(content.c_str(), path, error, maxlen);
 }
 
 bool GameData::Unregister(const char* name, char* error, int maxLen)
@@ -379,7 +673,7 @@ bool GameData::InitPatch(const std::string& name, GameDataPatch* item)
     return true;
 }
 
-static void ParseAddresses(const std::filesystem::path& path, const char* platform_name, const nlohmann::json& json, std::unordered_map<std::string, GameDataAddress>& out)
+static void ParseAddresses(const std::filesystem::path& path, std::string_view platform_name, const nlohmann::json& json, std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>>& out)
 {
     auto address_object = json.find("Addresses");
     if (address_object == json.end())
@@ -391,10 +685,6 @@ static void ParseAddresses(const std::filesystem::path& path, const char* platfo
         {
             continue;
         }
-
-        auto platform_object = entry_object.find(platform_name);
-        if (platform_object == entry_object.end() || platform_object->is_null())
-            continue;
 
         GameDataAddress item;
         item.m_File = path.string();
@@ -409,43 +699,98 @@ static void ParseAddresses(const std::filesystem::path& path, const char* platfo
             item.m_Base = base_object->get<std::string>();
         }
 
-        if (platform_object->is_string())
+        bool has_refs = false;
+
+        if (entry_object.contains("refs"))
         {
-            auto str         = platform_object->get<std::string>();
-            item.m_Signature = str;
+            const auto& refs = entry_object["refs"];
+
+            auto parse_ref_list = [](const nlohmann::json& node, const char* ref_key, std::vector<std::string>& out_vec) {
+                if (!node.contains(ref_key))
+                    return;
+
+                const auto& val = node[ref_key];
+
+                if (val.is_string())
+                {
+                    if (auto str = val.get<std::string>(); !str.empty())
+                        out_vec.emplace_back(str);
+                }
+                else if (val.is_array())
+                {
+                    for (const auto& element : val)
+                    {
+                        if (element.is_string())
+                        {
+                            if (auto str = element.get<std::string>(); !str.empty())
+                                out_vec.emplace_back(str);
+                        }
+                    }
+                }
+            };
+
+            if (refs.is_object())
+            {
+                parse_ref_list(refs, "strings", item.m_StringRefs);
+                parse_ref_list(refs, "cvars", item.m_CvarRefs);
+                parse_ref_list(refs, "vtables", item.m_VTableRefs);
+                if (refs.contains("vtable"))
+                {
+                    const auto& val = refs["vtable"];
+                    if (val.is_string())
+                    {
+                        if (auto str = val.get<std::string>(); !str.empty())
+                            item.m_FromVTable = std::move(str);
+                    }
+                }
+            }
+            has_refs = !item.m_StringRefs.empty() || !item.m_CvarRefs.empty() || !item.m_VTableRefs.empty() || !item.m_FromVTable.empty();
         }
-        else if (platform_object->is_object())
+
+        if (auto platform_object = entry_object.find(platform_name); platform_object != entry_object.end() && !platform_object->is_null())
         {
-            if (auto signature_object = platform_object->find("signature"); signature_object != platform_object->end() && signature_object->is_string())
+            if (platform_object->is_string())
             {
-                item.m_Signature = signature_object->get<std::string>();
+                auto str         = platform_object->get<std::string>();
+                item.m_Signature = str;
             }
-            if (auto base_object = platform_object->find("base"); base_object != platform_object->end() && base_object->is_string())
+            else if (platform_object->is_object())
             {
-                item.m_Base = base_object->get<std::string>();
-            }
+                if (auto signature_object = platform_object->find("signature"); signature_object != platform_object->end() && signature_object->is_string())
+                {
+                    item.m_Signature = signature_object->get<std::string>();
+                }
+                if (auto base_object = platform_object->find("base"); base_object != platform_object->end() && base_object->is_string())
+                {
+                    item.m_Base = base_object->get<std::string>();
+                }
 
-            auto factory_object = platform_object->find("factory");
-            if (factory_object == platform_object->end())
-                continue;
-
-            if (factory_object->is_string())
-            {
-                item.m_Factory = factory_object->get<std::string>();
-            }
-            else if (factory_object->is_number())
-            {
-                item.m_Factory = "+" + factory_object->dump();
-
-                WARN("[%s] %s[\"%s\"][\"factory\"] is a number, this is not an expected behavior, parsing as string '%s'", path.filename().c_str(), key.c_str(), platform_name, item.m_Factory.value_or("").c_str());
-            }
-            else
-            {
-                FERROR("[%s] %s[\"%s\"][\"factory\"] must be a string", path.filename().c_str(), key.c_str(), platform_name);
+                auto factory_object = platform_object->find("factory");
+                if (factory_object != platform_object->end())
+                {
+                    if (factory_object->is_string())
+                    {
+                        item.m_Factory = factory_object->get<std::string>();
+                    }
+                    else if (factory_object->is_number())
+                    {
+                        item.m_Factory = "+" + factory_object->dump();
+                        WARN("[%s] %s[\"%s\"][\"factory\"] is a number, this is not an expected behavior, parsing as string '%s'", path.filename().c_str(), key.c_str(), platform_name.data(), item.m_Factory.c_str());
+                    }
+                    else
+                    {
+                        FERROR("[%s] %s[\"%s\"][\"factory\"] must be a string", path.filename().c_str(), key.c_str(), platform_name.data());
+                    }
+                }
             }
         }
 
-        if (!item.m_Module && !item.m_Base)
+        if (item.m_Module.empty() && item.m_Base.empty())
+        {
+            continue;
+        }
+
+        if (item.m_Signature.empty() && !has_refs)
         {
             continue;
         }
@@ -454,7 +799,7 @@ static void ParseAddresses(const std::filesystem::path& path, const char* platfo
     }
 }
 
-static void ParseData(const std::filesystem::path& path, const char* platform_name, const nlohmann::json& json, const std::string& section_name, std::unordered_map<std::string, GameDataOffset>& out)
+static void ParseData(const std::filesystem::path& path, std::string_view platform_name, const nlohmann::json& json, const std::string& section_name, std::unordered_map<std::string, GameDataOffset, StringHash, std::equal_to<>>& out)
 {
     auto section_object = json.find(section_name);
     if (section_object == json.end())
@@ -480,7 +825,7 @@ static void ParseData(const std::filesystem::path& path, const char* platform_na
 
         if (!platform_object->is_number_integer())
         {
-            WARN("[%s] %s[\"%s\"][\"%s\"] is not an integer, ignoring.", path.filename().generic_string().c_str(), section_name.c_str(), key.c_str(), platform_name);
+            WARN("[%s] %s[\"%s\"][\"%s\"] is not an integer, ignoring.", path.filename().generic_string().c_str(), section_name.c_str(), key.c_str(), platform_name.data());
             continue;
         }
 
@@ -490,7 +835,7 @@ static void ParseData(const std::filesystem::path& path, const char* platform_na
     }
 }
 
-static void ParsePatches(const std::filesystem::path& path, const char* platform_name, const nlohmann::json& json, std::unordered_map<std::string, GameDataPatch>& out)
+static void ParsePatches(const std::filesystem::path& path, std::string_view platform_name, const nlohmann::json& json, std::unordered_map<std::string, GameDataPatch, StringHash, std::equal_to<>>& out)
 {
     auto patches = json.find("Patches");
     if (patches == json.end())
@@ -528,7 +873,7 @@ static void ParsePatches(const std::filesystem::path& path, const char* platform
         auto patch_object = platform_object->find("patch");
         if (patch_object == platform_object->end())
         {
-            WARN("[%s] Patches[\"%s\"][\"%s\"] does not contain key \"patch\", ignoring", path.filename().generic_string().c_str(), key.c_str(), platform_name);
+            WARN("[%s] Patches[\"%s\"][\"%s\"] does not contain key \"patch\", ignoring", path.filename().generic_string().c_str(), key.c_str(), platform_name.data());
 
             continue;
         }
@@ -571,136 +916,117 @@ static void ParsePatches(const std::filesystem::path& path, const char* platform
 bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path& path, char* error, int maxlen)
 {
 #ifdef PLATFORM_WINDOWS
-    static constexpr auto platform_name = "windows";
+    static constexpr std::string_view platform_name = "windows";
 #else
-    static constexpr auto platform_name = "linux";
+    static constexpr std::string_view platform_name = "linux";
 #endif
-    auto file_name = path.filename().generic_string();
+    std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>> temp_addresses{};
+    std::unordered_map<std::string, GameDataOffset, StringHash, std::equal_to<>>  temp_offsets{};
+    std::unordered_map<std::string, GameDataOffset, StringHash, std::equal_to<>>  temp_vtables{};
+    std::unordered_map<std::string, GameDataPatch, StringHash, std::equal_to<>>   temp_patches{};
 
     try
     {
         auto json = nlohmann::json::parse(content, /*callback*/ nullptr, /*allow_exception*/ true, /*ignore_comments*/ true);
 
-        std::unordered_map<std::string, GameDataAddress> temp_addresses{};
         ParseAddresses(path, platform_name, json, temp_addresses);
-
-        std::unordered_map<std::string, GameDataOffset> temp_offsets{};
         ParseData(path, platform_name, json, "Offsets", temp_offsets);
-
-        std::unordered_map<std::string, GameDataOffset> temp_vtables{};
         ParseData(path, platform_name, json, "VFuncs", temp_vtables);
-
-        std::unordered_map<std::string, GameDataPatch> temp_patches{};
         ParsePatches(path, platform_name, json, temp_patches);
 
         if (temp_addresses.empty() && temp_offsets.empty() && temp_vtables.empty() && temp_patches.empty())
         {
-            snprintf(error, maxlen, "No valid gamedata (addresses, offsets, etc.) found for platform '%s' in %s.", platform_name, file_name.c_str());
+            snprintf(error, maxlen, "No valid gamedata (addresses, offsets, etc.) found for platform '%s' in %s.", platform_name.data(), path.filename().string().c_str());
             return false;
-        }
-
-        // merge check stage
-        for (const auto& key : temp_offsets | std::views::keys)
-        {
-            if (m_Offsets.contains(key))
-            {
-                snprintf(error, maxlen, "Offset '%s' already exists.", key.c_str());
-                return false;
-            }
-        }
-
-        for (const auto& key : temp_vtables | std::views::keys)
-        {
-            if (m_VFuncs.contains(key))
-            {
-                snprintf(error, maxlen, "VFunc '%s' already exists.", key.c_str());
-                return false;
-            }
-        }
-
-        for (const auto& key : temp_addresses | std::views::keys)
-        {
-            if (m_Addresses.contains(key))
-            {
-                snprintf(error, maxlen, "Address '%s' already exists.", key.c_str());
-                return false;
-            }
-        }
-
-        for (const auto& key : temp_patches | std::views::keys)
-        {
-            if (m_Patches.contains(key))
-            {
-                snprintf(error, maxlen, "Patch '%s' already exists.", key.c_str());
-                return false;
-            }
-        }
-
-        // validate address
-        std::vector<std::string> failed_addresses = {};
-#if defined(DEBUG)
-        std::vector<std::string> succeeded_addresses = {};
-#endif
-
-        for (const auto& item : temp_addresses)
-        {
-            std::uintptr_t address{};
-            if (!FindAddress(temp_addresses, item.first.c_str(), address))
-            {
-                failed_addresses.emplace_back(item.first);
-            }
-#if defined(DEBUG)
-            else
-            {
-                succeeded_addresses.emplace_back(item.first);
-            }
-#endif
-        }
-
-#if defined(DEBUG)
-        if (!succeeded_addresses.empty())
-        {
-            std::string formatted_addresses;
-            for (size_t i = 0; i < succeeded_addresses.size(); ++i)
-            {
-                formatted_addresses += " " + std::to_string(i + 1) + ": " + succeeded_addresses[i] + "\n";
-            }
-            FLOG("Address resolve succeeded:\n%s", formatted_addresses.c_str());
-            fflush(stdout);
-        }
-#endif
-
-        if (!failed_addresses.empty())
-        {
-            std::string formatted_addresses;
-            for (size_t i = 0; i < failed_addresses.size(); ++i)
-            {
-                formatted_addresses += " " + std::to_string(i + 1) + ": " + failed_addresses[i] + "\n";
-            }
-
-            FERROR("Address resolve failed:\n%s", formatted_addresses.c_str());
-            fflush(stdout);
-
-            snprintf(error, maxlen, "Total %d sigs resolve failed.\n", static_cast<int>(failed_addresses.size()));
-            return false;
-        }
-
-        m_Offsets.merge(temp_offsets);
-        m_VFuncs.merge(temp_vtables);
-        m_Addresses.merge(temp_addresses);
-
-        for (auto& [name, patch] : temp_patches)
-        {
-            if (!InitPatch(name, &patch))
-                return false;
-
-            m_Patches[name] = std::move(patch);
         }
     }
-    catch (std::exception& ex)
+    catch (const std::exception& ex)
     {
-        FERROR("Error when parsing json %s: %s", file_name.c_str(), ex.what());
+        FERROR("Error when parsing json %s: %s", path.filename().c_str(), ex.what());
         return false;
+    }
+
+    auto check_duplicates = [&](const auto& temp_map, const auto& main_map, const char* type_name) -> bool {
+        for (const auto& [key, _] : temp_map)
+        {
+            if (main_map.contains(key))
+            {
+                snprintf(error, maxlen, "%s '%s' already exists.", type_name, key.c_str());
+                return true;
+            }
+        }
+        return false;
+    };
+
+    if (check_duplicates(temp_offsets, m_Offsets, "Offset")) return false;
+    if (check_duplicates(temp_vtables, m_VFuncs, "VFunc")) return false;
+    if (check_duplicates(temp_addresses, m_Addresses, "Address")) return false;
+    if (check_duplicates(temp_patches, m_Patches, "Patch")) return false;
+
+    // validate address
+    std::vector<std::string> failed_addresses = {};
+#ifdef DEBUG
+    std::vector<std::string> succeeded_addresses = {};
+#endif
+    failed_addresses.reserve(temp_addresses.size());
+
+    for (const auto& name : temp_addresses | std::views::keys)
+    {
+        std::uintptr_t address{};
+        if (!FindAddress(temp_addresses, name, address))
+        {
+            failed_addresses.emplace_back(name);
+        }
+#ifdef DEBUG
+        else
+        {
+            succeeded_addresses.emplace_back(name);
+        }
+#endif
+    }
+
+    auto format_address_list = [](const std::vector<std::string>& list) -> std::string {
+        std::string result;
+        if (list.empty()) return result;
+
+        result.reserve(list.size() * 40);
+
+        for (size_t i = 0; i < list.size(); ++i)
+        {
+            result.append(" ").append(std::to_string(i + 1)).append(": ").append(list[i]).append("\n");
+        }
+        return result;
+    };
+
+#ifdef DEBUG
+    if (!succeeded_addresses.empty())
+    {
+        std::string msg = format_address_list(succeeded_addresses);
+        FLOG("Address resolve succeeded:\n%s", msg.c_str());
+        fflush(stdout);
+    }
+#endif
+
+    if (!failed_addresses.empty()) [[unlikely]]
+    {
+        std::string msg = format_address_list(failed_addresses);
+        FERROR("Address resolve failed:\n%s", msg.c_str());
+        fflush(stdout);
+
+        snprintf(error, maxlen, "Total %zu sigs resolve failed.\n", failed_addresses.size());
+        return false;
+    }
+
+    m_Offsets.merge(temp_offsets);
+    m_VFuncs.merge(temp_vtables);
+    m_Addresses.merge(temp_addresses);
+
+    for (auto& [name, patch] : temp_patches)
+    {
+        if (!InitPatch(name, &patch))
+            return false;
+
+        m_Patches[name] = std::move(patch);
     }
 
     return true;
@@ -709,12 +1035,7 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 bool GameData::Register(const char* name)
 {
     char error[256];
-    if (!Register(name, error, sizeof(error)))
-    {
-        FERROR("%s: %s", name, error);
-        return false;
-    }
-    return true;
+    return Register(name, error, sizeof(error));
 }
 
 void GameData::Unregister(const char* name)

@@ -25,120 +25,124 @@ using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
-namespace Sharp.Shared.Managers;
+namespace Sharp.Shared.Managers;    
 
 public interface IClientManager
 {
     public delegate ECommandAction DelegateClientCommand(IGameClient client, StringCommand command);
 
     /// <summary>
-    ///     添加ClientListener以监听事件
+    ///     Add <see cref="IClientListener"/> to listen for events
     /// </summary>
     void InstallClientListener(IClientListener listener);
 
     /// <summary>
-    ///     移除ClientListener
+    ///     Remove <see cref="IClientListener"/>
     /// </summary>
     void RemoveClientListener(IClientListener listener);
 
     /// <summary>
-    ///     监听IClient发送的StringCommand (Virtual Command) <br />
-    ///     会自动注册ms_开头
+    ///     Listen for StringCommand (Virtual Command) sent by <see cref="IGameClient"/> <br />
+    ///     Automatically registers with ms_ prefix
     /// </summary>
     void InstallCommandCallback(string command, DelegateClientCommand callback);
 
     /// <summary>
-    ///     移除监听IClient发送的StringCommand (Virtual Command) <br />
-    ///     会自动注册ms_开头
+    ///     Remove listener for StringCommand (Virtual Command) sent by <see cref="IGameClient"/> <br />
+    ///     Automatically registers with ms_ prefix
     /// </summary>
     void RemoveCommandCallback(string command, DelegateClientCommand callback);
 
     /// <summary>
-    ///     监听IClient发送的ConCommand
+    ///     Listen for ConCommand sent by <see cref="IGameClient"/>
     /// </summary>
     void InstallCommandListener(string command, DelegateClientCommand callback);
 
     /// <summary>
-    ///     移除监听IClient发送的ConCommand
+    ///     Remove listener for ConCommand sent by <see cref="IGameClient"/>
     /// </summary>
     void RemoveCommandListener(string command, DelegateClientCommand callback);
 
     /// <summary>
-    ///     通过Slot查找某个IClient
+    ///     Find an <see cref="IGameClient"/> by Slot
     /// </summary>
     IGameClient? GetGameClient(PlayerSlot slot);
 
     /// <summary>
-    ///     通过UserId查找某个IClient
+    ///     Find an <see cref="IGameClient"/> by UserId
     /// </summary>
     IGameClient? GetGameClient(UserID userId);
 
     /// <summary>
-    ///     通过SteamId查找某个IClient
+    ///     Find an <see cref="IGameClient"/> by SteamId
     /// </summary>
     IGameClient? GetGameClient(SteamID steamId);
 
     /// <summary>
-    ///     获取已建立链接的IClient
+    ///     Get connected <see cref="IGameClient"/>s
     /// </summary>
     IEnumerable<IGameClient> GetGameClients(bool inGame = false);
 
     /// <summary>
-    ///     获取已建立链接的IClient
+    ///     Get connected <see cref="IGameClient"/>s
     /// </summary>
     List<IGameClient> GetGameClientList(bool inGame = false);
 
     /// <summary>
-    ///     获取Client池的IClient数量
+    ///     Get the number of <see cref="IGameClient"/>s in the client pool
     /// </summary>
     int GetClientCount(bool inGame = false);
 
     /// <summary>
-    ///     把某个玩家立即踢出游戏
+    ///     Immediately kick a player from the game
     /// </summary>
-    /// <param name="client">IClient</param>
-    /// <param name="internalReason">只在游戏内部Log中记录</param>
-    /// <param name="msgId">踢人的理由会直接根据ID展示给IClient</param>
+    /// <param name="client"><see cref="IGameClient"/></param>
+    /// <param name="internalReason">Only recorded in internal game log</param>
+    /// <param name="msgId">The kick reason will be displayed to the <see cref="IGameClient"/> based on ID</param>
     void KickClient(IGameClient    client,
         string                     internalReason,
         NetworkDisconnectionReason msgId = NetworkDisconnectionReason.Invalid);
 
     /// <summary>
-    ///     远程查询客户ConVar
+    ///     Query the value of a given cvar from the client
     /// </summary>
-    /// <param name="client">IClient</param>
-    /// <param name="name">ConVar名</param>
+    /// <param name="client"><see cref="IGameClient"/></param>
+    /// <param name="name">ConVar name</param>
     /// <param name="callback">Callback</param>
     /// <returns>Cookie</returns>
+    /// <remarks>
+    ///     <para>Can query any cvar that does not have flag <see cref="ConVarFlags.ServerCannotQuery"/> set.</para>
+    ///     <para>Note that client-side values can be manipulated by cheats/hacks and should not be trusted for security-critical decisions.</para>
+    /// </remarks>
     int QueryConVar(IGameClient client, string name, Action<IGameClient, QueryConVarValueStatus, string, string> callback);
 
     /// <summary>
-    ///     清空Admins并重新触发OnAdminReload
+    ///     Clear Admins and re-trigger OnAdminReload
     /// </summary>
     void ReloadAdmins();
 
     /// <summary>
-    ///     通过SteamID查找Admin
+    ///     Find Admin by SteamID
     /// </summary>
     IAdmin? FindAdmin(SteamID identity);
 
     /// <summary>
-    ///     通过名字查找Admin
+    ///     Find Admin by name
     /// </summary>
     IAdmin? FindAdmin(string name);
 
     /// <summary>
-    ///     创建Admin
+    ///     Create Admin
     /// </summary>
     IAdmin CreateAdmin(SteamID identity, string name, byte immunity = 0);
 
     /// <summary>
-    ///     删除Admin
+    ///     Delete Admin
     /// </summary>
     void DeleteAdmin(IAdmin admin);
 
     /// <summary>
-    ///     获取所有的Admins
+    ///     Get all Admins
     /// </summary>
     /// <returns></returns>
     IReadOnlyCollection<IAdmin> GetAdmins();

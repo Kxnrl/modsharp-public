@@ -69,6 +69,7 @@ extern class IGameTypes*                      g_pGameTypes;
 extern class ISteamApiProxy*                  g_pSteamApiProxy;
 extern class IScriptVM*                       g_pScriptVM;
 extern class INetworkStringTableContainer*    g_pStringTableContainer;
+extern class CSharpNetworkStringTableHelper*  g_pNetworkStringTableHelper;
 extern class CSharpKeyValuesHelper*           g_pKeyValuesHelper;
 extern class CSharpKeyValues3Helper*          g_pKeyValues3Helper;
 extern class IResourceSystem*                 g_pResourceSystem;

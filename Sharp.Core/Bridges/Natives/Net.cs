@@ -24,7 +24,9 @@ namespace Sharp.Core.Bridges.Natives;
 
 public static unsafe partial class Net
 {
-    public static partial bool SendNetMessage(RecipientFilter* filter, string name, byte* pData, int size);
+    public static partial bool SendNetMessage(RecipientFilter* filter, nint handle, byte* pData, int size);
+
+    public static partial nint GetNetMessageHandle(string name);
 
     public static partial void HookNetMessage(ProtobufNetMessageType msgId);
 

@@ -22,67 +22,67 @@ namespace Sharp.Shared.Enums;
 public enum HitGroupType : uint
 {
     /// <summary>
-    ///     无效
+    ///     Invalid
     /// </summary>
     Invalid = uint.MaxValue,
 
     /// <summary>
-    ///     通用
+    ///     Generic
     /// </summary>
     Generic = 0,
 
     /// <summary>
-    ///     脑瓜子
+    ///     Head
     /// </summary>
     Head,
 
     /// <summary>
-    ///     胸
+    ///     Chest
     /// </summary>
     Chest,
 
     /// <summary>
-    ///     肚子
+    ///     Stomach
     /// </summary>
     Stomach,
 
     /// <summary>
-    ///     左手
+    ///     Left arm
     /// </summary>
     LeftArm,
 
     /// <summary>
-    ///     右手
+    ///     Right arm
     /// </summary>
     RightArm,
 
     /// <summary>
-    ///     左腿
+    ///     Left leg
     /// </summary>
     LeftLeg,
 
     /// <summary>
-    ///     右腿
+    ///     Right leg
     /// </summary>
     RightLeg,
 
     /// <summary>
-    ///     脖子
+    ///     Neck
     /// </summary>
     Neck,
 
     /// <summary>
-    ///     不知道是哪里
+    ///     Unknown location
     /// </summary>
     Unknown9,
 
     /// <summary>
-    ///     不知道什么J8地方
+    ///     Gear/equipment
     /// </summary>
     Gear,
 
     /// <summary>
-    ///     特殊部位
+    ///     Special area
     /// </summary>
     Special,
 }

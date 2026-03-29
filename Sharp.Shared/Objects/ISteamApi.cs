@@ -25,7 +25,7 @@ namespace Sharp.Shared.Objects;
 public interface ISteamApi
 {
     /// <summary>
-    ///     服务是否可用
+    ///     Check if Steam service is available
     /// </summary>
     bool IsAvailable();
 
@@ -36,17 +36,17 @@ public interface ISteamApi
     void SetGameDescription(string description);
 
     /// <summary>
-    ///     LogOn?
+    ///     Check if logged into Steam
     /// </summary>
     bool BLoggedOn();
 
     /// <summary>
-    ///     Vac
+    ///     Check if server is VAC secured
     /// </summary>
     bool BSecure();
 
     /// <summary>
-    ///     SteamId
+    ///     Get server Steam ID
     /// </summary>
     SteamID GetSteamId();
 
@@ -99,28 +99,28 @@ public interface ISteamApi
     UserHasLicenseForApp UserHasLicenseForApp(SteamID steamId, uint appId);
 
     /// <summary>
-    ///     创意工坊物品状态
+    ///     Get Steam Workshop item state
     /// </summary>
     WorkshopItemState GetItemState(ulong sharedFileId);
 
     /// <summary>
-    ///     获取下载的状态
+    ///     Get download progress information
     /// </summary>
     bool GetItemDownloadInfo(ulong sharedFileId, out ulong bytesDownloaded, out ulong bytesTotal);
 
     /// <summary>
-    ///     下载创意工坊的文件
+    ///     Download Steam Workshop item
     /// </summary>
     /// <returns></returns>
     bool DownloadItem(ulong sharedFileId, bool highPriority);
 
     /// <summary>
-    ///     暂停下载
+    ///     Suspend or resume downloads
     /// </summary>
     void SuspendDownloads(bool suspend);
 
     /// <summary>
-    ///     获取Master上的公网Ip
+    ///     Get public IP address from master server
     /// </summary>
     /// <returns></returns>
     uint GetPublicIP();

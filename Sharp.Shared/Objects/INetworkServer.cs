@@ -28,51 +28,51 @@ namespace Sharp.Shared.Objects;
 public interface INetworkServer : INativeObject
 {
     /// <summary>
-    ///     获取Client池的IClient数量
+    ///     Get total number of clients in pool
     /// </summary>
     int GetClientCount();
 
     /// <summary>
-    ///     获取Client池的IClient数量
+    ///     Get number of clients in pool with filters
     ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
     /// </summary>
     int GetClientCount(bool connected, bool inGame = false);
 
     /// <summary>
-    ///     通过PlayerSlot获取IClient
+    ///     Get client by player slot
     /// </summary>
     IGameClient? GetGameClient(PlayerSlot slot);
 
     /// <summary>
-    ///     通过UserId获取IClient
+    ///     Get client by user ID
     /// </summary>
     IGameClient? GetGameClient(UserID userId);
 
     /// <summary>
-    ///     通过SteamId获取IClient
+    ///     Get client by Steam ID
     /// </summary>
     IGameClient? GetGameClient(SteamID steamId);
 
     /// <summary>
-    ///     获取IClient池
+    ///     Get all clients from pool
     /// </summary>
     [Obsolete("Use overload GetGameClients(bool, bool) instead, will be removed in 2.2")]
     IReadOnlyList<IGameClient> GetGameClients();
 
     /// <summary>
-    ///     获取IClient List <br />
+    ///     Get filtered list of clients <br />
     ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
     /// </summary>
     List<IGameClient> GetGameClients(bool connected, bool inGame = false);
 
     /// <summary>
-    ///     获取sv->m_vecClients
+    ///     Retrieves a pointer to the internal server client list container.
     /// </summary>
     /// <returns></returns>
     unsafe CUtlVector<nint>* GetGameClientPointers();
 
     /// <summary>
-    ///     获取游戏内Client数量
+    ///     Get number of in-game clients
     /// </summary>
     [Obsolete("Use GetClientCount(bool, bool) instead, will be removed in 2.2")]
     int GetGameClientCount(bool fullyInGame = false);

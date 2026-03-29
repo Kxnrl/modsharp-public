@@ -22,83 +22,83 @@ namespace Sharp.Shared;
 public interface IGameData
 {
     /// <summary>
-    ///     搜索 Offset
+    ///     Try to get offset by key
     /// </summary>
-    /// <param name="name">Key值</param>
-    /// <param name="offset">搜索结果</param>
-    /// <returns>是否搜索成功</returns>
+    /// <param name="name">Key name</param>
+    /// <param name="offset">Found offset value</param>
+    /// <returns>True if found, false otherwise</returns>
     bool GetOffset(string name, out int offset);
 
     /// <summary>
-    ///     搜索 Address
+    ///     Try to get address by key
     /// </summary>
-    /// <param name="name">Key值</param>
-    /// <param name="address">搜索结果</param>
-    /// <returns>是否搜索成功</returns>
+    /// <param name="name">Key name</param>
+    /// <param name="address">Found address value</param>
+    /// <returns>True if found, false otherwise</returns>
     bool GetAddress(string name, out nint address);
 
     /// <summary>
-    ///     搜索VTable Function Index
+    ///     Try to get virtual function index by key
     /// </summary>
-    /// <param name="name">Key值</param>
-    /// <param name="index">搜索结果</param>
-    /// <returns>是否搜索成功</returns>
+    /// <param name="name">Key name</param>
+    /// <param name="index">Found index value</param>
+    /// <returns>True if found, false otherwise</returns>
     bool GetVFuncIndex(string name, out int index);
 
     /// <summary>
-    ///     搜索 Offset 失败时抛出异常
+    ///     Get offset by key, throws exception if not found
     /// </summary>
-    /// <param name="name">Key值</param>
-    /// <returns>Offset值</returns>
+    /// <param name="name">Key name</param>
+    /// <returns>Offset value</returns>
     int GetOffset(string name);
 
     /// <summary>
-    ///     自动合并为 $"{classname}::{name}" 并搜索 Offset
+    ///     Get offset using class::member format
     /// </summary>
-    /// <param name="classname">类名</param>
-    /// <param name="name">成员名</param>
-    /// <returns>搜索结果</returns>
+    /// <param name="classname">Class name</param>
+    /// <param name="name">Member name</param>
+    /// <returns>Offset value</returns>
     int GetOffset(string classname, string name);
 
     /// <summary>
-    ///     搜索 Address 失败时抛出异常
+    ///     Get address by key, throws exception if not found
     /// </summary>
-    /// <param name="name">Key值</param>
-    /// <returns>Address值</returns>
+    /// <param name="name">Key name</param>
+    /// <returns>Address value</returns>
     nint GetAddress(string name);
 
     /// <summary>
-    ///     自动合并为 $"{classname}::{name}" 并搜索 Address
+    ///     Get address using class::member format
     /// </summary>
-    /// <param name="classname">类名</param>
-    /// <param name="name">成员名</param>
-    /// <returns>搜索结果</returns>
+    /// <param name="classname">Class name</param>
+    /// <param name="name">Member name</param>
+    /// <returns>Address value</returns>
     nint GetAddress(string classname, string name);
 
     /// <summary>
-    ///     搜索 VTable Function Index
+    ///     Get virtual function index by key
     /// </summary>
     /// <param name="name"></param>
-    /// <returns>Index</returns>
+    /// <returns>Index value</returns>
     int GetVFuncIndex(string name);
 
     /// <summary>
-    ///     自动合并为 $"{classname}::{name}" 并搜索 VTable Function Index
+    ///     Get virtual function index using class::member format
     /// </summary>
-    /// <param name="classname">类名</param>
-    /// <param name="name">成员名</param>
-    /// <returns>搜索结果</returns>
+    /// <param name="classname">Class name</param>
+    /// <param name="name">Member name</param>
+    /// <returns>Index value</returns>
     int GetVFuncIndex(string classname, string name);
 
     /// <summary>
-    ///     注册 GameData 文件
+    ///     Register GameData file
     /// </summary>
-    /// <param name="path">文件路径 (自动搜索 GameData 目录)</param>
+    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
     void Register(string path);
 
     /// <summary>
-    ///     卸载 GameData 文件
+    ///     Unregister GameData file
     /// </summary>
-    /// <param name="path">文件路径 (自动搜索 GameData 目录)</param>
+    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
     void Unregister(string path);
 }

@@ -17,9 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.HookParams;
 
 public interface IPlayerEquipWeaponForwardParams : IFunctionParams, IPlayerWeaponWithServiceFunctionParams
 {
+    [Obsolete("DO NOT USE THIS, IT IS GARBAGE VALUE FROM LAST RAX REGISTER. WILL BE REMOVED IN THE FUTURE", true)]
     long EquipmentValue { get; }
 }

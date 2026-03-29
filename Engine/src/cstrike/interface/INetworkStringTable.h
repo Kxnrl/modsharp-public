@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2025 Kxnrl. All Rights Reserved.
  *
@@ -24,10 +24,7 @@
 
 #include <cstdint>
 
-#define INTERFACEVERSION_SERVERSTRINGTABLE "Source2EngineToServerStringTable001"
-
 class INetworkStringTable;
-class INetworkStringTableContainer;
 class CNetworkStringTableItem;
 
 class INetworkStringTableContainer : public IAppSystem
@@ -49,7 +46,16 @@ public:
     virtual void CreateDictionary(const char* pchMapName)                                                = 0;
 };
 
-class INetworkStringDict;
+struct StringTableUserData
+{
+    void*   m_pData;
+    int32_t m_nBytes;
+
+    explicit StringTableUserData(void* data = nullptr, int32_t bytes = 0) :
+        m_pData(data), m_nBytes(bytes)
+    {
+    }
+};
 
 class INetworkStringTable
 {
@@ -66,14 +72,42 @@ private:
     virtual void Method_006() = 0;
 
 public:
-    virtual int32_t     AddString(bool bIsServer, const char* value, const void* unk1 = nullptr)        = 0;
-    virtual const char* GetString(int32_t index) const                                                  = 0;
-    virtual void        Method01() const                                                                = 0;
-    virtual void*       Method02() const                                                                = 0; 
-    virtual int32_t     FindStringIndex(const char* value) const                                        = 0;
+    virtual int32_t              AddString(bool bIsServer, const char* value, const StringTableUserData* data)         = 0;
+    virtual const char*          GetString(int32_t index) const                                                        = 0;
+    virtual void                 SetStringUserData(int32_t index, const StringTableUserData* data, bool forceOverride) = 0;
+    virtual StringTableUserData* GetStringUserData(int32_t index) const                                                = 0;
+    virtual int32_t              FindStringIndex(const char* value) const                                              = 0;
+
+private:
+    virtual void Method_012() = 0;
+
+public:
+    virtual void SetAllowClientSideAddString(bool state) = 0;
 };
 
 using CNetworkStringTableContainer = INetworkStringTableContainer;
 using CNetworkStringTable          = INetworkStringTable;
+
+class CSharpNetworkStringTableHelper
+{
+public:
+    virtual ~CSharpNetworkStringTableHelper() = default;
+    virtual const char* GetName(INetworkStringTable* pTable) const { return pTable->GetTableName(); }
+    virtual int32_t     GetId(INetworkStringTable* pTable) const { return pTable->GetTableId(); }
+    virtual int64_t     GetStringCount(INetworkStringTable* pTable) const { return pTable->GetStringCount(); }
+    virtual int32_t     AddString(INetworkStringTable* pTable, bool bIsServer, const char* value, void* data, int32_t size)
+    {
+        const StringTableUserData vd(data, size);
+        return pTable->AddString(bIsServer, value, &vd);
+    }
+    virtual const char*          GetString(INetworkStringTable* pTable, int32_t index) const { return pTable->GetString(index); }
+    virtual StringTableUserData* GetStringUserData(INetworkStringTable* pTable, int32_t index) const { return pTable->GetStringUserData(index); }
+    virtual void                 SetStringUserData(INetworkStringTable* pTable, int32_t index, void* data, int32_t size)
+    {
+        const StringTableUserData vd(data, size);
+        pTable->SetStringUserData(index, &vd, false);
+    }
+    virtual int32_t FindStringIndex(INetworkStringTable* pTable, const char* value) const { return pTable->FindStringIndex(value); }
+};
 
 #endif

@@ -22,17 +22,17 @@ namespace Sharp.Shared.Enums;
 public enum ECommandAction : byte
 {
     /// <summary>
-    ///     默认行为
+    ///     Default behavior
     /// </summary>
     Skipped,
 
     /// <summary>
-    ///     继续执行
+    ///     Continue executing ExecuteStringCommand. If it is used in <see cref="ClientListener.OnClientSayCommand"/>, no message will be sent
     /// </summary>
     Handled,
 
     /// <summary>
-    ///     跳过执行
+    ///     Skip executing ExecuteStringCommand. If it is used in <see cref="ClientListener.OnClientSayCommand"/>, no message will be sent
     /// </summary>
     Stopped,
 };

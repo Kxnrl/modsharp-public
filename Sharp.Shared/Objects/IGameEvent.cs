@@ -30,146 +30,194 @@ namespace Sharp.Shared.Objects;
 public interface IGameEvent : INativeObject
 {
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to string value
     /// </summary>
     void SetString(string key, string value);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to float value
     /// </summary>
     void SetFloat(string key, float value);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to integer value
     /// </summary>
     void SetInt(string key, int value);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to 64-bit unsigned integer value
     /// </summary>
     void SetUInt64(string key, ulong value);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to player controller
     /// </summary>
     void SetPlayer(string key, IPlayerController controller);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to player pawn
     /// </summary>
     void SetPlayer(string key, IPlayerPawn pawn);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to player by slot
     /// </summary>
     void SetPlayer(string key, int slot);
 
     /// <summary>
-    ///     设置事件字段的值
+    ///     Set event field to boolean value
     /// </summary>
     void SetBool(string key, bool value);
 
     /// <summary>
-    ///     获取事件字段的值
+    ///     Get event field as boolean value
     /// </summary>
     bool GetBool(string key);
 
     /// <summary>
-    ///     获取事件字段的值
+    ///     Get event field as string value
     /// </summary>
     string GetString(string key, string defaultValue = "");
 
     /// <summary>
-    ///     获取事件字段的值
+    ///     Get event field as float value
     /// </summary>
     float GetFloat(string key, float defaultValue = 0.0f);
 
     /// <summary>
-    ///     获取事件字段的值
+    ///     Get event field as integer value
     /// </summary>
     int GetInt(string key, int defaultValue = 0);
 
     /// <summary>
-    ///     获取事件字段的值
+    ///     Get event field as 64-bit unsigned integer value
     /// </summary>
     ulong GetUInt64(string key, ulong defaultValue = 0);
 
     /// <summary>
-    ///     获取事件字段的PlayerController
+    ///     Get event field as PlayerController
     /// </summary>
     IPlayerController? GetPlayerController(string key);
 
     /// <summary>
-    ///     获取事件字段的PlayerPawn
+    ///     Get event field as PlayerPawn
     ///     <remarks>
-    ///         <br />若实体本身为Observer这里也会返回null
+    ///         Returns null if entity is an Observer
     ///     </remarks>
     /// </summary>
     IPlayerPawn? GetPlayerPawn(string key);
 
     /// <summary>
-    ///     与游戏原本行为相符, 取BasePlayerPawn
+    ///     Get BasePlayerPawn, matches original game behavior
     /// </summary>
     IBasePlayerPawn? GetBasePlayerPawn(string key);
 
     /// <summary>
-    ///     获取事件的名称
+    ///     Get event name
     /// </summary>
     /// <returns></returns>
     string GetName();
 
     /// <summary>
-    ///     发射事件 <br />
-    ///     <remarks>在非自主创建的Event上调用时会直接抛出异常</remarks>
+    ///     Fire the event.
+    ///     <para>
+    ///         If <paramref name="serverOnly"/> is <c>false</c>, the event will be broadcast to all clients.
+    ///     </para>
     /// </summary>
-    /// <param name="serverOnly">不发送给客户端</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will be automatically disposed after firing the event.
+    ///         Do not manually call <see cref="Dispose"/> if you use this method.
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="serverOnly">If set to <c>true</c>, the event is processed only on the server and not sent to clients.</param>
     void Fire(bool serverOnly);
 
     /// <summary>
-    ///     发射事件给客户端 <br />
-    ///     <remarks>在非自主创建的Event上调用时会直接抛出异常</remarks>
+    ///     Fire the event to a specific client identified by their slot index.
     /// </summary>
-    /// <param name="slot">IGameClient index</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on module unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="slot">The client's slot index (0-based).</param>
     void FireToClient(int slot);
 
     /// <summary>
-    ///     发射事件给客户端 <br />
-    ///     <remarks>在非自主创建的Event上调用时会直接抛出异常</remarks>
+    ///     Fire the event to a specific client.
     /// </summary>
-    /// <param name="client">IGameClient</param>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on module unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
+    /// <param name="client">The target <see cref="IGameClient"/>.</param>
     void FireToClient(IGameClient client);
 
     /// <summary>
-    ///     发射事件给全体客户端<br />
-    ///     <remarks>在非自主创建的Event上调用时会直接抛出异常</remarks>
+    ///     Fire the event to all connected clients.
     /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
+    ///         You can cache the event object, modify its parameters, and re-fire it as needed.
+    ///         Ensure you manually call <see cref="Dispose"/> when the event is no longer needed (e.g., on plugin unload).
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
     void FireToClients();
 
     /// <summary>
-    ///     销毁事件 <br />
-    ///     <remarks>在非自主创建的Event上调用时会直接抛出异常</remarks>
-    ///     <br />
-    ///     <remarks>在已经被发射的事件上调用时会立即崩溃</remarks>
+    ///     Manually dispose of the event object.
     /// </summary>
+    /// <remarks>
+    ///     <para>
+    ///         This should only be called for custom-created events that were fired using
+    ///         <see cref="FireToClient(int)"/>, <see cref="FireToClient(IGameClient)"/>, or <see cref="FireToClients"/>.
+    ///     </para>
+    ///     <para>
+    ///         <b>WARNING:</b> Calling this method on an event that has already been disposed or fired via <see cref="Fire(bool)"/>
+    ///         may cause the server to crash.
+    ///     </para>
+    ///     <para>
+    ///         Throws an exception if called on a non-custom created event.
+    ///     </para>
+    /// </remarks>
     void Dispose();
 
     /// <summary>
-    ///     事件名
+    ///     Event name
     /// </summary>
     string Name { get; }
 
     /// <summary>
-    ///     是否允许修改值/发射
+    ///     Whether event can be modified or fired
     /// </summary>
     bool Editable { get; }
 
     /// <summary>
-    ///     使用索引获取值
+    ///     Set value using indexer
     /// </summary>
     object this[string key] { set; }
 
     /// <summary>
-    ///     获取事件的值并转换为Enum
+    ///     Get event value and convert to enum
     /// </summary>
     T Get<T>(string key, int defaultValue = 0) where T : Enum;
 }

@@ -143,6 +143,7 @@ jobs:
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/InputManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -152,12 +153,14 @@ jobs:
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.InputManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
         run: |
           cp -r ./.asset/configs  ./build/sharp
           cp -r ./.asset/gamedata ./build/sharp
+          cp -r ./.asset/locales ./build/sharp
 
       - name: Upload ModSharp artifact
         uses: actions/upload-artifact@v4
@@ -184,19 +187,22 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest
+    env:
+      CC: clang-21
+      CXX: clang++-21
     steps:
-      - name: Install Linux packages
+      - name: Install Clang 21
         run: |
-          sudo apt update
-          sudo apt install -yq --no-install-recommends g++-multilib build-essential
-
-      - name: Use GCC14
-        run: |
-          PATH="/usr/lib/gcc-14/bin:$PATH"
-
-      - name: Install Clang16
-        run: |
-          apt update && apt install -y clang-16
+          apt update
+          apt install -y wget gnupg
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          apt update
+          apt install -y clang-21
+          echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
+          echo "LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
 
       - name: Set Timezone
         uses: szenius/set-timezone@v2.0
@@ -243,13 +249,21 @@ jobs:
           mkdir ./build/sharp/configs
           mkdir ./build/sharp/gamedata
 
+      # Build Loader
       - name: Build Loader
+        working-directory: Loader
         run: |
-          cd Loader && cmake -P cmkr.cmake && cmake -B build -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cmake -P cmkr.cmake
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -- -j$(nproc)
 
+      # Build Engine
       - name: Build Engine
+        working-directory: Engine
         run: |
-          cd Engine && cmake -P cmkr.cmake && cmake -B build  -DCMAKE_C_COMPILER=clang-16 -DCMAKE_CXX_COMPILER=clang++-16 -DCMAKE_BUILD_TYPE=Release && cmake --build build -- -j$(nproc)
+          cmake -P cmkr.cmake
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -- -j$(nproc)
 
       - name: Build Sharp.Core
         shell: bash
@@ -276,6 +290,7 @@ jobs:
           dotnet publish Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/EntityEnhancements -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/LocalizerManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/InputManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -285,12 +300,14 @@ jobs:
           dotnet publish Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.ClientPreferences.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.LocalizerManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.InputManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
         run: |
           cp -r ./.asset/configs  ./build/sharp
           cp -r ./.asset/gamedata ./build/sharp
+          cp -r ./.asset/locales ./build/sharp
           cp -r ./Engine/build/libmodsharp.so ./build/sharp/bin/libmodsharp.so
           cp -r ./Loader/build/libserver.so ./build/sharp/bin/linuxsteamrt64/libserver.so
 
@@ -350,6 +367,7 @@ jobs:
           dotnet pack Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet pack Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Publish
         shell: bash
@@ -404,7 +422,7 @@ jobs:
           pushd build/linux-extensions && zip -r ../../ModSharp-git${{env.GITCOMMIT}}-linux-extensions.zip * && popd
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}

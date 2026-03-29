@@ -21,9 +21,11 @@
 #define MS_ROOT_ADDRESS_H
 
 #include "definitions.h"
+#include "cstrike/type/CUtlVector.h"
 
 #include <cstdint>
 
+struct TeamRewardInfo;
 struct CSosFieldData;
 struct CNetworkStateChangedInfo;
 class CModule;
@@ -173,7 +175,7 @@ using UTIL_DispatchParticleEffectFilterPosition_t = int32_t (*)(const char*,
                                                                 float /*angle_z*/);
 #endif
 using UTIL_DispatchParticleEffectFilterAttachment_t    = int32_t (*)(const char*, uint32_t, CBaseEntity*, uint8_t, uint32_t, bool, int, IRecipientFilter*, bool);
-using CCSGameRules_TerminateRound_t                    = void (*)(IGameRules*, float, uint32_t, void*, uint32_t);
+using CCSGameRules_TerminateRound_t                    = void (*)(IGameRules*, float, uint32_t, CUtlVector<TeamRewardInfo>*);
 using CCSGameRules_PlayerCanHearChat_t                 = bool (*)(IGameRules*, CCSPlayerController*, CCSPlayerController*, bool);
 using CGameEntitySystem_FindEntityByIndex_t            = CBaseEntity* (*)(CGameEntitySystem*, int32_t index);
 using CGameEntitySystem_AllocPooledString_t            = void* (*)(CUtlSymbolLarge*, const char*);

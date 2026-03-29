@@ -50,7 +50,7 @@ public enum ObserverMode
     Roaming,
 
     /// <summary>
-    ///     不知道这是什么
+    ///     No idea
     /// </summary>
     Directed,
 }
