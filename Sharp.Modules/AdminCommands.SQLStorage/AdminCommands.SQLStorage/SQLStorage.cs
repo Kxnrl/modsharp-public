@@ -77,7 +77,7 @@ public sealed class SqlStorage : IModSharpModule
 
     public void Shutdown()
     {
-        ((StorageServiceImpl)_impl).Shutdown();
+        ((StorageServiceImpl) _impl).Shutdown();
     }
 
     private static string ResolveConnectionString(IConfiguration configuration)
@@ -88,7 +88,8 @@ public sealed class SqlStorage : IModSharpModule
         if (string.IsNullOrWhiteSpace(connectionString))
         {
             throw new
-                KeyNotFoundException($"Missing '{ModuleConnectionStringKey}' or '{ConnectionStringKey}' in connection strings.");
+                KeyNotFoundException(
+                    $"Missing '{ModuleConnectionStringKey}' or '{ConnectionStringKey}' in connection strings.");
         }
 
         return connectionString;

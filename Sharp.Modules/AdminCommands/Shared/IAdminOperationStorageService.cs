@@ -60,5 +60,3 @@ public interface IAdminOperationStorageService
     /// </summary>
     Task<bool> HasActiveAsync(SteamID steamId, AdminOperationType type);
 }
-
-

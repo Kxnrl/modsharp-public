@@ -60,9 +60,9 @@ internal sealed class SteamIdDataConvert : ISugarDataConverter
             return default!;
         }
 
-        var value = (ulong)dataRecord.GetValue(dataRecordIndex);
+        var value   = (ulong) dataRecord.GetValue(dataRecordIndex);
         var steamId = new SteamID(value);
 
-        return (T)(object)steamId;
+        return (T) (object) steamId;
     }
 }

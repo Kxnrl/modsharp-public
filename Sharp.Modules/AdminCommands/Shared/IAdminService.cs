@@ -24,7 +24,7 @@ namespace Sharp.Modules.AdminCommands.Shared;
 
 /// <summary>
 ///     Aggregated admin operation services (ban/mute/gag/silence) exposed to consumers.
-///     If your ban/mute records live in SQL or another backend, implement <see cref="IAdminOperationStorageService"/>.
+///     If your ban/mute records live in SQL or another backend, implement <see cref="IAdminOperationStorageService" />.
 /// </summary>
 public interface IAdminService
 {
@@ -49,12 +49,12 @@ public interface IAdminService
     ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
     ///     </para>
     /// </summary>
-    void Apply(IGameClient?       admin,
-               IGameClient        target,
-               AdminOperationType type,
-               TimeSpan?          duration,
-               string             reason,
-               bool               silent = false);
+    void Apply(IGameClient? admin,
+        IGameClient         target,
+        AdminOperationType  type,
+        TimeSpan?           duration,
+        string              reason,
+        bool                silent = false);
 
     /// <summary>
     ///     Applies an admin operation to an offline target.
@@ -64,11 +64,11 @@ public interface IAdminService
     ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
     ///     </para>
     /// </summary>
-    void Apply(IGameClient?       admin,
-               SteamID            target,
-               AdminOperationType type,
-               TimeSpan?          duration,
-               string             reason);
+    void Apply(IGameClient? admin,
+        SteamID             target,
+        AdminOperationType  type,
+        TimeSpan?           duration,
+        string              reason);
 
     /// <summary>
     ///     Removes an admin operation from an online target.
@@ -77,11 +77,11 @@ public interface IAdminService
     ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
     ///     </para>
     /// </summary>
-    void Remove(IGameClient?       admin,
-                IGameClient        target,
-                AdminOperationType type,
-                string             reason,
-                bool               silent = false);
+    void Remove(IGameClient? admin,
+        IGameClient          target,
+        AdminOperationType   type,
+        string               reason,
+        bool                 silent = false);
 
     /// <summary>
     ///     Removes an admin operation from an offline target.
@@ -90,8 +90,8 @@ public interface IAdminService
     ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
     ///     </para>
     /// </summary>
-    void Remove(IGameClient?       admin,
-                SteamID            target,
-                AdminOperationType type,
-                string             reason);
+    void Remove(IGameClient? admin,
+        SteamID              target,
+        AdminOperationType   type,
+        string               reason);
 }
