@@ -42,6 +42,6 @@ public interface IAdmin
     ///     Checks whether this admin has the specified permission.
     /// </summary>
     /// <param name="permission">The permission string to check (e.g. <c>"admin:kick"</c>).</param>
-    /// <returns><see langword="true"/> if the permission is granted; otherwise <see langword="false"/>.</returns>
+    /// <returns><see langword="true" /> if the permission is granted; otherwise <see langword="false" />.</returns>
     bool HasPermission(string permission);
 }

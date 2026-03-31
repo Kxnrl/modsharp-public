@@ -19,20 +19,10 @@
 
 namespace Sharp.Modules.AdminManager.Shared;
 
-public record AdminTableManifest(
-    Dictionary<string, HashSet<string>> PermissionCollection,
+public record AdminTableManifest(Dictionary<string, HashSet<string>> PermissionCollection,
     List<RoleManifest>                  Roles,
-    List<AdminManifest>                 Admins
-);
+    List<AdminManifest>                 Admins);
 
-public record RoleManifest(
-    string          Name,
-    byte            Immunity,
-    HashSet<string> Permissions
-);
+public record RoleManifest(string Name, byte Immunity, HashSet<string> Permissions);
 
-public record AdminManifest(
-    ulong           Identity,
-    byte            Immunity,
-    HashSet<string> Permissions
-);
+public record AdminManifest(ulong Identity, byte Immunity, HashSet<string> Permissions);

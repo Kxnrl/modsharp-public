@@ -21,37 +21,41 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Storage;
 using Sharp.Modules.CommandCenter.Shared;
+using Sharp.Shared;
 using Sharp.Shared.Types;
 
 namespace Sharp.Modules.AdminManager.Commands;
 
 internal sealed class ServerCommands
 {
-    private readonly AdminManager          _adminManager;
-    private readonly AdminRepository       _repository;
-    private readonly ILogger<AdminManager> _logger;
-
-    public ServerCommands(AdminManager adminManager, AdminRepository repository, ILogger<AdminManager> logger)
-    {
-        _adminManager = adminManager;
-        _repository   = repository;
-        _logger       = logger;
-    }
+    private readonly ILogger<ServerCommands> _logger;
+    private readonly AdminManager            _adminManager;
+    private readonly AdminRepository         _repository;
 
     private bool _registered;
+
+    public ServerCommands(ISharedSystem shared, AdminManager adminManager, AdminRepository repository)
+    {
+        _logger       = shared.GetLoggerFactory().CreateLogger<ServerCommands>();
+        _adminManager = adminManager;
+        _repository   = repository;
+    }
 
     public void TryRegister(ICommandCenter? commandCenter, string moduleIdentity)
     {
         if (_registered || commandCenter is null)
+        {
             return;
+        }
 
         var registry = commandCenter.GetRegistry(moduleIdentity);
-        registry.RegisterServerCommand("perms", OnPermissionsCommand,
-            "Lists all registered permissions grouped by module.");
-        registry.RegisterServerCommand("admins", OnAdminsCommand,
-            "Lists all loaded admins. Usage: ms_admins [steamid64]");
-        registry.RegisterServerCommand("reload_admins", OnReloadAdminsCommand,
-            "Reloads admin configuration from admins.jsonc and admins_simple.jsonc.");
+
+        registry.RegisterServerCommand("perms",  OnPermissionsCommand, "Lists all registered permissions grouped by module.");
+        registry.RegisterServerCommand("admins", OnAdminsCommand,      "Lists all loaded admins. Usage: ms_admins [steamid64]");
+
+        registry.RegisterServerCommand("reload_admins",
+                                       OnReloadAdminsCommand,
+                                       "Reloads admin configuration from admins.jsonc and admins_simple.jsonc.");
 
         _registered = true;
     }
@@ -130,9 +134,12 @@ internal sealed class ServerCommands
                 continue;
             }
 
-            sb.Append("  ").Append(steamId)
-              .Append("  |  Immunity: ").Append(cachedAdmin.Immunity)
-              .Append("  |  Permissions: ").Append(cachedAdmin.Permissions.Count);
+            sb.Append("  ")
+              .Append(steamId)
+              .Append("  |  Immunity: ")
+              .Append(cachedAdmin.Immunity)
+              .Append("  |  Permissions: ")
+              .Append(cachedAdmin.Permissions.Count);
 
             if (sources.Count > 1)
             {
@@ -148,9 +155,8 @@ internal sealed class ServerCommands
         _logger.LogInformation("{Admins}", sb.ToString());
     }
 
-    private void ShowAdminDetail(
-        List<(ulong SteamId, Admin? CachedAdmin, Dictionary<string, AdminSource> Sources)> admins,
-        string filter)
+    private void ShowAdminDetail(List<(ulong SteamId, Admin? CachedAdmin, Dictionary<string, AdminSource> Sources)> admins,
+        string                                                                                                      filter)
     {
         if (!ulong.TryParse(filter, out var targetId))
         {
@@ -193,10 +199,15 @@ internal sealed class ServerCommands
 
             foreach (var (moduleId, source) in match.Sources.OrderBy(s => s.Key, StringComparer.OrdinalIgnoreCase))
             {
-                sb.Append("    Module '").Append(moduleId).Append("': ")
-                  .Append("immunity=").Append(source.CalculatedImmunity)
-                  .Append(", allows=").Append(source.ResolvedAllows.Count)
-                  .Append(", denies=").AppendLine(source.ResolvedDenies.Count.ToString());
+                sb.Append("    Module '")
+                  .Append(moduleId)
+                  .Append("': ")
+                  .Append("immunity=")
+                  .Append(source.CalculatedImmunity)
+                  .Append(", allows=")
+                  .Append(source.ResolvedAllows.Count)
+                  .Append(", denies=")
+                  .AppendLine(source.ResolvedDenies.Count.ToString());
             }
         }
 

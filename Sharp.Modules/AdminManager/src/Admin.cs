@@ -22,7 +22,7 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminManager;
 
-internal class Admin : IAdmin
+internal sealed class Admin : IAdmin
 {
     public SteamID Identity { get; }
 

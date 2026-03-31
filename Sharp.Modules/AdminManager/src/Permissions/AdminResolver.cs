@@ -20,28 +20,34 @@
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Modules.AdminManager.Storage;
+using Sharp.Shared;
 
 namespace Sharp.Modules.AdminManager.Permissions;
 
 internal sealed class AdminResolver
 {
-    private readonly AdminRepository _repo;
-    private readonly PermissionIndex _index;
-    private readonly ILogger<AdminManager> _logger;
-    private readonly HashSet<ulong> _usersWithWildcards = [];
+    private readonly ILogger<AdminResolver> _logger;
+    private readonly AdminRepository        _repo;
+    private readonly PermissionIndex        _index;
+
     /// <summary>
     ///     Tracks "module:permission" keys that have already been warned about to avoid log spam.
     ///     Entries are cleared when the missing permission is later registered by another module
-    ///     (see <see cref="ClearResolvedWarnings"/>), so the warning can fire again if the
+    ///     (see <see cref="ClearResolvedWarnings" />), so the warning can fire again if the
     ///     permission disappears and reappears across hot-reload cycles.
     /// </summary>
-    private readonly HashSet<string> _warnedUnknownPermissions = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _warnedUnknownPermissions;
 
-    public AdminResolver(AdminRepository repo, PermissionIndex index, ILogger<AdminManager> logger)
+    private readonly HashSet<ulong> _usersWithWildcards;
+
+    public AdminResolver(ISharedSystem shared, AdminRepository repo, PermissionIndex index)
     {
+        _logger = shared.GetLoggerFactory().CreateLogger<AdminResolver>();
         _repo   = repo;
         _index  = index;
-        _logger = logger;
+
+        _usersWithWildcards       = [];
+        _warnedUnknownPermissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     }
 
     public HashSet<ulong> RemoveModuleFromAdminSources(string moduleIdentity)
@@ -57,8 +63,8 @@ internal sealed class AdminResolver
     }
 
     public void RefreshModuleScope(string moduleIdentity,
-                                   AdminTableManifest manifest,
-                                   HashSet<string> newConcretePermissions)
+        AdminTableManifest                manifest,
+        HashSet<string>                   newConcretePermissions)
     {
         var usersToRefresh = new HashSet<ulong>();
         var newManifestIds = (manifest.Admins ?? []).Select(x => x.Identity).ToHashSet();
@@ -100,7 +106,7 @@ internal sealed class AdminResolver
         // Handle New & Updated Admins from Manifest
         foreach (var adminManifest in manifest.Admins ?? [])
         {
-            var immunity = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
+            var immunity    = CalculateEffectiveImmunity(moduleIdentity, adminManifest);
             var userSources = _repo.GetOrAddUserSources(adminManifest.Identity);
 
             userSources[moduleIdentity] = new AdminSource(immunity,
@@ -156,7 +162,7 @@ internal sealed class AdminResolver
 
     /// <summary>
     ///     Refreshes only admins whose rules contain wildcards.
-    ///     Use this instead of <see cref="RefreshAllAdmins"/> when a module disconnects,
+    ///     Use this instead of <see cref="RefreshAllAdmins" /> when a module disconnects,
     ///     since only wildcard users can be affected by the removal of permissions from the index.
     /// </summary>
     public void RefreshWildcardAdmins()
@@ -268,17 +274,19 @@ internal sealed class AdminResolver
             return;
         }
 
-        var issueCount   = unresolvedPerms.Values.Sum(s => s.Count)
+        var issueCount = unresolvedPerms.Values.Sum(s => s.Count)
                          + emptyWildcards.Values.Sum(s => s.Count)
                          + unresolvedRoles.Values.Sum(s => s.Count);
+
         var affectedUsers = unresolvedPerms.Keys
-                            .Union(emptyWildcards.Keys)
-                            .Union(unresolvedRoles.Keys)
-                            .Count();
+                                           .Union(emptyWildcards.Keys)
+                                           .Union(unresolvedRoles.Keys)
+                                           .Count();
 
         _logger.LogWarning(
             "=== AdminManager: Post-load permission validation — {IssueCount} issue(s) across {UserCount} admin(s) ===",
-            issueCount, affectedUsers);
+            issueCount,
+            affectedUsers);
 
         foreach (var (steamId, perms) in unresolvedPerms)
         {
@@ -290,14 +298,16 @@ internal sealed class AdminResolver
                 {
                     _logger.LogWarning(
                         "  User {SteamId}: Permission '{Permission}' is not defined by any loaded module. Did you mean '{Suggestion}'?",
-                        steamId, perm, suggestion);
+                        steamId,
+                        perm,
+                        suggestion);
                 }
                 else
                 {
-                    _logger.LogWarning(
-                        "  User {SteamId}: Permission '{Permission}' is not defined by any loaded module. "
-                      + "Check that the module providing it is installed and loaded.",
-                        steamId, perm);
+                    _logger.LogWarning("  User {SteamId}: Permission '{Permission}' is not defined by any loaded module. "
+                                       + "Check that the module providing it is installed and loaded.",
+                                       steamId,
+                                       perm);
                 }
             }
         }
@@ -308,7 +318,8 @@ internal sealed class AdminResolver
             {
                 _logger.LogWarning(
                     "  User {SteamId}: Wildcard '{Pattern}' matched 0 registered permissions. Check for typos in the prefix.",
-                    steamId, pattern);
+                    steamId,
+                    pattern);
             }
         }
 
@@ -316,9 +327,9 @@ internal sealed class AdminResolver
         {
             foreach (var role in roles)
             {
-                _logger.LogWarning(
-                    "  User {SteamId}: Role '@{Role}' is not defined.",
-                    steamId, role);
+                _logger.LogWarning("  User {SteamId}: Role '@{Role}' is not defined.",
+                                   steamId,
+                                   role);
             }
         }
 
@@ -330,7 +341,7 @@ internal sealed class AdminResolver
         {
             if (!dict.TryGetValue(key, out var set))
             {
-                set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                set       = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 dict[key] = set;
             }
 
@@ -594,8 +605,8 @@ internal sealed class AdminResolver
     }
 
     private void CollectUsersAffectedByNewPermissions(HashSet<string> newConcretePermissions,
-                                                      HashSet<ulong>  usersToRefresh,
-                                                      string?         excludeModuleIdentity = null)
+        HashSet<ulong>                                                usersToRefresh,
+        string?                                                       excludeModuleIdentity = null)
     {
         // Wildcard users
         foreach (var steamId in _usersWithWildcards)
@@ -713,15 +724,19 @@ internal sealed class AdminResolver
         return false;
     }
 
-    private bool HasDirectMatchForPermissions(string sourceModuleId, HashSet<string> rawRules, HashSet<string> newConcretePermissions)
+    private bool HasDirectMatchForPermissions(string sourceModuleId,
+        HashSet<string>                              rawRules,
+        HashSet<string>                              newConcretePermissions)
     {
         var visitedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         return CheckRulesForDirectMatch(sourceModuleId, rawRules, visitedRoles, newConcretePermissions);
     }
 
-    private bool CheckRulesForDirectMatch(string sourceModuleId, HashSet<string> rules,
-                                          HashSet<string> visitedRoles, HashSet<string> newConcretePermissions)
+    private bool CheckRulesForDirectMatch(string sourceModuleId,
+        HashSet<string>                          rules,
+        HashSet<string>                          visitedRoles,
+        HashSet<string>                          newConcretePermissions)
     {
         foreach (var rule in rules)
         {
@@ -742,10 +757,13 @@ internal sealed class AdminResolver
                 var roleName = effective[1..].ToString();
 
                 if (visitedRoles.Add(roleName)
-                 && _repo.TryGetModuleRoles(sourceModuleId, out var roles)
-                 && roles.TryGetValue(roleName, out var roleManifest))
+                    && _repo.TryGetModuleRoles(sourceModuleId, out var roles)
+                    && roles.TryGetValue(roleName, out var roleManifest))
                 {
-                    if (CheckRulesForDirectMatch(sourceModuleId, roleManifest.Permissions, visitedRoles, newConcretePermissions))
+                    if (CheckRulesForDirectMatch(sourceModuleId,
+                                                 roleManifest.Permissions,
+                                                 visitedRoles,
+                                                 newConcretePermissions))
                     {
                         return true;
                     }

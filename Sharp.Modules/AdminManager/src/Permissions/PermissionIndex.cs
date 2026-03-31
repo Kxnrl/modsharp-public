@@ -24,8 +24,8 @@ namespace Sharp.Modules.AdminManager.Permissions;
 
 internal sealed class PermissionIndex
 {
-    private readonly Dictionary<string, int> _refCounts = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, List<string>> _buckets = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, int>          _refCounts = new (StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, List<string>> _buckets   = new (StringComparer.OrdinalIgnoreCase);
 
     public void Register(IEnumerable<string> permissions)
     {
@@ -53,7 +53,7 @@ internal sealed class PermissionIndex
     {
         candidates = [];
 
-        var patternSpan   = pattern.AsSpan();
+        var patternSpan    = pattern.AsSpan();
         var firstSeparator = patternSpan.IndexOf(IAdminManager.SeparatorOperator);
 
         if (firstSeparator > 0)
@@ -127,7 +127,7 @@ internal sealed class PermissionIndex
 
         if (!_buckets.TryGetValue(root, out var list))
         {
-            list         = [];
+            list           = [];
             _buckets[root] = list;
         }
 

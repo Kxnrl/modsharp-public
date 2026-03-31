@@ -39,16 +39,18 @@ internal sealed class AdminRepository
         public bool                            IsEmpty     => Sources.Count == 0;
     }
 
-    private readonly Dictionary<string, PermissionCollectionDictionary> _permissionCollections
-        = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, PermissionCollectionDictionary> _permissionCollections;
+    private readonly Dictionary<string, HashSet<string>>                _standalonePermissions;
+    private readonly Dictionary<string, RolesDictionary>                _roles;
+    private readonly Dictionary<ulong, AdminUserEntry>                  _adminEntries;
 
-    private readonly Dictionary<string, HashSet<string>> _standalonePermissions
-        = new(StringComparer.OrdinalIgnoreCase);
-
-    private readonly Dictionary<string, RolesDictionary> _roles
-        = new(StringComparer.OrdinalIgnoreCase);
-
-    private readonly Dictionary<ulong, AdminUserEntry> _adminEntries = new();
+    public AdminRepository()
+    {
+        _permissionCollections = new Dictionary<string, PermissionCollectionDictionary>(StringComparer.OrdinalIgnoreCase);
+        _standalonePermissions = new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase);
+        _roles                 = new Dictionary<string, RolesDictionary>(StringComparer.OrdinalIgnoreCase);
+        _adminEntries          = [];
+    }
 
     public IAdmin? GetAdmin(SteamID identity)
         => _adminEntries.TryGetValue(identity, out var entry) ? entry.CachedAdmin : null;
@@ -74,7 +76,7 @@ internal sealed class AdminRepository
             return entry.Sources;
         }
 
-        entry = new AdminUserEntry();
+        entry                  = new AdminUserEntry();
         _adminEntries[steamId] = entry;
 
         return entry.Sources;
@@ -102,7 +104,7 @@ internal sealed class AdminRepository
 
     /// <summary>
     ///     Unregisters only manifest-sourced permissions for a module.
-    ///     Standalone permissions (from <see cref="RegisterStandalonePermissions"/>) are preserved.
+    ///     Standalone permissions (from <see cref="RegisterStandalonePermissions" />) are preserved.
     ///     Used during <c>MountAdminManifest</c> remount.
     /// </summary>
     public List<string> UnregisterManifestPermissions(string moduleIdentity)
@@ -147,7 +149,7 @@ internal sealed class AdminRepository
     {
         if (!_standalonePermissions.TryGetValue(moduleIdentity, out var existing))
         {
-            existing = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            existing                               = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             _standalonePermissions[moduleIdentity] = existing;
         }
 
@@ -165,8 +167,8 @@ internal sealed class AdminRepository
     }
 
     public List<string> RegisterModuleData(string moduleIdentity,
-                                           AdminTableManifest manifest,
-                                           out HashSet<string> newConcretePermissions)
+        AdminTableManifest                        manifest,
+        out HashSet<string>                       newConcretePermissions)
     {
         var modulePermissionCollection = new PermissionCollectionDictionary(StringComparer.OrdinalIgnoreCase);
         _permissionCollections[moduleIdentity] = modulePermissionCollection;
@@ -239,7 +241,7 @@ internal sealed class AdminRepository
     {
         if (!_adminEntries.TryGetValue(steamId, out var entry))
         {
-            entry = new AdminUserEntry();
+            entry                  = new AdminUserEntry();
             _adminEntries[steamId] = entry;
         }
 

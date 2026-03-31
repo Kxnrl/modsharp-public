@@ -20,7 +20,6 @@
 using System.Collections.Immutable;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Modules.CommandCenter.Shared;
-using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
@@ -31,28 +30,26 @@ namespace Sharp.Modules.AdminManager;
 
 internal class AdminCommandRegistry : IAdminCommandRegistry
 {
-    private readonly ICommandRegistry   _commandRegistry;
-    private readonly AdminManager       _self;
-    private readonly ISharedSystem      _shared;
-    private readonly string             _moduleIdentity;
+    private readonly ICommandRegistry _commandRegistry;
+    private readonly AdminManager     _self;
+    private readonly string           _moduleIdentity;
 
-    public AdminCommandRegistry(ICommandRegistry commandRegistry,
-                                AdminManager     self,
-                                ISharedSystem    shared,
-                                string           moduleIdentity)
+    public AdminCommandRegistry(ICommandRegistry commandRegistry, AdminManager self, string moduleIdentity)
     {
-        _commandRegistry  = commandRegistry;
-        _self             = self;
-        _shared           = shared;
-        _moduleIdentity   = moduleIdentity;
+        _commandRegistry = commandRegistry;
+        _self            = self;
+        _moduleIdentity  = moduleIdentity;
     }
 
-    public void RegisterAdminCommand(string command, Action<IGameClient?, StringCommand> call, ImmutableArray<string> permissions)
+    public void RegisterAdminCommand(string command,
+        Action<IGameClient?, StringCommand> call,
+        ImmutableArray<string>              permissions)
     {
-        _commandRegistry.RegisterGenericCommand(command, (client, stringCommand) =>
-        {
-            OnExecutingAdminCommand(client, stringCommand, call, permissions);
-        });
+        _commandRegistry.RegisterGenericCommand(command,
+                                                (client, stringCommand) =>
+                                                {
+                                                    OnExecutingAdminCommand(client, stringCommand, call, permissions);
+                                                });
     }
 
     public void RegisterPermissions(ImmutableArray<string> permissions)
@@ -60,11 +57,15 @@ internal class AdminCommandRegistry : IAdminCommandRegistry
         _self.RegisterModulePermissions(_moduleIdentity, permissions);
     }
 
-    private void OnExecutingAdminCommand(IGameClient? client, StringCommand command, Action<IGameClient?, StringCommand> call, ImmutableArray<string> permissions)
+    private void OnExecutingAdminCommand(IGameClient? client,
+        StringCommand                                 command,
+        Action<IGameClient?, StringCommand>           call,
+        ImmutableArray<string>                        permissions)
     {
         if (client is null)
         {
             call(null, command);
+
             return;
         }
 

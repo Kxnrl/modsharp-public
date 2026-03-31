@@ -35,19 +35,18 @@ namespace Sharp.Modules.AdminManager;
 
 internal class AdminManager : IAdminManager, IModSharpModule
 {
-    private const string CommandCenterAssemblyName    = "Sharp.Modules.CommandCenter";
+    private const string CommandCenterAssemblyName   = "Sharp.Modules.CommandCenter";
     private const string LocalizeManagerAssemblyName = "Sharp.Modules.LocalizerManager";
     private const string AdminManagerLocaleName      = "admin_manager";
 
-    private IModSharpModuleInterface<ICommandCenter>?     _commandCenter;
+    private static readonly string ModuleIdentity
+        = typeof(AdminManager).Assembly.GetName().Name ?? "Sharp.Modules.AdminManager";
+
+    private IModSharpModuleInterface<ICommandCenter>?    _commandCenter;
     private IModSharpModuleInterface<ILocalizerManager>? _localizerManager;
 
     private readonly ISharedSystem _shared;
     private readonly string        _sharpPath;
-
-    private readonly Dictionary<
-        string, // Module Identity
-        IAdminCommandRegistry> _commandRegistries = new (StringComparer.OrdinalIgnoreCase);
 
     private readonly ILogger<AdminManager> _logger;
     private readonly PermissionIndex       _permissionIndex;
@@ -55,15 +54,14 @@ internal class AdminManager : IAdminManager, IModSharpModule
     private readonly AdminResolver         _resolver;
     private readonly ServerCommands        _serverCommands;
 
-    private static readonly string ModuleIdentity = typeof(AdminManager).Assembly.GetName().Name ?? "Sharp.Modules.AdminManager";
+    private readonly Dictionary<string /* Module Identity*/, IAdminCommandRegistry> _commandRegistries;
 
-    public AdminManager(
-        ISharedSystem  sharedSystem,
-        string         dllPath,
-        string         sharpPath,
-        Version        version,
-        IConfiguration coreConfiguration,
-        bool           hotReload)
+    public AdminManager(ISharedSystem sharedSystem,
+        string                        dllPath,
+        string                        sharpPath,
+        Version                       version,
+        IConfiguration                coreConfiguration,
+        bool                          hotReload)
     {
         _shared    = sharedSystem;
         _sharpPath = sharpPath;
@@ -71,8 +69,10 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         _permissionIndex = new PermissionIndex();
         _repository      = new AdminRepository();
-        _resolver        = new AdminResolver(_repository, _permissionIndex, _logger);
-        _serverCommands  = new ServerCommands(this, _repository, _logger);
+        _resolver        = new AdminResolver(sharedSystem, _repository, _permissionIndex);
+        _serverCommands  = new ServerCommands(sharedSystem, this, _repository);
+
+        _commandRegistries = new Dictionary<string, IAdminCommandRegistry>(StringComparer.OrdinalIgnoreCase);
 
         LoadConfigManifest();
     }
@@ -129,8 +129,9 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         if (_localizerManager?.Instance is null)
         {
-            _logger.LogWarning("Failed to get LocalizerManager, Do you have '{assemblyName}' installed? If you don't, messages will use the fallback value.",
-                               LocalizeManagerAssemblyName);
+            _logger.LogWarning(
+                "Failed to get LocalizerManager, Do you have '{assemblyName}' installed? If you don't, messages will use the fallback value.",
+                LocalizeManagerAssemblyName);
         }
         else
         {
@@ -139,16 +140,20 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         if (_commandCenter?.Instance is null)
         {
-            _logger.LogWarning("Failed to get CommandCenter, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
-                               CommandCenterAssemblyName);
+            _logger.LogWarning(
+                "Failed to get CommandCenter, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
+                CommandCenterAssemblyName);
         }
 
         _serverCommands.TryRegister(_commandCenter?.Instance, ModuleIdentity);
 
         _resolver.ValidateAllPermissions();
 
-        _logger.LogInformation("AdminManager: {AdminCount} admin(s), {RoleCount} role(s), {PermCount} permission collection(s) loaded.",
-            _repository.AdminCount, _repository.RoleCount, _repository.GetAllPermissionCollections().Count);
+        _logger.LogInformation(
+            "AdminManager: {AdminCount} admin(s), {RoleCount} role(s), {PermCount} permission collection(s) loaded.",
+            _repository.AdminCount,
+            _repository.RoleCount,
+            _repository.GetAllPermissionCollections().Count);
     }
 
     public void Shutdown()
@@ -179,7 +184,7 @@ internal class AdminManager : IAdminManager, IModSharpModule
         }
 
         var commandRegistry = _commandCenter.Instance.GetRegistry(moduleIdentity);
-        var registry        = new AdminCommandRegistry(commandRegistry, this, _shared, moduleIdentity);
+        var registry        = new AdminCommandRegistry(commandRegistry, this, moduleIdentity);
         _commandRegistries[moduleIdentity] = registry;
 
         return registry;
@@ -187,24 +192,14 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
     public void MountAdminManifest(string moduleIdentity, Func<AdminTableManifest> call)
     {
-        var manifest = call();
-
-        if (manifest is null)
-        {
-            _logger.LogWarning("Module '{Identity}' attempted to mount a null manifest.", moduleIdentity);
-
-            return;
-        }
-
+        var manifest             = call.Invoke();
         var permissionCollection = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
 
         if (manifest.PermissionCollection is { Count: > 0 })
         {
             foreach (var (key, perms) in manifest.PermissionCollection)
             {
-                permissionCollection[key] = perms is not null
-                    ? new HashSet<string>(perms, StringComparer.OrdinalIgnoreCase)
-                    : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                permissionCollection[key] = new HashSet<string>(perms, StringComparer.OrdinalIgnoreCase);
             }
         }
 
@@ -297,16 +292,21 @@ internal class AdminManager : IAdminManager, IModSharpModule
 
         _resolver.ValidateAllPermissions();
 
-        _logger.LogInformation("Admin config reloaded: {AdminCount} admin(s), {RoleCount} role(s), {PermCount} permission collection(s).",
-            _repository.AdminCount, _repository.RoleCount, _repository.GetAllPermissionCollections().Count);
+        _logger.LogInformation(
+            "Admin config reloaded: {AdminCount} admin(s), {RoleCount} role(s), {PermCount} permission collection(s).",
+            _repository.AdminCount,
+            _repository.RoleCount,
+            _repository.GetAllPermissionCollections().Count);
     }
 
     private void LoadConfigManifest()
     {
-        var configLoader = new AdminConfigLoader(_logger);
+        var configLoader = new AdminConfigLoader(_shared);
         var manifest     = configLoader.LoadMergedManifest(_sharpPath);
 
-        if (manifest.PermissionCollection is { Count: > 0 } || manifest.Admins is { Count: > 0 } || manifest.Roles is { Count: > 0 })
+        if (manifest.PermissionCollection is { Count: > 0 }
+            || manifest.Admins is { Count           : > 0 }
+            || manifest.Roles is { Count            : > 0 })
         {
             MountAdminManifest(ModuleIdentity, () => manifest);
         }
@@ -317,23 +317,23 @@ internal class AdminManager : IAdminManager, IModSharpModule
         var checkAll = changedModuleName is null;
 
         var updateCommand
-            = checkAll || changedModuleName!.Equals(CommandCenterAssemblyName, StringComparison.OrdinalIgnoreCase);
+            = checkAll || CommandCenterAssemblyName.Equals(changedModuleName, StringComparison.OrdinalIgnoreCase);
 
         var updateLocalizer
-            = checkAll || changedModuleName!.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+            = checkAll || LocalizeManagerAssemblyName.Equals(changedModuleName, StringComparison.OrdinalIgnoreCase);
 
         var moduleManager = _shared.GetSharpModuleManager();
 
         if (updateCommand && (force || _commandCenter?.Instance is null))
         {
             _commandCenter = moduleManager
-                              .GetOptionalSharpModuleInterface<ICommandCenter>(ICommandCenter.Identity);
+                .GetOptionalSharpModuleInterface<ICommandCenter>(ICommandCenter.Identity);
         }
 
         if (updateLocalizer && (force || _localizerManager?.Instance is null))
         {
             _localizerManager = moduleManager
-                                .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
+                .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
         }
     }
 

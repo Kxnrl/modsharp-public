@@ -21,6 +21,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
+using Sharp.Shared;
 using Sharp.Shared.Units;
 using PermissionCollectionDictionary = System.Collections.Generic.Dictionary<
     string,                                    // Collection key
@@ -31,12 +32,10 @@ namespace Sharp.Modules.AdminManager.IO;
 
 internal sealed class AdminConfigLoader
 {
-    private readonly ILogger<AdminManager> _logger;
+    private readonly ILogger<AdminConfigLoader> _logger;
 
-    public AdminConfigLoader(ILogger<AdminManager> logger)
-    {
-        _logger = logger;
-    }
+    public AdminConfigLoader(ISharedSystem shared)
+        => _logger = shared.GetLoggerFactory().CreateLogger<AdminConfigLoader>();
 
     public AdminTableManifest LoadMergedManifest(string sharpPath)
     {
@@ -63,8 +62,8 @@ internal sealed class AdminConfigLoader
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "Failed to parse admins.jsonc — starting with NO admins, NO roles, and NO permissions. " +
-                    "Fix the JSON syntax in admins.jsonc and reload.");
+                                 "Failed to parse admins.jsonc — starting with NO admins, NO roles, and NO permissions. "
+                                 + "Fix the JSON syntax in admins.jsonc and reload.");
             }
         }
 
@@ -139,9 +138,10 @@ internal sealed class AdminConfigLoader
                             if (!knownRoles.Contains(role))
                             {
                                 _logger.LogWarning(
-                                    "Role '{Role}' referenced by SteamID64 '{SteamId}' in admins_simple.jsonc is not defined in admins.jsonc. " +
-                                    "This admin will have no permissions from this role — check for typos.",
-                                    role, steamIdStr);
+                                    "Role '{Role}' referenced by SteamID64 '{SteamId}' in admins_simple.jsonc is not defined in admins.jsonc. "
+                                    + "This admin will have no permissions from this role — check for typos.",
+                                    role,
+                                    steamIdStr);
                             }
 
                             permissions.Add($"{IAdminManager.RolesOperator}{role}");
@@ -153,7 +153,8 @@ internal sealed class AdminConfigLoader
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to parse admins_simple.jsonc — entries from this file will be skipped. Fix the JSON syntax and reload.");
+                _logger.LogError(ex,
+                                 "Failed to parse admins_simple.jsonc — entries from this file will be skipped. Fix the JSON syntax and reload.");
             }
         }
 
@@ -172,7 +173,8 @@ internal sealed class AdminConfigLoader
 
                 if (string.IsNullOrWhiteSpace(roleName))
                 {
-                    _logger.LogWarning("Ignoring empty role assignment for SteamID64 '{SteamId}' in admins_simple.jsonc.", steamIdStr);
+                    _logger.LogWarning("Ignoring empty role assignment for SteamID64 '{SteamId}' in admins_simple.jsonc.",
+                                       steamIdStr);
                 }
                 else
                 {
@@ -188,7 +190,8 @@ internal sealed class AdminConfigLoader
                 {
                     if (element.ValueKind != JsonValueKind.String)
                     {
-                        _logger.LogWarning("Ignoring non-string role value for SteamID64 '{SteamId}' in admins_simple.jsonc.", steamIdStr);
+                        _logger.LogWarning("Ignoring non-string role value for SteamID64 '{SteamId}' in admins_simple.jsonc.",
+                                           steamIdStr);
 
                         continue;
                     }
@@ -203,14 +206,17 @@ internal sealed class AdminConfigLoader
 
                 if (roles.Count == 0)
                 {
-                    _logger.LogWarning("Ignoring empty role array for SteamID64 '{SteamId}' in admins_simple.jsonc.", steamIdStr);
+                    _logger.LogWarning("Ignoring empty role array for SteamID64 '{SteamId}' in admins_simple.jsonc.",
+                                       steamIdStr);
                 }
 
                 break;
             }
 
             default:
-                _logger.LogWarning("Ignoring invalid role value for SteamID64 '{SteamId}' in admins_simple.jsonc. Expected string or array.", steamIdStr);
+                _logger.LogWarning(
+                    "Ignoring invalid role value for SteamID64 '{SteamId}' in admins_simple.jsonc. Expected string or array.",
+                    steamIdStr);
 
                 break;
         }
