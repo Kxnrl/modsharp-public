@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System.Text.Json;
 using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Shared;
@@ -62,51 +61,4 @@ public interface IAdminOperationStorageService
     Task<bool> HasActiveAsync(SteamID steamId, AdminOperationType type);
 }
 
-public readonly record struct AdminOperationType(string Value)
-{
-    public static readonly AdminOperationType Ban  = new ("core:ban");
-    public static readonly AdminOperationType Mute = new ("core:mute");
-    public static readonly AdminOperationType Gag  = new ("core:gag");
 
-    public override string ToString() => Value;
-
-    public bool Equals(AdminOperationType other)
-        => string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
-
-    public override int GetHashCode()
-        => StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
-}
-
-public record AdminOperationRecord(
-    SteamID            SteamId,
-    AdminOperationType Type,
-    SteamID?           AdminSteamId,
-    DateTime           CreatedAt,
-    DateTime?          ExpiresAt, // null = permanent
-    string             Reason,
-    string?            Metadata     = null,
-    SteamID?           RemovedBy    = null,
-    DateTime?          RemovedAt    = null,
-    string?            RemoveReason = null
-)
-{
-    public bool IsExpired   => RemovedAt.HasValue || (ExpiresAt.HasValue && ExpiresAt.Value < DateTime.UtcNow);
-    public bool IsPermanent => !ExpiresAt.HasValue;
-
-    public T? GetMetadata<T>()
-    {
-        if (string.IsNullOrWhiteSpace(Metadata))
-        {
-            return default;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<T>(Metadata);
-        }
-        catch
-        {
-            return default;
-        }
-    }
-}
