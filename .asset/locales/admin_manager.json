@@ -1,6 +1,33 @@
 {
   "AdminManager.NoPermission": {
-    "en-us": "You do not have access to do this command.",
-    "zh-cn": "你没有权限执行此命令。"
+    "en-us": "You do not have permission to use this command.",
+    "zh-cn": "你没有权限执行此命令。",
+    "pt-BR": "Você não tem permissão para executar este comando.",
+    "bg-BG": "Нямате права да изпълните тази команда.",
+    "cs-CZ": "Nemáte oprávnění k provedení tohoto příkazu.",
+    "da-DK": "Du har ikke adgang til at udføre denne kommando.",
+    "nl-NL": "Je hebt geen toestemming om dit commando uit te voeren.",
+    "fi-FI": "Sinulla ei ole oikeutta suorittaa tätä komentoa.",
+    "fr-FR": "Vous n'avez pas la permission d'exécuter cette commande.",
+    "de-DE": "Du hast keine Berechtigung, diesen Befehl auszuführen.",
+    "el-GR": "Δεν έχετε δικαίωμα να εκτελέσετε αυτήν την εντολή.",
+    "hu-HU": "Nincs jogosultságod a parancs végrehajtásához.",
+    "id-ID": "Anda tidak memiliki izin untuk menjalankan perintah ini.",
+    "it-IT": "Non hai il permesso di eseguire questo comando.",
+    "ja-JP": "このコマンドを実行する権限がありません。",
+    "ko-KR": "이 명령어를 실행할 권한이 없습니다.",
+    "es-419": "No tienes permiso para ejecutar este comando.",
+    "nb-NO": "Du har ikke tilgang til å utføre denne kommandoen.",
+    "pl-PL": "Nie masz uprawnień do wykonania tego polecenia.",
+    "pt-PT": "Não tens permissão para executar este comando.",
+    "ro-RO": "Nu ai permisiunea de a executa această comandă.",
+    "ru-RU": "У вас нет прав для выполнения этой команды.",
+    "es-ES": "No tienes permiso para ejecutar este comando.",
+    "sv-SE": "Du har inte behörighet att köra detta kommando.",
+    "zh-TW": "你沒有權限執行此指令。",
+    "th-TH": "คุณไม่มีสิทธิ์ในการใช้คำสั่งนี้",
+    "tr-TR": "Bu komutu çalıştırma yetkiniz yok.",
+    "uk-UA": "У вас немає прав для виконання цієї команди.",
+    "vi-VN": "Bạn không có quyền thực hiện lệnh này."
   }
 }
