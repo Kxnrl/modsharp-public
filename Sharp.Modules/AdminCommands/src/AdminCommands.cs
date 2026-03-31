@@ -64,13 +64,12 @@ public class AdminCommands : IModSharpModule
 
     private bool _registered;
 
-    public AdminCommands(
-        ISharedSystem  shared,
-        string         dllPath,
-        string         sharpPath,
-        Version        version,
-        IConfiguration configuration,
-        bool           hotReload)
+    public AdminCommands(ISharedSystem shared,
+        string                         dllPath,
+        string                         sharpPath,
+        Version                        version,
+        IConfiguration                 configuration,
+        bool                           hotReload)
     {
         _shared    = shared;
         _logger    = shared.GetLoggerFactory().CreateLogger<AdminCommands>();

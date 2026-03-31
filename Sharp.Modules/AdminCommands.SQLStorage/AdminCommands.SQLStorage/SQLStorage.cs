@@ -87,9 +87,8 @@ public sealed class SqlStorage : IModSharpModule
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            throw new
-                KeyNotFoundException(
-                    $"Missing '{ModuleConnectionStringKey}' or '{ConnectionStringKey}' in connection strings.");
+            throw new KeyNotFoundException(
+                $"Missing '{ModuleConnectionStringKey}' or '{ConnectionStringKey}' in connection strings.");
         }
 
         return connectionString;

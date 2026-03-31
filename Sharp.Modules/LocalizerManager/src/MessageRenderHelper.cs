@@ -28,8 +28,7 @@ namespace Sharp.Modules.LocalizerManager;
 
 internal static class MessageRenderHelper
 {
-    internal static string Render(
-        List<MessageSegment> segments,
+    internal static string Render(List<MessageSegment> segments,
         ILocale              locale,
         bool                 applyPrefix,
         string?              prefix)
@@ -311,8 +310,7 @@ internal static class MessageRenderHelper
 }
 
 [StructLayout(LayoutKind.Auto)]
-internal readonly record struct MessageSegment(
-    SegmentKind Kind,
+internal readonly record struct MessageSegment(SegmentKind Kind,
     string?     Text,
     string?     Fallback,
     SegmentArgs Args)

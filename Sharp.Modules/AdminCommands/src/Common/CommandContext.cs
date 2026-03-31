@@ -37,12 +37,11 @@ internal sealed class CommandContext
     private const string DefaultReasonKey      = "Admin.Reason.Default";
     private const string DefaultReasonFallback = "No reason provided";
 
-    public CommandContext(
-        InterfaceBridge bridge,
-        ModuleContext   moduleContext,
-        IGameClient?    issuer,
-        StringCommand   command,
-        ILogger         logger)
+    public CommandContext(InterfaceBridge bridge,
+        ModuleContext                     moduleContext,
+        IGameClient?                      issuer,
+        StringCommand                     command,
+        ILogger                           logger)
     {
         _bridge        = bridge;
         _moduleContext = moduleContext;

@@ -284,14 +284,13 @@ internal class BanService : ICommandCategory, IBanService
         ctx.ReplySuccessKey("Admin.Unbanned", "Unbanned {0}. Reason: {1}", steamId, reason);
     }
 
-    private async Task ExecuteBanAsync(
-        CommandContext ctx,
-        SteamID        targetId,
-        string         targetDisplayName,
-        TimeSpan?      duration,
-        string         reason,
-        IGameClient?   issuer,
-        BanType        type)
+    private async Task ExecuteBanAsync(CommandContext ctx,
+        SteamID                                       targetId,
+        string                                        targetDisplayName,
+        TimeSpan?                                     duration,
+        string                                        reason,
+        IGameClient?                                  issuer,
+        BanType                                       type)
     {
         try
         {
