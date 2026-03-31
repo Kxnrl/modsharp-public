@@ -18,6 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
@@ -26,13 +27,13 @@ namespace Sharp.Modules.AdminCommands.Commands;
 
 internal sealed class InventoryCommands : ICommandCategory
 {
-    private readonly CommandContextFactory      _contextFactory;
     private readonly ILogger<InventoryCommands> _logger;
+    private readonly CommandContextFactory      _contextFactory;
 
-    public InventoryCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
+    public InventoryCommands(ILogger<InventoryCommands> logger, CommandContextFactory contextFactory)
     {
+        _logger         = logger;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<InventoryCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)

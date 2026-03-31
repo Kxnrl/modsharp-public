@@ -17,11 +17,24 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Sharp.Modules.AdminCommands.Services.Handlers;
+using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Services.Internal;
+using Sharp.Shared.Objects;
+using Sharp.Shared.Types;
 
-internal interface IAdminOperationHookRegistrar
+namespace Sharp.Modules.AdminCommands.Common;
+
+internal sealed class CommandContextFactory
 {
-    void RegisterHooks();
+    private readonly InterfaceBridge _bridge;
+    private readonly ModuleContext   _moduleContext;
 
-    void UnregisterHooks();
+    public CommandContextFactory(InterfaceBridge bridge, ModuleContext moduleContext)
+    {
+        _bridge        = bridge;
+        _moduleContext = moduleContext;
+    }
+
+    public CommandContext Create(IGameClient? issuer, StringCommand command, ILogger logger)
+        => new (_bridge, _moduleContext, issuer, command, logger);
 }

@@ -31,13 +31,14 @@ internal sealed class AdminOperationStorage : IAdminOperationStorageService
 {
     private readonly ILogger<AdminOperationStorage> _logger;
     private readonly IAdminOperationStorageService  _fallback;
-    private          IAdminOperationStorageService  _current;
 
-    public AdminOperationStorage(IAdminOperationStorageService fallback, ILogger<AdminOperationStorage> logger)
+    private IAdminOperationStorageService _current;
+
+    public AdminOperationStorage(ILogger<AdminOperationStorage> logger, JsonAdminOperationStorage fallback)
     {
+        _logger   = logger;
         _fallback = fallback;
         _current  = fallback;
-        _logger   = logger;
     }
 
     public IAdminOperationStorageService Current => Volatile.Read(ref _current);

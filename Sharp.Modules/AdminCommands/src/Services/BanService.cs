@@ -21,7 +21,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.AdminCommands.Commands;
 using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Modules.AdminCommands.Shared;
@@ -34,26 +33,26 @@ namespace Sharp.Modules.AdminCommands.Services;
 
 internal class BanService : ICommandCategory, IBanService
 {
+    private readonly ILogger<BanService>   _logger;
     private readonly InterfaceBridge       _bridge;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly ModuleContext         _moduleContext;
     private readonly CommandContextFactory _contextFactory;
-    private readonly ILogger<BanService>   _logger;
 
-    public BanService(
-        InterfaceBridge       bridge,
-        AdminOperationService operations,
-        AdminOperationEngine  engine,
-        CommandContextFactory contextFactory,
-        ModuleContext         moduleContext)
+    public BanService(ILogger<BanService> logger,
+        InterfaceBridge                   bridge,
+        AdminOperationService             operations,
+        AdminOperationEngine              engine,
+        CommandContextFactory             contextFactory,
+        ModuleContext                     moduleContext)
     {
+        _logger         = logger;
         _bridge         = bridge;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
         _moduleContext  = moduleContext;
-        _logger         = bridge.LoggerFactory.CreateLogger<BanService>();
     }
 
     public void Register(IAdminCommandRegistry registry)
@@ -82,7 +81,7 @@ internal class BanService : ICommandCategory, IBanService
                                 AdminOperationType.Ban,
                                 duration,
                                 reason,
-                                metadata: JsonSerializer.Serialize(new { bantype = (int)BanType.SteamId }));
+                                JsonSerializer.Serialize(new { bantype = (int) BanType.SteamId }));
 
     public void Unban(IGameClient? admin, SteamID steamId, string reason)
         => _engine.RemoveOffline(admin, steamId, steamId.ToString(), AdminOperationType.Ban, reason);
@@ -231,13 +230,14 @@ internal class BanService : ICommandCategory, IBanService
 
         _ = ExecuteBanAsync(ctx, steamId, steamId.ToString(), duration, reason, issuer, BanType.SteamId)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process ban for {SteamId}", steamId);
-                    ctx.Reply("Failed to process ban. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process ban for {SteamId}", steamId);
+                                  ctx.Reply("Failed to process ban. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void OnCommandUnban(IGameClient? issuer, StringCommand command)
@@ -260,13 +260,14 @@ internal class BanService : ICommandCategory, IBanService
 
         _ = ExecuteUnbanAsync(ctx, steamId, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process unban for {SteamId}", steamId);
-                    ctx.Reply("Failed to process unban. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process unban for {SteamId}", steamId);
+                                  ctx.Reply("Failed to process unban. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private async Task ExecuteUnbanAsync(CommandContext ctx, SteamID steamId, string reason, IGameClient? issuer)
@@ -308,8 +309,8 @@ internal class BanService : ICommandCategory, IBanService
             }
             else
             {
-                var metadata = JsonSerializer.Serialize(new { bantype = (int)type });
-                _engine.ApplyOffline(issuer, targetId, targetDisplayName, AdminOperationType.Ban, duration, reason, metadata: metadata);
+                var metadata = JsonSerializer.Serialize(new { bantype = (int) type });
+                _engine.ApplyOffline(issuer, targetId, targetDisplayName, AdminOperationType.Ban, duration, reason, metadata);
             }
 
             var durationStr = FormatDuration(duration);

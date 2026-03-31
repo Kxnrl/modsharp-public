@@ -28,17 +28,17 @@ namespace Sharp.Modules.AdminCommands.Services;
 /// </summary>
 internal sealed class AdminOperationService
 {
-    private readonly IAdminOperationStorageService  _storage;
     private readonly ILogger<AdminOperationService> _logger;
+    private readonly IAdminOperationStorageService  _storage;
 
-    public AdminOperationService(IAdminOperationStorageService storage, InterfaceBridge bridge)
+    public AdminOperationService(ILogger<AdminOperationService> logger, IAdminOperationStorageService storage)
     {
+        _logger  = logger;
         _storage = storage;
-        _logger  = bridge.LoggerFactory.CreateLogger<AdminOperationService>();
     }
 
-    public async Task<IReadOnlyList<AdminOperationRecord>> GetAllAsync(SteamID           steamId,
-                                                                       CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<AdminOperationRecord>> GetAllAsync(SteamID steamId,
+        CancellationToken                                                      cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -50,13 +50,13 @@ internal sealed class AdminOperationService
         {
             _logger.LogError(ex, "Failed to load punishment records for {SteamId}", steamId);
 
-            return Array.Empty<AdminOperationRecord>();
+            return [];
         }
     }
 
-    public async Task<bool> HasActiveAsync(SteamID            steamId,
-                                           AdminOperationType type,
-                                           CancellationToken  cancellationToken = default)
+    public async Task<bool> HasActiveAsync(SteamID steamId,
+        AdminOperationType                         type,
+        CancellationToken                          cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -97,11 +97,11 @@ internal sealed class AdminOperationService
         }
     }
 
-    public async Task RemoveAsync(SteamID            steamId,
-                                  AdminOperationType type,
-                                  SteamID?           adminId,
-                                  string?            reason,
-                                  CancellationToken  cancellationToken = default)
+    public async Task RemoveAsync(SteamID steamId,
+        AdminOperationType                type,
+        SteamID?                          adminId,
+        string?                           reason,
+        CancellationToken                 cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 

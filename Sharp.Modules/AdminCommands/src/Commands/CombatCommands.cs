@@ -18,6 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
@@ -27,13 +28,13 @@ namespace Sharp.Modules.AdminCommands.Commands;
 
 internal sealed class CombatCommands : ICommandCategory
 {
-    private readonly CommandContextFactory   _contextFactory;
     private readonly ILogger<CombatCommands> _logger;
+    private readonly CommandContextFactory   _contextFactory;
 
-    public CombatCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
+    public CombatCommands(ILogger<CombatCommands> logger, CommandContextFactory contextFactory)
     {
+        _logger         = logger;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<CombatCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)

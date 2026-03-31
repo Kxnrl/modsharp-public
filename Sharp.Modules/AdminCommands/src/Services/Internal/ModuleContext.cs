@@ -30,8 +30,11 @@ namespace Sharp.Modules.AdminCommands.Services.Internal;
 /// </summary>
 internal sealed class ModuleContext
 {
-    private const int DefaultBroadcastType
-        = 1; // 0 = off, 1 = broadcast (ignore immunity), 2 = broadcast with max immunity gate
+    /// <summary>
+    ///     0 = off, 1 = broadcast (ignore immunity), 2 = broadcast with max immunity gate
+    /// </summary>
+    private const int DefaultBroadcastType = 1;
+
     private const int DefaultBroadcastMaxImmunity = byte.MaxValue;
 
     private readonly IConVar? _broadcastTypeConVar;

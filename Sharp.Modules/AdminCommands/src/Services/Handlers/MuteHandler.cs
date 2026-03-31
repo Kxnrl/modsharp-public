@@ -28,13 +28,18 @@ namespace Sharp.Modules.AdminCommands.Services.Handlers;
 
 internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 {
-    private readonly Dictionary<SteamID, DateTime?> _mutes = new ();
-
     private readonly InterfaceBridge _bridge;
-    private          bool            _hooksRegistered;
+
+    private readonly Dictionary<SteamID, DateTime?> _mutes;
+
+    private bool _hooksRegistered;
 
     public MuteHandler(InterfaceBridge bridge)
-        => _bridge = bridge;
+    {
+        _bridge = bridge;
+
+        _mutes = [];
+    }
 
     public AdminOperationType Type => AdminOperationType.Mute;
 

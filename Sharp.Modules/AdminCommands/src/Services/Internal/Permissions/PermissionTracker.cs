@@ -61,9 +61,9 @@ internal sealed class TrackingPermissionCommandRegistry : IAdminCommandRegistry
         _tracker = tracker;
     }
 
-    public void RegisterAdminCommand(string                              command,
-                                     Action<IGameClient?, StringCommand> call,
-                                     ImmutableArray<string>              permissions)
+    public void RegisterAdminCommand(string command,
+        Action<IGameClient?, StringCommand> call,
+        ImmutableArray<string>              permissions)
     {
         _tracker.Track(permissions);
         _inner.RegisterAdminCommand(command, call, permissions);

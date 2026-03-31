@@ -27,20 +27,23 @@ namespace Sharp.Modules.AdminCommands.Storage;
 
 internal class JsonAdminOperationStorage : IAdminOperationStorageService, IDisposable
 {
-    private readonly string                              _filePath;
-    private readonly ILogger<JsonAdminOperationStorage>? _logger;
-
-    // using SteamID + Punishment for quick lookup
-    private Dictionary<(SteamID, AdminOperationType), AdminOperationRecord> _records = new ();
-
-    private readonly SemaphoreSlim _lock = new (1, 1);
-
     private static readonly JsonSerializerOptions SerializerOptions = new () { WriteIndented = true };
 
-    public JsonAdminOperationStorage(string sharpPath, ILogger<JsonAdminOperationStorage>? logger = null)
+    private readonly ILogger<JsonAdminOperationStorage> _logger;
+    private readonly string                             _filePath;
+
+    // using SteamID + Punishment for quick lookup
+    private readonly Dictionary<(SteamID, AdminOperationType), AdminOperationRecord> _records;
+    private readonly SemaphoreSlim                                                   _lock;
+
+    public JsonAdminOperationStorage(ILogger<JsonAdminOperationStorage> logger, InterfaceBridge bridge)
     {
-        _filePath = Path.Combine(sharpPath, "data", "punishments.json");
+        _filePath = Path.Combine(bridge.SharpPath, "data", "punishments.json");
         _logger   = logger;
+
+        _records = [];
+        _lock    = new SemaphoreSlim(1, 1);
+
         Load();
     }
 
@@ -200,7 +203,7 @@ internal class JsonAdminOperationStorage : IAdminOperationStorageService, IDispo
             var json = File.ReadAllText(_filePath);
             var list = JsonSerializer.Deserialize<List<AdminOperationRecord>>(json) ?? [];
 
-            _records = new Dictionary<(SteamID, AdminOperationType), AdminOperationRecord>();
+            _records.Clear();
 
             foreach (var record in list)
             {
@@ -220,7 +223,7 @@ internal class JsonAdminOperationStorage : IAdminOperationStorageService, IDispo
                 _logger?.LogError(moveEx, "Failed to move corrupt punishment storage file.");
             }
 
-            _records = new ();
+            _records.Clear();
         }
     }
 

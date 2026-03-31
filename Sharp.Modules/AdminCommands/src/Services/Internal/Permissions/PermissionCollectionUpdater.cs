@@ -36,11 +36,11 @@ internal static class PermissionCollectionUpdater
             NumberHandling              = JsonNumberHandling.AllowReadingFromString,
         };
 
-    public static void Write(IAdminManager               adminManager,
-                             string                      sharpPath,
-                             string                      collectionName,
-                             IReadOnlyCollection<string> permissions,
-                             ILogger                     logger)
+    public static void Write(IAdminManager adminManager,
+        string                             sharpPath,
+        string                             collectionName,
+        IReadOnlyCollection<string>        permissions,
+        ILogger                            logger)
     {
         var configPath = Path.Combine(sharpPath, "configs", "admins.jsonc");
 
@@ -53,11 +53,15 @@ internal static class PermissionCollectionUpdater
                 var json = File.ReadAllText(configPath);
 
                 manifest = JsonSerializer.Deserialize<AdminTableManifest>(json, Options)
-                           ?? new AdminTableManifest(new (StringComparer.OrdinalIgnoreCase), [], []);
+                           ?? new AdminTableManifest(new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase),
+                                                     [],
+                                                     []);
             }
             else
             {
-                manifest = new AdminTableManifest(new (StringComparer.OrdinalIgnoreCase), [], []);
+                manifest = new AdminTableManifest(new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase),
+                                                  [],
+                                                  []);
             }
 
             var permissionCollection = manifest.PermissionCollection ?? [];

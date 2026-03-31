@@ -24,22 +24,7 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace Sharp.Modules.AdminCommands.Commands;
-
-internal sealed class CommandContextFactory
-{
-    private readonly InterfaceBridge _bridge;
-    private readonly ModuleContext   _moduleContext;
-
-    public CommandContextFactory(InterfaceBridge bridge, ModuleContext moduleContext)
-    {
-        _bridge        = bridge;
-        _moduleContext = moduleContext;
-    }
-
-    public CommandContext Create(IGameClient? issuer, StringCommand command, ILogger logger)
-        => new (_bridge, _moduleContext, issuer, command, logger);
-}
+namespace Sharp.Modules.AdminCommands.Common;
 
 internal sealed class CommandContext
 {
@@ -101,9 +86,8 @@ internal sealed class CommandContext
 
         var rawTarget = _command.GetArg(argIndex);
         targetLabel = rawTarget;
-        
-        var matchesEnumerable = ResolveTargets(rawTarget);
-        var matches = matchesEnumerable as List<IGameClient> ?? matchesEnumerable.ToList();
+
+        var matches = ResolveTargets(rawTarget).ToList();
 
         if (matches.Count == 0)
         {

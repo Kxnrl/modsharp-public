@@ -18,6 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
@@ -31,11 +32,11 @@ internal sealed class ServerCommands : ICommandCategory
     private readonly CommandContextFactory   _contextFactory;
     private readonly ILogger<ServerCommands> _logger;
 
-    public ServerCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
+    public ServerCommands(ILogger<ServerCommands> logger, InterfaceBridge bridge, CommandContextFactory contextFactory)
     {
+        _logger         = logger;
         _bridge         = bridge;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<ServerCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)

@@ -18,6 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Definition;
@@ -32,17 +33,20 @@ internal sealed class ChatCommands : ICommandCategory, IClientListener
 {
     private const string SayPermission = "admin:say";
 
+    private readonly ILogger<ChatCommands> _logger;
     private readonly InterfaceBridge       _bridge;
     private readonly CommandContextFactory _contextFactory;
     private readonly ModuleContext         _moduleContext;
-    private readonly ILogger<ChatCommands> _logger;
 
-    public ChatCommands(InterfaceBridge bridge, CommandContextFactory contextFactory, ModuleContext moduleContext)
+    public ChatCommands(ILogger<ChatCommands> logger,
+        InterfaceBridge                       bridge,
+        CommandContextFactory                 contextFactory,
+        ModuleContext                         moduleContext)
     {
+        _logger         = logger;
         _bridge         = bridge;
         _contextFactory = contextFactory;
         _moduleContext  = moduleContext;
-        _logger         = bridge.LoggerFactory.CreateLogger<ChatCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)
@@ -166,10 +170,10 @@ internal sealed class ChatCommands : ICommandCategory, IClientListener
     }
 
     public ECommandAction OnClientSayCommand(IGameClient client,
-                                             bool        teamOnly,
-                                             bool        isCommand,
-                                             string      commandName,
-                                             string      message)
+        bool                                             teamOnly,
+        bool                                             isCommand,
+        string                                           commandName,
+        string                                           message)
     {
         if (!message.StartsWith('@') || _moduleContext.AdminManager is not { } adminManager)
         {

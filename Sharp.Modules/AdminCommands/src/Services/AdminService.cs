@@ -30,7 +30,11 @@ internal sealed class AdminService : IAdminService
 {
     private readonly AdminOperationEngine _engine;
 
-    public AdminService(IBanService ban, IMuteService mute, IGagService gag, ISilenceService silence, AdminOperationEngine engine)
+    public AdminService(IBanService ban,
+        IMuteService                mute,
+        IGagService                 gag,
+        ISilenceService             silence,
+        AdminOperationEngine        engine)
     {
         Ban     = ban;
         Mute    = mute;
@@ -47,22 +51,22 @@ internal sealed class AdminService : IAdminService
     public void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler)
         => _engine.RegisterHandler(moduleIdentity, handler);
 
-    public void Apply(IGameClient?       admin,
-                      IGameClient        target,
-                      AdminOperationType type,
-                      TimeSpan?          duration,
-                      string             reason,
-                      bool               silent = false)
+    public void Apply(IGameClient? admin,
+        IGameClient                target,
+        AdminOperationType         type,
+        TimeSpan?                  duration,
+        string                     reason,
+        bool                       silent = false)
         => _engine.ApplyOnline(admin, target, type, duration, reason, silent);
 
     public void Apply(IGameClient? admin, SteamID target, AdminOperationType type, TimeSpan? duration, string reason)
         => _engine.ApplyOffline(admin, target, target.ToString(), type, duration, reason);
 
-    public void Remove(IGameClient?       admin,
-                       IGameClient        target,
-                       AdminOperationType type,
-                       string             reason,
-                       bool               silent = false)
+    public void Remove(IGameClient? admin,
+        IGameClient                 target,
+        AdminOperationType          type,
+        string                      reason,
+        bool                        silent = false)
         => _engine.RemoveOnline(admin, target, type, reason, silent);
 
     public void Remove(IGameClient? admin, SteamID target, AdminOperationType type, string reason)

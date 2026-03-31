@@ -22,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
-using Sharp.Shared.Listeners;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
@@ -31,17 +30,21 @@ namespace Sharp.Modules.AdminCommands.Services.Handlers;
 
 internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 {
-    private readonly Dictionary<SteamID, BanEntry> _bans   = new ();
-    private readonly Dictionary<string, DateTime?> _ipBans = new ();
-
-    private readonly InterfaceBridge     _bridge;
     private readonly ILogger<BanHandler> _logger;
-    private          bool                _hooksRegistered;
+    private readonly InterfaceBridge     _bridge;
 
-    public BanHandler(InterfaceBridge bridge)
+    private readonly Dictionary<SteamID, BanEntry> _bans;
+    private readonly Dictionary<string, DateTime?> _ipBans;
+
+    private bool _hooksRegistered;
+
+    public BanHandler(ILogger<BanHandler> logger, InterfaceBridge bridge)
     {
+        _logger = logger;
         _bridge = bridge;
-        _logger = bridge.LoggerFactory.CreateLogger<BanHandler>();
+
+        _bans   = [];
+        _ipBans = [];
     }
 
     public AdminOperationType Type => AdminOperationType.Ban;
@@ -49,7 +52,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     public void OnApplied(AdminOperationRecord record, IGameClient? targetClient)
     {
         var metadata = record.GetMetadata<BanMetadata>();
-        var type     = (BanType?) metadata?.Bantype ?? BanType.SteamId;
+        var type     = metadata?.BanType ?? BanType.SteamId;
         var ip       = metadata?.Ip;
 
         SetBanned(record.SteamId, true, type, ip, record.ExpiresAt);
@@ -94,8 +97,8 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         _hooksRegistered = false;
     }
 
-    private HookReturnValue<NetworkDisconnectionReason> OnConnectClientPre(IConnectClientHookParams                    @params,
-                                                                           HookReturnValue<NetworkDisconnectionReason> arg2)
+    private HookReturnValue<NetworkDisconnectionReason> OnConnectClientPre(IConnectClientHookParams @params,
+        HookReturnValue<NetworkDisconnectionReason>                                                 arg2)
     {
         var steamId = @params.SteamId;
 
@@ -155,11 +158,11 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         return true;
     }
 
-    private void SetBanned(SteamID   steamId,
-                           bool      banned,
-                           BanType   type      = BanType.SteamId,
-                           string?   ip        = null,
-                           DateTime? expiresAt = null)
+    private void SetBanned(SteamID steamId,
+        bool                       banned,
+        BanType                    type      = BanType.SteamId,
+        string?                    ip        = null,
+        DateTime?                  expiresAt = null)
     {
         if (banned)
         {
@@ -204,20 +207,17 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
             return ip;
         }
 
-        return ip.Substring(0, lastDotIndex + 1);
+        return ip[..(lastDotIndex + 1)];
     }
 
     private record struct BanEntry(DateTime? ExpiresAt, BanType Type, string? Ip);
 
-    private class BanMetadata
+    private record BanMetadata
     {
         [JsonPropertyName("ip")]
         public string? Ip { get; set; }
 
         [JsonPropertyName("bantype")]
-        public int Bantype { get; set; }
+        public BanType BanType { get; set; }
     }
-
-    public int ListenerVersion  => IClientListener.ApiVersion;
-    public int ListenerPriority => 0;
 }

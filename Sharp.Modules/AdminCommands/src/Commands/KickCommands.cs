@@ -18,6 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
@@ -25,17 +26,17 @@ using Sharp.Shared.Types;
 
 namespace Sharp.Modules.AdminCommands.Commands;
 
-internal class KickCommands : ICommandCategory
+internal sealed class KickCommands : ICommandCategory
 {
+    private readonly ILogger<KickCommands> _logger;
     private readonly InterfaceBridge       _bridge;
     private readonly CommandContextFactory _contextFactory;
-    private readonly ILogger<KickCommands> _logger;
 
-    public KickCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
+    public KickCommands(ILogger<KickCommands> logger, InterfaceBridge bridge, CommandContextFactory contextFactory)
     {
+        _logger         = logger;
         _bridge         = bridge;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<KickCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)

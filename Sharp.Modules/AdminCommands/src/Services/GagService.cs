@@ -18,7 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Objects;
@@ -29,21 +29,20 @@ namespace Sharp.Modules.AdminCommands.Services;
 
 internal class GagService : ICommandCategory, IGagService
 {
+    private readonly ILogger<GagService>   _logger;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
-    private readonly ILogger<GagService>   _logger;
 
-    public GagService(
-        InterfaceBridge       bridge,
-        AdminOperationService operations,
-        AdminOperationEngine  engine,
-        CommandContextFactory contextFactory)
+    public GagService(ILogger<GagService> logger,
+        AdminOperationService             operations,
+        AdminOperationEngine              engine,
+        CommandContextFactory             contextFactory)
     {
+        _logger         = logger;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<GagService>();
     }
 
     public void Register(IAdminCommandRegistry registry)
@@ -75,16 +74,21 @@ internal class GagService : ICommandCategory, IGagService
 
         _ = ExecuteGagAsync(ctx, target, duration, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process gag for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process gag. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process gag for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process gag. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteGagAsync(CommandContext ctx, IGameClient target, TimeSpan? duration, string reason, IGameClient? issuer)
+    private async Task ExecuteGagAsync(CommandContext ctx,
+        IGameClient                                   target,
+        TimeSpan?                                     duration,
+        string                                        reason,
+        IGameClient?                                  issuer)
     {
         if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
         {
@@ -114,13 +118,14 @@ internal class GagService : ICommandCategory, IGagService
 
         _ = ExecuteUngagAsync(ctx, target, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process ungag for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process ungag. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process ungag for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process ungag. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private async Task ExecuteUngagAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)

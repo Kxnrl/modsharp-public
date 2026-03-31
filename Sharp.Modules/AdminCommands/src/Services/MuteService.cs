@@ -18,7 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Objects;
@@ -29,21 +29,20 @@ namespace Sharp.Modules.AdminCommands.Services;
 
 internal class MuteService : ICommandCategory, IMuteService
 {
+    private readonly ILogger<MuteService>  _logger;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
-    private readonly ILogger<MuteService>  _logger;
 
-    public MuteService(
-        InterfaceBridge       bridge,
-        AdminOperationService operations,
-        AdminOperationEngine  engine,
-        CommandContextFactory contextFactory)
+    public MuteService(ILogger<MuteService> logger,
+        AdminOperationService               operations,
+        AdminOperationEngine                engine,
+        CommandContextFactory               contextFactory)
     {
+        _logger         = logger;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<MuteService>();
     }
 
     public void Register(IAdminCommandRegistry registry)
@@ -85,7 +84,11 @@ internal class MuteService : ICommandCategory, IMuteService
                           TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteMuteAsync(CommandContext ctx, IGameClient target, TimeSpan? duration, string reason, IGameClient? issuer)
+    private async Task ExecuteMuteAsync(CommandContext ctx,
+        IGameClient                                    target,
+        TimeSpan?                                      duration,
+        string                                         reason,
+        IGameClient?                                   issuer)
     {
         if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
         {

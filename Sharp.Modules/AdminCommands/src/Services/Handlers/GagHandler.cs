@@ -27,13 +27,18 @@ namespace Sharp.Modules.AdminCommands.Services.Handlers;
 
 internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar, IClientListener
 {
-    private readonly Dictionary<SteamID, DateTime?> _gags = new ();
-
     private readonly InterfaceBridge _bridge;
-    private          bool            _hooksRegistered;
+
+    private readonly Dictionary<SteamID, DateTime?> _gags;
+
+    private bool _hooksRegistered;
 
     public GagHandler(InterfaceBridge bridge)
-        => _bridge = bridge;
+    {
+        _bridge = bridge;
+
+        _gags = [];
+    }
 
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => byte.MaxValue;
@@ -75,10 +80,10 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     }
 
     public ECommandAction OnClientSayCommand(IGameClient client,
-                                             bool        teamOnly,
-                                             bool        isCommand,
-                                             string      commandName,
-                                             string      message)
+        bool                                             teamOnly,
+        bool                                             isCommand,
+        string                                           commandName,
+        string                                           message)
         => IsGagged(client.SteamId) && !isCommand ? ECommandAction.Stopped : ECommandAction.Skipped;
 
     private bool IsGagged(SteamID steamId)

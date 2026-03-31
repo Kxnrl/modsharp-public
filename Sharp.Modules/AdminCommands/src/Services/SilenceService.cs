@@ -18,7 +18,7 @@
  */
 
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Objects;
@@ -28,21 +28,21 @@ namespace Sharp.Modules.AdminCommands.Services;
 
 internal class SilenceService : ICommandCategory, ISilenceService
 {
+    private readonly ILogger<SilenceService> _logger;
     private readonly AdminOperationService   _operations;
     private readonly AdminOperationEngine    _engine;
     private readonly CommandContextFactory   _contextFactory;
-    private readonly ILogger<SilenceService> _logger;
 
-    public SilenceService(
-        InterfaceBridge       bridge,
-        AdminOperationService operations,
-        AdminOperationEngine  engine,
-        CommandContextFactory contextFactory)
+    public SilenceService(ILogger<SilenceService> logger,
+        InterfaceBridge                           bridge,
+        AdminOperationService                     operations,
+        AdminOperationEngine                      engine,
+        CommandContextFactory                     contextFactory)
     {
+        _logger         = logger;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<SilenceService>();
     }
 
     public void Register(IAdminCommandRegistry registry)
@@ -74,16 +74,21 @@ internal class SilenceService : ICommandCategory, ISilenceService
 
         _ = ExecuteSilenceAsync(ctx, target, duration, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process silence for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process silence. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process silence for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process silence. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteSilenceAsync(CommandContext ctx, IGameClient target, TimeSpan? duration, string reason, IGameClient? issuer)
+    private async Task ExecuteSilenceAsync(CommandContext ctx,
+        IGameClient                                       target,
+        TimeSpan?                                         duration,
+        string                                            reason,
+        IGameClient?                                      issuer)
     {
         var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
         var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
@@ -119,13 +124,14 @@ internal class SilenceService : ICommandCategory, ISilenceService
 
         _ = ExecuteUnsilenceAsync(ctx, target, reason, issuer)
             .ContinueWith(t =>
-            {
-                if (t.Exception?.InnerException is { } ex)
-                {
-                    _logger.LogError(ex, "Failed to process unsilence for {SteamId}", target.SteamId);
-                    ctx.Reply("Failed to process unsilence. Check server logs.");
-                }
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                          {
+                              if (t.Exception?.InnerException is { } ex)
+                              {
+                                  _logger.LogError(ex, "Failed to process unsilence for {SteamId}", target.SteamId);
+                                  ctx.Reply("Failed to process unsilence. Check server logs.");
+                              }
+                          },
+                          TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private async Task ExecuteUnsilenceAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)

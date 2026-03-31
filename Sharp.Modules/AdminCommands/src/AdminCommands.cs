@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Commands;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminCommands.Extensions;
 using Sharp.Modules.AdminCommands.Services;
 using Sharp.Modules.AdminCommands.Services.Handlers;
@@ -40,22 +41,22 @@ public class AdminCommands : IModSharpModule
     public static readonly string AssemblyName = typeof(AdminCommands).Assembly.GetName().Name
                                                  ?? "Sharp.Modules.AdminCommands";
 
-    private const string LocalizeManagerAssemblyName  = "Sharp.Modules.LocalizerManager";
+    private const  string LocalizeManagerAssemblyName  = "Sharp.Modules.LocalizerManager";
     internal const string AdminManagerAssemblyName     = "Sharp.Modules.AdminManager";
-    private const string TargetingManagerAssemblyName = "Sharp.Modules.TargetingManager";
-    private const string AdminCommandsLocaleName      = "admin_commands";
+    private const  string TargetingManagerAssemblyName = "Sharp.Modules.TargetingManager";
+    private const  string AdminCommandsLocaleName      = "admin_commands";
 
     string IModSharpModule.DisplayName   => "Sharp.Modules.AdminCommands";
     string IModSharpModule.DisplayAuthor => "Nukoooo";
 
-    private readonly ISharedSystem                         _shared;
-    private readonly ILogger<AdminCommands>                _logger;
-    private readonly ServiceProvider                       _serviceProvider;
-    private readonly PermissionTracker                     _permissionTracker;
-    private readonly ModuleContext                         _moduleContext;
-    private readonly AdminOperationStorage                 _adminOperationStorage;
-    private readonly IReadOnlyCollection<ICommandCategory> _commandCategories;
-    private readonly string                                _sharpPath;
+    private readonly ISharedSystem          _shared;
+    private readonly ILogger<AdminCommands> _logger;
+    private readonly ServiceProvider        _serviceProvider;
+    private readonly PermissionTracker      _permissionTracker;
+    private readonly ModuleContext          _moduleContext;
+    private readonly AdminOperationStorage  _adminOperationStorage;
+    private readonly ICommandCategory[]     _commandCategories;
+    private readonly string                 _sharpPath;
 
     private IModSharpModuleInterface<IAdminManager>?     _adminManager;
     private IModSharpModuleInterface<ILocalizerManager>? _localizerManager;
@@ -78,18 +79,22 @@ public class AdminCommands : IModSharpModule
         // Configure DI container
         var services = new ServiceCollection();
         ConfigureServices(services, shared, sharpPath);
-        _serviceProvider = services.BuildServiceProvider();
+        var provider = services.BuildServiceProvider();
 
-        _moduleContext         = _serviceProvider.GetRequiredService<ModuleContext>();
-        _permissionTracker     = _serviceProvider.GetRequiredService<PermissionTracker>();
-        _adminOperationStorage = _serviceProvider.GetRequiredService<AdminOperationStorage>();
-        _commandCategories     = _serviceProvider.GetServices<ICommandCategory>().ToArray();
+        _moduleContext         = provider.GetRequiredService<ModuleContext>();
+        _permissionTracker     = provider.GetRequiredService<PermissionTracker>();
+        _adminOperationStorage = provider.GetRequiredService<AdminOperationStorage>();
+        _commandCategories     = [.. provider.GetServices<ICommandCategory>()];
+        _serviceProvider       = provider;
     }
 
     private static void ConfigureServices(IServiceCollection services, ISharedSystem shared, string sharpPath)
     {
+        services.AddSingleton(shared.GetLoggerFactory());
+        services.Add(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
+
         AddCoreServices(services, shared, sharpPath);
-        AddStorageServices(services, sharpPath);
+        AddStorageServices(services);
         AddFeatureServices(services);
     }
 
@@ -101,28 +106,16 @@ public class AdminCommands : IModSharpModule
         services.AddSingleton<CommandContextFactory>();
         services.AddSingleton<AdminOperationService>();
         services.AddSingleton<AdminOperationEngine>();
-        
+
         services.AddOperationHandler<BanHandler>();
         services.AddOperationHandler<MuteHandler>();
         services.AddOperationHandler<GagHandler>();
     }
 
-    private static void AddStorageServices(IServiceCollection services, string sharpPath)
+    private static void AddStorageServices(IServiceCollection services)
     {
-        services.AddSingleton<JsonAdminOperationStorage>(sp =>
-        {
-            var bridge = sp.GetRequiredService<InterfaceBridge>();
-
-            return new JsonAdminOperationStorage(sharpPath, bridge.LoggerFactory.CreateLogger<JsonAdminOperationStorage>());
-        });
-
-        services.AddSingleton<AdminOperationStorage>(sp =>
-        {
-            var bridge   = sp.GetRequiredService<InterfaceBridge>();
-            var fallback = sp.GetRequiredService<JsonAdminOperationStorage>();
-
-            return new AdminOperationStorage(fallback, bridge.LoggerFactory.CreateLogger<AdminOperationStorage>());
-        });
+        services.AddSingleton<JsonAdminOperationStorage>();
+        services.AddSingleton<AdminOperationStorage>();
 
         services.AddSingleton<IAdminOperationStorageService>(sp => sp.GetRequiredService<AdminOperationStorage>());
     }
@@ -222,7 +215,7 @@ public class AdminCommands : IModSharpModule
             return;
         }
 
-        var registeredCategories = new List<ICommandCategory>(_commandCategories.Count);
+        var registeredCategories = new List<ICommandCategory>(_commandCategories.Length);
         _permissionTracker.Clear();
 
         try
@@ -298,8 +291,9 @@ public class AdminCommands : IModSharpModule
         }
         else if (logFailure)
         {
-            _logger.LogWarning("Failed to get AdminManager. Do you have '{AssemblyName}' installed? Admin commands will not work.",
-                               AdminManagerAssemblyName);
+            _logger.LogWarning(
+                "Failed to get AdminManager. Do you have '{AssemblyName}' installed? Admin commands will not work.",
+                AdminManagerAssemblyName);
         }
     }
 
@@ -312,14 +306,16 @@ public class AdminCommands : IModSharpModule
 
         _localizerManager = _shared.GetSharpModuleManager()
                                    .GetOptionalSharpModuleInterface<ILocalizerManager>(ILocalizerManager.Identity);
+
         _moduleContext.UpdateLocalizer(_localizerManager?.Instance);
 
         if (_localizerManager?.Instance is null)
         {
             if (logFailure)
             {
-                _logger.LogWarning("Failed to get LocalizerManager. Do you have '{AssemblyName}' installed? Messages will use fallback values.",
-                                   LocalizeManagerAssemblyName);
+                _logger.LogWarning(
+                    "Failed to get LocalizerManager. Do you have '{AssemblyName}' installed? Messages will use fallback values.",
+                    LocalizeManagerAssemblyName);
             }
         }
         else
@@ -337,12 +333,14 @@ public class AdminCommands : IModSharpModule
 
         _targetingManager = _shared.GetSharpModuleManager()
                                    .GetOptionalSharpModuleInterface<ITargetingManager>(ITargetingManager.Identity);
+
         _moduleContext.UpdateTargeting(_targetingManager?.Instance);
 
         if (_targetingManager?.Instance is null && logFailure)
         {
-            _logger.LogWarning("Failed to get TargetingManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
-                               TargetingManagerAssemblyName);
+            _logger.LogWarning(
+                "Failed to get TargetingManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
+                TargetingManagerAssemblyName);
         }
     }
 
@@ -351,7 +349,8 @@ public class AdminCommands : IModSharpModule
         try
         {
             var external = _shared.GetSharpModuleManager()
-                                  .GetOptionalSharpModuleInterface<IAdminOperationStorageService>(IAdminOperationStorageService.Identity)
+                                  .GetOptionalSharpModuleInterface<IAdminOperationStorageService>(
+                                      IAdminOperationStorageService.Identity)
                                   ?.Instance;
 
             if (external is null)
@@ -435,5 +434,4 @@ public class AdminCommands : IModSharpModule
             registrar.UnregisterHooks();
         }
     }
-
 }

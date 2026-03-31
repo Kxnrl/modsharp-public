@@ -23,7 +23,7 @@ using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace Sharp.Modules.AdminCommands.Commands;
+namespace Sharp.Modules.AdminCommands.Common;
 
 internal static class CommandHelpers
 {
@@ -102,43 +102,48 @@ internal static class CommandHelpers
 
     public static bool TryParseTeam(string raw, out CStrikeTeam team)
     {
-        if (string.Equals(raw, "t", StringComparison.OrdinalIgnoreCase) 
-            || string.Equals(raw, "te", StringComparison.OrdinalIgnoreCase) 
+        if (string.Equals(raw,    "t",         StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "te",        StringComparison.OrdinalIgnoreCase)
             || string.Equals(raw, "terrorist", StringComparison.OrdinalIgnoreCase))
         {
             team = CStrikeTeam.TE;
+
             return true;
         }
 
-        if (string.Equals(raw, "ct", StringComparison.OrdinalIgnoreCase) 
-            || string.Equals(raw, "counter", StringComparison.OrdinalIgnoreCase) 
-            || string.Equals(raw, "c", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(raw,    "ct",      StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "counter", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "c",       StringComparison.OrdinalIgnoreCase))
         {
             team = CStrikeTeam.CT;
+
             return true;
         }
 
-        if (string.Equals(raw, "spec", StringComparison.OrdinalIgnoreCase) 
-            || string.Equals(raw, "spectator", StringComparison.OrdinalIgnoreCase) 
-            || string.Equals(raw, "s", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(raw,    "spec",      StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "spectator", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(raw, "s",         StringComparison.OrdinalIgnoreCase))
         {
             team = CStrikeTeam.Spectator;
+
             return true;
         }
 
         if (byte.TryParse(raw, out var parsed) && Enum.IsDefined(typeof(CStrikeTeam), parsed))
         {
-            team = (CStrikeTeam)parsed;
+            team = (CStrikeTeam) parsed;
+
             return true;
         }
 
         team = CStrikeTeam.UnAssigned;
+
         return false;
     }
 
-    public static bool TryGetPawn(IGameClient     target,
-                                  out IPlayerPawn pawn,
-                                  bool            requireAlive = false)
+    public static bool TryGetPawn(IGameClient target,
+        out IPlayerPawn                       pawn,
+        bool                                  requireAlive = false)
     {
         pawn = null!;
 

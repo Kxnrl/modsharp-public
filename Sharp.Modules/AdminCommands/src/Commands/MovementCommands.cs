@@ -19,6 +19,7 @@
 
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
@@ -28,15 +29,13 @@ namespace Sharp.Modules.AdminCommands.Commands;
 
 internal sealed class MovementCommands : ICommandCategory
 {
-    private readonly InterfaceBridge           _bridge;
-    private readonly CommandContextFactory     _contextFactory;
     private readonly ILogger<MovementCommands> _logger;
+    private readonly CommandContextFactory     _contextFactory;
 
-    public MovementCommands(InterfaceBridge bridge, CommandContextFactory contextFactory)
+    public MovementCommands(ILogger<MovementCommands> logger, CommandContextFactory contextFactory)
     {
-        _bridge         = bridge;
+        _logger         = logger;
         _contextFactory = contextFactory;
-        _logger         = bridge.LoggerFactory.CreateLogger<MovementCommands>();
     }
 
     public void Register(IAdminCommandRegistry registry)

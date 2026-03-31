@@ -37,23 +37,23 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => 0;
 
+    private readonly ILogger<AdminOperationEngine> _logger;
     private readonly InterfaceBridge               _bridge;
     private readonly AdminOperationService         _operations;
     private readonly ModuleContext                 _moduleContext;
-    private readonly ILogger<AdminOperationEngine> _logger;
 
     private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)> _handlers;
 
-    public AdminOperationEngine(
-        InterfaceBridge                     bridge,
-        AdminOperationService               operations,
-        ModuleContext                       moduleContext,
-        IEnumerable<IAdminOperationHandler> handlers)
+    public AdminOperationEngine(ILogger<AdminOperationEngine> logger,
+        InterfaceBridge                                       bridge,
+        AdminOperationService                                 operations,
+        ModuleContext                                         moduleContext,
+        IEnumerable<IAdminOperationHandler>                   handlers)
     {
+        _logger        = logger;
         _bridge        = bridge;
         _operations    = operations;
         _moduleContext = moduleContext;
-        _logger        = bridge.LoggerFactory.CreateLogger<AdminOperationEngine>();
 
         _handlers = handlers.ToDictionary(h => h.Type,
                                           h => (h, AdminCommands.AssemblyName));
@@ -100,36 +100,36 @@ internal class AdminOperationEngine : IClientListener
         _bridge.ClientManager.RemoveClientListener(this);
     }
 
-    public void ApplyOnline(IGameClient?       admin,
-                            IGameClient        target,
-                            AdminOperationType type,
-                            TimeSpan?          duration,
-                            string             reason,
-                            bool               silent   = false,
-                            string?            metadata = null)
+    public void ApplyOnline(IGameClient? admin,
+        IGameClient                      target,
+        AdminOperationType               type,
+        TimeSpan?                        duration,
+        string                           reason,
+        bool                             silent   = false,
+        string?                          metadata = null)
         => ApplyCore(admin, target, target.SteamId, target.Name, target.Slot, type, duration, reason, metadata, silent);
 
-    public void ApplyOffline(IGameClient?       admin,
-                             SteamID            steamId,
-                             string             targetName,
-                             AdminOperationType type,
-                             TimeSpan?          duration,
-                             string             reason,
-                             string?            metadata = null)
+    public void ApplyOffline(IGameClient? admin,
+        SteamID                           steamId,
+        string                            targetName,
+        AdminOperationType                type,
+        TimeSpan?                         duration,
+        string                            reason,
+        string?                           metadata = null)
         => ApplyCore(admin, null, steamId, targetName, null, type, duration, reason, metadata, true);
 
-    public void RemoveOnline(IGameClient?       admin,
-                             IGameClient        target,
-                             AdminOperationType type,
-                             string             reason,
-                             bool               silent = false)
+    public void RemoveOnline(IGameClient? admin,
+        IGameClient                       target,
+        AdminOperationType                type,
+        string                            reason,
+        bool                              silent = false)
         => RemoveCore(admin, target, target.SteamId, target.Name, target.Slot, type, reason, silent);
 
-    public void RemoveOffline(IGameClient?       admin,
-                              SteamID            steamId,
-                              string             targetName,
-                              AdminOperationType type,
-                              string             reason)
+    public void RemoveOffline(IGameClient? admin,
+        SteamID                            steamId,
+        string                             targetName,
+        AdminOperationType                 type,
+        string                             reason)
         => RemoveCore(admin, null, steamId, targetName, null, type, reason, true);
 
     public void NotifySilenceApplied(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
@@ -140,7 +140,7 @@ internal class AdminOperationEngine : IClientListener
         Notify(adminName,
                target,
                "Admin.SilenceApplied",
-               $"silenced {target.Name} {formattedDuration.ToString()}",
+               $"silenced {target.Name} {formattedDuration}",
                formattedDuration,
                reason);
     }
@@ -155,16 +155,16 @@ internal class AdminOperationEngine : IClientListener
 
 #region Core
 
-    private void ApplyCore(IGameClient?       admin,
-                           IGameClient?       target,
-                           SteamID            targetId,
-                           string             targetName,
-                           PlayerSlot?        slot,
-                           AdminOperationType type,
-                           TimeSpan?          duration,
-                           string             reason,
-                           string?            metadata,
-                           bool               silent)
+    private void ApplyCore(IGameClient? admin,
+        IGameClient?                    target,
+        SteamID                         targetId,
+        string                          targetName,
+        PlayerSlot?                     slot,
+        AdminOperationType              type,
+        TimeSpan?                       duration,
+        string                          reason,
+        string?                         metadata,
+        bool                            silent)
     {
         var adminName    = ResolveAdminName(admin);
         var adminDisplay = ResolveAdminDisplay(admin);
@@ -196,14 +196,14 @@ internal class AdminOperationEngine : IClientListener
         _ = _operations.AddAsync(record);
     }
 
-    private void RemoveCore(IGameClient?       admin,
-                            IGameClient?       target,
-                            SteamID            targetId,
-                            string             targetName,
-                            PlayerSlot?        slot,
-                            AdminOperationType type,
-                            string             reason,
-                            bool               silent)
+    private void RemoveCore(IGameClient? admin,
+        IGameClient?                     target,
+        SteamID                          targetId,
+        string                           targetName,
+        PlayerSlot?                      slot,
+        AdminOperationType               type,
+        string                           reason,
+        bool                             silent)
     {
         var adminName    = ResolveAdminName(admin);
         var adminDisplay = ResolveAdminDisplay(admin);
@@ -230,12 +230,12 @@ internal class AdminOperationEngine : IClientListener
         _ = _operations.RemoveAsync(targetId, type, admin?.SteamId, reason);
     }
 
-    private static AdminOperationRecord CreateRecord(SteamID            targetId,
-                                                     AdminOperationType type,
-                                                     SteamID?           adminId,
-                                                     TimeSpan?          duration,
-                                                     string             reason,
-                                                     string?            metadata = null)
+    private static AdminOperationRecord CreateRecord(SteamID targetId,
+        AdminOperationType                                   type,
+        SteamID?                                             adminId,
+        TimeSpan?                                            duration,
+        string                                               reason,
+        string?                                              metadata = null)
     {
         var now       = DateTime.UtcNow;
         var expiresAt = duration.HasValue ? now.Add(duration.Value) : (DateTime?) null;
@@ -243,12 +243,12 @@ internal class AdminOperationEngine : IClientListener
         return new AdminOperationRecord(targetId, type, adminId, now, expiresAt, reason, metadata);
     }
 
-    private void Notify(string            adminName,
-                        IGameClient?      target,
-                        string            locKey,
-                        string            fallback,
-                        LocalizedDuration duration,
-                        string            reason)
+    private void Notify(string adminName,
+        IGameClient?           target,
+        string                 locKey,
+        string                 fallback,
+        LocalizedDuration      duration,
+        string                 reason)
     {
         _bridge.ModSharp.InvokeFrameAction(() =>
         {
@@ -268,13 +268,13 @@ internal class AdminOperationEngine : IClientListener
     private LocalizedDuration FormatDuration(TimeSpan? duration)
         => new (duration, _moduleContext.LocalizerManager);
 
-    private void LogOperation(string             adminDisplay,
-                              string             targetName,
-                              SteamID            targetId,
-                              AdminOperationType type,
-                              TimeSpan?          duration,
-                              string             reason,
-                              string             action)
+    private void LogOperation(string adminDisplay,
+        string                       targetName,
+        SteamID                      targetId,
+        AdminOperationType           type,
+        TimeSpan?                    duration,
+        string                       reason,
+        string                       action)
     {
         _logger.LogInformation("{Action} {Type}: {Admin} -> {Target} ({SteamId}). Duration: {Duration}. Reason: {Reason}",
                                action,
