@@ -38,13 +38,12 @@ public sealed class SqlStorage : IModSharpModule
 
     private readonly IAdminOperationStorageService _impl;
 
-    public SqlStorage(
-        ISharedSystem  sharedSystem,
-        string         dllPath,
-        string         sharpPath,
-        Version        version,
-        IConfiguration coreConfiguration,
-        bool           hotReload)
+    public SqlStorage(ISharedSystem sharedSystem,
+        string                      dllPath,
+        string                      sharpPath,
+        Version                     version,
+        IConfiguration              coreConfiguration,
+        bool                        hotReload)
     {
         _sharedSystem = sharedSystem;
         _logger       = sharedSystem.GetLoggerFactory().CreateLogger<SqlStorage>();

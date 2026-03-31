@@ -33,11 +33,13 @@ internal sealed class SteamIdDataConvert : ISugarDataConverter
 
         if (columnValue is SteamID id)
         {
-            parameter = new SugarParameter(name, null);
-            parameter.CustomDbType = System.Data.DbType.UInt64;
-            parameter.DbType = System.Data.DbType.UInt64;
-            parameter.Value = id.AsPrimitive();
-            parameter.TypeName = "UInt64";
+            parameter = new SugarParameter(name, null)
+            {
+                CustomDbType = System.Data.DbType.UInt64,
+                DbType       = System.Data.DbType.UInt64,
+                Value        = id.AsPrimitive(),
+                TypeName     = "UInt64",
+            };
         }
         else if (columnValue is ulong x)
         {

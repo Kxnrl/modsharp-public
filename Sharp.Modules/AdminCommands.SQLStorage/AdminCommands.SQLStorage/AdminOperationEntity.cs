@@ -46,10 +46,10 @@ internal sealed class AdminOperationEntity
     [SugarColumn(SqlParameterDbType = typeof(SteamIdDataConvert), ColumnDataType = "BIGINT UNSIGNED", IsNullable = true)]
     public SteamID? AdminSteamId { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 
     [SugarColumn(IsNullable = true)]
-    public DateTime? ExpiresAt { get; set; }
+    public DateTimeOffset? ExpiresAt { get; set; }
 
     [SugarColumn(Length = 2048)]
     public string Reason { get; set; } = string.Empty;
@@ -61,7 +61,7 @@ internal sealed class AdminOperationEntity
     public SteamID? RemovedBy { get; set; }
 
     [SugarColumn(IsNullable = true)]
-    public DateTime? RemovedAt { get; set; }
+    public DateTimeOffset? RemovedAt { get; set; }
 
     [SugarColumn(Length = 2048, IsNullable = true)]
     public string? RemoveReason { get; set; }

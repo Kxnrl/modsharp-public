@@ -137,12 +137,12 @@ internal sealed class StorageServiceImpl : IAdminOperationStorageService
             TargetSteamId = record.SteamId,
             Type          = NormalizeType(record.Type.Value),
             AdminSteamId  = record.AdminSteamId,
-            CreatedAt     = record.CreatedAt,
-            ExpiresAt     = record.ExpiresAt,
+            CreatedAt     = new DateTimeOffset(record.CreatedAt),
+            ExpiresAt     = record.ExpiresAt is null ? null : new DateTimeOffset(record.ExpiresAt.Value),
             Reason        = record.Reason,
             Metadata      = record.Metadata,
             RemovedBy     = record.RemovedBy,
-            RemovedAt     = record.RemovedAt,
+            RemovedAt     = record.RemovedAt is null ? null : new DateTimeOffset(record.RemovedAt.Value),
             RemoveReason  = record.RemoveReason,
         };
 
@@ -150,12 +150,12 @@ internal sealed class StorageServiceImpl : IAdminOperationStorageService
         => new (entity.TargetSteamId,
                 new AdminOperationType(entity.Type),
                 entity.AdminSteamId,
-                entity.CreatedAt,
-                entity.ExpiresAt,
+                entity.CreatedAt.UtcDateTime,
+                entity.ExpiresAt?.UtcDateTime,
                 entity.Reason,
                 entity.Metadata,
                 entity.RemovedBy,
-                entity.RemovedAt,
+                entity.RemovedAt?.UtcDateTime,
                 entity.RemoveReason);
 
     private static string NormalizeType(string value)
