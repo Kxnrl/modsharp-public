@@ -1,48 +1,60 @@
-// ReSharper disable UnusedParameter.Local
+/*
+ * ModSharp
+ * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
+ *
+ * This file is part of ModSharp.
+ * ModSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * ModSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.CommandCenter.Shared;
 using Sharp.Shared;
-using Sharp.Shared.Enums;
-using Sharp.Shared.Managers;
-using Sharp.Shared.Objects;
-using Sharp.Shared.Types;
-using static Sharp.Shared.Managers.IClientManager;
 
 namespace Sharp.Modules.CommandCenter;
 
-internal class CommandCenter : IModSharpModule, ICommandCenter
+internal sealed class CommandCenter : IModSharpModule, ICommandCenter
 {
-    private readonly Dictionary<string, CommandRegistry> _registries       = new (StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, HashSet<string>> _registerCommands = new(StringComparer.OrdinalIgnoreCase);
-    private readonly ISharedSystem                       _shared;
-    private readonly ILogger<CommandCenter>              _logger;
+    private readonly ISharedSystem          _shared;
+    private readonly ILogger<CommandCenter> _logger;
 
-    public CommandCenter(
-        ISharedSystem sharedSystem,
-        string dllPath,
-        string sharpPath,
-        Version version,
-        IConfiguration coreConfiguration,
-        bool hotReload)
+    private readonly Dictionary<string, CommandRegistry> _registries;
+    private readonly Dictionary<string, HashSet<string>> _registerCommands;
+
+    public CommandCenter(ISharedSystem sharedSystem,
+        string                         dllPath,
+        string                         sharpPath,
+        Version                        version,
+        IConfiguration                 coreConfiguration,
+        bool                           hotReload)
     {
         _shared = sharedSystem;
-        Path.GetFileName(dllPath);
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<CommandCenter>();
+
+        _registries       = new Dictionary<string, CommandRegistry>(StringComparer.OrdinalIgnoreCase);
+        _registerCommands = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
     }
 
-    #region IModSharpModule
+#region IModSharpModule
 
     public bool Init()
-    {
-        return true;
-    }
+        => true;
 
     public void PostInit()
     {
         _shared.GetSharpModuleManager()
-            .RegisterSharpModuleInterface<ICommandCenter>(this, ICommandCenter.Identity, this);
+               .RegisterSharpModuleInterface<ICommandCenter>(this, ICommandCenter.Identity, this);
     }
 
     public void OnLibraryDisconnect(string name)
@@ -66,9 +78,9 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
 
     string IModSharpModule.DisplayAuthor => "laper32";
 
-    #endregion
+#endregion
 
-    #region ICommandManager
+#region ICommandManager
 
     public ICommandRegistry GetRegistry(string moduleIdentity)
     {
@@ -78,11 +90,13 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
         }
 
         _registerCommands[moduleIdentity] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        registry = new CommandRegistry(moduleIdentity, this, _shared, _logger);
-        _registries[moduleIdentity] = registry;
+        registry                          = new CommandRegistry(moduleIdentity, this, _shared);
+        _registries[moduleIdentity]       = registry;
+
         return registry;
     }
-    #endregion
+
+#endregion
 
     public bool IsCommandExists(string command)
     {
@@ -98,14 +112,14 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
     }
 
     /// <summary>
-    /// 获取经过ms_装饰后的指令，这个一般只有服务端控制台指令需要
+    ///     获取经过ms_装饰后的指令，这个一般只有服务端控制台指令需要
     /// </summary>
     /// <param name="originalCommand"></param>
     /// <param name="addPrefix"></param>
-    /// <returns></returns>
-    public string GetAddPrefixCommand(string originalCommand, bool addPrefix = true)
+    public static string GetAddPrefixCommand(string originalCommand, bool addPrefix = true)
     {
         string actualRegisterCommand;
+
         if (addPrefix)
         {
             actualRegisterCommand = !originalCommand.StartsWith("ms_") ? $"ms_{originalCommand}" : originalCommand;
@@ -119,27 +133,23 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
     }
 
     /// <summary>
-    /// 判断是否有ms_前缀
+    ///     判断是否有ms_前缀
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public bool HasPrefix(string command)
-    {
-        return command.StartsWith("ms_", StringComparison.OrdinalIgnoreCase);
-    }
+    private static bool HasPrefix(string command)
+        => command.StartsWith("ms_", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    /// 获取移除ms_装饰后的指令，这个一般只有游戏内指令需要
+    ///     获取移除ms_装饰后的指令，这个一般只有游戏内指令需要
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public string GetStripPrefixCommand(string command)
-    {
-        return HasPrefix(command)
+    public static string GetStripPrefixCommand(string command)
+        => HasPrefix(command)
             ? command[3..]
             : // ms_ => 3 char
             command;
-    }
 
     public void AddRegisteredCommand(string identity, string command)
     {
@@ -148,7 +158,7 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
             set.Add(command);
         }
 
-        set = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { command };
+        set                         = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { command };
         _registerCommands[identity] = set;
     }
 
@@ -173,218 +183,5 @@ internal class CommandCenter : IModSharpModule, ICommandCenter
         set.Clear();
 
         _registerCommands.Remove(identity);
-    }
-}
-
-internal class CommandRegistry : ICommandRegistry
-{
-    private readonly string _identity;
-    private readonly CommandCenter _self;
-    private readonly IClientManager _clientManager;
-    private readonly ILogger<CommandCenter> _logger;
-
-    private readonly List<CommandListenerInfo> _hookCommands = [];
-    private readonly List<ClientCommandInfo> _clientCommands = [];
-    private readonly List<ConsoleCommandInfo> _consoleCommands = [];
-    private readonly List<GenericCommandInfo> _genericCommands = [];
-    private readonly IConVarManager _conVarManager;
-
-    public CommandRegistry(string identity, CommandCenter self, ISharedSystem sharedSystem, ILogger<CommandCenter> logger)
-    {
-        _identity      = identity;
-        _self          = self;
-        _logger        = logger;
-        _clientManager = sharedSystem.GetClientManager();
-        _conVarManager = sharedSystem.GetConVarManager();
-    }
-
-    public void RegisterClientCommand(string command, Action<IGameClient, StringCommand> call)
-    {
-        RegisterClientCommand(command, (client, stringCommand) =>
-        {
-            call(client, stringCommand);
-            return ECommandAction.Handled;
-        });
-    }
-
-    private void RegisterClientCommand(string command, DelegateClientCommand call)
-    {
-        if (_self.IsCommandExists(command))
-        {
-            _logger.LogWarning("Command `{Name}` has already registered.", command);
-            return;
-        }
-
-        var info = new ClientCommandInfo(command, _self.GetStripPrefixCommand(command), call);
-        _clientManager.InstallCommandCallback(info.StripPrefixCommand, info.Function);
-        _clientCommands.Add(info);
-        _self.AddRegisteredCommand(_identity, info.Command);
-
-    }
-
-    public void RegisterServerCommand(string command, Action<StringCommand> call, string description = "", bool addPrefix = true)
-    {
-        RegisterServerCommand(command, stringCommand =>
-        {
-            call(stringCommand);
-            return ECommandAction.Handled;
-        }, description, addPrefix);
-    }
-
-    public void RegisterServerCommand(string command, Action call, string description = "", bool addPrefix = true)
-    {
-        RegisterServerCommand(command, _ =>
-        {
-            call();
-        }, description, addPrefix);
-    }
-
-    private void RegisterServerCommand(string command, Func<StringCommand, ECommandAction> call,
-        string description = "", bool addPrefix = true)
-    {
-        if (_self.IsCommandExists(command))
-        {
-            _logger.LogWarning("Command `{Name}` has already registered.", command);
-            return;
-        }
-
-        var info = new ConsoleCommandInfo(command,
-                                          _self.GetAddPrefixCommand(command),
-                                          addPrefix,
-                                          (_, stringCommand) => call(stringCommand));
-
-        _conVarManager.CreateServerCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command, info.OnServerCommand);
-        _consoleCommands.Add(info);
-        _self.AddRegisteredCommand(_identity, info.Command);
-    }
-
-
-    public void RegisterGenericCommand(string command, Action<IGameClient?, StringCommand> call, string description = "")
-    {
-        RegisterGenericCommand(command, (client, stringCommand) =>
-        {
-            call(client, stringCommand);
-            return ECommandAction.Handled;
-        }, description);
-    }
-
-    private void RegisterGenericCommand(string command, Func<IGameClient?, StringCommand, ECommandAction> call,
-        string description = "")
-    {
-        if (_self.IsCommandExists(command))
-        {
-            _logger.LogWarning("Command `{Name}` has already registered.", command);
-            return;
-        }
-
-        var info = new GenericCommandInfo(command,
-                                          _self.GetAddPrefixCommand(command),
-                                          _self.GetStripPrefixCommand(command),
-                                          call);
-
-        _clientManager.InstallCommandCallback(info.StripPrefixCommand, info.OnClientCommand);
-        _conVarManager.CreateServerCommand(info.AddPrefixCommand, info.OnServerCommand, description);
-        _genericCommands.Add(info);
-        _self.AddRegisteredCommand(_identity, info.Command);
-    }
-
-    public void RegisterConsoleCommand(string command, Action<IGameClient?, StringCommand> callback,
-        bool addPrefix = true)
-    {
-        RegisterConsoleCommand(command,
-                               (client, stringCommand) =>
-                               {
-                                   callback(client, stringCommand);
-
-                                   return ECommandAction.Handled;
-                               },
-                               addPrefix);
-    }
-
-    private void RegisterConsoleCommand(string command, Func<IGameClient?, StringCommand, ECommandAction> callback, bool addPrefix = true)
-    {
-        if (_self.IsCommandExists(command))
-        {
-            _logger.LogWarning("Command `{Name}` has already registered.", command);
-            return;
-        }
-
-        var info = new ConsoleCommandInfo(command, _self.GetAddPrefixCommand(command), addPrefix, callback);
-
-        _conVarManager.CreateConsoleCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command,
-                                            info.OnConsoleCommand);
-        _consoleCommands.Add(info);
-        _self.AddRegisteredCommand(_identity, info.Command);
-
-    }
-
-    public void AddCommandListener(string commandName, DelegateClientCommand callback)
-    {
-        var info = new CommandListenerInfo(commandName, callback);
-
-        _clientManager.InstallCommandListener(info.Command, info.Function);
-        _hookCommands.Add(info);
-    }
-
-    public void Clear()
-    {
-        foreach (var info in _clientCommands)
-        {
-            _clientManager.RemoveCommandCallback(info.StripPrefixCommand, info.Function);
-        }
-
-        foreach (var info in _genericCommands)
-        {
-            _conVarManager.ReleaseCommand(info.AddPrefixCommand);
-            _clientManager.RemoveCommandCallback(info.StripPrefixCommand, info.OnClientCommand);
-        }
-
-        foreach (var info in _consoleCommands)
-        {
-            _conVarManager.ReleaseCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command);
-        }
-
-        foreach (var info in _hookCommands)
-        {
-            _clientManager.RemoveCommandListener(info.Command, info.Function);
-        }
-    }
-
-    private record CommandListenerInfo(string Command, DelegateClientCommand Function);
-
-    private record ClientCommandInfo(string Command, string StripPrefixCommand, DelegateClientCommand Function);
-
-    private record GenericCommandInfo(
-        string Command,
-        string AddPrefixCommand,
-        string StripPrefixCommand,
-        Func<IGameClient?, StringCommand, ECommandAction> Function)
-    {
-        public ECommandAction OnClientCommand(IGameClient client, StringCommand command)
-        {
-            return Function(client, command);
-        }
-
-        public ECommandAction OnServerCommand(StringCommand command)
-        {
-            return Function(null, command);
-        }
-    }
-
-    private record ConsoleCommandInfo(
-        string Command,
-        string AddPrefixCommand,
-        bool AddPrefix,
-        Func<IGameClient?, StringCommand, ECommandAction> Function)
-    {
-        public ECommandAction OnConsoleCommand(IGameClient? client, StringCommand command)
-        {
-            return Function(client, command);
-        }
-
-        public ECommandAction OnServerCommand(StringCommand command)
-        {
-            return Function(null, command);
-        }
     }
 }
