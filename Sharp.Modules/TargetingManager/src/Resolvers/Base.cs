@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -17,13 +17,27 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Modules.TargetingManager.Shared;
+using Sharp.Shared;
+using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 
-namespace Sharp.Modules.TargetingManager.Shared;
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-public interface ITargetResolver
+public abstract class BaseResolver : ITargetResolver
 {
-    string GetTarget();
+    protected readonly IClientManager       ClientManager;
+    protected readonly IEntityManager       EntityManager;
+    protected readonly IPhysicsQueryManager PhysicsQueryManager;
 
-    IEnumerable<IGameClient> Resolve(IGameClient? activator);
+    protected BaseResolver(ISharedSystem sharedSystem)
+    {
+        ClientManager       = sharedSystem.GetClientManager();
+        EntityManager       = sharedSystem.GetEntityManager();
+        PhysicsQueryManager = sharedSystem.GetPhysicsQueryManager();
+    }
+
+    public abstract string GetTarget();
+
+    public abstract IEnumerable<IGameClient> Resolve(IGameClient? activator);
 }

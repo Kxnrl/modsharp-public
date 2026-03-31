@@ -18,26 +18,34 @@
  */
 
 using Sharp.Modules.TargetingManager.Shared;
-using Sharp.Shared.Managers;
+using Sharp.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Objects;
 
-namespace Sharp.Modules.TargetingManager.BuiltinResolvers;
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-public class Dead(IClientManager clientManager) : ITargetResolver
+public sealed class Ct : BaseResolver
 {
-    public string GetTarget()
-        => PredefinedTargets.Dead;
-
-    public IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    public Ct(ISharedSystem sharedSystem) : base(sharedSystem)
     {
-        foreach (var client in clientManager.GetGameClients(true))
+    }
+
+    public override string GetTarget()
+        => PredefinedTargets.Ct;
+
+    public override IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    {
+        foreach (var client in ClientManager.GetGameClients(true))
         {
-            if (client.GetPlayerController()?.GetPlayerPawn() is not { IsValidEntity: true, IsAlive: false })
+            if (client.GetPlayerController() is not { } controller)
             {
                 continue;
             }
 
-            yield return client;
+            if (controller.Team == CStrikeTeam.CT)
+            {
+                yield return client;
+            }
         }
     }
 }

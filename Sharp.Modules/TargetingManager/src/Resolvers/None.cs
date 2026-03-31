@@ -18,20 +18,20 @@
  */
 
 using Sharp.Modules.TargetingManager.Shared;
-using Sharp.Shared.Managers;
+using Sharp.Shared;
 using Sharp.Shared.Objects;
 
-namespace Sharp.Modules.TargetingManager.BuiltinResolvers;
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-public class NotMe(IClientManager clientManager) : ITargetResolver
+public sealed class None : BaseResolver
 {
-    public string GetTarget()
-        => PredefinedTargets.NotMe;
-
-    public IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    public None(ISharedSystem sharedSystem) : base(sharedSystem)
     {
-        var players = clientManager.GetGameClients();
-
-        return activator is null ? players : players.Except([activator]);
     }
+
+    public override string GetTarget()
+        => PredefinedTargets.None;
+
+    public override IEnumerable<IGameClient> Resolve(IGameClient? activator)
+        => [];
 }

@@ -18,25 +18,21 @@
  */
 
 using Sharp.Modules.TargetingManager.Shared;
-using Sharp.Shared.Managers;
+using Sharp.Shared;
 using Sharp.Shared.Objects;
 
-#pragma warning disable CS9113 // Parameter is unread.
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-namespace Sharp.Modules.TargetingManager.BuiltinResolvers;
-
-public class Me(IClientManager clientManager) : ITargetResolver
+public sealed class Dead : BaseResolver
 {
-    public string GetTarget()
-        => PredefinedTargets.Me;
-
-    public IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    public Dead(ISharedSystem sharedSystem) : base(sharedSystem)
     {
-        if (activator is null)
-        {
-            return [];
-        }
-
-        return [activator];
     }
+
+    public override string GetTarget()
+        => PredefinedTargets.Dead;
+
+    public override IEnumerable<IGameClient> Resolve(IGameClient? activator)
+        => ClientManager.GetGameClients(true)
+                        .Where(client => client.GetPlayerController()?.GetPlayerPawn() is { IsAlive: false });
 }

@@ -18,24 +18,20 @@
  */
 
 using Sharp.Modules.TargetingManager.Shared;
-using Sharp.Shared.Managers;
+using Sharp.Shared;
 using Sharp.Shared.Objects;
 
-namespace Sharp.Modules.TargetingManager.BuiltinResolvers;
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-public class Bots(IClientManager clientManager) : ITargetResolver
+public sealed class All : BaseResolver
 {
-    public string GetTarget()
-        => PredefinedTargets.Bots;
-
-    public IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    public All(ISharedSystem sharedSystem) : base(sharedSystem)
     {
-        foreach (var client in clientManager.GetGameClients(true))
-        {
-            if (client.IsFakeClient)
-            {
-                yield return client;
-            }
-        }
     }
+
+    public override string GetTarget()
+        => PredefinedTargets.All;
+
+    public override IEnumerable<IGameClient> Resolve(IGameClient? activator)
+        => ClientManager.GetGameClients(true);
 }

@@ -23,17 +23,21 @@ using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
-namespace Sharp.Modules.TargetingManager.BuiltinResolvers;
+namespace Sharp.Modules.TargetingManager.Resolvers;
 
-// A simple traceline and check if the hit entity is a player.
+// A simple TraceLine and check if the hit entity is a player.
 // this only provides basic functionality, you should bring your own implementation
 // if this does not fit your need
-internal class Aim(ISharedSystem shared) : ITargetResolver
+internal sealed class Aim : BaseResolver
 {
-    public string GetTarget()
+    public Aim(ISharedSystem sharedSystem) : base(sharedSystem)
+    {
+    }
+
+    public override string GetTarget()
         => PredefinedTargets.Aim;
 
-    public IEnumerable<IGameClient> Resolve(IGameClient? activator)
+    public override IEnumerable<IGameClient> Resolve(IGameClient? activator)
     {
         if (activator?.GetPlayerController()?.GetPlayerPawn() is not { IsAlive: true } pawn)
         {
@@ -47,7 +51,7 @@ internal class Aim(ISharedSystem shared) : ITargetResolver
         var attr = RnQueryShapeAttr.Bullets();
         attr.SetEntityToIgnore(pawn, 0);
 
-        var trace = shared.GetPhysicsQueryManager().TraceLine(start, end, attr);
+        var trace = PhysicsQueryManager.TraceLine(start, end, attr);
 
         if (!trace.DidHit())
         {
@@ -55,7 +59,7 @@ internal class Aim(ISharedSystem shared) : ITargetResolver
         }
 
         // IsPlayerPawn will check if the entity is actually a player (not controller)
-        if (shared.GetEntityManager().MakeEntityFromPointer<IPlayerPawn>(trace.Entity) is not { IsPlayerPawn: true } tracePawn)
+        if (EntityManager.MakeEntityFromPointer<IPlayerPawn>(trace.Entity) is not { IsPlayerPawn: true } tracePawn)
         {
             return [];
         }

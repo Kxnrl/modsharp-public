@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.TargetingManager.BuiltinResolvers;
+using Sharp.Modules.TargetingManager.Resolvers;
 using Sharp.Modules.TargetingManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Managers;
@@ -14,43 +14,44 @@ namespace Sharp.Modules.TargetingManager;
 
 internal sealed class TargetingManager : IModSharpModule, ITargetingManager
 {
+    private static readonly string CoreIdentity
+        = typeof(TargetingManager).Assembly.GetName().Name ?? "Sharp.Modules.TargetingManager";
+
     private readonly ILogger<TargetingManager> _logger;
     private readonly ISharedSystem             _sharedSystem;
     private readonly IClientManager            _clientManager;
 
-    private readonly Dictionary<string, (string Owner, ITargetResolver Resolver)> _targetResolvers
-        = new (StringComparer.OrdinalIgnoreCase);
-
-    private static readonly string CoreIdentity
-        = typeof(TargetingManager).Assembly.GetName().Name ?? "Sharp.Modules.TargetingManager";
+    private readonly Dictionary<string, (string Owner, ITargetResolver Resolver)> _targetResolvers;
 
 #region IModSharpModule
 
-    public TargetingManager(
-        ISharedSystem  sharedSystem,
-        string         dllPath,
-        string         sharpPath,
-        Version        version,
-        IConfiguration coreConfiguration,
-        bool           hotReload)
+    public TargetingManager(ISharedSystem sharedSystem,
+        string                            dllPath,
+        string                            sharpPath,
+        Version                           version,
+        IConfiguration                    coreConfiguration,
+        bool                              hotReload)
     {
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<TargetingManager>();
 
-        _sharedSystem = sharedSystem;
-        var clientManager = sharedSystem.GetClientManager();
-        _clientManager = clientManager;
+        _sharedSystem  = sharedSystem;
+        _clientManager = sharedSystem.GetClientManager();
 
-        RegisterResolver(CoreIdentity, new Alive(clientManager));
-        RegisterResolver(CoreIdentity, new All(clientManager));
-        RegisterResolver(CoreIdentity, new None(clientManager));
-        RegisterResolver(CoreIdentity, new Bots(clientManager));
-        RegisterResolver(CoreIdentity, new Ct(clientManager));
-        RegisterResolver(CoreIdentity, new Dead(clientManager));
-        RegisterResolver(CoreIdentity, new Me(clientManager));
-        RegisterResolver(CoreIdentity, new NotMe(clientManager));
-        RegisterResolver(CoreIdentity, new Spec(clientManager));
-        RegisterResolver(CoreIdentity, new T(clientManager));
-        RegisterResolver(CoreIdentity, new Aim(_sharedSystem));
+        _targetResolvers = new Dictionary<string, (string Owner, ITargetResolver Resolver)>(StringComparer.OrdinalIgnoreCase);
+
+        var clientManager = sharedSystem.GetClientManager();
+
+        RegisterResolver(CoreIdentity, new Alive(sharedSystem));
+        RegisterResolver(CoreIdentity, new All(sharedSystem));
+        RegisterResolver(CoreIdentity, new None(sharedSystem));
+        RegisterResolver(CoreIdentity, new Bots(sharedSystem));
+        RegisterResolver(CoreIdentity, new Ct(sharedSystem));
+        RegisterResolver(CoreIdentity, new Dead(sharedSystem));
+        RegisterResolver(CoreIdentity, new Me(sharedSystem));
+        RegisterResolver(CoreIdentity, new NotMe(sharedSystem));
+        RegisterResolver(CoreIdentity, new Spec(sharedSystem));
+        RegisterResolver(CoreIdentity, new Te(sharedSystem));
+        RegisterResolver(CoreIdentity, new Aim(sharedSystem));
     }
 
     public bool Init()
@@ -168,10 +169,11 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
 
         if (_targetResolvers.TryGetValue(target, out var existingEntry))
         {
-            _logger.LogError("Failed to register target '{target}'. It is already registered by '{owner}'. Request from '{newOwner}' denied.",
-                             target,
-                             existingEntry.Owner,
-                             ownerIdentity);
+            _logger.LogError(
+                "Failed to register target '{target}'. It is already registered by '{owner}'. Request from '{newOwner}' denied.",
+                target,
+                existingEntry.Owner,
+                ownerIdentity);
 
             return false;
         }
@@ -183,11 +185,9 @@ internal sealed class TargetingManager : IModSharpModule, ITargetingManager
 
 #endregion
 
-    private IEnumerable<IGameClient> GetClientLiteral(string name)
+    private List<IGameClient> GetClientLiteral(string name)
     {
-        var allClients = _clientManager.GetGameClients(true);
-
-        var gameClients = allClients as IGameClient[] ?? allClients.ToArray();
+        var gameClients = _clientManager.GetGameClients(true).ToArray();
 
         // Exact Matches, target ALL players with this exact name
         var exactMatches = gameClients
