@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<BaseOutputPath>../../../.build/Sharp.Modules/CommandManager/</BaseOutputPath>
+		<BaseOutputPath>../../../.build/Sharp.Modules/CommandCenter/</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Shared\Sharp.Modules.CommandManager.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+	  <ProjectReference Include="..\Shared\Sharp.Modules.CommandCenter.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
 	</ItemGroup>
 
 </Project>

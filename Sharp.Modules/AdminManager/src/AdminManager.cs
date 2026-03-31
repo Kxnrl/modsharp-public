@@ -26,7 +26,7 @@ using Sharp.Modules.AdminManager.IO;
 using Sharp.Modules.AdminManager.Permissions;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Modules.AdminManager.Storage;
-using Sharp.Modules.CommandManager.Shared;
+using Sharp.Modules.CommandCenter.Shared;
 using Sharp.Modules.LocalizerManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Units;
@@ -35,11 +35,11 @@ namespace Sharp.Modules.AdminManager;
 
 internal class AdminManager : IAdminManager, IModSharpModule
 {
-    private const string CommandManagerAssemblyName  = "Sharp.Modules.CommandManager";
+    private const string CommandCenterAssemblyName    = "Sharp.Modules.CommandCenter";
     private const string LocalizeManagerAssemblyName = "Sharp.Modules.LocalizerManager";
     private const string AdminManagerLocaleName      = "admin_manager";
 
-    private IModSharpModuleInterface<ICommandManager>?   _commandManager;
+    private IModSharpModuleInterface<ICommandCenter>?     _commandCenter;
     private IModSharpModuleInterface<ILocalizerManager>? _localizerManager;
 
     private readonly ISharedSystem _shared;
@@ -87,13 +87,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
         _shared.GetSharpModuleManager().RegisterSharpModuleInterface<IAdminManager>(this, IAdminManager.Identity, this);
 
         RefreshModuleManagers(force: true);
-        _serverCommands.TryRegister(_commandManager?.Instance, ModuleIdentity);
+        _serverCommands.TryRegister(_commandCenter?.Instance, ModuleIdentity);
     }
 
     public void OnLibraryConnected(string name)
     {
         RefreshModuleManagers(name, true);
-        _serverCommands.TryRegister(_commandManager?.Instance, ModuleIdentity);
+        _serverCommands.TryRegister(_commandCenter?.Instance, ModuleIdentity);
 
         if (name.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
@@ -137,13 +137,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
             LoadLocale();
         }
 
-        if (_commandManager?.Instance is null)
+        if (_commandCenter?.Instance is null)
         {
-            _logger.LogWarning("Failed to get CommandManager, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
-                               CommandManagerAssemblyName);
+            _logger.LogWarning("Failed to get CommandCenter, Do you have '{assemblyName}' installed? If you don't, admin commands will not work.",
+                               CommandCenterAssemblyName);
         }
 
-        _serverCommands.TryRegister(_commandManager?.Instance, ModuleIdentity);
+        _serverCommands.TryRegister(_commandCenter?.Instance, ModuleIdentity);
 
         _resolver.ValidateAllPermissions();
 
@@ -172,13 +172,13 @@ internal class AdminManager : IAdminManager, IModSharpModule
             return value;
         }
 
-        if (_commandManager?.Instance is null)
+        if (_commandCenter?.Instance is null)
         {
             throw new InvalidOperationException(
-                $"CommandManager is not available. Ensure '{CommandManagerAssemblyName}' is installed and loaded before calling {nameof(IAdminManager.GetCommandRegistry)}.");
+                $"CommandCenter is not available. Ensure '{CommandCenterAssemblyName}' is installed and loaded before calling {nameof(IAdminManager.GetCommandRegistry)}.");
         }
 
-        var commandRegistry = _commandManager.Instance.GetRegistry(moduleIdentity);
+        var commandRegistry = _commandCenter.Instance.GetRegistry(moduleIdentity);
         var registry        = new AdminCommandRegistry(commandRegistry, this, _shared, moduleIdentity);
         _commandRegistries[moduleIdentity] = registry;
 
@@ -317,17 +317,17 @@ internal class AdminManager : IAdminManager, IModSharpModule
         var checkAll = changedModuleName is null;
 
         var updateCommand
-            = checkAll || changedModuleName!.Equals(CommandManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
+            = checkAll || changedModuleName!.Equals(CommandCenterAssemblyName, StringComparison.OrdinalIgnoreCase);
 
         var updateLocalizer
             = checkAll || changedModuleName!.Equals(LocalizeManagerAssemblyName, StringComparison.OrdinalIgnoreCase);
 
         var moduleManager = _shared.GetSharpModuleManager();
 
-        if (updateCommand && (force || _commandManager?.Instance is null))
+        if (updateCommand && (force || _commandCenter?.Instance is null))
         {
-            _commandManager = moduleManager
-                              .GetOptionalSharpModuleInterface<ICommandManager>(ICommandManager.Identity);
+            _commandCenter = moduleManager
+                              .GetOptionalSharpModuleInterface<ICommandCenter>(ICommandCenter.Identity);
         }
 
         if (updateLocalizer && (force || _localizerManager?.Instance is null))

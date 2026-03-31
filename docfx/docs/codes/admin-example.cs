@@ -116,7 +116,7 @@ internal class AdminExample : IModSharpModule
         }
         catch (InvalidOperationException)
         {
-            // CommandManager isn't loaded yet — will retry when it connects.
+            // CommandCenter isn't loaded yet — will retry when it connects.
         }
         catch (Exception e)
         {

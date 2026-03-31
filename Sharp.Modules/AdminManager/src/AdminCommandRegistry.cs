@@ -19,7 +19,7 @@
 
 using System.Collections.Immutable;
 using Sharp.Modules.AdminManager.Shared;
-using Sharp.Modules.CommandManager.Shared;
+using Sharp.Modules.CommandCenter.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;

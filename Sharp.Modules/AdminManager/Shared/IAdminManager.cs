@@ -117,7 +117,7 @@ public interface IAdminManager
     /// </param>
     /// <returns>A module-scoped <see cref="IAdminCommandRegistry" /> instance.</returns>
     /// <exception cref="InvalidOperationException">
-    ///     Thrown when <c>Sharp.Modules.CommandManager</c> is not available.
+    ///     Thrown when <c>Sharp.Modules.CommandCenter</c> is not available.
     /// </exception>
     /// <remarks>
     ///     Use the same <paramref name="moduleIdentity" /> you pass to <see cref="MountAdminManifest" />

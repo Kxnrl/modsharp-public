@@ -20,7 +20,7 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Storage;
-using Sharp.Modules.CommandManager.Shared;
+using Sharp.Modules.CommandCenter.Shared;
 using Sharp.Shared.Types;
 
 namespace Sharp.Modules.AdminManager.Commands;
@@ -40,12 +40,12 @@ internal sealed class ServerCommands
 
     private bool _registered;
 
-    public void TryRegister(ICommandManager? commandManager, string moduleIdentity)
+    public void TryRegister(ICommandCenter? commandCenter, string moduleIdentity)
     {
-        if (_registered || commandManager is null)
+        if (_registered || commandCenter is null)
             return;
 
-        var registry = commandManager.GetRegistry(moduleIdentity);
+        var registry = commandCenter.GetRegistry(moduleIdentity);
         registry.RegisterServerCommand("perms", OnPermissionsCommand,
             "Lists all registered permissions grouped by module.");
         registry.RegisterServerCommand("admins", OnAdminsCommand,

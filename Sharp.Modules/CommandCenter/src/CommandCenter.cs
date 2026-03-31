@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.CommandManager.Shared;
+using Sharp.Modules.CommandCenter.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Managers;
@@ -10,16 +10,16 @@ using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using static Sharp.Shared.Managers.IClientManager;
 
-namespace Sharp.Modules.CommandManager;
+namespace Sharp.Modules.CommandCenter;
 
-internal class CommandManager : IModSharpModule, ICommandManager
+internal class CommandCenter : IModSharpModule, ICommandCenter
 {
     private readonly Dictionary<string, CommandRegistry> _registries       = new (StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, HashSet<string>> _registerCommands = new(StringComparer.OrdinalIgnoreCase);
     private readonly ISharedSystem                       _shared;
-    private readonly ILogger<CommandManager>             _logger;
+    private readonly ILogger<CommandCenter>              _logger;
 
-    public CommandManager(
+    public CommandCenter(
         ISharedSystem sharedSystem,
         string dllPath,
         string sharpPath,
@@ -29,7 +29,7 @@ internal class CommandManager : IModSharpModule, ICommandManager
     {
         _shared = sharedSystem;
         Path.GetFileName(dllPath);
-        _logger = sharedSystem.GetLoggerFactory().CreateLogger<CommandManager>();
+        _logger = sharedSystem.GetLoggerFactory().CreateLogger<CommandCenter>();
     }
 
     #region IModSharpModule
@@ -42,7 +42,7 @@ internal class CommandManager : IModSharpModule, ICommandManager
     public void PostInit()
     {
         _shared.GetSharpModuleManager()
-            .RegisterSharpModuleInterface<ICommandManager>(this, ICommandManager.Identity, this);
+            .RegisterSharpModuleInterface<ICommandCenter>(this, ICommandCenter.Identity, this);
     }
 
     public void OnLibraryDisconnect(string name)
@@ -62,7 +62,7 @@ internal class CommandManager : IModSharpModule, ICommandManager
         _registerCommands.Clear();
     }
 
-    string IModSharpModule.DisplayName => "Sharp.Modules.CommandManager";
+    string IModSharpModule.DisplayName => "Sharp.Modules.CommandCenter";
 
     string IModSharpModule.DisplayAuthor => "laper32";
 
@@ -179,9 +179,9 @@ internal class CommandManager : IModSharpModule, ICommandManager
 internal class CommandRegistry : ICommandRegistry
 {
     private readonly string _identity;
-    private readonly CommandManager _self;
+    private readonly CommandCenter _self;
     private readonly IClientManager _clientManager;
-    private readonly ILogger<CommandManager> _logger;
+    private readonly ILogger<CommandCenter> _logger;
 
     private readonly List<CommandListenerInfo> _hookCommands = [];
     private readonly List<ClientCommandInfo> _clientCommands = [];
@@ -189,7 +189,7 @@ internal class CommandRegistry : ICommandRegistry
     private readonly List<GenericCommandInfo> _genericCommands = [];
     private readonly IConVarManager _conVarManager;
 
-    public CommandRegistry(string identity, CommandManager self, ISharedSystem sharedSystem, ILogger<CommandManager> logger)
+    public CommandRegistry(string identity, CommandCenter self, ISharedSystem sharedSystem, ILogger<CommandCenter> logger)
     {
         _identity      = identity;
         _self          = self;

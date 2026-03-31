@@ -21,18 +21,17 @@ using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using DelegateClientCommand = Sharp.Shared.Managers.IClientManager.DelegateClientCommand;
 
-namespace Sharp.Modules.CommandManager.Shared;
+namespace Sharp.Modules.CommandCenter.Shared;
 
-public interface ICommandManager
+public interface ICommandCenter
 {
-    const string Identity = nameof(ICommandManager);
+    const string Identity = nameof(ICommandCenter);
 
     /// <summary>
     ///     Gets the command registry for the specified module identity.
     /// </summary>
     /// <param name="moduleIdentity">The unique identity of the module.</param>
     public ICommandRegistry GetRegistry(string moduleIdentity);
-
 }
 
 public interface ICommandRegistry
