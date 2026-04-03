@@ -122,16 +122,7 @@ bool ParseNetworkReceivers(const RuntimeRecipientFilter* pFilter, int32_t* bits,
 
     if (pFilter->Type == RuntimeRecipientFilterType::Players)
     {
-        int32_t bitWide = 0;
-
-        for (auto i = CS_MAX_PLAYERS - 1; i >= 0; i--)
-        {
-            if ((pFilter->Receivers & (BASE_RECEIVER_MAGIC << i)) != 0)
-            {
-                bitWide = i + 1;
-                break;
-            }
-        }
+        const auto bitWide = std::bit_width(pFilter->Receivers);
 
         if (bitWide > 0)
         {

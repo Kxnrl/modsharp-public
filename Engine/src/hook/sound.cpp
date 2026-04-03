@@ -40,8 +40,9 @@
 static bool                                   s_bInSoundEmitter      = false;
 static CConVarBaseData*                       ms_hook_map_music      = nullptr;
 static CConVarBaseData*                       ms_map_music_threshold = nullptr;
-static std::unordered_map<std::string, float> s_SoundEventDuration{};
-static std::unordered_map<std::string, bool>  s_SoundEventIsMusic{};
+
+static std::unordered_map<std::string, float, StringHash, std::equal_to<>> s_SoundEventDuration{};
+static std::unordered_map<std::string, bool, StringHash, std::equal_to<>>  s_SoundEventIsMusic{};
 
 extern bool TransmitCheckMapMusic(int slot);
 
@@ -133,16 +134,17 @@ BeginMemberHookScope(SoundOpGameSystem)
     {
         return g_pSoundEventManager->GetSoundEventName(pSound);
     }
-
+    
     static inline float GetSoundDuration(const char* pszSound)
     {
-        const auto map = s_SoundEventDuration.find(pszSound);
+        const std::string_view key{pszSound};
+        const auto             map = s_SoundEventDuration.find(key);
         if (map != s_SoundEventDuration.end())
             return map->second;
 
         auto duration = g_pSoundEventManager->GetSoundEventDuration(pszSound, 0);
 
-        s_SoundEventDuration.emplace(pszSound, duration);
+        s_SoundEventDuration.emplace(key, duration);
 
         return duration;
     }
@@ -152,7 +154,8 @@ BeginMemberHookScope(SoundOpGameSystem)
         if (!pszSound[0])
             return false;
 
-        const auto map = s_SoundEventIsMusic.find(pszSound);
+        const std::string_view key{pszSound};
+        const auto             map = s_SoundEventIsMusic.find(key);
         if (map != s_SoundEventIsMusic.end())
             return map->second;
 
@@ -163,13 +166,13 @@ BeginMemberHookScope(SoundOpGameSystem)
         const auto statck_hash = g_pSoundEventManager->GetSoundEventStackHash(pszSound);
         if (statck_hash == std::numeric_limits<uint32_t>::max())
         {
-            s_SoundEventIsMusic.emplace(pszSound, false);
+            s_SoundEventIsMusic.emplace(key, false);
             return false;
         }
 
         const auto is_music = statck_hash == music_stack_hash;
 
-        s_SoundEventIsMusic.emplace(pszSound, is_music);
+        s_SoundEventIsMusic.emplace(key, is_music);
 
         return is_music;
     }
@@ -230,16 +233,19 @@ BeginMemberHookScope(SoundOpGameSystem)
         {
             if (ms_hook_map_music->GetValue<bool>())
             {
-                for (PlayerSlot_t i = 0u; i < CS_MAX_PLAYERS; i++)
+                NetworkReceiver_t removeMask = 0;
+                auto              remaining  = recipients;
+                while (remaining)
                 {
-                    if (!pFilter->IsPlayerSlotInFilter(i))
-                        continue;
+                    const PlayerSlot_t i   = static_cast<PlayerSlot_t>(std::countr_zero(remaining));
+                    const auto         bit = BASE_RECEIVER_MAGIC << i;
 
                     if (TransmitCheckMapMusic(i))
-                    {
-                        recipients &= ~(BASE_RECEIVER_MAGIC << i);
-                    }
+                        removeMask |= bit;
+
+                    remaining &= remaining - 1;
                 }
+                recipients &= ~removeMask;
             }
 
 #ifdef SOUND_HOOK_ASSERT

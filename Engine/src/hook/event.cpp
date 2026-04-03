@@ -34,6 +34,7 @@
 #include "cstrike/type/VProf.h"
 
 #include <algorithm>
+#include <bitset>
 #include <safetyhook.hpp>
 
 #include <string>
@@ -41,7 +42,8 @@
 
 // #define EVENT_HOOK_ASSERT
 
-static std::vector<std::string> s_hookedEvent;
+static constexpr size_t          MAX_EVENT_ID = 512;
+static std::bitset<MAX_EVENT_ID> s_hookedEventIds;
 
 class CGameEventManager;
 class IGameEventSystem;
@@ -65,24 +67,18 @@ BeginMemberHookScope(CGameEventManager)
 
         VPROF_MS_HOOK();
 
-        const auto pEventName = pEvent->GetName();
-
-        for (const auto& hooked : s_hookedEvent)
+        if (const auto id = pEvent->GetID(); id >= 0 && std::cmp_less(id, MAX_EVENT_ID) && s_hookedEventIds.test(id))
         {
-            if (hooked == pEventName)
+            auto noClients = serverOnly;
+
+            if (!forwards::HookFireEvent->Invoke(pEvent, &noClients))
             {
-                auto noClients = serverOnly;
-
-                if (!forwards::HookFireEvent->Invoke(pEvent, &noClients))
-                {
-                    eventManager->FreeEvent(pEvent);
-                    return false;
-                }
-
-                return FireEvent(pManager, pEvent, noClients);
+                eventManager->FreeEvent(pEvent);
+                return false;
             }
-        }
 
+            return FireEvent(pManager, pEvent, noClients);
+        }
         return FireEvent(pManager, pEvent, serverOnly);
     }
 }
@@ -94,13 +90,9 @@ public:
     {
         const auto pEventName = event->GetName();
 
-        for (const auto& hooked : s_hookedEvent)
+        if (const auto id = event->GetID(); id >= 0 && static_cast<size_t>(id) < MAX_EVENT_ID && s_hookedEventIds.test(id))
         {
-            if (hooked == pEventName)
-            {
-                forwards::FireGameEvent->Invoke(event);
-                break;
-            }
+            forwards::FireGameEvent->Invoke(event);
         }
     }
 
@@ -115,13 +107,17 @@ void InstallEventHooks()
 
 static void AddEventHook(const char* pEventName)
 {
-    if (std::ranges::find(s_hookedEvent, pEventName) != s_hookedEvent.end())
+    if (eventManager->FindListener(&g_EventListener, pEventName))
         return;
 
-    if (eventManager->AddListener(&g_EventListener, pEventName, true) != -1)
+    auto retEventId = eventManager->AddListener(&g_EventListener, pEventName, true);
+    if (retEventId == -1)
     {
-        s_hookedEvent.emplace_back(pEventName);
+        FERROR("Failed to add event listener: Invalid event name %s", pEventName);
+        return;
     }
+
+    if (static_cast<size_t>(retEventId) < MAX_EVENT_ID) { s_hookedEventIds.set(retEventId); }
 }
 
 static IGameEvent* CreateEventNative(const char* pEventName, bool force)

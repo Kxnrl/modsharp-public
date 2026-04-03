@@ -206,6 +206,7 @@ enum KV3LoadTextFlags_t
 
 MS_GLOBAL_IMPORT bool LoadKV3(KeyValues3* kv, CUtlString* error, CUtlBuffer* input, const KV3ID_t& format, const char* kv_name, uint32_t flags = KV3_LOAD_TEXT_NONE);
 MS_GLOBAL_IMPORT bool LoadKV3(KeyValues3* kv, CUtlString* error, const char* input, const KV3ID_t& format, const char* kv_name, uint32_t flags = KV3_LOAD_TEXT_NONE);
+MS_GLOBAL_IMPORT bool LoadKV3FromFile(KeyValues3* kv, CUtlString* error, const char* filename, const char* path, const KV3ID_t& format, uint32_t flags = KV3_LOAD_TEXT_NONE);
 
 class KeyValues3
 {

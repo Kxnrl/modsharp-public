@@ -62,11 +62,8 @@ void CSharpKeyValues3Helper::DestroyKeyValues3(KeyValues3* kv) const
 
 bool CSharpKeyValues3Helper::LoadFromFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const
 {
-    using load_from_file_fn    = bool (*)(KeyValues3*, CUtlString*, const char*, const char*, const KV3ID_t& format, uint32_t loadFlags);
-    static auto load_from_file = g_pGameData->GetAddress<load_from_file_fn>("LoadKV3FromFileUtlString");
-
     CUtlString buf;
-    const auto ret = load_from_file(kv, &buf, filename, pathId, g_KV3Format_Generic, KV3_LOAD_TEXT_NONE);
+    const auto ret = LoadKV3FromFile(kv, &buf, filename, pathId, g_KV3Format_Generic, KV3_LOAD_TEXT_NONE);
     memset(error, 0, 256);
     memcpy(error, buf.Get(), std::min(buf.Length(), 255));
     return ret;

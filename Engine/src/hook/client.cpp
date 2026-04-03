@@ -42,6 +42,7 @@
 #include <safetyhook.hpp>
 
 #include <algorithm>
+#include <random>
 #include <string>
 
 // #define CLIENT_HOOK_ASSERT
@@ -516,7 +517,8 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
 void InstallClientHooks()
 {
     // NOTE 修改初始Seed以避免不同服务器的Seed相同, 再更换服务器后可能出现问题
-    s_RandomSeed = (0 + std::rand() % (65535 - 0 + 1)) * (0 + std::rand() % (65535 - 0 + 1)) * 4357;
+    std::random_device rd;
+    s_RandomSeed = (static_cast<uint64_t>(rd()) << 32) | rd();
 
     InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, CheckConnect, server);
     InstallMemberDetourAutoSig(CSource2GameClients, Connected);

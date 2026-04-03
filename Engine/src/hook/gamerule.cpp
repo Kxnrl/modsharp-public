@@ -179,83 +179,61 @@ BeginStaticHookScope(HandleGCBanInfo)
     constexpr int32_t KickModeConditionally = 1;
     constexpr int32_t KickModeEveryCooldown = 2;
 
+    static bool ShouldKickForReason(const int32_t kickMode, const uint32_t reason)
+    {
+        if (kickMode != KickModeConditionally) return true;
+
+        switch (reason)
+        {
+        case 8:
+        case 10:
+        case 11:
+        case 14:
+        case 15:
+        case 19:
+        case 20: return true;
+        default: return reason - 22 <= 1;
+        }
+    }
+
+    static IServerGameClient::ENetworkDisconnectionReason GetKickReason(const uint32_t reason)
+    {
+        switch (reason)
+        {
+        case 8:
+        case 14: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_UNTRUSTEDACCOUNT;
+        case 10:
+        case 11:
+        case 19: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_CONVICTEDACCOUNT;
+        case 15: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_NOSTEAMTICKET;
+        default: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_COMPETITIVECOOLDOWN;
+        }
+    }
+
     static void CheckClient(const CServerSideClient* pClient, const int32_t kickMode, const double flTime)
     {
-        const auto playerAccountId = pClient->GetAccountId();
+        const auto it = sm_mapGcBanInformation->Find(pClient->GetAccountId());
 
-        for (int it = 0; it < sm_mapGcBanInformation->MaxElement(); ++it)
+        if (it == sm_mapGcBanInformation->InvalidIndex()) return;
+
+        auto& value = sm_mapGcBanInformation->Element(it);
+
+        const auto reason     = value.m_uiReason;
+        const auto expireTime = value.m_dblExpiration;
+
+        // Ignored ban reasons
+        if (reason == 12 || reason == 13 || reason == 18) return;
+
+        if (flTime > expireTime)
         {
-            if (!sm_mapGcBanInformation->IsValidIndex(it))
-                continue;
-
-            const auto accountId = sm_mapGcBanInformation->Key(it);
-
-            if (accountId != playerAccountId)
-                continue;
-
-            auto& value = sm_mapGcBanInformation->Element(it);
-
-            const auto reason     = value.m_uiReason;
-            const auto expireTime = value.m_dblExpiration;
-
-            if (reason == 12 || reason == 13 || reason == 18)
-                break;
-
-            if (flTime > expireTime)
-            {
-                sm_mapGcBanInformation->RemoveAt(it);
-                break;
-            }
-
-            auto shouldKick = true;
-
-            if (kickMode == KickModeConditionally)
-            {
-                switch (reason)
-                {
-                case 8:
-                case 10:
-                case 11:
-                case 14:
-                case 15:
-                case 19:
-                case 20:
-                    break;
-                default:
-                    shouldKick = reason - 22 <= 1;
-
-                    break;
-                }
-            }
-
-            if (!shouldKick)
-                break;
-
-            auto kickReason = IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_COMPETITIVECOOLDOWN;
-
-            switch (reason)
-            {
-            case 8:
-            case 14:
-                kickReason = IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_UNTRUSTEDACCOUNT;
-                break;
-
-            case 10:
-            case 11:
-            case 19:
-                kickReason = IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_CONVICTEDACCOUNT;
-                break;
-            case 15:
-                kickReason = IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_NOSTEAMTICKET;
-                break;
-            default:
-                break;
-            }
-
-            FLOG("Kick %s<%llu> due to GC<%u>", pClient->GetName(), pClient->GetSteamId(), reason);
-            engine->KickClient(pClient->GetSlot(), "sv_kick_players_with_cooldown", kickReason);
-            break;
+            sm_mapGcBanInformation->RemoveAt(it);
+            return;
         }
+
+        if (!ShouldKickForReason(kickMode, reason)) return;
+
+        FLOG("Kick %s<%llu> due to GC<%u>", pClient->GetName(), pClient->GetSteamId(), reason);
+        engine->KickClient(pClient->GetSlot(), "sv_kick_players_with_cooldown", GetKickReason(reason));
     }
 
     DeclareStaticDetourHook(HandleGCBanInfo, void, ())

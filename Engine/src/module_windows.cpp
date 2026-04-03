@@ -34,7 +34,17 @@
 #    include <windows.h>
 #    include <winternl.h>
 
+#    ifdef __clang__
+// clang-cl compat: MSVC pre-defines _ThrowInfo as a compiler built-in type.
+// Newer MSVC CRT headers (ehdata_forceinclude.h) define ThrowInfo at line 178
+// but reference _ThrowInfo at line 187. clang-cl lacks this built-in, so we
+// use a macro to map _ThrowInfo -> ThrowInfo before the header is parsed.
+#        define _ThrowInfo ThrowInfo
+#    endif
 #    include <rttidata.h>
+#    ifdef __clang__
+#        undef _ThrowInfo
+#    endif
 #    include <vcruntime.h>
 
 void CModule::GetModuleInfo(std::string_view mod)
@@ -62,6 +72,8 @@ void CModule::GetModuleInfo(std::string_view mod)
 
     if (ntHeader->Signature != IMAGE_NT_SIGNATURE)
         return;
+
+    _size        = ntHeader->OptionalHeader.SizeOfImage;
 
     auto section = IMAGE_FIRST_SECTION(ntHeader);
 
