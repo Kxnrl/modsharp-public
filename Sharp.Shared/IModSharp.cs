@@ -446,6 +446,11 @@ public interface IModSharp
     bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access);
 
     /// <summary>
+    ///     Set protected memory access
+    /// </summary>
+    bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access, out MemoryAccess originalAccess);
+
+    /// <summary>
     ///     Get memory allocator
     /// </summary>
     /// <returns></returns>

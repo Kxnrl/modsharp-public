@@ -35,6 +35,6 @@ constexpr uint8_t g_nReadExecuteAccess      = MemoryAccess_Read | MemoryAccess_E
 constexpr uint8_t g_nReadWriteAccess        = MemoryAccess_Read | MemoryAccess_Write;
 constexpr uint8_t g_nReadWriteExecuteAccess = MemoryAccess_Read | MemoryAccess_Write | MemoryAccess_Execute;
 
-bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access);
+bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access, uint8_t* old_access);
 
 #endif

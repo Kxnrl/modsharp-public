@@ -77,6 +77,7 @@ struct GameDataAddress
     std::string              m_FromVTable{};
     std::uintptr_t           m_FoundAddress = 0;
     std::string              m_File;
+    bool                     m_LoadOnDemand = false;
 };
 
 struct GameDataPatch

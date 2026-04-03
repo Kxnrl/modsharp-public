@@ -32,6 +32,7 @@
 #include <charconv>
 #include <deque>
 #include <fstream>
+#include <safetyhook.hpp>
 
 // #define DEBUG
 
@@ -573,13 +574,18 @@ bool GameData::Unregister(const char* name, char* error, int maxLen)
         if (patch.m_File == file_path)
         {
             // restore patches
+            if (patch.m_StoreBytes.empty())
+            {
+                FatalError("Failed to restore memory patch: %s", patch.m_AddressKey.c_str());
+            }
+
+            // restore patches
             const auto address = patch.m_Address;
-
-            SetMemoryAccess(address, patch.m_StoreBytes.size(), g_nReadWriteExecuteAccess);
-
-            memcpy(address, patch.m_StoreBytes.data(), patch.m_StoreBytes.size());
-
-            SetMemoryAccess(address, patch.m_StoreBytes.size(), g_nReadExecuteAccess);
+            if (auto unprotect_guard = safetyhook::unprotect(address, patch.m_StoreBytes.size()))
+            {
+                memcpy(address, patch.m_StoreBytes.data(), patch.m_StoreBytes.size());
+                FLOG("Patch Restored: %s", patch.m_AddressKey.c_str());
+            }
 
             it = m_Patches.erase(it);
         }
@@ -631,15 +637,9 @@ bool GameData::GetVFunctionIndex(const char* name, int* offset)
 
 bool GameData::InitPatch(const std::string& name, GameDataPatch* item)
 {
-    if (!item->m_StoreBytes.empty())
-    {
-        FERROR("Patch already initialized: %s\n", name.c_str());
-        return false;
-    }
-
     const auto address = GetAddress<uint8_t*>(item->m_AddressKey.c_str());
     item->m_Address    = address;
-
+    
     // validate
     if (!item->m_ValidateBytes.empty())
     {
@@ -655,19 +655,17 @@ bool GameData::InitPatch(const std::string& name, GameDataPatch* item)
     }
 
     const auto size = item->m_PatchBytes.size();
-
-    // unprotect memory
-    SetMemoryAccess(address, size, g_nReadWriteExecuteAccess);
-
-    // store and patch
+    if (auto unprotect_guard = safetyhook::unprotect(address, size))
     {
         item->m_StoreBytes.resize(size);
         memcpy(item->m_StoreBytes.data(), address, size);
         memcpy(address, item->m_PatchBytes.data(), size);
     }
-
-    // protect memory
-    SetMemoryAccess(address, item->m_PatchBytes.size(), g_nReadExecuteAccess);
+    else
+    {
+        FERROR("Failed to unprotect memory at %p", address);
+        return false;
+    }
 
     FLOG("Patch initialized: %s", name.c_str());
     return true;
@@ -697,6 +695,11 @@ static void ParseAddresses(const std::filesystem::path& path, std::string_view p
         if (auto base_object = entry_object.find("base"); base_object != entry_object.end() && base_object->is_string())
         {
             item.m_Base = base_object->get<std::string>();
+        }
+
+        if (auto optional_object = entry_object.find("on_demand"); optional_object != entry_object.end() && optional_object->is_boolean())
+        {
+            item.m_LoadOnDemand = optional_object->get<bool>();
         }
 
         bool has_refs = false;
@@ -900,6 +903,7 @@ static void ParsePatches(const std::filesystem::path& path, std::string_view pla
 
         item.m_File       = path.generic_string();
         item.m_AddressKey = address_object->get<std::string>();
+        item.m_StoreBytes.resize(patch_bytes.size());
 
         if (auto validate_object = platform_object->find("validate"); validate_object != platform_object->end())
         {
@@ -970,8 +974,10 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 #endif
     failed_addresses.reserve(temp_addresses.size());
 
-    for (const auto& name : temp_addresses | std::views::keys)
+    for (const auto& [name, value] : temp_addresses)
     {
+        if (value.m_LoadOnDemand) continue;
+
         std::uintptr_t address{};
         if (!FindAddress(temp_addresses, name, address))
         {

@@ -88,8 +88,6 @@ class CGameEventListener : public IGameEventListener2
 public:
     void FireGameEvent(IGameEvent* event) override
     {
-        const auto pEventName = event->GetName();
-
         if (const auto id = event->GetID(); id >= 0 && static_cast<size_t>(id) < MAX_EVENT_ID && s_hookedEventIds.test(id))
         {
             forwards::FireGameEvent->Invoke(event);

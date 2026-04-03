@@ -970,8 +970,18 @@ internal partial class SharpCore : ISharpCore
     public ILibraryModule GetLibraryModule(string module)
         => LibraryModule.Create(Bridges.Natives.Core.GetLibraryModule(module))!;
 
-    public bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access)
-        => Bridges.Natives.Core.SetMemoryAccess(pMemory, size, access);
+    public unsafe bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access)
+        => Bridges.Natives.Core.SetMemoryAccess(pMemory, size, access, null);
+
+    public unsafe bool SetMemoryAccess(nint pMemory, long size, MemoryAccess access, out MemoryAccess originalAccess)
+    {
+        originalAccess = 0;
+
+        fixed (MemoryAccess* ptr = &originalAccess)
+        {
+            return Bridges.Natives.Core.SetMemoryAccess(pMemory, size, access, ptr);
+        }
+    }
 
     public IMemAlloc GetMemAlloc()
         => CoreBridge.MemAlloc;

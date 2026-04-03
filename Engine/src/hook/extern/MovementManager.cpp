@@ -34,6 +34,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
+#include "memory/zydis_utility.h"
 
 #include <proto/cs_usercmd.pb.h>
 #include <proto/networkbasetypes.pb.h>
@@ -343,27 +344,20 @@ static void PatchJumpInWaterVelocityZ()
 {
     auto addresses = modules::server->FindPatternMulti("00 00 C8 42");
 
-    ZydisDecoder decoder{};
-    if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
-    {
-        FatalError("Failed to initialize decoder");
-    }
-
-    ZydisDecodedInstruction instr{};
-    ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
-
-    static constexpr int32_t  vel_offset     = offsetof(CMoveData, m_vecVelocity.z);
-    static constexpr uint32_t new_z_velocity = 0x43110000; // 145.0f
-
-    constexpr std::array<int8_t, 2> offsets = {-3, -4};
+    static constexpr int32_t        vel_offset     = offsetof(CMoveData, m_vecVelocity.z);
+    static constexpr uint32_t       new_z_velocity = 0x43110000; // 145.0f
+    constexpr std::array<int8_t, 2> offsets        = {-3, -4};
 
     for (auto address : addresses)
     {
         for (int8_t offset : offsets)
         {
-            // C7 ? ? 00 00 C8 42
             auto instruction_address = address.Offset(offset);
-            if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, instruction_address.As<uint8_t*>(), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands))
+
+            ZydisDecodedInstruction instr{};
+            ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
+
+            if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, instruction_address.As<uint8_t*>(), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands))
                 && instr.mnemonic == ZYDIS_MNEMONIC_MOV
                 && instr.operand_count_visible == 2
                 && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
@@ -373,13 +367,14 @@ static void PatchJumpInWaterVelocityZ()
                 auto* target_address = instruction_address.Offset(instr.raw.imm[0].offset).As<uint8_t*>();
                 if (target_address != address.As<uint8_t*>()) continue;
 
-                SetMemoryAccess(target_address, sizeof(new_z_velocity), g_nReadWriteExecuteAccess);
-                *reinterpret_cast<uint32_t*>(target_address) = new_z_velocity;
-                SetMemoryAccess(target_address, sizeof(new_z_velocity), g_nReadExecuteAccess);
+                if (auto unprotect_guard = safetyhook::unprotect(target_address, sizeof(new_z_velocity)))
+                {
+                    *reinterpret_cast<uint32_t*>(target_address) = new_z_velocity;
+                    FLOG("Successfully patched JumpInWaterVelocityZ @ server+0x%llx", instruction_address.GetPtr() - modules::server->Base());
+                    return;
+                }
 
-                FLOG("Successfully patched JumpInWaterVelocityZ @ server+0x%llx", instruction_address.GetPtr() - modules::server->Base());
-
-                return;
+                FERROR("Failed to unprotect memory address for patching JumpInWaterVelocityZ");
             }
         }
     }

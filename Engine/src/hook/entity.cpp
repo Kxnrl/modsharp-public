@@ -580,18 +580,9 @@ using AddOutputHandler_t = void (*)(const CEntityIdentity* pInstance, const char
 
 struct AddOutputKey_t
 {
-    AddOutputKey_t()                            = delete;
-    AddOutputKey_t(const AddOutputKey_t& other) = default;
-
-    AddOutputKey_t(const char* pName, size_t parts) :
-        AddOutputKey_t(pName, parts, false) {}
-
-    AddOutputKey_t(const char* pName, size_t parts, bool prefix) :
-        m_sName(pName), m_nParts(parts), m_bPrefix(prefix) {}
-
-    std::string m_sName;
-    size_t      m_nParts;
-    bool        m_bPrefix;
+    std::string_view m_sName;
+    size_t           m_nParts;
+    bool             m_bPrefix = false;
 };
 
 inline static bool GetVariantInt(const Variant_t* pValue, int& value)
@@ -640,13 +631,9 @@ inline static bool GetVariantFloat(const Variant_t* pValue, float& value)
 #define InputErrorCustomNoParam(error) \
     WARN("%d.%s Error Input '%s' -> %s", pInstance->GetEntityIndex(), pInstance->GetName(), pInput, error)
 
+
 struct AddOutputInfo_t
 {
-    AddOutputInfo_t() = delete;
-
-    AddOutputInfo_t(const AddOutputKey_t& key, const AddOutputHandler_t& handler) :
-        m_Key(key), m_Handler(handler) {}
-
     AddOutputKey_t     m_Key;
     AddOutputHandler_t m_Handler;
 };
@@ -1008,7 +995,7 @@ static void AddOutputCustom_Case(const CEntityIdentity* pInstance, const char* p
     }
 }
 
-static const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
+static constexpr std::array s_AddOutputHandlers = std::to_array<AddOutputInfo_t>({
 
     {{"targetname", 2},     AddOutputCustom_Targetname    },
     {{"origin", 4},         AddOutputCustom_Origin        },
@@ -1036,7 +1023,7 @@ static const std::vector<AddOutputInfo_t> s_AddOutputHandlers = {
 
     // Prefix
     {{"Case", 2, true},     AddOutputCustom_Case          },
-};
+});
 
 static bool CustomInput_CustomAddOutput(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue)
 {
@@ -1046,8 +1033,8 @@ static bool CustomInput_CustomAddOutput(const CEntityIdentity* pInstance, const 
         {
             for (const auto& [input, handler] : s_AddOutputHandlers)
             {
-                if ((input.m_bPrefix && strncasecmp(split[0].c_str(), input.m_sName.c_str(), input.m_sName.size()) == 0)
-                    || (!input.m_bPrefix && strcasecmp(split[0].c_str(), input.m_sName.c_str()) == 0))
+                if ((input.m_bPrefix && strncasecmp(split[0].c_str(), input.m_sName.data(), input.m_sName.size()) == 0)
+                    || (!input.m_bPrefix && strcasecmp(split[0].c_str(), input.m_sName.data()) == 0))
                 {
                     if (split.size() == input.m_nParts)
                     {
@@ -1323,7 +1310,32 @@ static bool CustomInput_SetMessage(const CEntityIdentity* pInstance, const char*
     return false;
 }
 
-static const std::vector<CustomInputInfo_t> s_InputEnhancementInputs = {
+struct CaseInsensitiveHash
+{
+    using is_transparent = void;
+    size_t operator()(std::string_view view) const
+    {
+        size_t hash = 0;
+        for (auto c : view)
+            hash = hash * 31 + static_cast<unsigned char>(tolower(c));
+        return hash;
+    }
+};
+
+struct CaseInsensitiveEqual
+{
+    using is_transparent = void;
+    bool operator()(std::string_view a, std::string_view b) const
+    {
+        if (a.size() != b.size()) return false;
+        for (size_t i = 0; i < a.size(); ++i)
+            if (tolower(static_cast<unsigned char>(a[i])) != tolower(static_cast<unsigned char>(b[i])))
+                return false;
+        return true;
+    }
+};
+
+static const std::unordered_map<std::string_view, InputEnhancement_t, CaseInsensitiveHash, CaseInsensitiveEqual> s_InputEnhancementInputs = {
     {"CustomAddOutput", CustomInput_CustomAddOutput},
     {"AddCustomOutput", CustomInput_CustomAddOutput},
     {"KeyValues",       CustomInput_CustomAddOutput},
@@ -1348,12 +1360,10 @@ static const std::vector<CustomInputInfo_t> s_InputEnhancementInputs = {
 
 static bool EntityInputEnhancement(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue)
 {
-    for (auto& [input, handler] : s_InputEnhancementInputs)
+    const auto it = s_InputEnhancementInputs.find(std::string_view{pInput});
+    if (it != s_InputEnhancementInputs.end())
     {
-        if (strcasecmp(pInput, input) == 0)
-        {
-            return handler(pInstance, pInput, pActivator, pCaller, pValue);
-        }
+        return it->second(pInstance, pInput, pActivator, pCaller, pValue);
     }
     return false;
 }

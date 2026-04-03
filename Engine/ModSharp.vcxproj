@@ -1,379 +1,380 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <ItemGroup Label="ProjectConfigurations">
-        <ProjectConfiguration Include="Release|Win32">
-            <Configuration>Release</Configuration>
-            <Platform>Win32</Platform>
-        </ProjectConfiguration>
-        <ProjectConfiguration Include="Release|x64">
-            <Configuration>Release</Configuration>
-            <Platform>x64</Platform>
-        </ProjectConfiguration>
-    </ItemGroup>
-    <ItemGroup>
-        <ClCompile Include="src\bridge\hookbridge.cpp"/>
-        <ClCompile Include="src\bridge\natives\NetNatives.cpp"/>
-        <ClCompile Include="src\bridge\natives\SoundNatives.cpp"/>
-        <ClCompile Include="src\command.cpp"/>
-        <ClCompile Include="src\CoreCLR\RuntimeProtobufMessage.cpp"/>
-        <ClCompile Include="src\bridge\corebridge.cpp"/>
-        <ClCompile Include="src\cstrike\component\CGameSceneNode.cpp"/>
-        <ClCompile Include="src\cstrike\component\PlayerPawnComponent.cpp"/>
-        <ClCompile Include="src\cstrike\econitem.cpp"/>
-        <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp"/>
-        <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp"/>
-        <ClCompile Include="src\cstrike\interfaces.cpp"/>
-        <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\ICvar.cpp"/>
-        <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp"/>
-        <ClCompile Include="src\cstrike\interface\IGameTypes.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\INetChannel.cpp"/>
-        <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp"/>
-        <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp"/>
-        <ClCompile Include="src\cstrike\type\CCommand.cpp"/>
-        <ClCompile Include="src\cstrike\type\CEntityKeyValues.cpp"/>
-        <ClCompile Include="src\cstrike\type\CRecipientFilter.cpp"/>
-        <ClCompile Include="src\cstrike\type\CUtlString.cpp"/>
-        <ClCompile Include="src\cstrike\type\KeyValues.cpp"/>
-        <ClCompile Include="src\cstrike\type\KeyValues3.cpp"/>
-        <ClCompile Include="src\hook\extern\DualMountAddon.cpp"/>
-        <ClCompile Include="src\kv3proxy.cpp"/>
-        <ClCompile Include="src\kvproxy.cpp"/>
-        <ClCompile Include="src\logging.cpp"/>
-        <ClCompile Include="src\memory\memory_access.cpp"/>
-        <ClCompile Include="src\memory\scan.cpp"/>
-        <ClCompile Include="src\memoverride_ms.cpp"/>
-        <ClCompile Include="src\module_windows.cpp"/>
-        <ClCompile Include="src\proto\cs_usercmd.pb.cc"/>
-        <ClCompile Include="src\proto\source2_steam_stats.pb.cc"/>
-        <ClCompile Include="src\proto\usercmd.pb.cc"/>
-        <ClCompile Include="src\sdkproxy.cpp"/>
-        <ClCompile Include="src\address.cpp"/>
-        <ClCompile Include="src\bridge\adapter.cpp"/>
-        <ClCompile Include="src\bridge\natives\ClientNatives.cpp"/>
-        <ClCompile Include="src\bridge\natives\CoreNatives.cpp"/>
-        <ClCompile Include="src\bridge\natives\EntityNatives.cpp"/>
-        <ClCompile Include="src\bridge\natives\GameNatives.cpp"/>
-        <ClCompile Include="src\bridge\natives\PlayerNatives.cpp"/>
-        <ClCompile Include="src\cstrike\type\CEconItemView.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\IGameRules.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\ISchemaSystem.cpp"/>
-        <ClCompile Include="src\cstrike\entity\CBaseModelEntity.cpp"/>
-        <ClCompile Include="src\cstrike\component\PlayerControllerComponent.cpp"/>
-        <ClCompile Include="src\cstrike\entity\PlayerController.cpp"/>
-        <ClCompile Include="src\cstrike\schema.cpp"/>
-        <ClCompile Include="src\CoreCLR\coreclr.cpp"/>
-        <ClCompile Include="src\cstrike\type\CNetworkGameServer.cpp"/>
-        <ClCompile Include="src\cstrike\type\CServerSideClient.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\CGameEntitySystem.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\IGameServer.cpp"/>
-        <ClCompile Include="src\cstrike\Interface\IGameSystem.cpp"/>
-        <ClCompile Include="src\cstrike\entity\CBaseEntity.cpp"/>
-        <ClCompile Include="src\cstrike\type\CEntityInstance.cpp"/>
-        <ClCompile Include="src\cstrike\entity\PlayerPawn.cpp"/>
-        <ClCompile Include="src\filesystemfix.cpp"/>
-        <ClCompile Include="src\gamedata.cpp"/>
-        <ClCompile Include="src\gamefactory.cpp"/>
-        <ClCompile Include="src\hook\client.cpp"/>
-        <ClCompile Include="src\hook\cvar.cpp"/>
-        <ClCompile Include="src\hook\engine.cpp"/>
-        <ClCompile Include="src\hook\entity.cpp"/>
-        <ClCompile Include="src\hook\event.cpp"/>
-        <ClCompile Include="src\hook\extern\DamageManager.cpp"/>
-        <ClCompile Include="src\hook\extern\GiveNamedItem.cpp"/>
-        <ClCompile Include="src\hook\extern\HandleCommandJoinTeam.cpp"/>
-        <ClCompile Include="src\hook\extern\MovementManager.cpp"/>
-        <ClCompile Include="src\hook\extern\TransmitManager.cpp"/>
-        <ClCompile Include="src\hook\extern\ValveConsoleLog.cpp"/>
-        <ClCompile Include="src\hook\gamerule.cpp"/>
-        <ClCompile Include="src\manager\HookManager.cpp"/>
-        <ClCompile Include="src\hook\network.cpp"/>
-        <ClCompile Include="src\hook\player.cpp"/>
-        <ClCompile Include="src\hook\server.cpp"/>
-        <ClCompile Include="src\hook\sound.cpp"/>
-        <ClCompile Include="src\protobufproxy.cpp"/>
-        <ClCompile Include="src\proto\connectionless_netmessages.pb.cc"/>
-        <ClCompile Include="src\proto\cstrike15_gcmessages.pb.cc"/>
-        <ClCompile Include="src\proto\cstrike15_usermessages.pb.cc"/>
-        <ClCompile Include="src\proto\engine_gcmessages.pb.cc"/>
-        <ClCompile Include="src\proto\gcsdk_gcmessages.pb.cc"/>
-        <ClCompile Include="src\proto\netmessages.pb.cc"/>
-        <ClCompile Include="src\proto\network_connection.pb.cc"/>
-        <ClCompile Include="src\proto\networkbasetypes.pb.cc"/>
-        <ClCompile Include="src\proto\steammessages.pb.cc"/>
-        <ClCompile Include="src\proto\usermessages.pb.cc"/>
-        <ClCompile Include="src\loader.cpp"/>
-        <ClCompile Include="src\manager\ConVarManager.cpp"/>
-        <ClCompile Include="src\modsharp.cpp"/>
-        <ClCompile Include="src\module.cpp"/>
-        <ClCompile Include="src\netmessage.cpp"/>
-        <ClCompile Include="src\steamproxy.cpp"/>
-        <ClCompile Include="src\steamworks.cpp"/>
-        <ClCompile Include="src\strtool.cpp"/>
-        <ClCompile Include="vendors\safetyhook\safetyhook.cpp"/>
-        <ClCompile Include="vendors\zydis\Zydis.c"/>
-    </ItemGroup>
-    <ItemGroup>
-        <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h"/>
-        <ClInclude Include="src\bridge\natives\NetNatives.h"/>
-        <ClInclude Include="src\bridge\natives\SoundNatives.h"/>
-        <ClInclude Include="src\command.h"/>
-        <ClInclude Include="src\CoreCLR\Nullable.h"/>
-        <ClInclude Include="src\CoreCLR\RuntimeList.h"/>
-        <ClInclude Include="src\CoreCLR\RuntimeProtobufMessage.h"/>
-        <ClInclude Include="src\bridge\natives\SchemaNatives.h"/>
-        <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h"/>
-        <ClInclude Include="src\cstrike\component\CGameSceneNode.h"/>
-        <ClInclude Include="src\cstrike\entity\CEconEntity.h"/>
-        <ClInclude Include="src\cstrike\entity\CLogicCase.h"/>
-        <ClInclude Include="src\cstrike\entity\CPointHurt.h"/>
-        <ClInclude Include="src\cstrike\interfaces.h"/>
-        <ClInclude Include="src\cstrike\Interface\ICommandLine.h"/>
-        <ClInclude Include="src\cstrike\Interface\IFileSystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameEvent.h"/>
-        <ClInclude Include="src\cstrike\interface\IGameSpawnGroupMgr.h"/>
-        <ClInclude Include="src\cstrike\Interface\IMemAlloc.h"/>
-        <ClInclude Include="src\cstrike\interface\IProtobufBinding.h"/>
-        <ClInclude Include="src\cstrike\interface\IRecipientFilter.h"/>
-        <ClInclude Include="src\cstrike\Interface\IResourceManifest.h"/>
-        <ClInclude Include="src\cstrike\Interface\IResourceSystem.h"/>
-        <ClInclude Include="src\cstrike\entity\CBaseAnimGraph.h"/>
-        <ClInclude Include="src\cstrike\component\CBodyComponent.h"/>
-        <ClInclude Include="src\cstrike\entity\CBreakable.h"/>
-        <ClInclude Include="src\cstrike\entity\CHudHint.h"/>
-        <ClInclude Include="src\cstrike\entity\CPhysBox.h"/>
-        <ClInclude Include="src\cstrike\consts.h"/>
-        <ClInclude Include="src\cstrike\type\CCollisionProperty.h"/>
-        <ClInclude Include="src\cstrike\type\CCSHitboxSystem.h"/>
-        <ClInclude Include="src\cstrike\interface\CDedicatedServerWorkshopManager.h"/>
-        <ClInclude Include="src\cstrike\type\CEconItemDefinition.h"/>
-        <ClInclude Include="src\cstrike\type\CEntityPrecacheContext.h"/>
-        <ClInclude Include="src\cstrike\type\CGameTrace.h"/>
-        <ClInclude Include="src\cstrike\type\CMemAllocAllocator.h"/>
-        <ClInclude Include="src\cstrike\type\CNetworkStateChangedFieldInfo.h"/>
-        <ClInclude Include="src\cstrike\type\CPlayerSlot.h"/>
-        <ClInclude Include="src\cstrike\type\CTakeDamageResult.h"/>
-        <ClInclude Include="src\cstrike\type\CHostState.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlRBTree.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlSourceLocation.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlTSHash.h"/>
-        <ClInclude Include="src\cstrike\type\HSequence.h"/>
-        <ClInclude Include="src\cstrike\type\CBitVec.h"/>
-        <ClInclude Include="src\cstrike\type\CBufferString.h"/>
-        <ClInclude Include="src\cstrike\type\CConVar.h"/>
-        <ClInclude Include="src\cstrike\type\CEffectData.h"/>
-        <ClInclude Include="src\cstrike\type\CEntityIdentity.h"/>
-        <ClInclude Include="src\cstrike\type\CEntityKeyValues.h"/>
-        <ClInclude Include="src\cstrike\type\CInButtonState.h"/>
-        <ClInclude Include="src\cstrike\type\CNetworkVelocityVector.h"/>
-        <ClInclude Include="src\cstrike\type\Color32.h"/>
-        <ClInclude Include="src\cstrike\type\ConCommand.h"/>
-        <ClInclude Include="src\cstrike\type\CRecipientFilter.h"/>
-        <ClInclude Include="src\cstrike\type\CSplitScreenSlot.h"/>
-        <ClInclude Include="src\cstrike\type\CTransform.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlBuffer.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlLeanVector.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlMap.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlMemory.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlString.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlSymbolLarge.h"/>
-        <ClInclude Include="src\cstrike\type\CUtlVector.h"/>
-        <ClInclude Include="src\cstrike\type\KeyValues.h"/>
-        <ClInclude Include="src\cstrike\type\KeyValues3.h"/>
-        <ClInclude Include="src\cstrike\type\matrix3x4.h"/>
-        <ClInclude Include="src\cstrike\type\netadr_t.h"/>
-        <ClInclude Include="src\mathematics.h"/>
-        <ClInclude Include="src\murmurhash.h"/>
-        <ClInclude Include="src\cstrike\type\QAngle.h"/>
-        <ClInclude Include="src\cstrike\type\Quaternion.h"/>
-        <ClInclude Include="src\cstrike\type\Vector.h"/>
-        <ClInclude Include="src\cstrike\type\Vector2D.h"/>
-        <ClInclude Include="src\cstrike\type\VProf.h"/>
-        <ClInclude Include="src\cstrike\type\ResourceSystem.h"/>
-        <ClInclude Include="src\bridge\adapter.h"/>
-        <ClInclude Include="src\bridge\corebridge.h"/>
-        <ClInclude Include="src\bridge\hookbridge.h"/>
-        <ClInclude Include="src\CoreCLR\NativeSpan.h"/>
-        <ClInclude Include="src\cstrike\Interface\IScriptVM.h"/>
-        <ClInclude Include="src\cstrike\Interface\INetworkStringTable.h"/>
-        <ClInclude Include="src\cstrike\entity\CEnvEntityMaker.h"/>
-        <ClInclude Include="src\cstrike\entity\CPhysForce.h"/>
-        <ClInclude Include="src\cstrike\type\CMoveData.h"/>
-        <ClInclude Include="src\cstrike\type\EntityIO.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameResourceServiceServer.h"/>
-        <ClInclude Include="src\address.h"/>
-        <ClInclude Include="src\bridge\natives\ClientNatives.h"/>
-        <ClInclude Include="src\bridge\natives\CVarNatives.h"/>
-        <ClInclude Include="src\bridge\natives\CoreNatives.h"/>
-        <ClInclude Include="src\bridge\natives\EntityNatives.h"/>
-        <ClInclude Include="src\bridge\natives\EventNatives.h"/>
-        <ClInclude Include="src\bridge\natives\GameNatives.h"/>
-        <ClInclude Include="src\bridge\natives\PlayerNatives.h"/>
-        <ClInclude Include="src\bridge\natives\TransmitManager.h"/>
-        <ClInclude Include="src\cstrike\type\CEconItemView.h"/>
-        <ClInclude Include="src\cstrike\type\CGlobalVars.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameTypes.h"/>
-        <ClInclude Include="src\cstrike\Interface\INetChannel.h"/>
-        <ClInclude Include="src\cstrike\Interface\INetwork.h"/>
-        <ClInclude Include="src\cstrike\Interface\INetworkServerService.h"/>
-        <ClInclude Include="src\cstrike\Interface\ISoundOpSystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\RecipientFilter.h"/>
-        <ClInclude Include="src\cstrike\schema.h"/>
-        <ClInclude Include="src\cstrike\entity\CBaseTrigger.h"/>
-        <ClInclude Include="src\cstrike\entity\CBaseWeapon.h"/>
-        <ClInclude Include="src\cstrike\entity\CEnvExplosion.h"/>
-        <ClInclude Include="src\cstrike\entity\CGamePlayerEquip.h"/>
-        <ClInclude Include="src\cstrike\entity\CTriggerPush.h"/>
-        <ClInclude Include="src\cstrike\type\VData.h"/>
-        <ClInclude Include="src\cstrike\type\CCommand.h"/>
-        <ClInclude Include="src\cstrike\component\PlayerControllerComponent.h"/>
-        <ClInclude Include="src\cstrike\component\PlayerPawnComponent.h"/>
-        <ClInclude Include="src\CoreCLR\coreclr.h"/>
-        <ClInclude Include="src\CoreCLR\coreclr_delegates.h"/>
-        <ClInclude Include="src\CoreCLR\hostfxr.h"/>
-        <ClInclude Include="src\cstrike\cstrike.h"/>
-        <ClInclude Include="src\cstrike\type\CNetworkGameServer.h"/>
-        <ClInclude Include="src\cstrike\type\CServerSideClient.h"/>
-        <ClInclude Include="src\cstrike\Interface\IAppSystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\ICvar.h"/>
-        <ClInclude Include="src\cstrike\Interface\IEngineServer.h"/>
-        <ClInclude Include="src\cstrike\Interface\CGameEntitySystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameRules.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameServer.h"/>
-        <ClInclude Include="src\cstrike\Interface\IGameSystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\ISchemaSystem.h"/>
-        <ClInclude Include="src\cstrike\Interface\IServerGameClient.h"/>
-        <ClInclude Include="src\cstrike\Interface\IServerGameEntities.h"/>
-        <ClInclude Include="src\cstrike\entity\CBaseEntity.h"/>
-        <ClInclude Include="src\cstrike\type\CEntityInstance.h"/>
-        <ClInclude Include="src\cstrike\entity\CBaseModelEntity.h"/>
-        <ClInclude Include="src\cstrike\entity\PlayerController.h"/>
-        <ClInclude Include="src\cstrike\entity\PlayerPawn.h"/>
-        <ClInclude Include="src\cstrike\type\CHashKey.h"/>
-        <ClInclude Include="src\cstrike\type\CTrace.h"/>
-        <ClInclude Include="src\cstrike\type\CTakeDamageInfo.h"/>
-        <ClInclude Include="src\cstrike\type\CUserCmd.h"/>
-        <ClInclude Include="src\cstrike\type\EmitSound.h"/>
-        <ClInclude Include="src\cstrike\type\Variant.h"/>
-        <ClInclude Include="src\definitions.h"/>
-        <ClInclude Include="src\bridge\forwards\forward.h"/>
-        <ClInclude Include="src\filesystemfix.h"/>
-        <ClInclude Include="src\gamedata.h"/>
-        <ClInclude Include="src\gamefactory.h"/>
-        <ClInclude Include="src\global.h"/>
-        <ClInclude Include="src\cstrike\type\CPaintKit.h"/>
-        <ClInclude Include="src\kv3proxy.h"/>
-        <ClInclude Include="src\kvproxy.h"/>
-        <ClInclude Include="src\manager\HookManager.h"/>
-        <ClInclude Include="src\hook\network.h"/>
-        <ClInclude Include="src\logging.h"/>
-        <ClInclude Include="src\manager\ConVarManager.h"/>
-        <ClInclude Include="src\memory\memory_access.h"/>
-        <ClInclude Include="src\memory\scan.h"/>
-        <ClInclude Include="src\module.h"/>
-        <ClInclude Include="src\platform.h"/>
-        <ClInclude Include="src\protobufproxy.h"/>
-        <ClInclude Include="src\scopetimer.h"/>
-        <ClInclude Include="src\sdkproxy.h"/>
-        <ClInclude Include="src\steamproxy.h"/>
-        <ClInclude Include="src\steamworks.h"/>
-        <ClInclude Include="src\strtool.h"/>
-        <ClInclude Include="src\types.h"/>
-        <ClInclude Include="src\netmessage.h"/>
-        <ClInclude Include="src\version.h"/>
-        <ClInclude Include="src\vhook\call.h"/>
-        <ClInclude Include="src\vhook\hook.h"/>
-        <ClInclude Include="vendors\expected\include\tl\expected.hpp"/>
-        <ClInclude Include="vendors\json\json.hpp"/>
-        <ClInclude Include="vendors\safetyhook\include\safetyhook\safetyhook.hpp"/>
-        <ClInclude Include="vendors\zydis\Zydis.h"/>
-    </ItemGroup>
-    <ItemGroup>
-        <ResourceCompile Include="src\version.rc"/>
-    </ItemGroup>
-    <PropertyGroup Label="Globals">
-        <VCProjectVersion>17.0</VCProjectVersion>
-        <Keyword>Win32Proj</Keyword>
-        <ProjectGuid>{2e9e0584-8b32-4e94-ba17-20febbbed37c}</ProjectGuid>
-        <RootNamespace>ModSharp</RootNamespace>
-        <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
-    </PropertyGroup>
-    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <UseDebugLibraries>false</UseDebugLibraries>
-        <PlatformToolset>v143</PlatformToolset>
-        <WholeProgramOptimization>true</WholeProgramOptimization>
-        <CharacterSet>Unicode</CharacterSet>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <UseDebugLibraries>false</UseDebugLibraries>
-        <PlatformToolset>v143</PlatformToolset>
-        <WholeProgramOptimization>true</WholeProgramOptimization>
-        <CharacterSet>MultiByte</CharacterSet>
-    </PropertyGroup>
-    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-    <ImportGroup Label="ExtensionSettings"/>
-    <ImportGroup Label="Shared">
-    </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-        <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
-    </ImportGroup>
-    <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
-    </ImportGroup>
-    <PropertyGroup Label="UserMacros"/>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <TargetName>modsharp</TargetName>
-        <OutDir>$(cs2)\game\sharp\bin\</OutDir>
-        <IncludePath>src;vendors/protobuf/src;vendors/steamworks/include/;vendors/zydis/;vendors/expected/include;vendors/safetyhook/include;vendors/json/;$(IncludePath)</IncludePath>
-        <IntDir>../.build/Engine/.mid/$(Platform)\$(Configuration)\</IntDir>
-        <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
-        <LibraryPath>$(LibraryPath)</LibraryPath>
-        <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
-    </PropertyGroup>
-    <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-        <ClCompile>
-            <WarningLevel>Level4</WarningLevel>
-            <FunctionLevelLinking>true</FunctionLevelLinking>
-            <IntrinsicFunctions>true</IntrinsicFunctions>
-            <SDLCheck>true</SDLCheck>
-            <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
-            <ConformanceMode>true</ConformanceMode>
-            <PrecompiledHeader>NotUsing</PrecompiledHeader>
-            <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-            <LanguageStandard>stdcpp20</LanguageStandard>
-            <LanguageStandard_C>stdc17</LanguageStandard_C>
-            <Optimization>MaxSpeed</Optimization>
-            <WholeProgramOptimization>false</WholeProgramOptimization>
-            <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-            <MultiProcessorCompilation>true</MultiProcessorCompilation>
-            <RuntimeTypeInfo>true</RuntimeTypeInfo>
-            <AdditionalOptions>/utf-8 /Zc:threadSafeInit %(AdditionalOptions)</AdditionalOptions>
-            <DisableSpecificWarnings>4828;4100</DisableSpecificWarnings>
-            <BufferSecurityCheck>true</BufferSecurityCheck>
-        </ClCompile>
-        <Link>
-            <SubSystem>Windows</SubSystem>
-            <EnableCOMDATFolding>true</EnableCOMDATFolding>
-            <OptimizeReferences>true</OptimizeReferences>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
-            <EnableUAC>false</EnableUAC>
-            <AdditionalDependencies>psapi.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
-            <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\src\CoreCLR\win64;lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-        </Link>
-        <PostBuildEvent>
-            <Command>
-            </Command>
-        </PostBuildEvent>
-        <PostBuildEvent>
-            <Message>
-            </Message>
-        </PostBuildEvent>
-        <PreBuildEvent>
-            <Command>setlocal enabledelayedexpansion
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\bridge\hookbridge.cpp" />
+    <ClCompile Include="src\bridge\natives\NetNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\SoundNatives.cpp" />
+    <ClCompile Include="src\command.cpp" />
+    <ClCompile Include="src\CoreCLR\RuntimeProtobufMessage.cpp" />
+    <ClCompile Include="src\bridge\corebridge.cpp" />
+    <ClCompile Include="src\cstrike\component\CGameSceneNode.cpp" />
+    <ClCompile Include="src\cstrike\component\PlayerPawnComponent.cpp" />
+    <ClCompile Include="src\cstrike\econitem.cpp" />
+    <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp" />
+    <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp" />
+    <ClCompile Include="src\cstrike\interfaces.cpp" />
+    <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />
+    <ClCompile Include="src\cstrike\Interface\ICvar.cpp" />
+    <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
+    <ClCompile Include="src\cstrike\interface\IGameTypes.cpp" />
+    <ClCompile Include="src\cstrike\Interface\INetChannel.cpp" />
+    <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp" />
+    <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp" />
+    <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp" />
+    <ClCompile Include="src\cstrike\type\CCommand.cpp" />
+    <ClCompile Include="src\cstrike\type\CEntityKeyValues.cpp" />
+    <ClCompile Include="src\cstrike\type\CRecipientFilter.cpp" />
+    <ClCompile Include="src\cstrike\type\CUtlString.cpp" />
+    <ClCompile Include="src\cstrike\type\KeyValues.cpp" />
+    <ClCompile Include="src\cstrike\type\KeyValues3.cpp" />
+    <ClCompile Include="src\hook\extern\DualMountAddon.cpp" />
+    <ClCompile Include="src\kv3proxy.cpp" />
+    <ClCompile Include="src\kvproxy.cpp" />
+    <ClCompile Include="src\logging.cpp" />
+    <ClCompile Include="src\memory\memory_access.cpp" />
+    <ClCompile Include="src\memory\scan.cpp" />
+    <ClCompile Include="src\memoverride_ms.cpp" />
+    <ClCompile Include="src\module_windows.cpp" />
+    <ClCompile Include="src\proto\cs_usercmd.pb.cc" />
+    <ClCompile Include="src\proto\source2_steam_stats.pb.cc" />
+    <ClCompile Include="src\proto\usercmd.pb.cc" />
+    <ClCompile Include="src\sdkproxy.cpp" />
+    <ClCompile Include="src\address.cpp" />
+    <ClCompile Include="src\bridge\adapter.cpp" />
+    <ClCompile Include="src\bridge\natives\ClientNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\CoreNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\EntityNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\GameNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\PlayerNatives.cpp" />
+    <ClCompile Include="src\cstrike\type\CEconItemView.cpp" />
+    <ClCompile Include="src\cstrike\Interface\IGameRules.cpp" />
+    <ClCompile Include="src\cstrike\Interface\ISchemaSystem.cpp" />
+    <ClCompile Include="src\cstrike\entity\CBaseModelEntity.cpp" />
+    <ClCompile Include="src\cstrike\component\PlayerControllerComponent.cpp" />
+    <ClCompile Include="src\cstrike\entity\PlayerController.cpp" />
+    <ClCompile Include="src\cstrike\schema.cpp" />
+    <ClCompile Include="src\CoreCLR\coreclr.cpp" />
+    <ClCompile Include="src\cstrike\type\CNetworkGameServer.cpp" />
+    <ClCompile Include="src\cstrike\type\CServerSideClient.cpp" />
+    <ClCompile Include="src\cstrike\Interface\CGameEntitySystem.cpp" />
+    <ClCompile Include="src\cstrike\Interface\IGameServer.cpp" />
+    <ClCompile Include="src\cstrike\Interface\IGameSystem.cpp" />
+    <ClCompile Include="src\cstrike\entity\CBaseEntity.cpp" />
+    <ClCompile Include="src\cstrike\type\CEntityInstance.cpp" />
+    <ClCompile Include="src\cstrike\entity\PlayerPawn.cpp" />
+    <ClCompile Include="src\filesystemfix.cpp" />
+    <ClCompile Include="src\gamedata.cpp" />
+    <ClCompile Include="src\gamefactory.cpp" />
+    <ClCompile Include="src\hook\client.cpp" />
+    <ClCompile Include="src\hook\cvar.cpp" />
+    <ClCompile Include="src\hook\engine.cpp" />
+    <ClCompile Include="src\hook\entity.cpp" />
+    <ClCompile Include="src\hook\event.cpp" />
+    <ClCompile Include="src\hook\extern\DamageManager.cpp" />
+    <ClCompile Include="src\hook\extern\GiveNamedItem.cpp" />
+    <ClCompile Include="src\hook\extern\HandleCommandJoinTeam.cpp" />
+    <ClCompile Include="src\hook\extern\MovementManager.cpp" />
+    <ClCompile Include="src\hook\extern\TransmitManager.cpp" />
+    <ClCompile Include="src\hook\extern\ValveConsoleLog.cpp" />
+    <ClCompile Include="src\hook\gamerule.cpp" />
+    <ClCompile Include="src\manager\HookManager.cpp" />
+    <ClCompile Include="src\hook\network.cpp" />
+    <ClCompile Include="src\hook\player.cpp" />
+    <ClCompile Include="src\hook\server.cpp" />
+    <ClCompile Include="src\hook\sound.cpp" />
+    <ClCompile Include="src\protobufproxy.cpp" />
+    <ClCompile Include="src\proto\connectionless_netmessages.pb.cc" />
+    <ClCompile Include="src\proto\cstrike15_gcmessages.pb.cc" />
+    <ClCompile Include="src\proto\cstrike15_usermessages.pb.cc" />
+    <ClCompile Include="src\proto\engine_gcmessages.pb.cc" />
+    <ClCompile Include="src\proto\gcsdk_gcmessages.pb.cc" />
+    <ClCompile Include="src\proto\netmessages.pb.cc" />
+    <ClCompile Include="src\proto\network_connection.pb.cc" />
+    <ClCompile Include="src\proto\networkbasetypes.pb.cc" />
+    <ClCompile Include="src\proto\steammessages.pb.cc" />
+    <ClCompile Include="src\proto\usermessages.pb.cc" />
+    <ClCompile Include="src\loader.cpp" />
+    <ClCompile Include="src\manager\ConVarManager.cpp" />
+    <ClCompile Include="src\modsharp.cpp" />
+    <ClCompile Include="src\module.cpp" />
+    <ClCompile Include="src\netmessage.cpp" />
+    <ClCompile Include="src\steamproxy.cpp" />
+    <ClCompile Include="src\steamworks.cpp" />
+    <ClCompile Include="src\strtool.cpp" />
+    <ClCompile Include="vendors\safetyhook\safetyhook.cpp" />
+    <ClCompile Include="vendors\zydis\Zydis.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
+    <ClInclude Include="src\bridge\natives\NetNatives.h" />
+    <ClInclude Include="src\bridge\natives\SoundNatives.h" />
+    <ClInclude Include="src\command.h" />
+    <ClInclude Include="src\CoreCLR\Nullable.h" />
+    <ClInclude Include="src\CoreCLR\RuntimeList.h" />
+    <ClInclude Include="src\CoreCLR\RuntimeProtobufMessage.h" />
+    <ClInclude Include="src\bridge\natives\SchemaNatives.h" />
+    <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h" />
+    <ClInclude Include="src\cstrike\component\CGameSceneNode.h" />
+    <ClInclude Include="src\cstrike\entity\CEconEntity.h" />
+    <ClInclude Include="src\cstrike\entity\CLogicCase.h" />
+    <ClInclude Include="src\cstrike\entity\CPointHurt.h" />
+    <ClInclude Include="src\cstrike\interfaces.h" />
+    <ClInclude Include="src\cstrike\Interface\ICommandLine.h" />
+    <ClInclude Include="src\cstrike\Interface\IFileSystem.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameEvent.h" />
+    <ClInclude Include="src\cstrike\interface\IGameSpawnGroupMgr.h" />
+    <ClInclude Include="src\cstrike\Interface\IMemAlloc.h" />
+    <ClInclude Include="src\cstrike\interface\IProtobufBinding.h" />
+    <ClInclude Include="src\cstrike\interface\IRecipientFilter.h" />
+    <ClInclude Include="src\cstrike\Interface\IResourceManifest.h" />
+    <ClInclude Include="src\cstrike\Interface\IResourceSystem.h" />
+    <ClInclude Include="src\cstrike\entity\CBaseAnimGraph.h" />
+    <ClInclude Include="src\cstrike\component\CBodyComponent.h" />
+    <ClInclude Include="src\cstrike\entity\CBreakable.h" />
+    <ClInclude Include="src\cstrike\entity\CHudHint.h" />
+    <ClInclude Include="src\cstrike\entity\CPhysBox.h" />
+    <ClInclude Include="src\cstrike\consts.h" />
+    <ClInclude Include="src\cstrike\type\CCollisionProperty.h" />
+    <ClInclude Include="src\cstrike\type\CCSHitboxSystem.h" />
+    <ClInclude Include="src\cstrike\interface\CDedicatedServerWorkshopManager.h" />
+    <ClInclude Include="src\cstrike\type\CEconItemDefinition.h" />
+    <ClInclude Include="src\cstrike\type\CEntityPrecacheContext.h" />
+    <ClInclude Include="src\cstrike\type\CGameTrace.h" />
+    <ClInclude Include="src\cstrike\type\CMemAllocAllocator.h" />
+    <ClInclude Include="src\cstrike\type\CNetworkStateChangedFieldInfo.h" />
+    <ClInclude Include="src\cstrike\type\CPlayerSlot.h" />
+    <ClInclude Include="src\cstrike\type\CTakeDamageResult.h" />
+    <ClInclude Include="src\cstrike\type\CHostState.h" />
+    <ClInclude Include="src\cstrike\type\CUtlRBTree.h" />
+    <ClInclude Include="src\cstrike\type\CUtlSourceLocation.h" />
+    <ClInclude Include="src\cstrike\type\CUtlTSHash.h" />
+    <ClInclude Include="src\cstrike\type\HSequence.h" />
+    <ClInclude Include="src\cstrike\type\CBitVec.h" />
+    <ClInclude Include="src\cstrike\type\CBufferString.h" />
+    <ClInclude Include="src\cstrike\type\CConVar.h" />
+    <ClInclude Include="src\cstrike\type\CEffectData.h" />
+    <ClInclude Include="src\cstrike\type\CEntityIdentity.h" />
+    <ClInclude Include="src\cstrike\type\CEntityKeyValues.h" />
+    <ClInclude Include="src\cstrike\type\CInButtonState.h" />
+    <ClInclude Include="src\cstrike\type\CNetworkVelocityVector.h" />
+    <ClInclude Include="src\cstrike\type\Color32.h" />
+    <ClInclude Include="src\cstrike\type\ConCommand.h" />
+    <ClInclude Include="src\cstrike\type\CRecipientFilter.h" />
+    <ClInclude Include="src\cstrike\type\CSplitScreenSlot.h" />
+    <ClInclude Include="src\cstrike\type\CTransform.h" />
+    <ClInclude Include="src\cstrike\type\CUtlBuffer.h" />
+    <ClInclude Include="src\cstrike\type\CUtlLeanVector.h" />
+    <ClInclude Include="src\cstrike\type\CUtlMap.h" />
+    <ClInclude Include="src\cstrike\type\CUtlMemory.h" />
+    <ClInclude Include="src\cstrike\type\CUtlString.h" />
+    <ClInclude Include="src\cstrike\type\CUtlSymbolLarge.h" />
+    <ClInclude Include="src\cstrike\type\CUtlVector.h" />
+    <ClInclude Include="src\cstrike\type\KeyValues.h" />
+    <ClInclude Include="src\cstrike\type\KeyValues3.h" />
+    <ClInclude Include="src\cstrike\type\matrix3x4.h" />
+    <ClInclude Include="src\cstrike\type\netadr_t.h" />
+    <ClInclude Include="src\mathematics.h" />
+    <ClInclude Include="src\memory\zydis_utility.h" />
+    <ClInclude Include="src\murmurhash.h" />
+    <ClInclude Include="src\cstrike\type\QAngle.h" />
+    <ClInclude Include="src\cstrike\type\Quaternion.h" />
+    <ClInclude Include="src\cstrike\type\Vector.h" />
+    <ClInclude Include="src\cstrike\type\Vector2D.h" />
+    <ClInclude Include="src\cstrike\type\VProf.h" />
+    <ClInclude Include="src\cstrike\type\ResourceSystem.h" />
+    <ClInclude Include="src\bridge\adapter.h" />
+    <ClInclude Include="src\bridge\corebridge.h" />
+    <ClInclude Include="src\bridge\hookbridge.h" />
+    <ClInclude Include="src\CoreCLR\NativeSpan.h" />
+    <ClInclude Include="src\cstrike\Interface\IScriptVM.h" />
+    <ClInclude Include="src\cstrike\Interface\INetworkStringTable.h" />
+    <ClInclude Include="src\cstrike\entity\CEnvEntityMaker.h" />
+    <ClInclude Include="src\cstrike\entity\CPhysForce.h" />
+    <ClInclude Include="src\cstrike\type\CMoveData.h" />
+    <ClInclude Include="src\cstrike\type\EntityIO.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameResourceServiceServer.h" />
+    <ClInclude Include="src\address.h" />
+    <ClInclude Include="src\bridge\natives\ClientNatives.h" />
+    <ClInclude Include="src\bridge\natives\CVarNatives.h" />
+    <ClInclude Include="src\bridge\natives\CoreNatives.h" />
+    <ClInclude Include="src\bridge\natives\EntityNatives.h" />
+    <ClInclude Include="src\bridge\natives\EventNatives.h" />
+    <ClInclude Include="src\bridge\natives\GameNatives.h" />
+    <ClInclude Include="src\bridge\natives\PlayerNatives.h" />
+    <ClInclude Include="src\bridge\natives\TransmitManager.h" />
+    <ClInclude Include="src\cstrike\type\CEconItemView.h" />
+    <ClInclude Include="src\cstrike\type\CGlobalVars.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameTypes.h" />
+    <ClInclude Include="src\cstrike\Interface\INetChannel.h" />
+    <ClInclude Include="src\cstrike\Interface\INetwork.h" />
+    <ClInclude Include="src\cstrike\Interface\INetworkServerService.h" />
+    <ClInclude Include="src\cstrike\Interface\ISoundOpSystem.h" />
+    <ClInclude Include="src\cstrike\Interface\RecipientFilter.h" />
+    <ClInclude Include="src\cstrike\schema.h" />
+    <ClInclude Include="src\cstrike\entity\CBaseTrigger.h" />
+    <ClInclude Include="src\cstrike\entity\CBaseWeapon.h" />
+    <ClInclude Include="src\cstrike\entity\CEnvExplosion.h" />
+    <ClInclude Include="src\cstrike\entity\CGamePlayerEquip.h" />
+    <ClInclude Include="src\cstrike\entity\CTriggerPush.h" />
+    <ClInclude Include="src\cstrike\type\VData.h" />
+    <ClInclude Include="src\cstrike\type\CCommand.h" />
+    <ClInclude Include="src\cstrike\component\PlayerControllerComponent.h" />
+    <ClInclude Include="src\cstrike\component\PlayerPawnComponent.h" />
+    <ClInclude Include="src\CoreCLR\coreclr.h" />
+    <ClInclude Include="src\CoreCLR\coreclr_delegates.h" />
+    <ClInclude Include="src\CoreCLR\hostfxr.h" />
+    <ClInclude Include="src\cstrike\cstrike.h" />
+    <ClInclude Include="src\cstrike\type\CNetworkGameServer.h" />
+    <ClInclude Include="src\cstrike\type\CServerSideClient.h" />
+    <ClInclude Include="src\cstrike\Interface\IAppSystem.h" />
+    <ClInclude Include="src\cstrike\Interface\ICvar.h" />
+    <ClInclude Include="src\cstrike\Interface\IEngineServer.h" />
+    <ClInclude Include="src\cstrike\Interface\CGameEntitySystem.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameRules.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameServer.h" />
+    <ClInclude Include="src\cstrike\Interface\IGameSystem.h" />
+    <ClInclude Include="src\cstrike\Interface\ISchemaSystem.h" />
+    <ClInclude Include="src\cstrike\Interface\IServerGameClient.h" />
+    <ClInclude Include="src\cstrike\Interface\IServerGameEntities.h" />
+    <ClInclude Include="src\cstrike\entity\CBaseEntity.h" />
+    <ClInclude Include="src\cstrike\type\CEntityInstance.h" />
+    <ClInclude Include="src\cstrike\entity\CBaseModelEntity.h" />
+    <ClInclude Include="src\cstrike\entity\PlayerController.h" />
+    <ClInclude Include="src\cstrike\entity\PlayerPawn.h" />
+    <ClInclude Include="src\cstrike\type\CHashKey.h" />
+    <ClInclude Include="src\cstrike\type\CTrace.h" />
+    <ClInclude Include="src\cstrike\type\CTakeDamageInfo.h" />
+    <ClInclude Include="src\cstrike\type\CUserCmd.h" />
+    <ClInclude Include="src\cstrike\type\EmitSound.h" />
+    <ClInclude Include="src\cstrike\type\Variant.h" />
+    <ClInclude Include="src\definitions.h" />
+    <ClInclude Include="src\bridge\forwards\forward.h" />
+    <ClInclude Include="src\filesystemfix.h" />
+    <ClInclude Include="src\gamedata.h" />
+    <ClInclude Include="src\gamefactory.h" />
+    <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\cstrike\type\CPaintKit.h" />
+    <ClInclude Include="src\kv3proxy.h" />
+    <ClInclude Include="src\kvproxy.h" />
+    <ClInclude Include="src\manager\HookManager.h" />
+    <ClInclude Include="src\hook\network.h" />
+    <ClInclude Include="src\logging.h" />
+    <ClInclude Include="src\manager\ConVarManager.h" />
+    <ClInclude Include="src\memory\memory_access.h" />
+    <ClInclude Include="src\memory\scan.h" />
+    <ClInclude Include="src\module.h" />
+    <ClInclude Include="src\platform.h" />
+    <ClInclude Include="src\protobufproxy.h" />
+    <ClInclude Include="src\scopetimer.h" />
+    <ClInclude Include="src\sdkproxy.h" />
+    <ClInclude Include="src\steamproxy.h" />
+    <ClInclude Include="src\steamworks.h" />
+    <ClInclude Include="src\strtool.h" />
+    <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\netmessage.h" />
+    <ClInclude Include="src\version.h" />
+    <ClInclude Include="src\vhook\call.h" />
+    <ClInclude Include="src\vhook\hook.h" />
+    <ClInclude Include="vendors\expected\include\tl\expected.hpp" />
+    <ClInclude Include="vendors\json\json.hpp" />
+    <ClInclude Include="vendors\safetyhook\include\safetyhook\safetyhook.hpp" />
+    <ClInclude Include="vendors\zydis\Zydis.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\version.rc" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{2e9e0584-8b32-4e94-ba17-20febbbed37c}</ProjectGuid>
+    <RootNamespace>ModSharp</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>modsharp</TargetName>
+    <OutDir>$(cs2)\game\sharp\bin\</OutDir>
+    <IncludePath>src;vendors/protobuf/src;vendors/steamworks/include/;vendors/zydis/;vendors/expected/include;vendors/safetyhook/include;vendors/json/;$(IncludePath)</IncludePath>
+    <IntDir>../.build/Engine/.mid/$(Platform)\$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <Optimization>MaxSpeed</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>/utf-8 /Zc:threadSafeInit %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>4828;4100</DisableSpecificWarnings>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>psapi.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\src\CoreCLR\win64;lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>setlocal enabledelayedexpansion
                 for /f %%i in ('git rev-list --count HEAD') do set GIT_COUNT=%%i
                 for /f %%h in ('git rev-parse --short HEAD') do set GIT_HASH=%%h
                 for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "datetime=%%a" &amp;&amp; set datetime=!datetime:~0,4!/!datetime:~4,2!/!datetime:~6,2! !datetime:~8,2!:!datetime:~10,2!:!datetime:~12,2!
@@ -385,11 +386,11 @@
                 endlocal
                 echo PreBuild End
             </Command>
-        </PreBuildEvent>
-        <PreBuildEvent>
-            <Message>Git AutoVersion</Message>
-        </PreBuildEvent>
-    </ItemDefinitionGroup>
-    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
-    <ImportGroup Label="ExtensionTargets"/>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Git AutoVersion</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

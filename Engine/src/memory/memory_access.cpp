@@ -22,17 +22,56 @@
 #include <Zydis.h>
 #include <safetyhook.hpp>
 
-bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access)
+#ifndef PLATFORM_WINDOWS
+#    include <sys/mman.h>
+#else
+#    ifndef WIN32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
+#endif
+#    include <windows.h>
+#endif
+
+bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access, uint8_t* old_access)
 {
     const bool read    = (access & MemoryAccess_Read) != 0;
     const bool write   = (access & MemoryAccess_Write) != 0;
     const bool execute = (access & MemoryAccess_Execute) != 0;
 
-    const auto result = safetyhook::vm_protect(address, size, safetyhook::VmAccess{.read = read, .write = write, .execute = execute});
+    safetyhook::VmAccess target_access{.read = read, .write = write, .execute = execute};
+    const auto           result = safetyhook::vm_protect(address, size, target_access);
 
-    return result.has_value();
+    if (!result.has_value()) return false;
+
+    if (old_access != nullptr)
+    {
+        uint32_t os_old_protect = result.value();
+
+#ifdef PLATFORM_WINDOWS
+        if (os_old_protect == PAGE_EXECUTE_READWRITE)
+        {
+            *old_access = MemoryAccess_Read | MemoryAccess_Write | MemoryAccess_Execute;
+        }
+        else if (os_old_protect == PAGE_EXECUTE_READ)
+        {
+            *old_access = MemoryAccess_Read | MemoryAccess_Execute;
+        }
+        else if (os_old_protect == PAGE_READWRITE)
+        {
+            *old_access = MemoryAccess_Read | MemoryAccess_Write;
+        }
+        else if (os_old_protect == PAGE_READONLY)
+        {
+            *old_access = MemoryAccess_Read;
+        }
+#else
+        if (os_old_protect & PROT_READ) *old_access |= MemoryAccess_Read;
+        if (os_old_protect & PROT_WRITE) *old_access |= MemoryAccess_Write;
+        if (os_old_protect & PROT_EXEC) *old_access |= MemoryAccess_Execute;
+#endif
+    }
+
+    return true;
 }
-
 uintptr_t ResolveCallTarget(ZydisDecoder* decoder, ZydisDecodedInstruction* instr, ZydisDecodedOperand* operands, uintptr_t current_ip)
 {
     ZyanU64 raw_target = 0;

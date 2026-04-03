@@ -290,12 +290,13 @@ static void PatchEnableVScript()
         auto op2 = &operands[1];
         if (op1->type != ZYDIS_OPERAND_TYPE_REGISTER || op1->reg.value != ZYDIS_REGISTER_EAX || op2->type != ZYDIS_OPERAND_TYPE_IMMEDIATE || op2->imm.value.s != 2)
             return false;
-
-        SetMemoryAccess(address, instr.length, g_nReadWriteExecuteAccess);
-        *address.Offset(1).As<uint8_t*>() = 0x1;
-        LOG("Patched CCSGOVScriptGameSystem::GetVScriptType @ server+0x%llx", address.GetPtr() - modules::server->Base());
-        SetMemoryAccess(address, instr.length, g_nReadExecuteAccess);
-
+        if (auto unprotect_guard = safetyhook::unprotect(address, instr.length))
+        {
+            *address.Offset(1).As<uint8_t*>() = 0x1;
+            LOG("Patched CCSGOVScriptGameSystem::GetVScriptType @ server+0x%llx", address.GetPtr() - modules::server->Base());
+            return true;
+        }
+        FERROR("Failed to unprotect memory region for CCSGOVScriptGameSystem::GetVScriptType");
         return true;
     });
 

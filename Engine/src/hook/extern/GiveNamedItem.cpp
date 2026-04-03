@@ -39,6 +39,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/Variant.h"
+#include "memory/zydis_utility.h"
 
 #include <Zydis.h>
 #include <safetyhook.hpp>
@@ -642,8 +643,6 @@ class LocalEntityListener : public IEntityListener
 
 #endif
 
-extern uintptr_t ResolveCallTarget(ZydisDecoder* decoder, ZydisDecodedInstruction* instr, ZydisDecodedOperand* operands, uintptr_t current_ip);
-
 static void PatchGiveNamedItemLimit()
 {
     static auto address = g_pGameData->GetAddress<uintptr_t>("CCSPlayer_ItemServices::GiveNamedItem");
@@ -653,7 +652,7 @@ static void PatchGiveNamedItemLimit()
     }
 
     auto V_stricmp_fast = modules::tier0->GetFunctionByName("V_stricmp_fast");
-    if (!V_stricmp_fast.IsValid())[[unlikely]]
+    if (!V_stricmp_fast.IsValid()) [[unlikely]]
     {
         FatalError("Failed to get V_stricmp_fast from tier0");
     }
@@ -703,11 +702,15 @@ static void PatchGiveNamedItemLimit()
             {
                 if (encoded_length == 2)
                 {
-                    SetMemoryAccess(pending_test_address, encoded_length, g_nReadWriteExecuteAccess);
-                    memcpy(pending_test_address, buffer.data(), encoded_length);
-                    SetMemoryAccess(pending_test_address, encoded_length, g_nReadExecuteAccess);
-
-                    FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(pending_test_address) - modules::server->Base());
+                    if (auto unprotect_guard = safetyhook::unprotect(pending_test_address, encoded_length))
+                    {
+                        memcpy(pending_test_address, buffer.data(), encoded_length);
+                        FLOG("Successfully patched GiveNamedItem limit @ server+0x%llx", reinterpret_cast<uintptr_t>(pending_test_address) - modules::server->Base());
+                    }
+                    else
+                    {
+                        WARN("Failed to unprotect memory for patching GiveNamedItem");
+                    }
                     return;
                 }
                 WARN("Encoder generated instruction length mismatch (Expected 2, got %d)", encoded_length);
@@ -731,8 +734,8 @@ static void PatchGiveNamedItemLimit()
 
         if (instr.mnemonic == ZYDIS_MNEMONIC_CALL)
         {
-            uintptr_t final_target = ResolveCallTarget(&decoder, &instr, operands, address);
-            prev_was_stricmp = final_target == V_stricmp_fast;
+            uintptr_t final_target = ZydisUtility::ResolveCallTarget(&instr, operands, address);
+            prev_was_stricmp       = final_target == V_stricmp_fast;
         }
         else if (instr.mnemonic != ZYDIS_MNEMONIC_TEST)
         {

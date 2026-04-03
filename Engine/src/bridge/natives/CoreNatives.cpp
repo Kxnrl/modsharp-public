@@ -264,9 +264,9 @@ static void* GetVTableByClass(const char* module, const char* className)
     return pModule->GetVirtualTableByName(className).As();
 }
 
-static bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access)
+static bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access, uint8_t* original_acess)
 {
-    return ::SetMemoryAccess(address, size, access);
+    return ::SetMemoryAccess(address, size, access, original_acess);
 }
 
 static void* InstallVirtualHook(void* vTable, int index, void* hook)
