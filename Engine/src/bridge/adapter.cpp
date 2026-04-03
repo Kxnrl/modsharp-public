@@ -35,8 +35,17 @@
 
 #include "cstrike/type/CUtlVector.h"
 
-static CUtlVector<NativeItem*>        g_BridgeNatives;
-static CUtlVector<ForwardItem<void>*> g_BridgeForwards;
+static CUtlVector<NativeItem*>& GetBridgeNatives()
+{
+    static CUtlVector<NativeItem*> instance;
+    return instance;
+}
+
+static CUtlVector<ForwardItem<void>*>& GetBridgeForwards()
+{
+    static CUtlVector<ForwardItem<void>*> instance;
+    return instance;
+}
 
 namespace bridge
 {
@@ -47,7 +56,7 @@ void CreateNative(const char* name, void* func)
     StrCopy(item->m_Name, sizeof(item->m_Name), name);
     item->m_Func = func;
 
-    g_BridgeNatives.AddToTail(item);
+    GetBridgeNatives().AddToTail(item);
 }
 
 ForwardItem<void>* CreateForward(const char* name)
@@ -58,18 +67,18 @@ ForwardItem<void>* CreateForward(const char* name)
     item->m_Func         = nullptr;
     item->m_InstallCount = 0;
 
-    g_BridgeForwards.AddToTail(item);
+    GetBridgeForwards().AddToTail(item);
 
     return item;
 }
 
 void* GetNatives()
 {
-    return &g_BridgeNatives;
+    return &GetBridgeNatives();
 }
 void* GetForwards()
 {
-    return &g_BridgeForwards;
+    return &GetBridgeForwards();
 }
 
 void InitNatives()
