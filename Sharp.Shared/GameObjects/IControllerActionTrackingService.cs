@@ -94,7 +94,62 @@ public interface IMatchStats : IPerRoundStats
     int R1V2Wins { get; set; }
 
     int EntryCount { get; set; }
+
     int EntryWins  { get; set; }
+}
+
+[NetClass("CSAdditionalPerRoundStats_t")]
+public interface IAdditionalPerRoundStats : ISchemaObject
+{
+    int NumChickensKilled { get; set; }
+
+    int KillsWhileBlind { get; set; }
+
+    int BombCarrierkills { get; set; }
+
+    float BurnDamageInflicted { get; set; }
+
+    float BlastDamageInflicted { get; set; }
+
+    int Dinks { get; set; }
+
+    bool FreshStartThisRound { get; set; }
+
+    bool BombPlantedAndAlive { get; set; }
+
+    int DefuseStarts { get; set; }
+
+    int HostagePickUps { get; set; }
+
+    int NumTeammatesFlashed { get; set; }
+}
+
+[NetClass("CSAdditionalMatchStats_t")]
+public interface IAdditionalMatchStats : IAdditionalPerRoundStats
+{
+    int NumRoundsSurvivedStreak { get; set; }
+
+    int MaxNumRoundsSurvivedStreak { get; set; }
+
+    int NumRoundsSurvivedTotal { get; set; }
+
+    int RoundsWonWithoutPurchase { get; set; }
+
+    int RoundsWonWithoutPurchaseTotal { get; set; }
+
+    int NumFirstKills { get; set; }
+
+    int NumClutchKills { get; set; }
+
+    int NumPistolKills { get; set; }
+
+    int NumSniperKills { get; set; }
+
+    int NumSuicides { get; set; }
+
+    int NumTeamKills { get; set; }
+
+    float TeamDamage { get; set; }
 }
 
 [NetClass("CCSPlayerController_ActionTrackingServices")]
@@ -119,4 +174,9 @@ public interface IControllerActionTrackingService : IPlayerControllerComponent
     ///     Gets the MatchStats instance
     /// </summary>
     IMatchStats GetMatchStats();
+
+    /// <summary>
+    ///     Get additional match stats
+    /// </summary>
+    IAdditionalMatchStats GetAdditionalMatchStats();
 }

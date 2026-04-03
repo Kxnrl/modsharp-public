@@ -83,6 +83,12 @@ public static class SchemaSystem
         return schemaField;
     }
 
+    public static int GetSchemaClassSize(string classname)
+        => GetSchemaClass(classname).Size;
+
+    public static byte GetSchemaClassAlignOf(string classname)
+        => GetSchemaClass(classname).AlignOf;
+
     public static int GetNetVarOffset(string classname, string field)
         => GetSchemaClassField(GetSchemaClass(classname), field).Offset;
 
