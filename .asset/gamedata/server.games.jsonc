@@ -52,11 +52,6 @@
       "linux": "55 48 89 E5 41 57 66 41 0F 7E C7 41 56 4D 89 C6",
       "windows": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B DA 49 8B F9"
     },
-    "CBaseEntity::EnableHammerUniqueId": {
-      "library": "server",
-      "linux": "31 C0 C3 CC CC CC CC CC CC CC CC CC CC CC CC CC B8 ? ? ? ? C3 CC CC CC CC CC CC CC CC CC CC C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 0F B6 87 ? ? ? ?",
-      "windows": "32 C0 C3 CC CC CC CC CC CC CC CC CC CC CC CC CC 33 C0 C3 CC CC CC CC CC CC CC CC CC CC CC CC CC C2 00 00"
-    },
     "CBaseEntity::LocalVelocity": {
       "library": "server",
       "linux": "55 48 89 E5 41 56 53 48 89 FB 48 83 EC",
@@ -999,29 +994,10 @@
     }
   },
   "Offsets": {
-    // CBaseWeapon
-    // m_nSubclassID + 4
-    "CBaseWeapon::m_VData": {
-      "linux": 1536,
-      "windows": 800
-    },
     // after m_nPersonaDataXpTrailLevel + 4
     "CCSPlayerController_InventoryServices::CCSPlayerInventory": {
       "linux": 112,
       "windows": 112
-    }
-  },
-  "Patches": {
-    "EnableCBaseEntityHammerUniqueId": {
-      "address": "CBaseEntity::EnableHammerUniqueId",
-      "linux": {
-        "patch": "B0 01",
-        "validate": "31 C0"
-      },
-      "windows": {
-        "patch": "B0 01",
-        "validate": "32 C0"
-      }
     }
   },
   "VFuncs": {

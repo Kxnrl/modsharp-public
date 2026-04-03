@@ -22,19 +22,13 @@
 #include "gamedata.h"
 #include "global.h"
 
-CCommand::CCommand()
+CCommand::CCommand() :
+    pad{}
 {
-#ifdef PLATFORM_WINDOWS
-    using fn         = void (*)(CCommand*);
-    static auto func = g_pGameData->GetAddress<fn>("CCommand::CCommand");
-
-    func(this);
-#else
     m_nArgv0Size = {};
     m_ArgSBuffer = {};
     m_ArgvBuffer = {};
     m_Args       = {};
-#endif
 }
 
 bool CCommand::Tokenize(const char* pCommand, void* pBreakSet)
