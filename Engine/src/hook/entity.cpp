@@ -27,6 +27,7 @@
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
+#include "Zydis.h"
 #include "vhook/call.h"
 #include "vhook/hook.h"
 
@@ -54,6 +55,7 @@
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EntityIO.h"
 #include "cstrike/type/Variant.h"
+#include "memory/zydis_utility.h"
 
 #include <safetyhook.hpp>
 
@@ -537,8 +539,202 @@ class CEntityListener : public IEntityListener
 
 } g_EntityListener;
 
+static void PatchEnableHammerUniqueId()
+{
+    const auto svr_mod = modules::server;
+
+    auto vapp_interface_name_addr = svr_mod->FindString("VApplication001", true);
+    if (!vapp_interface_name_addr.IsValid())
+    {
+        FatalError("Failed to find string \"VApplication001\". Did Valve change the interface version?");
+        return;
+    }
+
+    auto vapp_interface_name_ptr = svr_mod->FindPtr(vapp_interface_name_addr);
+    auto vapp_interface_ptr      = vapp_interface_name_ptr.Offset(sizeof(void*)).Dereference();
+
+    auto base_entity_type_info = svr_mod->GetTypeInfoFromName("CBaseEntity");
+    auto entity_instance_info  = svr_mod->GetTypeInfoFromName("CEntityInstance");
+
+    if (!base_entity_type_info.IsValid())
+    {
+        FatalError("[PatchEnableHammerUniqueId] Failed to find CBaseEntity `RTTI Type Descriptor'");
+        return;
+    }
+    if (!entity_instance_info.IsValid())
+    {
+        FatalError("[PatchEnableHammerUniqueId] Failed to find CEntityInstance `RTTI Type Descriptor'");
+        return;
+    }
+
+    auto candidates = svr_mod->FindAllFunctionsFromPointerRefs({base_entity_type_info, entity_instance_info, vapp_interface_ptr});
+
+    if (candidates.empty())
+    {
+        FatalError("[PatchEnableHammerUniqueId] No functions were found with CBaseEntity typeinfo, CEntityInstance typeinfo and VApplication interface", candidates.size());
+        return;
+    }
+
+    auto CBaseEntity_DebugPrintEntityOutput = svr_mod->GetFunctionRange(candidates[0]);
+
+    if (CBaseEntity_DebugPrintEntityOutput == nullptr)
+    {
+        FatalError("[PatchEnableHammerUniqueId] Failed to get function range for CBaseEntity::DebugPrintEntityOutput??");
+        return;
+    }
+
+    bool          seen_target_lea = false;
+    bool          seen_first_call = false;
+    ZydisRegister saved_ptr_reg   = ZYDIS_REGISTER_NONE;
+    ZydisRegister vtable_reg      = ZYDIS_REGISTER_NONE;
+
+    int32_t vtable_offset = 0;
+
+    ZydisUtility::ScanInstructions(CBaseEntity_DebugPrintEntityOutput->start,
+                                   CBaseEntity_DebugPrintEntityOutput->end,
+                                   [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                                       /*
+                                           ....
+                                           lea     r9, ??_R0?AVCBaseEntity@@@8 ; CBaseEntity `RTTI Type Descriptor'
+                                           mov     [rsp+38h+var_18], 0
+                                           lea     r8, ??_R0?AVCEntityInstance@@@8 ; CEntityInstance `RTTI Type Descriptor'
+                                           xor     edx, edx
+                                           call    dynamic_cast    ; look for dynamic_cast by checking if we have seen type_info gotten moved into registers (step 1)
+                                           mov     rbx, rax        ; save where the rax is stored to (step 2)
+                                           test    rax, rax
+                                           jz      short loc_180B035F6
+                                           mov     rcx, cs:g_pVApplication001
+                                           mov     rdx, [rcx]
+                                           call    qword ptr [rdx+0B0h]
+                                           mov     rcx, rbx
+                                           test    al, al
+                                           jz      short loc_180B035DC
+                                           add     rsp, 30h
+                                           pop     rbx
+                                           jmp     sub_180BF9D30
+                                       loc_180B035DC:
+                                           mov     rax, [rbx]      ; which register that the stored reg gets moved into (step 3)
+                                           call    qword ptr [rax+378h] ; get EnableHammerUniqueId offset (step 4), on linux would be (mov reg, [reg+offset])
+                                           test    al, al
+                                           jz      short loc_180B035F6
+                                           mov     rcx, rbx
+                                           add     rsp, 30h
+                                           pop     rbx
+                                       */
+
+                                       // step 1, look for dynamic_cast
+                                       if (!seen_first_call)
+                                       {
+                                           if (!seen_target_lea
+                                               && instr.mnemonic == ZYDIS_MNEMONIC_LEA
+                                               && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                                               && operands[1].mem.base == ZYDIS_REGISTER_RIP)
+                                           {
+                                               uintptr_t target_address = ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip);
+                                               if (target_address == base_entity_type_info || target_address == entity_instance_info)
+                                               {
+                                                   seen_target_lea = true;
+                                               }
+                                           }
+                                           else if (instr.mnemonic == ZYDIS_MNEMONIC_CALL && seen_target_lea)
+                                           {
+                                               seen_first_call = true;
+                                           }
+                                       }
+                                       // step 2: save which register that rax (the result from dynamic_cast) is moved into
+                                       else if (saved_ptr_reg == ZYDIS_REGISTER_NONE)
+                                       {
+                                           if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                                               && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                                               && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+                                               && operands[1].reg.value == ZYDIS_REGISTER_RAX)
+                                           {
+                                               saved_ptr_reg = operands[0].reg.value;
+                                           }
+                                       }
+                                       // step 3: track which register that our saved register is moved into (mov vtable_reg, [saved_ptr_reg])
+                                       else if (vtable_reg == ZYDIS_REGISTER_NONE)
+                                       {
+                                           if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                                               && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                                               && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                                               && operands[1].mem.base == saved_ptr_reg
+                                               && (!operands[1].mem.disp.has_displacement || operands[1].mem.disp.value == 0))
+                                           {
+                                               vtable_reg = operands[0].reg.value;
+                                           }
+                                       }
+                                       // step 4: get vfunc offset
+                                       else
+                                       {
+                                           // Windows: call qword ptr [vtable_reg + offset]
+                                           if (instr.mnemonic == ZYDIS_MNEMONIC_CALL
+                                               && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
+                                               && operands[0].mem.base == vtable_reg
+                                               && operands[0].mem.disp.has_displacement)
+                                           {
+                                               vtable_offset = static_cast<int32_t>(operands[0].mem.disp.value);
+                                               return true;
+                                           }
+
+                                           // Linux: mov <reg>, [vtable_reg + offset]
+                                           if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                                               && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                                               && operands[1].mem.base == vtable_reg
+                                               && operands[1].mem.disp.has_displacement && operands[1].mem.disp.value != 0)
+                                           {
+                                               vtable_offset = static_cast<int32_t>(operands[1].mem.disp.value);
+                                               return true;
+                                           }
+                                       }
+
+                                       if (instr.mnemonic == ZYDIS_MNEMONIC_CALL)
+                                       {
+                                           if (ZydisUtility::IsVolatileRegister(saved_ptr_reg))
+                                           {
+                                               saved_ptr_reg = ZYDIS_REGISTER_NONE;
+                                           }
+
+                                           if (ZydisUtility::IsVolatileRegister(vtable_reg))
+                                           {
+                                               vtable_reg = ZYDIS_REGISTER_NONE;
+                                           }
+                                       }
+
+                                       return false;
+                                   });
+
+    if (vtable_offset == 0)
+    {
+        FatalError("[PatchEnableHammerUniqueId] Cannot found vtable offset by tracking register flow...");
+        return;
+    }
+
+    auto base_entity_vtable = svr_mod->GetVirtualTableByName("CBaseEntity");
+    if (!base_entity_vtable.IsValid()) [[unlikely]]
+    {
+        FatalError("[PatchEnableHammerUniqueId] Failed to get CBaseEntity vtable???");
+        return;
+    }
+
+    auto enabled_hammer_unique_id_func = base_entity_vtable.Offset(vtable_offset).Dereference().As<uint8_t*>();
+
+    // mov al, 1;
+    // ret
+    constexpr std::array<uint8_t, 3> patch_bytes = {0xB0, 0x01, 0xC3};
+
+    auto protect = safetyhook::unprotect(enabled_hammer_unique_id_func, patch_bytes.size());
+    if (protect.has_value())
+    {
+        memcpy(enabled_hammer_unique_id_func, patch_bytes.data(), patch_bytes.size());
+        FLOG("Patched CBaseEntity::EnableHammerUniqueId @ server+0x%llx", enabled_hammer_unique_id_func - svr_mod->Base());
+    }
+}
+
 void InstallEntityHooks()
 {
+    PatchEnableHammerUniqueId();
+
     HOOK(CPointServerCommand, InputCommand, {.address = schemas::FindDataMapInputFunc("CPointServerCommand", "InputCommand")});
 
     HOOK(CEntityIOOutput, FireOutput);
