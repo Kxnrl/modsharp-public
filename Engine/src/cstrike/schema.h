@@ -99,6 +99,7 @@ namespace schemas
 int32_t   FindChainOffset(const char* className);
 SchemaKey GetOffset(const char* className, const char* memberName);
 SchemaKey GetOffset(uint32_t hashKey);
+void*     FindDataMapInputFunc(const char* className, const char* fieldName);
 
 } // namespace schemas
 

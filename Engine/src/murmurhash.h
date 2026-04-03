@@ -71,7 +71,9 @@ constexpr uint32_t MurmurHash2(std::string_view key, uint32_t seed)
     switch (len)
     {
     case 3: h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 2])) << 16;
+        [[fallthrough]];
     case 2: h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 1])) << 8;
+        [[fallthrough]];
     case 1:
         h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i]));
         h *= m;
@@ -132,7 +134,9 @@ constexpr uint32_t MurmurHash2Lowercase(std::string_view key, uint32_t seed)
     switch (len)
     {
     case 3: h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 2]))) << 16;
+        [[fallthrough]];
     case 2: h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 1]))) << 8;
+        [[fallthrough]];
     case 1:
         h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i])));
         h *= m;

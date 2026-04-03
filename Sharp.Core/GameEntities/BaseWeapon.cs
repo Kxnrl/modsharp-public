@@ -49,7 +49,8 @@ internal partial class BaseWeapon : EconEntity, IBaseWeapon
     private static readonly Lazy<int> VDataPrimaryReserveAmmoMaxOffset
         = new (() => SchemaSystem.GetNetVarOffset("CCSWeaponBaseVData", "m_nPrimaryReserveAmmoMax"));
 
-    private static int VDataOffset => CoreGameData.CBaseWeapon.VData;
+    private static readonly Lazy<int> VDataOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CBaseEntity", "m_pSubclassVData"));
 
     public bool IsKnife => Entity.IsWeapon(_this) && ItemDefinitionIndex is >= 500 and <= 526 or 42 or 59;
 
@@ -139,14 +140,14 @@ internal partial class BaseWeapon : EconEntity, IBaseWeapon
 #endregion
 
     public IWeaponData GetWeaponData()
-        => WeaponData.Create(_this.GetObjectPtr(VDataOffset))
+        => WeaponData.Create(_this.GetObjectPtr(VDataOffset.Value))
            ?? throw new EntryPointNotFoundException("Invalid VData pointer");
 
-    public int MaxClip => _this.GetObjectVarInt32(VDataOffset, VDataMaxClipOffset.Value);
+    public int MaxClip => _this.GetObjectVarInt32(VDataOffset.Value, VDataMaxClipOffset.Value);
 
-    public int PrimaryReserveAmmoMax => _this.GetObjectVarInt32(VDataOffset, VDataPrimaryReserveAmmoMaxOffset.Value);
+    public int PrimaryReserveAmmoMax => _this.GetObjectVarInt32(VDataOffset.Value, VDataPrimaryReserveAmmoMaxOffset.Value);
 
-    public GearSlot Slot => (GearSlot) _this.GetObjectVarInt32(VDataOffset, VDataSlotOffset.Value);
+    public GearSlot Slot => (GearSlot) _this.GetObjectVarInt32(VDataOffset.Value, VDataSlotOffset.Value);
 
     ////////////////////////////////////////////////////////////////////////////
 

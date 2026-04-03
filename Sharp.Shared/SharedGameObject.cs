@@ -19,6 +19,7 @@
 
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
 
@@ -26,10 +27,13 @@ namespace Sharp.Shared;
 
 public record SchemaClass
 {
-    public required string                                     ClassName   { get; init; }
-    public required ushort                                     ChainOffset { get; init; }
-    public required FrozenDictionary<string, SchemaClassField> Fields      { get; init; }
-    public required List<string>                               BaseClasses { get; init; }
+    public required string                                     ClassName     { get; init; }
+    public required ushort                                     ChainOffset   { get; init; }
+    public required int                                        Size          { get; init; }
+    public required byte                                       AlignOf       { get; init; }
+    public required FrozenDictionary<string, SchemaClassField> Fields        { get; init; }
+    public required List<string>                               BaseClasses   { get; init; }
+    public required List<DataMapField>                         DataMapFields { get; init; }
 }
 
 public record SchemaClassField
@@ -39,6 +43,14 @@ public record SchemaClassField
     public required string             Type      { get; init; }
     public required bool               IsArray   { get; init; }
     public required SchemaTypeCategory Category  { get; init; }
+}
+
+public record DataMapField
+{
+    public required string Name { get; init; }
+
+    [JsonIgnore]
+    public nint InputFunc { get; init; }
 }
 
 public record SchemaField

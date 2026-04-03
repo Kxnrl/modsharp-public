@@ -282,4 +282,7 @@ internal class SchemaManager : ICoreSchemaManager
         ushort                                   extraOffset = 0,
         bool                                     isStruct    = false)
         => SchemaSystem.NetVarStateChanged(nativeObject.GetAbsPtr(), schemaClass, schemaField, extraOffset, isStruct);
+
+    public nint GetDataMapInputFunc(string classname, string fieldName)
+        => SchemaSystem.GetDataMapInputFunc(classname, fieldName);
 }

@@ -33,10 +33,100 @@
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlTSHash.h"
 #include "cstrike/type/CUtlVector.h"
+#include "cstrike/type/Variant.h"
 
 #include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
+
+static constexpr const char* FieldTypeToString(FieldType_t type)
+{
+    constexpr const char* names[] = {
+        "void",                          // FIELD_VOID
+        "float32",                       // FIELD_FLOAT32
+        "const char*",                   // FIELD_STRING
+        "Vector",                        // FIELD_VECTOR
+        "Quaternion",                    // FIELD_QUATERNION
+        "int32",                         // FIELD_INT32
+        "bool",                          // FIELD_BOOLEAN
+        "int16",                         // FIELD_INT16
+        "char",                          // FIELD_CHARACTER
+        "Color",                         // FIELD_COLOR32
+        "<embedded>",                    // FIELD_EMBEDDED
+        "<custom>",                      // FIELD_CUSTOM
+        "<classptr>",                    // FIELD_CLASSPTR
+        "CHandle",                       // FIELD_EHANDLE
+        "Vector",                        // FIELD_POSITION_VECTOR
+        "float32",                       // FIELD_TIME
+        "int32",                         // FIELD_TICK
+        "soundname",                     // FIELD_SOUNDNAME
+        "<input>",                       // FIELD_INPUT
+        "<function>",                    // FIELD_FUNCTION
+        "VMatrix",                       // FIELD_VMATRIX
+        "VMatrix",                       // FIELD_VMATRIX_WORLDSPACE
+        "matrix3x4_t",                   // FIELD_MATRIX3X4_WORLDSPACE
+        "interval",                      // FIELD_INTERVAL
+        "<unused>",                      // FIELD_UNUSED
+        "Vector2d",                      // FIELD_VECTOR2D
+        "int64",                         // FIELD_INT64
+        "Vector4D",                      // FIELD_VECTOR4D
+        "<resource>",                    // FIELD_RESOURCE
+        "unknown",                       // FIELD_TYPEUNKNOWN
+        "const char*",                   // FIELD_CSTRING
+        "HSCRIPT",                       // FIELD_HSCRIPT
+        "CVariant",                      // FIELD_VARIANT
+        "uint64",                        // FIELD_UINT64
+        "float64",                       // FIELD_FLOAT64
+        "positive_or_null",              // FIELD_POSITIVEINTEGER_OR_NULL
+        "HSCRIPT-new",                   // FIELD_HSCRIPT_NEW_INSTANCE
+        "uint32",                        // FIELD_UINT32
+        "CUtlStringToken",               // FIELD_UTLSTRINGTOKEN
+        "QAngle",                        // FIELD_QANGLE
+        "Vector",                        // FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTOR
+        "HMaterial",                     // FIELD_HMATERIAL
+        "HModel",                        // FIELD_HMODEL
+        "Vector",                        // FIELD_NETWORK_QUANTIZED_VECTOR
+        "float32",                       // FIELD_NETWORK_QUANTIZED_FLOAT
+        "Vector",                        // FIELD_DIRECTION_VECTOR_WORLDSPACE
+        "QAngle",                        // FIELD_QANGLE_WORLDSPACE
+        "Quaternion",                    // FIELD_QUATERNION_WORLDSPACE
+        "HSCRIPT-light",                 // FIELD_HSCRIPT_LIGHTBINDING
+        "v8value",                       // FIELD_V8_VALUE
+        "v8object",                      // FIELD_V8_OBJECT
+        "v8array",                       // FIELD_V8_ARRAY
+        "v8callback",                    // FIELD_V8_CALLBACK_INFO
+        "CUtlString",                    // FIELD_UTLSTRING
+        "Vector",                        // FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_POSITION_VECTOR
+        "HRenderTexture",                // FIELD_HRENDERTEXTURE
+        "HParticleSystemDefinition",     // FIELD_HPARTICLESYSTEMDEFINITION
+        "uint8",                         // FIELD_UINT8
+        "uint16",                        // FIELD_UINT16
+        "CTransform",                    // FIELD_CTRANSFORM
+        "CTransform",                    // FIELD_CTRANSFORM_WORLDSPACE
+        "HPostProcessing",               // FIELD_HPOSTPROCESSING
+        "matrix3x4_t",                   // FIELD_MATRIX3X4
+        "<shim>",                        // FIELD_SHIM
+        "CMotionTransform",              // FIELD_CMOTIONTRANSFORM
+        "CMotionTransform",              // FIELD_CMOTIONTRANSFORM_WORLDSPACE
+        "AttachmentHandle_t",            // FIELD_ATTACHMENT_HANDLE
+        "int8",                          // FIELD_AMMO_INDEX
+        "ConditionId_t",                 // FIELD_CONDITION_ID
+        "CAI_ScheduleBits",              // FIELD_AI_SCHEDULE_BITS
+        "CModifierHandleTyped",          // FIELD_MODIFIER_HANDLE
+        "RotationVector",                // FIELD_ROTATION_VECTOR
+        "RotationVector",                // FIELD_ROTATION_VECTOR_WORLDSPACE
+        "HVDataResource",                // FIELD_HVDATA
+        "scale32",                       // FIELD_SCALE32
+        "CUtlStringAndTokenWithStorage", // FIELD_STRING_AND_TOKEN
+        "float64",                       // FIELD_ENGINE_TIME
+        "int32",                         // FIELD_ENGINE_TICK
+        "uint32",                        // FIELD_WORLD_GROUP_ID
+        "uint64",                        // FIELD_GLOBALSYMBOL
+        "HNmGraphDefinition",            // FIELD_HNMGRAPHDEFINITION
+    };
+    if (type < FieldType_t::FIELD_TYPECOUNT) return names[static_cast<uint8_t>(type)];
+    return "UNKNOWN";
+}
 
 // for coreclr
 struct SchemaClassField_t
@@ -48,19 +138,29 @@ struct SchemaClassField_t
     SchemaTypeCategory_t category;
 };
 
+struct DataMapField_t
+{
+    CUtlString name;
+    void*      inputFunc;
+};
 struct SchemaClass_t
 {
     CUtlString                     name;
     int32_t                        chain;
+    int32_t                        size;
+    int8_t                         align;
     CUtlVector<SchemaClassField_t> fields;
     CUtlVector<CUtlString*>        baseClassList;
+    CUtlVector<DataMapField_t>     dataMapFields;
+
 };
 
 using SchemaKeyValueMap_t = std::unordered_map<uint64_t, SchemaKey>;
 using SchemaTableMap_t    = std::unordered_map<uint64_t, SchemaKeyValueMap_t>;
 
-static CUtlVector<SchemaClass_t*> g_SchemaList;
-static SchemaKeyValueMap_t        g_SchemaMap{};
+static CUtlVector<SchemaClass_t*>          g_SchemaList;
+static SchemaKeyValueMap_t                 g_SchemaMap{};
+static std::unordered_map<uint64_t, void*> g_DataMapInputFuncMap{};
 
 static bool IsFieldNetworked(const SchemaClassFieldData_t& field)
 {
@@ -114,6 +214,19 @@ SchemaKey schemas::GetOffset(uint32_t hashKey)
     return {.offset = 0, .networked = false, .valid = false};
 }
 
+void* schemas::FindDataMapInputFunc(const char* className, const char* fieldName)
+{
+    char key_buffer[512];
+    snprintf(key_buffer, sizeof(key_buffer), "%s->%s", className, fieldName);
+
+    if (const auto it = g_DataMapInputFuncMap.find(MurmurHash2(key_buffer, MURMURHASH_SEED_MODSHARP)); it != g_DataMapInputFuncMap.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
+}
+
 void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex, uint32_t nPathIndex)
 {
     CNetworkStateChangedInfo info(offset, nArrayIndex, nPathIndex);
@@ -138,6 +251,57 @@ void SetStructStateChanged(void* pEntity, uint32_t offset)
 {
     CNetworkStateChangedInfo info(offset, 0xFFFFFFFF, 0xFFFFFFFF);
     CALL_VIRTUAL(void, 1, pEntity, &info);
+}
+
+static void ProcessDataMapFields(SchemaClass_t*                        derived_schema_class,
+                                 const SchemaClassInfoData_t*          current_class_info,
+                                 std::unordered_set<std::string_view>& added_field_names)
+{
+    const auto dataMap = current_class_info->GetDataMap();
+    if (dataMap == nullptr) return;
+
+    for (auto i = 0; i < dataMap->dataNumFields; i++)
+    {
+        const auto& dataMap_field = dataMap->dataDesc[i];
+
+        const auto* field_name = dataMap_field.fieldName;
+        if (field_name == nullptr) continue;
+
+        if (dataMap_field.inputFunc != nullptr)
+        {
+            auto new_dm_field  = derived_schema_class->dataMapFields.AddToTailGetPtr();
+            new_dm_field->name = field_name;
+            memcpy(&new_dm_field->inputFunc, &dataMap_field.inputFunc, sizeof(void*));
+
+            char key_buffer[512];
+            snprintf(key_buffer, sizeof(key_buffer), "%s->%s", derived_schema_class->name.Get(), field_name);
+            g_DataMapInputFuncMap[MurmurHash2(key_buffer, MURMURHASH_SEED_MODSHARP)] = new_dm_field->inputFunc;
+
+            continue;
+        }
+
+        constexpr int32_t invalid_offset = 0x7fffffff;
+        const auto        offset         = dataMap_field.fieldOffset;
+
+        if (offset == invalid_offset || dataMap_field.fieldType == FieldType_t::FIELD_EMBEDDED) continue;
+
+        if (added_field_names.contains(field_name)) continue;
+
+        auto* new_field      = derived_schema_class->fields.AddToTailGetPtr();
+        new_field->name      = field_name;
+        new_field->type      = FieldTypeToString(dataMap_field.fieldType);
+        new_field->offset    = offset;
+        new_field->networked = false;
+        new_field->category  = SCHEMA_TYPE_BUILTIN;
+
+        char key_buffer[512];
+        snprintf(key_buffer, sizeof(key_buffer), "%s->%s", derived_schema_class->name.Get(), field_name);
+        const auto hashed_name = MurmurHash2(key_buffer, MURMURHASH_SEED_MODSHARP);
+
+        g_SchemaMap[hashed_name] = {.offset = offset, .networked = false, .valid = true};
+
+        added_field_names.insert(field_name);
+    }
 }
 
 static void BuildClassSchemaRecursive(SchemaClass_t*                                derived_schema_class,
@@ -216,6 +380,8 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
 
         added_field_names.insert(field_name);
     }
+
+    ProcessDataMapFields(derived_schema_class, current_class_info, added_field_names);
 
     auto base_class_count = current_class_info->GetBaseClassSize();
     auto base_classes     = current_class_info->GetBaseClasses();

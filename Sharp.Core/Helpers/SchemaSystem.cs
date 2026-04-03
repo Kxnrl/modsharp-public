@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared;
@@ -393,6 +394,49 @@ public static class SchemaSystem
         }
 
         return true;
+    }
+
+    public static List<DataMapField> GetDataMapFields(string classname)
+    {
+        var schemaClass = GetSchemaClass(classname);
+
+        return schemaClass.DataMapFields;
+    }
+
+    public static DataMapField? GetDataMapField(string classname, string fieldName)
+    {
+        var schemaClass = GetSchemaClass(classname);
+
+        return schemaClass.DataMapFields.Find(f => f.Name == fieldName);
+    }
+
+    public static nint GetDataMapInputFunc(string classname, string fieldName)
+    {
+        var schemaClass = GetSchemaClass(classname);
+
+        var field = schemaClass.DataMapFields.Find(f => f.Name == fieldName);
+
+        if (field != null)
+        {
+            return field.InputFunc;
+        }
+
+        foreach (var baseClassName in schemaClass.BaseClasses)
+        {
+            if (!SharedGameObject.SchemaInfo.TryGetValue(baseClassName, out var baseClass))
+            {
+                continue;
+            }
+
+            var baseField = baseClass.DataMapFields.Find(f => f.Name == fieldName);
+
+            if (baseField != null)
+            {
+                return baseField.InputFunc;
+            }
+        }
+
+        return nint.Zero;
     }
 
     public static void NetworkStateChanged(nint ptr,

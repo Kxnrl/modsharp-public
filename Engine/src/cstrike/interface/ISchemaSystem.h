@@ -22,6 +22,8 @@
 
 #include <cstdint>
 
+enum class FieldType_t : uint8_t;
+struct DataMap_t;
 class CSchemaSystemTypeScope;
 struct SchemaClassInfoData_t;
 
@@ -82,6 +84,51 @@ struct SchemaBaseClassInfoData_t
     SchemaClassInfoData_t* m_pClass;
 };
 
+class CBaseEntity;
+using InputFunc_t = void (CBaseEntity::*)(void* data);
+
+struct TypeDescription_t
+{
+    FieldType_t    fieldType;
+    const char*    fieldName;
+    int32_t        fieldOffset; // Local offset value
+    unsigned short fieldSize;
+    int32_t        flags;
+    // the name of the variable in the map/fgd data, or the name of the action
+    const char* externalName;
+    // pointer to the function set for save/restoring of custom data types
+    void* pSaveRestoreOps;
+    // for associating function with string names
+    InputFunc_t inputFunc;
+
+    // For embedding additional datatables inside this one
+    union
+    {
+        DataMap_t*  td;
+        const char* enumName;
+    };
+
+    // Stores the actual member variable size in bytes
+    int32_t fieldSizeInBytes;
+    // Tolerance for field errors for float fields
+    float fieldTolerance;
+    // For raw fields (including children of embedded stuff) this is the flattened offset
+    int32_t    flatOffset[2];
+    uint16_t   flatGroup;
+    void*      pPredictionCopyOps;
+    DataMap_t* m_pPredictionCopyDataMap;
+};
+
+struct DataMap_t
+{
+    TypeDescription_t* dataDesc;
+    int32_t            dataNumFields;
+    const char*        dataClassName;
+    DataMap_t*         baseMap;
+    void*              m_pOptimizedDataMap;
+    int32_t            m_nPackedSize;
+};
+
 struct SchemaClassInfoData_t
 {
     const char* GetName() const
@@ -127,6 +174,11 @@ struct SchemaClassInfoData_t
         return m_pStaticMetadata;
     }
 
+    DataMap_t* GetDataMap() const
+    {
+        return m_pDataMap;
+    }
+
     SchemaClassInfoData_t() = delete;
 
 private:
@@ -142,7 +194,7 @@ private:
     int16_t                    m_nSingleInheritanceDepth;
     SchemaClassFieldData_t*    m_pFields;
     SchemaBaseClassInfoData_t* m_BaseClasses;
-    void*                      m_pDataMap;
+    DataMap_t*                 m_pDataMap;
     SchemaMetadataEntryData_t* m_pStaticMetadata;
 };
 

@@ -99,7 +99,19 @@ public static class Bootstrap
         public string TypeString => Type.Get();
     }
 
-    [StructLayout(LayoutKind.Explicit, Size = 64)]
+    [StructLayout(LayoutKind.Explicit, Size = 16)]
+    private unsafe struct CDataMapField
+    {
+        [FieldOffset(0)]
+        public CUtlString Name;
+
+        [FieldOffset(8)]
+        public nint InputFunc;
+
+        public string NameString => Name.Get();
+    }
+
+    [StructLayout(LayoutKind.Explicit, Size = 88)]
     private unsafe struct CSchemaClass
     {
         [FieldOffset(0)]
@@ -108,11 +120,20 @@ public static class Bootstrap
         [FieldOffset(8)]
         public int ChainOffset;
 
+        [FieldOffset(12)]
+        public int Size;
+
         [FieldOffset(16)]
+        public byte AlignOf;
+
+        [FieldOffset(24)]
         public CUtlVector<CSchemaClassField> Fields;
 
-        [FieldOffset(40)]
+        [FieldOffset(48)]
         public CUtlVector<Pointer<CUtlString>> BaseClassList;
+
+        [FieldOffset(72)]
+        public CUtlVector<CDataMapField> DataMapFields;
 
         public string NameString => Name.Get();
     }
@@ -155,13 +176,23 @@ public static class Bootstrap
                 baseClasses.Add(baseClassName);
             }
 
+            var dataMapFields = new List<DataMapField>();
+
+            foreach (var dmField in @class.DataMapFields)
+            {
+                dataMapFields.Add(new DataMapField { Name = dmField.NameString, InputFunc = dmField.InputFunc });
+            }
+
             schema.Add(className,
                        new SchemaClass
                        {
-                           ClassName   = className,
-                           ChainOffset = (ushort) @class.ChainOffset,
-                           Fields      = fieldDict.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase),
-                           BaseClasses = baseClasses, // keep order
+                           ClassName     = className,
+                           ChainOffset   = (ushort) @class.ChainOffset,
+                           Size          = @class.Size,
+                           AlignOf       = @class.AlignOf,
+                           Fields        = fieldDict.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase),
+                           BaseClasses   = baseClasses, // keep order
+                           DataMapFields = dataMapFields,
                        });
         }
 

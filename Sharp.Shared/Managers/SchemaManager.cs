@@ -511,4 +511,12 @@ public interface ISchemaManager
         ushort           extraOffset = 0,
         bool             isStruct    = false
     );
+
+    /// <summary>
+    ///     Get the datamap input function address.
+    /// </summary>
+    /// <param name="classname">The schema classname. e.g. CPointServerCommand</param>
+    /// <param name="fieldName">The input function name, e.g. InputCommand </param>
+    /// <returns>the function address, 0 if not found</returns>
+    nint GetDataMapInputFunc(string classname, string fieldName);
 }
