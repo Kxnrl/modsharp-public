@@ -521,12 +521,6 @@
       "linux": "55 48 89 E5 53 48 89 FB 48 83 EC 08 8B BF D0 20 00 00",
       "windows": "40 53 48 83 EC 20 44 8B 91 ? ? ? ?"
     },
-    // binding 'SpawnEntityFromTableSynchronous'
-    "CGameEntitySystem::SpawnEntityFromKeyValuesSync": {
-      "library": "server",
-      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 56 41 55 49 89 F5",
-      "windows": "48 8B C4 55 41 56 48 8D 68 98 48 81 EC ? ? ? ? 48 89 58 08 45 33 F6 48 89 70 10 48 8B F1"
-    },
     // 搜 CInferno::InfernoThink (damage) 然后往下找
     "CGamePhysicsQueryInterface::EntitiesAlongRay": {
       "library": "server",

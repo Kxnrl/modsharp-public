@@ -36,6 +36,7 @@ linux.compile-options = [
     "-Wall",
     
     "-Wformat",
+    "-Wno-format",
     "-Werror=format-insufficient-args",
     
     "-Wno-uninitialized",

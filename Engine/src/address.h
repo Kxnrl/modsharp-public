@@ -174,22 +174,21 @@ using UTIL_DispatchParticleEffectFilterPosition_t = int32_t (*)(const char*,
                                                                 double /*angle_xy*/,
                                                                 float /*angle_z*/);
 #endif
-using UTIL_DispatchParticleEffectFilterAttachment_t    = int32_t (*)(const char*, uint32_t, CBaseEntity*, uint8_t, uint32_t, bool, int, IRecipientFilter*, bool);
-using CCSGameRules_TerminateRound_t                    = void (*)(IGameRules*, float, uint32_t, CUtlVector<TeamRewardInfo>*);
-using CCSGameRules_PlayerCanHearChat_t                 = bool (*)(IGameRules*, CCSPlayerController*, CCSPlayerController*, bool);
-using CGameEntitySystem_FindEntityByIndex_t            = CBaseEntity* (*)(CGameEntitySystem*, int32_t index);
-using CGameEntitySystem_AllocPooledString_t            = void* (*)(CUtlSymbolLarge*, const char*);
-using CGameEntitySystem_FindByClassname_t              = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, const char* classname);
-using CGameEntitySystem_FindByName_t                   = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, const char* name, void*, void*, void*, void*);
-using CGameEntitySystem_FindInSphere_t                 = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, Vector* vector, float radius);
-using CGameEntitySystem_SpawnEntityFromKeyValuesSync_t = int32_t (*)(const char* classname, void* kv);
-using CGameEntitySystem_AddListenerEntity_t            = void (*)(CGameEntitySystem*, IEntityListener* listener);
-using CGameEntitySystem_RemoveListenerEntity_t         = void (*)(CGameEntitySystem*, IEntityListener* listener);
-using CGameEntitySystem_AddEntityIOEvent_t             = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, int, void*, void*);
-using ScriptRegisterConVar_t                           = void* (*)(void*, const char*, const char*, const char*, int);
-using ScriptRegisterConCommand_t                       = void (*)(void*, const char*, void*, const char*, int);
-using ScriptSetConVarString_t                          = void (*)(BaseConVar* convar, int64_t, const char*);
-using ScriptSetConVarNumber_t                          = void (*)(BaseConVar* convar, int64_t value, int64_t value2);
+using UTIL_DispatchParticleEffectFilterAttachment_t = int32_t (*)(const char*, uint32_t, CBaseEntity*, uint8_t, uint32_t, bool, int, IRecipientFilter*, bool);
+using CCSGameRules_TerminateRound_t                 = void (*)(IGameRules*, float, uint32_t, CUtlVector<TeamRewardInfo>*);
+using CCSGameRules_PlayerCanHearChat_t              = bool (*)(IGameRules*, CCSPlayerController*, CCSPlayerController*, bool);
+using CGameEntitySystem_FindEntityByIndex_t         = CBaseEntity* (*)(CGameEntitySystem*, int32_t index);
+using CGameEntitySystem_AllocPooledString_t         = void* (*)(CUtlSymbolLarge*, const char*);
+using CGameEntitySystem_FindByClassname_t           = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, const char* classname);
+using CGameEntitySystem_FindByName_t                = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, const char* name, void*, void*, void*, void*);
+using CGameEntitySystem_FindInSphere_t              = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, Vector* vector, float radius);
+using CGameEntitySystem_AddListenerEntity_t         = void (*)(CGameEntitySystem*, IEntityListener* listener);
+using CGameEntitySystem_RemoveListenerEntity_t      = void (*)(CGameEntitySystem*, IEntityListener* listener);
+using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, int, void*, void*);
+using ScriptRegisterConVar_t                        = void* (*)(void*, const char*, const char*, const char*, int);
+using ScriptRegisterConCommand_t                    = void (*)(void*, const char*, void*, const char*, int);
+using ScriptSetConVarString_t                       = void (*)(BaseConVar* convar, int64_t, const char*);
+using ScriptSetConVarNumber_t                       = void (*)(BaseConVar* convar, int64_t value, int64_t value2);
 #ifdef PLATFORM_WINDOWS
 using ScriptSetConVarDouble_t = void (*)(BaseConVar* convar, float value);
 #else
@@ -207,7 +206,6 @@ using CBaseModelEntity_LookupBone_t                   = int32_t (*)(CBaseModelEn
 using CBaseModelEntity_GetBoneTransform_t             = void (*)(CBaseModelEntity*, int32_t, matrix3x4_t*);
 using CBaseModelEntity_SetModelScale_t                = void (*)(CBaseModelEntity*, float);
 using CBaseModelEntity_SetCollisionBounds_t           = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
-using CPaintKit_UsesLegacyModel_t                     = bool (*)(const char*);
 using CGamePhysicsQueryInterface_TraceShape_t         = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
 #ifdef PLATFORM_WINDOWS
 using StudioModel_LookupAttachment_t = int32_t (*)(void*, int32_t*, const char*);
@@ -273,7 +271,6 @@ inline CGameEntitySystem_AllocPooledString_t               CGameEntitySystem_All
 inline CGameEntitySystem_FindByClassname_t                 CGameEntitySystem_FindByClassname;
 inline CGameEntitySystem_FindByName_t                      CGameEntitySystem_FindByName;
 inline CGameEntitySystem_FindInSphere_t                    CGameEntitySystem_FindInSphere;
-inline CGameEntitySystem_SpawnEntityFromKeyValuesSync_t    CGameEntitySystem_SpawnEntityFromKeyValuesSync;
 inline CGameEntitySystem_AddListenerEntity_t               CGameEntitySystem_AddListenerEntity;
 inline CGameEntitySystem_RemoveListenerEntity_t            CGameEntitySystem_RemoveListenerEntity;
 inline CGameEntitySystem_AddEntityIOEvent_t                CGameEntitySystem_AddEntityIOEvent;
@@ -294,7 +291,6 @@ inline CBaseModelEntity_LookupBone_t                       CBaseModelEntity_Look
 inline CBaseModelEntity_GetBoneTransform_t                 CBaseModelEntity_GetBoneTransform;
 inline CBaseModelEntity_SetModelScale_t                    CBaseModelEntity_SetModelScale;
 inline CBaseModelEntity_SetCollisionBounds_t               CBaseModelEntity_SetCollisionBounds;
-inline CPaintKit_UsesLegacyModel_t                         CPaintKit_UsesLegacyModel;
 inline CGamePhysicsQueryInterface_TraceShape_t             CGamePhysicsQueryInterface_TraceShape;
 inline StudioModel_LookupAttachment_t                      StudioModel_LookupAttachment;
 inline StudioModel_GetAttachment_t                         StudioModel_GetAttachment;

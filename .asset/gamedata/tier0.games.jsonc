@@ -14,10 +14,6 @@
       "library": "tier0",
       "linux": "@_ZN9CVProfile12OutputReportERK21VProfReportSettings_tPKci",
       "windows": "@?OutputReport@CVProfile@@QEAAXAEBUVProfReportSettings_t@@PEBDH@Z"
-    },
-    "LoadKV3FromFileUtlString": {
-      "library": "tier0",
-      "windows": "@?LoadKV3FromFile@@YA_NPEAVKeyValues3@@PEAVCUtlString@@PEBD2AEBUKV3ID_t@@I@Z"
     }
   }
 }
