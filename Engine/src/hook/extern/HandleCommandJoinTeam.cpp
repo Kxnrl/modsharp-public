@@ -23,6 +23,7 @@
 
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/type/CNetworkGameServer.h"
+#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 
@@ -72,5 +73,5 @@ BeginMemberHookScope(CBasePlayerController)
 
 void InstallHandleCommandJoinTeamHooks()
 {
-    InstallMemberDetourAutoSig(CBasePlayerController, HandleCommandJoinTeam);
+    HOOK(CBasePlayerController, HandleCommandJoinTeam);
 }

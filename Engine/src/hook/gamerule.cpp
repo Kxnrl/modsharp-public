@@ -21,6 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
@@ -265,13 +266,13 @@ BeginStaticHookScope(HandleGCBanInfo)
 
 void InstallGameRulesHooks()
 {
-    InstallMemberDetourAutoSig(CCSGameRules, Constructor);
-    InstallMemberDetourAutoSig(CCSGameRules, RestartRound);
-    InstallMemberDetourAutoSig(CCSGameRules, WillTeamHaveRoomForPlayer);
-    InstallMemberDetourAutoSig(CCSGameRules, CreateEndMatchMapGroupVoteOptions);
-    InstallMemberDetourAutoSig(CCSGameRules, TerminateRound);
+    HOOK(CCSGameRules, Constructor);
+    HOOK(CCSGameRules, RestartRound);
+    HOOK(CCSGameRules, WillTeamHaveRoomForPlayer);
+    HOOK(CCSGameRules, CreateEndMatchMapGroupVoteOptions);
+    HOOK(CCSGameRules, TerminateRound);
 
-    InstallStaticDetourAutoSig(HandleGCBanInfo);
+    SHOOK(HandleGCBanInfo);
 
     sm_mapGcBanInformation = g_pGameData->GetAddress<CUtlMap<uint32_t, CGcBanInformation_t, int>*>("CCSGameRules::sm_mapGcBanInformation");
 

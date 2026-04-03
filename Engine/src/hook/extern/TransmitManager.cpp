@@ -35,6 +35,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
+#include "hook/installer.h"
 
 #include <algorithm>
 #include <mutex>
@@ -843,7 +844,7 @@ public:
 
 void InstallTransmitHook()
 {
-    InstallMemberDetourAutoSig(ISource2GameEntities, CheckTransmit);
+    HOOK(ISource2GameEntities, CheckTransmit);
 
     g_pGameEntitySystem->AddListenerEntity(&s_listener);
 

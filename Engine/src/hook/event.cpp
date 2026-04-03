@@ -22,6 +22,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "logging.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -98,7 +99,7 @@ public:
 
 void InstallEventHooks()
 {
-    InstallVirtualHookAutoWithVTableAuto(CGameEventManager, FireEvent, server);
+    VHOOK(CGameEventManager, FireEvent, server);
 }
 
 // Natives Below

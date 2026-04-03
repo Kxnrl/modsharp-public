@@ -21,6 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -312,18 +313,18 @@ BeginMemberHookScope(INetworkServerService)
 
 void InstallEngineHooks()
 {
-    InstallMemberDetourAutoSig(CNetworkGameServer, SpawnServer_Unknown);
-    InstallMemberDetourAutoSig(CNetworkGameServer, SpawnServer);
-    InstallMemberDetourAutoSig(CNetworkGameServer, PrintStatus);
-    InstallMemberDetourAutoSig(CNetworkGameServer, GetFreeClient);
+    HOOK(CNetworkGameServer, SpawnServer_Unknown);
+    HOOK(CNetworkGameServer, SpawnServer);
+    HOOK(CNetworkGameServer, PrintStatus);
+    HOOK(CNetworkGameServer, GetFreeClient);
 
-    InstallMemberDetourAutoSig(CNetworkGameServer, ActiveServer);
+    HOOK(CNetworkGameServer, ActiveServer);
 
     // BUG 运行在客户端模式下时, 该功能会导致游戏无法启动
     if (CommandLine()->HasParam("-dedicated"))
     {
-        InstallVirtualHookAutoWithVTableAuto(CNetworkGameServer, DisconnectClient, engine);
-        InstallMemberDetourAutoSig(CNetworkGameServer, ConnectClient);
+        VHOOK(CNetworkGameServer, DisconnectClient, engine);
+        HOOK(CNetworkGameServer, ConnectClient);
     }
 
     // TODO steamnetworkingsockets -> str 'SendServerBrowserPacket' patch MTU
@@ -355,7 +356,7 @@ void InstallEngineHooks()
         });
     }
 
-    InstallVirtualHookAutoWithVTableManual(INetworkServerService, StartupServer, engine, CNetworkServerService);
+    VHOOK(INetworkServerService, StartupServer, engine, {.vtable = "CNetworkServerService"});
 
     g_pModSharpConVar           = g_ConVarManager.CreateConVar("modsharp_engine_version", FString("%s (%s)", MODSHARP_VERSION, MODSHARP_DATE), "Version of ModSharp Engine.", FCVAR_RELEASE | FCVAR_REPLICATED);
     ms_fix_server_query_players = g_ConVarManager.CreateConVar("ms_fix_server_query_players", false, "Fix A2S_Players response.", FCVAR_RELEASE);

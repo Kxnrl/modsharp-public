@@ -21,6 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
@@ -300,29 +301,29 @@ static void PatchEnableVScript()
         return true;
     });
 
-    InstallMemberDetourAutoSig(IScriptVM, CreateVM);
-    InstallMemberDetourAutoSig(CCSGOVScriptGameSystem, DestroyVM);
+    HOOK(IScriptVM, CreateVM);
+    HOOK(CCSGOVScriptGameSystem, DestroyVM);
 
     s_bPatchVScriptVM = true;
 }
 
 void InstallServerHooks()
 {
-    InstallMemberDetourAutoSig(CSource2Server, GameFrame);
-    InstallVirtualHookAutoWithVTableAuto(CSource2Server, GameServerSteamAPIActivated, server);
-    InstallVirtualHookAutoWithVTableAuto(CSource2Server, GameServerSteamAPIDeactivated, server);
+    HOOK(CSource2Server, GameFrame);
+    VHOOK(CSource2Server, GameServerSteamAPIActivated, server);
+    VHOOK(CSource2Server, GameServerSteamAPIDeactivated, server);
 
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GameInit, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GameShutdown, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GamePostInit, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GamePreShutdown, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GameActivate, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, GameDeactivate, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, OnPostSpawnGroupLoad, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, OnPrecacheResource, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, FrameUpdatePreEntityThink, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, FrameUpdatePostEntityThink, server);
-    InstallVirtualHookAutoWithVTableAuto(CGameRulesGameSystem, OnServerGamePostSimulate, server);
+    VHOOK(CGameRulesGameSystem, GameInit, server);
+    VHOOK(CGameRulesGameSystem, GameShutdown, server);
+    VHOOK(CGameRulesGameSystem, GamePostInit, server);
+    VHOOK(CGameRulesGameSystem, GamePreShutdown, server);
+    VHOOK(CGameRulesGameSystem, GameActivate, server);
+    VHOOK(CGameRulesGameSystem, GameDeactivate, server);
+    VHOOK(CGameRulesGameSystem, OnPostSpawnGroupLoad, server);
+    VHOOK(CGameRulesGameSystem, OnPrecacheResource, server);
+    VHOOK(CGameRulesGameSystem, FrameUpdatePreEntityThink, server);
+    VHOOK(CGameRulesGameSystem, FrameUpdatePostEntityThink, server);
+    VHOOK(CGameRulesGameSystem, OnServerGamePostSimulate, server);
 
     g_pScriptVM      = nullptr;
     g_pSpawnGroupMgr = nullptr;
@@ -331,7 +332,7 @@ void InstallServerHooks()
 
     if (CommandLine()->HasParam("-nobots"))
     {
-        InstallMemberDetourAutoSig(CNavMesh, GetNearestNavArea);
+        HOOK(CNavMesh, GetNearestNavArea);
     }
 
     if (CommandLine()->HasParam("-fucking_lua_map"))

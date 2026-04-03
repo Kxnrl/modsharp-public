@@ -28,6 +28,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CTakeDamageInfo.h"
 #include "cstrike/type/CTakeDamageResult.h"
+#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 
@@ -93,5 +94,5 @@ BeginMemberHookScope(CBaseEntity)
 
 void InstallDamageManagerHooks()
 {
-    InstallMemberDetourManual(CBaseEntity, DispatchTraceAttack, address::server::CBaseEntity_DispatchTraceAttack);
+    HOOK(CBaseEntity, DispatchTraceAttack, {.address = reinterpret_cast<void*>(address::server::CBaseEntity_DispatchTraceAttack)});
 }

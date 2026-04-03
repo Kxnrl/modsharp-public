@@ -24,6 +24,7 @@
 #include "manager/HookManager.h"
 
 #include "cstrike/interface/ICvar.h"
+#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 
@@ -106,8 +107,8 @@ void InstallValveConsoleLog()
         "Block valve's logging system. Default is \"false\". [0 = Default, 1 = Allow All, 2 = Block All]",
         FCVAR_RELEASE);
 
-    InstallStaticDetourAutoSig(LogDirect);
-    InstallStaticDetourAutoSig(LoggingSystem_IsChannelEnabled);
-    InstallStaticDetourAutoSig(LoggingSystem_IsChannelEnabled_Overload);
-    InstallMemberDetourAutoSig(CVProfile, OutputReport);
+    SHOOK(LogDirect);
+    SHOOK(LoggingSystem_IsChannelEnabled);
+    SHOOK(LoggingSystem_IsChannelEnabled_Overload);
+    HOOK(CVProfile, OutputReport);
 }

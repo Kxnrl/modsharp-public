@@ -34,6 +34,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
+#include "hook/installer.h"
 #include "memory/zydis_utility.h"
 
 #include <proto/cs_usercmd.pb.h>
@@ -384,15 +385,15 @@ static void PatchJumpInWaterVelocityZ()
 
 void InstallMovementHook()
 {
-    InstallMemberDetourAutoSig(CPlayer_MovementServices, RunCommand);
+    HOOK(CPlayer_MovementServices, RunCommand);
 
-    InstallMemberDetourAutoSig(CCSPlayer_MovementServices, WalkMove);
-    InstallMemberDetourAutoSig(CCSPlayer_MovementServices, Accelerate);
-    InstallMemberDetourAutoSig(CCSPlayer_MovementServices, ProcessMove);
+    HOOK(CCSPlayer_MovementServices, WalkMove);
+    HOOK(CCSPlayer_MovementServices, Accelerate);
+    HOOK(CCSPlayer_MovementServices, ProcessMove);
 
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayer_MovementServices, CheckMovingGround, server);
+    VHOOK(CCSPlayer_MovementServices, CheckMovingGround, server);
 
-    InstallMemberDetourAutoSig(CCSPlayerController, ProcessUserCommands);
+    HOOK(CCSPlayerController, ProcessUserCommands);
 
     PatchJumpInWaterVelocityZ();
 

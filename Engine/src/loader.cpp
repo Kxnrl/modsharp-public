@@ -24,6 +24,7 @@
 #include "sdkproxy.h"
 #include "strtool.h"
 #include "types.h"
+#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 
@@ -93,7 +94,7 @@ MS_EXPORT bool InitModsharp(CreateInterface_t engineFactory, CreateInterface_t s
         return false;
     }
 
-    InstallStaticDetourManual(Source2_Init, reinterpret_cast<bool (*)(void* p)>(address::engine::Source2_Init));
+    SHOOK(Source2_Init, {.address = (address::engine::Source2_Init)});
 
     return true;
 }

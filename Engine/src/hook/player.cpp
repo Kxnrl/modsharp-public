@@ -19,6 +19,7 @@
 
 #include "bridge/forwards/forward.h"
 #include "global.h"
+#include "installer.h"
 #include "manager/HookManager.h"
 #include "module.h"
 #include "vhook/hook.h"
@@ -97,7 +98,7 @@ BeginMemberHookScope(CCSPlayerPawn)
 #endif
     }
 
-    DeclareVirtualHook(PlayerPreThink, void, (CCSPlayerPawn * pPawn))
+    DeclareMemberDetourHook(PlayerPreThink, void, (CCSPlayerPawn * pPawn))
     {
         ValidateCC();
 
@@ -337,19 +338,19 @@ void InstallPlayerHooks()
     CCSPlayerPawn_Hooks::hk_ProcessMovement_AssignMaxSpeed = std::move(*result);
     g_pHookManager->Register(&CCSPlayerPawn_Hooks::hk_ProcessMovement_AssignMaxSpeed);
 #else
-    InstallMemberDetourAutoSig(CCSPlayerPawn, GetPlayerMaxSpeed);
+    HOOK(CCSPlayerPawn, GetPlayerMaxSpeed);
 #endif
 
-    InstallMemberDetourAutoSig(CCSPlayer_WeaponServices, EquipWeapon);
-    InstallMemberDetourAutoSig(CCSPlayer_WeaponServices, CanSwitch);
-    InstallMemberDetourAutoSig(CCSPlayer_WeaponServices, CanEquip);
+    HOOK(CCSPlayer_WeaponServices, EquipWeapon);
+    HOOK(CCSPlayer_WeaponServices, CanSwitch);
+    HOOK(CCSPlayer_WeaponServices, CanEquip);
 
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayer_WeaponServices, SwitchWeapon, server);
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayer_WeaponServices, DropWeapon, server);
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayer_WeaponServices, CanUse, server);
+    VHOOK(CCSPlayer_WeaponServices, SwitchWeapon, server);
+    VHOOK(CCSPlayer_WeaponServices, DropWeapon, server);
+    VHOOK(CCSPlayer_WeaponServices, CanUse, server);
 
-    InstallVirtualHookManualWithVTableAuto(CCSPlayerPawn, Event_Killed, server, "CBaseEntity::Event_Killed");
-    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerSpawn);
-    InstallVirtualHookAutoWithVTableAuto(CCSPlayerPawn, PlayerPreThink, server);
-    InstallMemberDetourAutoSig(CCSPlayerPawn, PlayerPostThink);
+    VHOOK(CCSPlayerPawn, Event_Killed, server, {.gamedata = "CBaseEntity::Event_Killed"});
+    HOOK(CCSPlayerPawn, PlayerSpawn);
+    HOOK(CCSPlayerPawn, PlayerPreThink);
+    HOOK(CCSPlayerPawn, PlayerPostThink);
 }

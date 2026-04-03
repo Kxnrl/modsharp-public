@@ -183,6 +183,7 @@
     <ClInclude Include="src\cstrike\type\KeyValues3.h" />
     <ClInclude Include="src\cstrike\type\matrix3x4.h" />
     <ClInclude Include="src\cstrike\type\netadr_t.h" />
+    <ClInclude Include="src\hook\installer.h" />
     <ClInclude Include="src\mathematics.h" />
     <ClInclude Include="src\memory\zydis_utility.h" />
     <ClInclude Include="src\murmurhash.h" />

@@ -21,6 +21,7 @@
 #include "bridge/natives/EntityNatives.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -538,18 +539,19 @@ class CEntityListener : public IEntityListener
 
 void InstallEntityHooks()
 {
-    InstallMemberDetourAutoSig(CPointServerCommand, InputCommand);
-    InstallMemberDetourAutoSig(CEntityIOOutput, FireOutput);
-    InstallMemberDetourAutoSig(CEntityIdentity, AcceptInput);
-    InstallMemberDetourAutoSig(CTriggerGravity, GravityTouch);
+    HOOK(CPointServerCommand, InputCommand, {.address = schemas::FindDataMapInputFunc("CPointServerCommand", "InputCommand")});
 
-    InstallStaticDetourAutoSig(SendToServerConsole);
+    HOOK(CEntityIOOutput, FireOutput);
+    HOOK(CEntityIdentity, AcceptInput);
+    HOOK(CTriggerGravity, GravityTouch, {.address = schemas::FindDataMapInputFunc("CTriggerGravity", "CTriggerGravityGravityTouch")});
 
-    InstallVirtualHookManualWithVTableAuto(CTriggerGravity, Precache, server, "CBaseEntity::Precache");
-    InstallVirtualHookManualWithVTableAuto(CTriggerGravity, EndTouch, server, "CBaseEntity::EndTouch");
-    InstallVirtualHookManualWithVTableAuto(CTriggerPush, Touch, server, "CBaseEntity::Touch");
-    InstallVirtualHookManualWithVTableAuto(CPhysBox, Use, server, "CBaseEntity::Use");
-    InstallVirtualHookAutoWithVTableAuto(CVPhys2World, GetTouchingList, vphysics2);
+    SHOOK(SendToServerConsole);
+
+    VHOOK(CTriggerGravity, Precache, server, {.gamedata = "CBaseEntity::Precache"});
+    VHOOK(CTriggerGravity, EndTouch, server, {.gamedata = "CBaseEntity::EndTouch"});
+    VHOOK(CTriggerPush, Touch, server, {.gamedata = "CBaseEntity::Touch"});
+    VHOOK(CPhysBox, Use, server, {.gamedata = "CBaseEntity::Use"});
+    VHOOK(CVPhys2World, GetTouchingList, vphysics2);
 
     g_pHookManager->Hook_PlayerSpawned(HookType_Post, [](CCSPlayerPawn* pPawn, CServerSideClient* pClient) {
         if (g_pScriptVM)

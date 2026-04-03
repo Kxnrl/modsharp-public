@@ -39,6 +39,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/Variant.h"
+#include "hook/installer.h"
 #include "memory/zydis_utility.h"
 
 #include <Zydis.h>
@@ -750,22 +751,22 @@ static void PatchGiveNamedItemLimit()
 
 void InstallGiveNamedItemHooks()
 {
-    InstallMemberDetourAutoSig(CCSPlayer_ItemServices, GiveNamedItem);
-    InstallMemberDetourAutoSig(CCSPlayer_ItemServices, GiveGlove);
-    InstallMemberDetourAutoSig(CCSPlayer_ItemServices, CanAcquire);
+    HOOK(CCSPlayer_ItemServices, GiveNamedItem);
+    HOOK(CCSPlayer_ItemServices, GiveGlove);
+    HOOK(CCSPlayer_ItemServices, CanAcquire);
 
-    InstallMemberDetourAutoSig(CBasePlayerPawn, FindMatchingWeaponsForTeamLoadout);
+    HOOK(CBasePlayerPawn, FindMatchingWeaponsForTeamLoadout);
 
     PatchGiveNamedItemLimit();
 
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
-    InstallVirtualHookManualWithVTableAuto(CGamePlayerEquip, Precache, server, "CBaseEntity::Precache");
-    InstallMemberDetourAutoSig(CGamePlayerEquip, InputTriggerForAllPlayers);
-    InstallMemberDetourAutoSig(CGamePlayerEquip, InputTriggerForActivatedPlayer);
+    VHOOK(CGamePlayerEquip, Precache, server, {.gamedata = "CBaseEntity::Precache"});
+    HOOK(CGamePlayerEquip, InputTriggerForAllPlayers, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForAllPlayers")});
+    HOOK(CGamePlayerEquip, InputTriggerForActivatedPlayer, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForActivatedPlayer")});
 
-    InstallVirtualHookManualWithVTableAuto(CGamePlayerEquip, Use, server, "CBaseEntity::Use");
-    InstallVirtualHookManualWithVTableAuto(CGamePlayerEquip, Touch, server, "CBaseEntity::Touch");
+    VHOOK(CGamePlayerEquip, Use, server, {.gamedata = "CBaseEntity::Use"});
+    VHOOK(CGamePlayerEquip, Touch, server, {.gamedata = "CBaseEntity::Touch"});
 
     g_pHookManager->Hook_GameShutdown(HookType_Post, [] {
         for (auto& val : s_gamePlayerEquipMap | std::views::values)

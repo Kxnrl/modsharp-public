@@ -20,6 +20,7 @@
 #include "bridge/forwards/forward.h"
 #include "bridge/natives/ClientNatives.h"
 #include "global.h"
+#include "installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -520,23 +521,23 @@ void InstallClientHooks()
     std::random_device rd;
     s_RandomSeed = (static_cast<uint64_t>(rd()) << 32) | rd();
 
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, CheckConnect, server);
-    InstallMemberDetourAutoSig(CSource2GameClients, Connected);
-    InstallMemberDetourAutoSig(CSource2GameClients, Disconnect);
-    InstallMemberDetourAutoSig(CSource2GameClients, PutInServer);
-    InstallMemberDetourAutoSig(CSource2GameClients, Active);
-    InstallVirtualHookAutoWithVTableAuto(CSource2GameClients, SettingsChanged, server);
-    InstallMemberDetourAutoSig(CSource2GameClients, Command);
-    InstallMemberDetourAutoSig(CSource2GameClients, FullyConnected);
+    VHOOK(CSource2GameClients, CheckConnect, server);
+    HOOK(CSource2GameClients, Connected);
+    HOOK(CSource2GameClients, Disconnect);
+    HOOK(CSource2GameClients, PutInServer);
+    HOOK(CSource2GameClients, Active);
+    VHOOK(CSource2GameClients, SettingsChanged, server);
+    HOOK(CSource2GameClients, Command);
+    HOOK(CSource2GameClients, FullyConnected);
 
-    InstallMemberDetourAutoSig(CServerSideClient, ExecuteStringCommand);
-    InstallMemberDetourAutoSig(CServerSideClient, IsHearingClient);
-    InstallVirtualHookAutoWithVTableAuto(CServerSideClient, CLCMsg_VoiceData, engine);
-    InstallVirtualHookAutoWithVTableAuto(CServerSideClient, CLCMsg_RespondCvarValue, engine);
-    InstallMemberDetourAutoSig(CServerSideClient, SendNetMessage);
+    HOOK(CServerSideClient, ExecuteStringCommand);
+    HOOK(CServerSideClient, IsHearingClient);
+    VHOOK(CServerSideClient, CLCMsg_VoiceData, engine);
+    VHOOK(CServerSideClient, CLCMsg_RespondCvarValue, engine);
+    HOOK(CServerSideClient, SendNetMessage);
 
-    InstallStaticDetourAutoSig(HostSay);
-    InstallStaticDetourAutoSig(ScriptPrintMessageChatAll);
+    SHOOK(HostSay);
+    SHOOK(ScriptPrintMessageChatAll);
 
     g_pHookManager->Hook_ClientFullyConnect(HookType_Post, [](PlayerSlot_t slot) {
         const auto pClient = sv->GetClient(slot);

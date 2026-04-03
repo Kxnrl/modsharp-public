@@ -21,6 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
+#include "installer.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
@@ -340,8 +341,8 @@ BeginMemberHookScope(SoundOpGameSystem)
 
 void InstallSoundHooks()
 {
-    InstallMemberDetourAutoSig(CSoundEmitterSystem, EmitSound);
-    InstallMemberDetourAutoSig(SoundOpGameSystem, DoStartSoundEvent);
+    HOOK(CSoundEmitterSystem, EmitSound);
+    HOOK(SoundOpGameSystem, DoStartSoundEvent);
 
 #ifdef SOUND_SET_PARAMS_HOOK
     InstallMemberDetourManual(SoundOpGameSystem, SetSoundEventParam, reinterpret_cast<decltype(SoundOpGameSystem_Hooks::SetSoundEventParam)>(address::server::SoundOpGameSystem_SetSoundEventParam));

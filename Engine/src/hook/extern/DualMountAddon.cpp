@@ -36,6 +36,7 @@
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/KeyValues.h"
+#include "hook/installer.h"
 
 #include <proto/networkbasetypes.pb.h>
 
@@ -322,8 +323,8 @@ void InstallDualMountAddonHooks()
         }
     });
 
-    InstallStaticDetourAutoSig(HostStateRequest);
-    InstallMemberDetourAutoSig(INetChannel, SendNetMessage);
+    SHOOK(HostStateRequest);
+    HOOK(INetChannel, SendNetMessage);
 }
 
 void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)
