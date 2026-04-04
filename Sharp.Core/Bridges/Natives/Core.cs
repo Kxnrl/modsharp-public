@@ -22,7 +22,7 @@ using Sharp.Shared.Enums;
 
 namespace Sharp.Core.Bridges.Natives;
 
-public static partial class Core
+public static unsafe partial class Core
 {
     public static partial string GetCommandLine();
 

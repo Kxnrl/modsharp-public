@@ -25,7 +25,7 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 48)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 56)]
 public unsafe ref struct RnQueryShapeAttr
 {
     [FieldOffset(0x0)]
@@ -48,6 +48,9 @@ public unsafe ref struct RnQueryShapeAttr
 
     [FieldOffset(0x2C)]
     private ushort m_nIncludedDetailLayers;
+
+    [FieldOffset(46)]
+    private byte m_nTargetDetailLayer;
 
     [FieldOffset(0x2F)]
     public RnQueryObjectSet m_nObjectSetMask;
@@ -72,6 +75,7 @@ public unsafe ref struct RnQueryShapeAttr
         m_nCollisionGroup         = CollisionGroupType.ConditionallySolid;
 
         m_nIncludedDetailLayers = ushort.MaxValue;
+        m_nTargetDetailLayer    = 0;
     }
 
     public void SetEntityToIgnore(IBaseEntity entityToIgnore, int index)

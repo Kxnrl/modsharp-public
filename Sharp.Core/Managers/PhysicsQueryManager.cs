@@ -354,6 +354,7 @@ internal unsafe partial class PhysicsQueryManager
 {
     // ReSharper disable InconsistentNaming
     private static readonly CTraceFilterVirtualTableDescriptor* _movementTraceFilterVtable;
+    private static readonly CTraceFilterVirtualTableDescriptor* _traceFilterVtable;
     private static readonly nint                                _interface;
 
     private static readonly delegate* unmanaged<nint, TraceShapeRay*, Vector*, Vector*, CTraceFilter*, GameTrace*, bool>
@@ -370,6 +371,10 @@ internal unsafe partial class PhysicsQueryManager
         _movementTraceFilterVtable
             = (CTraceFilterVirtualTableDescriptor*) CoreGameData.Core.GetRequiredVirtualTable("server",
                 "CTraceFilterPlayerMovementCS");
+
+        _traceFilterVtable
+            = (CTraceFilterVirtualTableDescriptor*) CoreGameData.Core.GetRequiredVirtualTable("server",
+                     "CTraceFilter");
 
         _interface = CoreGameData.Core.GetRequiredAddress("g_pPhysicsQuery");
 
@@ -407,11 +412,8 @@ internal unsafe partial class PhysicsQueryManager
     {
         var traceFilter = stackalloc CTraceFilter[1];
 
-        if (vtable is not null)
-        {
-            traceFilter->Vtable             = vtable;
-            traceFilter->m_bIterateEntities = true;
-        }
+        traceFilter->Vtable             = vtable is null ? _traceFilterVtable : vtable;
+        traceFilter->m_bIterateEntities = vtable is not null;
 
         traceFilter->QueryAttribute = query;
 

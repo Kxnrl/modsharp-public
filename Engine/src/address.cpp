@@ -299,7 +299,6 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::FindByClassname", address::server::CGameEntitySystem_FindByClassname);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::FindByName", address::server::CGameEntitySystem_FindByName);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::FindInSphere", address::server::CGameEntitySystem_FindInSphere);
-    RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::SpawnEntityFromKeyValuesSync", address::server::CGameEntitySystem_SpawnEntityFromKeyValuesSync);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::AddListenerEntity", address::server::CGameEntitySystem_AddListenerEntity);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::RemoveListenerEntity", address::server::CGameEntitySystem_RemoveListenerEntity);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::AllocPooledString", address::server::CGameEntitySystem_AllocPooledString);

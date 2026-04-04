@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 64)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 72)]
 public unsafe ref struct CTraceFilter
 {
     [FieldOffset(0)]
@@ -30,7 +30,7 @@ public unsafe ref struct CTraceFilter
     [FieldOffset(8)]
     public RnQueryShapeAttr QueryAttribute;
 
-    [FieldOffset(56)]
+    [FieldOffset(64)]
     public bool m_bIterateEntities;
 }
 
