@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
@@ -321,7 +320,7 @@ internal class EntityManager : ICoreEntityManager
 
             while (bits != 0)
             {
-                var bit   = BitOperations.TrailingZeroCount(bits);
+                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
                 var index = (bucket << 5) | bit;
 
                 if (_entities[index] is { } entity)
@@ -342,7 +341,7 @@ internal class EntityManager : ICoreEntityManager
 
             while (bits != 0)
             {
-                var bit   = BitOperations.TrailingZeroCount(bits);
+                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
                 var index = (bucket << 5) | bit;
 
                 if (_entities[index]?.As<T>() is { } entity)
@@ -363,7 +362,7 @@ internal class EntityManager : ICoreEntityManager
 
             while (bits != 0)
             {
-                var bit   = BitOperations.TrailingZeroCount(bits);
+                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
                 var index = (bucket << 5) | bit;
 
                 if (_entities[index] is { } entity && entity.Classname == classname)
@@ -384,7 +383,7 @@ internal class EntityManager : ICoreEntityManager
 
             while (bits != 0)
             {
-                var bit   = BitOperations.TrailingZeroCount(bits);
+                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
                 var index = (bucket << 5) | bit;
 
                 if (_entities[index] is { } entity && entity.Classname == classname && entity.As<T>() is { } typed)
