@@ -49,6 +49,7 @@ internal class EntityManager : ICoreEntityManager
     private readonly List<IEntityListener>  _listeners;
     private readonly ILogger<EntityManager> _logger;
     private readonly IBaseEntity?[]         _entities;
+    private readonly string?[]              _classnames;
     private readonly uint[]                 _activeBits;
 
     private PlayerSlot _maxSlots;
@@ -58,6 +59,7 @@ internal class EntityManager : ICoreEntityManager
         _logger     = logger;
         _listeners  = [];
         _entities   = new IBaseEntity?[MaxEntities];
+        _classnames = new string?[MaxEntities];
         _activeBits = new uint[BitBucketCount];
 
         Forward.OnEntityCreated     += OnEntityCreated;
@@ -93,6 +95,7 @@ internal class EntityManager : ICoreEntityManager
         if (index is >= 0 and < MaxEntities)
         {
             _entities[index]                = entity;
+            _classnames[index]              = entity.Classname;
             _activeBits[index >> 5] |= 1U << (index & 31);
         }
 
@@ -128,6 +131,7 @@ internal class EntityManager : ICoreEntityManager
         if (index is >= 0 and < MaxEntities)
         {
             _entities[index]                 = null;
+            _classnames[index]               = null;
             _activeBits[index >> 5] &= ~(1U << (index & 31));
         }
 
