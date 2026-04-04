@@ -22,31 +22,40 @@ using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 40)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 0x28)]
 public readonly ref struct RnCollisionAttr
 {
     [FieldOffset(0)]
     public readonly InteractionLayers InteractsAs;
 
-    [FieldOffset(8)]
+    [FieldOffset(0x8)]
     public readonly InteractionLayers InteractsWith;
 
-    [FieldOffset(16)]
+    [FieldOffset(0x10)]
     public readonly InteractionLayers InteractsExclude;
 
-    [FieldOffset(24)]
+    [FieldOffset(0x18)]
     public readonly uint EntityId;
 
-    [FieldOffset(28)]
+    [FieldOffset(0x1C)]
     public readonly uint OwnerId;
 
-    [FieldOffset(32)]
+    [FieldOffset(0x20)]
     public readonly ushort HierarchyId;
 
-    [FieldOffset(34)]
+    [FieldOffset(0x22)]
+    public readonly ushort DetailLayerMask;
+
+    [FieldOffset(0x24)]
+    public readonly byte DetailLayerMaskType;
+
+    [FieldOffset(0x25)]
+    public readonly byte TargetDetailLayer;
+
+    [FieldOffset(0x26)]
     public readonly CollisionGroupType CollisionGroup;
 
-    [FieldOffset(35)]
+    [FieldOffset(0x27)]
     public readonly byte CollisionFunctionMask;
 }
 
