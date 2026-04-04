@@ -312,7 +312,7 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    public IEnumerable<IBaseEntity> GetAllEntities()
+    private IEnumerable<int> EnumerateActiveIndices()
     {
         for (var bucket = 0; bucket < BitBucketCount; bucket++)
         {
@@ -323,75 +323,53 @@ internal class EntityManager : ICoreEntityManager
                 var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
                 var index = (bucket << 5) | bit;
 
-                if (_entities[index] is { } entity)
-                {
-                    yield return entity;
-                }
+                yield return index;
 
                 bits &= bits - 1;
+            }
+        }
+    }
+
+    public IEnumerable<IBaseEntity> GetAllEntities()
+    {
+        foreach (var index in EnumerateActiveIndices())
+        {
+            if (_entities[index] is { } entity)
+            {
+                yield return entity;
             }
         }
     }
 
     public IEnumerable<T> GetAllEntities<T>() where T : class, IBaseEntity
     {
-        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        foreach (var index in EnumerateActiveIndices())
         {
-            var bits = _activeBits[bucket];
-
-            while (bits != 0)
+            if (_entities[index]?.As<T>() is { } entity)
             {
-                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
-                var index = (bucket << 5) | bit;
-
-                if (_entities[index]?.As<T>() is { } entity)
-                {
-                    yield return entity;
-                }
-
-                bits &= bits - 1;
+                yield return entity;
             }
         }
     }
 
     public IEnumerable<IBaseEntity> GetAllEntities(string classname)
     {
-        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        foreach (var index in EnumerateActiveIndices())
         {
-            var bits = _activeBits[bucket];
-
-            while (bits != 0)
+            if (_classnames[index] == classname && _entities[index] is { } entity)
             {
-                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
-                var index = (bucket << 5) | bit;
-
-                if (_entities[index] is { } entity && entity.Classname == classname)
-                {
-                    yield return entity;
-                }
-
-                bits &= bits - 1;
+                yield return entity;
             }
         }
     }
 
     public IEnumerable<T> GetAllEntities<T>(string classname) where T : class, IBaseEntity
     {
-        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        foreach (var index in EnumerateActiveIndices())
         {
-            var bits = _activeBits[bucket];
-
-            while (bits != 0)
+            if (_classnames[index] == classname && _entities[index]?.As<T>() is { } entity)
             {
-                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
-                var index = (bucket << 5) | bit;
-
-                if (_entities[index] is { } entity && entity.Classname == classname && entity.As<T>() is { } typed)
-                {
-                    yield return typed;
-                }
-
-                bits &= bits - 1;
+                yield return entity;
             }
         }
     }
