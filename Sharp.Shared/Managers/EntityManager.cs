@@ -53,13 +53,13 @@ public interface IEntityManager
     ///     Get all currently existing entities matching a classname
     /// </summary>
     /// <param name="classname">Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player")</param>
-    IEnumerable<IBaseEntity> GetAllEntities(string classname);
+    IEnumerable<IBaseEntity> GetAllEntitiesByClassname(string classname);
 
     /// <summary>
     ///     Get all currently existing entities matching a classname, cast to a specific type
     /// </summary>
     /// <param name="classname">Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player")</param>
-    IEnumerable<T> GetAllEntities<T>(string classname) where T : class, IBaseEntity;
+    IEnumerable<T> GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity;
 
     /// <summary>
     ///     Find entity by EHandle

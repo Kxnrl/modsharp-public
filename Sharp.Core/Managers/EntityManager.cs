@@ -356,7 +356,7 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    public IEnumerable<IBaseEntity> GetAllEntities(string classname)
+    public IEnumerable<IBaseEntity> GetAllEntitiesByClassname(string classname)
     {
         foreach (var index in EnumerateActiveIndices())
         {
@@ -367,7 +367,7 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    public IEnumerable<T> GetAllEntities<T>(string classname) where T : class, IBaseEntity
+    public IEnumerable<T> GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
     {
         foreach (var index in EnumerateActiveIndices())
         {
