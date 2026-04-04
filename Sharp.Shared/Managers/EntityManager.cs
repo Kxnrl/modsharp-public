@@ -40,6 +40,28 @@ public interface IEntityManager
     void RemoveEntityListener(IEntityListener listener);
 
     /// <summary>
+    ///     Get all currently existing entities
+    /// </summary>
+    IEnumerable<IBaseEntity> GetAllEntities();
+
+    /// <summary>
+    ///     Get all currently existing entities of a specific type
+    /// </summary>
+    IEnumerable<T> GetAllEntities<T>() where T : class, IBaseEntity;
+
+    /// <summary>
+    ///     Get all currently existing entities matching a classname
+    /// </summary>
+    /// <param name="classname">Entity classname to filter by</param>
+    IEnumerable<IBaseEntity> GetAllEntities(string classname);
+
+    /// <summary>
+    ///     Get all currently existing entities matching a classname, cast to a specific type
+    /// </summary>
+    /// <param name="classname">Entity classname to filter by</param>
+    IEnumerable<T> GetAllEntities<T>(string classname) where T : class, IBaseEntity;
+
+    /// <summary>
     ///     Find entity by EHandle
     /// </summary>
     T? FindEntityByHandle<T>(CEntityHandle<T> eHandle) where T : class, IBaseEntity;

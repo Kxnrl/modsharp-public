@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
@@ -43,15 +44,22 @@ internal interface ICoreEntityManager : IEntityManager;
 // ReSharper disable ForCanBeConvertedToForeach
 internal class EntityManager : ICoreEntityManager
 {
+    private const int MaxEntities    = 16384;
+    private const int BitBucketCount = MaxEntities / 32; // 512
+
     private readonly List<IEntityListener>  _listeners;
     private readonly ILogger<EntityManager> _logger;
+    private readonly IBaseEntity?[]         _entities;
+    private readonly uint[]                 _activeBits;
 
     private PlayerSlot _maxSlots;
 
     public EntityManager(ILogger<EntityManager> logger)
     {
-        _logger    = logger;
-        _listeners = [];
+        _logger     = logger;
+        _listeners  = [];
+        _entities   = new IBaseEntity?[MaxEntities];
+        _activeBits = new uint[BitBucketCount];
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
@@ -81,6 +89,14 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
+        var index = entity.Index.AsPrimitive();
+
+        if (index is >= 0 and < MaxEntities)
+        {
+            _entities[index]                = entity;
+            _activeBits[index >> 5] |= 1U << (index & 31);
+        }
+
         for (var i = 0; i < _listeners.Count; i++)
         {
             try
@@ -106,6 +122,14 @@ internal class EntityManager : ICoreEntityManager
             _logger.LogError("Entity is nullptr in OnEntityDeleted");
 
             return;
+        }
+
+        var index = entity.Index.AsPrimitive();
+
+        if (index is >= 0 and < MaxEntities)
+        {
+            _entities[index]                 = null;
+            _activeBits[index >> 5] &= ~(1U << (index & 31));
         }
 
         for (var i = 0; i < _listeners.Count; i++)
@@ -157,7 +181,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityFollowed");
 
             return;
         }
@@ -186,7 +210,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityFireOutput");
 
             return EHookAction.Ignored;
         }
@@ -228,7 +252,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityAcceptInput");
 
             return EHookAction.Ignored;
         }
@@ -286,6 +310,90 @@ internal class EntityManager : ICoreEntityManager
         if (!_listeners.Remove(listener))
         {
             _logger.LogError("You have not install listener yet!\n{stackTrace}", Environment.StackTrace);
+        }
+    }
+
+    public IEnumerable<IBaseEntity> GetAllEntities()
+    {
+        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        {
+            var bits = _activeBits[bucket];
+
+            while (bits != 0)
+            {
+                var bit   = BitOperations.TrailingZeroCount(bits);
+                var index = (bucket << 5) | bit;
+
+                if (_entities[index] is { } entity)
+                {
+                    yield return entity;
+                }
+
+                bits &= bits - 1;
+            }
+        }
+    }
+
+    public IEnumerable<T> GetAllEntities<T>() where T : class, IBaseEntity
+    {
+        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        {
+            var bits = _activeBits[bucket];
+
+            while (bits != 0)
+            {
+                var bit   = BitOperations.TrailingZeroCount(bits);
+                var index = (bucket << 5) | bit;
+
+                if (_entities[index]?.As<T>() is { } entity)
+                {
+                    yield return entity;
+                }
+
+                bits &= bits - 1;
+            }
+        }
+    }
+
+    public IEnumerable<IBaseEntity> GetAllEntities(string classname)
+    {
+        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        {
+            var bits = _activeBits[bucket];
+
+            while (bits != 0)
+            {
+                var bit   = BitOperations.TrailingZeroCount(bits);
+                var index = (bucket << 5) | bit;
+
+                if (_entities[index] is { } entity && entity.Classname == classname)
+                {
+                    yield return entity;
+                }
+
+                bits &= bits - 1;
+            }
+        }
+    }
+
+    public IEnumerable<T> GetAllEntities<T>(string classname) where T : class, IBaseEntity
+    {
+        for (var bucket = 0; bucket < BitBucketCount; bucket++)
+        {
+            var bits = _activeBits[bucket];
+
+            while (bits != 0)
+            {
+                var bit   = BitOperations.TrailingZeroCount(bits);
+                var index = (bucket << 5) | bit;
+
+                if (_entities[index] is { } entity && entity.Classname == classname && entity.As<T>() is { } typed)
+                {
+                    yield return typed;
+                }
+
+                bits &= bits - 1;
+            }
         }
     }
 
