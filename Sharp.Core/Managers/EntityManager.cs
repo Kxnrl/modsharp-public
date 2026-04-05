@@ -360,7 +360,7 @@ internal class EntityManager : ICoreEntityManager
     {
         foreach (var index in EnumerateActiveIndices())
         {
-            if (_classnames[index] == classname && _entities[index] is { } entity)
+            if (string.Equals(_classnames[index], classname, StringComparison.OrdinalIgnoreCase) && _entities[index] is { } entity)
             {
                 yield return entity;
             }
@@ -371,7 +371,7 @@ internal class EntityManager : ICoreEntityManager
     {
         foreach (var index in EnumerateActiveIndices())
         {
-            if (_classnames[index] == classname && _entities[index]?.As<T>() is { } entity)
+            if (string.Equals(_classnames[index], classname, StringComparison.OrdinalIgnoreCase) && _entities[index]?.As<T>() is { } entity)
             {
                 yield return entity;
             }
