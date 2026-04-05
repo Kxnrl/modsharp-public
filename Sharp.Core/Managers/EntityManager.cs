@@ -90,10 +90,9 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        var index = entity.Index.AsPrimitive();
-
-        if (index is >= 0 and < MaxEntities)
+        if (entity.Index.IsNetworked())
         {
+            var index = entity.Index.AsPrimitive();
             _entities[index]                = entity;
             _classnames[index]              = entity.Classname;
             _activeBits[index >> 5] |= 1U << (index & 31);
@@ -126,10 +125,9 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        var index = entity.Index.AsPrimitive();
-
-        if (index is >= 0 and < MaxEntities)
+        if (entity.Index.IsNetworked())
         {
+            var index = entity.Index.AsPrimitive();
             _entities[index]                 = null;
             _classnames[index]               = null;
             _activeBits[index >> 5] &= ~(1U << (index & 31));
