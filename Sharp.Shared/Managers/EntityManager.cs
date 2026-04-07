@@ -88,37 +88,47 @@ public interface IEntityManager
     IBaseEntity? FindEntityInSphere(IBaseEntity? start, Vector center, float radius);
 
     /// <summary>
-    ///     Create and spawn entity <br />
-    ///     <remarks>
-    ///         No need to call <see cref="IBaseEntity.DispatchSpawn" />
-    ///     </remarks>
+    ///     Create and spawn entity (full pipeline: create + precache + dispatch spawn).
+    ///     Safe for all entity classes including weapons, but at the cost of performance
+    ///     (most of the cost is in the precache step).
+    ///     <br /><br />
+    ///     <b>For high-performance scenarios</b> (e.g. spawning many entities per tick),
+    ///     skip this method and call <see cref="CreateEntityByName" /> followed by
+    ///     <see cref="IBaseEntity.DispatchSpawn" /> directly. That path bypasses precache
+    ///     and is much faster, but <b>weapons will crash</b>, and other entities may fail
+    ///     if their required resources have not been loaded yet.
+    ///     <br /><br />
+    ///     No need to call <see cref="IBaseEntity.DispatchSpawn" /> after this method.
     /// </summary>
     IBaseEntity? SpawnEntitySync(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues);
 
     /// <summary>
-    ///     Create and spawn entity <br />
-    ///     <remarks>
-    ///         No need to call <see cref="IBaseEntity.DispatchSpawn" /> <br />
-    ///         <b>&lt;T&gt;</b> is not checked, caller must ensure type correctness
-    ///     </remarks>
+    ///     Generic version of <see cref="SpawnEntitySync(string, IReadOnlyDictionary{string, KeyValuesVariantValueItem})" />.
+    ///     See that overload for cost and the high-performance alternative.
+    ///     <br /><br />
+    ///     <b>&lt;T&gt; is not checked</b> — caller must ensure type correctness.
+    ///     <br /><br />
+    ///     No need to call <see cref="IBaseEntity.DispatchSpawn" /> after this method.
     /// </summary>
     T? SpawnEntitySync<T>(string classname, IReadOnlyDictionary<string, KeyValuesVariantValueItem> keyValues)
         where T : class, IBaseEntity;
 
     /// <summary>
-    ///     Create entity <br />
-    ///     <remarks>
-    ///         Cannot create weapon-related entities, otherwise it will crash
-    ///     </remarks>
+    ///     Create an entity instance without spawning it. You must call
+    ///     <see cref="IBaseEntity.DispatchSpawn" /> afterwards to actually spawn it.
+    ///     <br /><br />
+    ///     This bypasses the precache step, so it is much faster than
+    ///     <see cref="SpawnEntitySync(string, IReadOnlyDictionary{string, KeyValuesVariantValueItem})" />,
+    ///     but <b>weapons will crash</b> and other entities may fail if their required
+    ///     resources have not been loaded yet.
     /// </summary>
     IBaseEntity? CreateEntityByName(string classname);
 
     /// <summary>
-    ///     Create entity <br />
-    ///     <remarks>
-    ///         Cannot create weapon-related entities, otherwise it will crash <br />
-    ///         <b>&lt;T&gt;</b> is not checked, caller must ensure type correctness
-    ///     </remarks>
+    ///     Generic version of <see cref="CreateEntityByName(string)" />.
+    ///     See that overload for the precache caveat.
+    ///     <br /><br />
+    ///     <b>&lt;T&gt; is not checked</b> — caller must ensure type correctness.
     /// </summary>
     T? CreateEntityByName<T>(string classname) where T : class, IBaseEntity;
 
