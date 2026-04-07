@@ -64,6 +64,7 @@ internal class EntityManager : ICoreEntityManager
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
+        Forward.OnEntityDeletedPost += OnEntityDeletedPost;
         Forward.OnEntitySpawned     += OnEntitySpawned;
         Forward.OnEntityFollowed    += OnEntityFollowed;
         Forward.OnEntityFireOutput  += OnEntityFireOutput;
@@ -125,14 +126,6 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        if (entity.Index.IsNetworked())
-        {
-            var index = entity.Index.AsPrimitive();
-            _entities[index]                 = null;
-            _classnames[index]               = null;
-            _activeBits[index >> 5] &= ~(1U << (index & 31));
-        }
-
         for (var i = 0; i < _listeners.Count; i++)
         {
             try
@@ -146,6 +139,24 @@ internal class EntityManager : ICoreEntityManager
                                  nameof(OnEntityDeleted),
                                  _listeners[i].GetType().Name);
             }
+        }
+    }
+
+    private void OnEntityDeletedPost(nint ptr)
+    {
+        var entity = BaseEntity.Create(ptr);
+
+        if (entity is null)
+        {
+            return;
+        }
+
+        if (entity.Index.IsNetworked())
+        {
+            var index = entity.Index.AsPrimitive();
+            _entities[index]   = null;
+            _classnames[index] = null;
+            _activeBits[index >> 5] &= ~(1U << (index & 31));
         }
     }
 
