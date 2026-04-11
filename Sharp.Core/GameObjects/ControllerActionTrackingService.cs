@@ -244,10 +244,12 @@ internal partial class ControllerActionTrackingService : PlayerControllerCompone
         var baseOffset
             = SchemaSystem.GetNetVarOffset("CCSPlayerController_ActionTrackingServices", "m_flTotalRoundDamageDealt");
 
-        var alignment = SchemaSystem.GetSchemaClassAlignOf("CCSPlayerController_ActionTrackingServices");
-        var aligned   = baseOffset + sizeof(float) + alignment - 1 & ~(alignment - 1);
+        const int alignment = 8;
+        var       aligned   = ((baseOffset + sizeof(float) + alignment) - 1) & ~(alignment - 1);
 
-        return aligned + SchemaSystem.GetSchemaClassSize("CSAdditionalPerRoundStats_t");
+        var finalOffset = aligned + SchemaSystem.GetSchemaClassSize("CSAdditionalPerRoundStats_t");
+
+        return finalOffset;
     });
 
     public IAdditionalMatchStats GetAdditionalMatchStats()
