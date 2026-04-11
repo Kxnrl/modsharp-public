@@ -66,17 +66,48 @@ public interface IEntityManager
     T? FindEntityByIndex<T>(EntityIndex index) where T : class, IBaseEntity;
 
     /// <summary>
-    ///     Find entity by Classname
+    ///     Find entity by Classname.
     /// </summary>
-    /// <param name="start">Entity cursor, null to start from beginning</param>
-    /// <param name="classname">Entity Classname</param>
+    /// <remarks>
+    ///     <para>
+    ///         <b>PERFORMANCE WARNING:</b><br />
+    ///         JThis method performs an <b>O(N) linear scan</b> over the global
+    ///         entity list
+    ///         and uses a wildcard string comparison (<c>V_CompareNameWithWildcards</c>), which is way heavier than a normal
+    ///         <c>strcmp</c>, for every entity.
+    ///     </para>
+    /// </remarks>
+    /// <param name="start">Entity cursor, null to start from beginning.</param>
+    /// <param name="classname">
+    ///     Entity Classname. This is <b>case-insensitive</b> and supports wildcards:
+    ///     <c>*</c> matches zero or more characters (e.g., <c>prop_*</c>), and <c>?</c> matches exactly one character.
+    /// </param>
+    /// <returns>The first entity matching the specified Classname, or <c>null</c> if no match is found.</returns>
     IBaseEntity? FindEntityByClassname(IBaseEntity? start, string classname);
 
     /// <summary>
-    ///     Find entity by Targetname
+    ///     Find entity by Targetname.
     /// </summary>
-    /// <param name="start">Entity cursor, null to start from beginning</param>
-    /// <param name="name">Entity Targetname</param>
+    /// <remarks>
+    ///     <para>
+    ///         <b>PERFORMANCE WARNING:</b><br />
+    ///         This method performs an <b>O(N) linear scan</b> over the global entity list and uses a wildcard string
+    ///         comparison (<c>V_CompareNameWithWildcards</c>), which is way heavier than a normal <c>strcmp</c>, for every
+    ///         entity.
+    ///     </para>
+    ///     <para>
+    ///         For the best performance, you should not call this function in every server tick/frame (e.g. OnGameFrame,
+    ///         EntityThink), and maintain your own entity list with targetname saved instead, assuming their name won't
+    ///         change.
+    ///     </para>
+    /// </remarks>
+    /// <param name="start">Entity cursor, null to start from beginning.</param>
+    /// <param name="name">
+    ///     Entity Targetname. This is <b>case-insensitive</b> and supports wildcards:
+    ///     <c>*</c> matches zero or more characters (e.g., <c>door_*</c>), and <c>?</c> matches exactly one character (e.g.,
+    ///     <c>door_?</c>).
+    /// </param>
+    /// <returns>The first entity matching the specified Targetname, or <c>null</c> if no match is found.</returns>
     IBaseEntity? FindEntityByName(IBaseEntity? start, string name);
 
     /// <summary>
@@ -95,7 +126,7 @@ public interface IEntityManager
     ///     <b>For high-performance scenarios</b> (e.g. spawning many entities per tick),
     ///     skip this method and call <see cref="CreateEntityByName" /> followed by
     ///     <see cref="IBaseEntity.DispatchSpawn" /> directly. That path bypasses precache
-    ///     and is much faster, but <b>weapons will crash</b>, and other entities may fail
+    ///     and is much faster, but <b>spawning weapons will crash</b>, and other entities may fail
     ///     if their required resources have not been loaded yet.
     ///     <br /><br />
     ///     No need to call <see cref="IBaseEntity.DispatchSpawn" /> after this method.
@@ -119,7 +150,7 @@ public interface IEntityManager
     ///     <br /><br />
     ///     This bypasses the precache step, so it is much faster than
     ///     <see cref="SpawnEntitySync(string, IReadOnlyDictionary{string, KeyValuesVariantValueItem})" />,
-    ///     but <b>weapons will crash</b> and other entities may fail if their required
+    ///     but <b>spawning weapons will crash</b> and other entities may fail if their required
     ///     resources have not been loaded yet.
     /// </summary>
     IBaseEntity? CreateEntityByName(string classname);
