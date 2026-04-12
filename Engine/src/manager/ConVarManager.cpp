@@ -62,14 +62,34 @@ void ConVarManager::CreateConsoleCommand(const char* pName, FnCommandCallback_t 
 
 void SharpCommandCallback::CommandCallback(const CCommandContext& context, const CCommand& command)
 {
+    const char* cmd_string = command.GetCommandString();
+
     CServerSideClient* client = nullptr;
-    const auto         slot   = context.GetPlayerSlot();
-    if (slot >= 0)
+
+    if (sv)
     {
-        client = sv->GetClient(static_cast<uint8_t>(slot));
+        const auto slot = context.GetPlayerSlot();
+        if (auto clients = sv->GetClients())
+        {
+            auto count = clients->Count();
+            if (slot >= 0 && slot < count)
+            {
+                client = clients->Element(slot);
+            }
+            else if (slot != -1)
+            {
+                WARN("Invalid player slot #%d detected for command \"%s\"", slot, cmd_string);
+            }
+        }
     }
 
-    forwards::OnConCommandTrigger->Invoke(*reinterpret_cast<int64_t*>(&m_Handle), client, command.GetCommandString());
+    uint64_t handle = 0;
+    if (m_Handle.IsValid())
+    {
+        handle = (static_cast<uint64_t>(m_Handle.GetIndex()) << 32) | static_cast<uint64_t>(m_Handle.GetConCommandIndex());
+    }
+
+    forwards::OnConCommandTrigger->Invoke(static_cast<int64_t>(handle), client, cmd_string);
 }
 
 static uint64_t g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY);
