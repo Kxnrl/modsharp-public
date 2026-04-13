@@ -135,10 +135,10 @@ internal class SurvivalStatusMenuController : BaseMenuController
         sb.Append($"<font class='fontSize-m'>{title}<br><font class='fontSize-xs'>\u00A0<br></font><font class='fontSize-sm'>");
 
         // colors
-        const string keyColor      = "#DDAA11";
-        const string textColor     = "#ffffff";
-        const string disabledColor = "#888888";
-        const string cursorColor   = "#3399FF";
+        var keyColor      = MenuColor.KeyColor;
+        var textColor     = MenuColor.TextColor;
+        var disabledColor = MenuColor.DisabledColor;
+        var cursorColor   = MenuColor.CursorColor;
 
         var itemIndex = 1;
 
@@ -285,10 +285,10 @@ internal class SurvivalStatusMenuController : BaseMenuController
         static string Colored(string color, string content)
             => $"<font color='{color}'>{content}</font>";
 
-        static string Key(string key)
+        string Key(string key)
             => Colored(keyColor, key);
 
-        static string Text(string text)
+        string Text(string text)
             => Colored(textColor, text);
     }
 

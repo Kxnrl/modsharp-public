@@ -207,8 +207,8 @@ internal sealed class MenuKeyBindings
             return true;
         }
 
-        if (Enum.TryParse<MenuBindingType>(value, true, out type)
-            && Enum.IsDefined(typeof(MenuBindingType), type))
+        if (Enum.TryParse(value, true, out type)
+            && Enum.IsDefined(type))
         {
             return true;
         }
@@ -228,8 +228,8 @@ internal sealed class MenuKeyBindings
             return true;
         }
 
-        if (Enum.TryParse<UserCommandButtons>(value, true, out button)
-            && Enum.IsDefined(typeof(UserCommandButtons), button))
+        if (Enum.TryParse(value, true, out button)
+            && Enum.IsDefined(button))
         {
             return true;
         }

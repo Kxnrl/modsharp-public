@@ -51,6 +51,15 @@
         "Type": 1,
         "Button": "Scoreboard"
       }
+    },
+    "Colors": {
+      // The game supports the following format:
+      // #RGB, #RGBA, #RRGGBB, #RRGGBBAA
+      // if you miss the '#' at the beginning, menu manager will add it for you, but we strongly recommend you to add it to prefix
+      "Key": "#DDAA11",
+      "Text": "#ffffff",
+      "Disabled": "#888888",
+      "Cursor": "#3399FF"
     }
   },
   "ConnectionStrings": {

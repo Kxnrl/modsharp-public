@@ -55,12 +55,12 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     internal MenuKeyBindings KeyBindings { get; private set; }
 
-    public MenuManager(ISharedSystem sharedSystem,
-        string                       dllPath,
-        string                       sharpPath,
-        Version                      version,
-        IConfiguration               configuration,
-        bool                         hotReload)
+    public MenuManager(ISharedSystem  sharedSystem,
+                       string         dllPath,
+                       string         sharpPath,
+                       Version        version,
+                       IConfiguration configuration,
+                       bool           hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
@@ -74,17 +74,14 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
         _configuration = configuration;
 
         KeyBindings = MenuKeyBindings.Load(configuration, _logger);
-
-        InstallCommandBindings(KeyBindings);
-        _hooks.PlayerRunCommand.InstallHookPost(OnPlayerRunCommandPost);
-
-        configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
+        MenuColor.Load(configuration, _logger);
     }
 
     private void OnConfigReload()
     {
         var oldBindings = KeyBindings;
         KeyBindings = MenuKeyBindings.Load(_configuration, _logger);
+        MenuColor.Load(_configuration, _logger);
         _configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
 
         _modSharp.InvokeFrameAction(() =>
@@ -196,6 +193,13 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
     {
         _clientManager.InstallClientListener(this);
 
+        // take the highest priority to prevent other hooks from modifying the buttons
+        _hooks.PlayerRunCommand.InstallHookPre(OnPlayerRunCommandPre, int.MaxValue);
+
+        InstallCommandBindings(KeyBindings);
+
+        _configuration.GetReloadToken().RegisterChangeCallback(_ => OnConfigReload(), null);
+
         return true;
     }
 
@@ -220,7 +224,7 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     public void Shutdown()
     {
-        _hooks.PlayerRunCommand.RemoveHookPost(OnPlayerRunCommandPost);
+        _hooks.PlayerRunCommand.RemoveHookPre(OnPlayerRunCommandPre);
         RemoveCommandBindings(KeyBindings);
         _clientManager.RemoveClientListener(this);
 
@@ -252,51 +256,86 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
 #endregion
 
-    private void OnPlayerRunCommandPost(IPlayerRunCommandHookParams @params, HookReturnValue<EmptyHookReturn> @return)
+    private unsafe HookReturnValue<EmptyHookReturn> OnPlayerRunCommandPre(IPlayerRunCommandHookParams      @params,
+                                                                          HookReturnValue<EmptyHookReturn> @return)
     {
-        var bindings = KeyBindings;
-        var changed  = @params.Service.KeyChangedButtons;
-        var pressed  = @params.Service.KeyButtons;
-
-        if ((changed & bindings.GetButtonMask()) == 0)
+        if (_controllers[@params.Client.Slot] is not { } menuController)
         {
-            return;
+            return new HookReturnValue<EmptyHookReturn>();
+        }
+
+        var cmd = @params.BaseUserCmd;
+
+        if (cmd is null)
+        {
+            return new HookReturnValue<EmptyHookReturn>();
+        }
+
+        var bindings = KeyBindings;
+        var mask     = bindings.GetButtonMask();
+
+        var changed = @params.ChangedButtons;
+
+        var pressed = @params.KeyButtons;
+
+        const UserCommandButtons moveButtons = UserCommandButtons.MoveLeft
+                                               | UserCommandButtons.MoveRight
+                                               | UserCommandButtons.Forward
+                                               | UserCommandButtons.Back;
+
+        if (!menuController.Menu.IsPlayerMovementEnabled && (mask & moveButtons) != 0 && (pressed & moveButtons) != 0)
+        {
+            @params.KeyButtons     &= ~moveButtons;
+            @params.ChangedButtons &= ~moveButtons;
+
+            cmd->SideMove = cmd->ForwardMove = 0f;
+
+            var buttonState = cmd->ButtonState;
+            buttonState->ButtonChanged &= ~moveButtons;
+            buttonState->ButtonPressed &= ~moveButtons;
+        }
+
+        if ((changed & mask) == 0)
+        {
+            return new HookReturnValue<EmptyHookReturn>();
         }
 
         if (bindings.MoveUpCursor is { Type: MenuBindingType.Button, Button: { } moveUpBtn }
             && changed.HasFlag(moveUpBtn)
             && pressed.HasFlag(moveUpBtn))
         {
-            _controllers[@params.Client.Slot]?.MoveUpCursor();
+            menuController.MoveUpCursor();
         }
 
         if (bindings.MoveDownCursor is { Type: MenuBindingType.Button, Button: { } moveDownBtn }
             && changed.HasFlag(moveDownBtn)
             && pressed.HasFlag(moveDownBtn))
         {
-            _controllers[@params.Client.Slot]?.MoveDownCursor();
+            menuController.MoveDownCursor();
         }
 
         if (bindings.GoBack is { Type: MenuBindingType.Button, Button: { } goBackBtn }
             && changed.HasFlag(goBackBtn)
             && pressed.HasFlag(goBackBtn))
         {
-            _controllers[@params.Client.Slot]?.GoBack();
+            menuController.GoBack();
         }
 
         if (bindings.Confirm is { Type: MenuBindingType.Button, Button: { } confirmBtn }
             && changed.HasFlag(confirmBtn)
             && pressed.HasFlag(confirmBtn))
         {
-            _controllers[@params.Client.Slot]?.Confirm();
+            menuController.Confirm();
         }
 
         if (bindings.Exit is { Type: MenuBindingType.Button, Button: { } exitBtn }
             && changed.HasFlag(exitBtn)
             && pressed.HasFlag(exitBtn))
         {
-            _controllers[@params.Client.Slot]?.Exit();
+            menuController.Exit();
         }
+
+        return new HookReturnValue<EmptyHookReturn>();
     }
 
     public void DisplayMenu(IGameClient client, Menu menu)

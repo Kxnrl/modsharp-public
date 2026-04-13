@@ -65,6 +65,17 @@ public class Menu
     /// </summary>
     public bool ShowIndex { get; private set; } = true;
 
+    /// <summary>
+    ///     Gets whether the player is allowed to move while the menu is open.
+    /// </summary>
+    public bool IsPlayerMovementEnabled { get; private set; } = true;
+
+    /// <summary>
+    ///     Sets whether the player is allowed to move while the menu is open.
+    /// </summary>
+    public void SetPlayerMovement(bool enabled)
+        => IsPlayerMovementEnabled = enabled;
+
     private Func<IGameClient, string> _titleFactory = _ => string.Empty;
 
     /// <summary>
@@ -316,6 +327,18 @@ public class Menu
         });
 
     /// <summary>
+    ///     Enables player movement while this menu is open.
+    /// </summary>
+    public void EnablePlayerMovement()
+        => SetPlayerMovement(true);
+
+    /// <summary>
+    ///     Disables player movement while this menu is open.
+    /// </summary>
+    public void DisablePlayerMovement()
+        => SetPlayerMovement(false);
+
+    /// <summary>
     ///     Creates a new <see cref="Builder" /> for fluent menu construction.
     /// </summary>
     /// <returns>A new builder instance.</returns>
@@ -494,6 +517,22 @@ public class Menu
         public Builder HideIndex()
         {
             _menu.SetShowIndex(false);
+
+            return this;
+        }
+
+        /// <inheritdoc cref="Menu.EnablePlayerMovement()" />
+        public Builder EnablePlayerMovement()
+        {
+            _menu.SetPlayerMovement(true);
+
+            return this;
+        }
+
+        /// <inheritdoc cref="Menu.DisablePlayerMovement()" />
+        public Builder DisablePlayerMovement()
+        {
+            _menu.SetPlayerMovement(false);
 
             return this;
         }
