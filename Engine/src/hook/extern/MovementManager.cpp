@@ -19,12 +19,12 @@
 
 #include "bridge/forwards/forward.h"
 #include "global.h"
+#include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "mathematics.h"
-#include "memory/memory_access.h"
+#include "memory/zydis_utility.h"
 #include "module.h"
-#include "vhook/hook.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/PlayerController.h"
@@ -34,8 +34,6 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
-#include "hook/installer.h"
-#include "memory/zydis_utility.h"
 
 #include <proto/cs_usercmd.pb.h>
 #include <proto/networkbasetypes.pb.h>

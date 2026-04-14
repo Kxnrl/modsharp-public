@@ -22,22 +22,18 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "logging.h"
-#include "manager/HookManager.h"
-#include "module.h"
-#include "vhook/hook.h"
 
 #include "cstrike/interface/IGameEvent.h"
-#include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
 
-#include <algorithm>
-#include <bitset>
 #include <safetyhook.hpp>
 
+#include <algorithm>
+#include <bitset>
 #include <string>
 #include <vector>
 

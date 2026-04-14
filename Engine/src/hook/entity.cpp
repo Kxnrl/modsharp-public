@@ -21,15 +21,13 @@
 #include "bridge/natives/EntityNatives.h"
 #include "gamedata.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
-#include "Zydis.h"
 #include "vhook/call.h"
-#include "vhook/hook.h"
 
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/component/CGameSceneNode.h"
@@ -57,6 +55,7 @@
 #include "cstrike/type/Variant.h"
 #include "memory/zydis_utility.h"
 
+#include <Zydis.h>
 #include <safetyhook.hpp>
 
 #include <algorithm>
@@ -219,7 +218,7 @@ BeginMemberHookScope(CTriggerPush)
         if (!pEntity->PassesTriggerFilters(pOther))
             return;
 
-        Vector vecAbsDir(0,0,0);
+        Vector vecAbsDir(0, 0, 0);
 
         auto mat = pEntity->m_CBodyComponent()->m_pSceneNode()->EntityToWorldTransform();
 
@@ -828,7 +827,6 @@ inline static bool GetVariantFloat(const Variant_t* pValue, float& value)
 
 #define InputErrorCustomNoParam(error) \
     WARN("%d.%s Error Input '%s' -> %s", pInstance->GetEntityIndex(), pInstance->GetName(), pInput, error)
-
 
 struct AddOutputInfo_t
 {

@@ -21,7 +21,7 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"

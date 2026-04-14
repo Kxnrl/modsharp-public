@@ -20,11 +20,10 @@
 #include "bridge/forwards/forward.h"
 #include "bridge/natives/ClientNatives.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
-#include "vhook/hook.h"
 
 #include "CoreCLR/RuntimeProtobufMessage.h"
 

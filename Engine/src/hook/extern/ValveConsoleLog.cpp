@@ -17,14 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "gamedata.h"
 #include "global.h"
+#include "hook/installer.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
-#include "manager/HookManager.h"
 
 #include "cstrike/interface/ICvar.h"
-#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 

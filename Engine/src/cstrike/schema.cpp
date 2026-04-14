@@ -28,7 +28,6 @@
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/ISchemaSystem.h"
 #include "cstrike/schema.h"
-
 #include "cstrike/type/CNetworkStateChangedFieldInfo.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlTSHash.h"

@@ -19,6 +19,7 @@
 
 #include "gamedata.h"
 #include "global.h"
+#include "hook/installer.h"
 #include "hook/network.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
@@ -36,7 +37,6 @@
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/KeyValues.h"
-#include "hook/installer.h"
 
 #include <proto/networkbasetypes.pb.h>
 

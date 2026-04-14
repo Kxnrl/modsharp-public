@@ -19,10 +19,9 @@
 
 #include "bridge/forwards/forward.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "manager/HookManager.h"
 #include "module.h"
-#include "vhook/hook.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseWeapon.h"

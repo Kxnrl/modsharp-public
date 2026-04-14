@@ -21,14 +21,12 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
-#include "module.h"
 #include "sdkproxy.h"
 #include "steamproxy.h"
 #include "strtool.h"
-#include "vhook/hook.h"
 
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/ICvar.h"
@@ -40,8 +38,8 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlBuffer.h"
-#include "cstrike/type/netadr_t.h"
 #include "cstrike/type/VProf.h"
+#include "cstrike/type/netadr_t.h"
 
 #include <proto/connectionless_netmessages.pb.h>
 

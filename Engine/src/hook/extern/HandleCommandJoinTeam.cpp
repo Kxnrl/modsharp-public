@@ -19,11 +19,10 @@
 
 #include "bridge/forwards/forward.h"
 #include "global.h"
-#include "manager/HookManager.h"
+#include "hook/installer.h"
 
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/type/CNetworkGameServer.h"
-#include "hook/installer.h"
 
 #include <safetyhook.hpp>
 

@@ -20,9 +20,9 @@
 #include "bridge/adapter.h"
 #include "gamedata.h"
 #include "global.h"
+#include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
-#include "module.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseEntity.h"
@@ -35,7 +35,6 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
-#include "hook/installer.h"
 
 #include <algorithm>
 #include <mutex>

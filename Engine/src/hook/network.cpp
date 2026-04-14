@@ -22,12 +22,9 @@
 #include "bridge/forwards/forward.h"
 #include "gamedata.h"
 #include "global.h"
-#include "installer.h"
+#include "hook/installer.h"
 #include "module.h"
-#include "vhook/hook.h"
-#include "manager/HookManager.h"
 
-#include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/INetChannel.h"

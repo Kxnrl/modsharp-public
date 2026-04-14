@@ -21,11 +21,11 @@
 #include "bridge/forwards/forward.h"
 #include "global.h"
 #include "manager/HookManager.h"
-#include "memory/memory_access.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
-#include "vhook/hook.h"
+#include "hook/installer.h"
+#include "memory/zydis_utility.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseWeapon.h"
@@ -39,8 +39,6 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/Variant.h"
-#include "hook/installer.h"
-#include "memory/zydis_utility.h"
 
 #include <Zydis.h>
 #include <safetyhook.hpp>
