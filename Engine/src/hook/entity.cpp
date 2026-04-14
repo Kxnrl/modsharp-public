@@ -1525,7 +1525,8 @@ struct CaseInsensitiveEqual
     using is_transparent = void;
     bool operator()(std::string_view a, std::string_view b) const
     {
-        if (a.size() != b.size()) return false;
+        if (a.size() != b.size())
+            return false;
         for (size_t i = 0; i < a.size(); ++i)
             if (tolower(static_cast<unsigned char>(a[i])) != tolower(static_cast<unsigned char>(b[i])))
                 return false;

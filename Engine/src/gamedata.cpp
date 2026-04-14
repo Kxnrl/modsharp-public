@@ -183,7 +183,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         }
 
         std::string_view str_sv = trim(raw_str);
-        if (str_sv.empty()) continue;
+        if (str_sv.empty())
+            continue;
 
         auto ptr_idx = str_sv.find("[ptr]");
 
@@ -225,7 +226,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         constexpr std::string_view suffix = "[typeinfo]";
 
         std::string_view ref_sv = trim(raw_ref);
-        if (ref_sv.empty()) continue;
+        if (ref_sv.empty())
+            continue;
 
         if (!ref_sv.ends_with(suffix))
         {
@@ -962,10 +964,14 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
         return false;
     };
 
-    if (check_duplicates(temp_offsets, m_Offsets, "Offset")) return false;
-    if (check_duplicates(temp_vtables, m_VFuncs, "VFunc")) return false;
-    if (check_duplicates(temp_addresses, m_Addresses, "Address")) return false;
-    if (check_duplicates(temp_patches, m_Patches, "Patch")) return false;
+    if (check_duplicates(temp_offsets, m_Offsets, "Offset"))
+        return false;
+    if (check_duplicates(temp_vtables, m_VFuncs, "VFunc"))
+        return false;
+    if (check_duplicates(temp_addresses, m_Addresses, "Address"))
+        return false;
+    if (check_duplicates(temp_patches, m_Patches, "Patch"))
+        return false;
 
     // validate address
     std::vector<std::string> failed_addresses = {};
@@ -976,7 +982,8 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 
     for (const auto& [name, value] : temp_addresses)
     {
-        if (value.m_LoadOnDemand) continue;
+        if (value.m_LoadOnDemand)
+            continue;
 
         std::uintptr_t address{};
         if (!FindAddress(temp_addresses, name, address))
@@ -993,7 +1000,8 @@ bool GameData::LoadRawTextJson(const char* content, const std::filesystem::path&
 
     auto format_address_list = [](const std::vector<std::string>& list) -> std::string {
         std::string result;
-        if (list.empty()) return result;
+        if (list.empty())
+            return result;
 
         result.reserve(list.size() * 40);
 

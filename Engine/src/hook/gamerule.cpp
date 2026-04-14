@@ -182,7 +182,8 @@ BeginStaticHookScope(HandleGCBanInfo)
 
     static bool ShouldKickForReason(const int32_t kickMode, const uint32_t reason)
     {
-        if (kickMode != KickModeConditionally) return true;
+        if (kickMode != KickModeConditionally)
+            return true;
 
         switch (reason)
         {
@@ -215,7 +216,8 @@ BeginStaticHookScope(HandleGCBanInfo)
     {
         const auto it = sm_mapGcBanInformation->Find(pClient->GetAccountId());
 
-        if (it == sm_mapGcBanInformation->InvalidIndex()) return;
+        if (it == sm_mapGcBanInformation->InvalidIndex())
+            return;
 
         auto& value = sm_mapGcBanInformation->Element(it);
 
@@ -223,7 +225,8 @@ BeginStaticHookScope(HandleGCBanInfo)
         const auto expireTime = value.m_dblExpiration;
 
         // Ignored ban reasons
-        if (reason == 12 || reason == 13 || reason == 18) return;
+        if (reason == 12 || reason == 13 || reason == 18)
+            return;
 
         if (flTime > expireTime)
         {
@@ -231,7 +234,8 @@ BeginStaticHookScope(HandleGCBanInfo)
             return;
         }
 
-        if (!ShouldKickForReason(kickMode, reason)) return;
+        if (!ShouldKickForReason(kickMode, reason))
+            return;
 
         FLOG("Kick %s<%llu> due to GC<%u>", pClient->GetName(), pClient->GetSteamId(), reason);
         engine->KickClient(pClient->GetSlot(), "sv_kick_players_with_cooldown", GetKickReason(reason));

@@ -102,8 +102,7 @@ struct TypeDescription_t
     InputFunc_t inputFunc;
 
     // For embedding additional datatables inside this one
-    union
-    {
+    union {
         DataMap_t*  td;
         const char* enumName;
     };

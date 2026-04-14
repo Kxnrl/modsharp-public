@@ -142,7 +142,8 @@ int strpos(const char* str, const char* subStr)
 
 int stripos(const char* str, const char* subStr)
 {
-    if (str == nullptr || subStr == nullptr) return -1;
+    if (str == nullptr || subStr == nullptr)
+        return -1;
 
     for (int i = 0; str[i]; i++)
     {

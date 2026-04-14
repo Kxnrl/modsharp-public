@@ -112,7 +112,8 @@ static bool IsMapValid(const char* map)
     CUtlVector<WorkshopMap_t> workshopMaps;
     g_pServerWorkshopManager->ListWorkshopMaps(&workshopMaps);
 
-    if (workshopMaps.Count() == 0) return false;
+    if (workshopMaps.Count() == 0)
+        return false;
 
     for (const auto& workshop : workshopMaps)
     {

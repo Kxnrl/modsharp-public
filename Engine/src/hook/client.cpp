@@ -458,9 +458,11 @@ BeginStaticHookScope(HostSay)
         static auto starts_with_unicode = [](const std::string_view s) {
             const auto c = static_cast<uint8_t>(s[0]);
             // ASCII?
-            if ((c & 0x80) == 0) return false;
+            if ((c & 0x80) == 0)
+                return false;
             // Continuation byte?
-            if ((c & 0xC0) == 0x80) return false;
+            if ((c & 0xC0) == 0x80)
+                return false;
             // Leading-byte patterns for 2–4 byte sequences
             return (c & 0xE0) == 0xC0     // 2-byte
                    || (c & 0xF0) == 0xE0  // 3-byte

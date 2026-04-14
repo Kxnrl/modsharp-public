@@ -176,7 +176,8 @@ static std::string FindDotnetRuntime()
 
     for (const auto& search_path : s_vecSearchPaths)
     {
-        if (!std::filesystem::exists(search_path)) continue;
+        if (!std::filesystem::exists(search_path))
+            continue;
 
         for (const auto& entry : std::filesystem::recursive_directory_iterator(search_path))
         {

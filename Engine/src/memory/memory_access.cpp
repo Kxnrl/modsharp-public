@@ -40,7 +40,8 @@ bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access, uint8_t* old
     safetyhook::VmAccess target_access{.read = read, .write = write, .execute = execute};
     const auto           result = safetyhook::vm_protect(address, size, target_access);
 
-    if (!result.has_value()) return false;
+    if (!result.has_value())
+        return false;
 
     if (old_access != nullptr)
     {
@@ -75,7 +76,8 @@ bool SetMemoryAccess(uint8_t* address, size_t size, uint8_t access, uint8_t* old
 uintptr_t ResolveCallTarget(ZydisDecoder* decoder, ZydisDecodedInstruction* instr, ZydisDecodedOperand* operands, uintptr_t current_ip)
 {
     ZyanU64 raw_target = 0;
-    if (!ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(instr, &operands[0], current_ip, &raw_target))) return 0;
+    if (!ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(instr, &operands[0], current_ip, &raw_target)))
+        return 0;
 
     if (instr->opcode == 0xFF && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
     {

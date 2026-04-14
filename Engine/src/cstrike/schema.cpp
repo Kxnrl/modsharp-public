@@ -124,7 +124,8 @@ static constexpr const char* FieldTypeToString(FieldType_t type)
         "uint64",                        // FIELD_GLOBALSYMBOL
         "HNmGraphDefinition",            // FIELD_HNMGRAPHDEFINITION
     };
-    if (type < FieldType_t::FIELD_TYPECOUNT) return names[static_cast<uint8_t>(type)];
+    if (type < FieldType_t::FIELD_TYPECOUNT)
+        return names[static_cast<uint8_t>(type)];
     return "UNKNOWN";
 }
 
@@ -152,7 +153,6 @@ struct SchemaClass_t
     CUtlVector<SchemaClassField_t> fields;
     CUtlVector<CUtlString*>        baseClassList;
     CUtlVector<DataMapField_t>     dataMapFields;
-
 };
 
 using SchemaKeyValueMap_t = std::unordered_map<uint64_t, SchemaKey>;
@@ -258,14 +258,16 @@ static void ProcessDataMapFields(SchemaClass_t*                        derived_s
                                  std::unordered_set<std::string_view>& added_field_names)
 {
     const auto dataMap = current_class_info->GetDataMap();
-    if (dataMap == nullptr) return;
+    if (dataMap == nullptr)
+        return;
 
     for (auto i = 0; i < dataMap->dataNumFields; i++)
     {
         const auto& dataMap_field = dataMap->dataDesc[i];
 
         const auto* field_name = dataMap_field.fieldName;
-        if (field_name == nullptr) continue;
+        if (field_name == nullptr)
+            continue;
 
         if (dataMap_field.inputFunc != nullptr)
         {
@@ -283,9 +285,11 @@ static void ProcessDataMapFields(SchemaClass_t*                        derived_s
         constexpr int32_t invalid_offset = 0x7fffffff;
         const auto        offset         = dataMap_field.fieldOffset;
 
-        if (offset == invalid_offset || dataMap_field.fieldType == FieldType_t::FIELD_EMBEDDED) continue;
+        if (offset == invalid_offset || dataMap_field.fieldType == FieldType_t::FIELD_EMBEDDED)
+            continue;
 
-        if (added_field_names.contains(field_name)) continue;
+        if (added_field_names.contains(field_name))
+            continue;
 
         auto* new_field      = derived_schema_class->fields.AddToTailGetPtr();
         new_field->name      = field_name;

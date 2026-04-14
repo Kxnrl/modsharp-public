@@ -366,7 +366,8 @@ static void PatchJumpInWaterVelocityZ()
                 && operands[0].mem.disp.value == vel_offset)
             {
                 auto* target_address = instruction_address.Offset(instr.raw.imm[0].offset).As<uint8_t*>();
-                if (target_address != address.As<uint8_t*>()) continue;
+                if (target_address != address.As<uint8_t*>())
+                    continue;
 
                 if (auto unprotect_guard = safetyhook::unprotect(target_address, sizeof(new_z_velocity)))
                 {
