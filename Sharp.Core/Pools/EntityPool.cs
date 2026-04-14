@@ -92,7 +92,7 @@ internal sealed class EntityPool<T> where T : class, IBaseEntity
         ArgumentNullException.ThrowIfNull(entity);
 
 #if DEBUG
-        Debug.Print(
+        System.Diagnostics.Debug.Print(
             $"Cached Entity {entity.GetAbsPtr()}::{entity.Handle.GetValue()}::{entity.Handle.GetEntryIndex().AsPrimitive()}::{entity.Handle.GetSerialNum()} as {typeof(T).Name} :: {entity.Classname}");
 #endif
 
