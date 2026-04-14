@@ -374,7 +374,7 @@ internal unsafe partial class PhysicsQueryManager
 
         _traceFilterVtable
             = (CTraceFilterVirtualTableDescriptor*) CoreGameData.Core.GetRequiredVirtualTable("server",
-                     "CTraceFilter");
+                "CTraceFilter");
 
         _interface = CoreGameData.Core.GetRequiredAddress("g_pPhysicsQuery");
 

@@ -20,7 +20,6 @@
 #include "gamedata.h"
 #include "address.h"
 #include "logging.h"
-#include "memory/memory_access.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
@@ -28,11 +27,11 @@
 #include "cstrike/interface/ICvar.h"
 
 #include <json.hpp>
+#include <safetyhook.hpp>
 
 #include <charconv>
 #include <deque>
 #include <fstream>
-#include <safetyhook.hpp>
 
 // #define DEBUG
 

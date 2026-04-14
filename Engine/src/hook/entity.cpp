@@ -24,6 +24,7 @@
 #include "hook/installer.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
+#include "memory/zydis_utility.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
@@ -53,7 +54,6 @@
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EntityIO.h"
 #include "cstrike/type/Variant.h"
-#include "memory/zydis_utility.h"
 
 #include <Zydis.h>
 #include <safetyhook.hpp>

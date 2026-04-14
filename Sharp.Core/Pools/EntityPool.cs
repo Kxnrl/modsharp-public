@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Sharp.Core.Bridges.Forwards;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;

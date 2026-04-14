@@ -21,16 +21,17 @@ internal static class MenuColor
             return;
         }
 
-        KeyColor      = ParseColor(section, logger, "Key", "#DDAA11");
-        TextColor     = ParseColor(section, logger, "Text", "#ffffff");
+        KeyColor      = ParseColor(section, logger, "Key",      "#DDAA11");
+        TextColor     = ParseColor(section, logger, "Text",     "#ffffff");
         DisabledColor = ParseColor(section, logger, "Disabled", "#888888");
-        CursorColor   = ParseColor(section, logger, "Cursor", "#3399FF");
+        CursorColor   = ParseColor(section, logger, "Cursor",   "#3399FF");
 
-        logger.LogInformation("MenuManager Colors: KeyColor={KeyColor}, TextColor={TextColor}, DisabledColor={DisabledColor}, CursorColor={CursorColor}",
-                              KeyColor,
-                              TextColor,
-                              DisabledColor,
-                              CursorColor);
+        logger.LogInformation(
+            "MenuManager Colors: KeyColor={KeyColor}, TextColor={TextColor}, DisabledColor={DisabledColor}, CursorColor={CursorColor}",
+            KeyColor,
+            TextColor,
+            DisabledColor,
+            CursorColor);
     }
 
     private static string ParseColor(IConfiguration parent, ILogger logger, string key, string fallback)
@@ -50,7 +51,9 @@ internal static class MenuColor
         }
 
         if (!value.StartsWith('#'))
+        {
             value = $"#{value}";
+        }
 
         if (!IsValidHexColor(value))
         {
@@ -66,7 +69,9 @@ internal static class MenuColor
     {
         // 4 (#RGB), 5 (#RGBA), 7 (#RRGGBB), 9 (#RRGGBBAA)
         if (value.Length is not (4 or 5 or 7 or 9))
+        {
             return false;
+        }
 
         return uint.TryParse(value.AsSpan(1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _);
     }

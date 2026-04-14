@@ -55,12 +55,12 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
     internal MenuKeyBindings KeyBindings { get; private set; }
 
-    public MenuManager(ISharedSystem  sharedSystem,
-                       string         dllPath,
-                       string         sharpPath,
-                       Version        version,
-                       IConfiguration configuration,
-                       bool           hotReload)
+    public MenuManager(ISharedSystem sharedSystem,
+        string                       dllPath,
+        string                       sharpPath,
+        Version                      version,
+        IConfiguration               configuration,
+        bool                         hotReload)
     {
         var loggerFactory = sharedSystem.GetLoggerFactory();
 
@@ -256,8 +256,8 @@ internal class MenuManager : IModSharpModule, IClientListener, IMenuManager
 
 #endregion
 
-    private unsafe HookReturnValue<EmptyHookReturn> OnPlayerRunCommandPre(IPlayerRunCommandHookParams      @params,
-                                                                          HookReturnValue<EmptyHookReturn> @return)
+    private unsafe HookReturnValue<EmptyHookReturn> OnPlayerRunCommandPre(IPlayerRunCommandHookParams @params,
+        HookReturnValue<EmptyHookReturn>                                                              @return)
     {
         if (_controllers[@params.Client.Slot] is not { } menuController)
         {

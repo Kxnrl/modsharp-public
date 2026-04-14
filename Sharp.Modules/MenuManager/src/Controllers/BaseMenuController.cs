@@ -31,8 +31,8 @@ internal abstract class BaseMenuController : IInternalMenuController
 {
     protected const int MaxPageItems = 5;
 
-    public IGameClient Client          { get; }
-    public ulong       SessionId       { get; }
+    public IGameClient Client    { get; }
+    public ulong       SessionId { get; }
 
     protected readonly Stack<PreviousMenu> PreviousMenus  = new ();
     protected readonly List<BuiltMenuItem> BuiltMenuItems = [];
