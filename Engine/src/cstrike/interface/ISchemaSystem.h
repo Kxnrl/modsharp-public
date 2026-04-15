@@ -184,6 +184,7 @@ private:
     SchemaClassInfoData_t*     m_pClassInfo;
     const char*                m_pszName;
     const char*                m_pszModule;
+    const char*                m_pCPPName;
     int32_t                    m_nSize;
     int16_t                    m_nNumFields;
     int16_t                    m_nStaticMetadataCount;

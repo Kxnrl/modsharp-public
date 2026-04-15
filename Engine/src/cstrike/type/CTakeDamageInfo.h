@@ -22,6 +22,7 @@
 
 #include "cstrike/cstrike.h"
 #include "cstrike/type/CTrace.h"
+#include "cstrike/type/CUtlLeanVector.h"
 #include "cstrike/type/Vector.h"
 
 #include <cstdint>
@@ -140,17 +141,17 @@ private:
     [[maybe_unused]] uint8_t m_nUnknown1[0x2]{}; // 102
 
 public:
-    CGameTrace*          m_pTrace;                               // 104
-    TakeDamageFlags_t    m_nDamageFlags;                         // 112
-    HitGroup_t           m_iHitGroupId;                          // 120
-    int32_t              m_nNumObjectsPenetrated;                // 124
-    float                m_flFriendlyFireDamageReductionRatio;   // 128
-    bool                 m_bStoppedBullet;                       // 132
-    ShootInfo_t          m_ShootInfo;                            // 136
-    void*                m_hScriptInstance;                      // 224
-    AttackerInfo_t       m_AttackerInfo;                         // 232
-    CUtlVector<uint32_t> m_nDestructibleHitGroupsToForceDestroy; // 256
-    bool                 m_bInTakeDamageFlow;                    // 280
+    CGameTrace*              m_pTrace;                               // 104
+    TakeDamageFlags_t        m_nDamageFlags;                         // 112
+    HitGroup_t               m_iHitGroupId;                          // 120
+    int32_t                  m_nNumObjectsPenetrated;                // 124
+    float                    m_flFriendlyFireDamageReductionRatio;   // 128
+    bool                     m_bStoppedBullet;                       // 132
+    ShootInfo_t              m_ShootInfo;                            // 136
+    void*                    m_hScriptInstance;                      // 224
+    AttackerInfo_t           m_AttackerInfo;                         // 232
+    CUtlLeanVector<uint32_t> m_nDestructibleHitGroupsToForceDestroy; // 256
+    bool                     m_bInTakeDamageFlow;                    // 272
 
 private:
     [[maybe_unused]] uint8_t m_nUnknown2[0x4]{}; // 284
@@ -163,12 +164,12 @@ public:
         return (currentFlags & flagToCheck) != 0;
     }
 };
-static_assert(sizeof(CTakeDamageInfo) == 288);
+static_assert(sizeof(CTakeDamageInfo) == 0x118);
 #ifdef PLATFORM_WINDOWS
 static_assert(offsetof(CTakeDamageInfo, m_flOriginalDamage) == 96);
 static_assert(offsetof(CTakeDamageInfo, m_pTrace) == 104);
 static_assert(offsetof(CTakeDamageInfo, m_AttackerInfo) == 232);
-static_assert(offsetof(CTakeDamageInfo, m_bInTakeDamageFlow) == 280);
+static_assert(offsetof(CTakeDamageInfo, m_bInTakeDamageFlow) == 0x110);
 #endif
 
 #endif

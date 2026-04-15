@@ -404,7 +404,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
 
     public int DamageTaken
     {
-        get => Result->DamageDealt;
+        get => (int)Result->DamageDealt;
         set
         {
             CheckDisposed();
@@ -426,7 +426,7 @@ internal sealed unsafe class PlayerKilledForwardParams : PlayerPawnFunctionParam
 
     public int TotalledDamageTaken
     {
-        get => Result->TotalledDamageDealt;
+        get => (int)Result->TotalledDamageDealt;
         set
         {
             CheckDisposed();

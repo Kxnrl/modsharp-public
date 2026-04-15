@@ -24,6 +24,7 @@
 #include "logging.h"
 #include "types.h"
 #include "vhook/call.h"
+#include "module.h"
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/ISchemaSystem.h"
@@ -33,6 +34,9 @@
 #include "cstrike/type/CUtlTSHash.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Variant.h"
+#include "cstrike/type/CUtlMap.h"
+
+#include "memory/zydis_utility.h"
 
 #include <cstdint>
 #include <unordered_map>
@@ -161,17 +165,172 @@ static CUtlVector<SchemaClass_t*>          g_SchemaList;
 static SchemaKeyValueMap_t                 g_SchemaMap{};
 static std::unordered_map<uint64_t, void*> g_DataMapInputFuncMap{};
 
-static bool IsFieldNetworked(const SchemaClassFieldData_t& field)
+struct CNetworkSerializerFieldInfo
 {
-    static auto networkEnabled = MurmurHash2("MNetworkEnable", MURMURHASH_SEED_MODSHARP);
+    uint32_t   m_nHash;          // 0x00  field name hash
+    CUtlString m_pszFieldName;   // 0x08
+    CUtlString m_pszTypeName;    // 0x10  cleaned type (spaces removed from pointers)
+    CUtlString m_pszRawType;     // 0x18  raw type string as declared
+    CUtlString m_pszEncodedType; // 0x20
+    uint32_t   m_nClassHash;     // 0x28
+    CUtlString m_pszClassName;   // 0x30
+    int32_t    m_nFieldSize;     // 0x38
+    int32_t    m_nFieldOffset;   // 0x3C
+private:
+    char pad_040[0xD0]; // 0x40
+public:
+    CUtlString m_pszCodeGenType; // 0x110 class name for codegen (set by InitCodeGenTypes)
+private:
+    char pad_118[0x40]; // 0x118
+};                      // Size: 0x158
+static_assert(sizeof(CNetworkSerializerFieldInfo) == 0x158);
 
-    for (int i = 0; i < field.m_nMetadataCount; i++)
+struct CNetworkSerializerClassInfo
+{
+    uint32_t                                 m_nHash;        // 0x00
+    CUtlString                               m_pszClassName; // 0x08
+    CUtlVector<CNetworkSerializerFieldInfo*> m_Fields;       // 0x10
+private:
+    char _pad_028[0x178]; // 0x28
+public:
+    struct CNetworkSerializerCodeGenDatabase* m_pDatabase;  // 0x1A0
+    int32_t                                   m_nClassSize; // 0x1A8
+private:
+    char pad_1AC[0x1C]; // 0x1AC
+};                      // Size: 0x1C8
+static_assert(sizeof(CNetworkSerializerClassInfo) == 0x1C8);
+
+struct CNetworkSerializerCodeGenDatabase
+{
+    struct EnumInfo_t
     {
-        if (networkEnabled == MurmurHash2(field.m_pMetadata[i].m_name, MURMURHASH_SEED_MODSHARP))
-            return true;
+        int32_t m_nValue;
+        int8_t  m_nFlags;
+    };
+
+    CUtlString                                                  m_ModuleName; // 0x00
+    CUtlMap<const char*, CNetworkSerializerClassInfo*, int32_t> m_ClassInfos; // 0x08
+    CUtlMap<const char*, EnumInfo_t, int32_t>                   m_EnumInfos;  // 0x30
+private:
+    CUtlMap<const char*, void*, int32_t> _unk_map_058; // 0x58
+public:
+    bool m_bDebugSpew; // 0x80
+private:
+    char pad_81[0x27]; // 0x81
+public:
+    int32_t m_nDuplicateCount; // 0xA8
+};                             // Size: 0xB0
+static_assert(sizeof(CNetworkSerializerCodeGenDatabase) == 0xB0);
+
+// Map: class_name -> set of networked field names
+static std::unordered_map<std::string, std::unordered_set<std::string>> g_NetworkedFieldMap;
+
+static void BuildNetworkedFieldMap()
+{
+    // CEntityInstance::vtable[0] returns CNetworkSerializerClassInfo*
+    // CNetworkSerializerClassInfo::m_pDatabase (+0x1A0) points to CNetworkSerializerCodeGenDatabase
+    // Use CBaseEntity's vtable as it's guaranteed to exist and inherit CEntityInstance.
+    constexpr auto vtable_to_search = "CBaseEntity";
+    auto           vtable           = modules::server->GetVFunctionsFromVTable(vtable_to_search);
+    if (vtable.empty())
+    {
+        FatalError("[schema] %s vtable not found", vtable_to_search);
+        return;
     }
 
-    return false;
+    // The target vfunc is a simple getter returning a static global (lea rax, [rip+X]; ret).
+    // Instead of calling it (unsafe if vtable shifted), decode instructions to find the LEA target.
+    // Scan the first few vtable entries to find one whose resolved pointer has m_pszClassName == "CBaseEntity".
+    CNetworkSerializerClassInfo* classInfo = nullptr;
+
+    using GetClassInfoFn         = CNetworkSerializerClassInfo* (*)();
+    constexpr int max_scan_count = 5;
+
+    for (int i = 0; i < max_scan_count && !classInfo; i++)
+    {
+        auto fnAddr = vtable[i];
+        if (!fnAddr) continue;
+
+        // Check that the function is a simple getter pattern (lea/mov rax, [mem]; ret).
+        bool isSimpleGetter = false;
+        ZydisUtility::ScanInstructions(fnAddr, fnAddr + 16, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* ops) -> bool {
+            if ((instr.mnemonic == ZYDIS_MNEMONIC_LEA || instr.mnemonic == ZYDIS_MNEMONIC_MOV)
+                && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && ops[0].reg.value == ZYDIS_REGISTER_RAX
+                && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                isSimpleGetter = true;
+            }
+            else if (instr.mnemonic == ZYDIS_MNEMONIC_RET || instr.mnemonic == ZYDIS_MNEMONIC_INT3) return true;
+            else isSimpleGetter = false; // not a simple "lea/mov; ret" pattern
+            return false;
+        });
+
+        if (!isSimpleGetter) continue;
+
+        auto* candidate = reinterpret_cast<GetClassInfoFn>(fnAddr)();
+        if (candidate && candidate->m_pszClassName.Get()
+            && strcasecmp(candidate->m_pszClassName.Get(), vtable_to_search) == 0)
+        {
+            classInfo = candidate;
+            break;
+        }
+    }
+
+    if (!classInfo)
+    {
+        FatalError("[schema] Could not find GetNetworkSerializerClassInfo in CBaseEntity vtable");
+        return;
+    }
+
+    auto* pCodeGenDatabase = classInfo->m_pDatabase;
+    if (!pCodeGenDatabase)
+    {
+        FatalError("[schema] CNetworkSerializerClassInfo::m_pDatabase is null");
+        return;
+    }
+
+    auto class_infos = &pCodeGenDatabase->m_ClassInfos;
+
+    if (!class_infos->Count())
+    {
+        FatalError("[schema] CNetworkSerializerCodeGenDatabase::m_ClassInfos dict is empty");
+        return;
+    }
+
+    int totalFields = 0;
+    for (auto i = class_infos->FirstInorder(); i != -1; i = class_infos->NextInorder(i))
+    {
+        auto* class_info = class_infos->Element(i);
+        if (!class_info) continue;
+
+        const auto& class_name = class_info->m_pszClassName;
+        if (class_name.IsEmpty()) continue;
+
+        auto& fieldSet = g_NetworkedFieldMap[class_name.Get()];
+        for (auto* fieldInfo : class_info->m_Fields)
+        {
+            if (!fieldInfo) continue;
+
+            const auto& field_name = fieldInfo->m_pszFieldName;
+            if (field_name.IsEmpty()) continue;
+
+            fieldSet.insert(field_name.Get());
+            totalFields++;
+        }
+    }
+
+    FLOG("[schema] Built networked field map: %zu classes, %d fields", g_NetworkedFieldMap.size(), totalFields);
+}
+
+static bool IsFieldNetworked(const char* className, const char* fieldName)
+{
+    if (g_NetworkedFieldMap.empty()) return false;
+
+    auto classIt = g_NetworkedFieldMap.find(className);
+    if (classIt == g_NetworkedFieldMap.end()) return false;
+
+    return classIt->second.contains(fieldName);
 }
 
 int32_t schemas::FindChainOffset(const char* className)
@@ -353,7 +512,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
             FatalError("Offset of '%s' in class '%s' is negative!", field.m_pszName, current_class_info->GetName());
         }
 
-        const auto is_field_networked = IsFieldNetworked(field);
+        const auto is_field_networked = IsFieldNetworked(derived_schema_class->name.Get(), field.m_pszName);
 
         auto new_field = derived_schema_class->fields.AddToTailGetPtr();
 
@@ -435,6 +594,8 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
 
 void InitSchemaSystem()
 {
+    BuildNetworkedFieldMap();
+
     const auto pType = schemaSystem->FindTypeScopeForModule(LIB_FILE_PREFIX "server" LIB_FILE_EXTENSION);
     if (!pType)
     {

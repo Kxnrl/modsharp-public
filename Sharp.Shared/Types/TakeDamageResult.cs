@@ -17,44 +17,56 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Size = 40)]
+[StructLayout(LayoutKind.Explicit, Size = 0x50)]
 public unsafe struct TakeDamageResult
 {
-    [FieldOffset(0)]
+    [FieldOffset(0x00)]
     public TakeDamageInfo* OriginatingInfo;
 
-    [FieldOffset(8)]
+    // 0x08: CUtlLeanVector<DestructiblePartDamageRequest_t> (16 bytes, skipped)
+
+    [FieldOffset(0x18)]
     public int HealthLost;
 
-    [FieldOffset(12)]
+    [FieldOffset(0x1C)]
     public int HealthBefore;
 
-    [FieldOffset(16)]
-    public int DamageDealt;
+    [FieldOffset(0x20)]
+    public float DamageDealt;
 
-    [FieldOffset(20)]
+    [FieldOffset(0x24)]
     public float PreModifiedDamage;
 
-    [FieldOffset(24)]
+    [FieldOffset(0x28)]
     public int TotalledHealthLost;
 
-    [FieldOffset(28)]
-    public int TotalledDamageDealt;
+    [FieldOffset(0x2C)]
+    public float TotalledDamageDealt;
 
-    [FieldOffset(32)]
-    public float m_flTotalledPreModifiedDamage;
+    [FieldOffset(0x30)]
+    public float TotalledPreModifiedDamage;
 
-    [FieldOffset(36)]
+    [FieldOffset(0x34)]
+    public float NewDamageAccumulatorValue;
+
+    [FieldOffset(0x38)]
+    public ulong DamageFlags;
+
+    [FieldOffset(0x40)]
     public bool WasDamageSuppressed;
 
-    [FieldOffset(37)]
+    [FieldOffset(0x41)]
     public bool SuppressFlinch;
 
-    [FieldOffset(40)]
+    [FieldOffset(0x44)]
     private HitGroupType OverrideFlinchHitGroup;
+
+    [Obsolete("Use TotalledPreModifiedDamage instead")]
+    public float m_flTotalledPreModifiedDamage => TotalledPreModifiedDamage;
 }

@@ -24,6 +24,7 @@
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/QAngle.h"
 #include "cstrike/type/Vector.h"
+#include "cstrike/type/Vector2D.h"
 
 #include <cstdint>
 
@@ -107,26 +108,23 @@ private:
 #endif
 
 public:
-    Vector m_outWishVel;        // Win: 0xe8  | Lin: 0xe4
-    Vector m_vecOldAngles;      // Win: 0xf4  | Lin: 0xf0
-    Vector m_vecInputRotated;   // Win: 0x100 | Lin: 0xfc
-    Vector m_vecAccel;          // Win: 0x10c | Lin: 0x108
-    Vector m_vecAccelPerSecond; // Win: 0x118 | Lin: 0x114
-    float  m_flMaxSpeed;        // Win: 0x124 | Lin: 0x120
-    float  m_flClientMaxSpeed;  // Win: 0x128 | Lin: 0x124
-    float  m_flSubtickFraction; // Win: 0x12c | Lin: 0x128
-private:
-    char pad_130[12]; // Win: 0x130 | Lin: 0x12c
-
-public:
-    bool m_bInAir;               // Win: 0x13C | Lin: 0x138
-    bool m_bGameCodeMovedPlayer; // Win: 0x13D | Lin: 0x139
+    Vector   m_outWishVel;           // Win: 0xe8  | Lin: 0xe4
+    Vector   m_vecOldAngles;         // Win: 0xf4  | Lin: 0xf0
+    Vector2D m_vecWalkWishVel;       // Win: 0x100 | Lin: 0xfc
+    Vector   m_vecAccel;             // Win: 0x108 | Lin: 0x104
+    Vector   m_vecAccelPerSecond;    // Win: 0x114 | Lin: 0x110
+    float    m_flMaxSpeed;           // Win: 0x120 | Lin: 0x11c
+    float    m_flClientMaxSpeed;     // Win: 0x124 | Lin: 0x120
+    float    m_flSubtickFraction;    // Win: 0x128 | Lin: 0x124
+    float    m_flPreAirMovePosZ;     // Win: 0x12c | Lin: 0x128
+    float    m_flPreAirMoveVelZ;     // Win: 0x130 | Lin: 0x12c
+    float    m_flPreAirMoveAccelZ;   // Win: 0x134 | Lin: 0x130
+    bool     m_bInAir;               // Win: 0x138 | Lin: 0x134
+    bool     m_bGameCodeMovedPlayer; // Win: 0x139 | Lin: 0x135
 
 }; // Size Win: 0x13E | Lin: 0x13A
 #pragma pack(pop)
-
 #ifdef PLATFORM_WINDOWS
-static_assert(sizeof(CMoveData) == 0x13E, "sizeof(CMoveData) != 0x13E");
+static_assert(sizeof(CMoveData) == 0x13A, "sizeof(CMoveData) != 0x13A");
 #endif
-
 #endif

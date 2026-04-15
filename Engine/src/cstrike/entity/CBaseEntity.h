@@ -94,14 +94,6 @@ public:
     [[nodiscard]] bool IsPlayerController();
     [[nodiscard]] bool IsWeapon();
 
-#ifdef VIRTUAL_NetworkStateChanged
-    void NetworkStateChanged(uint16_t offset)
-    {
-        static auto _offset = g_pGameData->GetOffset("CBaseEntity::NetworkStateChanged");
-        return CALL_VIRTUAL(void, _offset, this, offset, static_cast<int64_t>(0xFFFFFFFF), static_cast<int64_t>(0xFFFF));
-    }
-#endif
-
     void SetOwner(CBaseEntity* pEntity);
     void SetModel(const char* pszModel);
 

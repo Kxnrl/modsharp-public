@@ -22,7 +22,12 @@
     "IScriptVM::CreateVM": {
       "library": "vscript",
       "linux": "55 4C 8D 05 ? ? ? ?",
-      "windows": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC ? 48 8B D9"
+      "windows": "48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 48 89 7C 24 20 41 56 48 83 EC ? 48 8B D9",
+      "refs": {
+        "strings": [
+          "WARNING: Lua unable to create VM\n"
+        ]
+      }
     },
     // 搜 "No DATA block for resource\n", 上面的 if 判断里调用的函数就是LoadCompiledResource
     "Resource_FindBlockInfo": {

@@ -460,7 +460,7 @@ internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFun
 
     public int TotalledDamageDealt
     {
-        get => Result->TotalledDamageDealt;
+        get => (int)Result->TotalledDamageDealt;
         set
         {
             CheckEditable();

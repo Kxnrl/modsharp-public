@@ -213,8 +213,8 @@
       "windows": 29
     },
     "CNetworkGameServer::DisconnectClient": {
-      "linux": 76,
-      "windows": 71
+      "linux": 77,
+      "windows": 72
     },
     "CNetworkGameServer::GetAddonName": {
       "linux": 26,

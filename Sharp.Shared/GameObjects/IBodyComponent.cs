@@ -68,8 +68,6 @@ public interface ISkeletonInstance : IGameSceneNode
 {
     IModelState GetModelState();
 
-    bool IsAnimationEnabled { get; set; }
-
     bool DisableSolidCollisionsForHierarchy { get; set; }
 
     uint MaterialGroup { get; set; }

@@ -129,7 +129,7 @@ public unsafe struct TakeDamageInfo
 
     /* End */
 
-    [FieldOffset(280)]
+    [FieldOffset(0x110)]
     public bool InTakeDamageFlow;
 
     [FieldOffset(284)]

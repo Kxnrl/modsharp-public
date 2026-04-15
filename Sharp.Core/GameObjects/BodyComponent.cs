@@ -105,9 +105,6 @@ internal partial class SkeletonInstance : GameSceneNode, ISkeletonInstance
     [NativeSchemaField("CSkeletonInstance", "m_modelState", typeof(ModelState), InlineObject = true)]
     private partial SchemaField GetModelStateField();
 
-    [NativeSchemaField("CSkeletonInstance", "m_bIsAnimationEnabled", typeof(bool))]
-    private partial SchemaField GetIsAnimationEnabledField();
-
     [NativeSchemaField("CSkeletonInstance", "m_bDisableSolidCollisionsForHierarchy", typeof(bool))]
     private partial SchemaField GetDisableSolidCollisionsForHierarchyField();
 
