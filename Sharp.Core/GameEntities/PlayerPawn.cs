@@ -150,25 +150,6 @@ internal partial class PlayerPawn : BasePlayerPawn, IPlayerPawn
     [NativeSchemaField("CCSPlayerPawn", "m_bWaitForNoAttack", typeof(bool))]
     private partial SchemaField GetWaitForNoAttackField();
 
-    [NativeSchemaField("CCSPlayerPawn", "m_aimPunchAngle", typeof(Vector))]
-    private partial SchemaField GetAimPunchAngleField();
-
-    [NativeSchemaField("CCSPlayerPawn", "m_aimPunchAngleVel", typeof(Vector))]
-    private partial SchemaField GetAimPunchAngleVelocityField();
-
-    [NativeSchemaField("CCSPlayerPawn", "m_aimPunchTickBase", typeof(int))]
-    private partial SchemaField GetAimPunchTickBaseField();
-
-    [NativeSchemaField("CCSPlayerPawn", "m_aimPunchTickFraction", typeof(float))]
-    private partial SchemaField GetAimPunchTickFractionField();
-
-    [NativeSchemaField("CCSPlayerPawn",
-                       "m_aimPunchCache",
-                       typeof(SchemaUnmanagedVector<Vector>),
-                       InlineObject = true,
-                       ReturnType = typeof(ISchemaList<Vector>))]
-    private partial SchemaField GetAimPunchCacheField();
-
 #endregion
 
 #region Service Schema

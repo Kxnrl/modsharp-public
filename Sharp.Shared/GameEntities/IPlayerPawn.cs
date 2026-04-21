@@ -249,29 +249,4 @@ public interface IPlayerPawn : IBasePlayerPawn
     ///     m_bWaitForNoAttack
     /// </summary>
     bool WaitForNoAttack { get; set; }
-
-    /// <summary>
-    ///     m_aimPunchAngle
-    /// </summary>
-    Vector AimPunchAngle { get; set; }
-
-    /// <summary>
-    ///     m_aimPunchAngleVel
-    /// </summary>
-    Vector AimPunchAngleVelocity { get; set; }
-
-    /// <summary>
-    ///     m_aimPunchTickBase
-    /// </summary>
-    int AimPunchTickBase { get; set; }
-
-    /// <summary>
-    ///     m_aimPunchTickFraction
-    /// </summary>
-    float AimPunchTickFraction { get; set; }
-
-    /// <summary>
-    ///     m_aimPunchCache
-    /// </summary>
-    ISchemaList<Vector> GetAimPunchCache();
 }
