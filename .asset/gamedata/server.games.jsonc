@@ -64,7 +64,7 @@
     "CBaseEntity::SetAbsOrigin": {
       "library": "server",
       "linux": "55 48 8D 15 ? ? ? ? 48 89 E5 53 48 89 FB 48 83 EC ? 48 8B 07 48 8B 80 ? ? ? ? 48 39 D0 75 ? 48 8B BB",
-      "windows": "48 89 5C 24 08 57 48 83 EC 40 48 8B 01 48 8B FA"
+      "windows": "48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 48 8B FA 48 8B D9 FF 90 ? ? ? ? 84 C0 0F 85"
     },
     "CBaseEntity::SetAbsVelocity": {
       "library": "server",
