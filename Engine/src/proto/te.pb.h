@@ -2601,7 +2601,7 @@ class CMsgEffectData /*final*/ :
   void _internal_set_effectname(uint32_t value);
   public:
 
-  // optional uint32 attachmentname = 19;
+  // optional uint32 attachmentname = 19 [default = 0];
   bool has_attachmentname() const;
   private:
   bool _internal_has_attachmentname() const;
@@ -4524,6 +4524,7 @@ class CMsgTEExplosion /*final*/ :
     kCreateDebrisFieldNumber = 12,
     kExplosionTypeFieldNumber = 11,
     kDebrisSurfacepropFieldNumber = 14,
+    kExplosionTypeNameFieldNumber = 15,
   };
   // optional string sound_name = 10;
   bool has_sound_name() const;
@@ -4688,6 +4689,19 @@ class CMsgTEExplosion /*final*/ :
   void _internal_set_debris_surfaceprop(uint32_t value);
   public:
 
+  // optional uint32 explosion_type_name = 15 [default = 0];
+  bool has_explosion_type_name() const;
+  private:
+  bool _internal_has_explosion_type_name() const;
+  public:
+  void clear_explosion_type_name();
+  uint32_t explosion_type_name() const;
+  void set_explosion_type_name(uint32_t value);
+  private:
+  uint32_t _internal_explosion_type_name() const;
+  void _internal_set_explosion_type_name(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgTEExplosion)
  private:
   class _Internal;
@@ -4709,6 +4723,7 @@ class CMsgTEExplosion /*final*/ :
     bool create_debris_;
     uint32_t explosion_type_;
     uint32_t debris_surfaceprop_;
+    uint32_t explosion_type_name_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_te_2eproto;
@@ -5557,7 +5572,7 @@ class CMsgTEPhysicsProp /*final*/ :
       ::CMsgVector* dmgdir);
   ::CMsgVector* unsafe_arena_release_dmgdir();
 
-  // optional fixed32 skin = 4;
+  // optional fixed32 skin = 4 [default = 0];
   bool has_skin() const;
   private:
   bool _internal_has_skin() const;
@@ -9015,7 +9030,7 @@ inline void CMsgEffectData::set_effectname(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgEffectData.effectname)
 }
 
-// optional uint32 attachmentname = 19;
+// optional uint32 attachmentname = 19 [default = 0];
 inline bool CMsgEffectData::_internal_has_attachmentname() const {
   bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
@@ -11186,6 +11201,34 @@ inline void CMsgTEExplosion::set_explosion_type(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgTEExplosion.explosion_type)
 }
 
+// optional uint32 explosion_type_name = 15 [default = 0];
+inline bool CMsgTEExplosion::_internal_has_explosion_type_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgTEExplosion::has_explosion_type_name() const {
+  return _internal_has_explosion_type_name();
+}
+inline void CMsgTEExplosion::clear_explosion_type_name() {
+  _impl_.explosion_type_name_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgTEExplosion::_internal_explosion_type_name() const {
+  return _impl_.explosion_type_name_;
+}
+inline uint32_t CMsgTEExplosion::explosion_type_name() const {
+  // @@protoc_insertion_point(field_get:CMsgTEExplosion.explosion_type_name)
+  return _internal_explosion_type_name();
+}
+inline void CMsgTEExplosion::_internal_set_explosion_type_name(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.explosion_type_name_ = value;
+}
+inline void CMsgTEExplosion::set_explosion_type_name(uint32_t value) {
+  _internal_set_explosion_type_name(value);
+  // @@protoc_insertion_point(field_set:CMsgTEExplosion.explosion_type_name)
+}
+
 // optional bool create_debris = 12;
 inline bool CMsgTEExplosion::_internal_has_create_debris() const {
   bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
@@ -12181,7 +12224,7 @@ inline void CMsgTEPhysicsProp::set_allocated_angles(::CMsgQAngle* angles) {
   // @@protoc_insertion_point(field_set_allocated:CMsgTEPhysicsProp.angles)
 }
 
-// optional fixed32 skin = 4;
+// optional fixed32 skin = 4 [default = 0];
 inline bool CMsgTEPhysicsProp::_internal_has_skin() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;

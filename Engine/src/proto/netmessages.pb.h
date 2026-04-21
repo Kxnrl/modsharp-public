@@ -625,7 +625,7 @@ inline bool SVC_Messages_LowFrequency_Parse(
 enum Bidirectional_Messages : int {
   bi_RebroadcastGameEvent = 16,
   bi_RebroadcastSource = 17,
-  bi_GameEvent = 18,
+  bi_GameEvent_DEPRECATED = 18,
   bi_PredictionEvent = 19
 };
 bool Bidirectional_Messages_IsValid(int value);
@@ -646,29 +646,6 @@ inline bool Bidirectional_Messages_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Bidirectional_Messages* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Bidirectional_Messages>(
     Bidirectional_Messages_descriptor(), name, value);
-}
-enum Bidirectional_Messages_LowFrequency : int {
-  bi_RelayInfo = 700,
-  bi_RelayPacket = 701
-};
-bool Bidirectional_Messages_LowFrequency_IsValid(int value);
-constexpr Bidirectional_Messages_LowFrequency Bidirectional_Messages_LowFrequency_MIN = bi_RelayInfo;
-constexpr Bidirectional_Messages_LowFrequency Bidirectional_Messages_LowFrequency_MAX = bi_RelayPacket;
-constexpr int Bidirectional_Messages_LowFrequency_ARRAYSIZE = Bidirectional_Messages_LowFrequency_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Bidirectional_Messages_LowFrequency_descriptor();
-template<typename T>
-inline const std::string& Bidirectional_Messages_LowFrequency_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, Bidirectional_Messages_LowFrequency>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function Bidirectional_Messages_LowFrequency_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    Bidirectional_Messages_LowFrequency_descriptor(), enum_t_value);
-}
-inline bool Bidirectional_Messages_LowFrequency_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, Bidirectional_Messages_LowFrequency* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Bidirectional_Messages_LowFrequency>(
-    Bidirectional_Messages_LowFrequency_descriptor(), name, value);
 }
 enum ReplayEventType_t : int {
   REPLAY_EVENT_CANCEL = 0,
@@ -28446,11 +28423,6 @@ template <> struct is_proto_enum< ::Bidirectional_Messages> : ::std::true_type {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Bidirectional_Messages>() {
   return ::Bidirectional_Messages_descriptor();
-}
-template <> struct is_proto_enum< ::Bidirectional_Messages_LowFrequency> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Bidirectional_Messages_LowFrequency>() {
-  return ::Bidirectional_Messages_LowFrequency_descriptor();
 }
 template <> struct is_proto_enum< ::ReplayEventType_t> : ::std::true_type {};
 template <>

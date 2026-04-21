@@ -47,7 +47,7 @@ public static partial class TeReflection {
           "DRINCgVzcGVlZBgFIAEoAiJ5CgtDTXNnVEVEZWNhbBIbCgZvcmlnaW4YASAB",
           "KAsyCy5DTXNnVmVjdG9yEhoKBXN0YXJ0GAIgASgLMgsuQ01zZ1ZlY3RvchIS",
           "CgZlbnRpdHkYAyABKAU6Ai0xEg4KBmhpdGJveBgEIAEoDRINCgVpbmRleBgF",
-          "IAEoDSKxAwoOQ01zZ0VmZmVjdERhdGESGwoGb3JpZ2luGAEgASgLMgsuQ01z",
+          "IAEoDSK0AwoOQ01zZ0VmZmVjdERhdGESGwoGb3JpZ2luGAEgASgLMgsuQ01z",
           "Z1ZlY3RvchIaCgVzdGFydBgCIAEoCzILLkNNc2dWZWN0b3ISGwoGbm9ybWFs",
           "GAMgASgLMgsuQ01zZ1ZlY3RvchIbCgZhbmdsZXMYBCABKAsyCy5DTXNnUUFu",
           "Z2xlEhgKBmVudGl0eRgFIAEoBzoIMTY3NzcyMTUSHQoLb3RoZXJlbnRpdHkY",
@@ -56,61 +56,62 @@ public static partial class TeReflection {
           "ZWZmZWN0aW5kZXgYCyABKAYSEgoKZGFtYWdldHlwZRgMIAEoDRIQCghtYXRl",
           "cmlhbBgNIAEoDRIOCgZoaXRib3gYDiABKA0SDQoFY29sb3IYDyABKA0SDQoF",
           "ZmxhZ3MYECABKA0SFwoPYXR0YWNobWVudGluZGV4GBEgASgFEhIKCmVmZmVj",
-          "dG5hbWUYEiABKA0SFgoOYXR0YWNobWVudG5hbWUYEyABKA0iOwoUQ01zZ1RF",
-          "RWZmZWN0RGlzcGF0Y2gSIwoKZWZmZWN0ZGF0YRgBIAEoCzIPLkNNc2dFZmZl",
-          "Y3REYXRhIlsKEkNNc2dURUVuZXJneVNwbGFzaBIYCgNwb3MYASABKAsyCy5D",
-          "TXNnVmVjdG9yEhgKA2RpchgCIAEoCzILLkNNc2dWZWN0b3ISEQoJZXhwbG9z",
-          "aXZlGAMgASgIIkIKCkNNc2dURUZpenoSEgoGZW50aXR5GAEgASgFOgItMRIP",
-          "CgdkZW5zaXR5GAIgASgNEg8KB2N1cnJlbnQYAyABKAUi+QEKFENNc2dURVNo",
-          "YXR0ZXJTdXJmYWNlEhsKBm9yaWdpbhgBIAEoCzILLkNNc2dWZWN0b3ISGwoG",
-          "YW5nbGVzGAIgASgLMgsuQ01zZ1FBbmdsZRIaCgVmb3JjZRgDIAEoCzILLkNN",
-          "c2dWZWN0b3ISHQoIZm9yY2Vwb3MYBCABKAsyCy5DTXNnVmVjdG9yEg0KBXdp",
-          "ZHRoGAUgASgCEg4KBmhlaWdodBgGIAEoAhIRCglzaGFyZHNpemUYByABKAIS",
-          "EwoLc3VyZmFjZXR5cGUYCCABKA0SEgoKZnJvbnRjb2xvchgJIAEoBxIRCgli",
-          "YWNrY29sb3IYCiABKAciYAoQQ01zZ1RFR2xvd1Nwcml0ZRIbCgZvcmlnaW4Y",
-          "ASABKAsyCy5DTXNnVmVjdG9yEg0KBXNjYWxlGAIgASgCEgwKBGxpZmUYAyAB",
-          "KAISEgoKYnJpZ2h0bmVzcxgEIAEoDSJWCgxDTXNnVEVJbXBhY3QSGwoGb3Jp",
-          "Z2luGAEgASgLMgsuQ01zZ1ZlY3RvchIbCgZub3JtYWwYAiABKAsyCy5DTXNn",
-          "VmVjdG9yEgwKBHR5cGUYAyABKA0iagoRQ01zZ1RFTXV6emxlRmxhc2gSGwoG",
-          "b3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIbCgZhbmdsZXMYAiABKAsyCy5D",
-          "TXNnUUFuZ2xlEg0KBXNjYWxlGAMgASgCEgwKBHR5cGUYBCABKA0ibwoRQ01z",
-          "Z1RFQmxvb2RTdHJlYW0SGwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIe",
-          "CglkaXJlY3Rpb24YAiABKAsyCy5DTXNnVmVjdG9yEg0KBWNvbG9yGAMgASgH",
-          "Eg4KBmFtb3VudBgEIAEoDSKZAgoPQ01zZ1RFRXhwbG9zaW9uEhsKBm9yaWdp",
-          "bhgBIAEoCzILLkNNc2dWZWN0b3ISDQoFZmxhZ3MYAyABKA0SGwoGbm9ybWFs",
-          "GAQgASgLMgsuQ01zZ1ZlY3RvchIOCgZyYWRpdXMYBiABKA0SEQoJbWFnbml0",
-          "dWRlGAcgASgNEhcKD2FmZmVjdF9yYWdkb2xscxgJIAEoCBISCgpzb3VuZF9u",
-          "YW1lGAogASgJEhYKDmV4cGxvc2lvbl90eXBlGAsgASgNEhUKDWNyZWF0ZV9k",
-          "ZWJyaXMYDCABKAgSIgoNZGVicmlzX29yaWdpbhgNIAEoCzILLkNNc2dWZWN0",
-          "b3ISGgoSZGVicmlzX3N1cmZhY2Vwcm9wGA4gASgHImYKCkNNc2dURUR1c3QS",
-          "GwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIMCgRzaXplGAIgASgCEg0K",
-          "BXNwZWVkGAMgASgCEh4KCWRpcmVjdGlvbhgEIAEoCzILLkNNc2dWZWN0b3Ii",
-          "QgoRQ01zZ1RFTGFyZ2VGdW5uZWwSGwoGb3JpZ2luGAEgASgLMgsuQ01zZ1Zl",
-          "Y3RvchIQCghyZXZlcnNlZBgCIAEoDSJuCgxDTXNnVEVTcGFya3MSGwoGb3Jp",
-          "Z2luGAEgASgLMgsuQ01zZ1ZlY3RvchIRCgltYWduaXR1ZGUYAiABKA0SDgoG",
-          "bGVuZ3RoGAMgASgNEh4KCWRpcmVjdGlvbhgEIAEoCzILLkNNc2dWZWN0b3Ii",
-          "vAIKEUNNc2dURVBoeXNpY3NQcm9wEhsKBm9yaWdpbhgBIAEoCzILLkNNc2dW",
-          "ZWN0b3ISHQoIdmVsb2NpdHkYAiABKAsyCy5DTXNnVmVjdG9yEhsKBmFuZ2xl",
-          "cxgDIAEoCzILLkNNc2dRQW5nbGUSDAoEc2tpbhgEIAEoBxINCgVmbGFncxgF",
-          "IAEoDRIPCgdlZmZlY3RzGAYgASgNEg0KBWNvbG9yGAcgASgHEhIKCm1vZGVs",
-          "aW5kZXgYCCABKAYSIwobdW51c2VkX2JyZWFrbW9kZWxzbm90dG9tYWtlGAkg",
-          "ASgNEg0KBXNjYWxlGAogASgCEhsKBmRtZ3BvcxgLIAEoCzILLkNNc2dWZWN0",
-          "b3ISGwoGZG1nZGlyGAwgASgLMgsuQ01zZ1ZlY3RvchIPCgdkbWd0eXBlGA0g",
-          "ASgFIjkKC0NNc2dURVNtb2tlEhsKBm9yaWdpbhgBIAEoCzILLkNNc2dWZWN0",
-          "b3ISDQoFc2NhbGUYAiABKAIiWwoQQ01zZ1RFV29ybGREZWNhbBIbCgZvcmln",
-          "aW4YASABKAsyCy5DTXNnVmVjdG9yEhsKBm5vcm1hbBgCIAEoCzILLkNNc2dW",
-          "ZWN0b3ISDQoFaW5kZXgYAyABKA0q+AMKDkVURVByb3RvYnVmSWRzEhgKE1RF",
-          "X0VmZmVjdERpc3BhdGNoSWQQkAMSFwoSVEVfQXJtb3JSaWNvY2hldElkEJED",
-          "EhYKEVRFX0JlYW1FbnRQb2ludElkEJIDEhIKDVRFX0JlYW1FbnRzSWQQkwMS",
-          "FAoPVEVfQmVhbVBvaW50c0lkEJQDEhIKDVRFX0JlYW1SaW5nSWQQlQMSEQoM",
-          "VEVfQnViYmxlc0lkEJgDEhUKEFRFX0J1YmJsZVRyYWlsSWQQmQMSDwoKVEVf",
-          "RGVjYWxJZBCaAxIUCg9URV9Xb3JsZERlY2FsSWQQmwMSFgoRVEVfRW5lcmd5",
-          "U3BsYXNoSWQQnAMSDgoJVEVfRml6eklkEJ0DEhgKE1RFX1NoYXR0ZXJTdXJm",
-          "YWNlSWQQngMSFAoPVEVfR2xvd1Nwcml0ZUlkEJ8DEhAKC1RFX0ltcGFjdElk",
-          "EKADEhUKEFRFX011enpsZUZsYXNoSWQQoQMSFQoQVEVfQmxvb2RTdHJlYW1J",
-          "ZBCiAxITCg5URV9FeHBsb3Npb25JZBCjAxIOCglURV9EdXN0SWQQpAMSFQoQ",
-          "VEVfTGFyZ2VGdW5uZWxJZBClAxIQCgtURV9TcGFya3NJZBCmAxIVChBURV9Q",
-          "aHlzaWNzUHJvcElkEKcDEg8KClRFX1Ntb2tlSWQQqgM="));
+          "dG5hbWUYEiABKA0SGQoOYXR0YWNobWVudG5hbWUYEyABKA06ATAiOwoUQ01z",
+          "Z1RFRWZmZWN0RGlzcGF0Y2gSIwoKZWZmZWN0ZGF0YRgBIAEoCzIPLkNNc2dF",
+          "ZmZlY3REYXRhIlsKEkNNc2dURUVuZXJneVNwbGFzaBIYCgNwb3MYASABKAsy",
+          "Cy5DTXNnVmVjdG9yEhgKA2RpchgCIAEoCzILLkNNc2dWZWN0b3ISEQoJZXhw",
+          "bG9zaXZlGAMgASgIIkIKCkNNc2dURUZpenoSEgoGZW50aXR5GAEgASgFOgIt",
+          "MRIPCgdkZW5zaXR5GAIgASgNEg8KB2N1cnJlbnQYAyABKAUi+QEKFENNc2dU",
+          "RVNoYXR0ZXJTdXJmYWNlEhsKBm9yaWdpbhgBIAEoCzILLkNNc2dWZWN0b3IS",
+          "GwoGYW5nbGVzGAIgASgLMgsuQ01zZ1FBbmdsZRIaCgVmb3JjZRgDIAEoCzIL",
+          "LkNNc2dWZWN0b3ISHQoIZm9yY2Vwb3MYBCABKAsyCy5DTXNnVmVjdG9yEg0K",
+          "BXdpZHRoGAUgASgCEg4KBmhlaWdodBgGIAEoAhIRCglzaGFyZHNpemUYByAB",
+          "KAISEwoLc3VyZmFjZXR5cGUYCCABKA0SEgoKZnJvbnRjb2xvchgJIAEoBxIR",
+          "CgliYWNrY29sb3IYCiABKAciYAoQQ01zZ1RFR2xvd1Nwcml0ZRIbCgZvcmln",
+          "aW4YASABKAsyCy5DTXNnVmVjdG9yEg0KBXNjYWxlGAIgASgCEgwKBGxpZmUY",
+          "AyABKAISEgoKYnJpZ2h0bmVzcxgEIAEoDSJWCgxDTXNnVEVJbXBhY3QSGwoG",
+          "b3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIbCgZub3JtYWwYAiABKAsyCy5D",
+          "TXNnVmVjdG9yEgwKBHR5cGUYAyABKA0iagoRQ01zZ1RFTXV6emxlRmxhc2gS",
+          "GwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIbCgZhbmdsZXMYAiABKAsy",
+          "Cy5DTXNnUUFuZ2xlEg0KBXNjYWxlGAMgASgCEgwKBHR5cGUYBCABKA0ibwoR",
+          "Q01zZ1RFQmxvb2RTdHJlYW0SGwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3Rv",
+          "chIeCglkaXJlY3Rpb24YAiABKAsyCy5DTXNnVmVjdG9yEg0KBWNvbG9yGAMg",
+          "ASgHEg4KBmFtb3VudBgEIAEoDSK5AgoPQ01zZ1RFRXhwbG9zaW9uEhsKBm9y",
+          "aWdpbhgBIAEoCzILLkNNc2dWZWN0b3ISDQoFZmxhZ3MYAyABKA0SGwoGbm9y",
+          "bWFsGAQgASgLMgsuQ01zZ1ZlY3RvchIOCgZyYWRpdXMYBiABKA0SEQoJbWFn",
+          "bml0dWRlGAcgASgNEhcKD2FmZmVjdF9yYWdkb2xscxgJIAEoCBISCgpzb3Vu",
+          "ZF9uYW1lGAogASgJEhYKDmV4cGxvc2lvbl90eXBlGAsgASgNEh4KE2V4cGxv",
+          "c2lvbl90eXBlX25hbWUYDyABKA06ATASFQoNY3JlYXRlX2RlYnJpcxgMIAEo",
+          "CBIiCg1kZWJyaXNfb3JpZ2luGA0gASgLMgsuQ01zZ1ZlY3RvchIaChJkZWJy",
+          "aXNfc3VyZmFjZXByb3AYDiABKAciZgoKQ01zZ1RFRHVzdBIbCgZvcmlnaW4Y",
+          "ASABKAsyCy5DTXNnVmVjdG9yEgwKBHNpemUYAiABKAISDQoFc3BlZWQYAyAB",
+          "KAISHgoJZGlyZWN0aW9uGAQgASgLMgsuQ01zZ1ZlY3RvciJCChFDTXNnVEVM",
+          "YXJnZUZ1bm5lbBIbCgZvcmlnaW4YASABKAsyCy5DTXNnVmVjdG9yEhAKCHJl",
+          "dmVyc2VkGAIgASgNIm4KDENNc2dURVNwYXJrcxIbCgZvcmlnaW4YASABKAsy",
+          "Cy5DTXNnVmVjdG9yEhEKCW1hZ25pdHVkZRgCIAEoDRIOCgZsZW5ndGgYAyAB",
+          "KA0SHgoJZGlyZWN0aW9uGAQgASgLMgsuQ01zZ1ZlY3RvciK/AgoRQ01zZ1RF",
+          "UGh5c2ljc1Byb3ASGwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchIdCgh2",
+          "ZWxvY2l0eRgCIAEoCzILLkNNc2dWZWN0b3ISGwoGYW5nbGVzGAMgASgLMgsu",
+          "Q01zZ1FBbmdsZRIPCgRza2luGAQgASgHOgEwEg0KBWZsYWdzGAUgASgNEg8K",
+          "B2VmZmVjdHMYBiABKA0SDQoFY29sb3IYByABKAcSEgoKbW9kZWxpbmRleBgI",
+          "IAEoBhIjCht1bnVzZWRfYnJlYWttb2RlbHNub3R0b21ha2UYCSABKA0SDQoF",
+          "c2NhbGUYCiABKAISGwoGZG1ncG9zGAsgASgLMgsuQ01zZ1ZlY3RvchIbCgZk",
+          "bWdkaXIYDCABKAsyCy5DTXNnVmVjdG9yEg8KB2RtZ3R5cGUYDSABKAUiOQoL",
+          "Q01zZ1RFU21va2USGwoGb3JpZ2luGAEgASgLMgsuQ01zZ1ZlY3RvchINCgVz",
+          "Y2FsZRgCIAEoAiJbChBDTXNnVEVXb3JsZERlY2FsEhsKBm9yaWdpbhgBIAEo",
+          "CzILLkNNc2dWZWN0b3ISGwoGbm9ybWFsGAIgASgLMgsuQ01zZ1ZlY3RvchIN",
+          "CgVpbmRleBgDIAEoDSr4AwoORVRFUHJvdG9idWZJZHMSGAoTVEVfRWZmZWN0",
+          "RGlzcGF0Y2hJZBCQAxIXChJURV9Bcm1vclJpY29jaGV0SWQQkQMSFgoRVEVf",
+          "QmVhbUVudFBvaW50SWQQkgMSEgoNVEVfQmVhbUVudHNJZBCTAxIUCg9URV9C",
+          "ZWFtUG9pbnRzSWQQlAMSEgoNVEVfQmVhbVJpbmdJZBCVAxIRCgxURV9CdWJi",
+          "bGVzSWQQmAMSFQoQVEVfQnViYmxlVHJhaWxJZBCZAxIPCgpURV9EZWNhbElk",
+          "EJoDEhQKD1RFX1dvcmxkRGVjYWxJZBCbAxIWChFURV9FbmVyZ3lTcGxhc2hJ",
+          "ZBCcAxIOCglURV9GaXp6SWQQnQMSGAoTVEVfU2hhdHRlclN1cmZhY2VJZBCe",
+          "AxIUCg9URV9HbG93U3ByaXRlSWQQnwMSEAoLVEVfSW1wYWN0SWQQoAMSFQoQ",
+          "VEVfTXV6emxlRmxhc2hJZBChAxIVChBURV9CbG9vZFN0cmVhbUlkEKIDEhMK",
+          "DlRFX0V4cGxvc2lvbklkEKMDEg4KCVRFX0R1c3RJZBCkAxIVChBURV9MYXJn",
+          "ZUZ1bm5lbElkEKUDEhAKC1RFX1NwYXJrc0lkEKYDEhUKEFRFX1BoeXNpY3NQ",
+          "cm9wSWQQpwMSDwoKVEVfU21va2VJZBCqAw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ETEProtobufIds), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -132,7 +133,7 @@ public static partial class TeReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEImpact), global::CMsgTEImpact.Parser, new[]{ "Origin", "Normal", "Type" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEMuzzleFlash), global::CMsgTEMuzzleFlash.Parser, new[]{ "Origin", "Angles", "Scale", "Type" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEBloodStream), global::CMsgTEBloodStream.Parser, new[]{ "Origin", "Direction", "Color", "Amount" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEExplosion), global::CMsgTEExplosion.Parser, new[]{ "Origin", "Flags", "Normal", "Radius", "Magnitude", "AffectRagdolls", "SoundName", "ExplosionType", "CreateDebris", "DebrisOrigin", "DebrisSurfaceprop" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEExplosion), global::CMsgTEExplosion.Parser, new[]{ "Origin", "Flags", "Normal", "Radius", "Magnitude", "AffectRagdolls", "SoundName", "ExplosionType", "ExplosionTypeName", "CreateDebris", "DebrisOrigin", "DebrisSurfaceprop" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEDust), global::CMsgTEDust.Parser, new[]{ "Origin", "Size", "Speed", "Direction" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTELargeFunnel), global::CMsgTELargeFunnel.Parser, new[]{ "Origin", "Reversed" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTESparks), global::CMsgTESparks.Parser, new[]{ "Origin", "Magnitude", "Length", "Direction" }, null, null, null, null),
@@ -7668,6 +7669,7 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     affectRagdolls_ = other.affectRagdolls_;
     soundName_ = other.soundName_;
     explosionType_ = other.explosionType_;
+    explosionTypeName_ = other.explosionTypeName_;
     createDebris_ = other.createDebris_;
     debrisOrigin_ = other.debrisOrigin_ != null ? other.debrisOrigin_.Clone() : null;
     debrisSurfaceprop_ = other.debrisSurfaceprop_;
@@ -7865,6 +7867,33 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     _hasBits0 &= ~16;
   }
 
+  /// <summary>Field number for the "explosion_type_name" field.</summary>
+  public const int ExplosionTypeNameFieldNumber = 15;
+  private readonly static uint ExplosionTypeNameDefaultValue = 0;
+
+  private uint explosionTypeName_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint ExplosionTypeName {
+    get { if ((_hasBits0 & 128) != 0) { return explosionTypeName_; } else { return ExplosionTypeNameDefaultValue; } }
+    set {
+      _hasBits0 |= 128;
+      explosionTypeName_ = value;
+    }
+  }
+  /// <summary>Gets whether the "explosion_type_name" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasExplosionTypeName {
+    get { return (_hasBits0 & 128) != 0; }
+  }
+  /// <summary>Clears the value of the "explosion_type_name" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearExplosionTypeName() {
+    _hasBits0 &= ~128;
+  }
+
   /// <summary>Field number for the "create_debris" field.</summary>
   public const int CreateDebrisFieldNumber = 12;
   private readonly static bool CreateDebrisDefaultValue = false;
@@ -7954,6 +7983,7 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     if (AffectRagdolls != other.AffectRagdolls) return false;
     if (SoundName != other.SoundName) return false;
     if (ExplosionType != other.ExplosionType) return false;
+    if (ExplosionTypeName != other.ExplosionTypeName) return false;
     if (CreateDebris != other.CreateDebris) return false;
     if (!object.Equals(DebrisOrigin, other.DebrisOrigin)) return false;
     if (DebrisSurfaceprop != other.DebrisSurfaceprop) return false;
@@ -7972,6 +8002,7 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     if (HasAffectRagdolls) hash ^= AffectRagdolls.GetHashCode();
     if (HasSoundName) hash ^= SoundName.GetHashCode();
     if (HasExplosionType) hash ^= ExplosionType.GetHashCode();
+    if (HasExplosionTypeName) hash ^= ExplosionTypeName.GetHashCode();
     if (HasCreateDebris) hash ^= CreateDebris.GetHashCode();
     if (debrisOrigin_ != null) hash ^= DebrisOrigin.GetHashCode();
     if (HasDebrisSurfaceprop) hash ^= DebrisSurfaceprop.GetHashCode();
@@ -8037,6 +8068,10 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
       output.WriteRawTag(117);
       output.WriteFixed32(DebrisSurfaceprop);
     }
+    if (HasExplosionTypeName) {
+      output.WriteRawTag(120);
+      output.WriteUInt32(ExplosionTypeName);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -8091,6 +8126,10 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
       output.WriteRawTag(117);
       output.WriteFixed32(DebrisSurfaceprop);
     }
+    if (HasExplosionTypeName) {
+      output.WriteRawTag(120);
+      output.WriteUInt32(ExplosionTypeName);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -8124,6 +8163,9 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     }
     if (HasExplosionType) {
       size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ExplosionType);
+    }
+    if (HasExplosionTypeName) {
+      size += 1 + pb::CodedOutputStream.ComputeUInt32Size(ExplosionTypeName);
     }
     if (HasCreateDebris) {
       size += 1 + 1;
@@ -8175,6 +8217,9 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
     }
     if (other.HasExplosionType) {
       ExplosionType = other.ExplosionType;
+    }
+    if (other.HasExplosionTypeName) {
+      ExplosionTypeName = other.ExplosionTypeName;
     }
     if (other.HasCreateDebris) {
       CreateDebris = other.CreateDebris;
@@ -8256,6 +8301,10 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
           DebrisSurfaceprop = input.ReadFixed32();
           break;
         }
+        case 120: {
+          ExplosionTypeName = input.ReadUInt32();
+          break;
+        }
       }
     }
   #endif
@@ -8322,6 +8371,10 @@ public sealed partial class CMsgTEExplosion : pb::IMessage<CMsgTEExplosion>
         }
         case 117: {
           DebrisSurfaceprop = input.ReadFixed32();
+          break;
+        }
+        case 120: {
+          ExplosionTypeName = input.ReadUInt32();
           break;
         }
       }

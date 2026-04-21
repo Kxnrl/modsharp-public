@@ -17049,6 +17049,7 @@ class CMsgGCCStrike15_v2_ClientRequestJoinFriendData /*final*/ :
     kAccountIdFieldNumber = 2,
     kJoinTokenFieldNumber = 3,
     kJoinIppFieldNumber = 4,
+    kIsLocalServerFieldNumber = 7,
   };
   // optional string errormsg = 6;
   bool has_errormsg() const;
@@ -17138,6 +17139,19 @@ class CMsgGCCStrike15_v2_ClientRequestJoinFriendData /*final*/ :
   void _internal_set_join_ipp(uint32_t value);
   public:
 
+  // optional bool is_local_server = 7;
+  bool has_is_local_server() const;
+  private:
+  bool _internal_has_is_local_server() const;
+  public:
+  void clear_is_local_server();
+  bool is_local_server() const;
+  void set_is_local_server(bool value);
+  private:
+  bool _internal_is_local_server() const;
+  void _internal_set_is_local_server(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgGCCStrike15_v2_ClientRequestJoinFriendData)
  private:
   class _Internal;
@@ -17154,6 +17168,7 @@ class CMsgGCCStrike15_v2_ClientRequestJoinFriendData /*final*/ :
     uint32_t account_id_;
     uint32_t join_token_;
     uint32_t join_ipp_;
+    bool is_local_server_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -58258,6 +58273,34 @@ inline void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::set_allocated_errorm
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CMsgGCCStrike15_v2_ClientRequestJoinFriendData.errormsg)
+}
+
+// optional bool is_local_server = 7;
+inline bool CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_internal_has_is_local_server() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgGCCStrike15_v2_ClientRequestJoinFriendData::has_is_local_server() const {
+  return _internal_has_is_local_server();
+}
+inline void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::clear_is_local_server() {
+  _impl_.is_local_server_ = false;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline bool CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_internal_is_local_server() const {
+  return _impl_.is_local_server_;
+}
+inline bool CMsgGCCStrike15_v2_ClientRequestJoinFriendData::is_local_server() const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_ClientRequestJoinFriendData.is_local_server)
+  return _internal_is_local_server();
+}
+inline void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_internal_set_is_local_server(bool value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.is_local_server_ = value;
+}
+inline void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::set_is_local_server(bool value) {
+  _internal_set_is_local_server(value);
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_ClientRequestJoinFriendData.is_local_server)
 }
 
 // -------------------------------------------------------------------

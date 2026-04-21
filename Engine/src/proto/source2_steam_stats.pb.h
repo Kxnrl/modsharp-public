@@ -29,6 +29,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -53,6 +54,15 @@ extern CMsgSource2PerfIntervalSampleDefaultTypeInternal _CMsgSource2PerfInterval
 class CMsgSource2PerfIntervalSample_Tag;
 struct CMsgSource2PerfIntervalSample_TagDefaultTypeInternal;
 extern CMsgSource2PerfIntervalSample_TagDefaultTypeInternal _CMsgSource2PerfIntervalSample_Tag_default_instance_;
+class CMsgSource2PlayStatsPackedRecordList;
+struct CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal;
+extern CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_default_instance_;
+class CMsgSource2PlayStatsPackedRecordList_FieldDef;
+struct CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal;
+extern CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_FieldDef_default_instance_;
+class CMsgSource2PlayStatsPackedRecordList_SteamIDList;
+struct CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal;
+extern CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_SteamIDList_default_instance_;
 class CMsgSource2SystemSpecs;
 struct CMsgSource2SystemSpecsDefaultTypeInternal;
 extern CMsgSource2SystemSpecsDefaultTypeInternal _CMsgSource2SystemSpecs_default_instance_;
@@ -62,23 +72,80 @@ extern CMsgSource2VProfLiteReportDefaultTypeInternal _CMsgSource2VProfLiteReport
 class CMsgSource2VProfLiteReportItem;
 struct CMsgSource2VProfLiteReportItemDefaultTypeInternal;
 extern CMsgSource2VProfLiteReportItemDefaultTypeInternal _CMsgSource2VProfLiteReportItem_default_instance_;
+class CSource2Metrics_FetchMapData_Request;
+struct CSource2Metrics_FetchMapData_RequestDefaultTypeInternal;
+extern CSource2Metrics_FetchMapData_RequestDefaultTypeInternal _CSource2Metrics_FetchMapData_Request_default_instance_;
+class CSource2Metrics_FetchMapData_Response;
+struct CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal;
+extern CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal _CSource2Metrics_FetchMapData_Response_default_instance_;
+class CSource2Metrics_FetchMapData_Response_MapData;
+struct CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal;
+extern CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal _CSource2Metrics_FetchMapData_Response_MapData_default_instance_;
 class CSource2Metrics_MatchPerfSummary_Notification;
 struct CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal;
 extern CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal _CSource2Metrics_MatchPerfSummary_Notification_default_instance_;
 class CSource2Metrics_MatchPerfSummary_Notification_Client;
 struct CSource2Metrics_MatchPerfSummary_Notification_ClientDefaultTypeInternal;
 extern CSource2Metrics_MatchPerfSummary_Notification_ClientDefaultTypeInternal _CSource2Metrics_MatchPerfSummary_Notification_Client_default_instance_;
+class CSource2Metrics_RecordPlayStats_Notification;
+struct CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal;
+extern CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal _CSource2Metrics_RecordPlayStats_Notification_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CMsgSource2NetworkFlowQuality* Arena::CreateMaybeMessage<::CMsgSource2NetworkFlowQuality>(Arena*);
 template<> ::CMsgSource2PerfIntervalSample* Arena::CreateMaybeMessage<::CMsgSource2PerfIntervalSample>(Arena*);
 template<> ::CMsgSource2PerfIntervalSample_Tag* Arena::CreateMaybeMessage<::CMsgSource2PerfIntervalSample_Tag>(Arena*);
+template<> ::CMsgSource2PlayStatsPackedRecordList* Arena::CreateMaybeMessage<::CMsgSource2PlayStatsPackedRecordList>(Arena*);
+template<> ::CMsgSource2PlayStatsPackedRecordList_FieldDef* Arena::CreateMaybeMessage<::CMsgSource2PlayStatsPackedRecordList_FieldDef>(Arena*);
+template<> ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* Arena::CreateMaybeMessage<::CMsgSource2PlayStatsPackedRecordList_SteamIDList>(Arena*);
 template<> ::CMsgSource2SystemSpecs* Arena::CreateMaybeMessage<::CMsgSource2SystemSpecs>(Arena*);
 template<> ::CMsgSource2VProfLiteReport* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReport>(Arena*);
 template<> ::CMsgSource2VProfLiteReportItem* Arena::CreateMaybeMessage<::CMsgSource2VProfLiteReportItem>(Arena*);
+template<> ::CSource2Metrics_FetchMapData_Request* Arena::CreateMaybeMessage<::CSource2Metrics_FetchMapData_Request>(Arena*);
+template<> ::CSource2Metrics_FetchMapData_Response* Arena::CreateMaybeMessage<::CSource2Metrics_FetchMapData_Response>(Arena*);
+template<> ::CSource2Metrics_FetchMapData_Response_MapData* Arena::CreateMaybeMessage<::CSource2Metrics_FetchMapData_Response_MapData>(Arena*);
 template<> ::CSource2Metrics_MatchPerfSummary_Notification* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification>(Arena*);
 template<> ::CSource2Metrics_MatchPerfSummary_Notification_Client* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification_Client>(Arena*);
+template<> ::CSource2Metrics_RecordPlayStats_Notification* Arena::CreateMaybeMessage<::CSource2Metrics_RecordPlayStats_Notification>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
+enum ESource2PlayStatsFieldType : int {
+  Source2PlayStats_Invalid = 0,
+  Source2PlayStats_UInt64 = 1,
+  Source2PlayStats_UInt32 = 2,
+  Source2PlayStats_UInt16 = 3,
+  Source2PlayStats_UInt8 = 4,
+  Source2PlayStats_Int64 = 5,
+  Source2PlayStats_Int32 = 6,
+  Source2PlayStats_Int16 = 7,
+  Source2PlayStats_Int8 = 8,
+  Source2PlayStats_Float64 = 9,
+  Source2PlayStats_Float32 = 10,
+  Source2PlayStats_Bool = 11,
+  Source2PlayStats_String = 12,
+  Source2PlayStats_LowCardinalityString = 13,
+  Source2PlayStats_UTCDateTime = 14,
+  Source2PlayStats_SteamIDTrustBucket = 15,
+  Source2PlayStats_SteamIDTrustBucketMin = 16
+};
+bool ESource2PlayStatsFieldType_IsValid(int value);
+constexpr ESource2PlayStatsFieldType ESource2PlayStatsFieldType_MIN = Source2PlayStats_Invalid;
+constexpr ESource2PlayStatsFieldType ESource2PlayStatsFieldType_MAX = Source2PlayStats_SteamIDTrustBucketMin;
+constexpr int ESource2PlayStatsFieldType_ARRAYSIZE = ESource2PlayStatsFieldType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ESource2PlayStatsFieldType_descriptor();
+template<typename T>
+inline const std::string& ESource2PlayStatsFieldType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ESource2PlayStatsFieldType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ESource2PlayStatsFieldType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ESource2PlayStatsFieldType_descriptor(), enum_t_value);
+}
+inline bool ESource2PlayStatsFieldType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ESource2PlayStatsFieldType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ESource2PlayStatsFieldType>(
+    ESource2PlayStatsFieldType_descriptor(), name, value);
+}
 // ===================================================================
 
 class CMsgSource2SystemSpecs /*final*/ :
@@ -2844,6 +2911,1745 @@ class CSource2Metrics_MatchPerfSummary_Notification /*final*/ :
     uint32_t appid_;
     uint32_t server_build_id_;
     uint32_t server_popid_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSource2PlayStatsPackedRecordList_FieldDef /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2PlayStatsPackedRecordList.FieldDef) */ {
+ public:
+  inline CMsgSource2PlayStatsPackedRecordList_FieldDef() : CMsgSource2PlayStatsPackedRecordList_FieldDef(nullptr) {}
+  ~CMsgSource2PlayStatsPackedRecordList_FieldDef() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_FieldDef(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2PlayStatsPackedRecordList_FieldDef(const CMsgSource2PlayStatsPackedRecordList_FieldDef& from);
+  CMsgSource2PlayStatsPackedRecordList_FieldDef(CMsgSource2PlayStatsPackedRecordList_FieldDef&& from) noexcept
+    : CMsgSource2PlayStatsPackedRecordList_FieldDef() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2PlayStatsPackedRecordList_FieldDef& operator=(const CMsgSource2PlayStatsPackedRecordList_FieldDef& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2PlayStatsPackedRecordList_FieldDef& operator=(CMsgSource2PlayStatsPackedRecordList_FieldDef&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2PlayStatsPackedRecordList_FieldDef& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2PlayStatsPackedRecordList_FieldDef* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2PlayStatsPackedRecordList_FieldDef*>(
+               &_CMsgSource2PlayStatsPackedRecordList_FieldDef_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    8;
+
+  friend void swap(CMsgSource2PlayStatsPackedRecordList_FieldDef& a, CMsgSource2PlayStatsPackedRecordList_FieldDef& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2PlayStatsPackedRecordList_FieldDef* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2PlayStatsPackedRecordList_FieldDef* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2PlayStatsPackedRecordList_FieldDef* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2PlayStatsPackedRecordList_FieldDef>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2PlayStatsPackedRecordList_FieldDef& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2PlayStatsPackedRecordList_FieldDef& from) {
+    CMsgSource2PlayStatsPackedRecordList_FieldDef::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2PlayStatsPackedRecordList_FieldDef* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2PlayStatsPackedRecordList.FieldDef";
+  }
+  protected:
+  explicit CMsgSource2PlayStatsPackedRecordList_FieldDef(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFieldNameFieldNumber = 1,
+    kFieldTypeFieldNumber = 2,
+  };
+  // optional string field_name = 1;
+  bool has_field_name() const;
+  private:
+  bool _internal_has_field_name() const;
+  public:
+  void clear_field_name();
+  const std::string& field_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_field_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_field_name();
+  PROTOBUF_NODISCARD std::string* release_field_name();
+  void set_allocated_field_name(std::string* field_name);
+  private:
+  const std::string& _internal_field_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_field_name(const std::string& value);
+  std::string* _internal_mutable_field_name();
+  public:
+
+  // optional .ESource2PlayStatsFieldType field_type = 2 [default = Source2PlayStats_Invalid];
+  bool has_field_type() const;
+  private:
+  bool _internal_has_field_type() const;
+  public:
+  void clear_field_type();
+  ::ESource2PlayStatsFieldType field_type() const;
+  void set_field_type(::ESource2PlayStatsFieldType value);
+  private:
+  ::ESource2PlayStatsFieldType _internal_field_type() const;
+  void _internal_set_field_type(::ESource2PlayStatsFieldType value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr field_name_;
+    int field_type_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSource2PlayStatsPackedRecordList_SteamIDList /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2PlayStatsPackedRecordList.SteamIDList) */ {
+ public:
+  inline CMsgSource2PlayStatsPackedRecordList_SteamIDList() : CMsgSource2PlayStatsPackedRecordList_SteamIDList(nullptr) {}
+  ~CMsgSource2PlayStatsPackedRecordList_SteamIDList() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_SteamIDList(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2PlayStatsPackedRecordList_SteamIDList(const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from);
+  CMsgSource2PlayStatsPackedRecordList_SteamIDList(CMsgSource2PlayStatsPackedRecordList_SteamIDList&& from) noexcept
+    : CMsgSource2PlayStatsPackedRecordList_SteamIDList() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2PlayStatsPackedRecordList_SteamIDList& operator=(const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2PlayStatsPackedRecordList_SteamIDList& operator=(CMsgSource2PlayStatsPackedRecordList_SteamIDList&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2PlayStatsPackedRecordList_SteamIDList& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2PlayStatsPackedRecordList_SteamIDList* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2PlayStatsPackedRecordList_SteamIDList*>(
+               &_CMsgSource2PlayStatsPackedRecordList_SteamIDList_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(CMsgSource2PlayStatsPackedRecordList_SteamIDList& a, CMsgSource2PlayStatsPackedRecordList_SteamIDList& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2PlayStatsPackedRecordList_SteamIDList* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2PlayStatsPackedRecordList_SteamIDList* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2PlayStatsPackedRecordList_SteamIDList* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2PlayStatsPackedRecordList_SteamIDList>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from) {
+    CMsgSource2PlayStatsPackedRecordList_SteamIDList::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2PlayStatsPackedRecordList_SteamIDList* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2PlayStatsPackedRecordList.SteamIDList";
+  }
+  protected:
+  explicit CMsgSource2PlayStatsPackedRecordList_SteamIDList(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSteamidFieldNumber = 1,
+  };
+  // repeated fixed64 steamid = 1 [packed = true];
+  int steamid_size() const;
+  private:
+  int _internal_steamid_size() const;
+  public:
+  void clear_steamid();
+  private:
+  uint64_t _internal_steamid(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_steamid() const;
+  void _internal_add_steamid(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_steamid();
+  public:
+  uint64_t steamid(int index) const;
+  void set_steamid(int index, uint64_t value);
+  void add_steamid(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      steamid() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_steamid();
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > steamid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgSource2PlayStatsPackedRecordList /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgSource2PlayStatsPackedRecordList) */ {
+ public:
+  inline CMsgSource2PlayStatsPackedRecordList() : CMsgSource2PlayStatsPackedRecordList(nullptr) {}
+  ~CMsgSource2PlayStatsPackedRecordList() override;
+  explicit PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgSource2PlayStatsPackedRecordList(const CMsgSource2PlayStatsPackedRecordList& from);
+  CMsgSource2PlayStatsPackedRecordList(CMsgSource2PlayStatsPackedRecordList&& from) noexcept
+    : CMsgSource2PlayStatsPackedRecordList() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgSource2PlayStatsPackedRecordList& operator=(const CMsgSource2PlayStatsPackedRecordList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgSource2PlayStatsPackedRecordList& operator=(CMsgSource2PlayStatsPackedRecordList&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgSource2PlayStatsPackedRecordList& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgSource2PlayStatsPackedRecordList* internal_default_instance() {
+    return reinterpret_cast<const CMsgSource2PlayStatsPackedRecordList*>(
+               &_CMsgSource2PlayStatsPackedRecordList_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(CMsgSource2PlayStatsPackedRecordList& a, CMsgSource2PlayStatsPackedRecordList& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgSource2PlayStatsPackedRecordList* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgSource2PlayStatsPackedRecordList* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgSource2PlayStatsPackedRecordList* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgSource2PlayStatsPackedRecordList>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgSource2PlayStatsPackedRecordList& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgSource2PlayStatsPackedRecordList& from) {
+    CMsgSource2PlayStatsPackedRecordList::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgSource2PlayStatsPackedRecordList* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgSource2PlayStatsPackedRecordList";
+  }
+  protected:
+  explicit CMsgSource2PlayStatsPackedRecordList(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CMsgSource2PlayStatsPackedRecordList_FieldDef FieldDef;
+  typedef CMsgSource2PlayStatsPackedRecordList_SteamIDList SteamIDList;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kFieldDefsFieldNumber = 2,
+    kUint64ValsFieldNumber = 4,
+    kUint32ValsFieldNumber = 5,
+    kUint16ValsFieldNumber = 6,
+    kUint8ValsFieldNumber = 7,
+    kInt64ValsFieldNumber = 8,
+    kInt32ValsFieldNumber = 9,
+    kInt16ValsFieldNumber = 10,
+    kInt8ValsFieldNumber = 11,
+    kFloat64ValsFieldNumber = 12,
+    kFloat32ValsFieldNumber = 13,
+    kBoolValsFieldNumber = 14,
+    kStringValsFieldNumber = 15,
+    kLowCardinalityStringValsFieldNumber = 16,
+    kUtcdatetimeValsFieldNumber = 17,
+    kSteamidtrustbucketValsFieldNumber = 18,
+    kTrustbucketValsFieldNumber = 19,
+    kRecordNameFieldNumber = 1,
+    kRecordCountFieldNumber = 3,
+  };
+  // repeated .CMsgSource2PlayStatsPackedRecordList.FieldDef field_defs = 2;
+  int field_defs_size() const;
+  private:
+  int _internal_field_defs_size() const;
+  public:
+  void clear_field_defs();
+  ::CMsgSource2PlayStatsPackedRecordList_FieldDef* mutable_field_defs(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >*
+      mutable_field_defs();
+  private:
+  const ::CMsgSource2PlayStatsPackedRecordList_FieldDef& _internal_field_defs(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList_FieldDef* _internal_add_field_defs();
+  public:
+  const ::CMsgSource2PlayStatsPackedRecordList_FieldDef& field_defs(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList_FieldDef* add_field_defs();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >&
+      field_defs() const;
+
+  // repeated uint64 uint64_vals = 4 [packed = true];
+  int uint64_vals_size() const;
+  private:
+  int _internal_uint64_vals_size() const;
+  public:
+  void clear_uint64_vals();
+  private:
+  uint64_t _internal_uint64_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_uint64_vals() const;
+  void _internal_add_uint64_vals(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_uint64_vals();
+  public:
+  uint64_t uint64_vals(int index) const;
+  void set_uint64_vals(int index, uint64_t value);
+  void add_uint64_vals(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      uint64_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_uint64_vals();
+
+  // repeated uint32 uint32_vals = 5 [packed = true];
+  int uint32_vals_size() const;
+  private:
+  int _internal_uint32_vals_size() const;
+  public:
+  void clear_uint32_vals();
+  private:
+  uint32_t _internal_uint32_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_uint32_vals() const;
+  void _internal_add_uint32_vals(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_uint32_vals();
+  public:
+  uint32_t uint32_vals(int index) const;
+  void set_uint32_vals(int index, uint32_t value);
+  void add_uint32_vals(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      uint32_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_uint32_vals();
+
+  // repeated uint32 uint16_vals = 6 [packed = true];
+  int uint16_vals_size() const;
+  private:
+  int _internal_uint16_vals_size() const;
+  public:
+  void clear_uint16_vals();
+  private:
+  uint32_t _internal_uint16_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_uint16_vals() const;
+  void _internal_add_uint16_vals(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_uint16_vals();
+  public:
+  uint32_t uint16_vals(int index) const;
+  void set_uint16_vals(int index, uint32_t value);
+  void add_uint16_vals(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      uint16_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_uint16_vals();
+
+  // repeated uint32 uint8_vals = 7 [packed = true];
+  int uint8_vals_size() const;
+  private:
+  int _internal_uint8_vals_size() const;
+  public:
+  void clear_uint8_vals();
+  private:
+  uint32_t _internal_uint8_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_uint8_vals() const;
+  void _internal_add_uint8_vals(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_uint8_vals();
+  public:
+  uint32_t uint8_vals(int index) const;
+  void set_uint8_vals(int index, uint32_t value);
+  void add_uint8_vals(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      uint8_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_uint8_vals();
+
+  // repeated int64 int64_vals = 8 [packed = true];
+  int int64_vals_size() const;
+  private:
+  int _internal_int64_vals_size() const;
+  public:
+  void clear_int64_vals();
+  private:
+  int64_t _internal_int64_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >&
+      _internal_int64_vals() const;
+  void _internal_add_int64_vals(int64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >*
+      _internal_mutable_int64_vals();
+  public:
+  int64_t int64_vals(int index) const;
+  void set_int64_vals(int index, int64_t value);
+  void add_int64_vals(int64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >&
+      int64_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >*
+      mutable_int64_vals();
+
+  // repeated int32 int32_vals = 9 [packed = true];
+  int int32_vals_size() const;
+  private:
+  int _internal_int32_vals_size() const;
+  public:
+  void clear_int32_vals();
+  private:
+  int32_t _internal_int32_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_int32_vals() const;
+  void _internal_add_int32_vals(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_int32_vals();
+  public:
+  int32_t int32_vals(int index) const;
+  void set_int32_vals(int index, int32_t value);
+  void add_int32_vals(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      int32_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_int32_vals();
+
+  // repeated int32 int16_vals = 10 [packed = true];
+  int int16_vals_size() const;
+  private:
+  int _internal_int16_vals_size() const;
+  public:
+  void clear_int16_vals();
+  private:
+  int32_t _internal_int16_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_int16_vals() const;
+  void _internal_add_int16_vals(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_int16_vals();
+  public:
+  int32_t int16_vals(int index) const;
+  void set_int16_vals(int index, int32_t value);
+  void add_int16_vals(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      int16_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_int16_vals();
+
+  // repeated int32 int8_vals = 11 [packed = true];
+  int int8_vals_size() const;
+  private:
+  int _internal_int8_vals_size() const;
+  public:
+  void clear_int8_vals();
+  private:
+  int32_t _internal_int8_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      _internal_int8_vals() const;
+  void _internal_add_int8_vals(int32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      _internal_mutable_int8_vals();
+  public:
+  int32_t int8_vals(int index) const;
+  void set_int8_vals(int index, int32_t value);
+  void add_int8_vals(int32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+      int8_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+      mutable_int8_vals();
+
+  // repeated double float64_vals = 12 [packed = true];
+  int float64_vals_size() const;
+  private:
+  int _internal_float64_vals_size() const;
+  public:
+  void clear_float64_vals();
+  private:
+  double _internal_float64_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+      _internal_float64_vals() const;
+  void _internal_add_float64_vals(double value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+      _internal_mutable_float64_vals();
+  public:
+  double float64_vals(int index) const;
+  void set_float64_vals(int index, double value);
+  void add_float64_vals(double value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+      float64_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+      mutable_float64_vals();
+
+  // repeated float float32_vals = 13 [packed = true];
+  int float32_vals_size() const;
+  private:
+  int _internal_float32_vals_size() const;
+  public:
+  void clear_float32_vals();
+  private:
+  float _internal_float32_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      _internal_float32_vals() const;
+  void _internal_add_float32_vals(float value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      _internal_mutable_float32_vals();
+  public:
+  float float32_vals(int index) const;
+  void set_float32_vals(int index, float value);
+  void add_float32_vals(float value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+      float32_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+      mutable_float32_vals();
+
+  // repeated bool bool_vals = 14 [packed = true];
+  int bool_vals_size() const;
+  private:
+  int _internal_bool_vals_size() const;
+  public:
+  void clear_bool_vals();
+  private:
+  bool _internal_bool_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >&
+      _internal_bool_vals() const;
+  void _internal_add_bool_vals(bool value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >*
+      _internal_mutable_bool_vals();
+  public:
+  bool bool_vals(int index) const;
+  void set_bool_vals(int index, bool value);
+  void add_bool_vals(bool value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >&
+      bool_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >*
+      mutable_bool_vals();
+
+  // repeated string string_vals = 15;
+  int string_vals_size() const;
+  private:
+  int _internal_string_vals_size() const;
+  public:
+  void clear_string_vals();
+  const std::string& string_vals(int index) const;
+  std::string* mutable_string_vals(int index);
+  void set_string_vals(int index, const std::string& value);
+  void set_string_vals(int index, std::string&& value);
+  void set_string_vals(int index, const char* value);
+  void set_string_vals(int index, const char* value, size_t size);
+  std::string* add_string_vals();
+  void add_string_vals(const std::string& value);
+  void add_string_vals(std::string&& value);
+  void add_string_vals(const char* value);
+  void add_string_vals(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& string_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_string_vals();
+  private:
+  const std::string& _internal_string_vals(int index) const;
+  std::string* _internal_add_string_vals();
+  public:
+
+  // repeated string low_cardinality_string_vals = 16;
+  int low_cardinality_string_vals_size() const;
+  private:
+  int _internal_low_cardinality_string_vals_size() const;
+  public:
+  void clear_low_cardinality_string_vals();
+  const std::string& low_cardinality_string_vals(int index) const;
+  std::string* mutable_low_cardinality_string_vals(int index);
+  void set_low_cardinality_string_vals(int index, const std::string& value);
+  void set_low_cardinality_string_vals(int index, std::string&& value);
+  void set_low_cardinality_string_vals(int index, const char* value);
+  void set_low_cardinality_string_vals(int index, const char* value, size_t size);
+  std::string* add_low_cardinality_string_vals();
+  void add_low_cardinality_string_vals(const std::string& value);
+  void add_low_cardinality_string_vals(std::string&& value);
+  void add_low_cardinality_string_vals(const char* value);
+  void add_low_cardinality_string_vals(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& low_cardinality_string_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_low_cardinality_string_vals();
+  private:
+  const std::string& _internal_low_cardinality_string_vals(int index) const;
+  std::string* _internal_add_low_cardinality_string_vals();
+  public:
+
+  // repeated fixed32 utcdatetime_vals = 17 [packed = true];
+  int utcdatetime_vals_size() const;
+  private:
+  int _internal_utcdatetime_vals_size() const;
+  public:
+  void clear_utcdatetime_vals();
+  private:
+  uint32_t _internal_utcdatetime_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      _internal_utcdatetime_vals() const;
+  void _internal_add_utcdatetime_vals(uint32_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      _internal_mutable_utcdatetime_vals();
+  public:
+  uint32_t utcdatetime_vals(int index) const;
+  void set_utcdatetime_vals(int index, uint32_t value);
+  void add_utcdatetime_vals(uint32_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+      utcdatetime_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+      mutable_utcdatetime_vals();
+
+  // repeated fixed64 steamidtrustbucket_vals = 18 [packed = true];
+  int steamidtrustbucket_vals_size() const;
+  private:
+  int _internal_steamidtrustbucket_vals_size() const;
+  public:
+  void clear_steamidtrustbucket_vals();
+  private:
+  uint64_t _internal_steamidtrustbucket_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_steamidtrustbucket_vals() const;
+  void _internal_add_steamidtrustbucket_vals(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_steamidtrustbucket_vals();
+  public:
+  uint64_t steamidtrustbucket_vals(int index) const;
+  void set_steamidtrustbucket_vals(int index, uint64_t value);
+  void add_steamidtrustbucket_vals(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      steamidtrustbucket_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_steamidtrustbucket_vals();
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList.SteamIDList trustbucket_vals = 19;
+  int trustbucket_vals_size() const;
+  private:
+  int _internal_trustbucket_vals_size() const;
+  public:
+  void clear_trustbucket_vals();
+  ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* mutable_trustbucket_vals(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >*
+      mutable_trustbucket_vals();
+  private:
+  const ::CMsgSource2PlayStatsPackedRecordList_SteamIDList& _internal_trustbucket_vals(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* _internal_add_trustbucket_vals();
+  public:
+  const ::CMsgSource2PlayStatsPackedRecordList_SteamIDList& trustbucket_vals(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* add_trustbucket_vals();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >&
+      trustbucket_vals() const;
+
+  // optional string record_name = 1;
+  bool has_record_name() const;
+  private:
+  bool _internal_has_record_name() const;
+  public:
+  void clear_record_name();
+  const std::string& record_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_record_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_record_name();
+  PROTOBUF_NODISCARD std::string* release_record_name();
+  void set_allocated_record_name(std::string* record_name);
+  private:
+  const std::string& _internal_record_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_record_name(const std::string& value);
+  std::string* _internal_mutable_record_name();
+  public:
+
+  // optional uint32 record_count = 3;
+  bool has_record_count() const;
+  private:
+  bool _internal_has_record_count() const;
+  public:
+  void clear_record_count();
+  uint32_t record_count() const;
+  void set_record_count(uint32_t value);
+  private:
+  uint32_t _internal_record_count() const;
+  void _internal_set_record_count(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgSource2PlayStatsPackedRecordList)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_FieldDef > field_defs_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > uint64_vals_;
+    mutable std::atomic<int> _uint64_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > uint32_vals_;
+    mutable std::atomic<int> _uint32_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > uint16_vals_;
+    mutable std::atomic<int> _uint16_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > uint8_vals_;
+    mutable std::atomic<int> _uint8_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t > int64_vals_;
+    mutable std::atomic<int> _int64_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > int32_vals_;
+    mutable std::atomic<int> _int32_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > int16_vals_;
+    mutable std::atomic<int> _int16_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > int8_vals_;
+    mutable std::atomic<int> _int8_vals_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< double > float64_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< float > float32_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool > bool_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> string_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> low_cardinality_string_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > utcdatetime_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > steamidtrustbucket_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList > trustbucket_vals_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr record_name_;
+    uint32_t record_count_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_RecordPlayStats_Notification /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_RecordPlayStats_Notification) */ {
+ public:
+  inline CSource2Metrics_RecordPlayStats_Notification() : CSource2Metrics_RecordPlayStats_Notification(nullptr) {}
+  ~CSource2Metrics_RecordPlayStats_Notification() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_RecordPlayStats_Notification(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_RecordPlayStats_Notification(const CSource2Metrics_RecordPlayStats_Notification& from);
+  CSource2Metrics_RecordPlayStats_Notification(CSource2Metrics_RecordPlayStats_Notification&& from) noexcept
+    : CSource2Metrics_RecordPlayStats_Notification() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_RecordPlayStats_Notification& operator=(const CSource2Metrics_RecordPlayStats_Notification& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_RecordPlayStats_Notification& operator=(CSource2Metrics_RecordPlayStats_Notification&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_RecordPlayStats_Notification& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_RecordPlayStats_Notification* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_RecordPlayStats_Notification*>(
+               &_CSource2Metrics_RecordPlayStats_Notification_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(CSource2Metrics_RecordPlayStats_Notification& a, CSource2Metrics_RecordPlayStats_Notification& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_RecordPlayStats_Notification* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_RecordPlayStats_Notification* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_RecordPlayStats_Notification* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_RecordPlayStats_Notification>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_RecordPlayStats_Notification& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_RecordPlayStats_Notification& from) {
+    CSource2Metrics_RecordPlayStats_Notification::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_RecordPlayStats_Notification* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_RecordPlayStats_Notification";
+  }
+  protected:
+  explicit CSource2Metrics_RecordPlayStats_Notification(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRecordTypesFieldNumber = 1,
+    kAppidFieldNumber = 2,
+  };
+  // repeated .CMsgSource2PlayStatsPackedRecordList record_types = 1;
+  int record_types_size() const;
+  private:
+  int _internal_record_types_size() const;
+  public:
+  void clear_record_types();
+  ::CMsgSource2PlayStatsPackedRecordList* mutable_record_types(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList >*
+      mutable_record_types();
+  private:
+  const ::CMsgSource2PlayStatsPackedRecordList& _internal_record_types(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList* _internal_add_record_types();
+  public:
+  const ::CMsgSource2PlayStatsPackedRecordList& record_types(int index) const;
+  ::CMsgSource2PlayStatsPackedRecordList* add_record_types();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList >&
+      record_types() const;
+
+  // optional uint32 appid = 2;
+  bool has_appid() const;
+  private:
+  bool _internal_has_appid() const;
+  public:
+  void clear_appid();
+  uint32_t appid() const;
+  void set_appid(uint32_t value);
+  private:
+  uint32_t _internal_appid() const;
+  void _internal_set_appid(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_RecordPlayStats_Notification)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList > record_types_;
+    uint32_t appid_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_FetchMapData_Request /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_FetchMapData_Request) */ {
+ public:
+  inline CSource2Metrics_FetchMapData_Request() : CSource2Metrics_FetchMapData_Request(nullptr) {}
+  ~CSource2Metrics_FetchMapData_Request() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Request(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_FetchMapData_Request(const CSource2Metrics_FetchMapData_Request& from);
+  CSource2Metrics_FetchMapData_Request(CSource2Metrics_FetchMapData_Request&& from) noexcept
+    : CSource2Metrics_FetchMapData_Request() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_FetchMapData_Request& operator=(const CSource2Metrics_FetchMapData_Request& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_FetchMapData_Request& operator=(CSource2Metrics_FetchMapData_Request&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_FetchMapData_Request& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_FetchMapData_Request* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_FetchMapData_Request*>(
+               &_CSource2Metrics_FetchMapData_Request_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(CSource2Metrics_FetchMapData_Request& a, CSource2Metrics_FetchMapData_Request& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_FetchMapData_Request* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_FetchMapData_Request* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_FetchMapData_Request* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_FetchMapData_Request>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_FetchMapData_Request& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_FetchMapData_Request& from) {
+    CSource2Metrics_FetchMapData_Request::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_FetchMapData_Request* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_FetchMapData_Request";
+  }
+  protected:
+  explicit CSource2Metrics_FetchMapData_Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kMapNameFieldNumber = 2,
+    kParamFieldNumber = 5,
+    kAppidFieldNumber = 1,
+    kGameTypeFieldNumber = 3,
+    kGameModeFieldNumber = 4,
+    kTimeSpanFieldNumber = 6,
+  };
+  // optional string map_name = 2;
+  bool has_map_name() const;
+  private:
+  bool _internal_has_map_name() const;
+  public:
+  void clear_map_name();
+  const std::string& map_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_map_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_map_name();
+  PROTOBUF_NODISCARD std::string* release_map_name();
+  void set_allocated_map_name(std::string* map_name);
+  private:
+  const std::string& _internal_map_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_map_name(const std::string& value);
+  std::string* _internal_mutable_map_name();
+  public:
+
+  // optional string param = 5;
+  bool has_param() const;
+  private:
+  bool _internal_has_param() const;
+  public:
+  void clear_param();
+  const std::string& param() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_param(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_param();
+  PROTOBUF_NODISCARD std::string* release_param();
+  void set_allocated_param(std::string* param);
+  private:
+  const std::string& _internal_param() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param(const std::string& value);
+  std::string* _internal_mutable_param();
+  public:
+
+  // optional uint32 appid = 1;
+  bool has_appid() const;
+  private:
+  bool _internal_has_appid() const;
+  public:
+  void clear_appid();
+  uint32_t appid() const;
+  void set_appid(uint32_t value);
+  private:
+  uint32_t _internal_appid() const;
+  void _internal_set_appid(uint32_t value);
+  public:
+
+  // optional uint32 game_type = 3;
+  bool has_game_type() const;
+  private:
+  bool _internal_has_game_type() const;
+  public:
+  void clear_game_type();
+  uint32_t game_type() const;
+  void set_game_type(uint32_t value);
+  private:
+  uint32_t _internal_game_type() const;
+  void _internal_set_game_type(uint32_t value);
+  public:
+
+  // optional uint32 game_mode = 4;
+  bool has_game_mode() const;
+  private:
+  bool _internal_has_game_mode() const;
+  public:
+  void clear_game_mode();
+  uint32_t game_mode() const;
+  void set_game_mode(uint32_t value);
+  private:
+  uint32_t _internal_game_mode() const;
+  void _internal_set_game_mode(uint32_t value);
+  public:
+
+  // optional uint32 time_span = 6;
+  bool has_time_span() const;
+  private:
+  bool _internal_has_time_span() const;
+  public:
+  void clear_time_span();
+  uint32_t time_span() const;
+  void set_time_span(uint32_t value);
+  private:
+  uint32_t _internal_time_span() const;
+  void _internal_set_time_span(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_FetchMapData_Request)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr map_name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_;
+    uint32_t appid_;
+    uint32_t game_type_;
+    uint32_t game_mode_;
+    uint32_t time_span_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_FetchMapData_Response_MapData /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_FetchMapData_Response.MapData) */ {
+ public:
+  inline CSource2Metrics_FetchMapData_Response_MapData() : CSource2Metrics_FetchMapData_Response_MapData(nullptr) {}
+  ~CSource2Metrics_FetchMapData_Response_MapData() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Response_MapData(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_FetchMapData_Response_MapData(const CSource2Metrics_FetchMapData_Response_MapData& from);
+  CSource2Metrics_FetchMapData_Response_MapData(CSource2Metrics_FetchMapData_Response_MapData&& from) noexcept
+    : CSource2Metrics_FetchMapData_Response_MapData() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_FetchMapData_Response_MapData& operator=(const CSource2Metrics_FetchMapData_Response_MapData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_FetchMapData_Response_MapData& operator=(CSource2Metrics_FetchMapData_Response_MapData&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_FetchMapData_Response_MapData& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_FetchMapData_Response_MapData* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_FetchMapData_Response_MapData*>(
+               &_CSource2Metrics_FetchMapData_Response_MapData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(CSource2Metrics_FetchMapData_Response_MapData& a, CSource2Metrics_FetchMapData_Response_MapData& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_FetchMapData_Response_MapData* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_FetchMapData_Response_MapData* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_FetchMapData_Response_MapData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_FetchMapData_Response_MapData>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_FetchMapData_Response_MapData& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_FetchMapData_Response_MapData& from) {
+    CSource2Metrics_FetchMapData_Response_MapData::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_FetchMapData_Response_MapData* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_FetchMapData_Response.MapData";
+  }
+  protected:
+  explicit CSource2Metrics_FetchMapData_Response_MapData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kNameFieldNumber = 1,
+    kTypeFieldNumber = 2,
+    kDataFieldNumber = 3,
+  };
+  // optional string name = 1;
+  bool has_name() const;
+  private:
+  bool _internal_has_name() const;
+  public:
+  void clear_name();
+  const std::string& name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_name();
+  PROTOBUF_NODISCARD std::string* release_name();
+  void set_allocated_name(std::string* name);
+  private:
+  const std::string& _internal_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_name(const std::string& value);
+  std::string* _internal_mutable_name();
+  public:
+
+  // optional string type = 2;
+  bool has_type() const;
+  private:
+  bool _internal_has_type() const;
+  public:
+  void clear_type();
+  const std::string& type() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_type(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_type();
+  PROTOBUF_NODISCARD std::string* release_type();
+  void set_allocated_type(std::string* type);
+  private:
+  const std::string& _internal_type() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_type(const std::string& value);
+  std::string* _internal_mutable_type();
+  public:
+
+  // optional string data = 3;
+  bool has_data() const;
+  private:
+  bool _internal_has_data() const;
+  public:
+  void clear_data();
+  const std::string& data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_data();
+  PROTOBUF_NODISCARD std::string* release_data();
+  void set_allocated_data(std::string* data);
+  private:
+  const std::string& _internal_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
+  std::string* _internal_mutable_data();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_FetchMapData_Response.MapData)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr type_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSource2Metrics_FetchMapData_Response /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSource2Metrics_FetchMapData_Response) */ {
+ public:
+  inline CSource2Metrics_FetchMapData_Response() : CSource2Metrics_FetchMapData_Response(nullptr) {}
+  ~CSource2Metrics_FetchMapData_Response() override;
+  explicit PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Response(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSource2Metrics_FetchMapData_Response(const CSource2Metrics_FetchMapData_Response& from);
+  CSource2Metrics_FetchMapData_Response(CSource2Metrics_FetchMapData_Response&& from) noexcept
+    : CSource2Metrics_FetchMapData_Response() {
+    *this = ::std::move(from);
+  }
+
+  inline CSource2Metrics_FetchMapData_Response& operator=(const CSource2Metrics_FetchMapData_Response& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSource2Metrics_FetchMapData_Response& operator=(CSource2Metrics_FetchMapData_Response&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSource2Metrics_FetchMapData_Response& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSource2Metrics_FetchMapData_Response* internal_default_instance() {
+    return reinterpret_cast<const CSource2Metrics_FetchMapData_Response*>(
+               &_CSource2Metrics_FetchMapData_Response_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(CSource2Metrics_FetchMapData_Response& a, CSource2Metrics_FetchMapData_Response& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSource2Metrics_FetchMapData_Response* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSource2Metrics_FetchMapData_Response* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSource2Metrics_FetchMapData_Response* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSource2Metrics_FetchMapData_Response>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSource2Metrics_FetchMapData_Response& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSource2Metrics_FetchMapData_Response& from) {
+    CSource2Metrics_FetchMapData_Response::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSource2Metrics_FetchMapData_Response* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSource2Metrics_FetchMapData_Response";
+  }
+  protected:
+  explicit CSource2Metrics_FetchMapData_Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CSource2Metrics_FetchMapData_Response_MapData MapData;
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kResultsFieldNumber = 1,
+  };
+  // repeated .CSource2Metrics_FetchMapData_Response.MapData results = 1;
+  int results_size() const;
+  private:
+  int _internal_results_size() const;
+  public:
+  void clear_results();
+  ::CSource2Metrics_FetchMapData_Response_MapData* mutable_results(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData >*
+      mutable_results();
+  private:
+  const ::CSource2Metrics_FetchMapData_Response_MapData& _internal_results(int index) const;
+  ::CSource2Metrics_FetchMapData_Response_MapData* _internal_add_results();
+  public:
+  const ::CSource2Metrics_FetchMapData_Response_MapData& results(int index) const;
+  ::CSource2Metrics_FetchMapData_Response_MapData* add_results();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData >&
+      results() const;
+
+  // @@protoc_insertion_point(class_scope:CSource2Metrics_FetchMapData_Response)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData > results_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
@@ -6455,6 +8261,1675 @@ inline void CSource2Metrics_MatchPerfSummary_Notification::set_allocated_map(std
   // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_MatchPerfSummary_Notification.map)
 }
 
+// -------------------------------------------------------------------
+
+// CMsgSource2PlayStatsPackedRecordList_FieldDef
+
+// optional string field_name = 1;
+inline bool CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_has_field_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgSource2PlayStatsPackedRecordList_FieldDef::has_field_name() const {
+  return _internal_has_field_name();
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::clear_field_name() {
+  _impl_.field_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList_FieldDef::field_name() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name)
+  return _internal_field_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::set_field_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.field_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name)
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList_FieldDef::mutable_field_name() {
+  std::string* _s = _internal_mutable_field_name();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name)
+  return _s;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_field_name() const {
+  return _impl_.field_name_.Get();
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_set_field_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.field_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_mutable_field_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.field_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList_FieldDef::release_field_name() {
+  // @@protoc_insertion_point(field_release:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name)
+  if (!_internal_has_field_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.field_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.field_name_.IsDefault()) {
+    _impl_.field_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::set_allocated_field_name(std::string* field_name) {
+  if (field_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.field_name_.SetAllocated(field_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.field_name_.IsDefault()) {
+    _impl_.field_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name)
+}
+
+// optional .ESource2PlayStatsFieldType field_type = 2 [default = Source2PlayStats_Invalid];
+inline bool CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_has_field_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2PlayStatsPackedRecordList_FieldDef::has_field_type() const {
+  return _internal_has_field_type();
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::clear_field_type() {
+  _impl_.field_type_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline ::ESource2PlayStatsFieldType CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_field_type() const {
+  return static_cast< ::ESource2PlayStatsFieldType >(_impl_.field_type_);
+}
+inline ::ESource2PlayStatsFieldType CMsgSource2PlayStatsPackedRecordList_FieldDef::field_type() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_type)
+  return _internal_field_type();
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::_internal_set_field_type(::ESource2PlayStatsFieldType value) {
+  assert(::ESource2PlayStatsFieldType_IsValid(value));
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.field_type_ = value;
+}
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::set_field_type(::ESource2PlayStatsFieldType value) {
+  _internal_set_field_type(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.FieldDef.field_type)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2PlayStatsPackedRecordList_SteamIDList
+
+// repeated fixed64 steamid = 1 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList_SteamIDList::_internal_steamid_size() const {
+  return _impl_.steamid_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList_SteamIDList::steamid_size() const {
+  return _internal_steamid_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::clear_steamid() {
+  _impl_.steamid_.Clear();
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList_SteamIDList::_internal_steamid(int index) const {
+  return _impl_.steamid_.Get(index);
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList_SteamIDList::steamid(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.SteamIDList.steamid)
+  return _internal_steamid(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::set_steamid(int index, uint64_t value) {
+  _impl_.steamid_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.SteamIDList.steamid)
+}
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::_internal_add_steamid(uint64_t value) {
+  _impl_.steamid_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::add_steamid(uint64_t value) {
+  _internal_add_steamid(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.SteamIDList.steamid)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::_internal_steamid() const {
+  return _impl_.steamid_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::steamid() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.SteamIDList.steamid)
+  return _internal_steamid();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::_internal_mutable_steamid() {
+  return &_impl_.steamid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::mutable_steamid() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.SteamIDList.steamid)
+  return _internal_mutable_steamid();
+}
+
+// -------------------------------------------------------------------
+
+// CMsgSource2PlayStatsPackedRecordList
+
+// optional string record_name = 1;
+inline bool CMsgSource2PlayStatsPackedRecordList::_internal_has_record_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgSource2PlayStatsPackedRecordList::has_record_name() const {
+  return _internal_has_record_name();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_record_name() {
+  _impl_.record_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::record_name() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.record_name)
+  return _internal_record_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgSource2PlayStatsPackedRecordList::set_record_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.record_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.record_name)
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::mutable_record_name() {
+  std::string* _s = _internal_mutable_record_name();
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.record_name)
+  return _s;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::_internal_record_name() const {
+  return _impl_.record_name_.Get();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_set_record_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.record_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::_internal_mutable_record_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.record_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::release_record_name() {
+  // @@protoc_insertion_point(field_release:CMsgSource2PlayStatsPackedRecordList.record_name)
+  if (!_internal_has_record_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.record_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.record_name_.IsDefault()) {
+    _impl_.record_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_allocated_record_name(std::string* record_name) {
+  if (record_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.record_name_.SetAllocated(record_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.record_name_.IsDefault()) {
+    _impl_.record_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgSource2PlayStatsPackedRecordList.record_name)
+}
+
+// repeated .CMsgSource2PlayStatsPackedRecordList.FieldDef field_defs = 2;
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_field_defs_size() const {
+  return _impl_.field_defs_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::field_defs_size() const {
+  return _internal_field_defs_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_field_defs() {
+  _impl_.field_defs_.Clear();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_FieldDef* CMsgSource2PlayStatsPackedRecordList::mutable_field_defs(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.field_defs)
+  return _impl_.field_defs_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >*
+CMsgSource2PlayStatsPackedRecordList::mutable_field_defs() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.field_defs)
+  return &_impl_.field_defs_;
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList_FieldDef& CMsgSource2PlayStatsPackedRecordList::_internal_field_defs(int index) const {
+  return _impl_.field_defs_.Get(index);
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList_FieldDef& CMsgSource2PlayStatsPackedRecordList::field_defs(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.field_defs)
+  return _internal_field_defs(index);
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_FieldDef* CMsgSource2PlayStatsPackedRecordList::_internal_add_field_defs() {
+  return _impl_.field_defs_.Add();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_FieldDef* CMsgSource2PlayStatsPackedRecordList::add_field_defs() {
+  ::CMsgSource2PlayStatsPackedRecordList_FieldDef* _add = _internal_add_field_defs();
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.field_defs)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >&
+CMsgSource2PlayStatsPackedRecordList::field_defs() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.field_defs)
+  return _impl_.field_defs_;
+}
+
+// optional uint32 record_count = 3;
+inline bool CMsgSource2PlayStatsPackedRecordList::_internal_has_record_count() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgSource2PlayStatsPackedRecordList::has_record_count() const {
+  return _internal_has_record_count();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_record_count() {
+  _impl_.record_count_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::_internal_record_count() const {
+  return _impl_.record_count_;
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::record_count() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.record_count)
+  return _internal_record_count();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_set_record_count(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.record_count_ = value;
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_record_count(uint32_t value) {
+  _internal_set_record_count(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.record_count)
+}
+
+// repeated uint64 uint64_vals = 4 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_uint64_vals_size() const {
+  return _impl_.uint64_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::uint64_vals_size() const {
+  return _internal_uint64_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_uint64_vals() {
+  _impl_.uint64_vals_.Clear();
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::_internal_uint64_vals(int index) const {
+  return _impl_.uint64_vals_.Get(index);
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::uint64_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.uint64_vals)
+  return _internal_uint64_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_uint64_vals(int index, uint64_t value) {
+  _impl_.uint64_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.uint64_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_uint64_vals(uint64_t value) {
+  _impl_.uint64_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_uint64_vals(uint64_t value) {
+  _internal_add_uint64_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.uint64_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_uint64_vals() const {
+  return _impl_.uint64_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::uint64_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.uint64_vals)
+  return _internal_uint64_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_uint64_vals() {
+  return &_impl_.uint64_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_uint64_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.uint64_vals)
+  return _internal_mutable_uint64_vals();
+}
+
+// repeated uint32 uint32_vals = 5 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_uint32_vals_size() const {
+  return _impl_.uint32_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::uint32_vals_size() const {
+  return _internal_uint32_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_uint32_vals() {
+  _impl_.uint32_vals_.Clear();
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::_internal_uint32_vals(int index) const {
+  return _impl_.uint32_vals_.Get(index);
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::uint32_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.uint32_vals)
+  return _internal_uint32_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_uint32_vals(int index, uint32_t value) {
+  _impl_.uint32_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.uint32_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_uint32_vals(uint32_t value) {
+  _impl_.uint32_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_uint32_vals(uint32_t value) {
+  _internal_add_uint32_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.uint32_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_uint32_vals() const {
+  return _impl_.uint32_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::uint32_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.uint32_vals)
+  return _internal_uint32_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_uint32_vals() {
+  return &_impl_.uint32_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_uint32_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.uint32_vals)
+  return _internal_mutable_uint32_vals();
+}
+
+// repeated uint32 uint16_vals = 6 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_uint16_vals_size() const {
+  return _impl_.uint16_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::uint16_vals_size() const {
+  return _internal_uint16_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_uint16_vals() {
+  _impl_.uint16_vals_.Clear();
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::_internal_uint16_vals(int index) const {
+  return _impl_.uint16_vals_.Get(index);
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::uint16_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.uint16_vals)
+  return _internal_uint16_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_uint16_vals(int index, uint32_t value) {
+  _impl_.uint16_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.uint16_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_uint16_vals(uint32_t value) {
+  _impl_.uint16_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_uint16_vals(uint32_t value) {
+  _internal_add_uint16_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.uint16_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_uint16_vals() const {
+  return _impl_.uint16_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::uint16_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.uint16_vals)
+  return _internal_uint16_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_uint16_vals() {
+  return &_impl_.uint16_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_uint16_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.uint16_vals)
+  return _internal_mutable_uint16_vals();
+}
+
+// repeated uint32 uint8_vals = 7 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_uint8_vals_size() const {
+  return _impl_.uint8_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::uint8_vals_size() const {
+  return _internal_uint8_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_uint8_vals() {
+  _impl_.uint8_vals_.Clear();
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::_internal_uint8_vals(int index) const {
+  return _impl_.uint8_vals_.Get(index);
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::uint8_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.uint8_vals)
+  return _internal_uint8_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_uint8_vals(int index, uint32_t value) {
+  _impl_.uint8_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.uint8_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_uint8_vals(uint32_t value) {
+  _impl_.uint8_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_uint8_vals(uint32_t value) {
+  _internal_add_uint8_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.uint8_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_uint8_vals() const {
+  return _impl_.uint8_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::uint8_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.uint8_vals)
+  return _internal_uint8_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_uint8_vals() {
+  return &_impl_.uint8_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_uint8_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.uint8_vals)
+  return _internal_mutable_uint8_vals();
+}
+
+// repeated int64 int64_vals = 8 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_int64_vals_size() const {
+  return _impl_.int64_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::int64_vals_size() const {
+  return _internal_int64_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_int64_vals() {
+  _impl_.int64_vals_.Clear();
+}
+inline int64_t CMsgSource2PlayStatsPackedRecordList::_internal_int64_vals(int index) const {
+  return _impl_.int64_vals_.Get(index);
+}
+inline int64_t CMsgSource2PlayStatsPackedRecordList::int64_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.int64_vals)
+  return _internal_int64_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_int64_vals(int index, int64_t value) {
+  _impl_.int64_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.int64_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_int64_vals(int64_t value) {
+  _impl_.int64_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_int64_vals(int64_t value) {
+  _internal_add_int64_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.int64_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_int64_vals() const {
+  return _impl_.int64_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >&
+CMsgSource2PlayStatsPackedRecordList::int64_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.int64_vals)
+  return _internal_int64_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_int64_vals() {
+  return &_impl_.int64_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int64_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_int64_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.int64_vals)
+  return _internal_mutable_int64_vals();
+}
+
+// repeated int32 int32_vals = 9 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_int32_vals_size() const {
+  return _impl_.int32_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::int32_vals_size() const {
+  return _internal_int32_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_int32_vals() {
+  _impl_.int32_vals_.Clear();
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::_internal_int32_vals(int index) const {
+  return _impl_.int32_vals_.Get(index);
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::int32_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.int32_vals)
+  return _internal_int32_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_int32_vals(int index, int32_t value) {
+  _impl_.int32_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.int32_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_int32_vals(int32_t value) {
+  _impl_.int32_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_int32_vals(int32_t value) {
+  _internal_add_int32_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.int32_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_int32_vals() const {
+  return _impl_.int32_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::int32_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.int32_vals)
+  return _internal_int32_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_int32_vals() {
+  return &_impl_.int32_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_int32_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.int32_vals)
+  return _internal_mutable_int32_vals();
+}
+
+// repeated int32 int16_vals = 10 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_int16_vals_size() const {
+  return _impl_.int16_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::int16_vals_size() const {
+  return _internal_int16_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_int16_vals() {
+  _impl_.int16_vals_.Clear();
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::_internal_int16_vals(int index) const {
+  return _impl_.int16_vals_.Get(index);
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::int16_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.int16_vals)
+  return _internal_int16_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_int16_vals(int index, int32_t value) {
+  _impl_.int16_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.int16_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_int16_vals(int32_t value) {
+  _impl_.int16_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_int16_vals(int32_t value) {
+  _internal_add_int16_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.int16_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_int16_vals() const {
+  return _impl_.int16_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::int16_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.int16_vals)
+  return _internal_int16_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_int16_vals() {
+  return &_impl_.int16_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_int16_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.int16_vals)
+  return _internal_mutable_int16_vals();
+}
+
+// repeated int32 int8_vals = 11 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_int8_vals_size() const {
+  return _impl_.int8_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::int8_vals_size() const {
+  return _internal_int8_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_int8_vals() {
+  _impl_.int8_vals_.Clear();
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::_internal_int8_vals(int index) const {
+  return _impl_.int8_vals_.Get(index);
+}
+inline int32_t CMsgSource2PlayStatsPackedRecordList::int8_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.int8_vals)
+  return _internal_int8_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_int8_vals(int index, int32_t value) {
+  _impl_.int8_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.int8_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_int8_vals(int32_t value) {
+  _impl_.int8_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_int8_vals(int32_t value) {
+  _internal_add_int8_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.int8_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_int8_vals() const {
+  return _impl_.int8_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >&
+CMsgSource2PlayStatsPackedRecordList::int8_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.int8_vals)
+  return _internal_int8_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_int8_vals() {
+  return &_impl_.int8_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_int8_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.int8_vals)
+  return _internal_mutable_int8_vals();
+}
+
+// repeated double float64_vals = 12 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_float64_vals_size() const {
+  return _impl_.float64_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::float64_vals_size() const {
+  return _internal_float64_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_float64_vals() {
+  _impl_.float64_vals_.Clear();
+}
+inline double CMsgSource2PlayStatsPackedRecordList::_internal_float64_vals(int index) const {
+  return _impl_.float64_vals_.Get(index);
+}
+inline double CMsgSource2PlayStatsPackedRecordList::float64_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.float64_vals)
+  return _internal_float64_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_float64_vals(int index, double value) {
+  _impl_.float64_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.float64_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_float64_vals(double value) {
+  _impl_.float64_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_float64_vals(double value) {
+  _internal_add_float64_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.float64_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+CMsgSource2PlayStatsPackedRecordList::_internal_float64_vals() const {
+  return _impl_.float64_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >&
+CMsgSource2PlayStatsPackedRecordList::float64_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.float64_vals)
+  return _internal_float64_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_float64_vals() {
+  return &_impl_.float64_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< double >*
+CMsgSource2PlayStatsPackedRecordList::mutable_float64_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.float64_vals)
+  return _internal_mutable_float64_vals();
+}
+
+// repeated float float32_vals = 13 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_float32_vals_size() const {
+  return _impl_.float32_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::float32_vals_size() const {
+  return _internal_float32_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_float32_vals() {
+  _impl_.float32_vals_.Clear();
+}
+inline float CMsgSource2PlayStatsPackedRecordList::_internal_float32_vals(int index) const {
+  return _impl_.float32_vals_.Get(index);
+}
+inline float CMsgSource2PlayStatsPackedRecordList::float32_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.float32_vals)
+  return _internal_float32_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_float32_vals(int index, float value) {
+  _impl_.float32_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.float32_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_float32_vals(float value) {
+  _impl_.float32_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_float32_vals(float value) {
+  _internal_add_float32_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.float32_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+CMsgSource2PlayStatsPackedRecordList::_internal_float32_vals() const {
+  return _impl_.float32_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >&
+CMsgSource2PlayStatsPackedRecordList::float32_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.float32_vals)
+  return _internal_float32_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_float32_vals() {
+  return &_impl_.float32_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< float >*
+CMsgSource2PlayStatsPackedRecordList::mutable_float32_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.float32_vals)
+  return _internal_mutable_float32_vals();
+}
+
+// repeated bool bool_vals = 14 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_bool_vals_size() const {
+  return _impl_.bool_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::bool_vals_size() const {
+  return _internal_bool_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_bool_vals() {
+  _impl_.bool_vals_.Clear();
+}
+inline bool CMsgSource2PlayStatsPackedRecordList::_internal_bool_vals(int index) const {
+  return _impl_.bool_vals_.Get(index);
+}
+inline bool CMsgSource2PlayStatsPackedRecordList::bool_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.bool_vals)
+  return _internal_bool_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_bool_vals(int index, bool value) {
+  _impl_.bool_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.bool_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_bool_vals(bool value) {
+  _impl_.bool_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_bool_vals(bool value) {
+  _internal_add_bool_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.bool_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >&
+CMsgSource2PlayStatsPackedRecordList::_internal_bool_vals() const {
+  return _impl_.bool_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >&
+CMsgSource2PlayStatsPackedRecordList::bool_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.bool_vals)
+  return _internal_bool_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_bool_vals() {
+  return &_impl_.bool_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< bool >*
+CMsgSource2PlayStatsPackedRecordList::mutable_bool_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.bool_vals)
+  return _internal_mutable_bool_vals();
+}
+
+// repeated string string_vals = 15;
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_string_vals_size() const {
+  return _impl_.string_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::string_vals_size() const {
+  return _internal_string_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_string_vals() {
+  _impl_.string_vals_.Clear();
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::add_string_vals() {
+  std::string* _s = _internal_add_string_vals();
+  // @@protoc_insertion_point(field_add_mutable:CMsgSource2PlayStatsPackedRecordList.string_vals)
+  return _s;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::_internal_string_vals(int index) const {
+  return _impl_.string_vals_.Get(index);
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::string_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.string_vals)
+  return _internal_string_vals(index);
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::mutable_string_vals(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.string_vals)
+  return _impl_.string_vals_.Mutable(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_string_vals(int index, const std::string& value) {
+  _impl_.string_vals_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_string_vals(int index, std::string&& value) {
+  _impl_.string_vals_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_string_vals(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.string_vals_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_string_vals(int index, const char* value, size_t size) {
+  _impl_.string_vals_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::_internal_add_string_vals() {
+  return _impl_.string_vals_.Add();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_string_vals(const std::string& value) {
+  _impl_.string_vals_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_string_vals(std::string&& value) {
+  _impl_.string_vals_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_string_vals(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.string_vals_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_string_vals(const char* value, size_t size) {
+  _impl_.string_vals_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:CMsgSource2PlayStatsPackedRecordList.string_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+CMsgSource2PlayStatsPackedRecordList::string_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.string_vals)
+  return _impl_.string_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+CMsgSource2PlayStatsPackedRecordList::mutable_string_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.string_vals)
+  return &_impl_.string_vals_;
+}
+
+// repeated string low_cardinality_string_vals = 16;
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_low_cardinality_string_vals_size() const {
+  return _impl_.low_cardinality_string_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::low_cardinality_string_vals_size() const {
+  return _internal_low_cardinality_string_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_low_cardinality_string_vals() {
+  _impl_.low_cardinality_string_vals_.Clear();
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::add_low_cardinality_string_vals() {
+  std::string* _s = _internal_add_low_cardinality_string_vals();
+  // @@protoc_insertion_point(field_add_mutable:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+  return _s;
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::_internal_low_cardinality_string_vals(int index) const {
+  return _impl_.low_cardinality_string_vals_.Get(index);
+}
+inline const std::string& CMsgSource2PlayStatsPackedRecordList::low_cardinality_string_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+  return _internal_low_cardinality_string_vals(index);
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::mutable_low_cardinality_string_vals(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+  return _impl_.low_cardinality_string_vals_.Mutable(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_low_cardinality_string_vals(int index, const std::string& value) {
+  _impl_.low_cardinality_string_vals_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_low_cardinality_string_vals(int index, std::string&& value) {
+  _impl_.low_cardinality_string_vals_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_low_cardinality_string_vals(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.low_cardinality_string_vals_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_low_cardinality_string_vals(int index, const char* value, size_t size) {
+  _impl_.low_cardinality_string_vals_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline std::string* CMsgSource2PlayStatsPackedRecordList::_internal_add_low_cardinality_string_vals() {
+  return _impl_.low_cardinality_string_vals_.Add();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_low_cardinality_string_vals(const std::string& value) {
+  _impl_.low_cardinality_string_vals_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_low_cardinality_string_vals(std::string&& value) {
+  _impl_.low_cardinality_string_vals_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_low_cardinality_string_vals(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.low_cardinality_string_vals_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_low_cardinality_string_vals(const char* value, size_t size) {
+  _impl_.low_cardinality_string_vals_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+CMsgSource2PlayStatsPackedRecordList::low_cardinality_string_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+  return _impl_.low_cardinality_string_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+CMsgSource2PlayStatsPackedRecordList::mutable_low_cardinality_string_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals)
+  return &_impl_.low_cardinality_string_vals_;
+}
+
+// repeated fixed32 utcdatetime_vals = 17 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_utcdatetime_vals_size() const {
+  return _impl_.utcdatetime_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::utcdatetime_vals_size() const {
+  return _internal_utcdatetime_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_utcdatetime_vals() {
+  _impl_.utcdatetime_vals_.Clear();
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::_internal_utcdatetime_vals(int index) const {
+  return _impl_.utcdatetime_vals_.Get(index);
+}
+inline uint32_t CMsgSource2PlayStatsPackedRecordList::utcdatetime_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.utcdatetime_vals)
+  return _internal_utcdatetime_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_utcdatetime_vals(int index, uint32_t value) {
+  _impl_.utcdatetime_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.utcdatetime_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_utcdatetime_vals(uint32_t value) {
+  _impl_.utcdatetime_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_utcdatetime_vals(uint32_t value) {
+  _internal_add_utcdatetime_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.utcdatetime_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_utcdatetime_vals() const {
+  return _impl_.utcdatetime_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >&
+CMsgSource2PlayStatsPackedRecordList::utcdatetime_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.utcdatetime_vals)
+  return _internal_utcdatetime_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_utcdatetime_vals() {
+  return &_impl_.utcdatetime_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_utcdatetime_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.utcdatetime_vals)
+  return _internal_mutable_utcdatetime_vals();
+}
+
+// repeated fixed64 steamidtrustbucket_vals = 18 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_steamidtrustbucket_vals_size() const {
+  return _impl_.steamidtrustbucket_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::steamidtrustbucket_vals_size() const {
+  return _internal_steamidtrustbucket_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_steamidtrustbucket_vals() {
+  _impl_.steamidtrustbucket_vals_.Clear();
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::_internal_steamidtrustbucket_vals(int index) const {
+  return _impl_.steamidtrustbucket_vals_.Get(index);
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::steamidtrustbucket_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.steamidtrustbucket_vals)
+  return _internal_steamidtrustbucket_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_steamidtrustbucket_vals(int index, uint64_t value) {
+  _impl_.steamidtrustbucket_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.steamidtrustbucket_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_steamidtrustbucket_vals(uint64_t value) {
+  _impl_.steamidtrustbucket_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_steamidtrustbucket_vals(uint64_t value) {
+  _internal_add_steamidtrustbucket_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.steamidtrustbucket_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_steamidtrustbucket_vals() const {
+  return _impl_.steamidtrustbucket_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::steamidtrustbucket_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.steamidtrustbucket_vals)
+  return _internal_steamidtrustbucket_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_steamidtrustbucket_vals() {
+  return &_impl_.steamidtrustbucket_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_steamidtrustbucket_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.steamidtrustbucket_vals)
+  return _internal_mutable_steamidtrustbucket_vals();
+}
+
+// repeated .CMsgSource2PlayStatsPackedRecordList.SteamIDList trustbucket_vals = 19;
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_trustbucket_vals_size() const {
+  return _impl_.trustbucket_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::trustbucket_vals_size() const {
+  return _internal_trustbucket_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_trustbucket_vals() {
+  _impl_.trustbucket_vals_.Clear();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* CMsgSource2PlayStatsPackedRecordList::mutable_trustbucket_vals(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgSource2PlayStatsPackedRecordList.trustbucket_vals)
+  return _impl_.trustbucket_vals_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >*
+CMsgSource2PlayStatsPackedRecordList::mutable_trustbucket_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.trustbucket_vals)
+  return &_impl_.trustbucket_vals_;
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList_SteamIDList& CMsgSource2PlayStatsPackedRecordList::_internal_trustbucket_vals(int index) const {
+  return _impl_.trustbucket_vals_.Get(index);
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList_SteamIDList& CMsgSource2PlayStatsPackedRecordList::trustbucket_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.trustbucket_vals)
+  return _internal_trustbucket_vals(index);
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* CMsgSource2PlayStatsPackedRecordList::_internal_add_trustbucket_vals() {
+  return _impl_.trustbucket_vals_.Add();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* CMsgSource2PlayStatsPackedRecordList::add_trustbucket_vals() {
+  ::CMsgSource2PlayStatsPackedRecordList_SteamIDList* _add = _internal_add_trustbucket_vals();
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.trustbucket_vals)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >&
+CMsgSource2PlayStatsPackedRecordList::trustbucket_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.trustbucket_vals)
+  return _impl_.trustbucket_vals_;
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_RecordPlayStats_Notification
+
+// repeated .CMsgSource2PlayStatsPackedRecordList record_types = 1;
+inline int CSource2Metrics_RecordPlayStats_Notification::_internal_record_types_size() const {
+  return _impl_.record_types_.size();
+}
+inline int CSource2Metrics_RecordPlayStats_Notification::record_types_size() const {
+  return _internal_record_types_size();
+}
+inline void CSource2Metrics_RecordPlayStats_Notification::clear_record_types() {
+  _impl_.record_types_.Clear();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList* CSource2Metrics_RecordPlayStats_Notification::mutable_record_types(int index) {
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_RecordPlayStats_Notification.record_types)
+  return _impl_.record_types_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList >*
+CSource2Metrics_RecordPlayStats_Notification::mutable_record_types() {
+  // @@protoc_insertion_point(field_mutable_list:CSource2Metrics_RecordPlayStats_Notification.record_types)
+  return &_impl_.record_types_;
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList& CSource2Metrics_RecordPlayStats_Notification::_internal_record_types(int index) const {
+  return _impl_.record_types_.Get(index);
+}
+inline const ::CMsgSource2PlayStatsPackedRecordList& CSource2Metrics_RecordPlayStats_Notification::record_types(int index) const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_RecordPlayStats_Notification.record_types)
+  return _internal_record_types(index);
+}
+inline ::CMsgSource2PlayStatsPackedRecordList* CSource2Metrics_RecordPlayStats_Notification::_internal_add_record_types() {
+  return _impl_.record_types_.Add();
+}
+inline ::CMsgSource2PlayStatsPackedRecordList* CSource2Metrics_RecordPlayStats_Notification::add_record_types() {
+  ::CMsgSource2PlayStatsPackedRecordList* _add = _internal_add_record_types();
+  // @@protoc_insertion_point(field_add:CSource2Metrics_RecordPlayStats_Notification.record_types)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList >&
+CSource2Metrics_RecordPlayStats_Notification::record_types() const {
+  // @@protoc_insertion_point(field_list:CSource2Metrics_RecordPlayStats_Notification.record_types)
+  return _impl_.record_types_;
+}
+
+// optional uint32 appid = 2;
+inline bool CSource2Metrics_RecordPlayStats_Notification::_internal_has_appid() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_RecordPlayStats_Notification::has_appid() const {
+  return _internal_has_appid();
+}
+inline void CSource2Metrics_RecordPlayStats_Notification::clear_appid() {
+  _impl_.appid_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline uint32_t CSource2Metrics_RecordPlayStats_Notification::_internal_appid() const {
+  return _impl_.appid_;
+}
+inline uint32_t CSource2Metrics_RecordPlayStats_Notification::appid() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_RecordPlayStats_Notification.appid)
+  return _internal_appid();
+}
+inline void CSource2Metrics_RecordPlayStats_Notification::_internal_set_appid(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.appid_ = value;
+}
+inline void CSource2Metrics_RecordPlayStats_Notification::set_appid(uint32_t value) {
+  _internal_set_appid(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_RecordPlayStats_Notification.appid)
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_FetchMapData_Request
+
+// optional uint32 appid = 1;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_appid() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_appid() const {
+  return _internal_has_appid();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_appid() {
+  _impl_.appid_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::_internal_appid() const {
+  return _impl_.appid_;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::appid() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.appid)
+  return _internal_appid();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_appid(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.appid_ = value;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_appid(uint32_t value) {
+  _internal_set_appid(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.appid)
+}
+
+// optional string map_name = 2;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_map_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_map_name() const {
+  return _internal_has_map_name();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_map_name() {
+  _impl_.map_name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Request::map_name() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.map_name)
+  return _internal_map_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_FetchMapData_Request::set_map_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.map_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.map_name)
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::mutable_map_name() {
+  std::string* _s = _internal_mutable_map_name();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Request.map_name)
+  return _s;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Request::_internal_map_name() const {
+  return _impl_.map_name_.Get();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_map_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.map_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::_internal_mutable_map_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.map_name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::release_map_name() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_FetchMapData_Request.map_name)
+  if (!_internal_has_map_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.map_name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.map_name_.IsDefault()) {
+    _impl_.map_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_allocated_map_name(std::string* map_name) {
+  if (map_name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.map_name_.SetAllocated(map_name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.map_name_.IsDefault()) {
+    _impl_.map_name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_FetchMapData_Request.map_name)
+}
+
+// optional uint32 game_type = 3;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_game_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_game_type() const {
+  return _internal_has_game_type();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_game_type() {
+  _impl_.game_type_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::_internal_game_type() const {
+  return _impl_.game_type_;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::game_type() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.game_type)
+  return _internal_game_type();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_game_type(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.game_type_ = value;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_game_type(uint32_t value) {
+  _internal_set_game_type(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.game_type)
+}
+
+// optional uint32 game_mode = 4;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_game_mode() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_game_mode() const {
+  return _internal_has_game_mode();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_game_mode() {
+  _impl_.game_mode_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::_internal_game_mode() const {
+  return _impl_.game_mode_;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::game_mode() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.game_mode)
+  return _internal_game_mode();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_game_mode(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.game_mode_ = value;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_game_mode(uint32_t value) {
+  _internal_set_game_mode(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.game_mode)
+}
+
+// optional string param = 5;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_param() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_param() const {
+  return _internal_has_param();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_param() {
+  _impl_.param_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Request::param() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.param)
+  return _internal_param();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_FetchMapData_Request::set_param(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.param_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.param)
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::mutable_param() {
+  std::string* _s = _internal_mutable_param();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Request.param)
+  return _s;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Request::_internal_param() const {
+  return _impl_.param_.Get();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_param(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.param_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::_internal_mutable_param() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.param_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Request::release_param() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_FetchMapData_Request.param)
+  if (!_internal_has_param()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.param_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.param_.IsDefault()) {
+    _impl_.param_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_allocated_param(std::string* param) {
+  if (param != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.param_.SetAllocated(param, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.param_.IsDefault()) {
+    _impl_.param_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_FetchMapData_Request.param)
+}
+
+// optional uint32 time_span = 6;
+inline bool CSource2Metrics_FetchMapData_Request::_internal_has_time_span() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Request::has_time_span() const {
+  return _internal_has_time_span();
+}
+inline void CSource2Metrics_FetchMapData_Request::clear_time_span() {
+  _impl_.time_span_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::_internal_time_span() const {
+  return _impl_.time_span_;
+}
+inline uint32_t CSource2Metrics_FetchMapData_Request::time_span() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Request.time_span)
+  return _internal_time_span();
+}
+inline void CSource2Metrics_FetchMapData_Request::_internal_set_time_span(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.time_span_ = value;
+}
+inline void CSource2Metrics_FetchMapData_Request::set_time_span(uint32_t value) {
+  _internal_set_time_span(value);
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Request.time_span)
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_FetchMapData_Response_MapData
+
+// optional string name = 1;
+inline bool CSource2Metrics_FetchMapData_Response_MapData::_internal_has_name() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Response_MapData::has_name() const {
+  return _internal_has_name();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::clear_name() {
+  _impl_.name_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::name() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Response.MapData.name)
+  return _internal_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_FetchMapData_Response_MapData::set_name(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Response.MapData.name)
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::mutable_name() {
+  std::string* _s = _internal_mutable_name();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Response.MapData.name)
+  return _s;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::_internal_name() const {
+  return _impl_.name_.Get();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::_internal_set_name(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::_internal_mutable_name() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.name_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::release_name() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_FetchMapData_Response.MapData.name)
+  if (!_internal_has_name()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.name_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::set_allocated_name(std::string* name) {
+  if (name != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.name_.SetAllocated(name, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.name_.IsDefault()) {
+    _impl_.name_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_FetchMapData_Response.MapData.name)
+}
+
+// optional string type = 2;
+inline bool CSource2Metrics_FetchMapData_Response_MapData::_internal_has_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Response_MapData::has_type() const {
+  return _internal_has_type();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::clear_type() {
+  _impl_.type_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::type() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Response.MapData.type)
+  return _internal_type();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_FetchMapData_Response_MapData::set_type(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.type_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Response.MapData.type)
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::mutable_type() {
+  std::string* _s = _internal_mutable_type();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Response.MapData.type)
+  return _s;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::_internal_type() const {
+  return _impl_.type_.Get();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::_internal_set_type(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.type_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::_internal_mutable_type() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.type_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::release_type() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_FetchMapData_Response.MapData.type)
+  if (!_internal_has_type()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.type_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.type_.IsDefault()) {
+    _impl_.type_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::set_allocated_type(std::string* type) {
+  if (type != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.type_.SetAllocated(type, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.type_.IsDefault()) {
+    _impl_.type_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_FetchMapData_Response.MapData.type)
+}
+
+// optional string data = 3;
+inline bool CSource2Metrics_FetchMapData_Response_MapData::_internal_has_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CSource2Metrics_FetchMapData_Response_MapData::has_data() const {
+  return _internal_has_data();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::clear_data() {
+  _impl_.data_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::data() const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Response.MapData.data)
+  return _internal_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSource2Metrics_FetchMapData_Response_MapData::set_data(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000004u;
+ _impl_.data_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSource2Metrics_FetchMapData_Response.MapData.data)
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::mutable_data() {
+  std::string* _s = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Response.MapData.data)
+  return _s;
+}
+inline const std::string& CSource2Metrics_FetchMapData_Response_MapData::_internal_data() const {
+  return _impl_.data_.Get();
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::_internal_set_data(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::_internal_mutable_data() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  return _impl_.data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSource2Metrics_FetchMapData_Response_MapData::release_data() {
+  // @@protoc_insertion_point(field_release:CSource2Metrics_FetchMapData_Response.MapData.data)
+  if (!_internal_has_data()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  auto* p = _impl_.data_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSource2Metrics_FetchMapData_Response_MapData::set_allocated_data(std::string* data) {
+  if (data != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.data_.SetAllocated(data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.data_.IsDefault()) {
+    _impl_.data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSource2Metrics_FetchMapData_Response.MapData.data)
+}
+
+// -------------------------------------------------------------------
+
+// CSource2Metrics_FetchMapData_Response
+
+// repeated .CSource2Metrics_FetchMapData_Response.MapData results = 1;
+inline int CSource2Metrics_FetchMapData_Response::_internal_results_size() const {
+  return _impl_.results_.size();
+}
+inline int CSource2Metrics_FetchMapData_Response::results_size() const {
+  return _internal_results_size();
+}
+inline void CSource2Metrics_FetchMapData_Response::clear_results() {
+  _impl_.results_.Clear();
+}
+inline ::CSource2Metrics_FetchMapData_Response_MapData* CSource2Metrics_FetchMapData_Response::mutable_results(int index) {
+  // @@protoc_insertion_point(field_mutable:CSource2Metrics_FetchMapData_Response.results)
+  return _impl_.results_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData >*
+CSource2Metrics_FetchMapData_Response::mutable_results() {
+  // @@protoc_insertion_point(field_mutable_list:CSource2Metrics_FetchMapData_Response.results)
+  return &_impl_.results_;
+}
+inline const ::CSource2Metrics_FetchMapData_Response_MapData& CSource2Metrics_FetchMapData_Response::_internal_results(int index) const {
+  return _impl_.results_.Get(index);
+}
+inline const ::CSource2Metrics_FetchMapData_Response_MapData& CSource2Metrics_FetchMapData_Response::results(int index) const {
+  // @@protoc_insertion_point(field_get:CSource2Metrics_FetchMapData_Response.results)
+  return _internal_results(index);
+}
+inline ::CSource2Metrics_FetchMapData_Response_MapData* CSource2Metrics_FetchMapData_Response::_internal_add_results() {
+  return _impl_.results_.Add();
+}
+inline ::CSource2Metrics_FetchMapData_Response_MapData* CSource2Metrics_FetchMapData_Response::add_results() {
+  ::CSource2Metrics_FetchMapData_Response_MapData* _add = _internal_add_results();
+  // @@protoc_insertion_point(field_add:CSource2Metrics_FetchMapData_Response.results)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData >&
+CSource2Metrics_FetchMapData_Response::results() const {
+  // @@protoc_insertion_point(field_list:CSource2Metrics_FetchMapData_Response.results)
+  return _impl_.results_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -6472,9 +9947,33 @@ inline void CSource2Metrics_MatchPerfSummary_Notification::set_allocated_map(std
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::ESource2PlayStatsFieldType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::ESource2PlayStatsFieldType>() {
+  return ::ESource2PlayStatsFieldType_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 

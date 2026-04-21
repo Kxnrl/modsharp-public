@@ -225,8 +225,139 @@ struct CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_MatchPerfSummary_NotificationDefaultTypeInternal _CSource2Metrics_MatchPerfSummary_Notification_default_instance_;
-static ::_pb::Metadata file_level_metadata_source2_5fsteam_5fstats_2eproto[8];
-static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto = nullptr;
+PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_FieldDef::CMsgSource2PlayStatsPackedRecordList_FieldDef(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.field_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.field_type_)*/0} {}
+struct CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal() {}
+  union {
+    CMsgSource2PlayStatsPackedRecordList_FieldDef _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgSource2PlayStatsPackedRecordList_FieldDefDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_FieldDef_default_instance_;
+PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_SteamIDList::CMsgSource2PlayStatsPackedRecordList_SteamIDList(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.steamid_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal() {}
+  union {
+    CMsgSource2PlayStatsPackedRecordList_SteamIDList _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgSource2PlayStatsPackedRecordList_SteamIDListDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_SteamIDList_default_instance_;
+PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList::CMsgSource2PlayStatsPackedRecordList(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.field_defs_)*/{}
+  , /*decltype(_impl_.uint64_vals_)*/{}
+  , /*decltype(_impl_._uint64_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.uint32_vals_)*/{}
+  , /*decltype(_impl_._uint32_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.uint16_vals_)*/{}
+  , /*decltype(_impl_._uint16_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.uint8_vals_)*/{}
+  , /*decltype(_impl_._uint8_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.int64_vals_)*/{}
+  , /*decltype(_impl_._int64_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.int32_vals_)*/{}
+  , /*decltype(_impl_._int32_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.int16_vals_)*/{}
+  , /*decltype(_impl_._int16_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.int8_vals_)*/{}
+  , /*decltype(_impl_._int8_vals_cached_byte_size_)*/{0}
+  , /*decltype(_impl_.float64_vals_)*/{}
+  , /*decltype(_impl_.float32_vals_)*/{}
+  , /*decltype(_impl_.bool_vals_)*/{}
+  , /*decltype(_impl_.string_vals_)*/{}
+  , /*decltype(_impl_.low_cardinality_string_vals_)*/{}
+  , /*decltype(_impl_.utcdatetime_vals_)*/{}
+  , /*decltype(_impl_.steamidtrustbucket_vals_)*/{}
+  , /*decltype(_impl_.trustbucket_vals_)*/{}
+  , /*decltype(_impl_.record_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.record_count_)*/0u} {}
+struct CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal() {}
+  union {
+    CMsgSource2PlayStatsPackedRecordList _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal _CMsgSource2PlayStatsPackedRecordList_default_instance_;
+PROTOBUF_CONSTEXPR CSource2Metrics_RecordPlayStats_Notification::CSource2Metrics_RecordPlayStats_Notification(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.record_types_)*/{}
+  , /*decltype(_impl_.appid_)*/0u} {}
+struct CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal() {}
+  union {
+    CSource2Metrics_RecordPlayStats_Notification _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal _CSource2Metrics_RecordPlayStats_Notification_default_instance_;
+PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Request::CSource2Metrics_FetchMapData_Request(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.map_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.param_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.appid_)*/0u
+  , /*decltype(_impl_.game_type_)*/0u
+  , /*decltype(_impl_.game_mode_)*/0u
+  , /*decltype(_impl_.time_span_)*/0u} {}
+struct CSource2Metrics_FetchMapData_RequestDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_RequestDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSource2Metrics_FetchMapData_RequestDefaultTypeInternal() {}
+  union {
+    CSource2Metrics_FetchMapData_Request _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_FetchMapData_RequestDefaultTypeInternal _CSource2Metrics_FetchMapData_Request_default_instance_;
+PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Response_MapData::CSource2Metrics_FetchMapData_Response_MapData(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.type_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}} {}
+struct CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal() {}
+  union {
+    CSource2Metrics_FetchMapData_Response_MapData _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_FetchMapData_Response_MapDataDefaultTypeInternal _CSource2Metrics_FetchMapData_Response_MapData_default_instance_;
+PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_Response::CSource2Metrics_FetchMapData_Response(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.results_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal() {}
+  union {
+    CSource2Metrics_FetchMapData_Response _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal _CSource2Metrics_FetchMapData_Response_default_instance_;
+static ::_pb::Metadata file_level_metadata_source2_5fsteam_5fstats_2eproto[15];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_source2_5fsteam_5fstats_2eproto = nullptr;
 
 const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -480,6 +611,114 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   2,
   ~0u,
   1,
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_FieldDef, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_FieldDef, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_FieldDef, _impl_.field_name_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_FieldDef, _impl_.field_type_),
+  0,
+  1,
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_SteamIDList, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList_SteamIDList, _impl_.steamid_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.record_name_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.field_defs_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.record_count_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.uint64_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.uint32_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.uint16_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.uint8_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.int64_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.int32_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.int16_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.int8_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.float64_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.float32_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.bool_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.string_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.low_cardinality_string_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.utcdatetime_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.steamidtrustbucket_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.trustbucket_vals_),
+  0,
+  ~0u,
+  1,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  ~0u,
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_RecordPlayStats_Notification, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_RecordPlayStats_Notification, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_RecordPlayStats_Notification, _impl_.record_types_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_RecordPlayStats_Notification, _impl_.appid_),
+  ~0u,
+  0,
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.appid_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.map_name_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.game_type_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.game_mode_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.param_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Request, _impl_.time_span_),
+  2,
+  0,
+  3,
+  4,
+  1,
+  5,
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response_MapData, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response_MapData, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response_MapData, _impl_.name_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response_MapData, _impl_.type_),
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response_MapData, _impl_.data_),
+  0,
+  1,
+  2,
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response, _impl_.results_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 20, -1, sizeof(::CMsgSource2SystemSpecs)},
@@ -490,6 +729,13 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 192, 204, -1, sizeof(::CMsgSource2PerfIntervalSample)},
   { 210, 223, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification_Client)},
   { 230, 243, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
+  { 250, 258, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
+  { 260, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
+  { 267, 292, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
+  { 311, 319, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
+  { 321, 333, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
+  { 339, 348, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
+  { 351, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -501,6 +747,13 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgSource2PerfIntervalSample_default_instance_._instance,
   &::_CSource2Metrics_MatchPerfSummary_Notification_Client_default_instance_._instance,
   &::_CSource2Metrics_MatchPerfSummary_Notification_default_instance_._instance,
+  &::_CMsgSource2PlayStatsPackedRecordList_FieldDef_default_instance_._instance,
+  &::_CMsgSource2PlayStatsPackedRecordList_SteamIDList_default_instance_._instance,
+  &::_CMsgSource2PlayStatsPackedRecordList_default_instance_._instance,
+  &::_CSource2Metrics_RecordPlayStats_Notification_default_instance_._instance,
+  &::_CSource2Metrics_FetchMapData_Request_default_instance_._instance,
+  &::_CSource2Metrics_FetchMapData_Response_MapData_default_instance_._instance,
+  &::_CSource2Metrics_FetchMapData_Response_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -583,13 +836,57 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   ".CMsgSource2NetworkFlowQuality\0225\n\rupstre"
   "am_flow\030\005 \001(\0132\036.CMsgSource2NetworkFlowQu"
   "ality\022\017\n\007steamid\030\n \001(\006\0224\n\014perf_samples\030\013"
-  " \003(\0132\036.CMsgSource2PerfIntervalSample"
+  " \003(\0132\036.CMsgSource2PerfIntervalSample\"\373\005\n"
+  "$CMsgSource2PlayStatsPackedRecordList\022\023\n"
+  "\013record_name\030\001 \001(\t\022B\n\nfield_defs\030\002 \003(\0132."
+  ".CMsgSource2PlayStatsPackedRecordList.Fi"
+  "eldDef\022\024\n\014record_count\030\003 \001(\r\022\027\n\013uint64_v"
+  "als\030\004 \003(\004B\002\020\001\022\027\n\013uint32_vals\030\005 \003(\rB\002\020\001\022\027"
+  "\n\013uint16_vals\030\006 \003(\rB\002\020\001\022\026\n\nuint8_vals\030\007 "
+  "\003(\rB\002\020\001\022\026\n\nint64_vals\030\010 \003(\003B\002\020\001\022\026\n\nint32"
+  "_vals\030\t \003(\005B\002\020\001\022\026\n\nint16_vals\030\n \003(\005B\002\020\001\022"
+  "\025\n\tint8_vals\030\013 \003(\005B\002\020\001\022\030\n\014float64_vals\030\014"
+  " \003(\001B\002\020\001\022\030\n\014float32_vals\030\r \003(\002B\002\020\001\022\025\n\tbo"
+  "ol_vals\030\016 \003(\010B\002\020\001\022\023\n\013string_vals\030\017 \003(\t\022#"
+  "\n\033low_cardinality_string_vals\030\020 \003(\t\022\034\n\020u"
+  "tcdatetime_vals\030\021 \003(\007B\002\020\001\022#\n\027steamidtrus"
+  "tbucket_vals\030\022 \003(\006B\002\020\001\022K\n\020trustbucket_va"
+  "ls\030\023 \003(\01321.CMsgSource2PlayStatsPackedRec"
+  "ordList.SteamIDList\032i\n\010FieldDef\022\022\n\nfield"
+  "_name\030\001 \001(\t\022I\n\nfield_type\030\002 \001(\0162\033.ESourc"
+  "e2PlayStatsFieldType:\030Source2PlayStats_I"
+  "nvalid\032\"\n\013SteamIDList\022\023\n\007steamid\030\001 \003(\006B\002"
+  "\020\001\"z\n,CSource2Metrics_RecordPlayStats_No"
+  "tification\022;\n\014record_types\030\001 \003(\0132%.CMsgS"
+  "ource2PlayStatsPackedRecordList\022\r\n\005appid"
+  "\030\002 \001(\r\"\217\001\n$CSource2Metrics_FetchMapData_"
+  "Request\022\r\n\005appid\030\001 \001(\r\022\020\n\010map_name\030\002 \001(\t"
+  "\022\021\n\tgame_type\030\003 \001(\r\022\021\n\tgame_mode\030\004 \001(\r\022\r"
+  "\n\005param\030\005 \001(\t\022\021\n\ttime_span\030\006 \001(\r\"\235\001\n%CSo"
+  "urce2Metrics_FetchMapData_Response\022\?\n\007re"
+  "sults\030\001 \003(\0132..CSource2Metrics_FetchMapDa"
+  "ta_Response.MapData\0323\n\007MapData\022\014\n\004name\030\001"
+  " \001(\t\022\014\n\004type\030\002 \001(\t\022\014\n\004data\030\003 \001(\t*\262\004\n\032ESo"
+  "urce2PlayStatsFieldType\022\034\n\030Source2PlaySt"
+  "ats_Invalid\020\000\022\033\n\027Source2PlayStats_UInt64"
+  "\020\001\022\033\n\027Source2PlayStats_UInt32\020\002\022\033\n\027Sourc"
+  "e2PlayStats_UInt16\020\003\022\032\n\026Source2PlayStats"
+  "_UInt8\020\004\022\032\n\026Source2PlayStats_Int64\020\005\022\032\n\026"
+  "Source2PlayStats_Int32\020\006\022\032\n\026Source2PlayS"
+  "tats_Int16\020\007\022\031\n\025Source2PlayStats_Int8\020\010\022"
+  "\034\n\030Source2PlayStats_Float64\020\t\022\034\n\030Source2"
+  "PlayStats_Float32\020\n\022\031\n\025Source2PlayStats_"
+  "Bool\020\013\022\033\n\027Source2PlayStats_String\020\014\022)\n%S"
+  "ource2PlayStats_LowCardinalityString\020\r\022 "
+  "\n\034Source2PlayStats_UTCDateTime\020\016\022\'\n#Sour"
+  "ce2PlayStats_SteamIDTrustBucket\020\017\022*\n&Sou"
+  "rce2PlayStats_SteamIDTrustBucketMin\020\020"
   ;
 static ::_pbi::once_flag descriptor_table_source2_5fsteam_5fstats_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_source2_5fsteam_5fstats_2eproto = {
-    false, false, 3196, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
+    false, false, 4957, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
     "source2_steam_stats.proto",
-    &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 8,
+    &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 15,
     schemas, file_default_instances, TableStruct_source2_5fsteam_5fstats_2eproto::offsets,
     file_level_metadata_source2_5fsteam_5fstats_2eproto, file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto,
     file_level_service_descriptors_source2_5fsteam_5fstats_2eproto,
@@ -600,6 +897,35 @@ PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_source2_
 
 // Force running AddDescriptors() at dynamic initialization time.
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_source2_5fsteam_5fstats_2eproto(&descriptor_table_source2_5fsteam_5fstats_2eproto);
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ESource2PlayStatsFieldType_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_source2_5fsteam_5fstats_2eproto);
+  return file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto[0];
+}
+bool ESource2PlayStatsFieldType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 // ===================================================================
 
@@ -5423,6 +5749,2523 @@ void CSource2Metrics_MatchPerfSummary_Notification::InternalSwap(CSource2Metrics
       file_level_metadata_source2_5fsteam_5fstats_2eproto[7]);
 }
 
+// ===================================================================
+
+class CMsgSource2PlayStatsPackedRecordList_FieldDef::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CMsgSource2PlayStatsPackedRecordList_FieldDef>()._impl_._has_bits_);
+  static void set_has_field_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_field_type(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CMsgSource2PlayStatsPackedRecordList_FieldDef::CMsgSource2PlayStatsPackedRecordList_FieldDef(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+}
+CMsgSource2PlayStatsPackedRecordList_FieldDef::CMsgSource2PlayStatsPackedRecordList_FieldDef(const CMsgSource2PlayStatsPackedRecordList_FieldDef& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CMsgSource2PlayStatsPackedRecordList_FieldDef* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.field_name_){}
+    , decltype(_impl_.field_type_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.field_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.field_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_field_name()) {
+    _this->_impl_.field_name_.Set(from._internal_field_name(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.field_type_ = from._impl_.field_type_;
+  // @@protoc_insertion_point(copy_constructor:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.field_name_){}
+    , decltype(_impl_.field_type_){0}
+  };
+  _impl_.field_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.field_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CMsgSource2PlayStatsPackedRecordList_FieldDef::~CMsgSource2PlayStatsPackedRecordList_FieldDef() {
+  // @@protoc_insertion_point(destructor:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList_FieldDef::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.field_name_.Destroy();
+}
+
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.field_name_.ClearNonDefaultToEmpty();
+  }
+  _impl_.field_type_ = 0;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CMsgSource2PlayStatsPackedRecordList_FieldDef::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional string field_name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_field_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional .ESource2PlayStatsFieldType field_type = 2 [default = Source2PlayStats_Invalid];
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::ESource2PlayStatsFieldType_IsValid(val))) {
+            _internal_set_field_type(static_cast<::ESource2PlayStatsFieldType>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(2, val, mutable_unknown_fields());
+          }
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CMsgSource2PlayStatsPackedRecordList_FieldDef::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional string field_name = 1;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_field_name().data(), static_cast<int>(this->_internal_field_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgSource2PlayStatsPackedRecordList.FieldDef.field_name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_field_name(), target);
+  }
+
+  // optional .ESource2PlayStatsFieldType field_type = 2 [default = Source2PlayStats_Invalid];
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      2, this->_internal_field_type(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  return target;
+}
+
+size_t CMsgSource2PlayStatsPackedRecordList_FieldDef::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional string field_name = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_field_name());
+    }
+
+    // optional .ESource2PlayStatsFieldType field_type = 2 [default = Source2PlayStats_Invalid];
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_field_type());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgSource2PlayStatsPackedRecordList_FieldDef::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CMsgSource2PlayStatsPackedRecordList_FieldDef::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgSource2PlayStatsPackedRecordList_FieldDef::GetClassData() const { return &_class_data_; }
+
+
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgSource2PlayStatsPackedRecordList_FieldDef*>(&to_msg);
+  auto& from = static_cast<const CMsgSource2PlayStatsPackedRecordList_FieldDef&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_field_name(from._internal_field_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.field_type_ = from._impl_.field_type_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::CopyFrom(const CMsgSource2PlayStatsPackedRecordList_FieldDef& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgSource2PlayStatsPackedRecordList.FieldDef)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMsgSource2PlayStatsPackedRecordList_FieldDef::IsInitialized() const {
+  return true;
+}
+
+void CMsgSource2PlayStatsPackedRecordList_FieldDef::InternalSwap(CMsgSource2PlayStatsPackedRecordList_FieldDef* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.field_name_, lhs_arena,
+      &other->_impl_.field_name_, rhs_arena
+  );
+  swap(_impl_.field_type_, other->_impl_.field_type_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgSource2PlayStatsPackedRecordList_FieldDef::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[8]);
+}
+
+// ===================================================================
+
+class CMsgSource2PlayStatsPackedRecordList_SteamIDList::_Internal {
+ public:
+};
+
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::CMsgSource2PlayStatsPackedRecordList_SteamIDList(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+}
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::CMsgSource2PlayStatsPackedRecordList_SteamIDList(const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CMsgSource2PlayStatsPackedRecordList_SteamIDList* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.steamid_){from._impl_.steamid_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.steamid_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+CMsgSource2PlayStatsPackedRecordList_SteamIDList::~CMsgSource2PlayStatsPackedRecordList_SteamIDList() {
+  // @@protoc_insertion_point(destructor:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList_SteamIDList::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.steamid_.~RepeatedField();
+}
+
+void CMsgSource2PlayStatsPackedRecordList_SteamIDList::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CMsgSource2PlayStatsPackedRecordList_SteamIDList::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.steamid_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CMsgSource2PlayStatsPackedRecordList_SteamIDList::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated fixed64 steamid = 1 [packed = true];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFixed64Parser(_internal_mutable_steamid(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 9) {
+          _internal_add_steamid(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint64_t>(ptr));
+          ptr += sizeof(uint64_t);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CMsgSource2PlayStatsPackedRecordList_SteamIDList::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated fixed64 steamid = 1 [packed = true];
+  if (this->_internal_steamid_size() > 0) {
+    target = stream->WriteFixedPacked(1, _internal_steamid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  return target;
+}
+
+size_t CMsgSource2PlayStatsPackedRecordList_SteamIDList::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated fixed64 steamid = 1 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_steamid_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgSource2PlayStatsPackedRecordList_SteamIDList::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CMsgSource2PlayStatsPackedRecordList_SteamIDList::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgSource2PlayStatsPackedRecordList_SteamIDList::GetClassData() const { return &_class_data_; }
+
+
+void CMsgSource2PlayStatsPackedRecordList_SteamIDList::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgSource2PlayStatsPackedRecordList_SteamIDList*>(&to_msg);
+  auto& from = static_cast<const CMsgSource2PlayStatsPackedRecordList_SteamIDList&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.steamid_.MergeFrom(from._impl_.steamid_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CMsgSource2PlayStatsPackedRecordList_SteamIDList::CopyFrom(const CMsgSource2PlayStatsPackedRecordList_SteamIDList& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgSource2PlayStatsPackedRecordList.SteamIDList)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMsgSource2PlayStatsPackedRecordList_SteamIDList::IsInitialized() const {
+  return true;
+}
+
+void CMsgSource2PlayStatsPackedRecordList_SteamIDList::InternalSwap(CMsgSource2PlayStatsPackedRecordList_SteamIDList* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.steamid_.InternalSwap(&other->_impl_.steamid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgSource2PlayStatsPackedRecordList_SteamIDList::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[9]);
+}
+
+// ===================================================================
+
+class CMsgSource2PlayStatsPackedRecordList::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CMsgSource2PlayStatsPackedRecordList>()._impl_._has_bits_);
+  static void set_has_record_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_record_count(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CMsgSource2PlayStatsPackedRecordList::CMsgSource2PlayStatsPackedRecordList(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CMsgSource2PlayStatsPackedRecordList)
+}
+CMsgSource2PlayStatsPackedRecordList::CMsgSource2PlayStatsPackedRecordList(const CMsgSource2PlayStatsPackedRecordList& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CMsgSource2PlayStatsPackedRecordList* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.field_defs_){from._impl_.field_defs_}
+    , decltype(_impl_.uint64_vals_){from._impl_.uint64_vals_}
+    , /*decltype(_impl_._uint64_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint32_vals_){from._impl_.uint32_vals_}
+    , /*decltype(_impl_._uint32_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint16_vals_){from._impl_.uint16_vals_}
+    , /*decltype(_impl_._uint16_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint8_vals_){from._impl_.uint8_vals_}
+    , /*decltype(_impl_._uint8_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int64_vals_){from._impl_.int64_vals_}
+    , /*decltype(_impl_._int64_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int32_vals_){from._impl_.int32_vals_}
+    , /*decltype(_impl_._int32_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int16_vals_){from._impl_.int16_vals_}
+    , /*decltype(_impl_._int16_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int8_vals_){from._impl_.int8_vals_}
+    , /*decltype(_impl_._int8_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.float64_vals_){from._impl_.float64_vals_}
+    , decltype(_impl_.float32_vals_){from._impl_.float32_vals_}
+    , decltype(_impl_.bool_vals_){from._impl_.bool_vals_}
+    , decltype(_impl_.string_vals_){from._impl_.string_vals_}
+    , decltype(_impl_.low_cardinality_string_vals_){from._impl_.low_cardinality_string_vals_}
+    , decltype(_impl_.utcdatetime_vals_){from._impl_.utcdatetime_vals_}
+    , decltype(_impl_.steamidtrustbucket_vals_){from._impl_.steamidtrustbucket_vals_}
+    , decltype(_impl_.trustbucket_vals_){from._impl_.trustbucket_vals_}
+    , decltype(_impl_.record_name_){}
+    , decltype(_impl_.record_count_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.record_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.record_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_record_name()) {
+    _this->_impl_.record_name_.Set(from._internal_record_name(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.record_count_ = from._impl_.record_count_;
+  // @@protoc_insertion_point(copy_constructor:CMsgSource2PlayStatsPackedRecordList)
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.field_defs_){arena}
+    , decltype(_impl_.uint64_vals_){arena}
+    , /*decltype(_impl_._uint64_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint32_vals_){arena}
+    , /*decltype(_impl_._uint32_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint16_vals_){arena}
+    , /*decltype(_impl_._uint16_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.uint8_vals_){arena}
+    , /*decltype(_impl_._uint8_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int64_vals_){arena}
+    , /*decltype(_impl_._int64_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int32_vals_){arena}
+    , /*decltype(_impl_._int32_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int16_vals_){arena}
+    , /*decltype(_impl_._int16_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.int8_vals_){arena}
+    , /*decltype(_impl_._int8_vals_cached_byte_size_)*/{0}
+    , decltype(_impl_.float64_vals_){arena}
+    , decltype(_impl_.float32_vals_){arena}
+    , decltype(_impl_.bool_vals_){arena}
+    , decltype(_impl_.string_vals_){arena}
+    , decltype(_impl_.low_cardinality_string_vals_){arena}
+    , decltype(_impl_.utcdatetime_vals_){arena}
+    , decltype(_impl_.steamidtrustbucket_vals_){arena}
+    , decltype(_impl_.trustbucket_vals_){arena}
+    , decltype(_impl_.record_name_){}
+    , decltype(_impl_.record_count_){0u}
+  };
+  _impl_.record_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.record_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CMsgSource2PlayStatsPackedRecordList::~CMsgSource2PlayStatsPackedRecordList() {
+  // @@protoc_insertion_point(destructor:CMsgSource2PlayStatsPackedRecordList)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CMsgSource2PlayStatsPackedRecordList::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.field_defs_.~RepeatedPtrField();
+  _impl_.uint64_vals_.~RepeatedField();
+  _impl_.uint32_vals_.~RepeatedField();
+  _impl_.uint16_vals_.~RepeatedField();
+  _impl_.uint8_vals_.~RepeatedField();
+  _impl_.int64_vals_.~RepeatedField();
+  _impl_.int32_vals_.~RepeatedField();
+  _impl_.int16_vals_.~RepeatedField();
+  _impl_.int8_vals_.~RepeatedField();
+  _impl_.float64_vals_.~RepeatedField();
+  _impl_.float32_vals_.~RepeatedField();
+  _impl_.bool_vals_.~RepeatedField();
+  _impl_.string_vals_.~RepeatedPtrField();
+  _impl_.low_cardinality_string_vals_.~RepeatedPtrField();
+  _impl_.utcdatetime_vals_.~RepeatedField();
+  _impl_.steamidtrustbucket_vals_.~RepeatedField();
+  _impl_.trustbucket_vals_.~RepeatedPtrField();
+  _impl_.record_name_.Destroy();
+}
+
+void CMsgSource2PlayStatsPackedRecordList::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CMsgSource2PlayStatsPackedRecordList::Clear() {
+// @@protoc_insertion_point(message_clear_start:CMsgSource2PlayStatsPackedRecordList)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.field_defs_.Clear();
+  _impl_.uint64_vals_.Clear();
+  _impl_.uint32_vals_.Clear();
+  _impl_.uint16_vals_.Clear();
+  _impl_.uint8_vals_.Clear();
+  _impl_.int64_vals_.Clear();
+  _impl_.int32_vals_.Clear();
+  _impl_.int16_vals_.Clear();
+  _impl_.int8_vals_.Clear();
+  _impl_.float64_vals_.Clear();
+  _impl_.float32_vals_.Clear();
+  _impl_.bool_vals_.Clear();
+  _impl_.string_vals_.Clear();
+  _impl_.low_cardinality_string_vals_.Clear();
+  _impl_.utcdatetime_vals_.Clear();
+  _impl_.steamidtrustbucket_vals_.Clear();
+  _impl_.trustbucket_vals_.Clear();
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.record_name_.ClearNonDefaultToEmpty();
+  }
+  _impl_.record_count_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CMsgSource2PlayStatsPackedRecordList::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional string record_name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_record_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CMsgSource2PlayStatsPackedRecordList.record_name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .CMsgSource2PlayStatsPackedRecordList.FieldDef field_defs = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_field_defs(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 record_count = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _Internal::set_has_record_count(&has_bits);
+          _impl_.record_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint64 uint64_vals = 4 [packed = true];
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_uint64_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 32) {
+          _internal_add_uint64_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 uint32_vals = 5 [packed = true];
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_uint32_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 40) {
+          _internal_add_uint32_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 uint16_vals = 6 [packed = true];
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_uint16_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 48) {
+          _internal_add_uint16_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated uint32 uint8_vals = 7 [packed = true];
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt32Parser(_internal_mutable_uint8_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 56) {
+          _internal_add_uint8_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int64 int64_vals = 8 [packed = true];
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt64Parser(_internal_mutable_int64_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 64) {
+          _internal_add_int64_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 int32_vals = 9 [packed = true];
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_int32_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 72) {
+          _internal_add_int32_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 int16_vals = 10 [packed = true];
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 82)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_int16_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 80) {
+          _internal_add_int16_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated int32 int8_vals = 11 [packed = true];
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 90)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedInt32Parser(_internal_mutable_int8_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 88) {
+          _internal_add_int8_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated double float64_vals = 12 [packed = true];
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 98)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedDoubleParser(_internal_mutable_float64_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 97) {
+          _internal_add_float64_vals(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<double>(ptr));
+          ptr += sizeof(double);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated float float32_vals = 13 [packed = true];
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 106)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFloatParser(_internal_mutable_float32_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 109) {
+          _internal_add_float32_vals(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr));
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated bool bool_vals = 14 [packed = true];
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 114)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedBoolParser(_internal_mutable_bool_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 112) {
+          _internal_add_bool_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string string_vals = 15;
+      case 15:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 122)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            auto str = _internal_add_string_vals();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            #ifndef NDEBUG
+            ::_pbi::VerifyUTF8(str, "CMsgSource2PlayStatsPackedRecordList.string_vals");
+            #endif  // !NDEBUG
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<122>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated string low_cardinality_string_vals = 16;
+      case 16:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 130)) {
+          ptr -= 2;
+          do {
+            ptr += 2;
+            auto str = _internal_add_low_cardinality_string_vals();
+            ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+            CHK_(ptr);
+            #ifndef NDEBUG
+            ::_pbi::VerifyUTF8(str, "CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals");
+            #endif  // !NDEBUG
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<130>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated fixed32 utcdatetime_vals = 17 [packed = true];
+      case 17:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 138)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFixed32Parser(_internal_mutable_utcdatetime_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 141) {
+          _internal_add_utcdatetime_vals(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint32_t>(ptr));
+          ptr += sizeof(uint32_t);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated fixed64 steamidtrustbucket_vals = 18 [packed = true];
+      case 18:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 146)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedFixed64Parser(_internal_mutable_steamidtrustbucket_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 145) {
+          _internal_add_steamidtrustbucket_vals(::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<uint64_t>(ptr));
+          ptr += sizeof(uint64_t);
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .CMsgSource2PlayStatsPackedRecordList.SteamIDList trustbucket_vals = 19;
+      case 19:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 154)) {
+          ptr -= 2;
+          do {
+            ptr += 2;
+            ptr = ctx->ParseMessage(_internal_add_trustbucket_vals(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<154>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CMsgSource2PlayStatsPackedRecordList::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CMsgSource2PlayStatsPackedRecordList)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional string record_name = 1;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_record_name().data(), static_cast<int>(this->_internal_record_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgSource2PlayStatsPackedRecordList.record_name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_record_name(), target);
+  }
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList.FieldDef field_defs = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_field_defs_size()); i < n; i++) {
+    const auto& repfield = this->_internal_field_defs(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // optional uint32 record_count = 3;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_record_count(), target);
+  }
+
+  // repeated uint64 uint64_vals = 4 [packed = true];
+  {
+    int byte_size = _impl_._uint64_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt64Packed(
+          4, _internal_uint64_vals(), byte_size, target);
+    }
+  }
+
+  // repeated uint32 uint32_vals = 5 [packed = true];
+  {
+    int byte_size = _impl_._uint32_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(
+          5, _internal_uint32_vals(), byte_size, target);
+    }
+  }
+
+  // repeated uint32 uint16_vals = 6 [packed = true];
+  {
+    int byte_size = _impl_._uint16_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(
+          6, _internal_uint16_vals(), byte_size, target);
+    }
+  }
+
+  // repeated uint32 uint8_vals = 7 [packed = true];
+  {
+    int byte_size = _impl_._uint8_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(
+          7, _internal_uint8_vals(), byte_size, target);
+    }
+  }
+
+  // repeated int64 int64_vals = 8 [packed = true];
+  {
+    int byte_size = _impl_._int64_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt64Packed(
+          8, _internal_int64_vals(), byte_size, target);
+    }
+  }
+
+  // repeated int32 int32_vals = 9 [packed = true];
+  {
+    int byte_size = _impl_._int32_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          9, _internal_int32_vals(), byte_size, target);
+    }
+  }
+
+  // repeated int32 int16_vals = 10 [packed = true];
+  {
+    int byte_size = _impl_._int16_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          10, _internal_int16_vals(), byte_size, target);
+    }
+  }
+
+  // repeated int32 int8_vals = 11 [packed = true];
+  {
+    int byte_size = _impl_._int8_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteInt32Packed(
+          11, _internal_int8_vals(), byte_size, target);
+    }
+  }
+
+  // repeated double float64_vals = 12 [packed = true];
+  if (this->_internal_float64_vals_size() > 0) {
+    target = stream->WriteFixedPacked(12, _internal_float64_vals(), target);
+  }
+
+  // repeated float float32_vals = 13 [packed = true];
+  if (this->_internal_float32_vals_size() > 0) {
+    target = stream->WriteFixedPacked(13, _internal_float32_vals(), target);
+  }
+
+  // repeated bool bool_vals = 14 [packed = true];
+  if (this->_internal_bool_vals_size() > 0) {
+    target = stream->WriteFixedPacked(14, _internal_bool_vals(), target);
+  }
+
+  // repeated string string_vals = 15;
+  for (int i = 0, n = this->_internal_string_vals_size(); i < n; i++) {
+    const auto& s = this->_internal_string_vals(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgSource2PlayStatsPackedRecordList.string_vals");
+    target = stream->WriteString(15, s, target);
+  }
+
+  // repeated string low_cardinality_string_vals = 16;
+  for (int i = 0, n = this->_internal_low_cardinality_string_vals_size(); i < n; i++) {
+    const auto& s = this->_internal_low_cardinality_string_vals(i);
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      s.data(), static_cast<int>(s.length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CMsgSource2PlayStatsPackedRecordList.low_cardinality_string_vals");
+    target = stream->WriteString(16, s, target);
+  }
+
+  // repeated fixed32 utcdatetime_vals = 17 [packed = true];
+  if (this->_internal_utcdatetime_vals_size() > 0) {
+    target = stream->WriteFixedPacked(17, _internal_utcdatetime_vals(), target);
+  }
+
+  // repeated fixed64 steamidtrustbucket_vals = 18 [packed = true];
+  if (this->_internal_steamidtrustbucket_vals_size() > 0) {
+    target = stream->WriteFixedPacked(18, _internal_steamidtrustbucket_vals(), target);
+  }
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList.SteamIDList trustbucket_vals = 19;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_trustbucket_vals_size()); i < n; i++) {
+    const auto& repfield = this->_internal_trustbucket_vals(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(19, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CMsgSource2PlayStatsPackedRecordList)
+  return target;
+}
+
+size_t CMsgSource2PlayStatsPackedRecordList::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CMsgSource2PlayStatsPackedRecordList)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList.FieldDef field_defs = 2;
+  total_size += 1UL * this->_internal_field_defs_size();
+  for (const auto& msg : this->_impl_.field_defs_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated uint64 uint64_vals = 4 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt64Size(this->_impl_.uint64_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._uint64_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated uint32 uint32_vals = 5 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.uint32_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._uint32_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated uint32 uint16_vals = 6 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.uint16_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._uint16_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated uint32 uint8_vals = 7 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt32Size(this->_impl_.uint8_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._uint8_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated int64 int64_vals = 8 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int64Size(this->_impl_.int64_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._int64_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated int32 int32_vals = 9 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.int32_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._int32_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated int32 int16_vals = 10 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.int16_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._int16_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated int32 int8_vals = 11 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      Int32Size(this->_impl_.int8_vals_);
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._int8_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
+  // repeated double float64_vals = 12 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_float64_vals_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated float float32_vals = 13 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_float32_vals_size());
+    size_t data_size = 4UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated bool bool_vals = 14 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_bool_vals_size());
+    size_t data_size = 1UL * count;
+    if (data_size > 0) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated string string_vals = 15;
+  total_size += 1 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.string_vals_.size());
+  for (int i = 0, n = _impl_.string_vals_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.string_vals_.Get(i));
+  }
+
+  // repeated string low_cardinality_string_vals = 16;
+  total_size += 2 *
+      ::PROTOBUF_NAMESPACE_ID::internal::FromIntSize(_impl_.low_cardinality_string_vals_.size());
+  for (int i = 0, n = _impl_.low_cardinality_string_vals_.size(); i < n; i++) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+      _impl_.low_cardinality_string_vals_.Get(i));
+  }
+
+  // repeated fixed32 utcdatetime_vals = 17 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_utcdatetime_vals_size());
+    size_t data_size = 4UL * count;
+    if (data_size > 0) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated fixed64 steamidtrustbucket_vals = 18 [packed = true];
+  {
+    unsigned int count = static_cast<unsigned int>(this->_internal_steamidtrustbucket_vals_size());
+    size_t data_size = 8UL * count;
+    if (data_size > 0) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    total_size += data_size;
+  }
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList.SteamIDList trustbucket_vals = 19;
+  total_size += 2UL * this->_internal_trustbucket_vals_size();
+  for (const auto& msg : this->_impl_.trustbucket_vals_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    // optional string record_name = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_record_name());
+    }
+
+    // optional uint32 record_count = 3;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_record_count());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgSource2PlayStatsPackedRecordList::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CMsgSource2PlayStatsPackedRecordList::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgSource2PlayStatsPackedRecordList::GetClassData() const { return &_class_data_; }
+
+
+void CMsgSource2PlayStatsPackedRecordList::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CMsgSource2PlayStatsPackedRecordList*>(&to_msg);
+  auto& from = static_cast<const CMsgSource2PlayStatsPackedRecordList&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgSource2PlayStatsPackedRecordList)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.field_defs_.MergeFrom(from._impl_.field_defs_);
+  _this->_impl_.uint64_vals_.MergeFrom(from._impl_.uint64_vals_);
+  _this->_impl_.uint32_vals_.MergeFrom(from._impl_.uint32_vals_);
+  _this->_impl_.uint16_vals_.MergeFrom(from._impl_.uint16_vals_);
+  _this->_impl_.uint8_vals_.MergeFrom(from._impl_.uint8_vals_);
+  _this->_impl_.int64_vals_.MergeFrom(from._impl_.int64_vals_);
+  _this->_impl_.int32_vals_.MergeFrom(from._impl_.int32_vals_);
+  _this->_impl_.int16_vals_.MergeFrom(from._impl_.int16_vals_);
+  _this->_impl_.int8_vals_.MergeFrom(from._impl_.int8_vals_);
+  _this->_impl_.float64_vals_.MergeFrom(from._impl_.float64_vals_);
+  _this->_impl_.float32_vals_.MergeFrom(from._impl_.float32_vals_);
+  _this->_impl_.bool_vals_.MergeFrom(from._impl_.bool_vals_);
+  _this->_impl_.string_vals_.MergeFrom(from._impl_.string_vals_);
+  _this->_impl_.low_cardinality_string_vals_.MergeFrom(from._impl_.low_cardinality_string_vals_);
+  _this->_impl_.utcdatetime_vals_.MergeFrom(from._impl_.utcdatetime_vals_);
+  _this->_impl_.steamidtrustbucket_vals_.MergeFrom(from._impl_.steamidtrustbucket_vals_);
+  _this->_impl_.trustbucket_vals_.MergeFrom(from._impl_.trustbucket_vals_);
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_record_name(from._internal_record_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.record_count_ = from._impl_.record_count_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CMsgSource2PlayStatsPackedRecordList::CopyFrom(const CMsgSource2PlayStatsPackedRecordList& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CMsgSource2PlayStatsPackedRecordList)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CMsgSource2PlayStatsPackedRecordList::IsInitialized() const {
+  return true;
+}
+
+void CMsgSource2PlayStatsPackedRecordList::InternalSwap(CMsgSource2PlayStatsPackedRecordList* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.field_defs_.InternalSwap(&other->_impl_.field_defs_);
+  _impl_.uint64_vals_.InternalSwap(&other->_impl_.uint64_vals_);
+  _impl_.uint32_vals_.InternalSwap(&other->_impl_.uint32_vals_);
+  _impl_.uint16_vals_.InternalSwap(&other->_impl_.uint16_vals_);
+  _impl_.uint8_vals_.InternalSwap(&other->_impl_.uint8_vals_);
+  _impl_.int64_vals_.InternalSwap(&other->_impl_.int64_vals_);
+  _impl_.int32_vals_.InternalSwap(&other->_impl_.int32_vals_);
+  _impl_.int16_vals_.InternalSwap(&other->_impl_.int16_vals_);
+  _impl_.int8_vals_.InternalSwap(&other->_impl_.int8_vals_);
+  _impl_.float64_vals_.InternalSwap(&other->_impl_.float64_vals_);
+  _impl_.float32_vals_.InternalSwap(&other->_impl_.float32_vals_);
+  _impl_.bool_vals_.InternalSwap(&other->_impl_.bool_vals_);
+  _impl_.string_vals_.InternalSwap(&other->_impl_.string_vals_);
+  _impl_.low_cardinality_string_vals_.InternalSwap(&other->_impl_.low_cardinality_string_vals_);
+  _impl_.utcdatetime_vals_.InternalSwap(&other->_impl_.utcdatetime_vals_);
+  _impl_.steamidtrustbucket_vals_.InternalSwap(&other->_impl_.steamidtrustbucket_vals_);
+  _impl_.trustbucket_vals_.InternalSwap(&other->_impl_.trustbucket_vals_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.record_name_, lhs_arena,
+      &other->_impl_.record_name_, rhs_arena
+  );
+  swap(_impl_.record_count_, other->_impl_.record_count_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CMsgSource2PlayStatsPackedRecordList::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[10]);
+}
+
+// ===================================================================
+
+class CSource2Metrics_RecordPlayStats_Notification::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSource2Metrics_RecordPlayStats_Notification>()._impl_._has_bits_);
+  static void set_has_appid(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+};
+
+CSource2Metrics_RecordPlayStats_Notification::CSource2Metrics_RecordPlayStats_Notification(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSource2Metrics_RecordPlayStats_Notification)
+}
+CSource2Metrics_RecordPlayStats_Notification::CSource2Metrics_RecordPlayStats_Notification(const CSource2Metrics_RecordPlayStats_Notification& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSource2Metrics_RecordPlayStats_Notification* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.record_types_){from._impl_.record_types_}
+    , decltype(_impl_.appid_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.appid_ = from._impl_.appid_;
+  // @@protoc_insertion_point(copy_constructor:CSource2Metrics_RecordPlayStats_Notification)
+}
+
+inline void CSource2Metrics_RecordPlayStats_Notification::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.record_types_){arena}
+    , decltype(_impl_.appid_){0u}
+  };
+}
+
+CSource2Metrics_RecordPlayStats_Notification::~CSource2Metrics_RecordPlayStats_Notification() {
+  // @@protoc_insertion_point(destructor:CSource2Metrics_RecordPlayStats_Notification)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSource2Metrics_RecordPlayStats_Notification::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.record_types_.~RepeatedPtrField();
+}
+
+void CSource2Metrics_RecordPlayStats_Notification::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSource2Metrics_RecordPlayStats_Notification::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSource2Metrics_RecordPlayStats_Notification)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.record_types_.Clear();
+  _impl_.appid_ = 0u;
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSource2Metrics_RecordPlayStats_Notification::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .CMsgSource2PlayStatsPackedRecordList record_types = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_record_types(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 appid = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_appid(&has_bits);
+          _impl_.appid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSource2Metrics_RecordPlayStats_Notification::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSource2Metrics_RecordPlayStats_Notification)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList record_types = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_record_types_size()); i < n; i++) {
+    const auto& repfield = this->_internal_record_types(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint32 appid = 2;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_appid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSource2Metrics_RecordPlayStats_Notification)
+  return target;
+}
+
+size_t CSource2Metrics_RecordPlayStats_Notification::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSource2Metrics_RecordPlayStats_Notification)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .CMsgSource2PlayStatsPackedRecordList record_types = 1;
+  total_size += 1UL * this->_internal_record_types_size();
+  for (const auto& msg : this->_impl_.record_types_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // optional uint32 appid = 2;
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_appid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSource2Metrics_RecordPlayStats_Notification::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSource2Metrics_RecordPlayStats_Notification::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSource2Metrics_RecordPlayStats_Notification::GetClassData() const { return &_class_data_; }
+
+
+void CSource2Metrics_RecordPlayStats_Notification::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSource2Metrics_RecordPlayStats_Notification*>(&to_msg);
+  auto& from = static_cast<const CSource2Metrics_RecordPlayStats_Notification&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSource2Metrics_RecordPlayStats_Notification)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.record_types_.MergeFrom(from._impl_.record_types_);
+  if (from._internal_has_appid()) {
+    _this->_internal_set_appid(from._internal_appid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSource2Metrics_RecordPlayStats_Notification::CopyFrom(const CSource2Metrics_RecordPlayStats_Notification& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSource2Metrics_RecordPlayStats_Notification)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSource2Metrics_RecordPlayStats_Notification::IsInitialized() const {
+  return true;
+}
+
+void CSource2Metrics_RecordPlayStats_Notification::InternalSwap(CSource2Metrics_RecordPlayStats_Notification* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.record_types_.InternalSwap(&other->_impl_.record_types_);
+  swap(_impl_.appid_, other->_impl_.appid_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSource2Metrics_RecordPlayStats_Notification::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[11]);
+}
+
+// ===================================================================
+
+class CSource2Metrics_FetchMapData_Request::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSource2Metrics_FetchMapData_Request>()._impl_._has_bits_);
+  static void set_has_appid(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_map_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_game_type(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_game_mode(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
+  static void set_has_param(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_time_span(HasBits* has_bits) {
+    (*has_bits)[0] |= 32u;
+  }
+};
+
+CSource2Metrics_FetchMapData_Request::CSource2Metrics_FetchMapData_Request(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSource2Metrics_FetchMapData_Request)
+}
+CSource2Metrics_FetchMapData_Request::CSource2Metrics_FetchMapData_Request(const CSource2Metrics_FetchMapData_Request& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSource2Metrics_FetchMapData_Request* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.map_name_){}
+    , decltype(_impl_.param_){}
+    , decltype(_impl_.appid_){}
+    , decltype(_impl_.game_type_){}
+    , decltype(_impl_.game_mode_){}
+    , decltype(_impl_.time_span_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.map_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.map_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_map_name()) {
+    _this->_impl_.map_name_.Set(from._internal_map_name(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.param_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.param_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_param()) {
+    _this->_impl_.param_.Set(from._internal_param(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.appid_, &from._impl_.appid_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.time_span_) -
+    reinterpret_cast<char*>(&_impl_.appid_)) + sizeof(_impl_.time_span_));
+  // @@protoc_insertion_point(copy_constructor:CSource2Metrics_FetchMapData_Request)
+}
+
+inline void CSource2Metrics_FetchMapData_Request::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.map_name_){}
+    , decltype(_impl_.param_){}
+    , decltype(_impl_.appid_){0u}
+    , decltype(_impl_.game_type_){0u}
+    , decltype(_impl_.game_mode_){0u}
+    , decltype(_impl_.time_span_){0u}
+  };
+  _impl_.map_name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.map_name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.param_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.param_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CSource2Metrics_FetchMapData_Request::~CSource2Metrics_FetchMapData_Request() {
+  // @@protoc_insertion_point(destructor:CSource2Metrics_FetchMapData_Request)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSource2Metrics_FetchMapData_Request::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.map_name_.Destroy();
+  _impl_.param_.Destroy();
+}
+
+void CSource2Metrics_FetchMapData_Request::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSource2Metrics_FetchMapData_Request::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSource2Metrics_FetchMapData_Request)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000003u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.map_name_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.param_.ClearNonDefaultToEmpty();
+    }
+  }
+  if (cached_has_bits & 0x0000003cu) {
+    ::memset(&_impl_.appid_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.time_span_) -
+        reinterpret_cast<char*>(&_impl_.appid_)) + sizeof(_impl_.time_span_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSource2Metrics_FetchMapData_Request::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional uint32 appid = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_appid(&has_bits);
+          _impl_.appid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string map_name = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_map_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CSource2Metrics_FetchMapData_Request.map_name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 game_type = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _Internal::set_has_game_type(&has_bits);
+          _impl_.game_type_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 game_mode = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _Internal::set_has_game_mode(&has_bits);
+          _impl_.game_mode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string param = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
+          auto str = _internal_mutable_param();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CSource2Metrics_FetchMapData_Request.param");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 time_span = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _Internal::set_has_time_span(&has_bits);
+          _impl_.time_span_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSource2Metrics_FetchMapData_Request::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSource2Metrics_FetchMapData_Request)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional uint32 appid = 1;
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_appid(), target);
+  }
+
+  // optional string map_name = 2;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_map_name().data(), static_cast<int>(this->_internal_map_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CSource2Metrics_FetchMapData_Request.map_name");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_map_name(), target);
+  }
+
+  // optional uint32 game_type = 3;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_game_type(), target);
+  }
+
+  // optional uint32 game_mode = 4;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_game_mode(), target);
+  }
+
+  // optional string param = 5;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_param().data(), static_cast<int>(this->_internal_param().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CSource2Metrics_FetchMapData_Request.param");
+    target = stream->WriteStringMaybeAliased(
+        5, this->_internal_param(), target);
+  }
+
+  // optional uint32 time_span = 6;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(6, this->_internal_time_span(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSource2Metrics_FetchMapData_Request)
+  return target;
+}
+
+size_t CSource2Metrics_FetchMapData_Request::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSource2Metrics_FetchMapData_Request)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000003fu) {
+    // optional string map_name = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_map_name());
+    }
+
+    // optional string param = 5;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_param());
+    }
+
+    // optional uint32 appid = 1;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_appid());
+    }
+
+    // optional uint32 game_type = 3;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_game_type());
+    }
+
+    // optional uint32 game_mode = 4;
+    if (cached_has_bits & 0x00000010u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_game_mode());
+    }
+
+    // optional uint32 time_span = 6;
+    if (cached_has_bits & 0x00000020u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_time_span());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSource2Metrics_FetchMapData_Request::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSource2Metrics_FetchMapData_Request::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSource2Metrics_FetchMapData_Request::GetClassData() const { return &_class_data_; }
+
+
+void CSource2Metrics_FetchMapData_Request::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSource2Metrics_FetchMapData_Request*>(&to_msg);
+  auto& from = static_cast<const CSource2Metrics_FetchMapData_Request&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSource2Metrics_FetchMapData_Request)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000003fu) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_map_name(from._internal_map_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_param(from._internal_param());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.appid_ = from._impl_.appid_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.game_type_ = from._impl_.game_type_;
+    }
+    if (cached_has_bits & 0x00000010u) {
+      _this->_impl_.game_mode_ = from._impl_.game_mode_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      _this->_impl_.time_span_ = from._impl_.time_span_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSource2Metrics_FetchMapData_Request::CopyFrom(const CSource2Metrics_FetchMapData_Request& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSource2Metrics_FetchMapData_Request)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSource2Metrics_FetchMapData_Request::IsInitialized() const {
+  return true;
+}
+
+void CSource2Metrics_FetchMapData_Request::InternalSwap(CSource2Metrics_FetchMapData_Request* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.map_name_, lhs_arena,
+      &other->_impl_.map_name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.param_, lhs_arena,
+      &other->_impl_.param_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CSource2Metrics_FetchMapData_Request, _impl_.time_span_)
+      + sizeof(CSource2Metrics_FetchMapData_Request::_impl_.time_span_)
+      - PROTOBUF_FIELD_OFFSET(CSource2Metrics_FetchMapData_Request, _impl_.appid_)>(
+          reinterpret_cast<char*>(&_impl_.appid_),
+          reinterpret_cast<char*>(&other->_impl_.appid_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSource2Metrics_FetchMapData_Request::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[12]);
+}
+
+// ===================================================================
+
+class CSource2Metrics_FetchMapData_Response_MapData::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CSource2Metrics_FetchMapData_Response_MapData>()._impl_._has_bits_);
+  static void set_has_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_type(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_data(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+};
+
+CSource2Metrics_FetchMapData_Response_MapData::CSource2Metrics_FetchMapData_Response_MapData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSource2Metrics_FetchMapData_Response.MapData)
+}
+CSource2Metrics_FetchMapData_Response_MapData::CSource2Metrics_FetchMapData_Response_MapData(const CSource2Metrics_FetchMapData_Response_MapData& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSource2Metrics_FetchMapData_Response_MapData* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.type_){}
+    , decltype(_impl_.data_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_name()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.type_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.type_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_type()) {
+    _this->_impl_.type_.Set(from._internal_type(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.data_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.data_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_data()) {
+    _this->_impl_.data_.Set(from._internal_data(), 
+      _this->GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:CSource2Metrics_FetchMapData_Response.MapData)
+}
+
+inline void CSource2Metrics_FetchMapData_Response_MapData::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.type_){}
+    , decltype(_impl_.data_){}
+  };
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.type_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.type_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.data_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.data_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CSource2Metrics_FetchMapData_Response_MapData::~CSource2Metrics_FetchMapData_Response_MapData() {
+  // @@protoc_insertion_point(destructor:CSource2Metrics_FetchMapData_Response.MapData)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSource2Metrics_FetchMapData_Response_MapData::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.name_.Destroy();
+  _impl_.type_.Destroy();
+  _impl_.data_.Destroy();
+}
+
+void CSource2Metrics_FetchMapData_Response_MapData::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSource2Metrics_FetchMapData_Response_MapData::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSource2Metrics_FetchMapData_Response.MapData)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.name_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.type_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _impl_.data_.ClearNonDefaultToEmpty();
+    }
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSource2Metrics_FetchMapData_Response_MapData::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CSource2Metrics_FetchMapData_Response.MapData.name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string type = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_type();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CSource2Metrics_FetchMapData_Response.MapData.type");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string data = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_data();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CSource2Metrics_FetchMapData_Response.MapData.data");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSource2Metrics_FetchMapData_Response_MapData::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSource2Metrics_FetchMapData_Response.MapData)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional string name = 1;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CSource2Metrics_FetchMapData_Response.MapData.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // optional string type = 2;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_type().data(), static_cast<int>(this->_internal_type().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CSource2Metrics_FetchMapData_Response.MapData.type");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_type(), target);
+  }
+
+  // optional string data = 3;
+  if (cached_has_bits & 0x00000004u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_data().data(), static_cast<int>(this->_internal_data().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CSource2Metrics_FetchMapData_Response.MapData.data");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_data(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSource2Metrics_FetchMapData_Response.MapData)
+  return target;
+}
+
+size_t CSource2Metrics_FetchMapData_Response_MapData::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSource2Metrics_FetchMapData_Response.MapData)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    // optional string name = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_name());
+    }
+
+    // optional string type = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_type());
+    }
+
+    // optional string data = 3;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_data());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSource2Metrics_FetchMapData_Response_MapData::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSource2Metrics_FetchMapData_Response_MapData::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSource2Metrics_FetchMapData_Response_MapData::GetClassData() const { return &_class_data_; }
+
+
+void CSource2Metrics_FetchMapData_Response_MapData::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSource2Metrics_FetchMapData_Response_MapData*>(&to_msg);
+  auto& from = static_cast<const CSource2Metrics_FetchMapData_Response_MapData&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSource2Metrics_FetchMapData_Response.MapData)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_name(from._internal_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_type(from._internal_type());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_internal_set_data(from._internal_data());
+    }
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSource2Metrics_FetchMapData_Response_MapData::CopyFrom(const CSource2Metrics_FetchMapData_Response_MapData& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSource2Metrics_FetchMapData_Response.MapData)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSource2Metrics_FetchMapData_Response_MapData::IsInitialized() const {
+  return true;
+}
+
+void CSource2Metrics_FetchMapData_Response_MapData::InternalSwap(CSource2Metrics_FetchMapData_Response_MapData* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.type_, lhs_arena,
+      &other->_impl_.type_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.data_, lhs_arena,
+      &other->_impl_.data_, rhs_arena
+  );
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSource2Metrics_FetchMapData_Response_MapData::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[13]);
+}
+
+// ===================================================================
+
+class CSource2Metrics_FetchMapData_Response::_Internal {
+ public:
+};
+
+CSource2Metrics_FetchMapData_Response::CSource2Metrics_FetchMapData_Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CSource2Metrics_FetchMapData_Response)
+}
+CSource2Metrics_FetchMapData_Response::CSource2Metrics_FetchMapData_Response(const CSource2Metrics_FetchMapData_Response& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CSource2Metrics_FetchMapData_Response* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.results_){from._impl_.results_}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:CSource2Metrics_FetchMapData_Response)
+}
+
+inline void CSource2Metrics_FetchMapData_Response::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.results_){arena}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+CSource2Metrics_FetchMapData_Response::~CSource2Metrics_FetchMapData_Response() {
+  // @@protoc_insertion_point(destructor:CSource2Metrics_FetchMapData_Response)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CSource2Metrics_FetchMapData_Response::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.results_.~RepeatedPtrField();
+}
+
+void CSource2Metrics_FetchMapData_Response::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CSource2Metrics_FetchMapData_Response::Clear() {
+// @@protoc_insertion_point(message_clear_start:CSource2Metrics_FetchMapData_Response)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.results_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CSource2Metrics_FetchMapData_Response::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // repeated .CSource2Metrics_FetchMapData_Response.MapData results = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_results(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CSource2Metrics_FetchMapData_Response::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CSource2Metrics_FetchMapData_Response)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // repeated .CSource2Metrics_FetchMapData_Response.MapData results = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_results_size()); i < n; i++) {
+    const auto& repfield = this->_internal_results(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CSource2Metrics_FetchMapData_Response)
+  return target;
+}
+
+size_t CSource2Metrics_FetchMapData_Response::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CSource2Metrics_FetchMapData_Response)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .CSource2Metrics_FetchMapData_Response.MapData results = 1;
+  total_size += 1UL * this->_internal_results_size();
+  for (const auto& msg : this->_impl_.results_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CSource2Metrics_FetchMapData_Response::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CSource2Metrics_FetchMapData_Response::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CSource2Metrics_FetchMapData_Response::GetClassData() const { return &_class_data_; }
+
+
+void CSource2Metrics_FetchMapData_Response::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CSource2Metrics_FetchMapData_Response*>(&to_msg);
+  auto& from = static_cast<const CSource2Metrics_FetchMapData_Response&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CSource2Metrics_FetchMapData_Response)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_impl_.results_.MergeFrom(from._impl_.results_);
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CSource2Metrics_FetchMapData_Response::CopyFrom(const CSource2Metrics_FetchMapData_Response& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CSource2Metrics_FetchMapData_Response)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CSource2Metrics_FetchMapData_Response::IsInitialized() const {
+  return true;
+}
+
+void CSource2Metrics_FetchMapData_Response::InternalSwap(CSource2Metrics_FetchMapData_Response* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.results_.InternalSwap(&other->_impl_.results_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CSource2Metrics_FetchMapData_Response::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[14]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CMsgSource2SystemSpecs*
@@ -5456,6 +8299,34 @@ Arena::CreateMaybeMessage< ::CSource2Metrics_MatchPerfSummary_Notification_Clien
 template<> PROTOBUF_NOINLINE ::CSource2Metrics_MatchPerfSummary_Notification*
 Arena::CreateMaybeMessage< ::CSource2Metrics_MatchPerfSummary_Notification >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CSource2Metrics_MatchPerfSummary_Notification >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CMsgSource2PlayStatsPackedRecordList_FieldDef*
+Arena::CreateMaybeMessage< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgSource2PlayStatsPackedRecordList_FieldDef >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CMsgSource2PlayStatsPackedRecordList_SteamIDList*
+Arena::CreateMaybeMessage< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CMsgSource2PlayStatsPackedRecordList*
+Arena::CreateMaybeMessage< ::CMsgSource2PlayStatsPackedRecordList >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CMsgSource2PlayStatsPackedRecordList >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSource2Metrics_RecordPlayStats_Notification*
+Arena::CreateMaybeMessage< ::CSource2Metrics_RecordPlayStats_Notification >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSource2Metrics_RecordPlayStats_Notification >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSource2Metrics_FetchMapData_Request*
+Arena::CreateMaybeMessage< ::CSource2Metrics_FetchMapData_Request >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSource2Metrics_FetchMapData_Request >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSource2Metrics_FetchMapData_Response_MapData*
+Arena::CreateMaybeMessage< ::CSource2Metrics_FetchMapData_Response_MapData >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSource2Metrics_FetchMapData_Response_MapData >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CSource2Metrics_FetchMapData_Response*
+Arena::CreateMaybeMessage< ::CSource2Metrics_FetchMapData_Response >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CSource2Metrics_FetchMapData_Response >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

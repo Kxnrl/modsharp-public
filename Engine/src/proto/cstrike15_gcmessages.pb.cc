@@ -1228,7 +1228,8 @@ PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_ClientRequestJoinFriendData::CMsgGCCStrike
   , /*decltype(_impl_.version_)*/0u
   , /*decltype(_impl_.account_id_)*/0u
   , /*decltype(_impl_.join_token_)*/0u
-  , /*decltype(_impl_.join_ipp_)*/0u} {}
+  , /*decltype(_impl_.join_ipp_)*/0u
+  , /*decltype(_impl_.is_local_server_)*/false} {}
 struct CMsgGCCStrike15_v2_ClientRequestJoinFriendDataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_ClientRequestJoinFriendDataDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -4439,12 +4440,14 @@ const uint32_t TableStruct_cstrike15_5fgcmessages_2eproto::offsets[] PROTOBUF_SE
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.join_ipp_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.res_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.errormsg_),
+  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.is_local_server_),
   2,
   3,
   4,
   5,
   1,
   0,
+  6,
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinServerData, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_ClientRequestJoinServerData, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -6112,126 +6115,126 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 1136, 1148, -1, sizeof(::CMsgGCCStrike15_v2_ClientReportResponse)},
   { 1154, 1166, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestWatchInfoFriends)},
   { 1172, 1191, -1, sizeof(::WatchableMatchInfo)},
-  { 1204, 1216, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData)},
-  { 1222, 1235, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestJoinServerData)},
-  { 1242, 1253, -1, sizeof(::CMsgGCCstrike15_v2_ClientRedeemMissionReward)},
-  { 1258, 1267, -1, sizeof(::CMsgGCCstrike15_v2_ClientRedeemFreeReward)},
-  { 1270, 1286, -1, sizeof(::CMsgGCCstrike15_v2_GC2ServerNotifyXPRewarded)},
-  { 1296, 1303, -1, sizeof(::CMsgGCCStrike15_v2_ClientNetworkConfig)},
-  { 1304, 1313, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats_DeepStatsRange)},
-  { 1316, 1324, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats_DeepStatsMatch)},
-  { 1326, 1335, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats)},
-  { 1338, 1348, -1, sizeof(::CMsgGCCStrike15_v2_WatchInfoUsers)},
-  { 1352, 1362, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestPlayersProfile)},
-  { 1366, 1374, -1, sizeof(::CMsgGCCStrike15_v2_PlayersProfile)},
-  { 1376, 1385, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary_DataPerWeek)},
-  { 1388, 1407, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary_DataPerMap)},
-  { 1420, 1430, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary)},
-  { 1434, 1448, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseUpdate)},
-  { 1456, 1473, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseAssignment)},
-  { 1484, 1492, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseStatus)},
-  { 1494, 1502, -1, sizeof(::CClientHeaderOverwatchEvidence)},
-  { 1504, 1513, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientTextMsg)},
-  { 1516, 1524, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCTextMsg)},
-  { 1526, 1534, -1, sizeof(::CMsgGCCStrike15_v2_MatchEndRunRewardDrops)},
-  { 1536, 1554, -1, sizeof(::CEconItemPreviewDataBlock_Sticker)},
-  { 1566, 1595, -1, sizeof(::CEconItemPreviewDataBlock)},
-  { 1618, 1625, -1, sizeof(::CMsgGCCStrike15_v2_MatchEndRewardDropsNotification)},
-  { 1626, 1633, -1, sizeof(::CMsgItemAcknowledged)},
-  { 1634, 1644, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest)},
-  { 1648, 1655, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse)},
-  { 1656, -1, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestCurrentLiveGames)},
-  { 1662, 1669, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestLiveGameForUser)},
-  { 1670, 1677, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestRecentUserGames)},
-  { 1678, 1685, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestTournamentGames)},
-  { 1686, 1695, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestFullGameInfo)},
-  { 1698, 1709, -1, sizeof(::CDataGCCStrike15_v2_MatchInfo)},
-  { 1714, 1723, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroupTeam)},
-  { 1726, -1, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroup_Picks)},
-  { 1733, 1749, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroup)},
-  { 1759, 1769, -1, sizeof(::CDataGCCStrike15_v2_TournamentSection)},
-  { 1773, 1782, -1, sizeof(::CDataGCCStrike15_v2_TournamentInfo)},
-  { 1785, 1797, -1, sizeof(::CMsgGCCStrike15_v2_MatchList)},
-  { 1803, 1812, -1, sizeof(::CMsgGCCStrike15_v2_MatchListTournamentOperatorMgmt)},
-  { 1815, 1826, -1, sizeof(::CMsgGCCStrike15_v2_Predictions_GroupMatchTeamPick)},
-  { 1831, 1839, -1, sizeof(::CMsgGCCStrike15_v2_Predictions)},
-  { 1841, 1850, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy_FantasySlot)},
-  { 1853, 1861, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy_FantasyTeam)},
-  { 1863, 1871, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy)},
-  { 1873, 1880, -1, sizeof(::CAttribute_String)},
-  { 1881, 1890, -1, sizeof(::CMsgLegacySource1ClientWelcome_Location)},
-  { 1893, 1910, -1, sizeof(::CMsgLegacySource1ClientWelcome)},
-  { 1921, 1934, -1, sizeof(::CMsgCStrike15Welcome)},
-  { 1941, 1952, -1, sizeof(::CMsgGCCStrike15_v2_ClientVarValueNotificationInfo)},
-  { 1957, 1967, -1, sizeof(::CMsgGCCStrike15_v2_ServerVarValueNotificationInfo)},
-  { 1971, -1, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardRequest)},
-  { 1977, 1985, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardResponse_GiftLeaderboardEntry)},
-  { 1987, 1998, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardResponse)},
-  { 2003, 2011, -1, sizeof(::CMsgGCCStrike15_v2_ClientSubmitSurveyVote)},
-  { 2013, 2020, -1, sizeof(::CMsgGCCStrike15_v2_Server2GCClientValidate)},
-  { 2021, 2031, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientTournamentInfo)},
-  { 2035, 2044, -1, sizeof(::CSOEconCoupon)},
-  { 2047, 2056, -1, sizeof(::CSOAccountItemPersonalStore)},
-  { 2059, 2068, -1, sizeof(::CSOAccountXpShop)},
-  { 2071, 2081, -1, sizeof(::CSOAccountXpShopBids)},
-  { 2085, 2094, -1, sizeof(::CSOVolatileItemOffer)},
-  { 2097, 2106, -1, sizeof(::CSOVolatileItemClaimedRewards)},
-  { 2109, 2116, -1, sizeof(::CSOAccountKeychainRemoveToolCharges)},
-  { 2117, 2126, -1, sizeof(::CSOQuestProgress)},
-  { 2129, 2142, -1, sizeof(::CSOAccountSeasonalOperation)},
-  { 2149, 2157, -1, sizeof(::CSOAccountRecurringSubscription)},
-  { 2159, 2168, -1, sizeof(::CSOGameAccountSteamChina)},
-  { 2171, 2182, -1, sizeof(::CSOPersonaDataPublic)},
-  { 2187, 2197, -1, sizeof(::CSOAccountRecurringMission)},
-  { 2201, 2211, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop)},
-  { 2215, -1, -1, sizeof(::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks)},
-  { 2221, 2232, -1, sizeof(::CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats)},
-  { 2237, 2244, -1, sizeof(::CMsgGC_GlobalGame_Subscribe)},
-  { 2245, 2252, -1, sizeof(::CMsgGC_GlobalGame_Unsubscribe)},
-  { 2253, 2262, -1, sizeof(::CMsgGC_GlobalGame_Play)},
-  { 2265, 2272, -1, sizeof(::CMsgGCCStrike15_v2_AcknowledgePenalty)},
-  { 2273, 2283, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin)},
-  { 2287, 2295, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCStreamUnlock)},
-  { 2297, 2304, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestElevate)},
-  { 2305, 2313, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCChat)},
-  { 2315, 2323, -1, sizeof(::CMsgGCCStrike15_v2_GCToClientChat)},
-  { 2325, 2333, -1, sizeof(::CMsgGCCStrike15_v2_ClientAuthKeyCode)},
-  { 2335, 2342, -1, sizeof(::CMsgGCCStrike15_GotvSyncPacket)},
-  { 2343, 2363, -1, sizeof(::PlayerDecalDigitalSignature)},
-  { 2377, 2385, -1, sizeof(::CMsgGCCStrike15_v2_ClientPlayerDecalSign)},
-  { 2387, 2394, -1, sizeof(::CMsgGCCStrike15_v2_BetaEnrollment)},
-  { 2395, 2404, -1, sizeof(::CMsgGCCStrike15_v2_ClientLogonFatalError)},
-  { 2407, 2416, -1, sizeof(::CMsgGCCStrike15_v2_ClientPollState)},
-  { 2419, 2434, -1, sizeof(::CMsgGCCStrike15_v2_Party_Register)},
-  { 2443, 2455, -1, sizeof(::CMsgGCCStrike15_v2_Party_Search)},
-  { 2461, 2474, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults_Entry)},
-  { 2481, -1, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults)},
-  { 2488, 2496, -1, sizeof(::CMsgGCCStrike15_v2_Party_Invite)},
-  { 2498, 2507, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays_Player)},
-  { 2510, 2518, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays)},
-  { 2520, 2530, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestTicket)},
-  { 2534, 2541, -1, sizeof(::CMsgGCToClientSteamDatagramTicket)},
-  { 2542, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestOffers)},
-  { 2548, 2557, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestSouvenir)},
-  { 2560, 2568, -1, sizeof(::CMsgGCCStrike15_v2_ClientAccountBalance)},
-  { 2570, 2578, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyJoinRelay)},
-  { 2580, 2588, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning_Entry)},
-  { 2590, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning)},
-  { 2597, 2605, -1, sizeof(::CMsgGCCStrike15_v2_SetEventFavorite)},
-  { 2607, 2614, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Request)},
-  { 2615, 2624, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Response)},
-  { 2627, 2639, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport_Entry)},
-  { 2645, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport)},
-  { 2652, 2662, -1, sizeof(::CVDiagnostic)},
-  { 2666, 2692, -1, sizeof(::CMsgGCCStrike15_v2_ClientReportValidation)},
-  { 2712, 2727, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)},
-  { 2736, 2744, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRequestValidation)},
-  { 2746, 2761, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem)},
-  { 2770, 2786, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)},
-  { 2796, 2803, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
-  { 2804, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
-  { 2810, 2818, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
-  { 2820, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
+  { 1204, 1217, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestJoinFriendData)},
+  { 1224, 1237, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestJoinServerData)},
+  { 1244, 1255, -1, sizeof(::CMsgGCCstrike15_v2_ClientRedeemMissionReward)},
+  { 1260, 1269, -1, sizeof(::CMsgGCCstrike15_v2_ClientRedeemFreeReward)},
+  { 1272, 1288, -1, sizeof(::CMsgGCCstrike15_v2_GC2ServerNotifyXPRewarded)},
+  { 1298, 1305, -1, sizeof(::CMsgGCCStrike15_v2_ClientNetworkConfig)},
+  { 1306, 1315, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats_DeepStatsRange)},
+  { 1318, 1326, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats_DeepStatsMatch)},
+  { 1328, 1337, -1, sizeof(::CMsgGCCStrike15_ClientDeepStats)},
+  { 1340, 1350, -1, sizeof(::CMsgGCCStrike15_v2_WatchInfoUsers)},
+  { 1354, 1364, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestPlayersProfile)},
+  { 1368, 1376, -1, sizeof(::CMsgGCCStrike15_v2_PlayersProfile)},
+  { 1378, 1387, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary_DataPerWeek)},
+  { 1390, 1409, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary_DataPerMap)},
+  { 1422, 1432, -1, sizeof(::CMsgGCCStrike15_v2_PremierSeasonSummary)},
+  { 1436, 1450, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseUpdate)},
+  { 1458, 1475, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseAssignment)},
+  { 1486, 1494, -1, sizeof(::CMsgGCCStrike15_v2_PlayerOverwatchCaseStatus)},
+  { 1496, 1504, -1, sizeof(::CClientHeaderOverwatchEvidence)},
+  { 1506, 1515, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientTextMsg)},
+  { 1518, 1526, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCTextMsg)},
+  { 1528, 1536, -1, sizeof(::CMsgGCCStrike15_v2_MatchEndRunRewardDrops)},
+  { 1538, 1556, -1, sizeof(::CEconItemPreviewDataBlock_Sticker)},
+  { 1568, 1597, -1, sizeof(::CEconItemPreviewDataBlock)},
+  { 1620, 1627, -1, sizeof(::CMsgGCCStrike15_v2_MatchEndRewardDropsNotification)},
+  { 1628, 1635, -1, sizeof(::CMsgItemAcknowledged)},
+  { 1636, 1646, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockRequest)},
+  { 1650, 1657, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCEconPreviewDataBlockResponse)},
+  { 1658, -1, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestCurrentLiveGames)},
+  { 1664, 1671, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestLiveGameForUser)},
+  { 1672, 1679, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestRecentUserGames)},
+  { 1680, 1687, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestTournamentGames)},
+  { 1688, 1697, -1, sizeof(::CMsgGCCStrike15_v2_MatchListRequestFullGameInfo)},
+  { 1700, 1711, -1, sizeof(::CDataGCCStrike15_v2_MatchInfo)},
+  { 1716, 1725, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroupTeam)},
+  { 1728, -1, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroup_Picks)},
+  { 1735, 1751, -1, sizeof(::CDataGCCStrike15_v2_TournamentGroup)},
+  { 1761, 1771, -1, sizeof(::CDataGCCStrike15_v2_TournamentSection)},
+  { 1775, 1784, -1, sizeof(::CDataGCCStrike15_v2_TournamentInfo)},
+  { 1787, 1799, -1, sizeof(::CMsgGCCStrike15_v2_MatchList)},
+  { 1805, 1814, -1, sizeof(::CMsgGCCStrike15_v2_MatchListTournamentOperatorMgmt)},
+  { 1817, 1828, -1, sizeof(::CMsgGCCStrike15_v2_Predictions_GroupMatchTeamPick)},
+  { 1833, 1841, -1, sizeof(::CMsgGCCStrike15_v2_Predictions)},
+  { 1843, 1852, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy_FantasySlot)},
+  { 1855, 1863, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy_FantasyTeam)},
+  { 1865, 1873, -1, sizeof(::CMsgGCCStrike15_v2_Fantasy)},
+  { 1875, 1882, -1, sizeof(::CAttribute_String)},
+  { 1883, 1892, -1, sizeof(::CMsgLegacySource1ClientWelcome_Location)},
+  { 1895, 1912, -1, sizeof(::CMsgLegacySource1ClientWelcome)},
+  { 1923, 1936, -1, sizeof(::CMsgCStrike15Welcome)},
+  { 1943, 1954, -1, sizeof(::CMsgGCCStrike15_v2_ClientVarValueNotificationInfo)},
+  { 1959, 1969, -1, sizeof(::CMsgGCCStrike15_v2_ServerVarValueNotificationInfo)},
+  { 1973, -1, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardRequest)},
+  { 1979, 1987, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardResponse_GiftLeaderboardEntry)},
+  { 1989, 2000, -1, sizeof(::CMsgGCCStrike15_v2_GiftsLeaderboardResponse)},
+  { 2005, 2013, -1, sizeof(::CMsgGCCStrike15_v2_ClientSubmitSurveyVote)},
+  { 2015, 2022, -1, sizeof(::CMsgGCCStrike15_v2_Server2GCClientValidate)},
+  { 2023, 2033, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientTournamentInfo)},
+  { 2037, 2046, -1, sizeof(::CSOEconCoupon)},
+  { 2049, 2058, -1, sizeof(::CSOAccountItemPersonalStore)},
+  { 2061, 2070, -1, sizeof(::CSOAccountXpShop)},
+  { 2073, 2083, -1, sizeof(::CSOAccountXpShopBids)},
+  { 2087, 2096, -1, sizeof(::CSOVolatileItemOffer)},
+  { 2099, 2108, -1, sizeof(::CSOVolatileItemClaimedRewards)},
+  { 2111, 2118, -1, sizeof(::CSOAccountKeychainRemoveToolCharges)},
+  { 2119, 2128, -1, sizeof(::CSOQuestProgress)},
+  { 2131, 2144, -1, sizeof(::CSOAccountSeasonalOperation)},
+  { 2151, 2159, -1, sizeof(::CSOAccountRecurringSubscription)},
+  { 2161, 2170, -1, sizeof(::CSOGameAccountSteamChina)},
+  { 2173, 2184, -1, sizeof(::CSOPersonaDataPublic)},
+  { 2189, 2199, -1, sizeof(::CSOAccountRecurringMission)},
+  { 2203, 2213, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientNotifyXPShop)},
+  { 2217, -1, -1, sizeof(::CMsgGCCStrike15_v2_Client2GcAckXPShopTracks)},
+  { 2223, 2234, -1, sizeof(::CMsgGCCStrike15_v2_MatchmakingGC2ClientSearchStats)},
+  { 2239, 2246, -1, sizeof(::CMsgGC_GlobalGame_Subscribe)},
+  { 2247, 2254, -1, sizeof(::CMsgGC_GlobalGame_Unsubscribe)},
+  { 2255, 2264, -1, sizeof(::CMsgGC_GlobalGame_Play)},
+  { 2267, 2274, -1, sizeof(::CMsgGCCStrike15_v2_AcknowledgePenalty)},
+  { 2275, 2285, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCRequestPrestigeCoin)},
+  { 2289, 2297, -1, sizeof(::CMsgGCCStrike15_v2_Client2GCStreamUnlock)},
+  { 2299, 2306, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestElevate)},
+  { 2307, 2315, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCChat)},
+  { 2317, 2325, -1, sizeof(::CMsgGCCStrike15_v2_GCToClientChat)},
+  { 2327, 2335, -1, sizeof(::CMsgGCCStrike15_v2_ClientAuthKeyCode)},
+  { 2337, 2344, -1, sizeof(::CMsgGCCStrike15_GotvSyncPacket)},
+  { 2345, 2365, -1, sizeof(::PlayerDecalDigitalSignature)},
+  { 2379, 2387, -1, sizeof(::CMsgGCCStrike15_v2_ClientPlayerDecalSign)},
+  { 2389, 2396, -1, sizeof(::CMsgGCCStrike15_v2_BetaEnrollment)},
+  { 2397, 2406, -1, sizeof(::CMsgGCCStrike15_v2_ClientLogonFatalError)},
+  { 2409, 2418, -1, sizeof(::CMsgGCCStrike15_v2_ClientPollState)},
+  { 2421, 2436, -1, sizeof(::CMsgGCCStrike15_v2_Party_Register)},
+  { 2445, 2457, -1, sizeof(::CMsgGCCStrike15_v2_Party_Search)},
+  { 2463, 2476, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults_Entry)},
+  { 2483, -1, -1, sizeof(::CMsgGCCStrike15_v2_Party_SearchResults)},
+  { 2490, 2498, -1, sizeof(::CMsgGCCStrike15_v2_Party_Invite)},
+  { 2500, 2509, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays_Player)},
+  { 2512, 2520, -1, sizeof(::CMsgGCCStrike15_v2_Account_RequestCoPlays)},
+  { 2522, 2532, -1, sizeof(::CMsgGCCStrike15_v2_ClientToGCRequestTicket)},
+  { 2536, 2543, -1, sizeof(::CMsgGCToClientSteamDatagramTicket)},
+  { 2544, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestOffers)},
+  { 2550, 2559, -1, sizeof(::CMsgGCCStrike15_v2_ClientRequestSouvenir)},
+  { 2562, 2570, -1, sizeof(::CMsgGCCStrike15_v2_ClientAccountBalance)},
+  { 2572, 2580, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyJoinRelay)},
+  { 2582, 2590, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning_Entry)},
+  { 2592, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPartyWarning)},
+  { 2599, 2607, -1, sizeof(::CMsgGCCStrike15_v2_SetEventFavorite)},
+  { 2609, 2616, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Request)},
+  { 2617, 2626, -1, sizeof(::CMsgGCCStrike15_v2_GetEventFavorites_Response)},
+  { 2629, 2641, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport_Entry)},
+  { 2647, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport)},
+  { 2654, 2664, -1, sizeof(::CVDiagnostic)},
+  { 2668, 2694, -1, sizeof(::CMsgGCCStrike15_v2_ClientReportValidation)},
+  { 2714, 2729, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)},
+  { 2738, 2746, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRequestValidation)},
+  { 2748, 2763, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem)},
+  { 2772, 2788, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)},
+  { 2798, 2805, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
+  { 2806, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
+  { 2812, 2820, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
+  { 2822, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -6740,544 +6743,545 @@ const char descriptor_table_protodef_cstrike15_5fgcmessages_2eproto[] PROTOBUF_S
   "\001(\004\022\036\n\026cl_decryptdata_key_pub\030\007 \001(\004\022\021\n\tg"
   "ame_type\030\010 \001(\r\022\025\n\rgame_mapgroup\030\t \001(\t\022\020\n"
   "\010game_map\030\n \001(\t\022\021\n\tserver_id\030\013 \001(\004\022\020\n\010ma"
-  "tch_id\030\014 \001(\004\022\026\n\016reservation_id\030\r \001(\004\"\313\001\n"
+  "tch_id\030\014 \001(\004\022\026\n\016reservation_id\030\r \001(\004\"\344\001\n"
   ".CMsgGCCStrike15_v2_ClientRequestJoinFri"
   "endData\022\017\n\007version\030\001 \001(\r\022\022\n\naccount_id\030\002"
   " \001(\r\022\022\n\njoin_token\030\003 \001(\r\022\020\n\010join_ipp\030\004 \001"
   "(\r\022<\n\003res\030\005 \001(\0132/.CMsgGCCStrike15_v2_Mat"
   "chmakingGC2ClientReserve\022\020\n\010errormsg\030\006 \001"
-  "(\t\"\337\001\n.CMsgGCCStrike15_v2_ClientRequestJ"
-  "oinServerData\022\017\n\007version\030\001 \001(\r\022\022\n\naccoun"
-  "t_id\030\002 \001(\r\022\020\n\010serverid\030\003 \001(\004\022\021\n\tserver_i"
-  "p\030\004 \001(\r\022\023\n\013server_port\030\005 \001(\r\022<\n\003res\030\006 \001("
-  "\0132/.CMsgGCCStrike15_v2_MatchmakingGC2Cli"
-  "entReserve\022\020\n\010errormsg\030\007 \001(\t\"\236\001\n,CMsgGCC"
-  "strike15_v2_ClientRedeemMissionReward\022\023\n"
-  "\013campaign_id\030\001 \001(\r\022\021\n\tredeem_id\030\002 \001(\r\022\032\n"
-  "\022redeemable_balance\030\003 \001(\r\022\025\n\rexpected_co"
-  "st\030\004 \001(\r\022\023\n\013bid_control\030\005 \001(\005\"o\n)CMsgGCC"
-  "strike15_v2_ClientRedeemFreeReward\022\027\n\017ge"
-  "neration_time\030\001 \001(\r\022\032\n\022redeemable_balanc"
-  "e\030\002 \001(\r\022\r\n\005items\030\003 \003(\004\"\271\002\n,CMsgGCCstrike"
-  "15_v2_GC2ServerNotifyXPRewarded\022)\n\020xp_pr"
-  "ogress_data\030\001 \003(\0132\017.XpProgressData\022\022\n\nac"
-  "count_id\030\002 \001(\r\022\022\n\ncurrent_xp\030\003 \001(\r\022\025\n\rcu"
-  "rrent_level\030\004 \001(\r\022\027\n\017upgraded_defidx\030\005 \001"
-  "(\r\022 \n\030operation_points_awarded\030\006 \001(\r\022\024\n\014"
-  "free_rewards\030\007 \001(\r\022\032\n\022xp_trail_remaining"
-  "\030\010 \001(\r\022\032\n\022xp_trail_xp_needed\030\t \001(\005\022\026\n\016xp"
-  "_trail_level\030\n \001(\r\"6\n&CMsgGCCStrike15_v2"
-  "_ClientNetworkConfig\022\014\n\004data\030\001 \001(\014\"\325\002\n\037C"
-  "MsgGCCStrike15_ClientDeepStats\022\022\n\naccoun"
-  "t_id\030\001 \001(\r\022>\n\005range\030\002 \001(\0132/.CMsgGCCStrik"
-  "e15_ClientDeepStats.DeepStatsRange\022@\n\007ma"
-  "tches\030\003 \003(\0132/.CMsgGCCStrike15_ClientDeep"
-  "Stats.DeepStatsMatch\032<\n\016DeepStatsRange\022\r"
-  "\n\005begin\030\001 \001(\r\022\013\n\003end\030\002 \001(\r\022\016\n\006frozen\030\003 \001"
-  "(\010\032^\n\016DeepStatsMatch\022%\n\006player\030\001 \001(\0132\025.D"
-  "eepPlayerStatsEntry\022%\n\006events\030\002 \003(\0132\025.De"
-  "epPlayerMatchEvent\"\232\001\n!CMsgGCCStrike15_v"
-  "2_WatchInfoUsers\022\022\n\nrequest_id\030\001 \001(\r\022\023\n\013"
-  "account_ids\030\002 \003(\r\0222\n\025watchable_match_inf"
-  "os\030\003 \003(\0132\023.WatchableMatchInfo\022\030\n\020extende"
-  "d_timeout\030\005 \001(\r\"\234\001\n.CMsgGCCStrike15_v2_C"
-  "lientRequestPlayersProfile\022\036\n\026request_id"
-  "__deprecated\030\001 \001(\r\022\037\n\027account_ids__depre"
-  "cated\030\002 \003(\r\022\022\n\naccount_id\030\003 \001(\r\022\025\n\rreque"
-  "st_level\030\004 \001(\r\"\200\001\n!CMsgGCCStrike15_v2_Pl"
-  "ayersProfile\022\022\n\nrequest_id\030\001 \001(\r\022G\n\020acco"
-  "unt_profiles\030\002 \003(\0132-.CMsgGCCStrike15_v2_"
-  "MatchmakingGC2ClientHello\"\226\004\n\'CMsgGCCStr"
-  "ike15_v2_PremierSeasonSummary\022\022\n\naccount"
-  "_id\030\001 \001(\r\022\021\n\tseason_id\030\002 \001(\r\022K\n\rdata_per"
-  "_week\030\003 \003(\01324.CMsgGCCStrike15_v2_Premier"
-  "SeasonSummary.DataPerWeek\022I\n\014data_per_ma"
-  "p\030\004 \003(\01323.CMsgGCCStrike15_v2_PremierSeas"
-  "onSummary.DataPerMap\032G\n\013DataPerWeek\022\017\n\007w"
-  "eek_id\030\001 \001(\004\022\017\n\007rank_id\030\002 \001(\r\022\026\n\016matches"
-  "_played\030\003 \001(\r\032\342\001\n\nDataPerMap\022\016\n\006map_id\030\001"
-  " \001(\r\022\014\n\004wins\030\002 \001(\r\022\014\n\004ties\030\003 \001(\r\022\016\n\006loss"
-  "es\030\004 \001(\r\022\016\n\006rounds\030\005 \001(\r\022\r\n\005kills\030\006 \001(\r\022"
-  "\021\n\theadshots\030\007 \001(\r\022\017\n\007assists\030\010 \001(\r\022\016\n\006d"
-  "eaths\030\t \001(\r\022\014\n\004mvps\030\n \001(\r\022\021\n\trounds_3k\030\013"
-  " \001(\r\022\021\n\trounds_4k\030\014 \001(\r\022\021\n\trounds_5k\030\r \001"
-  "(\r\"\314\001\n,CMsgGCCStrike15_v2_PlayerOverwatc"
-  "hCaseUpdate\022\016\n\006caseid\030\001 \001(\004\022\021\n\tsuspectid"
-  "\030\003 \001(\r\022\022\n\nfractionid\030\004 \001(\r\022\022\n\nrpt_aimbot"
-  "\030\005 \001(\r\022\024\n\014rpt_wallhack\030\006 \001(\r\022\025\n\rrpt_spee"
-  "dhack\030\007 \001(\r\022\024\n\014rpt_teamharm\030\010 \001(\r\022\016\n\006rea"
-  "son\030\t \001(\r\"\215\002\n0CMsgGCCStrike15_v2_PlayerO"
-  "verwatchCaseAssignment\022\016\n\006caseid\030\001 \001(\004\022\017"
-  "\n\007caseurl\030\002 \001(\t\022\017\n\007verdict\030\003 \001(\r\022\021\n\ttime"
-  "stamp\030\004 \001(\r\022\027\n\017throttleseconds\030\005 \001(\r\022\021\n\t"
-  "suspectid\030\006 \001(\r\022\022\n\nfractionid\030\007 \001(\r\022\021\n\tn"
-  "umrounds\030\010 \001(\r\022\026\n\016fractionrounds\030\t \001(\r\022\031"
-  "\n\021streakconvictions\030\n \001(\005\022\016\n\006reason\030\013 \001("
-  "\r\"P\n,CMsgGCCStrike15_v2_PlayerOverwatchC"
-  "aseStatus\022\016\n\006caseid\030\001 \001(\004\022\020\n\010statusid\030\002 "
-  "\001(\r\"C\n\036CClientHeaderOverwatchEvidence\022\021\n"
-  "\taccountid\030\001 \001(\r\022\016\n\006caseid\030\002 \001(\004\"P\n#CMsg"
-  "GCCStrike15_v2_GC2ClientTextMsg\022\n\n\002id\030\001 "
-  "\001(\r\022\014\n\004type\030\002 \001(\r\022\017\n\007payload\030\003 \001(\014\"\?\n#CM"
-  "sgGCCStrike15_v2_Client2GCTextMsg\022\n\n\002id\030"
-  "\001 \001(\r\022\014\n\004args\030\002 \003(\014\"\266\001\n)CMsgGCCStrike15_"
-  "v2_MatchEndRunRewardDrops\022L\n\nserverinfo\030"
-  "\003 \001(\01328.CMsgGCCStrike15_v2_MatchmakingSe"
-  "rverReservationResponse\022;\n\024match_end_que"
-  "st_data\030\004 \001(\0132\035.CMsgGC_ServerQuestUpdate"
-  "Data\"\244\006\n\031CEconItemPreviewDataBlock\022\021\n\tac"
-  "countid\030\001 \001(\r\022\016\n\006itemid\030\002 \001(\004\022\020\n\010definde"
-  "x\030\003 \001(\r\022\022\n\npaintindex\030\004 \001(\r\022\016\n\006rarity\030\005 "
-  "\001(\r\022\017\n\007quality\030\006 \001(\r\022\021\n\tpaintwear\030\007 \001(\r\022"
-  "\021\n\tpaintseed\030\010 \001(\r\022\032\n\022killeaterscoretype"
-  "\030\t \001(\r\022\026\n\016killeatervalue\030\n \001(\r\022\022\n\ncustom"
-  "name\030\013 \001(\t\0224\n\010stickers\030\014 \003(\0132\".CEconItem"
-  "PreviewDataBlock.Sticker\022\021\n\tinventory\030\r "
-  "\001(\r\022\016\n\006origin\030\016 \001(\r\022\017\n\007questid\030\017 \001(\r\022\022\n\n"
-  "dropreason\030\020 \001(\r\022\022\n\nmusicindex\030\021 \001(\r\022\020\n\010"
-  "entindex\030\022 \001(\005\022\020\n\010petindex\030\023 \001(\r\0225\n\tkeyc"
-  "hains\030\024 \003(\0132\".CEconItemPreviewDataBlock."
-  "Sticker\022\r\n\005style\030\025 \001(\r\0226\n\nvariations\030\026 \003"
-  "(\0132\".CEconItemPreviewDataBlock.Sticker\022\025"
-  "\n\rupgrade_level\030\027 \001(\r\032\343\001\n\007Sticker\022\014\n\004slo"
-  "t\030\001 \001(\r\022\022\n\nsticker_id\030\002 \001(\r\022\014\n\004wear\030\003 \001("
-  "\002\022\r\n\005scale\030\004 \001(\002\022\020\n\010rotation\030\005 \001(\002\022\017\n\007ti"
-  "nt_id\030\006 \001(\r\022\020\n\010offset_x\030\007 \001(\002\022\020\n\010offset_"
-  "y\030\010 \001(\002\022\020\n\010offset_z\030\t \001(\002\022\017\n\007pattern\030\n \001"
-  "(\r\022\026\n\016highlight_reel\030\013 \001(\r\022\027\n\017wrapped_st"
-  "icker\030\014 \001(\r\"b\n2CMsgGCCStrike15_v2_MatchE"
-  "ndRewardDropsNotification\022,\n\010iteminfo\030\006 "
-  "\001(\0132\032.CEconItemPreviewDataBlock\"D\n\024CMsgI"
-  "temAcknowledged\022,\n\010iteminfo\030\001 \001(\0132\032.CEco"
-  "nItemPreviewDataBlock\"}\n7CMsgGCCStrike15"
-  "_v2_Client2GCEconPreviewDataBlockRequest"
-  "\022\017\n\007param_s\030\001 \001(\004\022\017\n\007param_a\030\002 \001(\004\022\017\n\007pa"
-  "ram_d\030\003 \001(\004\022\017\n\007param_m\030\004 \001(\004\"h\n8CMsgGCCS"
-  "trike15_v2_Client2GCEconPreviewDataBlock"
-  "Response\022,\n\010iteminfo\030\001 \001(\0132\032.CEconItemPr"
-  "eviewDataBlock\"5\n3CMsgGCCStrike15_v2_Mat"
-  "chListRequestCurrentLiveGames\"G\n2CMsgGCC"
-  "Strike15_v2_MatchListRequestLiveGameForU"
-  "ser\022\021\n\taccountid\030\001 \001(\r\"G\n2CMsgGCCStrike1"
-  "5_v2_MatchListRequestRecentUserGames\022\021\n\t"
-  "accountid\030\001 \001(\r\"E\n2CMsgGCCStrike15_v2_Ma"
-  "tchListRequestTournamentGames\022\017\n\007eventid"
-  "\030\001 \001(\005\"d\n/CMsgGCCStrike15_v2_MatchListRe"
-  "questFullGameInfo\022\017\n\007matchid\030\001 \001(\004\022\021\n\tou"
-  "tcomeid\030\002 \001(\004\022\r\n\005token\030\003 \001(\r\"\210\002\n\035CDataGC"
-  "CStrike15_v2_MatchInfo\022\017\n\007matchid\030\001 \001(\004\022"
-  "\021\n\tmatchtime\030\002 \001(\r\022/\n\022watchablematchinfo"
-  "\030\003 \001(\0132\023.WatchableMatchInfo\022J\n\021roundstat"
-  "s_legacy\030\004 \001(\0132/.CMsgGCCStrike15_v2_Matc"
-  "hmakingServerRoundStats\022F\n\rroundstatsall"
-  "\030\005 \003(\0132/.CMsgGCCStrike15_v2_MatchmakingS"
-  "erverRoundStats\"^\n\'CDataGCCStrike15_v2_T"
-  "ournamentGroupTeam\022\017\n\007team_id\030\001 \001(\005\022\r\n\005s"
-  "core\030\002 \001(\005\022\023\n\013correctpick\030\003 \001(\010\"\331\002\n#CDat"
-  "aGCCStrike15_v2_TournamentGroup\022\017\n\007group"
-  "id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\014\n\004desc\030\003 \001(\t\022\031\n\021"
-  "picks__deprecated\030\004 \001(\r\0227\n\005teams\030\005 \003(\0132("
-  ".CDataGCCStrike15_v2_TournamentGroupTeam"
-  "\022\021\n\tstage_ids\030\006 \003(\005\022\031\n\021picklockuntiltime"
-  "\030\007 \001(\r\022\025\n\rpickableteams\030\010 \001(\r\022\027\n\017points_"
-  "per_pick\030\t \001(\r\0229\n\005picks\030\n \003(\0132*.CDataGCC"
-  "Strike15_v2_TournamentGroup.Picks\032\030\n\005Pic"
-  "ks\022\017\n\007pickids\030\001 \003(\005\"\214\001\n%CDataGCCStrike15"
-  "_v2_TournamentSection\022\021\n\tsectionid\030\001 \001(\r"
-  "\022\014\n\004name\030\002 \001(\t\022\014\n\004desc\030\003 \001(\t\0224\n\006groups\030\004"
-  " \003(\0132$.CDataGCCStrike15_v2_TournamentGro"
-  "up\"\265\001\n\"CDataGCCStrike15_v2_TournamentInf"
-  "o\0228\n\010sections\030\001 \003(\0132&.CDataGCCStrike15_v"
-  "2_TournamentSection\022*\n\020tournament_event\030"
-  "\002 \001(\0132\020.TournamentEvent\022)\n\020tournament_te"
-  "ams\030\003 \003(\0132\017.TournamentTeam\"\353\001\n\034CMsgGCCSt"
-  "rike15_v2_MatchList\022\024\n\014msgrequestid\030\001 \001("
-  "\r\022\021\n\taccountid\030\002 \001(\r\022\022\n\nservertime\030\003 \001(\r"
-  "\022/\n\007matches\030\004 \003(\0132\036.CDataGCCStrike15_v2_"
-  "MatchInfo\022 \n\007streams\030\005 \003(\0132\017.TournamentT"
-  "eam\022;\n\016tournamentinfo\030\006 \001(\0132#.CDataGCCSt"
-  "rike15_v2_TournamentInfo\"\211\001\n2CMsgGCCStri"
-  "ke15_v2_MatchListTournamentOperatorMgmt\022"
-  "\017\n\007eventid\030\001 \001(\005\022/\n\007matches\030\002 \003(\0132\036.CDat"
-  "aGCCStrike15_v2_MatchInfo\022\021\n\taccountid\030\003"
-  " \001(\r\"\357\001\n\036CMsgGCCStrike15_v2_Predictions\022"
-  "\020\n\010event_id\030\001 \001(\r\022R\n\026group_match_team_pi"
-  "cks\030\002 \003(\01322.CMsgGCCStrike15_v2_Predictio"
-  "ns.GroupMatchTeamPick\032g\n\022GroupMatchTeamP"
-  "ick\022\021\n\tsectionid\030\001 \001(\005\022\017\n\007groupid\030\002 \001(\005\022"
-  "\r\n\005index\030\003 \001(\005\022\016\n\006teamid\030\004 \001(\005\022\016\n\006itemid"
-  "\030\005 \001(\004\"\373\001\n\032CMsgGCCStrike15_v2_Fantasy\022\020\n"
-  "\010event_id\030\001 \001(\r\0226\n\005teams\030\002 \003(\0132\'.CMsgGCC"
-  "Strike15_v2_Fantasy.FantasyTeam\0329\n\013Fanta"
-  "sySlot\022\014\n\004type\030\001 \001(\005\022\014\n\004pick\030\002 \001(\005\022\016\n\006it"
-  "emid\030\003 \001(\004\032X\n\013FantasyTeam\022\021\n\tsectionid\030\001"
-  " \001(\005\0226\n\005slots\030\002 \003(\0132\'.CMsgGCCStrike15_v2"
-  "_Fantasy.FantasySlot\"\"\n\021CAttribute_Strin"
-  "g\022\r\n\005value\030\001 \001(\t\"\316\003\n\036CMsgLegacySource1Cl"
-  "ientWelcome\022\017\n\007version\030\001 \001(\r\022\021\n\tgame_dat"
-  "a\030\002 \001(\014\022;\n\033outofdate_subscribed_caches\030\003"
-  " \003(\0132\026.CMsgSOCacheSubscribed\022A\n\032uptodate"
-  "_subscribed_caches\030\004 \003(\0132\035.CMsgSOCacheSu"
-  "bscriptionCheck\022:\n\010location\030\005 \001(\0132(.CMsg"
-  "LegacySource1ClientWelcome.Location\022\022\n\ng"
-  "ame_data2\030\006 \001(\014\022$\n\034rtime32_gc_welcome_ti"
-  "mestamp\030\007 \001(\r\022\020\n\010currency\030\010 \001(\r\022\017\n\007balan"
-  "ce\030\t \001(\r\022\023\n\013balance_url\030\n \001(\t\022\030\n\020txn_cou"
-  "ntry_code\030\013 \001(\t\032@\n\010Location\022\020\n\010latitude\030"
-  "\001 \001(\002\022\021\n\tlongitude\030\002 \001(\002\022\017\n\007country\030\003 \001("
-  "\t\"\304\001\n\024CMsgCStrike15Welcome\022\027\n\017store_item"
-  "_hash\030\005 \001(\r\022\037\n\027timeplayedconsecutively\030\006"
-  " \001(\r\022\031\n\021time_first_played\030\n \001(\r\022\030\n\020last_"
-  "time_played\030\014 \001(\r\022\027\n\017last_ip_address\030\r \001"
-  "(\r\022\022\n\ngscookieid\030\022 \001(\004\022\020\n\010uniqueid\030\023 \001(\004"
-  "\"\233\001\n1CMsgGCCStrike15_v2_ClientVarValueNo"
-  "tificationInfo\022\022\n\nvalue_name\030\001 \001(\t\022\021\n\tva"
-  "lue_int\030\002 \001(\005\022\023\n\013server_addr\030\003 \001(\r\022\023\n\013se"
-  "rver_port\030\004 \001(\r\022\025\n\rchoked_blocks\030\005 \003(\t\"z"
-  "\n1CMsgGCCStrike15_v2_ServerVarValueNotif"
-  "icationInfo\022\021\n\taccountid\030\001 \001(\r\022\022\n\nviewan"
-  "gles\030\002 \003(\r\022\014\n\004type\030\003 \001(\r\022\020\n\010userdata\030\004 \003"
-  "(\r\",\n*CMsgGCCStrike15_v2_GiftsLeaderboar"
-  "dRequest\"\235\002\n+CMsgGCCStrike15_v2_GiftsLea"
-  "derboardResponse\022\022\n\nservertime\030\001 \001(\r\022\033\n\023"
-  "time_period_seconds\030\002 \001(\r\022\031\n\021total_gifts"
-  "_given\030\003 \001(\r\022\024\n\014total_givers\030\004 \001(\r\022R\n\007en"
-  "tries\030\005 \003(\0132A.CMsgGCCStrike15_v2_GiftsLe"
-  "aderboardResponse.GiftLeaderboardEntry\0328"
-  "\n\024GiftLeaderboardEntry\022\021\n\taccountid\030\001 \001("
-  "\r\022\r\n\005gifts\030\002 \001(\r\"L\n)CMsgGCCStrike15_v2_C"
-  "lientSubmitSurveyVote\022\021\n\tsurvey_id\030\001 \001(\r"
-  "\022\014\n\004vote\030\002 \001(\r\"\?\n*CMsgGCCStrike15_v2_Ser"
-  "ver2GCClientValidate\022\021\n\taccountid\030\001 \001(\r\""
-  "r\n*CMsgGCCStrike15_v2_GC2ClientTournamen"
-  "tInfo\022\017\n\007eventid\030\001 \001(\r\022\017\n\007stageid\030\002 \001(\r\022"
-  "\021\n\tgame_type\030\003 \001(\r\022\017\n\007teamids\030\004 \003(\r\"O\n\rC"
-  "SOEconCoupon\022\025\n\007entryid\030\001 \001(\rB\004\200\246\035\001\022\016\n\006d"
-  "efidx\030\002 \001(\r\022\027\n\017expiration_date\030\003 \001(\007\"a\n\033"
-  "CSOAccountItemPersonalStore\022\027\n\017generatio"
-  "n_time\030\001 \001(\r\022\032\n\022redeemable_balance\030\002 \001(\r"
-  "\022\r\n\005items\030\003 \003(\004\"Z\n\020CSOAccountXpShop\022\027\n\017g"
-  "eneration_time\030\001 \001(\r\022\032\n\022redeemable_balan"
-  "ce\030\002 \001(\r\022\021\n\txp_tracks\030\003 \003(\r\"z\n\024CSOAccoun"
-  "tXpShopBids\022\031\n\013campaign_id\030\001 \001(\rB\004\200\246\035\001\022\027"
-  "\n\tredeem_id\030\002 \001(\rB\004\200\246\035\001\022\025\n\rexpected_cost"
-  "\030\003 \001(\r\022\027\n\017generation_time\030\004 \001(\r\"Z\n\024CSOVo"
-  "latileItemOffer\022\024\n\006defidx\030\001 \001(\rB\004\200\246\035\001\022\023\n"
-  "\013faux_itemid\030\002 \003(\004\022\027\n\017generation_time\030\003 "
-  "\003(\r\"^\n\035CSOVolatileItemClaimedRewards\022\024\n\006"
-  "defidx\030\001 \001(\rB\004\200\246\035\001\022\016\n\006reward\030\002 \003(\r\022\027\n\017ge"
-  "neration_time\030\003 \003(\r\"6\n#CSOAccountKeychai"
-  "nRemoveToolCharges\022\017\n\007charges\030\001 \001(\r\"Y\n\020C"
-  "SOQuestProgress\022\025\n\007questid\030\001 \001(\rB\004\200\246\035\001\022\030"
-  "\n\020points_remaining\030\002 \001(\r\022\024\n\014bonus_points"
-  "\030\003 \001(\r\"\315\001\n\033CSOAccountSeasonalOperation\022\032"
-  "\n\014season_value\030\001 \001(\rB\004\200\246\035\001\022\025\n\rtier_unloc"
-  "ked\030\002 \001(\r\022\025\n\rpremium_tiers\030\003 \001(\r\022\022\n\nmiss"
-  "ion_id\030\004 \001(\r\022\032\n\022missions_completed\030\005 \001(\r"
-  "\022\032\n\022redeemable_balance\030\006 \001(\r\022\030\n\020season_p"
-  "ass_time\030\007 \001(\r\"R\n\037CSOAccountRecurringSub"
-  "scription\022\027\n\017time_next_cycle\030\001 \001(\r\022\026\n\016ti"
-  "me_initiated\030\002 \001(\r\"c\n\030CSOGameAccountStea"
-  "mChina\022\030\n\020time_last_update\030\001 \001(\r\022\026\n\016time"
-  "_comms_ban\030\002 \001(\r\022\025\n\rtime_play_ban\030\003 \001(\r\""
-  "\257\001\n\024CSOPersonaDataPublic\022\024\n\014player_level"
-  "\030\001 \001(\005\022-\n\014commendation\030\002 \001(\0132\027.PlayerCom"
-  "mendationInfo\022\026\n\016elevated_state\030\003 \001(\010\022\"\n"
-  "\032xp_trail_timestamp_refresh\030\004 \001(\r\022\026\n\016xp_"
-  "trail_level\030\005 \001(\r\"f\n\032CSOAccountRecurring"
-  "Mission\022\022\n\naccount_id\030\001 \001(\r\022\022\n\nmission_i"
-  "d\030\002 \001(\r\022\016\n\006period\030\003 \001(\r\022\020\n\010progress\030\004 \001("
-  "\r\"\240\001\n(CMsgGCCStrike15_v2_GC2ClientNotify"
-  "XPShop\022#\n\010prematch\030\001 \001(\0132\021.CSOAccountXpS"
-  "hop\022$\n\tpostmatch\030\002 \001(\0132\021.CSOAccountXpSho"
-  "p\022\022\n\ncurrent_xp\030\003 \001(\r\022\025\n\rcurrent_level\030\004"
-  " \001(\r\"-\n+CMsgGCCStrike15_v2_Client2GcAckX"
-  "PShopTracks\"\251\001\n2CMsgGCCStrike15_v2_Match"
-  "makingGC2ClientSearchStats\022\026\n\016gs_locatio"
-  "n_id\030\001 \001(\r\022\026\n\016data_center_id\030\002 \001(\r\022\025\n\rnu"
-  "m_locked_in\030\003 \001(\r\022\030\n\020num_found_nearby\030\004 "
-  "\001(\r\022\022\n\nnote_level\030\005 \001(\r\"-\n\033CMsgGC_Global"
-  "Game_Subscribe\022\016\n\006ticket\030\001 \001(\004\"1\n\035CMsgGC"
-  "_GlobalGame_Unsubscribe\022\020\n\010timeleft\030\001 \001("
-  "\005\"P\n\026CMsgGC_GlobalGame_Play\022\016\n\006ticket\030\001 "
-  "\001(\004\022\022\n\ngametimems\030\002 \001(\r\022\022\n\nmsperpoint\030\003 "
-  "\001(\r\"=\n%CMsgGCCStrike15_v2_AcknowledgePen"
-  "alty\022\024\n\014acknowledged\030\001 \001(\005\"{\n/CMsgGCCStr"
-  "ike15_v2_Client2GCRequestPrestigeCoin\022\020\n"
-  "\010defindex\030\001 \001(\r\022\021\n\tupgradeid\030\002 \001(\004\022\r\n\005ho"
-  "urs\030\003 \001(\r\022\024\n\014prestigetime\030\004 \001(\r\"F\n(CMsgG"
-  "CCStrike15_v2_Client2GCStreamUnlock\022\016\n\006t"
-  "icket\030\001 \001(\004\022\n\n\002os\030\002 \001(\005\"<\n+CMsgGCCStrike"
-  "15_v2_ClientToGCRequestElevate\022\r\n\005stage\030"
-  "\001 \001(\r\"C\n!CMsgGCCStrike15_v2_ClientToGCCh"
-  "at\022\020\n\010match_id\030\001 \001(\004\022\014\n\004text\030\002 \001(\t\"E\n!CM"
-  "sgGCCStrike15_v2_GCToClientChat\022\022\n\naccou"
-  "nt_id\030\001 \001(\r\022\014\n\004text\030\002 \001(\t\"E\n$CMsgGCCStri"
-  "ke15_v2_ClientAuthKeyCode\022\017\n\007eventid\030\001 \001"
-  "(\r\022\014\n\004code\030\002 \001(\t\"F\n\036CMsgGCCStrike15_Gotv"
-  "SyncPacket\022$\n\004data\030\001 \001(\0132\026.CEngineGotvSy"
-  "ncPacket\"\223\002\n\033PlayerDecalDigitalSignature"
-  "\022\021\n\tsignature\030\001 \001(\014\022\021\n\taccountid\030\002 \001(\r\022\r"
-  "\n\005rtime\030\003 \001(\r\022\016\n\006endpos\030\004 \003(\002\022\020\n\010startpo"
-  "s\030\005 \003(\002\022\014\n\004left\030\006 \003(\002\022\021\n\ttx_defidx\030\007 \001(\r"
-  "\022\020\n\010entindex\030\010 \001(\005\022\016\n\006hitbox\030\t \001(\r\022\024\n\014cr"
-  "eationtime\030\n \001(\002\022\021\n\tequipslot\030\013 \001(\r\022\020\n\010t"
-  "race_id\030\014 \001(\r\022\016\n\006normal\030\r \003(\002\022\017\n\007tint_id"
-  "\030\016 \001(\r\"f\n(CMsgGCCStrike15_v2_ClientPlaye"
-  "rDecalSign\022*\n\004data\030\001 \001(\0132\034.PlayerDecalDi"
-  "gitalSignature\022\016\n\006itemid\030\002 \001(\004\"4\n!CMsgGC"
-  "CStrike15_v2_BetaEnrollment\022\017\n\007eresult\030\001"
-  " \001(\r\"_\n(CMsgGCCStrike15_v2_ClientLogonFa"
-  "talError\022\021\n\terrorcode\030\001 \001(\r\022\017\n\007message\030\002"
-  " \001(\t\022\017\n\007country\030\003 \001(\t\"S\n\"CMsgGCCStrike15"
-  "_v2_ClientPollState\022\016\n\006pollid\030\001 \001(\r\022\r\n\005n"
-  "ames\030\002 \003(\t\022\016\n\006values\030\003 \003(\005\"\244\001\n!CMsgGCCSt"
-  "rike15_v2_Party_Register\022\n\n\002id\030\001 \001(\r\022\013\n\003"
-  "ver\030\002 \001(\r\022\013\n\003apr\030\003 \001(\r\022\013\n\003ark\030\004 \001(\r\022\013\n\003n"
-  "by\030\005 \001(\r\022\013\n\003grp\030\006 \001(\r\022\r\n\005slots\030\007 \001(\r\022\020\n\010"
-  "launcher\030\010 \001(\r\022\021\n\tgame_type\030\t \001(\r\"{\n\037CMs"
-  "gGCCStrike15_v2_Party_Search\022\013\n\003ver\030\001 \001("
-  "\r\022\013\n\003apr\030\002 \001(\r\022\013\n\003ark\030\003 \001(\r\022\014\n\004grps\030\004 \003("
-  "\r\022\020\n\010launcher\030\005 \001(\r\022\021\n\tgame_type\030\006 \001(\r\"\327"
-  "\001\n&CMsgGCCStrike15_v2_Party_SearchResult"
-  "s\022>\n\007entries\030\001 \003(\0132-.CMsgGCCStrike15_v2_"
-  "Party_SearchResults.Entry\032m\n\005Entry\022\n\n\002id"
-  "\030\001 \001(\r\022\013\n\003grp\030\002 \001(\r\022\021\n\tgame_type\030\003 \001(\r\022\013"
-  "\n\003apr\030\004 \001(\r\022\013\n\003ark\030\005 \001(\r\022\013\n\003loc\030\006 \001(\r\022\021\n"
-  "\taccountid\030\007 \001(\r\"E\n\037CMsgGCCStrike15_v2_P"
-  "arty_Invite\022\021\n\taccountid\030\001 \001(\r\022\017\n\007lobbyi"
-  "d\030\002 \001(\r\"\302\001\n)CMsgGCCStrike15_v2_Account_R"
-  "equestCoPlays\022B\n\007players\030\001 \003(\01321.CMsgGCC"
-  "Strike15_v2_Account_RequestCoPlays.Playe"
-  "r\022\022\n\nservertime\030\002 \001(\r\032=\n\006Player\022\021\n\taccou"
-  "ntid\030\001 \001(\r\022\020\n\010rtcoplay\030\002 \001(\r\022\016\n\006online\030\003"
-  " \001(\010\"\244\001\n*CMsgGCCStrike15_v2_ClientToGCRe"
-  "questTicket\022\033\n\023authorized_steam_id\030\001 \001(\006"
-  "\022\034\n\024authorized_public_ip\030\002 \001(\007\022\033\n\023gamese"
-  "rver_steam_id\030\003 \001(\006\022\036\n\026gameserver_sdr_ro"
-  "uting\030\005 \001(\t\">\n!CMsgGCToClientSteamDatagr"
-  "amTicket\022\031\n\021serialized_ticket\030\020 \001(\014\"(\n&C"
-  "MsgGCCStrike15_v2_ClientRequestOffers\"\\\n"
-  "(CMsgGCCStrike15_v2_ClientRequestSouveni"
-  "r\022\016\n\006itemid\030\001 \001(\004\022\017\n\007matchid\030\002 \001(\004\022\017\n\007ev"
-  "entid\030\003 \001(\005\"F\n\'CMsgGCCStrike15_v2_Client"
-  "AccountBalance\022\016\n\006amount\030\001 \001(\004\022\013\n\003url\030\002 "
-  "\001(\t\"M\n\'CMsgGCCStrike15_v2_ClientPartyJoi"
-  "nRelay\022\021\n\taccountid\030\001 \001(\r\022\017\n\007lobbyid\030\002 \001"
-  "(\004\"\224\001\n%CMsgGCCStrike15_v2_ClientPartyWar"
-  "ning\022=\n\007entries\030\001 \003(\0132,.CMsgGCCStrike15_"
-  "v2_ClientPartyWarning.Entry\032,\n\005Entry\022\021\n\t"
-  "accountid\030\001 \001(\r\022\020\n\010warntype\030\002 \001(\r\"K\n#CMs"
-  "gGCCStrike15_v2_SetEventFavorite\022\017\n\007even"
-  "tid\030\001 \001(\004\022\023\n\013is_favorite\030\002 \001(\010\"B\n,CMsgGC"
-  "CStrike15_v2_GetEventFavorites_Request\022\022"
-  "\n\nall_events\030\001 \001(\010\"r\n-CMsgGCCStrike15_v2"
-  "_GetEventFavorites_Response\022\022\n\nall_event"
-  "s\030\001 \001(\010\022\026\n\016json_favorites\030\002 \001(\t\022\025\n\rjson_"
-  "featured\030\003 \001(\t\"\325\001\n#CMsgGCCStrike15_v2_Cl"
-  "ientPerfReport\022;\n\007entries\030\001 \003(\0132*.CMsgGC"
-  "CStrike15_v2_ClientPerfReport.Entry\032q\n\005E"
-  "ntry\022\023\n\013perfcounter\030\001 \001(\r\022\016\n\006length\030\002 \001("
-  "\r\022\021\n\treference\030\003 \001(\014\022\016\n\006actual\030\004 \001(\014\022\020\n\010"
-  "sourceid\030\005 \001(\r\022\016\n\006status\030\006 \001(\r\"Q\n\014CVDiag"
-  "nostic\022\n\n\002id\030\001 \001(\r\022\020\n\010extended\030\002 \001(\r\022\r\n\005"
-  "value\030\003 \001(\004\022\024\n\014string_value\030\004 \001(\t\"\360\003\n)CM"
-  "sgGCCStrike15_v2_ClientReportValidation\022"
-  "\023\n\013file_report\030\001 \001(\t\022\024\n\014command_line\030\002 \001"
-  "(\t\022\023\n\013total_files\030\003 \001(\r\022\026\n\016internal_erro"
-  "r\030\004 \001(\r\022\022\n\ntrust_time\030\005 \001(\r\022\025\n\rcount_pen"
-  "ding\030\006 \001(\r\022\027\n\017count_completed\030\007 \001(\r\022\022\n\np"
-  "rocess_id\030\010 \001(\r\022\021\n\tosversion\030\t \001(\005\022\033\n\023cl"
-  "ientreportversion\030\n \001(\r\022\021\n\tstatus_id\030\013 \001"
-  "(\r\022\023\n\013diagnostic1\030\014 \001(\r\022\023\n\013diagnostic2\030\r"
-  " \001(\004\022\023\n\013diagnostic3\030\016 \001(\004\022\030\n\020last_launch"
-  "_data\030\017 \001(\t\022\024\n\014report_count\030\020 \001(\r\022\023\n\013cli"
-  "ent_time\030\021 \001(\004\022\023\n\013diagnostic4\030\022 \001(\004\022\023\n\013d"
-  "iagnostic5\030\023 \001(\004\022\"\n\013diagnostics\030\024 \003(\0132\r."
-  "CVDiagnostic\"\250\002\n,CMsgGCCStrike15_v2_GC2C"
-  "lientRefuseSecureMode\022\023\n\013file_report\030\001 \001"
-  "(\t\022\033\n\023offer_insecure_mode\030\002 \001(\010\022\031\n\021offer"
-  "_secure_mode\030\003 \001(\010\022\030\n\020show_unsigned_ui\030\004"
-  " \001(\010\022\021\n\tkick_user\030\005 \001(\010\022\027\n\017show_trusted_"
-  "ui\030\006 \001(\010\022 \n\030show_warning_not_trusted\030\007 \001"
-  "(\010\022\"\n\032show_warning_not_trusted_2\030\010 \001(\010\022\037"
-  "\n\027files_prevented_trusted\030\t \001(\t\"T\n-CMsgG"
-  "CCStrike15_v2_GC2ClientRequestValidation"
-  "\022\023\n\013full_report\030\001 \001(\010\022\016\n\006module\030\002 \001(\t\"\313\001"
-  "\n&CMsgGCCStrike15_v2_GC2ClientInitSystem"
-  "\022\014\n\004load\030\001 \001(\010\022\014\n\004name\030\002 \001(\t\022\022\n\noutputna"
-  "me\030\003 \001(\t\022\020\n\010key_data\030\004 \001(\014\022\020\n\010sha_hash\030\005"
-  " \001(\014\022\016\n\006cookie\030\006 \001(\005\022\020\n\010manifest\030\007 \001(\t\022\026"
-  "\n\016system_package\030\010 \001(\014\022\023\n\013load_system\030\t "
-  "\001(\010\"\245\002\n/CMsgGCCStrike15_v2_GC2ClientInit"
-  "System_Response\022\017\n\007success\030\001 \001(\010\022\022\n\ndiag"
-  "nostic\030\002 \001(\t\022\020\n\010sha_hash\030\003 \001(\014\022\020\n\010respon"
-  "se\030\004 \001(\005\022\023\n\013error_code1\030\005 \001(\005\022\023\n\013error_c"
-  "ode2\030\006 \001(\005\022\016\n\006handle\030\007 \001(\003\022E\n\014einit_resu"
-  "lt\030\010 \001(\0162\022.EInitSystemResult:\033k_EInitSys"
-  "temResult_Invalid\022\023\n\013aux_system1\030\t \001(\005\022\023"
-  "\n\013aux_system2\030\n \001(\005\"P\n/CMsgGCCStrike15_v"
-  "2_SetPlayerLeaderboardSafeName\022\035\n\025leader"
-  "board_safe_name\030\001 \001(\t\"%\n#CMsgRequestRecu"
-  "rringMissionSchedule\"\241\001\n\032CMsgRecurringMi"
-  "ssionSchema\022A\n\010missions\030\001 \003(\0132/.CMsgRecu"
-  "rringMissionSchema.MissionTemplateList\032@"
-  "\n\023MissionTemplateList\022\016\n\006period\030\001 \001(\r\022\031\n"
-  "\021mission_templates\030\002 \003(\014*\311*\n\nECsgoGCMsg\022"
-  "\036\n\031k_EMsgGCCStrike15_v2_Base\020\214G\022*\n%k_EMs"
-  "gGCCStrike15_v2_MatchmakingStart\020\215G\022)\n$k"
-  "_EMsgGCCStrike15_v2_MatchmakingStop\020\216G\0226"
-  "\n1k_EMsgGCCStrike15_v2_MatchmakingClient"
-  "2ServerPing\020\217G\0224\n/k_EMsgGCCStrike15_v2_M"
-  "atchmakingGC2ClientUpdate\020\220G\022>\n9k_EMsgGC"
-  "CStrike15_v2_MatchmakingServerReservatio"
-  "nResponse\020\222G\0225\n0k_EMsgGCCStrike15_v2_Mat"
-  "chmakingGC2ClientReserve\020\223G\0223\n.k_EMsgGCC"
-  "Strike15_v2_MatchmakingClient2GCHello\020\225G"
-  "\0223\n.k_EMsgGCCStrike15_v2_MatchmakingGC2C"
-  "lientHello\020\226G\0225\n0k_EMsgGCCStrike15_v2_Ma"
-  "tchmakingGC2ClientAbandon\020\230G\022:\n5k_EMsgGC"
-  "CStrike15_v2_MatchmakingOperator2GCBlogU"
-  "pdate\020\235G\022:\n5k_EMsgGCCStrike15_v2_ServerN"
-  "otificationForUserPenalty\020\236G\022,\n\'k_EMsgGC"
-  "CStrike15_v2_ClientReportPlayer\020\237G\022,\n\'k_"
-  "EMsgGCCStrike15_v2_ClientReportServer\020\240G"
-  "\022-\n(k_EMsgGCCStrike15_v2_ClientCommendPl"
-  "ayer\020\241G\022.\n)k_EMsgGCCStrike15_v2_ClientRe"
-  "portResponse\020\242G\0222\n-k_EMsgGCCStrike15_v2_"
-  "ClientCommendPlayerQuery\020\243G\022:\n5k_EMsgGCC"
-  "Strike15_v2_ClientCommendPlayerQueryResp"
-  "onse\020\244G\022(\n#k_EMsgGCCStrike15_v2_WatchInf"
-  "oUsers\020\246G\0225\n0k_EMsgGCCStrike15_v2_Client"
-  "RequestPlayersProfile\020\247G\022(\n#k_EMsgGCCStr"
-  "ike15_v2_PlayersProfile\020\250G\0223\n.k_EMsgGCCS"
-  "trike15_v2_PlayerOverwatchCaseUpdate\020\253G\022"
-  "7\n2k_EMsgGCCStrike15_v2_PlayerOverwatchC"
-  "aseAssignment\020\254G\0223\n.k_EMsgGCCStrike15_v2"
-  "_PlayerOverwatchCaseStatus\020\255G\022*\n%k_EMsgG"
-  "CCStrike15_v2_GC2ClientTextMsg\020\256G\022*\n%k_E"
-  "MsgGCCStrike15_v2_Client2GCTextMsg\020\257G\0220\n"
-  "+k_EMsgGCCStrike15_v2_MatchEndRunRewardD"
-  "rops\020\260G\0229\n4k_EMsgGCCStrike15_v2_MatchEnd"
-  "RewardDropsNotification\020\261G\0228\n3k_EMsgGCCS"
-  "trike15_v2_ClientRequestWatchInfoFriends"
-  "2\020\262G\022#\n\036k_EMsgGCCStrike15_v2_MatchList\020\263"
-  "G\022:\n5k_EMsgGCCStrike15_v2_MatchListReque"
-  "stCurrentLiveGames\020\264G\0229\n4k_EMsgGCCStrike"
-  "15_v2_MatchListRequestRecentUserGames\020\265G"
-  "\0224\n/k_EMsgGCCStrike15_v2_GC2ServerReserv"
-  "ationUpdate\020\266G\0228\n3k_EMsgGCCStrike15_v2_C"
-  "lientVarValueNotificationInfo\020\270G\0229\n4k_EM"
-  "sgGCCStrike15_v2_MatchListRequestTournam"
-  "entGames\020\272G\0226\n1k_EMsgGCCStrike15_v2_Matc"
-  "hListRequestFullGameInfo\020\273G\0221\n,k_EMsgGCC"
-  "Strike15_v2_GiftsLeaderboardRequest\020\274G\0222"
-  "\n-k_EMsgGCCStrike15_v2_GiftsLeaderboardR"
-  "esponse\020\275G\0228\n3k_EMsgGCCStrike15_v2_Serve"
-  "rVarValueNotificationInfo\020\276G\0220\n+k_EMsgGC"
-  "CStrike15_v2_ClientSubmitSurveyVote\020\300G\0221"
-  "\n,k_EMsgGCCStrike15_v2_Server2GCClientVa"
-  "lidate\020\301G\0229\n4k_EMsgGCCStrike15_v2_MatchL"
-  "istRequestLiveGameForUser\020\302G\022>\n9k_EMsgGC"
-  "CStrike15_v2_Client2GCEconPreviewDataBlo"
-  "ckRequest\020\304G\022\?\n:k_EMsgGCCStrike15_v2_Cli"
-  "ent2GCEconPreviewDataBlockResponse\020\305G\0220\n"
-  "+k_EMsgGCCStrike15_v2_AccountPrivacySett"
-  "ings\020\306G\022+\n&k_EMsgGCCStrike15_v2_SetMyAct"
-  "ivityInfo\020\307G\022\?\n:k_EMsgGCCStrike15_v2_Mat"
-  "chListRequestTournamentPredictions\020\310G\022>\n"
-  "9k_EMsgGCCStrike15_v2_MatchListUploadTou"
-  "rnamentPredictions\020\311G\022&\n!k_EMsgGCCStrike"
-  "15_v2_DraftSummary\020\312G\0225\n0k_EMsgGCCStrike"
-  "15_v2_ClientRequestJoinFriendData\020\313G\0225\n0"
-  "k_EMsgGCCStrike15_v2_ClientRequestJoinSe"
-  "rverData\020\314G\0221\n,k_EMsgGCCStrike15_v2_GC2C"
-  "lientTournamentInfo\020\317G\022\"\n\035k_EMsgGC_Globa"
-  "lGame_Subscribe\020\320G\022$\n\037k_EMsgGC_GlobalGam"
-  "e_Unsubscribe\020\321G\022\035\n\030k_EMsgGC_GlobalGame_"
-  "Play\020\322G\022,\n\'k_EMsgGCCStrike15_v2_Acknowle"
-  "dgePenalty\020\323G\0226\n1k_EMsgGCCStrike15_v2_Cl"
-  "ient2GCRequestPrestigeCoin\020\324G\022.\n)k_EMsgG"
-  "CCStrike15_v2_GC2ClientGlobalStats\020\325G\022/\n"
-  "*k_EMsgGCCStrike15_v2_Client2GCStreamUnl"
-  "ock\020\326G\0222\n-k_EMsgGCCStrike15_v2_FantasyRe"
-  "questClientData\020\327G\0221\n,k_EMsgGCCStrike15_"
-  "v2_FantasyUpdateClientData\020\330G\0227\n2k_EMsgG"
-  "CCStrike15_v2_GCToClientSteamdatagramTic"
-  "ket\020\331G\0221\n,k_EMsgGCCStrike15_v2_ClientToG"
-  "CRequestTicket\020\332G\0222\n-k_EMsgGCCStrike15_v"
-  "2_ClientToGCRequestElevate\020\333G\022$\n\037k_EMsgG"
-  "CCStrike15_v2_GlobalChat\020\334G\022.\n)k_EMsgGCC"
-  "Strike15_v2_GlobalChat_Subscribe\020\335G\0220\n+k"
-  "_EMsgGCCStrike15_v2_GlobalChat_Unsubscri"
-  "be\020\336G\022+\n&k_EMsgGCCStrike15_v2_ClientAuth"
-  "KeyCode\020\337G\022(\n#k_EMsgGCCStrike15_v2_GotvS"
-  "yncPacket\020\340G\022/\n*k_EMsgGCCStrike15_v2_Cli"
-  "entPlayerDecalSign\020\341G\022/\n*k_EMsgGCCStrike"
-  "15_v2_ClientLogonFatalError\020\343G\022)\n$k_EMsg"
-  "GCCStrike15_v2_ClientPollState\020\344G\022(\n#k_E"
-  "MsgGCCStrike15_v2_Party_Register\020\345G\022*\n%k"
-  "_EMsgGCCStrike15_v2_Party_Unregister\020\346G\022"
-  "&\n!k_EMsgGCCStrike15_v2_Party_Search\020\347G\022"
-  "&\n!k_EMsgGCCStrike15_v2_Party_Invite\020\350G\022"
-  "0\n+k_EMsgGCCStrike15_v2_Account_RequestC"
-  "oPlays\020\351G\022,\n\'k_EMsgGCCStrike15_v2_Client"
-  "GCRankUpdate\020\352G\022-\n(k_EMsgGCCStrike15_v2_"
-  "ClientRequestOffers\020\353G\022.\n)k_EMsgGCCStrik"
-  "e15_v2_ClientAccountBalance\020\354G\022.\n)k_EMsg"
-  "GCCStrike15_v2_ClientPartyJoinRelay\020\355G\022,"
-  "\n\'k_EMsgGCCStrike15_v2_ClientPartyWarnin"
-  "g\020\356G\022*\n%k_EMsgGCCStrike15_v2_SetEventFav"
-  "orite\020\360G\0223\n.k_EMsgGCCStrike15_v2_GetEven"
-  "tFavorites_Request\020\361G\022*\n%k_EMsgGCCStrike"
-  "15_v2_ClientPerfReport\020\362G\0224\n/k_EMsgGCCSt"
-  "rike15_v2_GetEventFavorites_Response\020\363G\022"
-  "/\n*k_EMsgGCCStrike15_v2_ClientRequestSou"
-  "venir\020\364G\0220\n+k_EMsgGCCStrike15_v2_ClientR"
-  "eportValidation\020\365G\0223\n.k_EMsgGCCStrike15_"
-  "v2_GC2ClientRefuseSecureMode\020\366G\0224\n/k_EMs"
-  "gGCCStrike15_v2_GC2ClientRequestValidati"
-  "on\020\367G\0223\n.k_EMsgGCCStrike15_v2_ClientRede"
-  "emMissionReward\020\371G\022&\n!k_EMsgGCCStrike15_"
-  "ClientDeepStats\020\372G\0222\n-k_EMsgGCCStrike15_"
-  "StartAgreementSessionInGame\020\373G\022-\n(k_EMsg"
-  "GCCStrike15_v2_GC2ClientInitSystem\020\374G\0226\n"
-  "1k_EMsgGCCStrike15_v2_GC2ClientInitSyste"
-  "m_Response\020\375G\022\'\n\"k_EMsgGCCStrike15_v2_Pr"
-  "ivateQueues\020\376G\0229\n4k_EMsgGCCStrike15_v2_M"
-  "atchListTournamentOperatorMgmt\020\377G\022(\n#k_E"
-  "MsgGCCStrike15_v2_BetaEnrollment\020\201H\0226\n1k"
-  "_EMsgGCCStrike15_v2_SetPlayerLeaderboard"
-  "SafeName\020\202H\0220\n+k_EMsgGCCStrike15_v2_Clie"
-  "ntRedeemFreeReward\020\203H\022-\n(k_EMsgGCCStrike"
-  "15_v2_ClientNetworkConfig\020\204H\022/\n*k_EMsgGC"
-  "CStrike15_v2_GC2ClientNotifyXPShop\020\205H\0222\n"
-  "-k_EMsgGCCStrike15_v2_Client2GcAckXPShop"
-  "Tracks\020\206H\0229\n4k_EMsgGCCStrike15_v2_Matchm"
-  "akingGC2ClientSearchStats\020\207H\022.\n)k_EMsgGC"
-  "CStrike15_v2_PremierSeasonSummary\020\210H\0229\n4"
-  "k_EMsgGCCStrike15_v2_RequestRecurringMis"
-  "sionSchedule\020\211H\0220\n+k_EMsgGCCStrike15_v2_"
-  "RecurringMissionSchema\020\212H\0221\n,k_EMsgGCCSt"
-  "rike15_v2_VolatileItemClaimReward\020\213H*\230\001\n"
-  "\022ECsgoSteamUserStat\022&\n\"k_ECsgoSteamUserS"
-  "tat_XpEarnedGames\020\001\022-\n)k_ECsgoSteamUserS"
-  "tat_MatchWinsCompetitive\020\002\022+\n\'k_ECsgoSte"
-  "amUserStat_SurvivedDangerZone\020\003*J\n\tQuest"
-  "Type\022\032\n\026k_EQuestType_Operation\020\001\022!\n\035k_EQ"
-  "uestType_RecurringMission\020\002*\241\001\n\027EClientR"
-  "eportingVersion\022(\n$k_EClientReportingVer"
-  "sion_OldVersion\020\000\022)\n%k_EClientReportingV"
-  "ersion_BetaVersion\020\001\0221\n-k_EClientReporti"
-  "ngVersion_SupportsTrustedMode\020\002*\276\002\n\021EIni"
-  "tSystemResult\022\037\n\033k_EInitSystemResult_Inv"
-  "alid\020\000\022\037\n\033k_EInitSystemResult_Success\020\001\022"
-  "\034\n\030k_EInitSystemResult_None\020\002\022 \n\034k_EInit"
-  "SystemResult_NotFound\020\003\022 \n\034k_EInitSystem"
-  "Result_Existing\020\004\022\"\n\036k_EInitSystemResult"
-  "_FailedOpen\020\005\022 \n\034k_EInitSystemResult_Mis"
-  "match\020\006\022\"\n\036k_EInitSystemResult_FailedIni"
-  "t\020\007\022\033\n\027k_EInitSystemResult_Max\020\010"
+  "(\t\022\027\n\017is_local_server\030\007 \001(\010\"\337\001\n.CMsgGCCS"
+  "trike15_v2_ClientRequestJoinServerData\022\017"
+  "\n\007version\030\001 \001(\r\022\022\n\naccount_id\030\002 \001(\r\022\020\n\010s"
+  "erverid\030\003 \001(\004\022\021\n\tserver_ip\030\004 \001(\r\022\023\n\013serv"
+  "er_port\030\005 \001(\r\022<\n\003res\030\006 \001(\0132/.CMsgGCCStri"
+  "ke15_v2_MatchmakingGC2ClientReserve\022\020\n\010e"
+  "rrormsg\030\007 \001(\t\"\236\001\n,CMsgGCCstrike15_v2_Cli"
+  "entRedeemMissionReward\022\023\n\013campaign_id\030\001 "
+  "\001(\r\022\021\n\tredeem_id\030\002 \001(\r\022\032\n\022redeemable_bal"
+  "ance\030\003 \001(\r\022\025\n\rexpected_cost\030\004 \001(\r\022\023\n\013bid"
+  "_control\030\005 \001(\005\"o\n)CMsgGCCstrike15_v2_Cli"
+  "entRedeemFreeReward\022\027\n\017generation_time\030\001"
+  " \001(\r\022\032\n\022redeemable_balance\030\002 \001(\r\022\r\n\005item"
+  "s\030\003 \003(\004\"\271\002\n,CMsgGCCstrike15_v2_GC2Server"
+  "NotifyXPRewarded\022)\n\020xp_progress_data\030\001 \003"
+  "(\0132\017.XpProgressData\022\022\n\naccount_id\030\002 \001(\r\022"
+  "\022\n\ncurrent_xp\030\003 \001(\r\022\025\n\rcurrent_level\030\004 \001"
+  "(\r\022\027\n\017upgraded_defidx\030\005 \001(\r\022 \n\030operation"
+  "_points_awarded\030\006 \001(\r\022\024\n\014free_rewards\030\007 "
+  "\001(\r\022\032\n\022xp_trail_remaining\030\010 \001(\r\022\032\n\022xp_tr"
+  "ail_xp_needed\030\t \001(\005\022\026\n\016xp_trail_level\030\n "
+  "\001(\r\"6\n&CMsgGCCStrike15_v2_ClientNetworkC"
+  "onfig\022\014\n\004data\030\001 \001(\014\"\325\002\n\037CMsgGCCStrike15_"
+  "ClientDeepStats\022\022\n\naccount_id\030\001 \001(\r\022>\n\005r"
+  "ange\030\002 \001(\0132/.CMsgGCCStrike15_ClientDeepS"
+  "tats.DeepStatsRange\022@\n\007matches\030\003 \003(\0132/.C"
+  "MsgGCCStrike15_ClientDeepStats.DeepStats"
+  "Match\032<\n\016DeepStatsRange\022\r\n\005begin\030\001 \001(\r\022\013"
+  "\n\003end\030\002 \001(\r\022\016\n\006frozen\030\003 \001(\010\032^\n\016DeepStats"
+  "Match\022%\n\006player\030\001 \001(\0132\025.DeepPlayerStatsE"
+  "ntry\022%\n\006events\030\002 \003(\0132\025.DeepPlayerMatchEv"
+  "ent\"\232\001\n!CMsgGCCStrike15_v2_WatchInfoUser"
+  "s\022\022\n\nrequest_id\030\001 \001(\r\022\023\n\013account_ids\030\002 \003"
+  "(\r\0222\n\025watchable_match_infos\030\003 \003(\0132\023.Watc"
+  "hableMatchInfo\022\030\n\020extended_timeout\030\005 \001(\r"
+  "\"\234\001\n.CMsgGCCStrike15_v2_ClientRequestPla"
+  "yersProfile\022\036\n\026request_id__deprecated\030\001 "
+  "\001(\r\022\037\n\027account_ids__deprecated\030\002 \003(\r\022\022\n\n"
+  "account_id\030\003 \001(\r\022\025\n\rrequest_level\030\004 \001(\r\""
+  "\200\001\n!CMsgGCCStrike15_v2_PlayersProfile\022\022\n"
+  "\nrequest_id\030\001 \001(\r\022G\n\020account_profiles\030\002 "
+  "\003(\0132-.CMsgGCCStrike15_v2_MatchmakingGC2C"
+  "lientHello\"\226\004\n\'CMsgGCCStrike15_v2_Premie"
+  "rSeasonSummary\022\022\n\naccount_id\030\001 \001(\r\022\021\n\tse"
+  "ason_id\030\002 \001(\r\022K\n\rdata_per_week\030\003 \003(\01324.C"
+  "MsgGCCStrike15_v2_PremierSeasonSummary.D"
+  "ataPerWeek\022I\n\014data_per_map\030\004 \003(\01323.CMsgG"
+  "CCStrike15_v2_PremierSeasonSummary.DataP"
+  "erMap\032G\n\013DataPerWeek\022\017\n\007week_id\030\001 \001(\004\022\017\n"
+  "\007rank_id\030\002 \001(\r\022\026\n\016matches_played\030\003 \001(\r\032\342"
+  "\001\n\nDataPerMap\022\016\n\006map_id\030\001 \001(\r\022\014\n\004wins\030\002 "
+  "\001(\r\022\014\n\004ties\030\003 \001(\r\022\016\n\006losses\030\004 \001(\r\022\016\n\006rou"
+  "nds\030\005 \001(\r\022\r\n\005kills\030\006 \001(\r\022\021\n\theadshots\030\007 "
+  "\001(\r\022\017\n\007assists\030\010 \001(\r\022\016\n\006deaths\030\t \001(\r\022\014\n\004"
+  "mvps\030\n \001(\r\022\021\n\trounds_3k\030\013 \001(\r\022\021\n\trounds_"
+  "4k\030\014 \001(\r\022\021\n\trounds_5k\030\r \001(\r\"\314\001\n,CMsgGCCS"
+  "trike15_v2_PlayerOverwatchCaseUpdate\022\016\n\006"
+  "caseid\030\001 \001(\004\022\021\n\tsuspectid\030\003 \001(\r\022\022\n\nfract"
+  "ionid\030\004 \001(\r\022\022\n\nrpt_aimbot\030\005 \001(\r\022\024\n\014rpt_w"
+  "allhack\030\006 \001(\r\022\025\n\rrpt_speedhack\030\007 \001(\r\022\024\n\014"
+  "rpt_teamharm\030\010 \001(\r\022\016\n\006reason\030\t \001(\r\"\215\002\n0C"
+  "MsgGCCStrike15_v2_PlayerOverwatchCaseAss"
+  "ignment\022\016\n\006caseid\030\001 \001(\004\022\017\n\007caseurl\030\002 \001(\t"
+  "\022\017\n\007verdict\030\003 \001(\r\022\021\n\ttimestamp\030\004 \001(\r\022\027\n\017"
+  "throttleseconds\030\005 \001(\r\022\021\n\tsuspectid\030\006 \001(\r"
+  "\022\022\n\nfractionid\030\007 \001(\r\022\021\n\tnumrounds\030\010 \001(\r\022"
+  "\026\n\016fractionrounds\030\t \001(\r\022\031\n\021streakconvict"
+  "ions\030\n \001(\005\022\016\n\006reason\030\013 \001(\r\"P\n,CMsgGCCStr"
+  "ike15_v2_PlayerOverwatchCaseStatus\022\016\n\006ca"
+  "seid\030\001 \001(\004\022\020\n\010statusid\030\002 \001(\r\"C\n\036CClientH"
+  "eaderOverwatchEvidence\022\021\n\taccountid\030\001 \001("
+  "\r\022\016\n\006caseid\030\002 \001(\004\"P\n#CMsgGCCStrike15_v2_"
+  "GC2ClientTextMsg\022\n\n\002id\030\001 \001(\r\022\014\n\004type\030\002 \001"
+  "(\r\022\017\n\007payload\030\003 \001(\014\"\?\n#CMsgGCCStrike15_v"
+  "2_Client2GCTextMsg\022\n\n\002id\030\001 \001(\r\022\014\n\004args\030\002"
+  " \003(\014\"\266\001\n)CMsgGCCStrike15_v2_MatchEndRunR"
+  "ewardDrops\022L\n\nserverinfo\030\003 \001(\01328.CMsgGCC"
+  "Strike15_v2_MatchmakingServerReservation"
+  "Response\022;\n\024match_end_quest_data\030\004 \001(\0132\035"
+  ".CMsgGC_ServerQuestUpdateData\"\244\006\n\031CEconI"
+  "temPreviewDataBlock\022\021\n\taccountid\030\001 \001(\r\022\016"
+  "\n\006itemid\030\002 \001(\004\022\020\n\010defindex\030\003 \001(\r\022\022\n\npain"
+  "tindex\030\004 \001(\r\022\016\n\006rarity\030\005 \001(\r\022\017\n\007quality\030"
+  "\006 \001(\r\022\021\n\tpaintwear\030\007 \001(\r\022\021\n\tpaintseed\030\010 "
+  "\001(\r\022\032\n\022killeaterscoretype\030\t \001(\r\022\026\n\016kille"
+  "atervalue\030\n \001(\r\022\022\n\ncustomname\030\013 \001(\t\0224\n\010s"
+  "tickers\030\014 \003(\0132\".CEconItemPreviewDataBloc"
+  "k.Sticker\022\021\n\tinventory\030\r \001(\r\022\016\n\006origin\030\016"
+  " \001(\r\022\017\n\007questid\030\017 \001(\r\022\022\n\ndropreason\030\020 \001("
+  "\r\022\022\n\nmusicindex\030\021 \001(\r\022\020\n\010entindex\030\022 \001(\005\022"
+  "\020\n\010petindex\030\023 \001(\r\0225\n\tkeychains\030\024 \003(\0132\".C"
+  "EconItemPreviewDataBlock.Sticker\022\r\n\005styl"
+  "e\030\025 \001(\r\0226\n\nvariations\030\026 \003(\0132\".CEconItemP"
+  "reviewDataBlock.Sticker\022\025\n\rupgrade_level"
+  "\030\027 \001(\r\032\343\001\n\007Sticker\022\014\n\004slot\030\001 \001(\r\022\022\n\nstic"
+  "ker_id\030\002 \001(\r\022\014\n\004wear\030\003 \001(\002\022\r\n\005scale\030\004 \001("
+  "\002\022\020\n\010rotation\030\005 \001(\002\022\017\n\007tint_id\030\006 \001(\r\022\020\n\010"
+  "offset_x\030\007 \001(\002\022\020\n\010offset_y\030\010 \001(\002\022\020\n\010offs"
+  "et_z\030\t \001(\002\022\017\n\007pattern\030\n \001(\r\022\026\n\016highlight"
+  "_reel\030\013 \001(\r\022\027\n\017wrapped_sticker\030\014 \001(\r\"b\n2"
+  "CMsgGCCStrike15_v2_MatchEndRewardDropsNo"
+  "tification\022,\n\010iteminfo\030\006 \001(\0132\032.CEconItem"
+  "PreviewDataBlock\"D\n\024CMsgItemAcknowledged"
+  "\022,\n\010iteminfo\030\001 \001(\0132\032.CEconItemPreviewDat"
+  "aBlock\"}\n7CMsgGCCStrike15_v2_Client2GCEc"
+  "onPreviewDataBlockRequest\022\017\n\007param_s\030\001 \001"
+  "(\004\022\017\n\007param_a\030\002 \001(\004\022\017\n\007param_d\030\003 \001(\004\022\017\n\007"
+  "param_m\030\004 \001(\004\"h\n8CMsgGCCStrike15_v2_Clie"
+  "nt2GCEconPreviewDataBlockResponse\022,\n\010ite"
+  "minfo\030\001 \001(\0132\032.CEconItemPreviewDataBlock\""
+  "5\n3CMsgGCCStrike15_v2_MatchListRequestCu"
+  "rrentLiveGames\"G\n2CMsgGCCStrike15_v2_Mat"
+  "chListRequestLiveGameForUser\022\021\n\taccounti"
+  "d\030\001 \001(\r\"G\n2CMsgGCCStrike15_v2_MatchListR"
+  "equestRecentUserGames\022\021\n\taccountid\030\001 \001(\r"
+  "\"E\n2CMsgGCCStrike15_v2_MatchListRequestT"
+  "ournamentGames\022\017\n\007eventid\030\001 \001(\005\"d\n/CMsgG"
+  "CCStrike15_v2_MatchListRequestFullGameIn"
+  "fo\022\017\n\007matchid\030\001 \001(\004\022\021\n\toutcomeid\030\002 \001(\004\022\r"
+  "\n\005token\030\003 \001(\r\"\210\002\n\035CDataGCCStrike15_v2_Ma"
+  "tchInfo\022\017\n\007matchid\030\001 \001(\004\022\021\n\tmatchtime\030\002 "
+  "\001(\r\022/\n\022watchablematchinfo\030\003 \001(\0132\023.Watcha"
+  "bleMatchInfo\022J\n\021roundstats_legacy\030\004 \001(\0132"
+  "/.CMsgGCCStrike15_v2_MatchmakingServerRo"
+  "undStats\022F\n\rroundstatsall\030\005 \003(\0132/.CMsgGC"
+  "CStrike15_v2_MatchmakingServerRoundStats"
+  "\"^\n\'CDataGCCStrike15_v2_TournamentGroupT"
+  "eam\022\017\n\007team_id\030\001 \001(\005\022\r\n\005score\030\002 \001(\005\022\023\n\013c"
+  "orrectpick\030\003 \001(\010\"\331\002\n#CDataGCCStrike15_v2"
+  "_TournamentGroup\022\017\n\007groupid\030\001 \001(\r\022\014\n\004nam"
+  "e\030\002 \001(\t\022\014\n\004desc\030\003 \001(\t\022\031\n\021picks__deprecat"
+  "ed\030\004 \001(\r\0227\n\005teams\030\005 \003(\0132(.CDataGCCStrike"
+  "15_v2_TournamentGroupTeam\022\021\n\tstage_ids\030\006"
+  " \003(\005\022\031\n\021picklockuntiltime\030\007 \001(\r\022\025\n\rpicka"
+  "bleteams\030\010 \001(\r\022\027\n\017points_per_pick\030\t \001(\r\022"
+  "9\n\005picks\030\n \003(\0132*.CDataGCCStrike15_v2_Tou"
+  "rnamentGroup.Picks\032\030\n\005Picks\022\017\n\007pickids\030\001"
+  " \003(\005\"\214\001\n%CDataGCCStrike15_v2_TournamentS"
+  "ection\022\021\n\tsectionid\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022"
+  "\014\n\004desc\030\003 \001(\t\0224\n\006groups\030\004 \003(\0132$.CDataGCC"
+  "Strike15_v2_TournamentGroup\"\265\001\n\"CDataGCC"
+  "Strike15_v2_TournamentInfo\0228\n\010sections\030\001"
+  " \003(\0132&.CDataGCCStrike15_v2_TournamentSec"
+  "tion\022*\n\020tournament_event\030\002 \001(\0132\020.Tournam"
+  "entEvent\022)\n\020tournament_teams\030\003 \003(\0132\017.Tou"
+  "rnamentTeam\"\353\001\n\034CMsgGCCStrike15_v2_Match"
+  "List\022\024\n\014msgrequestid\030\001 \001(\r\022\021\n\taccountid\030"
+  "\002 \001(\r\022\022\n\nservertime\030\003 \001(\r\022/\n\007matches\030\004 \003"
+  "(\0132\036.CDataGCCStrike15_v2_MatchInfo\022 \n\007st"
+  "reams\030\005 \003(\0132\017.TournamentTeam\022;\n\016tourname"
+  "ntinfo\030\006 \001(\0132#.CDataGCCStrike15_v2_Tourn"
+  "amentInfo\"\211\001\n2CMsgGCCStrike15_v2_MatchLi"
+  "stTournamentOperatorMgmt\022\017\n\007eventid\030\001 \001("
+  "\005\022/\n\007matches\030\002 \003(\0132\036.CDataGCCStrike15_v2"
+  "_MatchInfo\022\021\n\taccountid\030\003 \001(\r\"\357\001\n\036CMsgGC"
+  "CStrike15_v2_Predictions\022\020\n\010event_id\030\001 \001"
+  "(\r\022R\n\026group_match_team_picks\030\002 \003(\01322.CMs"
+  "gGCCStrike15_v2_Predictions.GroupMatchTe"
+  "amPick\032g\n\022GroupMatchTeamPick\022\021\n\tsectioni"
+  "d\030\001 \001(\005\022\017\n\007groupid\030\002 \001(\005\022\r\n\005index\030\003 \001(\005\022"
+  "\016\n\006teamid\030\004 \001(\005\022\016\n\006itemid\030\005 \001(\004\"\373\001\n\032CMsg"
+  "GCCStrike15_v2_Fantasy\022\020\n\010event_id\030\001 \001(\r"
+  "\0226\n\005teams\030\002 \003(\0132\'.CMsgGCCStrike15_v2_Fan"
+  "tasy.FantasyTeam\0329\n\013FantasySlot\022\014\n\004type\030"
+  "\001 \001(\005\022\014\n\004pick\030\002 \001(\005\022\016\n\006itemid\030\003 \001(\004\032X\n\013F"
+  "antasyTeam\022\021\n\tsectionid\030\001 \001(\005\0226\n\005slots\030\002"
+  " \003(\0132\'.CMsgGCCStrike15_v2_Fantasy.Fantas"
+  "ySlot\"\"\n\021CAttribute_String\022\r\n\005value\030\001 \001("
+  "\t\"\316\003\n\036CMsgLegacySource1ClientWelcome\022\017\n\007"
+  "version\030\001 \001(\r\022\021\n\tgame_data\030\002 \001(\014\022;\n\033outo"
+  "fdate_subscribed_caches\030\003 \003(\0132\026.CMsgSOCa"
+  "cheSubscribed\022A\n\032uptodate_subscribed_cac"
+  "hes\030\004 \003(\0132\035.CMsgSOCacheSubscriptionCheck"
+  "\022:\n\010location\030\005 \001(\0132(.CMsgLegacySource1Cl"
+  "ientWelcome.Location\022\022\n\ngame_data2\030\006 \001(\014"
+  "\022$\n\034rtime32_gc_welcome_timestamp\030\007 \001(\r\022\020"
+  "\n\010currency\030\010 \001(\r\022\017\n\007balance\030\t \001(\r\022\023\n\013bal"
+  "ance_url\030\n \001(\t\022\030\n\020txn_country_code\030\013 \001(\t"
+  "\032@\n\010Location\022\020\n\010latitude\030\001 \001(\002\022\021\n\tlongit"
+  "ude\030\002 \001(\002\022\017\n\007country\030\003 \001(\t\"\304\001\n\024CMsgCStri"
+  "ke15Welcome\022\027\n\017store_item_hash\030\005 \001(\r\022\037\n\027"
+  "timeplayedconsecutively\030\006 \001(\r\022\031\n\021time_fi"
+  "rst_played\030\n \001(\r\022\030\n\020last_time_played\030\014 \001"
+  "(\r\022\027\n\017last_ip_address\030\r \001(\r\022\022\n\ngscookiei"
+  "d\030\022 \001(\004\022\020\n\010uniqueid\030\023 \001(\004\"\233\001\n1CMsgGCCStr"
+  "ike15_v2_ClientVarValueNotificationInfo\022"
+  "\022\n\nvalue_name\030\001 \001(\t\022\021\n\tvalue_int\030\002 \001(\005\022\023"
+  "\n\013server_addr\030\003 \001(\r\022\023\n\013server_port\030\004 \001(\r"
+  "\022\025\n\rchoked_blocks\030\005 \003(\t\"z\n1CMsgGCCStrike"
+  "15_v2_ServerVarValueNotificationInfo\022\021\n\t"
+  "accountid\030\001 \001(\r\022\022\n\nviewangles\030\002 \003(\r\022\014\n\004t"
+  "ype\030\003 \001(\r\022\020\n\010userdata\030\004 \003(\r\",\n*CMsgGCCSt"
+  "rike15_v2_GiftsLeaderboardRequest\"\235\002\n+CM"
+  "sgGCCStrike15_v2_GiftsLeaderboardRespons"
+  "e\022\022\n\nservertime\030\001 \001(\r\022\033\n\023time_period_sec"
+  "onds\030\002 \001(\r\022\031\n\021total_gifts_given\030\003 \001(\r\022\024\n"
+  "\014total_givers\030\004 \001(\r\022R\n\007entries\030\005 \003(\0132A.C"
+  "MsgGCCStrike15_v2_GiftsLeaderboardRespon"
+  "se.GiftLeaderboardEntry\0328\n\024GiftLeaderboa"
+  "rdEntry\022\021\n\taccountid\030\001 \001(\r\022\r\n\005gifts\030\002 \001("
+  "\r\"L\n)CMsgGCCStrike15_v2_ClientSubmitSurv"
+  "eyVote\022\021\n\tsurvey_id\030\001 \001(\r\022\014\n\004vote\030\002 \001(\r\""
+  "\?\n*CMsgGCCStrike15_v2_Server2GCClientVal"
+  "idate\022\021\n\taccountid\030\001 \001(\r\"r\n*CMsgGCCStrik"
+  "e15_v2_GC2ClientTournamentInfo\022\017\n\007eventi"
+  "d\030\001 \001(\r\022\017\n\007stageid\030\002 \001(\r\022\021\n\tgame_type\030\003 "
+  "\001(\r\022\017\n\007teamids\030\004 \003(\r\"O\n\rCSOEconCoupon\022\025\n"
+  "\007entryid\030\001 \001(\rB\004\200\246\035\001\022\016\n\006defidx\030\002 \001(\r\022\027\n\017"
+  "expiration_date\030\003 \001(\007\"a\n\033CSOAccountItemP"
+  "ersonalStore\022\027\n\017generation_time\030\001 \001(\r\022\032\n"
+  "\022redeemable_balance\030\002 \001(\r\022\r\n\005items\030\003 \003(\004"
+  "\"Z\n\020CSOAccountXpShop\022\027\n\017generation_time\030"
+  "\001 \001(\r\022\032\n\022redeemable_balance\030\002 \001(\r\022\021\n\txp_"
+  "tracks\030\003 \003(\r\"z\n\024CSOAccountXpShopBids\022\031\n\013"
+  "campaign_id\030\001 \001(\rB\004\200\246\035\001\022\027\n\tredeem_id\030\002 \001"
+  "(\rB\004\200\246\035\001\022\025\n\rexpected_cost\030\003 \001(\r\022\027\n\017gener"
+  "ation_time\030\004 \001(\r\"Z\n\024CSOVolatileItemOffer"
+  "\022\024\n\006defidx\030\001 \001(\rB\004\200\246\035\001\022\023\n\013faux_itemid\030\002 "
+  "\003(\004\022\027\n\017generation_time\030\003 \003(\r\"^\n\035CSOVolat"
+  "ileItemClaimedRewards\022\024\n\006defidx\030\001 \001(\rB\004\200"
+  "\246\035\001\022\016\n\006reward\030\002 \003(\r\022\027\n\017generation_time\030\003"
+  " \003(\r\"6\n#CSOAccountKeychainRemoveToolChar"
+  "ges\022\017\n\007charges\030\001 \001(\r\"Y\n\020CSOQuestProgress"
+  "\022\025\n\007questid\030\001 \001(\rB\004\200\246\035\001\022\030\n\020points_remain"
+  "ing\030\002 \001(\r\022\024\n\014bonus_points\030\003 \001(\r\"\315\001\n\033CSOA"
+  "ccountSeasonalOperation\022\032\n\014season_value\030"
+  "\001 \001(\rB\004\200\246\035\001\022\025\n\rtier_unlocked\030\002 \001(\r\022\025\n\rpr"
+  "emium_tiers\030\003 \001(\r\022\022\n\nmission_id\030\004 \001(\r\022\032\n"
+  "\022missions_completed\030\005 \001(\r\022\032\n\022redeemable_"
+  "balance\030\006 \001(\r\022\030\n\020season_pass_time\030\007 \001(\r\""
+  "R\n\037CSOAccountRecurringSubscription\022\027\n\017ti"
+  "me_next_cycle\030\001 \001(\r\022\026\n\016time_initiated\030\002 "
+  "\001(\r\"c\n\030CSOGameAccountSteamChina\022\030\n\020time_"
+  "last_update\030\001 \001(\r\022\026\n\016time_comms_ban\030\002 \001("
+  "\r\022\025\n\rtime_play_ban\030\003 \001(\r\"\257\001\n\024CSOPersonaD"
+  "ataPublic\022\024\n\014player_level\030\001 \001(\005\022-\n\014comme"
+  "ndation\030\002 \001(\0132\027.PlayerCommendationInfo\022\026"
+  "\n\016elevated_state\030\003 \001(\010\022\"\n\032xp_trail_times"
+  "tamp_refresh\030\004 \001(\r\022\026\n\016xp_trail_level\030\005 \001"
+  "(\r\"f\n\032CSOAccountRecurringMission\022\022\n\nacco"
+  "unt_id\030\001 \001(\r\022\022\n\nmission_id\030\002 \001(\r\022\016\n\006peri"
+  "od\030\003 \001(\r\022\020\n\010progress\030\004 \001(\r\"\240\001\n(CMsgGCCSt"
+  "rike15_v2_GC2ClientNotifyXPShop\022#\n\010prema"
+  "tch\030\001 \001(\0132\021.CSOAccountXpShop\022$\n\tpostmatc"
+  "h\030\002 \001(\0132\021.CSOAccountXpShop\022\022\n\ncurrent_xp"
+  "\030\003 \001(\r\022\025\n\rcurrent_level\030\004 \001(\r\"-\n+CMsgGCC"
+  "Strike15_v2_Client2GcAckXPShopTracks\"\251\001\n"
+  "2CMsgGCCStrike15_v2_MatchmakingGC2Client"
+  "SearchStats\022\026\n\016gs_location_id\030\001 \001(\r\022\026\n\016d"
+  "ata_center_id\030\002 \001(\r\022\025\n\rnum_locked_in\030\003 \001"
+  "(\r\022\030\n\020num_found_nearby\030\004 \001(\r\022\022\n\nnote_lev"
+  "el\030\005 \001(\r\"-\n\033CMsgGC_GlobalGame_Subscribe\022"
+  "\016\n\006ticket\030\001 \001(\004\"1\n\035CMsgGC_GlobalGame_Uns"
+  "ubscribe\022\020\n\010timeleft\030\001 \001(\005\"P\n\026CMsgGC_Glo"
+  "balGame_Play\022\016\n\006ticket\030\001 \001(\004\022\022\n\ngametime"
+  "ms\030\002 \001(\r\022\022\n\nmsperpoint\030\003 \001(\r\"=\n%CMsgGCCS"
+  "trike15_v2_AcknowledgePenalty\022\024\n\014acknowl"
+  "edged\030\001 \001(\005\"{\n/CMsgGCCStrike15_v2_Client"
+  "2GCRequestPrestigeCoin\022\020\n\010defindex\030\001 \001(\r"
+  "\022\021\n\tupgradeid\030\002 \001(\004\022\r\n\005hours\030\003 \001(\r\022\024\n\014pr"
+  "estigetime\030\004 \001(\r\"F\n(CMsgGCCStrike15_v2_C"
+  "lient2GCStreamUnlock\022\016\n\006ticket\030\001 \001(\004\022\n\n\002"
+  "os\030\002 \001(\005\"<\n+CMsgGCCStrike15_v2_ClientToG"
+  "CRequestElevate\022\r\n\005stage\030\001 \001(\r\"C\n!CMsgGC"
+  "CStrike15_v2_ClientToGCChat\022\020\n\010match_id\030"
+  "\001 \001(\004\022\014\n\004text\030\002 \001(\t\"E\n!CMsgGCCStrike15_v"
+  "2_GCToClientChat\022\022\n\naccount_id\030\001 \001(\r\022\014\n\004"
+  "text\030\002 \001(\t\"E\n$CMsgGCCStrike15_v2_ClientA"
+  "uthKeyCode\022\017\n\007eventid\030\001 \001(\r\022\014\n\004code\030\002 \001("
+  "\t\"F\n\036CMsgGCCStrike15_GotvSyncPacket\022$\n\004d"
+  "ata\030\001 \001(\0132\026.CEngineGotvSyncPacket\"\223\002\n\033Pl"
+  "ayerDecalDigitalSignature\022\021\n\tsignature\030\001"
+  " \001(\014\022\021\n\taccountid\030\002 \001(\r\022\r\n\005rtime\030\003 \001(\r\022\016"
+  "\n\006endpos\030\004 \003(\002\022\020\n\010startpos\030\005 \003(\002\022\014\n\004left"
+  "\030\006 \003(\002\022\021\n\ttx_defidx\030\007 \001(\r\022\020\n\010entindex\030\010 "
+  "\001(\005\022\016\n\006hitbox\030\t \001(\r\022\024\n\014creationtime\030\n \001("
+  "\002\022\021\n\tequipslot\030\013 \001(\r\022\020\n\010trace_id\030\014 \001(\r\022\016"
+  "\n\006normal\030\r \003(\002\022\017\n\007tint_id\030\016 \001(\r\"f\n(CMsgG"
+  "CCStrike15_v2_ClientPlayerDecalSign\022*\n\004d"
+  "ata\030\001 \001(\0132\034.PlayerDecalDigitalSignature\022"
+  "\016\n\006itemid\030\002 \001(\004\"4\n!CMsgGCCStrike15_v2_Be"
+  "taEnrollment\022\017\n\007eresult\030\001 \001(\r\"_\n(CMsgGCC"
+  "Strike15_v2_ClientLogonFatalError\022\021\n\terr"
+  "orcode\030\001 \001(\r\022\017\n\007message\030\002 \001(\t\022\017\n\007country"
+  "\030\003 \001(\t\"S\n\"CMsgGCCStrike15_v2_ClientPollS"
+  "tate\022\016\n\006pollid\030\001 \001(\r\022\r\n\005names\030\002 \003(\t\022\016\n\006v"
+  "alues\030\003 \003(\005\"\244\001\n!CMsgGCCStrike15_v2_Party"
+  "_Register\022\n\n\002id\030\001 \001(\r\022\013\n\003ver\030\002 \001(\r\022\013\n\003ap"
+  "r\030\003 \001(\r\022\013\n\003ark\030\004 \001(\r\022\013\n\003nby\030\005 \001(\r\022\013\n\003grp"
+  "\030\006 \001(\r\022\r\n\005slots\030\007 \001(\r\022\020\n\010launcher\030\010 \001(\r\022"
+  "\021\n\tgame_type\030\t \001(\r\"{\n\037CMsgGCCStrike15_v2"
+  "_Party_Search\022\013\n\003ver\030\001 \001(\r\022\013\n\003apr\030\002 \001(\r\022"
+  "\013\n\003ark\030\003 \001(\r\022\014\n\004grps\030\004 \003(\r\022\020\n\010launcher\030\005"
+  " \001(\r\022\021\n\tgame_type\030\006 \001(\r\"\327\001\n&CMsgGCCStrik"
+  "e15_v2_Party_SearchResults\022>\n\007entries\030\001 "
+  "\003(\0132-.CMsgGCCStrike15_v2_Party_SearchRes"
+  "ults.Entry\032m\n\005Entry\022\n\n\002id\030\001 \001(\r\022\013\n\003grp\030\002"
+  " \001(\r\022\021\n\tgame_type\030\003 \001(\r\022\013\n\003apr\030\004 \001(\r\022\013\n\003"
+  "ark\030\005 \001(\r\022\013\n\003loc\030\006 \001(\r\022\021\n\taccountid\030\007 \001("
+  "\r\"E\n\037CMsgGCCStrike15_v2_Party_Invite\022\021\n\t"
+  "accountid\030\001 \001(\r\022\017\n\007lobbyid\030\002 \001(\r\"\302\001\n)CMs"
+  "gGCCStrike15_v2_Account_RequestCoPlays\022B"
+  "\n\007players\030\001 \003(\01321.CMsgGCCStrike15_v2_Acc"
+  "ount_RequestCoPlays.Player\022\022\n\nservertime"
+  "\030\002 \001(\r\032=\n\006Player\022\021\n\taccountid\030\001 \001(\r\022\020\n\010r"
+  "tcoplay\030\002 \001(\r\022\016\n\006online\030\003 \001(\010\"\244\001\n*CMsgGC"
+  "CStrike15_v2_ClientToGCRequestTicket\022\033\n\023"
+  "authorized_steam_id\030\001 \001(\006\022\034\n\024authorized_"
+  "public_ip\030\002 \001(\007\022\033\n\023gameserver_steam_id\030\003"
+  " \001(\006\022\036\n\026gameserver_sdr_routing\030\005 \001(\t\">\n!"
+  "CMsgGCToClientSteamDatagramTicket\022\031\n\021ser"
+  "ialized_ticket\030\020 \001(\014\"(\n&CMsgGCCStrike15_"
+  "v2_ClientRequestOffers\"\\\n(CMsgGCCStrike1"
+  "5_v2_ClientRequestSouvenir\022\016\n\006itemid\030\001 \001"
+  "(\004\022\017\n\007matchid\030\002 \001(\004\022\017\n\007eventid\030\003 \001(\005\"F\n\'"
+  "CMsgGCCStrike15_v2_ClientAccountBalance\022"
+  "\016\n\006amount\030\001 \001(\004\022\013\n\003url\030\002 \001(\t\"M\n\'CMsgGCCS"
+  "trike15_v2_ClientPartyJoinRelay\022\021\n\taccou"
+  "ntid\030\001 \001(\r\022\017\n\007lobbyid\030\002 \001(\004\"\224\001\n%CMsgGCCS"
+  "trike15_v2_ClientPartyWarning\022=\n\007entries"
+  "\030\001 \003(\0132,.CMsgGCCStrike15_v2_ClientPartyW"
+  "arning.Entry\032,\n\005Entry\022\021\n\taccountid\030\001 \001(\r"
+  "\022\020\n\010warntype\030\002 \001(\r\"K\n#CMsgGCCStrike15_v2"
+  "_SetEventFavorite\022\017\n\007eventid\030\001 \001(\004\022\023\n\013is"
+  "_favorite\030\002 \001(\010\"B\n,CMsgGCCStrike15_v2_Ge"
+  "tEventFavorites_Request\022\022\n\nall_events\030\001 "
+  "\001(\010\"r\n-CMsgGCCStrike15_v2_GetEventFavori"
+  "tes_Response\022\022\n\nall_events\030\001 \001(\010\022\026\n\016json"
+  "_favorites\030\002 \001(\t\022\025\n\rjson_featured\030\003 \001(\t\""
+  "\325\001\n#CMsgGCCStrike15_v2_ClientPerfReport\022"
+  ";\n\007entries\030\001 \003(\0132*.CMsgGCCStrike15_v2_Cl"
+  "ientPerfReport.Entry\032q\n\005Entry\022\023\n\013perfcou"
+  "nter\030\001 \001(\r\022\016\n\006length\030\002 \001(\r\022\021\n\treference\030"
+  "\003 \001(\014\022\016\n\006actual\030\004 \001(\014\022\020\n\010sourceid\030\005 \001(\r\022"
+  "\016\n\006status\030\006 \001(\r\"Q\n\014CVDiagnostic\022\n\n\002id\030\001 "
+  "\001(\r\022\020\n\010extended\030\002 \001(\r\022\r\n\005value\030\003 \001(\004\022\024\n\014"
+  "string_value\030\004 \001(\t\"\360\003\n)CMsgGCCStrike15_v"
+  "2_ClientReportValidation\022\023\n\013file_report\030"
+  "\001 \001(\t\022\024\n\014command_line\030\002 \001(\t\022\023\n\013total_fil"
+  "es\030\003 \001(\r\022\026\n\016internal_error\030\004 \001(\r\022\022\n\ntrus"
+  "t_time\030\005 \001(\r\022\025\n\rcount_pending\030\006 \001(\r\022\027\n\017c"
+  "ount_completed\030\007 \001(\r\022\022\n\nprocess_id\030\010 \001(\r"
+  "\022\021\n\tosversion\030\t \001(\005\022\033\n\023clientreportversi"
+  "on\030\n \001(\r\022\021\n\tstatus_id\030\013 \001(\r\022\023\n\013diagnosti"
+  "c1\030\014 \001(\r\022\023\n\013diagnostic2\030\r \001(\004\022\023\n\013diagnos"
+  "tic3\030\016 \001(\004\022\030\n\020last_launch_data\030\017 \001(\t\022\024\n\014"
+  "report_count\030\020 \001(\r\022\023\n\013client_time\030\021 \001(\004\022"
+  "\023\n\013diagnostic4\030\022 \001(\004\022\023\n\013diagnostic5\030\023 \001("
+  "\004\022\"\n\013diagnostics\030\024 \003(\0132\r.CVDiagnostic\"\250\002"
+  "\n,CMsgGCCStrike15_v2_GC2ClientRefuseSecu"
+  "reMode\022\023\n\013file_report\030\001 \001(\t\022\033\n\023offer_ins"
+  "ecure_mode\030\002 \001(\010\022\031\n\021offer_secure_mode\030\003 "
+  "\001(\010\022\030\n\020show_unsigned_ui\030\004 \001(\010\022\021\n\tkick_us"
+  "er\030\005 \001(\010\022\027\n\017show_trusted_ui\030\006 \001(\010\022 \n\030sho"
+  "w_warning_not_trusted\030\007 \001(\010\022\"\n\032show_warn"
+  "ing_not_trusted_2\030\010 \001(\010\022\037\n\027files_prevent"
+  "ed_trusted\030\t \001(\t\"T\n-CMsgGCCStrike15_v2_G"
+  "C2ClientRequestValidation\022\023\n\013full_report"
+  "\030\001 \001(\010\022\016\n\006module\030\002 \001(\t\"\313\001\n&CMsgGCCStrike"
+  "15_v2_GC2ClientInitSystem\022\014\n\004load\030\001 \001(\010\022"
+  "\014\n\004name\030\002 \001(\t\022\022\n\noutputname\030\003 \001(\t\022\020\n\010key"
+  "_data\030\004 \001(\014\022\020\n\010sha_hash\030\005 \001(\014\022\016\n\006cookie\030"
+  "\006 \001(\005\022\020\n\010manifest\030\007 \001(\t\022\026\n\016system_packag"
+  "e\030\010 \001(\014\022\023\n\013load_system\030\t \001(\010\"\245\002\n/CMsgGCC"
+  "Strike15_v2_GC2ClientInitSystem_Response"
+  "\022\017\n\007success\030\001 \001(\010\022\022\n\ndiagnostic\030\002 \001(\t\022\020\n"
+  "\010sha_hash\030\003 \001(\014\022\020\n\010response\030\004 \001(\005\022\023\n\013err"
+  "or_code1\030\005 \001(\005\022\023\n\013error_code2\030\006 \001(\005\022\016\n\006h"
+  "andle\030\007 \001(\003\022E\n\014einit_result\030\010 \001(\0162\022.EIni"
+  "tSystemResult:\033k_EInitSystemResult_Inval"
+  "id\022\023\n\013aux_system1\030\t \001(\005\022\023\n\013aux_system2\030\n"
+  " \001(\005\"P\n/CMsgGCCStrike15_v2_SetPlayerLead"
+  "erboardSafeName\022\035\n\025leaderboard_safe_name"
+  "\030\001 \001(\t\"%\n#CMsgRequestRecurringMissionSch"
+  "edule\"\241\001\n\032CMsgRecurringMissionSchema\022A\n\010"
+  "missions\030\001 \003(\0132/.CMsgRecurringMissionSch"
+  "ema.MissionTemplateList\032@\n\023MissionTempla"
+  "teList\022\016\n\006period\030\001 \001(\r\022\031\n\021mission_templa"
+  "tes\030\002 \003(\014*\311*\n\nECsgoGCMsg\022\036\n\031k_EMsgGCCStr"
+  "ike15_v2_Base\020\214G\022*\n%k_EMsgGCCStrike15_v2"
+  "_MatchmakingStart\020\215G\022)\n$k_EMsgGCCStrike1"
+  "5_v2_MatchmakingStop\020\216G\0226\n1k_EMsgGCCStri"
+  "ke15_v2_MatchmakingClient2ServerPing\020\217G\022"
+  "4\n/k_EMsgGCCStrike15_v2_MatchmakingGC2Cl"
+  "ientUpdate\020\220G\022>\n9k_EMsgGCCStrike15_v2_Ma"
+  "tchmakingServerReservationResponse\020\222G\0225\n"
+  "0k_EMsgGCCStrike15_v2_MatchmakingGC2Clie"
+  "ntReserve\020\223G\0223\n.k_EMsgGCCStrike15_v2_Mat"
+  "chmakingClient2GCHello\020\225G\0223\n.k_EMsgGCCSt"
+  "rike15_v2_MatchmakingGC2ClientHello\020\226G\0225"
+  "\n0k_EMsgGCCStrike15_v2_MatchmakingGC2Cli"
+  "entAbandon\020\230G\022:\n5k_EMsgGCCStrike15_v2_Ma"
+  "tchmakingOperator2GCBlogUpdate\020\235G\022:\n5k_E"
+  "MsgGCCStrike15_v2_ServerNotificationForU"
+  "serPenalty\020\236G\022,\n\'k_EMsgGCCStrike15_v2_Cl"
+  "ientReportPlayer\020\237G\022,\n\'k_EMsgGCCStrike15"
+  "_v2_ClientReportServer\020\240G\022-\n(k_EMsgGCCSt"
+  "rike15_v2_ClientCommendPlayer\020\241G\022.\n)k_EM"
+  "sgGCCStrike15_v2_ClientReportResponse\020\242G"
+  "\0222\n-k_EMsgGCCStrike15_v2_ClientCommendPl"
+  "ayerQuery\020\243G\022:\n5k_EMsgGCCStrike15_v2_Cli"
+  "entCommendPlayerQueryResponse\020\244G\022(\n#k_EM"
+  "sgGCCStrike15_v2_WatchInfoUsers\020\246G\0225\n0k_"
+  "EMsgGCCStrike15_v2_ClientRequestPlayersP"
+  "rofile\020\247G\022(\n#k_EMsgGCCStrike15_v2_Player"
+  "sProfile\020\250G\0223\n.k_EMsgGCCStrike15_v2_Play"
+  "erOverwatchCaseUpdate\020\253G\0227\n2k_EMsgGCCStr"
+  "ike15_v2_PlayerOverwatchCaseAssignment\020\254"
+  "G\0223\n.k_EMsgGCCStrike15_v2_PlayerOverwatc"
+  "hCaseStatus\020\255G\022*\n%k_EMsgGCCStrike15_v2_G"
+  "C2ClientTextMsg\020\256G\022*\n%k_EMsgGCCStrike15_"
+  "v2_Client2GCTextMsg\020\257G\0220\n+k_EMsgGCCStrik"
+  "e15_v2_MatchEndRunRewardDrops\020\260G\0229\n4k_EM"
+  "sgGCCStrike15_v2_MatchEndRewardDropsNoti"
+  "fication\020\261G\0228\n3k_EMsgGCCStrike15_v2_Clie"
+  "ntRequestWatchInfoFriends2\020\262G\022#\n\036k_EMsgG"
+  "CCStrike15_v2_MatchList\020\263G\022:\n5k_EMsgGCCS"
+  "trike15_v2_MatchListRequestCurrentLiveGa"
+  "mes\020\264G\0229\n4k_EMsgGCCStrike15_v2_MatchList"
+  "RequestRecentUserGames\020\265G\0224\n/k_EMsgGCCSt"
+  "rike15_v2_GC2ServerReservationUpdate\020\266G\022"
+  "8\n3k_EMsgGCCStrike15_v2_ClientVarValueNo"
+  "tificationInfo\020\270G\0229\n4k_EMsgGCCStrike15_v"
+  "2_MatchListRequestTournamentGames\020\272G\0226\n1"
+  "k_EMsgGCCStrike15_v2_MatchListRequestFul"
+  "lGameInfo\020\273G\0221\n,k_EMsgGCCStrike15_v2_Gif"
+  "tsLeaderboardRequest\020\274G\0222\n-k_EMsgGCCStri"
+  "ke15_v2_GiftsLeaderboardResponse\020\275G\0228\n3k"
+  "_EMsgGCCStrike15_v2_ServerVarValueNotifi"
+  "cationInfo\020\276G\0220\n+k_EMsgGCCStrike15_v2_Cl"
+  "ientSubmitSurveyVote\020\300G\0221\n,k_EMsgGCCStri"
+  "ke15_v2_Server2GCClientValidate\020\301G\0229\n4k_"
+  "EMsgGCCStrike15_v2_MatchListRequestLiveG"
+  "ameForUser\020\302G\022>\n9k_EMsgGCCStrike15_v2_Cl"
+  "ient2GCEconPreviewDataBlockRequest\020\304G\022\?\n"
+  ":k_EMsgGCCStrike15_v2_Client2GCEconPrevi"
+  "ewDataBlockResponse\020\305G\0220\n+k_EMsgGCCStrik"
+  "e15_v2_AccountPrivacySettings\020\306G\022+\n&k_EM"
+  "sgGCCStrike15_v2_SetMyActivityInfo\020\307G\022\?\n"
+  ":k_EMsgGCCStrike15_v2_MatchListRequestTo"
+  "urnamentPredictions\020\310G\022>\n9k_EMsgGCCStrik"
+  "e15_v2_MatchListUploadTournamentPredicti"
+  "ons\020\311G\022&\n!k_EMsgGCCStrike15_v2_DraftSumm"
+  "ary\020\312G\0225\n0k_EMsgGCCStrike15_v2_ClientReq"
+  "uestJoinFriendData\020\313G\0225\n0k_EMsgGCCStrike"
+  "15_v2_ClientRequestJoinServerData\020\314G\0221\n,"
+  "k_EMsgGCCStrike15_v2_GC2ClientTournament"
+  "Info\020\317G\022\"\n\035k_EMsgGC_GlobalGame_Subscribe"
+  "\020\320G\022$\n\037k_EMsgGC_GlobalGame_Unsubscribe\020\321"
+  "G\022\035\n\030k_EMsgGC_GlobalGame_Play\020\322G\022,\n\'k_EM"
+  "sgGCCStrike15_v2_AcknowledgePenalty\020\323G\0226"
+  "\n1k_EMsgGCCStrike15_v2_Client2GCRequestP"
+  "restigeCoin\020\324G\022.\n)k_EMsgGCCStrike15_v2_G"
+  "C2ClientGlobalStats\020\325G\022/\n*k_EMsgGCCStrik"
+  "e15_v2_Client2GCStreamUnlock\020\326G\0222\n-k_EMs"
+  "gGCCStrike15_v2_FantasyRequestClientData"
+  "\020\327G\0221\n,k_EMsgGCCStrike15_v2_FantasyUpdat"
+  "eClientData\020\330G\0227\n2k_EMsgGCCStrike15_v2_G"
+  "CToClientSteamdatagramTicket\020\331G\0221\n,k_EMs"
+  "gGCCStrike15_v2_ClientToGCRequestTicket\020"
+  "\332G\0222\n-k_EMsgGCCStrike15_v2_ClientToGCReq"
+  "uestElevate\020\333G\022$\n\037k_EMsgGCCStrike15_v2_G"
+  "lobalChat\020\334G\022.\n)k_EMsgGCCStrike15_v2_Glo"
+  "balChat_Subscribe\020\335G\0220\n+k_EMsgGCCStrike1"
+  "5_v2_GlobalChat_Unsubscribe\020\336G\022+\n&k_EMsg"
+  "GCCStrike15_v2_ClientAuthKeyCode\020\337G\022(\n#k"
+  "_EMsgGCCStrike15_v2_GotvSyncPacket\020\340G\022/\n"
+  "*k_EMsgGCCStrike15_v2_ClientPlayerDecalS"
+  "ign\020\341G\022/\n*k_EMsgGCCStrike15_v2_ClientLog"
+  "onFatalError\020\343G\022)\n$k_EMsgGCCStrike15_v2_"
+  "ClientPollState\020\344G\022(\n#k_EMsgGCCStrike15_"
+  "v2_Party_Register\020\345G\022*\n%k_EMsgGCCStrike1"
+  "5_v2_Party_Unregister\020\346G\022&\n!k_EMsgGCCStr"
+  "ike15_v2_Party_Search\020\347G\022&\n!k_EMsgGCCStr"
+  "ike15_v2_Party_Invite\020\350G\0220\n+k_EMsgGCCStr"
+  "ike15_v2_Account_RequestCoPlays\020\351G\022,\n\'k_"
+  "EMsgGCCStrike15_v2_ClientGCRankUpdate\020\352G"
+  "\022-\n(k_EMsgGCCStrike15_v2_ClientRequestOf"
+  "fers\020\353G\022.\n)k_EMsgGCCStrike15_v2_ClientAc"
+  "countBalance\020\354G\022.\n)k_EMsgGCCStrike15_v2_"
+  "ClientPartyJoinRelay\020\355G\022,\n\'k_EMsgGCCStri"
+  "ke15_v2_ClientPartyWarning\020\356G\022*\n%k_EMsgG"
+  "CCStrike15_v2_SetEventFavorite\020\360G\0223\n.k_E"
+  "MsgGCCStrike15_v2_GetEventFavorites_Requ"
+  "est\020\361G\022*\n%k_EMsgGCCStrike15_v2_ClientPer"
+  "fReport\020\362G\0224\n/k_EMsgGCCStrike15_v2_GetEv"
+  "entFavorites_Response\020\363G\022/\n*k_EMsgGCCStr"
+  "ike15_v2_ClientRequestSouvenir\020\364G\0220\n+k_E"
+  "MsgGCCStrike15_v2_ClientReportValidation"
+  "\020\365G\0223\n.k_EMsgGCCStrike15_v2_GC2ClientRef"
+  "useSecureMode\020\366G\0224\n/k_EMsgGCCStrike15_v2"
+  "_GC2ClientRequestValidation\020\367G\0223\n.k_EMsg"
+  "GCCStrike15_v2_ClientRedeemMissionReward"
+  "\020\371G\022&\n!k_EMsgGCCStrike15_ClientDeepStats"
+  "\020\372G\0222\n-k_EMsgGCCStrike15_StartAgreementS"
+  "essionInGame\020\373G\022-\n(k_EMsgGCCStrike15_v2_"
+  "GC2ClientInitSystem\020\374G\0226\n1k_EMsgGCCStrik"
+  "e15_v2_GC2ClientInitSystem_Response\020\375G\022\'"
+  "\n\"k_EMsgGCCStrike15_v2_PrivateQueues\020\376G\022"
+  "9\n4k_EMsgGCCStrike15_v2_MatchListTournam"
+  "entOperatorMgmt\020\377G\022(\n#k_EMsgGCCStrike15_"
+  "v2_BetaEnrollment\020\201H\0226\n1k_EMsgGCCStrike1"
+  "5_v2_SetPlayerLeaderboardSafeName\020\202H\0220\n+"
+  "k_EMsgGCCStrike15_v2_ClientRedeemFreeRew"
+  "ard\020\203H\022-\n(k_EMsgGCCStrike15_v2_ClientNet"
+  "workConfig\020\204H\022/\n*k_EMsgGCCStrike15_v2_GC"
+  "2ClientNotifyXPShop\020\205H\0222\n-k_EMsgGCCStrik"
+  "e15_v2_Client2GcAckXPShopTracks\020\206H\0229\n4k_"
+  "EMsgGCCStrike15_v2_MatchmakingGC2ClientS"
+  "earchStats\020\207H\022.\n)k_EMsgGCCStrike15_v2_Pr"
+  "emierSeasonSummary\020\210H\0229\n4k_EMsgGCCStrike"
+  "15_v2_RequestRecurringMissionSchedule\020\211H"
+  "\0220\n+k_EMsgGCCStrike15_v2_RecurringMissio"
+  "nSchema\020\212H\0221\n,k_EMsgGCCStrike15_v2_Volat"
+  "ileItemClaimReward\020\213H*\230\001\n\022ECsgoSteamUser"
+  "Stat\022&\n\"k_ECsgoSteamUserStat_XpEarnedGam"
+  "es\020\001\022-\n)k_ECsgoSteamUserStat_MatchWinsCo"
+  "mpetitive\020\002\022+\n\'k_ECsgoSteamUserStat_Surv"
+  "ivedDangerZone\020\003*J\n\tQuestType\022\032\n\026k_EQues"
+  "tType_Operation\020\001\022!\n\035k_EQuestType_Recurr"
+  "ingMission\020\002*\241\001\n\027EClientReportingVersion"
+  "\022(\n$k_EClientReportingVersion_OldVersion"
+  "\020\000\022)\n%k_EClientReportingVersion_BetaVers"
+  "ion\020\001\0221\n-k_EClientReportingVersion_Suppo"
+  "rtsTrustedMode\020\002*\276\002\n\021EInitSystemResult\022\037"
+  "\n\033k_EInitSystemResult_Invalid\020\000\022\037\n\033k_EIn"
+  "itSystemResult_Success\020\001\022\034\n\030k_EInitSyste"
+  "mResult_None\020\002\022 \n\034k_EInitSystemResult_No"
+  "tFound\020\003\022 \n\034k_EInitSystemResult_Existing"
+  "\020\004\022\"\n\036k_EInitSystemResult_FailedOpen\020\005\022 "
+  "\n\034k_EInitSystemResult_Mismatch\020\006\022\"\n\036k_EI"
+  "nitSystemResult_FailedInit\020\007\022\033\n\027k_EInitS"
+  "ystemResult_Max\020\010"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessages_2eproto_deps[3] = {
   &::descriptor_table_engine_5fgcmessages_2eproto,
@@ -7286,7 +7290,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessa
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fgcmessages_2eproto = {
-    false, false, 34392, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
+    false, false, 34417, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
     "cstrike15_gcmessages.proto",
     &descriptor_table_cstrike15_5fgcmessages_2eproto_once, descriptor_table_cstrike15_5fgcmessages_2eproto_deps, 3, 180,
     schemas, file_default_instances, TableStruct_cstrike15_5fgcmessages_2eproto::offsets,
@@ -32107,6 +32111,9 @@ class CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_Internal {
   static void set_has_errormsg(HasBits* has_bits) {
     (*has_bits)[0] |= 1u;
   }
+  static void set_has_is_local_server(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
 };
 
 const ::CMsgGCCStrike15_v2_MatchmakingGC2ClientReserve&
@@ -32130,7 +32137,8 @@ CMsgGCCStrike15_v2_ClientRequestJoinFriendData::CMsgGCCStrike15_v2_ClientRequest
     , decltype(_impl_.version_){}
     , decltype(_impl_.account_id_){}
     , decltype(_impl_.join_token_){}
-    , decltype(_impl_.join_ipp_){}};
+    , decltype(_impl_.join_ipp_){}
+    , decltype(_impl_.is_local_server_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.errormsg_.InitDefault();
@@ -32145,8 +32153,8 @@ CMsgGCCStrike15_v2_ClientRequestJoinFriendData::CMsgGCCStrike15_v2_ClientRequest
     _this->_impl_.res_ = new ::CMsgGCCStrike15_v2_MatchmakingGC2ClientReserve(*from._impl_.res_);
   }
   ::memcpy(&_impl_.version_, &from._impl_.version_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.join_ipp_) -
-    reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.join_ipp_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_local_server_) -
+    reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.is_local_server_));
   // @@protoc_insertion_point(copy_constructor:CMsgGCCStrike15_v2_ClientRequestJoinFriendData)
 }
 
@@ -32163,6 +32171,7 @@ inline void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::SharedCtor(
     , decltype(_impl_.account_id_){0u}
     , decltype(_impl_.join_token_){0u}
     , decltype(_impl_.join_ipp_){0u}
+    , decltype(_impl_.is_local_server_){false}
   };
   _impl_.errormsg_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -32205,10 +32214,10 @@ void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::Clear() {
       _impl_.res_->Clear();
     }
   }
-  if (cached_has_bits & 0x0000003cu) {
+  if (cached_has_bits & 0x0000007cu) {
     ::memset(&_impl_.version_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.join_ipp_) -
-        reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.join_ipp_));
+        reinterpret_cast<char*>(&_impl_.is_local_server_) -
+        reinterpret_cast<char*>(&_impl_.version_)) + sizeof(_impl_.is_local_server_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -32274,6 +32283,15 @@ const char* CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_InternalParse(const
           #ifndef NDEBUG
           ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_ClientRequestJoinFriendData.errormsg");
           #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool is_local_server = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _Internal::set_has_is_local_server(&has_bits);
+          _impl_.is_local_server_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -32349,6 +32367,12 @@ uint8_t* CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_InternalSerialize(
         6, this->_internal_errormsg(), target);
   }
 
+  // optional bool is_local_server = 7;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(7, this->_internal_is_local_server(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -32366,7 +32390,7 @@ size_t CMsgGCCStrike15_v2_ClientRequestJoinFriendData::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x0000007fu) {
     // optional string errormsg = 6;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -32401,6 +32425,11 @@ size_t CMsgGCCStrike15_v2_ClientRequestJoinFriendData::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_join_ipp());
     }
 
+    // optional bool is_local_server = 7;
+    if (cached_has_bits & 0x00000040u) {
+      total_size += 1 + 1;
+    }
+
   }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
@@ -32421,7 +32450,7 @@ void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::MergeImpl(::PROTOBUF_NAMESP
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x0000007fu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_set_errormsg(from._internal_errormsg());
     }
@@ -32440,6 +32469,9 @@ void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::MergeImpl(::PROTOBUF_NAMESP
     }
     if (cached_has_bits & 0x00000020u) {
       _this->_impl_.join_ipp_ = from._impl_.join_ipp_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.is_local_server_ = from._impl_.is_local_server_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -32468,8 +32500,8 @@ void CMsgGCCStrike15_v2_ClientRequestJoinFriendData::InternalSwap(CMsgGCCStrike1
       &other->_impl_.errormsg_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.join_ipp_)
-      + sizeof(CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_impl_.join_ipp_)
+      PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.is_local_server_)
+      + sizeof(CMsgGCCStrike15_v2_ClientRequestJoinFriendData::_impl_.is_local_server_)
       - PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_ClientRequestJoinFriendData, _impl_.res_)>(
           reinterpret_cast<char*>(&_impl_.res_),
           reinterpret_cast<char*>(&other->_impl_.res_));

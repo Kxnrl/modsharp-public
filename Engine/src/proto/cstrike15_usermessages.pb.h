@@ -302,6 +302,9 @@ extern CCSUsrMsg_VoteSetupDefaultTypeInternal _CCSUsrMsg_VoteSetup_default_insta
 class CCSUsrMsg_VoteStart;
 struct CCSUsrMsg_VoteStartDefaultTypeInternal;
 extern CCSUsrMsg_VoteStartDefaultTypeInternal _CCSUsrMsg_VoteStart_default_instance_;
+class CCSUsrMsg_WeaponMagDrop;
+struct CCSUsrMsg_WeaponMagDropDefaultTypeInternal;
+extern CCSUsrMsg_WeaponMagDropDefaultTypeInternal _CCSUsrMsg_WeaponMagDrop_default_instance_;
 class CCSUsrMsg_WeaponSound;
 struct CCSUsrMsg_WeaponSoundDefaultTypeInternal;
 extern CCSUsrMsg_WeaponSoundDefaultTypeInternal _CCSUsrMsg_WeaponSound_default_instance_;
@@ -400,6 +403,7 @@ template<> ::CCSUsrMsg_VoteFailed* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteFai
 template<> ::CCSUsrMsg_VotePass* Arena::CreateMaybeMessage<::CCSUsrMsg_VotePass>(Arena*);
 template<> ::CCSUsrMsg_VoteSetup* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteSetup>(Arena*);
 template<> ::CCSUsrMsg_VoteStart* Arena::CreateMaybeMessage<::CCSUsrMsg_VoteStart>(Arena*);
+template<> ::CCSUsrMsg_WeaponMagDrop* Arena::CreateMaybeMessage<::CCSUsrMsg_WeaponMagDrop>(Arena*);
 template<> ::CCSUsrMsg_WeaponSound* Arena::CreateMaybeMessage<::CCSUsrMsg_WeaponSound>(Arena*);
 template<> ::CCSUsrMsg_XRankGet* Arena::CreateMaybeMessage<::CCSUsrMsg_XRankGet>(Arena*);
 template<> ::CCSUsrMsg_XRankUpd* Arena::CreateMaybeMessage<::CCSUsrMsg_XRankUpd>(Arena*);
@@ -483,11 +487,12 @@ enum ECstrike15UserMessages : int {
   CS_UM_CounterStrafe = 385,
   CS_UM_DamagePrediction = 386,
   CS_UM_RecurringMissionSchema = 387,
-  CS_UM_SendPlayerLoadout = 388
+  CS_UM_SendPlayerLoadout = 388,
+  CS_UM_WeaponMagDrop = 389
 };
 bool ECstrike15UserMessages_IsValid(int value);
 constexpr ECstrike15UserMessages ECstrike15UserMessages_MIN = CS_UM_VGUIMenu;
-constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_SendPlayerLoadout;
+constexpr ECstrike15UserMessages ECstrike15UserMessages_MAX = CS_UM_WeaponMagDrop;
 constexpr int ECstrike15UserMessages_ARRAYSIZE = ECstrike15UserMessages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ECstrike15UserMessages_descriptor();
@@ -5485,6 +5490,196 @@ class CCSUsrMsg_WeaponSound /*final*/ :
 };
 // -------------------------------------------------------------------
 
+class CCSUsrMsg_WeaponMagDrop /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_WeaponMagDrop) */ {
+ public:
+  inline CCSUsrMsg_WeaponMagDrop() : CCSUsrMsg_WeaponMagDrop(nullptr) {}
+  ~CCSUsrMsg_WeaponMagDrop() override;
+  explicit PROTOBUF_CONSTEXPR CCSUsrMsg_WeaponMagDrop(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CCSUsrMsg_WeaponMagDrop(const CCSUsrMsg_WeaponMagDrop& from);
+  CCSUsrMsg_WeaponMagDrop(CCSUsrMsg_WeaponMagDrop&& from) noexcept
+    : CCSUsrMsg_WeaponMagDrop() {
+    *this = ::std::move(from);
+  }
+
+  inline CCSUsrMsg_WeaponMagDrop& operator=(const CCSUsrMsg_WeaponMagDrop& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CCSUsrMsg_WeaponMagDrop& operator=(CCSUsrMsg_WeaponMagDrop&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CCSUsrMsg_WeaponMagDrop& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CCSUsrMsg_WeaponMagDrop* internal_default_instance() {
+    return reinterpret_cast<const CCSUsrMsg_WeaponMagDrop*>(
+               &_CCSUsrMsg_WeaponMagDrop_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    25;
+
+  friend void swap(CCSUsrMsg_WeaponMagDrop& a, CCSUsrMsg_WeaponMagDrop& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CCSUsrMsg_WeaponMagDrop* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CCSUsrMsg_WeaponMagDrop* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CCSUsrMsg_WeaponMagDrop* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CCSUsrMsg_WeaponMagDrop>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CCSUsrMsg_WeaponMagDrop& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CCSUsrMsg_WeaponMagDrop& from) {
+    CCSUsrMsg_WeaponMagDrop::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CCSUsrMsg_WeaponMagDrop* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CCSUsrMsg_WeaponMagDrop";
+  }
+  protected:
+  explicit CCSUsrMsg_WeaponMagDrop(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kSecondaryDataFieldNumber = 2,
+    kServerEventFieldNumber = 3,
+    kEntidxFieldNumber = 1,
+  };
+  // optional int32 secondary_data = 2;
+  bool has_secondary_data() const;
+  private:
+  bool _internal_has_secondary_data() const;
+  public:
+  void clear_secondary_data();
+  int32_t secondary_data() const;
+  void set_secondary_data(int32_t value);
+  private:
+  int32_t _internal_secondary_data() const;
+  void _internal_set_secondary_data(int32_t value);
+  public:
+
+  // optional bool server_event = 3;
+  bool has_server_event() const;
+  private:
+  bool _internal_has_server_event() const;
+  public:
+  void clear_server_event();
+  bool server_event() const;
+  void set_server_event(bool value);
+  private:
+  bool _internal_server_event() const;
+  void _internal_set_server_event(bool value);
+  public:
+
+  // optional int32 entidx = 1 [default = -1];
+  bool has_entidx() const;
+  private:
+  bool _internal_has_entidx() const;
+  public:
+  void clear_entidx();
+  int32_t entidx() const;
+  void set_entidx(int32_t value);
+  private:
+  int32_t _internal_entidx() const;
+  void _internal_set_entidx(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CCSUsrMsg_WeaponMagDrop)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    int32_t secondary_data_;
+    bool server_event_;
+    int32_t entidx_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_cstrike15_5fusermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
 class CCSUsrMsg_UpdateScreenHealthBar /*final*/ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CCSUsrMsg_UpdateScreenHealthBar) */ {
  public:
@@ -5540,7 +5735,7 @@ class CCSUsrMsg_UpdateScreenHealthBar /*final*/ :
                &_CCSUsrMsg_UpdateScreenHealthBar_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(CCSUsrMsg_UpdateScreenHealthBar& a, CCSUsrMsg_UpdateScreenHealthBar& b) {
     a.Swap(&b);
@@ -5745,7 +5940,7 @@ class CCSUsrMsg_EntityOutlineHighlight /*final*/ :
                &_CCSUsrMsg_EntityOutlineHighlight_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(CCSUsrMsg_EntityOutlineHighlight& a, CCSUsrMsg_EntityOutlineHighlight& b) {
     a.Swap(&b);
@@ -5920,7 +6115,7 @@ class CCSUsrMsg_AdjustMoney /*final*/ :
                &_CCSUsrMsg_AdjustMoney_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(CCSUsrMsg_AdjustMoney& a, CCSUsrMsg_AdjustMoney& b) {
     a.Swap(&b);
@@ -6080,7 +6275,7 @@ class CCSUsrMsg_ReportHit /*final*/ :
                &_CCSUsrMsg_ReportHit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    29;
 
   friend void swap(CCSUsrMsg_ReportHit& a, CCSUsrMsg_ReportHit& b) {
     a.Swap(&b);
@@ -6285,7 +6480,7 @@ class CCSUsrMsg_KillCam /*final*/ :
                &_CCSUsrMsg_KillCam_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    30;
 
   friend void swap(CCSUsrMsg_KillCam& a, CCSUsrMsg_KillCam& b) {
     a.Swap(&b);
@@ -6475,7 +6670,7 @@ class CCSUsrMsg_DesiredTimescale /*final*/ :
                &_CCSUsrMsg_DesiredTimescale_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    31;
 
   friend void swap(CCSUsrMsg_DesiredTimescale& a, CCSUsrMsg_DesiredTimescale& b) {
     a.Swap(&b);
@@ -6680,7 +6875,7 @@ class CCSUsrMsg_CurrentTimescale /*final*/ :
                &_CCSUsrMsg_CurrentTimescale_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    32;
 
   friend void swap(CCSUsrMsg_CurrentTimescale& a, CCSUsrMsg_CurrentTimescale& b) {
     a.Swap(&b);
@@ -6840,7 +7035,7 @@ class CCSUsrMsg_AchievementEvent /*final*/ :
                &_CCSUsrMsg_AchievementEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(CCSUsrMsg_AchievementEvent& a, CCSUsrMsg_AchievementEvent& b) {
     a.Swap(&b);
@@ -7030,7 +7225,7 @@ class CCSUsrMsg_MatchEndConditions /*final*/ :
                &_CCSUsrMsg_MatchEndConditions_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    34;
 
   friend void swap(CCSUsrMsg_MatchEndConditions& a, CCSUsrMsg_MatchEndConditions& b) {
     a.Swap(&b);
@@ -7235,7 +7430,7 @@ class CCSUsrMsg_PlayerStatsUpdate_Stat /*final*/ :
                &_CCSUsrMsg_PlayerStatsUpdate_Stat_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    35;
 
   friend void swap(CCSUsrMsg_PlayerStatsUpdate_Stat& a, CCSUsrMsg_PlayerStatsUpdate_Stat& b) {
     a.Swap(&b);
@@ -7410,7 +7605,7 @@ class CCSUsrMsg_PlayerStatsUpdate /*final*/ :
                &_CCSUsrMsg_PlayerStatsUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    36;
 
   friend void swap(CCSUsrMsg_PlayerStatsUpdate& a, CCSUsrMsg_PlayerStatsUpdate& b) {
     a.Swap(&b);
@@ -7622,7 +7817,7 @@ class CCSUsrMsg_QuestProgress /*final*/ :
                &_CCSUsrMsg_QuestProgress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    37;
 
   friend void swap(CCSUsrMsg_QuestProgress& a, CCSUsrMsg_QuestProgress& b) {
     a.Swap(&b);
@@ -7827,7 +8022,7 @@ class CCSUsrMsg_ScoreLeaderboardData /*final*/ :
                &_CCSUsrMsg_ScoreLeaderboardData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    38;
 
   friend void swap(CCSUsrMsg_ScoreLeaderboardData& a, CCSUsrMsg_ScoreLeaderboardData& b) {
     a.Swap(&b);
@@ -7992,7 +8187,7 @@ class CCSUsrMsg_PlayerDecalDigitalSignature /*final*/ :
                &_CCSUsrMsg_PlayerDecalDigitalSignature_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    39;
 
   friend void swap(CCSUsrMsg_PlayerDecalDigitalSignature& a, CCSUsrMsg_PlayerDecalDigitalSignature& b) {
     a.Swap(&b);
@@ -8157,7 +8352,7 @@ class CCSUsrMsg_XRankGet /*final*/ :
                &_CCSUsrMsg_XRankGet_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    39;
+    40;
 
   friend void swap(CCSUsrMsg_XRankGet& a, CCSUsrMsg_XRankGet& b) {
     a.Swap(&b);
@@ -8332,7 +8527,7 @@ class CCSUsrMsg_XRankUpd /*final*/ :
                &_CCSUsrMsg_XRankUpd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    41;
 
   friend void swap(CCSUsrMsg_XRankUpd& a, CCSUsrMsg_XRankUpd& b) {
     a.Swap(&b);
@@ -8522,7 +8717,7 @@ class CCSUsrMsg_CallVoteFailed /*final*/ :
                &_CCSUsrMsg_CallVoteFailed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    41;
+    42;
 
   friend void swap(CCSUsrMsg_CallVoteFailed& a, CCSUsrMsg_CallVoteFailed& b) {
     a.Swap(&b);
@@ -8697,7 +8892,7 @@ class CCSUsrMsg_VoteStart /*final*/ :
                &_CCSUsrMsg_VoteStart_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    42;
+    43;
 
   friend void swap(CCSUsrMsg_VoteStart& a, CCSUsrMsg_VoteStart& b) {
     a.Swap(&b);
@@ -8977,7 +9172,7 @@ class CCSUsrMsg_VotePass /*final*/ :
                &_CCSUsrMsg_VotePass_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    43;
+    44;
 
   friend void swap(CCSUsrMsg_VotePass& a, CCSUsrMsg_VotePass& b) {
     a.Swap(&b);
@@ -9192,7 +9387,7 @@ class CCSUsrMsg_VoteFailed /*final*/ :
                &_CCSUsrMsg_VoteFailed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    44;
+    45;
 
   friend void swap(CCSUsrMsg_VoteFailed& a, CCSUsrMsg_VoteFailed& b) {
     a.Swap(&b);
@@ -9367,7 +9562,7 @@ class CCSUsrMsg_VoteSetup /*final*/ :
                &_CCSUsrMsg_VoteSetup_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    45;
+    46;
 
   friend void swap(CCSUsrMsg_VoteSetup& a, CCSUsrMsg_VoteSetup& b) {
     a.Swap(&b);
@@ -9537,7 +9732,7 @@ class CCSUsrMsg_SendLastKillerDamageToClient /*final*/ :
                &_CCSUsrMsg_SendLastKillerDamageToClient_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    46;
+    47;
 
   friend void swap(CCSUsrMsg_SendLastKillerDamageToClient& a, CCSUsrMsg_SendLastKillerDamageToClient& b) {
     a.Swap(&b);
@@ -9772,7 +9967,7 @@ class CCSUsrMsg_ServerRankUpdate_RankUpdate /*final*/ :
                &_CCSUsrMsg_ServerRankUpdate_RankUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    47;
+    48;
 
   friend void swap(CCSUsrMsg_ServerRankUpdate_RankUpdate& a, CCSUsrMsg_ServerRankUpdate_RankUpdate& b) {
     a.Swap(&b);
@@ -10007,7 +10202,7 @@ class CCSUsrMsg_ServerRankUpdate /*final*/ :
                &_CCSUsrMsg_ServerRankUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    48;
+    49;
 
   friend void swap(CCSUsrMsg_ServerRankUpdate& a, CCSUsrMsg_ServerRankUpdate& b) {
     a.Swap(&b);
@@ -10173,7 +10368,7 @@ class CCSUsrMsg_XpUpdate /*final*/ :
                &_CCSUsrMsg_XpUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    49;
+    50;
 
   friend void swap(CCSUsrMsg_XpUpdate& a, CCSUsrMsg_XpUpdate& b) {
     a.Swap(&b);
@@ -10338,7 +10533,7 @@ class CCSUsrMsg_ItemPickup /*final*/ :
                &_CCSUsrMsg_ItemPickup_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    50;
+    51;
 
   friend void swap(CCSUsrMsg_ItemPickup& a, CCSUsrMsg_ItemPickup& b) {
     a.Swap(&b);
@@ -10503,7 +10698,7 @@ class CCSUsrMsg_ShowMenu /*final*/ :
                &_CCSUsrMsg_ShowMenu_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    51;
+    52;
 
   friend void swap(CCSUsrMsg_ShowMenu& a, CCSUsrMsg_ShowMenu& b) {
     a.Swap(&b);
@@ -10698,7 +10893,7 @@ class CCSUsrMsg_BarTime /*final*/ :
                &_CCSUsrMsg_BarTime_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    52;
+    53;
 
   friend void swap(CCSUsrMsg_BarTime& a, CCSUsrMsg_BarTime& b) {
     a.Swap(&b);
@@ -10863,7 +11058,7 @@ class CCSUsrMsg_AmmoDenied /*final*/ :
                &_CCSUsrMsg_AmmoDenied_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    53;
+    54;
 
   friend void swap(CCSUsrMsg_AmmoDenied& a, CCSUsrMsg_AmmoDenied& b) {
     a.Swap(&b);
@@ -11023,7 +11218,7 @@ class CCSUsrMsg_MarkAchievement /*final*/ :
                &_CCSUsrMsg_MarkAchievement_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    54;
+    55;
 
   friend void swap(CCSUsrMsg_MarkAchievement& a, CCSUsrMsg_MarkAchievement& b) {
     a.Swap(&b);
@@ -11188,7 +11383,7 @@ class CCSUsrMsg_MatchStatsUpdate /*final*/ :
                &_CCSUsrMsg_MatchStatsUpdate_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    55;
+    56;
 
   friend void swap(CCSUsrMsg_MatchStatsUpdate& a, CCSUsrMsg_MatchStatsUpdate& b) {
     a.Swap(&b);
@@ -11353,7 +11548,7 @@ class CCSUsrMsg_ItemDrop /*final*/ :
                &_CCSUsrMsg_ItemDrop_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    56;
+    57;
 
   friend void swap(CCSUsrMsg_ItemDrop& a, CCSUsrMsg_ItemDrop& b) {
     a.Swap(&b);
@@ -11528,7 +11723,7 @@ class CCSUsrMsg_RoundBackupFilenames /*final*/ :
                &_CCSUsrMsg_RoundBackupFilenames_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    57;
+    58;
 
   friend void swap(CCSUsrMsg_RoundBackupFilenames& a, CCSUsrMsg_RoundBackupFilenames& b) {
     a.Swap(&b);
@@ -11743,7 +11938,7 @@ class CCSUsrMsg_SSUI /*final*/ :
                &_CCSUsrMsg_SSUI_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    59;
 
   friend void swap(CCSUsrMsg_SSUI& a, CCSUsrMsg_SSUI& b) {
     a.Swap(&b);
@@ -11933,7 +12128,7 @@ class CCSUsrMsg_SurvivalStats_Fact /*final*/ :
                &_CCSUsrMsg_SurvivalStats_Fact_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    60;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Fact& a, CCSUsrMsg_SurvivalStats_Fact& b) {
     a.Swap(&b);
@@ -12138,7 +12333,7 @@ class CCSUsrMsg_SurvivalStats_Placement /*final*/ :
                &_CCSUsrMsg_SurvivalStats_Placement_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    61;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Placement& a, CCSUsrMsg_SurvivalStats_Placement& b) {
     a.Swap(&b);
@@ -12328,7 +12523,7 @@ class CCSUsrMsg_SurvivalStats_Damage /*final*/ :
                &_CCSUsrMsg_SurvivalStats_Damage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    62;
 
   friend void swap(CCSUsrMsg_SurvivalStats_Damage& a, CCSUsrMsg_SurvivalStats_Damage& b) {
     a.Swap(&b);
@@ -12548,7 +12743,7 @@ class CCSUsrMsg_SurvivalStats /*final*/ :
                &_CCSUsrMsg_SurvivalStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    63;
 
   friend void swap(CCSUsrMsg_SurvivalStats& a, CCSUsrMsg_SurvivalStats& b) {
     a.Swap(&b);
@@ -12787,7 +12982,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_Accolade /*final*/ :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_Accolade_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    64;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData_Accolade& a, CCSUsrMsg_EndOfMatchAllPlayersData_Accolade& b) {
     a.Swap(&b);
@@ -12977,7 +13172,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData /*final*/ :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    65;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData& a, CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData& b) {
     a.Swap(&b);
@@ -13257,7 +13452,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData /*final*/ :
                &_CCSUsrMsg_EndOfMatchAllPlayersData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    66;
 
   friend void swap(CCSUsrMsg_EndOfMatchAllPlayersData& a, CCSUsrMsg_EndOfMatchAllPlayersData& b) {
     a.Swap(&b);
@@ -13440,7 +13635,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Victim /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Victim_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    67;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Victim& a, CCSUsrMsg_RoundEndReportData_RerEvent_Victim& b) {
     a.Swap(&b);
@@ -13675,7 +13870,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Objective /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Objective_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    68;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Objective& a, CCSUsrMsg_RoundEndReportData_RerEvent_Objective& b) {
     a.Swap(&b);
@@ -13835,7 +14030,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Damage /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_Damage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    69;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent_Damage& a, CCSUsrMsg_RoundEndReportData_RerEvent_Damage& b) {
     a.Swap(&b);
@@ -14070,7 +14265,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_RerEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    70;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_RerEvent& a, CCSUsrMsg_RoundEndReportData_RerEvent& b) {
     a.Swap(&b);
@@ -14339,7 +14534,7 @@ class CCSUsrMsg_RoundEndReportData_InitialConditions /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_InitialConditions_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    71;
 
   friend void swap(CCSUsrMsg_RoundEndReportData_InitialConditions& a, CCSUsrMsg_RoundEndReportData_InitialConditions& b) {
     a.Swap(&b);
@@ -14529,7 +14724,7 @@ class CCSUsrMsg_RoundEndReportData /*final*/ :
                &_CCSUsrMsg_RoundEndReportData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    71;
+    72;
 
   friend void swap(CCSUsrMsg_RoundEndReportData& a, CCSUsrMsg_RoundEndReportData& b) {
     a.Swap(&b);
@@ -14717,7 +14912,7 @@ class CCSUsrMsg_PostRoundDamageReport /*final*/ :
                &_CCSUsrMsg_PostRoundDamageReport_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    72;
+    73;
 
   friend void swap(CCSUsrMsg_PostRoundDamageReport& a, CCSUsrMsg_PostRoundDamageReport& b) {
     a.Swap(&b);
@@ -14967,7 +15162,7 @@ class CCSUsrMsg_CurrentRoundOdds /*final*/ :
                &_CCSUsrMsg_CurrentRoundOdds_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    73;
+    74;
 
   friend void swap(CCSUsrMsg_CurrentRoundOdds& a, CCSUsrMsg_CurrentRoundOdds& b) {
     a.Swap(&b);
@@ -15127,7 +15322,7 @@ class CCSUsrMsg_DeepStats /*final*/ :
                &_CCSUsrMsg_DeepStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    74;
+    75;
 
   friend void swap(CCSUsrMsg_DeepStats& a, CCSUsrMsg_DeepStats& b) {
     a.Swap(&b);
@@ -15292,7 +15487,7 @@ class CCSUsrMsg_ShootInfo /*final*/ :
                &_CCSUsrMsg_ShootInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    75;
+    76;
 
   friend void swap(CCSUsrMsg_ShootInfo& a, CCSUsrMsg_ShootInfo& b) {
     a.Swap(&b);
@@ -15512,7 +15707,7 @@ class CCSUsrMsg_ResetHud /*final*/ :
                &_CCSUsrMsg_ResetHud_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    77;
 
   friend void swap(CCSUsrMsg_ResetHud& a, CCSUsrMsg_ResetHud& b) {
     a.Swap(&b);
@@ -15672,7 +15867,7 @@ class CCSUsrMsg_GameTitle /*final*/ :
                &_CCSUsrMsg_GameTitle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    77;
+    78;
 
   friend void swap(CCSUsrMsg_GameTitle& a, CCSUsrMsg_GameTitle& b) {
     a.Swap(&b);
@@ -15832,7 +16027,7 @@ class CCSUsrMsg_RequestState /*final*/ :
                &_CCSUsrMsg_RequestState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    78;
+    79;
 
   friend void swap(CCSUsrMsg_RequestState& a, CCSUsrMsg_RequestState& b) {
     a.Swap(&b);
@@ -15992,7 +16187,7 @@ class CCSUsrMsg_StopSpectatorMode /*final*/ :
                &_CCSUsrMsg_StopSpectatorMode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    79;
+    80;
 
   friend void swap(CCSUsrMsg_StopSpectatorMode& a, CCSUsrMsg_StopSpectatorMode& b) {
     a.Swap(&b);
@@ -16152,7 +16347,7 @@ class CCSUsrMsg_DisconnectToLobby /*final*/ :
                &_CCSUsrMsg_DisconnectToLobby_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    80;
+    81;
 
   friend void swap(CCSUsrMsg_DisconnectToLobby& a, CCSUsrMsg_DisconnectToLobby& b) {
     a.Swap(&b);
@@ -16312,7 +16507,7 @@ class CCSUsrMsg_ClientInfo /*final*/ :
                &_CCSUsrMsg_ClientInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    81;
+    82;
 
   friend void swap(CCSUsrMsg_ClientInfo& a, CCSUsrMsg_ClientInfo& b) {
     a.Swap(&b);
@@ -16472,7 +16667,7 @@ class CCSUsrMsg_ServerRankRevealAll /*final*/ :
                &_CCSUsrMsg_ServerRankRevealAll_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    82;
+    83;
 
   friend void swap(CCSUsrMsg_ServerRankRevealAll& a, CCSUsrMsg_ServerRankRevealAll& b) {
     a.Swap(&b);
@@ -16652,7 +16847,7 @@ class CCSUsrMsgPreMatchSayText /*final*/ :
                &_CCSUsrMsgPreMatchSayText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    83;
+    84;
 
   friend void swap(CCSUsrMsgPreMatchSayText& a, CCSUsrMsgPreMatchSayText& b) {
     a.Swap(&b);
@@ -16847,7 +17042,7 @@ class CCSUsrMsg_CounterStrafe /*final*/ :
                &_CCSUsrMsg_CounterStrafe_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    84;
+    85;
 
   friend void swap(CCSUsrMsg_CounterStrafe& a, CCSUsrMsg_CounterStrafe& b) {
     a.Swap(&b);
@@ -17022,7 +17217,7 @@ class CCSUsrMsg_DamagePrediction /*final*/ :
                &_CCSUsrMsg_DamagePrediction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    85;
+    86;
 
   friend void swap(CCSUsrMsg_DamagePrediction& a, CCSUsrMsg_DamagePrediction& b) {
     a.Swap(&b);
@@ -17302,7 +17497,7 @@ class CCSUsrMsg_RecurringMissionSchema /*final*/ :
                &_CCSUsrMsg_RecurringMissionSchema_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    86;
+    87;
 
   friend void swap(CCSUsrMsg_RecurringMissionSchema& a, CCSUsrMsg_RecurringMissionSchema& b) {
     a.Swap(&b);
@@ -17482,7 +17677,7 @@ class CCSUsrMsg_SendPlayerLoadout_LoadoutItem /*final*/ :
                &_CCSUsrMsg_SendPlayerLoadout_LoadoutItem_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    87;
+    88;
 
   friend void swap(CCSUsrMsg_SendPlayerLoadout_LoadoutItem& a, CCSUsrMsg_SendPlayerLoadout_LoadoutItem& b) {
     a.Swap(&b);
@@ -17677,7 +17872,7 @@ class CCSUsrMsg_SendPlayerLoadout /*final*/ :
                &_CCSUsrMsg_SendPlayerLoadout_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    88;
+    89;
 
   friend void swap(CCSUsrMsg_SendPlayerLoadout& a, CCSUsrMsg_SendPlayerLoadout& b) {
     a.Swap(&b);
@@ -21080,6 +21275,94 @@ inline void CCSUsrMsg_WeaponSound::_internal_set_source_soundscapeid(uint32_t va
 inline void CCSUsrMsg_WeaponSound::set_source_soundscapeid(uint32_t value) {
   _internal_set_source_soundscapeid(value);
   // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponSound.source_soundscapeid)
+}
+
+// -------------------------------------------------------------------
+
+// CCSUsrMsg_WeaponMagDrop
+
+// optional int32 entidx = 1 [default = -1];
+inline bool CCSUsrMsg_WeaponMagDrop::_internal_has_entidx() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_WeaponMagDrop::has_entidx() const {
+  return _internal_has_entidx();
+}
+inline void CCSUsrMsg_WeaponMagDrop::clear_entidx() {
+  _impl_.entidx_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CCSUsrMsg_WeaponMagDrop::_internal_entidx() const {
+  return _impl_.entidx_;
+}
+inline int32_t CCSUsrMsg_WeaponMagDrop::entidx() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_WeaponMagDrop.entidx)
+  return _internal_entidx();
+}
+inline void CCSUsrMsg_WeaponMagDrop::_internal_set_entidx(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.entidx_ = value;
+}
+inline void CCSUsrMsg_WeaponMagDrop::set_entidx(int32_t value) {
+  _internal_set_entidx(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponMagDrop.entidx)
+}
+
+// optional int32 secondary_data = 2;
+inline bool CCSUsrMsg_WeaponMagDrop::_internal_has_secondary_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_WeaponMagDrop::has_secondary_data() const {
+  return _internal_has_secondary_data();
+}
+inline void CCSUsrMsg_WeaponMagDrop::clear_secondary_data() {
+  _impl_.secondary_data_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline int32_t CCSUsrMsg_WeaponMagDrop::_internal_secondary_data() const {
+  return _impl_.secondary_data_;
+}
+inline int32_t CCSUsrMsg_WeaponMagDrop::secondary_data() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_WeaponMagDrop.secondary_data)
+  return _internal_secondary_data();
+}
+inline void CCSUsrMsg_WeaponMagDrop::_internal_set_secondary_data(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.secondary_data_ = value;
+}
+inline void CCSUsrMsg_WeaponMagDrop::set_secondary_data(int32_t value) {
+  _internal_set_secondary_data(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponMagDrop.secondary_data)
+}
+
+// optional bool server_event = 3;
+inline bool CCSUsrMsg_WeaponMagDrop::_internal_has_server_event() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_WeaponMagDrop::has_server_event() const {
+  return _internal_has_server_event();
+}
+inline void CCSUsrMsg_WeaponMagDrop::clear_server_event() {
+  _impl_.server_event_ = false;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline bool CCSUsrMsg_WeaponMagDrop::_internal_server_event() const {
+  return _impl_.server_event_;
+}
+inline bool CCSUsrMsg_WeaponMagDrop::server_event() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_WeaponMagDrop.server_event)
+  return _internal_server_event();
+}
+inline void CCSUsrMsg_WeaponMagDrop::_internal_set_server_event(bool value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.server_event_ = value;
+}
+inline void CCSUsrMsg_WeaponMagDrop::set_server_event(bool value) {
+  _internal_set_server_event(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponMagDrop.server_event)
 }
 
 // -------------------------------------------------------------------
@@ -28247,6 +28530,8 @@ inline void CCSUsrMsg_SendPlayerLoadout::set_playerslot(int32_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

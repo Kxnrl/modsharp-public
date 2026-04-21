@@ -24,58 +24,59 @@ public static partial class GameeventsReflection {
         string.Concat(
           "ChBnYW1lZXZlbnRzLnByb3RvGhZuZXR3b3JrYmFzZXR5cGVzLnByb3RvIkcK",
           "HENNc2dWRGVidWdHYW1lU2Vzc2lvbklERXZlbnQSEAoIY2xpZW50aWQYASAB",
-          "KAUSFQoNZ2FtZXNlc3Npb25pZBgCIAEoCSLHAgoTQ01zZ1BsYWNlRGVjYWxF",
+          "KAUSFQoNZ2FtZXNlc3Npb25pZBgCIAEoCSLyAgoTQ01zZ1BsYWNlRGVjYWxF",
           "dmVudBIdCghwb3NpdGlvbhgBIAEoCzILLkNNc2dWZWN0b3ISGwoGbm9ybWFs",
           "GAIgASgLMgsuQ01zZ1ZlY3RvchIaCgVzYXhpcxgDIAEoCzILLkNNc2dWZWN0",
           "b3ISEQoJYm9uZWluZGV4GAQgASgFEhUKDXRyaWFuZ2xlaW5kZXgYDSABKAUS",
           "DQoFZmxhZ3MYBSABKA0SDQoFY29sb3IYBiABKAcSEwoLcmFuZG9tX3NlZWQY",
           "ByABKAUSGAoQZGVjYWxfZ3JvdXBfbmFtZRgIIAEoDRIVCg1zaXplX292ZXJy",
           "aWRlGAkgASgCEh4KDGVudGl0eWhhbmRsZRgKIAEoDToIMTY3NzcyMTUSEwoL",
-          "bWF0ZXJpYWxfaWQYCyABKAQSFQoNc2VxdWVuY2VfbmFtZRgMIAEoDSIxChlD",
-          "TXNnQ2xlYXJXb3JsZERlY2Fsc0V2ZW50EhQKDGZsYWdzdG9jbGVhchgBIAEo",
-          "DSIyChpDTXNnQ2xlYXJFbnRpdHlEZWNhbHNFdmVudBIUCgxmbGFnc3RvY2xl",
-          "YXIYASABKA0iVQodQ01zZ0NsZWFyRGVjYWxzRm9yRW50aXR5RXZlbnQSFAoM",
-          "ZmxhZ3N0b2NsZWFyGAEgASgNEh4KDGVudGl0eWhhbmRsZRgCIAEoDToIMTY3",
-          "NzcyMTUi9AEKHkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50TGlzdBJBCgtk",
-          "ZXNjcmlwdG9ycxgBIAMoCzIsLkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50",
-          "TGlzdC5kZXNjcmlwdG9yX3QaIwoFa2V5X3QSDAoEdHlwZRgBIAEoBRIMCgRu",
-          "YW1lGAIgASgJGmIKDGRlc2NyaXB0b3JfdBIPCgdldmVudGlkGAEgASgFEgwK",
-          "BG5hbWUYAiABKAkSMwoEa2V5cxgDIAMoCzIlLkNNc2dTb3VyY2UxTGVnYWN5",
-          "R2FtZUV2ZW50TGlzdC5rZXlfdDoGgLUYgMABIksKHUNNc2dTb3VyY2UxTGVn",
-          "YWN5TGlzdGVuRXZlbnRzEhIKCnBsYXllcnNsb3QYASABKAUSFgoOZXZlbnRh",
-          "cnJheWJpdHMYAiADKA0iuAIKGkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50",
-          "EhIKCmV2ZW50X25hbWUYASABKAkSDwoHZXZlbnRpZBgCIAEoBRIvCgRrZXlz",
-          "GAMgAygLMiEuQ01zZ1NvdXJjZTFMZWdhY3lHYW1lRXZlbnQua2V5X3QSEwoL",
-          "c2VydmVyX3RpY2sYBCABKAUSEwoLcGFzc3Rocm91Z2gYBSABKAUamQEKBWtl",
-          "eV90EgwKBHR5cGUYASABKAUSEgoKdmFsX3N0cmluZxgCIAEoCRIRCgl2YWxf",
-          "ZmxvYXQYAyABKAISEAoIdmFsX2xvbmcYBCABKAUSEQoJdmFsX3Nob3J0GAUg",
-          "ASgFEhAKCHZhbF9ieXRlGAYgASgFEhAKCHZhbF9ib29sGAcgASgIEhIKCnZh",
-          "bF91aW50NjQYCCABKAQipAEKFkNNc2dTb3NTdGFydFNvdW5kRXZlbnQSFwoP",
-          "c291bmRldmVudF9ndWlkGAEgASgFEhcKD3NvdW5kZXZlbnRfaGFzaBgCIAEo",
-          "BxIfChNzb3VyY2VfZW50aXR5X2luZGV4GAMgASgFOgItMRIMCgRzZWVkGAQg",
-          "ASgFEhUKDXBhY2tlZF9wYXJhbXMYBSABKAwSEgoKc3RhcnRfdGltZRgGIAEo",
-          "AiIwChVDTXNnU29zU3RvcFNvdW5kRXZlbnQSFwoPc291bmRldmVudF9ndWlk",
-          "GAEgASgFIlUKGUNNc2dTb3NTdG9wU291bmRFdmVudEhhc2gSFwoPc291bmRl",
-          "dmVudF9oYXNoGAEgASgHEh8KE3NvdXJjZV9lbnRpdHlfaW5kZXgYAiABKAU6",
-          "Ai0xIkwKGkNNc2dTb3NTZXRTb3VuZEV2ZW50UGFyYW1zEhcKD3NvdW5kZXZl",
-          "bnRfZ3VpZBgBIAEoBRIVCg1wYWNrZWRfcGFyYW1zGAUgASgMIkkKHENNc2dT",
-          "b3NTZXRMaWJyYXJ5U3RhY2tGaWVsZHMSEgoKc3RhY2tfaGFzaBgBIAEoBxIV",
-          "Cg1wYWNrZWRfZmllbGRzGAUgASgMKq0DCg9FQmFzZUdhbWVFdmVudHMSIAob",
-          "R0VfVkRlYnVnR2FtZVNlc3Npb25JREV2ZW50EMgBEhcKEkdFX1BsYWNlRGVj",
-          "YWxFdmVudBDJARIdChhHRV9DbGVhcldvcmxkRGVjYWxzRXZlbnQQygESHgoZ",
-          "R0VfQ2xlYXJFbnRpdHlEZWNhbHNFdmVudBDLARIhChxHRV9DbGVhckRlY2Fs",
-          "c0ZvckVudGl0eUV2ZW50EMwBEiIKHUdFX1NvdXJjZTFMZWdhY3lHYW1lRXZl",
-          "bnRMaXN0EM0BEiEKHEdFX1NvdXJjZTFMZWdhY3lMaXN0ZW5FdmVudHMQzgES",
-          "HgoZR0VfU291cmNlMUxlZ2FjeUdhbWVFdmVudBDPARIaChVHRV9Tb3NTdGFy",
-          "dFNvdW5kRXZlbnQQ0AESGQoUR0VfU29zU3RvcFNvdW5kRXZlbnQQ0QESHgoZ",
-          "R0VfU29zU2V0U291bmRFdmVudFBhcmFtcxDSARIgChtHRV9Tb3NTZXRMaWJy",
-          "YXJ5U3RhY2tGaWVsZHMQ0wESHQoYR0VfU29zU3RvcFNvdW5kRXZlbnRIYXNo",
-          "ENQB"));
+          "bWF0ZXJpYWxfaWQYCyABKAQSFQoNc2VxdWVuY2VfbmFtZRgMIAEoDRIpChRw",
+          "b3NpdGlvbl9vYmplY3RzcGFjZRgOIAEoCzILLkNNc2dWZWN0b3IiMQoZQ01z",
+          "Z0NsZWFyV29ybGREZWNhbHNFdmVudBIUCgxmbGFnc3RvY2xlYXIYASABKA0i",
+          "MgoaQ01zZ0NsZWFyRW50aXR5RGVjYWxzRXZlbnQSFAoMZmxhZ3N0b2NsZWFy",
+          "GAEgASgNIlUKHUNNc2dDbGVhckRlY2Fsc0ZvckVudGl0eUV2ZW50EhQKDGZs",
+          "YWdzdG9jbGVhchgBIAEoDRIeCgxlbnRpdHloYW5kbGUYAiABKA06CDE2Nzc3",
+          "MjE1IvQBCh5DTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudExpc3QSQQoLZGVz",
+          "Y3JpcHRvcnMYASADKAsyLC5DTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudExp",
+          "c3QuZGVzY3JpcHRvcl90GiMKBWtleV90EgwKBHR5cGUYASABKAUSDAoEbmFt",
+          "ZRgCIAEoCRpiCgxkZXNjcmlwdG9yX3QSDwoHZXZlbnRpZBgBIAEoBRIMCgRu",
+          "YW1lGAIgASgJEjMKBGtleXMYAyADKAsyJS5DTXNnU291cmNlMUxlZ2FjeUdh",
+          "bWVFdmVudExpc3Qua2V5X3Q6BoC1GICAAiJLCh1DTXNnU291cmNlMUxlZ2Fj",
+          "eUxpc3RlbkV2ZW50cxISCgpwbGF5ZXJzbG90GAEgASgFEhYKDmV2ZW50YXJy",
+          "YXliaXRzGAIgAygNIrgCChpDTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudBIS",
+          "CgpldmVudF9uYW1lGAEgASgJEg8KB2V2ZW50aWQYAiABKAUSLwoEa2V5cxgD",
+          "IAMoCzIhLkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50LmtleV90EhMKC3Nl",
+          "cnZlcl90aWNrGAQgASgFEhMKC3Bhc3N0aHJvdWdoGAUgASgFGpkBCgVrZXlf",
+          "dBIMCgR0eXBlGAEgASgFEhIKCnZhbF9zdHJpbmcYAiABKAkSEQoJdmFsX2Zs",
+          "b2F0GAMgASgCEhAKCHZhbF9sb25nGAQgASgFEhEKCXZhbF9zaG9ydBgFIAEo",
+          "BRIQCgh2YWxfYnl0ZRgGIAEoBRIQCgh2YWxfYm9vbBgHIAEoCBISCgp2YWxf",
+          "dWludDY0GAggASgEIqQBChZDTXNnU29zU3RhcnRTb3VuZEV2ZW50EhcKD3Nv",
+          "dW5kZXZlbnRfZ3VpZBgBIAEoBRIXCg9zb3VuZGV2ZW50X2hhc2gYAiABKAcS",
+          "HwoTc291cmNlX2VudGl0eV9pbmRleBgDIAEoBToCLTESDAoEc2VlZBgEIAEo",
+          "BRIVCg1wYWNrZWRfcGFyYW1zGAUgASgMEhIKCnN0YXJ0X3RpbWUYBiABKAIi",
+          "MAoVQ01zZ1Nvc1N0b3BTb3VuZEV2ZW50EhcKD3NvdW5kZXZlbnRfZ3VpZBgB",
+          "IAEoBSJVChlDTXNnU29zU3RvcFNvdW5kRXZlbnRIYXNoEhcKD3NvdW5kZXZl",
+          "bnRfaGFzaBgBIAEoBxIfChNzb3VyY2VfZW50aXR5X2luZGV4GAIgASgFOgIt",
+          "MSJMChpDTXNnU29zU2V0U291bmRFdmVudFBhcmFtcxIXCg9zb3VuZGV2ZW50",
+          "X2d1aWQYASABKAUSFQoNcGFja2VkX3BhcmFtcxgFIAEoDCJJChxDTXNnU29z",
+          "U2V0TGlicmFyeVN0YWNrRmllbGRzEhIKCnN0YWNrX2hhc2gYASABKAcSFQoN",
+          "cGFja2VkX2ZpZWxkcxgFIAEoDCqtAwoPRUJhc2VHYW1lRXZlbnRzEiAKG0dF",
+          "X1ZEZWJ1Z0dhbWVTZXNzaW9uSURFdmVudBDIARIXChJHRV9QbGFjZURlY2Fs",
+          "RXZlbnQQyQESHQoYR0VfQ2xlYXJXb3JsZERlY2Fsc0V2ZW50EMoBEh4KGUdF",
+          "X0NsZWFyRW50aXR5RGVjYWxzRXZlbnQQywESIQocR0VfQ2xlYXJEZWNhbHNG",
+          "b3JFbnRpdHlFdmVudBDMARIiCh1HRV9Tb3VyY2UxTGVnYWN5R2FtZUV2ZW50",
+          "TGlzdBDNARIhChxHRV9Tb3VyY2UxTGVnYWN5TGlzdGVuRXZlbnRzEM4BEh4K",
+          "GUdFX1NvdXJjZTFMZWdhY3lHYW1lRXZlbnQQzwESGgoVR0VfU29zU3RhcnRT",
+          "b3VuZEV2ZW50ENABEhkKFEdFX1Nvc1N0b3BTb3VuZEV2ZW50ENEBEh4KGUdF",
+          "X1Nvc1NldFNvdW5kRXZlbnRQYXJhbXMQ0gESIAobR0VfU29zU2V0TGlicmFy",
+          "eVN0YWNrRmllbGRzENMBEh0KGEdFX1Nvc1N0b3BTb3VuZEV2ZW50SGFzaBDU",
+          "AQ=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::EBaseGameEvents), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgVDebugGameSessionIDEvent), global::CMsgVDebugGameSessionIDEvent.Parser, new[]{ "Clientid", "Gamesessionid" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlaceDecalEvent), global::CMsgPlaceDecalEvent.Parser, new[]{ "Position", "Normal", "Saxis", "Boneindex", "Triangleindex", "Flags", "Color", "RandomSeed", "DecalGroupName", "SizeOverride", "Entityhandle", "MaterialId", "SequenceName" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlaceDecalEvent), global::CMsgPlaceDecalEvent.Parser, new[]{ "Position", "Normal", "Saxis", "Boneindex", "Triangleindex", "Flags", "Color", "RandomSeed", "DecalGroupName", "SizeOverride", "Entityhandle", "MaterialId", "SequenceName", "PositionObjectspace" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearWorldDecalsEvent), global::CMsgClearWorldDecalsEvent.Parser, new[]{ "Flagstoclear" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearEntityDecalsEvent), global::CMsgClearEntityDecalsEvent.Parser, new[]{ "Flagstoclear" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearDecalsForEntityEvent), global::CMsgClearDecalsForEntityEvent.Parser, new[]{ "Flagstoclear", "Entityhandle" }, null, null, null, null),
@@ -419,6 +420,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     entityhandle_ = other.entityhandle_;
     materialId_ = other.materialId_;
     sequenceName_ = other.sequenceName_;
+    positionObjectspace_ = other.positionObjectspace_ != null ? other.positionObjectspace_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -734,6 +736,18 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     _hasBits0 &= ~256;
   }
 
+  /// <summary>Field number for the "position_objectspace" field.</summary>
+  public const int PositionObjectspaceFieldNumber = 14;
+  private global::CMsgVector positionObjectspace_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CMsgVector PositionObjectspace {
+    get { return positionObjectspace_; }
+    set {
+      positionObjectspace_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -762,6 +776,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     if (Entityhandle != other.Entityhandle) return false;
     if (MaterialId != other.MaterialId) return false;
     if (SequenceName != other.SequenceName) return false;
+    if (!object.Equals(PositionObjectspace, other.PositionObjectspace)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -782,6 +797,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     if (HasEntityhandle) hash ^= Entityhandle.GetHashCode();
     if (HasMaterialId) hash ^= MaterialId.GetHashCode();
     if (HasSequenceName) hash ^= SequenceName.GetHashCode();
+    if (positionObjectspace_ != null) hash ^= PositionObjectspace.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -852,6 +868,10 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
       output.WriteRawTag(104);
       output.WriteInt32(Triangleindex);
     }
+    if (positionObjectspace_ != null) {
+      output.WriteRawTag(114);
+      output.WriteMessage(PositionObjectspace);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -914,6 +934,10 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
       output.WriteRawTag(104);
       output.WriteInt32(Triangleindex);
     }
+    if (positionObjectspace_ != null) {
+      output.WriteRawTag(114);
+      output.WriteMessage(PositionObjectspace);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -962,6 +986,9 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     }
     if (HasSequenceName) {
       size += 1 + pb::CodedOutputStream.ComputeUInt32Size(SequenceName);
+    }
+    if (positionObjectspace_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(PositionObjectspace);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -1022,6 +1049,12 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     }
     if (other.HasSequenceName) {
       SequenceName = other.SequenceName;
+    }
+    if (other.positionObjectspace_ != null) {
+      if (positionObjectspace_ == null) {
+        PositionObjectspace = new global::CMsgVector();
+      }
+      PositionObjectspace.MergeFrom(other.PositionObjectspace);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -1099,6 +1132,13 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
           Triangleindex = input.ReadInt32();
           break;
         }
+        case 114: {
+          if (positionObjectspace_ == null) {
+            PositionObjectspace = new global::CMsgVector();
+          }
+          input.ReadMessage(PositionObjectspace);
+          break;
+        }
       }
     }
   #endif
@@ -1173,6 +1213,13 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
         }
         case 104: {
           Triangleindex = input.ReadInt32();
+          break;
+        }
+        case 114: {
+          if (positionObjectspace_ == null) {
+            PositionObjectspace = new global::CMsgVector();
+          }
+          input.ReadMessage(PositionObjectspace);
           break;
         }
       }

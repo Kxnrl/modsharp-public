@@ -423,6 +423,22 @@ struct CCSUsrMsg_WeaponSoundDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CCSUsrMsg_WeaponSoundDefaultTypeInternal _CCSUsrMsg_WeaponSound_default_instance_;
+PROTOBUF_CONSTEXPR CCSUsrMsg_WeaponMagDrop::CCSUsrMsg_WeaponMagDrop(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.secondary_data_)*/0
+  , /*decltype(_impl_.server_event_)*/false
+  , /*decltype(_impl_.entidx_)*/-1} {}
+struct CCSUsrMsg_WeaponMagDropDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CCSUsrMsg_WeaponMagDropDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CCSUsrMsg_WeaponMagDropDefaultTypeInternal() {}
+  union {
+    CCSUsrMsg_WeaponMagDrop _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CCSUsrMsg_WeaponMagDropDefaultTypeInternal _CCSUsrMsg_WeaponMagDrop_default_instance_;
 PROTOBUF_CONSTEXPR CCSUsrMsg_UpdateScreenHealthBar::CCSUsrMsg_UpdateScreenHealthBar(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -1440,7 +1456,7 @@ struct CCSUsrMsg_SendPlayerLoadoutDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CCSUsrMsg_SendPlayerLoadoutDefaultTypeInternal _CCSUsrMsg_SendPlayerLoadout_default_instance_;
-static ::_pb::Metadata file_level_metadata_cstrike15_5fusermessages_2eproto[89];
+static ::_pb::Metadata file_level_metadata_cstrike15_5fusermessages_2eproto[90];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cstrike15_5fusermessages_2eproto[2];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_cstrike15_5fusermessages_2eproto = nullptr;
 
@@ -1753,6 +1769,18 @@ const uint32_t TableStruct_cstrike15_5fusermessages_2eproto::offsets[] PROTOBUF_
   0,
   4,
   5,
+  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_WeaponMagDrop, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_WeaponMagDrop, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_WeaponMagDrop, _impl_.entidx_),
+  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_WeaponMagDrop, _impl_.secondary_data_),
+  PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_WeaponMagDrop, _impl_.server_event_),
+  2,
+  0,
+  1,
   PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_UpdateScreenHealthBar, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CCSUsrMsg_UpdateScreenHealthBar, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -2536,70 +2564,71 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 262, 270, -1, sizeof(::CCSUsrMsg_SendPlayerItemFound)},
   { 272, 283, -1, sizeof(::CCSUsrMsg_ReloadEffect)},
   { 288, 301, -1, sizeof(::CCSUsrMsg_WeaponSound)},
-  { 308, 318, -1, sizeof(::CCSUsrMsg_UpdateScreenHealthBar)},
-  { 322, 330, -1, sizeof(::CCSUsrMsg_EntityOutlineHighlight)},
-  { 332, 339, -1, sizeof(::CCSUsrMsg_AdjustMoney)},
-  { 340, 350, -1, sizeof(::CCSUsrMsg_ReportHit)},
-  { 354, 363, -1, sizeof(::CCSUsrMsg_KillCam)},
-  { 366, 376, -1, sizeof(::CCSUsrMsg_DesiredTimescale)},
-  { 380, 387, -1, sizeof(::CCSUsrMsg_CurrentTimescale)},
-  { 388, 397, -1, sizeof(::CCSUsrMsg_AchievementEvent)},
-  { 400, 410, -1, sizeof(::CCSUsrMsg_MatchEndConditions)},
-  { 414, 422, -1, sizeof(::CCSUsrMsg_PlayerStatsUpdate_Stat)},
-  { 424, 434, -1, sizeof(::CCSUsrMsg_PlayerStatsUpdate)},
-  { 438, 448, -1, sizeof(::CCSUsrMsg_QuestProgress)},
-  { 452, 459, -1, sizeof(::CCSUsrMsg_ScoreLeaderboardData)},
-  { 460, 467, -1, sizeof(::CCSUsrMsg_PlayerDecalDigitalSignature)},
-  { 468, 476, -1, sizeof(::CCSUsrMsg_XRankGet)},
-  { 478, 487, -1, sizeof(::CCSUsrMsg_XRankUpd)},
-  { 490, 498, -1, sizeof(::CCSUsrMsg_CallVoteFailed)},
-  { 500, 514, -1, sizeof(::CCSUsrMsg_VoteStart)},
-  { 522, 532, -1, sizeof(::CCSUsrMsg_VotePass)},
-  { 536, 544, -1, sizeof(::CCSUsrMsg_VoteFailed)},
-  { 546, -1, -1, sizeof(::CCSUsrMsg_VoteSetup)},
-  { 553, 565, -1, sizeof(::CCSUsrMsg_SendLastKillerDamageToClient)},
-  { 571, 583, -1, sizeof(::CCSUsrMsg_ServerRankUpdate_RankUpdate)},
-  { 589, -1, -1, sizeof(::CCSUsrMsg_ServerRankUpdate)},
-  { 596, 603, -1, sizeof(::CCSUsrMsg_XpUpdate)},
-  { 604, 611, -1, sizeof(::CCSUsrMsg_ItemPickup)},
-  { 612, 621, -1, sizeof(::CCSUsrMsg_ShowMenu)},
-  { 624, 631, -1, sizeof(::CCSUsrMsg_BarTime)},
-  { 632, 639, -1, sizeof(::CCSUsrMsg_AmmoDenied)},
-  { 640, 647, -1, sizeof(::CCSUsrMsg_MarkAchievement)},
-  { 648, 655, -1, sizeof(::CCSUsrMsg_MatchStatsUpdate)},
-  { 656, 664, -1, sizeof(::CCSUsrMsg_ItemDrop)},
-  { 666, 676, -1, sizeof(::CCSUsrMsg_RoundBackupFilenames)},
-  { 680, 689, -1, sizeof(::CCSUsrMsg_SSUI)},
-  { 692, 702, -1, sizeof(::CCSUsrMsg_SurvivalStats_Fact)},
-  { 706, 715, -1, sizeof(::CCSUsrMsg_SurvivalStats_Placement)},
-  { 718, 729, -1, sizeof(::CCSUsrMsg_SurvivalStats_Damage)},
-  { 734, 745, -1, sizeof(::CCSUsrMsg_SurvivalStats)},
-  { 750, 759, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData_Accolade)},
-  { 762, 776, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData)},
-  { 784, 792, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData)},
-  { 794, 806, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Victim)},
-  { 812, 819, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Objective)},
-  { 820, 832, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Damage)},
-  { 838, 851, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent)},
-  { 858, 867, -1, sizeof(::CCSUsrMsg_RoundEndReportData_InitialConditions)},
-  { 870, 878, -1, sizeof(::CCSUsrMsg_RoundEndReportData)},
-  { 880, 893, -1, sizeof(::CCSUsrMsg_PostRoundDamageReport)},
-  { 900, 907, -1, sizeof(::CCSUsrMsg_CurrentRoundOdds)},
-  { 908, 915, -1, sizeof(::CCSUsrMsg_DeepStats)},
-  { 916, 926, -1, sizeof(::CCSUsrMsg_ShootInfo)},
-  { 930, 937, -1, sizeof(::CCSUsrMsg_ResetHud)},
-  { 938, 945, -1, sizeof(::CCSUsrMsg_GameTitle)},
-  { 946, 953, -1, sizeof(::CCSUsrMsg_RequestState)},
-  { 954, 961, -1, sizeof(::CCSUsrMsg_StopSpectatorMode)},
-  { 962, 969, -1, sizeof(::CCSUsrMsg_DisconnectToLobby)},
-  { 970, 977, -1, sizeof(::CCSUsrMsg_ClientInfo)},
-  { 978, 986, -1, sizeof(::CCSUsrMsg_ServerRankRevealAll)},
-  { 988, 997, -1, sizeof(::CCSUsrMsgPreMatchSayText)},
-  { 1000, 1008, -1, sizeof(::CCSUsrMsg_CounterStrafe)},
-  { 1010, 1024, -1, sizeof(::CCSUsrMsg_DamagePrediction)},
-  { 1032, 1040, -1, sizeof(::CCSUsrMsg_RecurringMissionSchema)},
-  { 1042, 1051, -1, sizeof(::CCSUsrMsg_SendPlayerLoadout_LoadoutItem)},
-  { 1054, 1062, -1, sizeof(::CCSUsrMsg_SendPlayerLoadout)},
+  { 308, 317, -1, sizeof(::CCSUsrMsg_WeaponMagDrop)},
+  { 320, 330, -1, sizeof(::CCSUsrMsg_UpdateScreenHealthBar)},
+  { 334, 342, -1, sizeof(::CCSUsrMsg_EntityOutlineHighlight)},
+  { 344, 351, -1, sizeof(::CCSUsrMsg_AdjustMoney)},
+  { 352, 362, -1, sizeof(::CCSUsrMsg_ReportHit)},
+  { 366, 375, -1, sizeof(::CCSUsrMsg_KillCam)},
+  { 378, 388, -1, sizeof(::CCSUsrMsg_DesiredTimescale)},
+  { 392, 399, -1, sizeof(::CCSUsrMsg_CurrentTimescale)},
+  { 400, 409, -1, sizeof(::CCSUsrMsg_AchievementEvent)},
+  { 412, 422, -1, sizeof(::CCSUsrMsg_MatchEndConditions)},
+  { 426, 434, -1, sizeof(::CCSUsrMsg_PlayerStatsUpdate_Stat)},
+  { 436, 446, -1, sizeof(::CCSUsrMsg_PlayerStatsUpdate)},
+  { 450, 460, -1, sizeof(::CCSUsrMsg_QuestProgress)},
+  { 464, 471, -1, sizeof(::CCSUsrMsg_ScoreLeaderboardData)},
+  { 472, 479, -1, sizeof(::CCSUsrMsg_PlayerDecalDigitalSignature)},
+  { 480, 488, -1, sizeof(::CCSUsrMsg_XRankGet)},
+  { 490, 499, -1, sizeof(::CCSUsrMsg_XRankUpd)},
+  { 502, 510, -1, sizeof(::CCSUsrMsg_CallVoteFailed)},
+  { 512, 526, -1, sizeof(::CCSUsrMsg_VoteStart)},
+  { 534, 544, -1, sizeof(::CCSUsrMsg_VotePass)},
+  { 548, 556, -1, sizeof(::CCSUsrMsg_VoteFailed)},
+  { 558, -1, -1, sizeof(::CCSUsrMsg_VoteSetup)},
+  { 565, 577, -1, sizeof(::CCSUsrMsg_SendLastKillerDamageToClient)},
+  { 583, 595, -1, sizeof(::CCSUsrMsg_ServerRankUpdate_RankUpdate)},
+  { 601, -1, -1, sizeof(::CCSUsrMsg_ServerRankUpdate)},
+  { 608, 615, -1, sizeof(::CCSUsrMsg_XpUpdate)},
+  { 616, 623, -1, sizeof(::CCSUsrMsg_ItemPickup)},
+  { 624, 633, -1, sizeof(::CCSUsrMsg_ShowMenu)},
+  { 636, 643, -1, sizeof(::CCSUsrMsg_BarTime)},
+  { 644, 651, -1, sizeof(::CCSUsrMsg_AmmoDenied)},
+  { 652, 659, -1, sizeof(::CCSUsrMsg_MarkAchievement)},
+  { 660, 667, -1, sizeof(::CCSUsrMsg_MatchStatsUpdate)},
+  { 668, 676, -1, sizeof(::CCSUsrMsg_ItemDrop)},
+  { 678, 688, -1, sizeof(::CCSUsrMsg_RoundBackupFilenames)},
+  { 692, 701, -1, sizeof(::CCSUsrMsg_SSUI)},
+  { 704, 714, -1, sizeof(::CCSUsrMsg_SurvivalStats_Fact)},
+  { 718, 727, -1, sizeof(::CCSUsrMsg_SurvivalStats_Placement)},
+  { 730, 741, -1, sizeof(::CCSUsrMsg_SurvivalStats_Damage)},
+  { 746, 757, -1, sizeof(::CCSUsrMsg_SurvivalStats)},
+  { 762, 771, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData_Accolade)},
+  { 774, 788, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData)},
+  { 796, 804, -1, sizeof(::CCSUsrMsg_EndOfMatchAllPlayersData)},
+  { 806, 818, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Victim)},
+  { 824, 831, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Objective)},
+  { 832, 844, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent_Damage)},
+  { 850, 863, -1, sizeof(::CCSUsrMsg_RoundEndReportData_RerEvent)},
+  { 870, 879, -1, sizeof(::CCSUsrMsg_RoundEndReportData_InitialConditions)},
+  { 882, 890, -1, sizeof(::CCSUsrMsg_RoundEndReportData)},
+  { 892, 905, -1, sizeof(::CCSUsrMsg_PostRoundDamageReport)},
+  { 912, 919, -1, sizeof(::CCSUsrMsg_CurrentRoundOdds)},
+  { 920, 927, -1, sizeof(::CCSUsrMsg_DeepStats)},
+  { 928, 938, -1, sizeof(::CCSUsrMsg_ShootInfo)},
+  { 942, 949, -1, sizeof(::CCSUsrMsg_ResetHud)},
+  { 950, 957, -1, sizeof(::CCSUsrMsg_GameTitle)},
+  { 958, 965, -1, sizeof(::CCSUsrMsg_RequestState)},
+  { 966, 973, -1, sizeof(::CCSUsrMsg_StopSpectatorMode)},
+  { 974, 981, -1, sizeof(::CCSUsrMsg_DisconnectToLobby)},
+  { 982, 989, -1, sizeof(::CCSUsrMsg_ClientInfo)},
+  { 990, 998, -1, sizeof(::CCSUsrMsg_ServerRankRevealAll)},
+  { 1000, 1009, -1, sizeof(::CCSUsrMsgPreMatchSayText)},
+  { 1012, 1020, -1, sizeof(::CCSUsrMsg_CounterStrafe)},
+  { 1022, 1036, -1, sizeof(::CCSUsrMsg_DamagePrediction)},
+  { 1044, 1052, -1, sizeof(::CCSUsrMsg_RecurringMissionSchema)},
+  { 1054, 1063, -1, sizeof(::CCSUsrMsg_SendPlayerLoadout_LoadoutItem)},
+  { 1066, 1074, -1, sizeof(::CCSUsrMsg_SendPlayerLoadout)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -2628,6 +2657,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CCSUsrMsg_SendPlayerItemFound_default_instance_._instance,
   &::_CCSUsrMsg_ReloadEffect_default_instance_._instance,
   &::_CCSUsrMsg_WeaponSound_default_instance_._instance,
+  &::_CCSUsrMsg_WeaponMagDrop_default_instance_._instance,
   &::_CCSUsrMsg_UpdateScreenHealthBar_default_instance_._instance,
   &::_CCSUsrMsg_EntityOutlineHighlight_default_instance_._instance,
   &::_CCSUsrMsg_AdjustMoney_default_instance_._instance,
@@ -2754,215 +2784,218 @@ const char descriptor_table_protodef_cstrike15_5fusermessages_2eproto[] PROTOBUF
   "onSound\022\022\n\006entidx\030\001 \001(\005:\002-1\022\020\n\010origin_x\030"
   "\002 \001(\002\022\020\n\010origin_y\030\003 \001(\002\022\020\n\010origin_z\030\004 \001("
   "\002\022\r\n\005sound\030\005 \001(\t\022\026\n\016game_timestamp\030\006 \001(\002"
-  "\022\033\n\023source_soundscapeid\030\007 \001(\007\"v\n\037CCSUsrM"
-  "sg_UpdateScreenHealthBar\022\022\n\006entidx\030\001 \001(\005"
-  ":\002-1\022\027\n\017healthratio_old\030\002 \001(\002\022\027\n\017healthr"
-  "atio_new\030\003 \001(\002\022\r\n\005style\030\004 \001(\005\"O\n CCSUsrM"
-  "sg_EntityOutlineHighlight\022\022\n\006entidx\030\001 \001("
-  "\005:\002-1\022\027\n\017removehighlight\030\002 \001(\010\"\'\n\025CCSUsr"
-  "Msg_AdjustMoney\022\016\n\006amount\030\001 \001(\005\"U\n\023CCSUs"
-  "rMsg_ReportHit\022\r\n\005pos_x\030\001 \001(\002\022\r\n\005pos_y\030\002"
-  " \001(\002\022\021\n\ttimestamp\030\004 \001(\002\022\r\n\005pos_z\030\003 \001(\002\"Z"
-  "\n\021CCSUsrMsg_KillCam\022\020\n\010obs_mode\030\001 \001(\005\022\030\n"
-  "\014first_target\030\002 \001(\005:\002-1\022\031\n\rsecond_target"
-  "\030\003 \001(\005:\002-1\"\213\001\n\032CCSUsrMsg_DesiredTimescal"
-  "e\022\031\n\021desired_timescale\030\001 \001(\002\022\035\n\025duration"
-  "_realtime_sec\030\002 \001(\002\022\031\n\021interpolator_type"
-  "\030\003 \001(\005\022\030\n\020start_blend_time\030\004 \001(\002\"3\n\032CCSU"
-  "srMsg_CurrentTimescale\022\025\n\rcur_timescale\030"
-  "\001 \001(\002\"Q\n\032CCSUsrMsg_AchievementEvent\022\023\n\013a"
-  "chievement\030\001 \001(\005\022\r\n\005count\030\002 \001(\005\022\017\n\007user_"
-  "id\030\003 \001(\005\"r\n\034CCSUsrMsg_MatchEndConditions"
-  "\022\021\n\tfraglimit\030\001 \001(\005\022\024\n\014mp_maxrounds\030\002 \001("
-  "\005\022\023\n\013mp_winlimit\030\003 \001(\005\022\024\n\014mp_timelimit\030\004"
-  " \001(\002\"\242\001\n\033CCSUsrMsg_PlayerStatsUpdate\022\017\n\007"
-  "version\030\001 \001(\005\0220\n\005stats\030\004 \003(\0132!.CCSUsrMsg"
-  "_PlayerStatsUpdate.Stat\022\017\n\007ehandle\030\005 \001(\r"
-  "\022\013\n\003crc\030\006 \001(\005\032\"\n\004Stat\022\013\n\003idx\030\001 \001(\005\022\r\n\005de"
-  "lta\030\002 \001(\005\"p\n\027CCSUsrMsg_QuestProgress\022\020\n\010"
-  "quest_id\030\001 \001(\r\022\025\n\rnormal_points\030\002 \001(\r\022\024\n"
-  "\014bonus_points\030\003 \001(\r\022\026\n\016is_event_quest\030\004 "
-  "\001(\010\"E\n\036CCSUsrMsg_ScoreLeaderboardData\022#\n"
-  "\004data\030\001 \001(\0132\025.ScoreLeaderboardData\"S\n%CC"
-  "SUsrMsg_PlayerDecalDigitalSignature\022*\n\004d"
-  "ata\030\001 \001(\0132\034.PlayerDecalDigitalSignature\""
-  ":\n\022CCSUsrMsg_XRankGet\022\020\n\010mode_idx\030\001 \001(\005\022"
-  "\022\n\ncontroller\030\002 \001(\005\"K\n\022CCSUsrMsg_XRankUp"
-  "d\022\020\n\010mode_idx\030\001 \001(\005\022\022\n\ncontroller\030\002 \001(\005\022"
-  "\017\n\007ranking\030\003 \001(\005\"8\n\030CCSUsrMsg_CallVoteFa"
-  "iled\022\016\n\006reason\030\001 \001(\005\022\014\n\004time\030\002 \001(\005\"\306\001\n\023C"
-  "CSUsrMsg_VoteStart\022\014\n\004team\030\001 \001(\005\022\027\n\013play"
-  "er_slot\030\002 \001(\005:\002-1\022\021\n\tvote_type\030\003 \001(\005\022\020\n\010"
-  "disp_str\030\004 \001(\t\022\023\n\013details_str\030\005 \001(\t\022\026\n\016o"
-  "ther_team_str\030\006 \001(\t\022\026\n\016is_yes_no_vote\030\007 "
-  "\001(\010\022\036\n\022player_slot_target\030\010 \001(\005:\002-1\"\\\n\022C"
-  "CSUsrMsg_VotePass\022\014\n\004team\030\001 \001(\005\022\021\n\tvote_"
-  "type\030\002 \001(\005\022\020\n\010disp_str\030\003 \001(\t\022\023\n\013details_"
-  "str\030\004 \001(\t\"4\n\024CCSUsrMsg_VoteFailed\022\014\n\004tea"
-  "m\030\001 \001(\005\022\016\n\006reason\030\002 \001(\005\"/\n\023CCSUsrMsg_Vot"
-  "eSetup\022\030\n\020potential_issues\030\001 \003(\t\"\276\001\n&CCS"
-  "UsrMsg_SendLastKillerDamageToClient\022\026\n\016n"
-  "um_hits_given\030\001 \001(\005\022\024\n\014damage_given\030\002 \001("
-  "\005\022\026\n\016num_hits_taken\030\003 \001(\005\022\024\n\014damage_take"
-  "n\030\004 \001(\005\022\033\n\023actual_damage_given\030\005 \001(\005\022\033\n\023"
-  "actual_damage_taken\030\006 \001(\005\"\335\001\n\032CCSUsrMsg_"
-  "ServerRankUpdate\022;\n\013rank_update\030\001 \003(\0132&."
-  "CCSUsrMsg_ServerRankUpdate.RankUpdate\032\201\001"
-  "\n\nRankUpdate\022\022\n\naccount_id\030\001 \001(\005\022\020\n\010rank"
-  "_old\030\002 \001(\005\022\020\n\010rank_new\030\003 \001(\005\022\020\n\010num_wins"
-  "\030\004 \001(\005\022\023\n\013rank_change\030\005 \001(\002\022\024\n\014rank_type"
-  "_id\030\006 \001(\005\"Q\n\022CCSUsrMsg_XpUpdate\022;\n\004data\030"
-  "\001 \001(\0132-.CMsgGCCstrike15_v2_GC2ServerNoti"
-  "fyXPRewarded\"$\n\024CCSUsrMsg_ItemPickup\022\014\n\004"
-  "item\030\001 \001(\t\"Y\n\022CCSUsrMsg_ShowMenu\022\030\n\020bits"
-  "_valid_slots\030\001 \001(\005\022\024\n\014display_time\030\002 \001(\005"
-  "\022\023\n\013menu_string\030\003 \001(\t\"!\n\021CCSUsrMsg_BarTi"
-  "me\022\014\n\004time\030\001 \001(\t\"\'\n\024CCSUsrMsg_AmmoDenied"
-  "\022\017\n\007ammoidx\030\001 \001(\005\"0\n\031CCSUsrMsg_MarkAchie"
-  "vement\022\023\n\013achievement\030\001 \001(\t\",\n\032CCSUsrMsg"
-  "_MatchStatsUpdate\022\016\n\006update\030\001 \001(\t\"3\n\022CCS"
-  "UsrMsg_ItemDrop\022\016\n\006itemid\030\001 \001(\003\022\r\n\005death"
-  "\030\002 \001(\010\"b\n\036CCSUsrMsg_RoundBackupFilenames"
-  "\022\r\n\005count\030\001 \001(\005\022\r\n\005index\030\002 \001(\005\022\020\n\010filena"
-  "me\030\003 \001(\t\022\020\n\010nicename\030\004 \001(\t\"D\n\016CCSUsrMsg_"
-  "SSUI\022\014\n\004show\030\001 \001(\010\022\022\n\nstart_time\030\002 \001(\002\022\020"
-  "\n\010end_time\030\003 \001(\002\"\265\003\n\027CCSUsrMsg_SurvivalS"
-  "tats\022\014\n\004xuid\030\001 \001(\004\022,\n\005facts\030\002 \003(\0132\035.CCSU"
-  "srMsg_SurvivalStats.Fact\0221\n\005users\030\003 \003(\0132"
-  "\".CCSUsrMsg_SurvivalStats.Placement\0220\n\007d"
-  "amages\030\005 \003(\0132\037.CCSUsrMsg_SurvivalStats.D"
-  "amage\022\022\n\nticknumber\030\004 \001(\005\032M\n\004Fact\022\014\n\004typ"
-  "e\030\001 \001(\005\022\017\n\007display\030\002 \001(\005\022\r\n\005value\030\003 \001(\005\022"
-  "\027\n\017interestingness\030\004 \001(\002\032@\n\tPlacement\022\014\n"
-  "\004xuid\030\001 \001(\004\022\022\n\nteamnumber\030\002 \001(\005\022\021\n\tplace"
-  "ment\030\003 \001(\005\032T\n\006Damage\022\014\n\004xuid\030\001 \001(\004\022\n\n\002to"
-  "\030\002 \001(\005\022\017\n\007to_hits\030\003 \001(\005\022\014\n\004from\030\004 \001(\005\022\021\n"
-  "\tfrom_hits\030\005 \001(\005\"\243\003\n\"CCSUsrMsg_EndOfMatc"
-  "hAllPlayersData\022E\n\rallplayerdata\030\001 \003(\0132."
-  ".CCSUsrMsg_EndOfMatchAllPlayersData.Play"
-  "erData\022\r\n\005scene\030\002 \001(\005\032>\n\010Accolade\022\021\n\teac"
-  "colade\030\001 \001(\005\022\r\n\005value\030\002 \001(\002\022\020\n\010position\030"
-  "\003 \001(\005\032\337\001\n\nPlayerData\022\020\n\004slot\030\001 \001(\005:\002-1\022\014"
-  "\n\004xuid\030\002 \001(\004\022\014\n\004name\030\003 \001(\t\022\022\n\nteamnumber"
-  "\030\004 \001(\005\022@\n\nnomination\030\005 \001(\0132,.CCSUsrMsg_E"
-  "ndOfMatchAllPlayersData.Accolade\022)\n\005item"
-  "s\030\006 \003(\0132\032.CEconItemPreviewDataBlock\022\023\n\013p"
-  "layercolor\030\007 \001(\005\022\r\n\005isbot\030\010 \001(\010:\005\200\265\030\200 \"\350"
-  "\006\n\034CCSUsrMsg_RoundEndReportData\022H\n\017init_"
-  "conditions\030\001 \001(\0132/.CCSUsrMsg_RoundEndRep"
-  "ortData.InitialConditions\022B\n\022all_rer_eve"
-  "nt_data\030\002 \003(\0132&.CCSUsrMsg_RoundEndReport"
-  "Data.RerEvent\032\335\004\n\010RerEvent\022\021\n\ttimestamp\030"
-  "\001 \001(\002\022\026\n\016terrorist_odds\030\002 \001(\005\022\020\n\010ct_aliv"
-  "e\030\003 \001(\005\022\017\n\007t_alive\030\004 \001(\005\022B\n\013victim_data\030"
-  "\005 \001(\0132-.CCSUsrMsg_RoundEndReportData.Rer"
-  "Event.Victim\022H\n\016objective_data\030\006 \001(\01320.C"
-  "CSUsrMsg_RoundEndReportData.RerEvent.Obj"
-  "ective\022F\n\017all_damage_data\030\007 \003(\0132-.CCSUsr"
-  "Msg_RoundEndReportData.RerEvent.Damage\032s"
-  "\n\006Victim\022\023\n\013team_number\030\001 \001(\005\022\026\n\nplayers"
-  "lot\030\002 \001(\005:\002-1\022\014\n\004xuid\030\003 \001(\004\022\r\n\005color\030\004 \001"
-  "(\005\022\016\n\006is_bot\030\005 \001(\010\022\017\n\007is_dead\030\006 \001(\010\032\031\n\tO"
-  "bjective\022\014\n\004type\030\001 \001(\005\032\234\001\n\006Damage\022\034\n\020oth"
-  "er_playerslot\030\001 \001(\005:\002-1\022\022\n\nother_xuid\030\002 "
-  "\001(\004\022\026\n\016health_removed\030\003 \001(\005\022\020\n\010num_hits\030"
-  "\004 \001(\005\022\035\n\025return_health_removed\030\005 \001(\005\022\027\n\017"
-  "return_num_hits\030\006 \001(\005\032Z\n\021InitialConditio"
-  "ns\022\026\n\016ct_equip_value\030\001 \001(\005\022\025\n\rt_equip_va"
-  "lue\030\002 \001(\005\022\026\n\016terrorist_odds\030\003 \001(\005\"\323\001\n\037CC"
-  "SUsrMsg_PostRoundDamageReport\022\022\n\nother_x"
-  "uid\030\001 \001(\004\022\027\n\017given_kill_type\030\002 \001(\005\022\034\n\024gi"
-  "ven_health_removed\030\003 \001(\005\022\026\n\016given_num_hi"
-  "ts\030\004 \001(\005\022\027\n\017taken_kill_type\030\005 \001(\005\022\034\n\024tak"
-  "en_health_removed\030\006 \001(\005\022\026\n\016taken_num_hit"
-  "s\030\007 \001(\005\"*\n\032CCSUsrMsg_CurrentRoundOdds\022\014\n"
-  "\004odds\030\001 \001(\005\"F\n\023CCSUsrMsg_DeepStats\022/\n\005st"
-  "ats\030\001 \001(\0132 .CMsgGCCStrike15_ClientDeepSt"
-  "ats\"\226\001\n\023CCSUsrMsg_ShootInfo\022\024\n\014frame_num"
-  "ber\030\001 \001(\005\022)\n\021hitbox_transforms\030\002 \003(\0132\016.C"
-  "MsgTransform\022\036\n\tshoot_pos\030\003 \001(\0132\013.CMsgVe"
-  "ctor\022\036\n\tshoot_dir\030\004 \001(\0132\013.CMsgQAngle\"#\n\022"
-  "CCSUsrMsg_ResetHud\022\r\n\005reset\030\001 \001(\010\"$\n\023CCS"
-  "UsrMsg_GameTitle\022\r\n\005dummy\030\001 \001(\005\"\'\n\026CCSUs"
-  "rMsg_RequestState\022\r\n\005dummy\030\001 \001(\005\",\n\033CCSU"
-  "srMsg_StopSpectatorMode\022\r\n\005dummy\030\001 \001(\005\","
-  "\n\033CCSUsrMsg_DisconnectToLobby\022\r\n\005dummy\030\001"
-  " \001(\005\"%\n\024CCSUsrMsg_ClientInfo\022\r\n\005dummy\030\001 "
-  "\001(\005\"\204\001\n\035CCSUsrMsg_ServerRankRevealAll\022\035\n"
-  "\025seconds_till_shutdown\030\001 \001(\005\022D\n\013reservat"
-  "ion\030\002 \001(\0132/.CMsgGCCStrike15_v2_Matchmaki"
-  "ngGC2ServerReserve\"N\n\030CCSUsrMsgPreMatchS"
-  "ayText\022\022\n\naccount_id\030\001 \001(\r\022\014\n\004text\030\002 \001(\t"
-  "\022\020\n\010all_chat\030\003 \001(\010\"O\n\027CCSUsrMsg_CounterS"
-  "trafe\022\033\n\023press_to_release_ns\030\001 \001(\005\022\027\n\017to"
-  "tal_keys_down\030\002 \001(\005\"\361\001\n\032CCSUsrMsg_Damage"
-  "Prediction\022\023\n\013command_num\030\001 \001(\005\022\022\n\npelle"
-  "t_idx\030\002 \001(\005\022\023\n\013victim_slot\030\003 \001(\005\022\036\n\026vict"
-  "im_starting_health\030\004 \001(\005\022\025\n\rvictim_damag"
-  "e\030\005 \001(\005\022\036\n\tshoot_pos\030\006 \001(\0132\013.CMsgVector\022"
-  "\036\n\tshoot_dir\030\007 \001(\0132\013.CMsgQAngle\022\036\n\taim_p"
-  "unch\030\010 \001(\0132\013.CMsgQAngle\"J\n CCSUsrMsg_Rec"
-  "urringMissionSchema\022\016\n\006period\030\001 \001(\r\022\026\n\016m"
-  "ission_schema\030\002 \001(\014\"\322\001\n\033CCSUsrMsg_SendPl"
-  "ayerLoadout\0229\n\007loadout\030\001 \003(\0132(.CCSUsrMsg"
-  "_SendPlayerLoadout.LoadoutItem\022\026\n\nplayer"
-  "slot\030\002 \001(\005:\002-1\032X\n\013LoadoutItem\022-\n\tecon_it"
-  "em\030\001 \001(\0132\032.CEconItemPreviewDataBlock\022\014\n\004"
-  "team\030\002 \001(\005\022\014\n\004slot\030\003 \001(\005:\006\200\265\030\200\200\001*\323\017\n\026ECs"
-  "trike15UserMessages\022\023\n\016CS_UM_VGUIMenu\020\255\002"
-  "\022\021\n\014CS_UM_Geiger\020\256\002\022\020\n\013CS_UM_Train\020\257\002\022\022\n"
-  "\rCS_UM_HudText\020\260\002\022\022\n\rCS_UM_SayText\020\261\002\022\023\n"
-  "\016CS_UM_SayText2\020\262\002\022\022\n\rCS_UM_TextMsg\020\263\002\022\021"
-  "\n\014CS_UM_HudMsg\020\264\002\022\023\n\016CS_UM_ResetHud\020\265\002\022\024"
-  "\n\017CS_UM_GameTitle\020\266\002\022\020\n\013CS_UM_Shake\020\270\002\022\017"
-  "\n\nCS_UM_Fade\020\271\002\022\021\n\014CS_UM_Rumble\020\272\002\022\027\n\022CS"
-  "_UM_CloseCaption\020\273\002\022\035\n\030CS_UM_CloseCaptio"
-  "nDirect\020\274\002\022\024\n\017CS_UM_SendAudio\020\275\002\022\023\n\016CS_U"
-  "M_RawAudio\020\276\002\022\024\n\017CS_UM_VoiceMask\020\277\002\022\027\n\022C"
-  "S_UM_RequestState\020\300\002\022\021\n\014CS_UM_Damage\020\301\002\022"
-  "\024\n\017CS_UM_RadioText\020\302\002\022\023\n\016CS_UM_HintText\020"
-  "\303\002\022\026\n\021CS_UM_KeyHintText\020\304\002\022%\n CS_UM_Proc"
-  "essSpottedEntityUpdate\020\305\002\022\027\n\022CS_UM_Reloa"
-  "dEffect\020\306\002\022\026\n\021CS_UM_AdjustMoney\020\307\002\022\032\n\025CS"
-  "_UM_UpdateTeamMoney\020\310\002\022\034\n\027CS_UM_StopSpec"
-  "tatorMode\020\311\002\022\022\n\rCS_UM_KillCam\020\312\002\022\033\n\026CS_U"
-  "M_DesiredTimescale\020\313\002\022\033\n\026CS_UM_CurrentTi"
-  "mescale\020\314\002\022\033\n\026CS_UM_AchievementEvent\020\315\002\022"
-  "\035\n\030CS_UM_MatchEndConditions\020\316\002\022\034\n\027CS_UM_"
-  "DisconnectToLobby\020\317\002\022\034\n\027CS_UM_PlayerStat"
-  "sUpdate\020\320\002\022\025\n\020CS_UM_ClientInfo\020\323\002\022\023\n\016CS_"
-  "UM_XRankGet\020\324\002\022\023\n\016CS_UM_XRankUpd\020\325\002\022\031\n\024C"
-  "S_UM_CallVoteFailed\020\331\002\022\024\n\017CS_UM_VoteStar"
-  "t\020\332\002\022\023\n\016CS_UM_VotePass\020\333\002\022\025\n\020CS_UM_VoteF"
-  "ailed\020\334\002\022\024\n\017CS_UM_VoteSetup\020\335\002\022\036\n\031CS_UM_"
-  "ServerRankRevealAll\020\336\002\022\'\n\"CS_UM_SendLast"
-  "KillerDamageToClient\020\337\002\022\033\n\026CS_UM_ServerR"
-  "ankUpdate\020\340\002\022\025\n\020CS_UM_ItemPickup\020\341\002\022\023\n\016C"
-  "S_UM_ShowMenu\020\342\002\022\022\n\rCS_UM_BarTime\020\343\002\022\025\n\020"
-  "CS_UM_AmmoDenied\020\344\002\022\032\n\025CS_UM_MarkAchieve"
-  "ment\020\345\002\022\033\n\026CS_UM_MatchStatsUpdate\020\346\002\022\023\n\016"
-  "CS_UM_ItemDrop\020\347\002\022\036\n\031CS_UM_SendPlayerIte"
-  "mDrops\020\351\002\022\037\n\032CS_UM_RoundBackupFilenames\020"
-  "\352\002\022\036\n\031CS_UM_SendPlayerItemFound\020\353\002\022\024\n\017CS"
-  "_UM_ReportHit\020\354\002\022\023\n\016CS_UM_XpUpdate\020\355\002\022\030\n"
-  "\023CS_UM_QuestProgress\020\356\002\022\037\n\032CS_UM_ScoreLe"
-  "aderboardData\020\357\002\022&\n!CS_UM_PlayerDecalDig"
-  "italSignature\020\360\002\022\026\n\021CS_UM_WeaponSound\020\361\002"
-  "\022 \n\033CS_UM_UpdateScreenHealthBar\020\362\002\022!\n\034CS"
-  "_UM_EntityOutlineHighlight\020\363\002\022\017\n\nCS_UM_S"
-  "SUI\020\364\002\022\030\n\023CS_UM_SurvivalStats\020\365\002\022\035\n\030CS_U"
-  "M_DisconnectToLobby2\020\366\002\022#\n\036CS_UM_EndOfMa"
-  "tchAllPlayersData\020\367\002\022 \n\033CS_UM_PostRoundD"
-  "amageReport\020\370\002\022\035\n\030CS_UM_RoundEndReportDa"
-  "ta\020\373\002\022\033\n\026CS_UM_CurrentRoundOdds\020\374\002\022\024\n\017CS"
-  "_UM_DeepStats\020\375\002\022\024\n\017CS_UM_ShootInfo\020\377\002\022\030"
-  "\n\023CS_UM_CounterStrafe\020\201\003\022\033\n\026CS_UM_Damage"
-  "Prediction\020\202\003\022!\n\034CS_UM_RecurringMissionS"
-  "chema\020\203\003\022\034\n\027CS_UM_SendPlayerLoadout\020\204\003*\210"
-  "\001\n\"ECSUsrMsg_DisconnectToLobby_Action\0220\n"
-  ",k_ECSUsrMsg_DisconnectToLobby_Action_De"
-  "fault\020\000\0220\n,k_ECSUsrMsg_DisconnectToLobby"
-  "_Action_GoQueue\020\001"
+  "\022\033\n\023source_soundscapeid\030\007 \001(\007\"[\n\027CCSUsrM"
+  "sg_WeaponMagDrop\022\022\n\006entidx\030\001 \001(\005:\002-1\022\026\n\016"
+  "secondary_data\030\002 \001(\005\022\024\n\014server_event\030\003 \001"
+  "(\010\"v\n\037CCSUsrMsg_UpdateScreenHealthBar\022\022\n"
+  "\006entidx\030\001 \001(\005:\002-1\022\027\n\017healthratio_old\030\002 \001"
+  "(\002\022\027\n\017healthratio_new\030\003 \001(\002\022\r\n\005style\030\004 \001"
+  "(\005\"O\n CCSUsrMsg_EntityOutlineHighlight\022\022"
+  "\n\006entidx\030\001 \001(\005:\002-1\022\027\n\017removehighlight\030\002 "
+  "\001(\010\"\'\n\025CCSUsrMsg_AdjustMoney\022\016\n\006amount\030\001"
+  " \001(\005\"U\n\023CCSUsrMsg_ReportHit\022\r\n\005pos_x\030\001 \001"
+  "(\002\022\r\n\005pos_y\030\002 \001(\002\022\021\n\ttimestamp\030\004 \001(\002\022\r\n\005"
+  "pos_z\030\003 \001(\002\"Z\n\021CCSUsrMsg_KillCam\022\020\n\010obs_"
+  "mode\030\001 \001(\005\022\030\n\014first_target\030\002 \001(\005:\002-1\022\031\n\r"
+  "second_target\030\003 \001(\005:\002-1\"\213\001\n\032CCSUsrMsg_De"
+  "siredTimescale\022\031\n\021desired_timescale\030\001 \001("
+  "\002\022\035\n\025duration_realtime_sec\030\002 \001(\002\022\031\n\021inte"
+  "rpolator_type\030\003 \001(\005\022\030\n\020start_blend_time\030"
+  "\004 \001(\002\"3\n\032CCSUsrMsg_CurrentTimescale\022\025\n\rc"
+  "ur_timescale\030\001 \001(\002\"Q\n\032CCSUsrMsg_Achievem"
+  "entEvent\022\023\n\013achievement\030\001 \001(\005\022\r\n\005count\030\002"
+  " \001(\005\022\017\n\007user_id\030\003 \001(\005\"r\n\034CCSUsrMsg_Match"
+  "EndConditions\022\021\n\tfraglimit\030\001 \001(\005\022\024\n\014mp_m"
+  "axrounds\030\002 \001(\005\022\023\n\013mp_winlimit\030\003 \001(\005\022\024\n\014m"
+  "p_timelimit\030\004 \001(\002\"\242\001\n\033CCSUsrMsg_PlayerSt"
+  "atsUpdate\022\017\n\007version\030\001 \001(\005\0220\n\005stats\030\004 \003("
+  "\0132!.CCSUsrMsg_PlayerStatsUpdate.Stat\022\017\n\007"
+  "ehandle\030\005 \001(\r\022\013\n\003crc\030\006 \001(\005\032\"\n\004Stat\022\013\n\003id"
+  "x\030\001 \001(\005\022\r\n\005delta\030\002 \001(\005\"p\n\027CCSUsrMsg_Ques"
+  "tProgress\022\020\n\010quest_id\030\001 \001(\r\022\025\n\rnormal_po"
+  "ints\030\002 \001(\r\022\024\n\014bonus_points\030\003 \001(\r\022\026\n\016is_e"
+  "vent_quest\030\004 \001(\010\"E\n\036CCSUsrMsg_ScoreLeade"
+  "rboardData\022#\n\004data\030\001 \001(\0132\025.ScoreLeaderbo"
+  "ardData\"S\n%CCSUsrMsg_PlayerDecalDigitalS"
+  "ignature\022*\n\004data\030\001 \001(\0132\034.PlayerDecalDigi"
+  "talSignature\":\n\022CCSUsrMsg_XRankGet\022\020\n\010mo"
+  "de_idx\030\001 \001(\005\022\022\n\ncontroller\030\002 \001(\005\"K\n\022CCSU"
+  "srMsg_XRankUpd\022\020\n\010mode_idx\030\001 \001(\005\022\022\n\ncont"
+  "roller\030\002 \001(\005\022\017\n\007ranking\030\003 \001(\005\"8\n\030CCSUsrM"
+  "sg_CallVoteFailed\022\016\n\006reason\030\001 \001(\005\022\014\n\004tim"
+  "e\030\002 \001(\005\"\306\001\n\023CCSUsrMsg_VoteStart\022\014\n\004team\030"
+  "\001 \001(\005\022\027\n\013player_slot\030\002 \001(\005:\002-1\022\021\n\tvote_t"
+  "ype\030\003 \001(\005\022\020\n\010disp_str\030\004 \001(\t\022\023\n\013details_s"
+  "tr\030\005 \001(\t\022\026\n\016other_team_str\030\006 \001(\t\022\026\n\016is_y"
+  "es_no_vote\030\007 \001(\010\022\036\n\022player_slot_target\030\010"
+  " \001(\005:\002-1\"\\\n\022CCSUsrMsg_VotePass\022\014\n\004team\030\001"
+  " \001(\005\022\021\n\tvote_type\030\002 \001(\005\022\020\n\010disp_str\030\003 \001("
+  "\t\022\023\n\013details_str\030\004 \001(\t\"4\n\024CCSUsrMsg_Vote"
+  "Failed\022\014\n\004team\030\001 \001(\005\022\016\n\006reason\030\002 \001(\005\"/\n\023"
+  "CCSUsrMsg_VoteSetup\022\030\n\020potential_issues\030"
+  "\001 \003(\t\"\276\001\n&CCSUsrMsg_SendLastKillerDamage"
+  "ToClient\022\026\n\016num_hits_given\030\001 \001(\005\022\024\n\014dama"
+  "ge_given\030\002 \001(\005\022\026\n\016num_hits_taken\030\003 \001(\005\022\024"
+  "\n\014damage_taken\030\004 \001(\005\022\033\n\023actual_damage_gi"
+  "ven\030\005 \001(\005\022\033\n\023actual_damage_taken\030\006 \001(\005\"\335"
+  "\001\n\032CCSUsrMsg_ServerRankUpdate\022;\n\013rank_up"
+  "date\030\001 \003(\0132&.CCSUsrMsg_ServerRankUpdate."
+  "RankUpdate\032\201\001\n\nRankUpdate\022\022\n\naccount_id\030"
+  "\001 \001(\005\022\020\n\010rank_old\030\002 \001(\005\022\020\n\010rank_new\030\003 \001("
+  "\005\022\020\n\010num_wins\030\004 \001(\005\022\023\n\013rank_change\030\005 \001(\002"
+  "\022\024\n\014rank_type_id\030\006 \001(\005\"Q\n\022CCSUsrMsg_XpUp"
+  "date\022;\n\004data\030\001 \001(\0132-.CMsgGCCstrike15_v2_"
+  "GC2ServerNotifyXPRewarded\"$\n\024CCSUsrMsg_I"
+  "temPickup\022\014\n\004item\030\001 \001(\t\"Y\n\022CCSUsrMsg_Sho"
+  "wMenu\022\030\n\020bits_valid_slots\030\001 \001(\005\022\024\n\014displ"
+  "ay_time\030\002 \001(\005\022\023\n\013menu_string\030\003 \001(\t\"!\n\021CC"
+  "SUsrMsg_BarTime\022\014\n\004time\030\001 \001(\t\"\'\n\024CCSUsrM"
+  "sg_AmmoDenied\022\017\n\007ammoidx\030\001 \001(\005\"0\n\031CCSUsr"
+  "Msg_MarkAchievement\022\023\n\013achievement\030\001 \001(\t"
+  "\",\n\032CCSUsrMsg_MatchStatsUpdate\022\016\n\006update"
+  "\030\001 \001(\t\"3\n\022CCSUsrMsg_ItemDrop\022\016\n\006itemid\030\001"
+  " \001(\003\022\r\n\005death\030\002 \001(\010\"b\n\036CCSUsrMsg_RoundBa"
+  "ckupFilenames\022\r\n\005count\030\001 \001(\005\022\r\n\005index\030\002 "
+  "\001(\005\022\020\n\010filename\030\003 \001(\t\022\020\n\010nicename\030\004 \001(\t\""
+  "D\n\016CCSUsrMsg_SSUI\022\014\n\004show\030\001 \001(\010\022\022\n\nstart"
+  "_time\030\002 \001(\002\022\020\n\010end_time\030\003 \001(\002\"\265\003\n\027CCSUsr"
+  "Msg_SurvivalStats\022\014\n\004xuid\030\001 \001(\004\022,\n\005facts"
+  "\030\002 \003(\0132\035.CCSUsrMsg_SurvivalStats.Fact\0221\n"
+  "\005users\030\003 \003(\0132\".CCSUsrMsg_SurvivalStats.P"
+  "lacement\0220\n\007damages\030\005 \003(\0132\037.CCSUsrMsg_Su"
+  "rvivalStats.Damage\022\022\n\nticknumber\030\004 \001(\005\032M"
+  "\n\004Fact\022\014\n\004type\030\001 \001(\005\022\017\n\007display\030\002 \001(\005\022\r\n"
+  "\005value\030\003 \001(\005\022\027\n\017interestingness\030\004 \001(\002\032@\n"
+  "\tPlacement\022\014\n\004xuid\030\001 \001(\004\022\022\n\nteamnumber\030\002"
+  " \001(\005\022\021\n\tplacement\030\003 \001(\005\032T\n\006Damage\022\014\n\004xui"
+  "d\030\001 \001(\004\022\n\n\002to\030\002 \001(\005\022\017\n\007to_hits\030\003 \001(\005\022\014\n\004"
+  "from\030\004 \001(\005\022\021\n\tfrom_hits\030\005 \001(\005\"\243\003\n\"CCSUsr"
+  "Msg_EndOfMatchAllPlayersData\022E\n\rallplaye"
+  "rdata\030\001 \003(\0132..CCSUsrMsg_EndOfMatchAllPla"
+  "yersData.PlayerData\022\r\n\005scene\030\002 \001(\005\032>\n\010Ac"
+  "colade\022\021\n\teaccolade\030\001 \001(\005\022\r\n\005value\030\002 \001(\002"
+  "\022\020\n\010position\030\003 \001(\005\032\337\001\n\nPlayerData\022\020\n\004slo"
+  "t\030\001 \001(\005:\002-1\022\014\n\004xuid\030\002 \001(\004\022\014\n\004name\030\003 \001(\t\022"
+  "\022\n\nteamnumber\030\004 \001(\005\022@\n\nnomination\030\005 \001(\0132"
+  ",.CCSUsrMsg_EndOfMatchAllPlayersData.Acc"
+  "olade\022)\n\005items\030\006 \003(\0132\032.CEconItemPreviewD"
+  "ataBlock\022\023\n\013playercolor\030\007 \001(\005\022\r\n\005isbot\030\010"
+  " \001(\010:\005\200\265\030\200 \"\350\006\n\034CCSUsrMsg_RoundEndReport"
+  "Data\022H\n\017init_conditions\030\001 \001(\0132/.CCSUsrMs"
+  "g_RoundEndReportData.InitialConditions\022B"
+  "\n\022all_rer_event_data\030\002 \003(\0132&.CCSUsrMsg_R"
+  "oundEndReportData.RerEvent\032\335\004\n\010RerEvent\022"
+  "\021\n\ttimestamp\030\001 \001(\002\022\026\n\016terrorist_odds\030\002 \001"
+  "(\005\022\020\n\010ct_alive\030\003 \001(\005\022\017\n\007t_alive\030\004 \001(\005\022B\n"
+  "\013victim_data\030\005 \001(\0132-.CCSUsrMsg_RoundEndR"
+  "eportData.RerEvent.Victim\022H\n\016objective_d"
+  "ata\030\006 \001(\01320.CCSUsrMsg_RoundEndReportData"
+  ".RerEvent.Objective\022F\n\017all_damage_data\030\007"
+  " \003(\0132-.CCSUsrMsg_RoundEndReportData.RerE"
+  "vent.Damage\032s\n\006Victim\022\023\n\013team_number\030\001 \001"
+  "(\005\022\026\n\nplayerslot\030\002 \001(\005:\002-1\022\014\n\004xuid\030\003 \001(\004"
+  "\022\r\n\005color\030\004 \001(\005\022\016\n\006is_bot\030\005 \001(\010\022\017\n\007is_de"
+  "ad\030\006 \001(\010\032\031\n\tObjective\022\014\n\004type\030\001 \001(\005\032\234\001\n\006"
+  "Damage\022\034\n\020other_playerslot\030\001 \001(\005:\002-1\022\022\n\n"
+  "other_xuid\030\002 \001(\004\022\026\n\016health_removed\030\003 \001(\005"
+  "\022\020\n\010num_hits\030\004 \001(\005\022\035\n\025return_health_remo"
+  "ved\030\005 \001(\005\022\027\n\017return_num_hits\030\006 \001(\005\032Z\n\021In"
+  "itialConditions\022\026\n\016ct_equip_value\030\001 \001(\005\022"
+  "\025\n\rt_equip_value\030\002 \001(\005\022\026\n\016terrorist_odds"
+  "\030\003 \001(\005\"\323\001\n\037CCSUsrMsg_PostRoundDamageRepo"
+  "rt\022\022\n\nother_xuid\030\001 \001(\004\022\027\n\017given_kill_typ"
+  "e\030\002 \001(\005\022\034\n\024given_health_removed\030\003 \001(\005\022\026\n"
+  "\016given_num_hits\030\004 \001(\005\022\027\n\017taken_kill_type"
+  "\030\005 \001(\005\022\034\n\024taken_health_removed\030\006 \001(\005\022\026\n\016"
+  "taken_num_hits\030\007 \001(\005\"*\n\032CCSUsrMsg_Curren"
+  "tRoundOdds\022\014\n\004odds\030\001 \001(\005\"F\n\023CCSUsrMsg_De"
+  "epStats\022/\n\005stats\030\001 \001(\0132 .CMsgGCCStrike15"
+  "_ClientDeepStats\"\226\001\n\023CCSUsrMsg_ShootInfo"
+  "\022\024\n\014frame_number\030\001 \001(\005\022)\n\021hitbox_transfo"
+  "rms\030\002 \003(\0132\016.CMsgTransform\022\036\n\tshoot_pos\030\003"
+  " \001(\0132\013.CMsgVector\022\036\n\tshoot_dir\030\004 \001(\0132\013.C"
+  "MsgQAngle\"#\n\022CCSUsrMsg_ResetHud\022\r\n\005reset"
+  "\030\001 \001(\010\"$\n\023CCSUsrMsg_GameTitle\022\r\n\005dummy\030\001"
+  " \001(\005\"\'\n\026CCSUsrMsg_RequestState\022\r\n\005dummy\030"
+  "\001 \001(\005\",\n\033CCSUsrMsg_StopSpectatorMode\022\r\n\005"
+  "dummy\030\001 \001(\005\",\n\033CCSUsrMsg_DisconnectToLob"
+  "by\022\r\n\005dummy\030\001 \001(\005\"%\n\024CCSUsrMsg_ClientInf"
+  "o\022\r\n\005dummy\030\001 \001(\005\"\204\001\n\035CCSUsrMsg_ServerRan"
+  "kRevealAll\022\035\n\025seconds_till_shutdown\030\001 \001("
+  "\005\022D\n\013reservation\030\002 \001(\0132/.CMsgGCCStrike15"
+  "_v2_MatchmakingGC2ServerReserve\"N\n\030CCSUs"
+  "rMsgPreMatchSayText\022\022\n\naccount_id\030\001 \001(\r\022"
+  "\014\n\004text\030\002 \001(\t\022\020\n\010all_chat\030\003 \001(\010\"O\n\027CCSUs"
+  "rMsg_CounterStrafe\022\033\n\023press_to_release_n"
+  "s\030\001 \001(\005\022\027\n\017total_keys_down\030\002 \001(\005\"\361\001\n\032CCS"
+  "UsrMsg_DamagePrediction\022\023\n\013command_num\030\001"
+  " \001(\005\022\022\n\npellet_idx\030\002 \001(\005\022\023\n\013victim_slot\030"
+  "\003 \001(\005\022\036\n\026victim_starting_health\030\004 \001(\005\022\025\n"
+  "\rvictim_damage\030\005 \001(\005\022\036\n\tshoot_pos\030\006 \001(\0132"
+  "\013.CMsgVector\022\036\n\tshoot_dir\030\007 \001(\0132\013.CMsgQA"
+  "ngle\022\036\n\taim_punch\030\010 \001(\0132\013.CMsgQAngle\"J\n "
+  "CCSUsrMsg_RecurringMissionSchema\022\016\n\006peri"
+  "od\030\001 \001(\r\022\026\n\016mission_schema\030\002 \001(\014\"\322\001\n\033CCS"
+  "UsrMsg_SendPlayerLoadout\0229\n\007loadout\030\001 \003("
+  "\0132(.CCSUsrMsg_SendPlayerLoadout.LoadoutI"
+  "tem\022\026\n\nplayerslot\030\002 \001(\005:\002-1\032X\n\013LoadoutIt"
+  "em\022-\n\tecon_item\030\001 \001(\0132\032.CEconItemPreview"
+  "DataBlock\022\014\n\004team\030\002 \001(\005\022\014\n\004slot\030\003 \001(\005:\006\200"
+  "\265\030\200\200\001*\355\017\n\026ECstrike15UserMessages\022\023\n\016CS_U"
+  "M_VGUIMenu\020\255\002\022\021\n\014CS_UM_Geiger\020\256\002\022\020\n\013CS_U"
+  "M_Train\020\257\002\022\022\n\rCS_UM_HudText\020\260\002\022\022\n\rCS_UM_"
+  "SayText\020\261\002\022\023\n\016CS_UM_SayText2\020\262\002\022\022\n\rCS_UM"
+  "_TextMsg\020\263\002\022\021\n\014CS_UM_HudMsg\020\264\002\022\023\n\016CS_UM_"
+  "ResetHud\020\265\002\022\024\n\017CS_UM_GameTitle\020\266\002\022\020\n\013CS_"
+  "UM_Shake\020\270\002\022\017\n\nCS_UM_Fade\020\271\002\022\021\n\014CS_UM_Ru"
+  "mble\020\272\002\022\027\n\022CS_UM_CloseCaption\020\273\002\022\035\n\030CS_U"
+  "M_CloseCaptionDirect\020\274\002\022\024\n\017CS_UM_SendAud"
+  "io\020\275\002\022\023\n\016CS_UM_RawAudio\020\276\002\022\024\n\017CS_UM_Voic"
+  "eMask\020\277\002\022\027\n\022CS_UM_RequestState\020\300\002\022\021\n\014CS_"
+  "UM_Damage\020\301\002\022\024\n\017CS_UM_RadioText\020\302\002\022\023\n\016CS"
+  "_UM_HintText\020\303\002\022\026\n\021CS_UM_KeyHintText\020\304\002\022"
+  "%\n CS_UM_ProcessSpottedEntityUpdate\020\305\002\022\027"
+  "\n\022CS_UM_ReloadEffect\020\306\002\022\026\n\021CS_UM_AdjustM"
+  "oney\020\307\002\022\032\n\025CS_UM_UpdateTeamMoney\020\310\002\022\034\n\027C"
+  "S_UM_StopSpectatorMode\020\311\002\022\022\n\rCS_UM_KillC"
+  "am\020\312\002\022\033\n\026CS_UM_DesiredTimescale\020\313\002\022\033\n\026CS"
+  "_UM_CurrentTimescale\020\314\002\022\033\n\026CS_UM_Achieve"
+  "mentEvent\020\315\002\022\035\n\030CS_UM_MatchEndConditions"
+  "\020\316\002\022\034\n\027CS_UM_DisconnectToLobby\020\317\002\022\034\n\027CS_"
+  "UM_PlayerStatsUpdate\020\320\002\022\025\n\020CS_UM_ClientI"
+  "nfo\020\323\002\022\023\n\016CS_UM_XRankGet\020\324\002\022\023\n\016CS_UM_XRa"
+  "nkUpd\020\325\002\022\031\n\024CS_UM_CallVoteFailed\020\331\002\022\024\n\017C"
+  "S_UM_VoteStart\020\332\002\022\023\n\016CS_UM_VotePass\020\333\002\022\025"
+  "\n\020CS_UM_VoteFailed\020\334\002\022\024\n\017CS_UM_VoteSetup"
+  "\020\335\002\022\036\n\031CS_UM_ServerRankRevealAll\020\336\002\022\'\n\"C"
+  "S_UM_SendLastKillerDamageToClient\020\337\002\022\033\n\026"
+  "CS_UM_ServerRankUpdate\020\340\002\022\025\n\020CS_UM_ItemP"
+  "ickup\020\341\002\022\023\n\016CS_UM_ShowMenu\020\342\002\022\022\n\rCS_UM_B"
+  "arTime\020\343\002\022\025\n\020CS_UM_AmmoDenied\020\344\002\022\032\n\025CS_U"
+  "M_MarkAchievement\020\345\002\022\033\n\026CS_UM_MatchStats"
+  "Update\020\346\002\022\023\n\016CS_UM_ItemDrop\020\347\002\022\036\n\031CS_UM_"
+  "SendPlayerItemDrops\020\351\002\022\037\n\032CS_UM_RoundBac"
+  "kupFilenames\020\352\002\022\036\n\031CS_UM_SendPlayerItemF"
+  "ound\020\353\002\022\024\n\017CS_UM_ReportHit\020\354\002\022\023\n\016CS_UM_X"
+  "pUpdate\020\355\002\022\030\n\023CS_UM_QuestProgress\020\356\002\022\037\n\032"
+  "CS_UM_ScoreLeaderboardData\020\357\002\022&\n!CS_UM_P"
+  "layerDecalDigitalSignature\020\360\002\022\026\n\021CS_UM_W"
+  "eaponSound\020\361\002\022 \n\033CS_UM_UpdateScreenHealt"
+  "hBar\020\362\002\022!\n\034CS_UM_EntityOutlineHighlight\020"
+  "\363\002\022\017\n\nCS_UM_SSUI\020\364\002\022\030\n\023CS_UM_SurvivalSta"
+  "ts\020\365\002\022\035\n\030CS_UM_DisconnectToLobby2\020\366\002\022#\n\036"
+  "CS_UM_EndOfMatchAllPlayersData\020\367\002\022 \n\033CS_"
+  "UM_PostRoundDamageReport\020\370\002\022\035\n\030CS_UM_Rou"
+  "ndEndReportData\020\373\002\022\033\n\026CS_UM_CurrentRound"
+  "Odds\020\374\002\022\024\n\017CS_UM_DeepStats\020\375\002\022\024\n\017CS_UM_S"
+  "hootInfo\020\377\002\022\030\n\023CS_UM_CounterStrafe\020\201\003\022\033\n"
+  "\026CS_UM_DamagePrediction\020\202\003\022!\n\034CS_UM_Recu"
+  "rringMissionSchema\020\203\003\022\034\n\027CS_UM_SendPlaye"
+  "rLoadout\020\204\003\022\030\n\023CS_UM_WeaponMagDrop\020\205\003*\210\001"
+  "\n\"ECSUsrMsg_DisconnectToLobby_Action\0220\n,"
+  "k_ECSUsrMsg_DisconnectToLobby_Action_Def"
+  "ault\020\000\0220\n,k_ECSUsrMsg_DisconnectToLobby_"
+  "Action_GoQueue\020\001"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermessages_2eproto_deps[2] = {
   &::descriptor_table_cstrike15_5fgcmessages_2eproto,
@@ -2970,9 +3003,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fusermes
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fusermessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fusermessages_2eproto = {
-    false, false, 10697, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
+    false, false, 10816, descriptor_table_protodef_cstrike15_5fusermessages_2eproto,
     "cstrike15_usermessages.proto",
-    &descriptor_table_cstrike15_5fusermessages_2eproto_once, descriptor_table_cstrike15_5fusermessages_2eproto_deps, 2, 89,
+    &descriptor_table_cstrike15_5fusermessages_2eproto_once, descriptor_table_cstrike15_5fusermessages_2eproto_deps, 2, 90,
     schemas, file_default_instances, TableStruct_cstrike15_5fusermessages_2eproto::offsets,
     file_level_metadata_cstrike15_5fusermessages_2eproto, file_level_enum_descriptors_cstrike15_5fusermessages_2eproto,
     file_level_service_descriptors_cstrike15_5fusermessages_2eproto,
@@ -3066,6 +3099,7 @@ bool ECstrike15UserMessages_IsValid(int value) {
     case 386:
     case 387:
     case 388:
+    case 389:
       return true;
     default:
       return false;
@@ -10157,6 +10191,273 @@ void CCSUsrMsg_WeaponSound::InternalSwap(CCSUsrMsg_WeaponSound* other) {
 
 // ===================================================================
 
+class CCSUsrMsg_WeaponMagDrop::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CCSUsrMsg_WeaponMagDrop>()._impl_._has_bits_);
+  static void set_has_entidx(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_secondary_data(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_server_event(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CCSUsrMsg_WeaponMagDrop::CCSUsrMsg_WeaponMagDrop(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CCSUsrMsg_WeaponMagDrop)
+}
+CCSUsrMsg_WeaponMagDrop::CCSUsrMsg_WeaponMagDrop(const CCSUsrMsg_WeaponMagDrop& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CCSUsrMsg_WeaponMagDrop* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.secondary_data_){}
+    , decltype(_impl_.server_event_){}
+    , decltype(_impl_.entidx_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.secondary_data_, &from._impl_.secondary_data_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.entidx_) -
+    reinterpret_cast<char*>(&_impl_.secondary_data_)) + sizeof(_impl_.entidx_));
+  // @@protoc_insertion_point(copy_constructor:CCSUsrMsg_WeaponMagDrop)
+}
+
+inline void CCSUsrMsg_WeaponMagDrop::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.secondary_data_){0}
+    , decltype(_impl_.server_event_){false}
+    , decltype(_impl_.entidx_){-1}
+  };
+}
+
+CCSUsrMsg_WeaponMagDrop::~CCSUsrMsg_WeaponMagDrop() {
+  // @@protoc_insertion_point(destructor:CCSUsrMsg_WeaponMagDrop)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CCSUsrMsg_WeaponMagDrop::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void CCSUsrMsg_WeaponMagDrop::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CCSUsrMsg_WeaponMagDrop::Clear() {
+// @@protoc_insertion_point(message_clear_start:CCSUsrMsg_WeaponMagDrop)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    ::memset(&_impl_.secondary_data_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.server_event_) -
+        reinterpret_cast<char*>(&_impl_.secondary_data_)) + sizeof(_impl_.server_event_));
+    _impl_.entidx_ = -1;
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CCSUsrMsg_WeaponMagDrop::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional int32 entidx = 1 [default = -1];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_entidx(&has_bits);
+          _impl_.entidx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 secondary_data = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_secondary_data(&has_bits);
+          _impl_.secondary_data_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool server_event = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _Internal::set_has_server_event(&has_bits);
+          _impl_.server_event_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CCSUsrMsg_WeaponMagDrop::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CCSUsrMsg_WeaponMagDrop)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional int32 entidx = 1 [default = -1];
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_entidx(), target);
+  }
+
+  // optional int32 secondary_data = 2;
+  if (cached_has_bits & 0x00000001u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_secondary_data(), target);
+  }
+
+  // optional bool server_event = 3;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_server_event(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CCSUsrMsg_WeaponMagDrop)
+  return target;
+}
+
+size_t CCSUsrMsg_WeaponMagDrop::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CCSUsrMsg_WeaponMagDrop)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    // optional int32 secondary_data = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_secondary_data());
+    }
+
+    // optional bool server_event = 3;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 + 1;
+    }
+
+    // optional int32 entidx = 1 [default = -1];
+    if (cached_has_bits & 0x00000004u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_entidx());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CCSUsrMsg_WeaponMagDrop::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CCSUsrMsg_WeaponMagDrop::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CCSUsrMsg_WeaponMagDrop::GetClassData() const { return &_class_data_; }
+
+
+void CCSUsrMsg_WeaponMagDrop::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CCSUsrMsg_WeaponMagDrop*>(&to_msg);
+  auto& from = static_cast<const CCSUsrMsg_WeaponMagDrop&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CCSUsrMsg_WeaponMagDrop)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_impl_.secondary_data_ = from._impl_.secondary_data_;
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.server_event_ = from._impl_.server_event_;
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.entidx_ = from._impl_.entidx_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CCSUsrMsg_WeaponMagDrop::CopyFrom(const CCSUsrMsg_WeaponMagDrop& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CCSUsrMsg_WeaponMagDrop)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CCSUsrMsg_WeaponMagDrop::IsInitialized() const {
+  return true;
+}
+
+void CCSUsrMsg_WeaponMagDrop::InternalSwap(CCSUsrMsg_WeaponMagDrop* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CCSUsrMsg_WeaponMagDrop, _impl_.server_event_)
+      + sizeof(CCSUsrMsg_WeaponMagDrop::_impl_.server_event_)
+      - PROTOBUF_FIELD_OFFSET(CCSUsrMsg_WeaponMagDrop, _impl_.secondary_data_)>(
+          reinterpret_cast<char*>(&_impl_.secondary_data_),
+          reinterpret_cast<char*>(&other->_impl_.secondary_data_));
+  swap(_impl_.entidx_, other->_impl_.entidx_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_WeaponMagDrop::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
+      file_level_metadata_cstrike15_5fusermessages_2eproto[25]);
+}
+
+// ===================================================================
+
 class CCSUsrMsg_UpdateScreenHealthBar::_Internal {
  public:
   using HasBits = decltype(std::declval<CCSUsrMsg_UpdateScreenHealthBar>()._impl_._has_bits_);
@@ -10447,7 +10748,7 @@ void CCSUsrMsg_UpdateScreenHealthBar::InternalSwap(CCSUsrMsg_UpdateScreenHealthB
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_UpdateScreenHealthBar::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[25]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[26]);
 }
 
 // ===================================================================
@@ -10679,7 +10980,7 @@ void CCSUsrMsg_EntityOutlineHighlight::InternalSwap(CCSUsrMsg_EntityOutlineHighl
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_EntityOutlineHighlight::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[26]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[27]);
 }
 
 // ===================================================================
@@ -10870,7 +11171,7 @@ void CCSUsrMsg_AdjustMoney::InternalSwap(CCSUsrMsg_AdjustMoney* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_AdjustMoney::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[27]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[28]);
 }
 
 // ===================================================================
@@ -11163,7 +11464,7 @@ void CCSUsrMsg_ReportHit::InternalSwap(CCSUsrMsg_ReportHit* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ReportHit::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[28]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[29]);
 }
 
 // ===================================================================
@@ -11425,7 +11726,7 @@ void CCSUsrMsg_KillCam::InternalSwap(CCSUsrMsg_KillCam* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_KillCam::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[29]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[30]);
 }
 
 // ===================================================================
@@ -11718,7 +12019,7 @@ void CCSUsrMsg_DesiredTimescale::InternalSwap(CCSUsrMsg_DesiredTimescale* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_DesiredTimescale::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[30]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[31]);
 }
 
 // ===================================================================
@@ -11909,7 +12210,7 @@ void CCSUsrMsg_CurrentTimescale::InternalSwap(CCSUsrMsg_CurrentTimescale* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_CurrentTimescale::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[31]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[32]);
 }
 
 // ===================================================================
@@ -12174,7 +12475,7 @@ void CCSUsrMsg_AchievementEvent::InternalSwap(CCSUsrMsg_AchievementEvent* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_AchievementEvent::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[32]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[33]);
 }
 
 // ===================================================================
@@ -12467,7 +12768,7 @@ void CCSUsrMsg_MatchEndConditions::InternalSwap(CCSUsrMsg_MatchEndConditions* ot
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_MatchEndConditions::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[33]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[34]);
 }
 
 // ===================================================================
@@ -12704,7 +13005,7 @@ void CCSUsrMsg_PlayerStatsUpdate_Stat::InternalSwap(CCSUsrMsg_PlayerStatsUpdate_
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_PlayerStatsUpdate_Stat::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[34]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[35]);
 }
 
 // ===================================================================
@@ -13003,7 +13304,7 @@ void CCSUsrMsg_PlayerStatsUpdate::InternalSwap(CCSUsrMsg_PlayerStatsUpdate* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_PlayerStatsUpdate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[35]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[36]);
 }
 
 // ===================================================================
@@ -13296,7 +13597,7 @@ void CCSUsrMsg_QuestProgress::InternalSwap(CCSUsrMsg_QuestProgress* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_QuestProgress::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[36]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[37]);
 }
 
 // ===================================================================
@@ -13506,7 +13807,7 @@ void CCSUsrMsg_ScoreLeaderboardData::InternalSwap(CCSUsrMsg_ScoreLeaderboardData
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ScoreLeaderboardData::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[37]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[38]);
 }
 
 // ===================================================================
@@ -13716,7 +14017,7 @@ void CCSUsrMsg_PlayerDecalDigitalSignature::InternalSwap(CCSUsrMsg_PlayerDecalDi
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_PlayerDecalDigitalSignature::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[38]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[39]);
 }
 
 // ===================================================================
@@ -13953,7 +14254,7 @@ void CCSUsrMsg_XRankGet::InternalSwap(CCSUsrMsg_XRankGet* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_XRankGet::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[39]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[40]);
 }
 
 // ===================================================================
@@ -14218,7 +14519,7 @@ void CCSUsrMsg_XRankUpd::InternalSwap(CCSUsrMsg_XRankUpd* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_XRankUpd::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[40]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[41]);
 }
 
 // ===================================================================
@@ -14455,7 +14756,7 @@ void CCSUsrMsg_CallVoteFailed::InternalSwap(CCSUsrMsg_CallVoteFailed* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_CallVoteFailed::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[41]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[42]);
 }
 
 // ===================================================================
@@ -14955,7 +15256,7 @@ void CCSUsrMsg_VoteStart::InternalSwap(CCSUsrMsg_VoteStart* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_VoteStart::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[42]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[43]);
 }
 
 // ===================================================================
@@ -15310,7 +15611,7 @@ void CCSUsrMsg_VotePass::InternalSwap(CCSUsrMsg_VotePass* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_VotePass::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[43]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[44]);
 }
 
 // ===================================================================
@@ -15547,7 +15848,7 @@ void CCSUsrMsg_VoteFailed::InternalSwap(CCSUsrMsg_VoteFailed* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_VoteFailed::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[44]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[45]);
 }
 
 // ===================================================================
@@ -15739,7 +16040,7 @@ void CCSUsrMsg_VoteSetup::InternalSwap(CCSUsrMsg_VoteSetup* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_VoteSetup::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[45]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[46]);
 }
 
 // ===================================================================
@@ -16088,7 +16389,7 @@ void CCSUsrMsg_SendLastKillerDamageToClient::InternalSwap(CCSUsrMsg_SendLastKill
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SendLastKillerDamageToClient::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[46]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[47]);
 }
 
 // ===================================================================
@@ -16437,7 +16738,7 @@ void CCSUsrMsg_ServerRankUpdate_RankUpdate::InternalSwap(CCSUsrMsg_ServerRankUpd
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ServerRankUpdate_RankUpdate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[47]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[48]);
 }
 
 // ===================================================================
@@ -16622,7 +16923,7 @@ void CCSUsrMsg_ServerRankUpdate::InternalSwap(CCSUsrMsg_ServerRankUpdate* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ServerRankUpdate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[48]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[49]);
 }
 
 // ===================================================================
@@ -16832,7 +17133,7 @@ void CCSUsrMsg_XpUpdate::InternalSwap(CCSUsrMsg_XpUpdate* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_XpUpdate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[49]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[50]);
 }
 
 // ===================================================================
@@ -17052,7 +17353,7 @@ void CCSUsrMsg_ItemPickup::InternalSwap(CCSUsrMsg_ItemPickup* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ItemPickup::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[50]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[51]);
 }
 
 // ===================================================================
@@ -17348,7 +17649,7 @@ void CCSUsrMsg_ShowMenu::InternalSwap(CCSUsrMsg_ShowMenu* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ShowMenu::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[51]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[52]);
 }
 
 // ===================================================================
@@ -17568,7 +17869,7 @@ void CCSUsrMsg_BarTime::InternalSwap(CCSUsrMsg_BarTime* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_BarTime::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[52]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[53]);
 }
 
 // ===================================================================
@@ -17759,7 +18060,7 @@ void CCSUsrMsg_AmmoDenied::InternalSwap(CCSUsrMsg_AmmoDenied* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_AmmoDenied::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[53]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[54]);
 }
 
 // ===================================================================
@@ -17979,7 +18280,7 @@ void CCSUsrMsg_MarkAchievement::InternalSwap(CCSUsrMsg_MarkAchievement* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_MarkAchievement::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[54]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[55]);
 }
 
 // ===================================================================
@@ -18199,7 +18500,7 @@ void CCSUsrMsg_MatchStatsUpdate::InternalSwap(CCSUsrMsg_MatchStatsUpdate* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_MatchStatsUpdate::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[55]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[56]);
 }
 
 // ===================================================================
@@ -18436,7 +18737,7 @@ void CCSUsrMsg_ItemDrop::InternalSwap(CCSUsrMsg_ItemDrop* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ItemDrop::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[56]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[57]);
 }
 
 // ===================================================================
@@ -18791,7 +19092,7 @@ void CCSUsrMsg_RoundBackupFilenames::InternalSwap(CCSUsrMsg_RoundBackupFilenames
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundBackupFilenames::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[57]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[58]);
 }
 
 // ===================================================================
@@ -19056,7 +19357,7 @@ void CCSUsrMsg_SSUI::InternalSwap(CCSUsrMsg_SSUI* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SSUI::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[58]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[59]);
 }
 
 // ===================================================================
@@ -19349,7 +19650,7 @@ void CCSUsrMsg_SurvivalStats_Fact::InternalSwap(CCSUsrMsg_SurvivalStats_Fact* ot
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SurvivalStats_Fact::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[59]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[60]);
 }
 
 // ===================================================================
@@ -19614,7 +19915,7 @@ void CCSUsrMsg_SurvivalStats_Placement::InternalSwap(CCSUsrMsg_SurvivalStats_Pla
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SurvivalStats_Placement::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[60]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[61]);
 }
 
 // ===================================================================
@@ -19935,7 +20236,7 @@ void CCSUsrMsg_SurvivalStats_Damage::InternalSwap(CCSUsrMsg_SurvivalStats_Damage
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SurvivalStats_Damage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[61]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[62]);
 }
 
 // ===================================================================
@@ -20274,7 +20575,7 @@ void CCSUsrMsg_SurvivalStats::InternalSwap(CCSUsrMsg_SurvivalStats* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SurvivalStats::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[62]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[63]);
 }
 
 // ===================================================================
@@ -20539,7 +20840,7 @@ void CCSUsrMsg_EndOfMatchAllPlayersData_Accolade::InternalSwap(CCSUsrMsg_EndOfMa
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_EndOfMatchAllPlayersData_Accolade::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[63]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[64]);
 }
 
 // ===================================================================
@@ -21004,7 +21305,7 @@ void CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData::InternalSwap(CCSUsrMsg_EndOf
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[64]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[65]);
 }
 
 // ===================================================================
@@ -21229,7 +21530,7 @@ void CCSUsrMsg_EndOfMatchAllPlayersData::InternalSwap(CCSUsrMsg_EndOfMatchAllPla
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_EndOfMatchAllPlayersData::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[65]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[66]);
 }
 
 // ===================================================================
@@ -21580,7 +21881,7 @@ void CCSUsrMsg_RoundEndReportData_RerEvent_Victim::InternalSwap(CCSUsrMsg_RoundE
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData_RerEvent_Victim::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[66]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[67]);
 }
 
 // ===================================================================
@@ -21771,7 +22072,7 @@ void CCSUsrMsg_RoundEndReportData_RerEvent_Objective::InternalSwap(CCSUsrMsg_Rou
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData_RerEvent_Objective::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[67]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[68]);
 }
 
 // ===================================================================
@@ -22122,7 +22423,7 @@ void CCSUsrMsg_RoundEndReportData_RerEvent_Damage::InternalSwap(CCSUsrMsg_RoundE
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData_RerEvent_Damage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[68]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[69]);
 }
 
 // ===================================================================
@@ -22539,7 +22840,7 @@ void CCSUsrMsg_RoundEndReportData_RerEvent::InternalSwap(CCSUsrMsg_RoundEndRepor
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData_RerEvent::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[69]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[70]);
 }
 
 // ===================================================================
@@ -22804,7 +23105,7 @@ void CCSUsrMsg_RoundEndReportData_InitialConditions::InternalSwap(CCSUsrMsg_Roun
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData_InitialConditions::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[70]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[71]);
 }
 
 // ===================================================================
@@ -23044,7 +23345,7 @@ void CCSUsrMsg_RoundEndReportData::InternalSwap(CCSUsrMsg_RoundEndReportData* ot
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RoundEndReportData::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[71]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[72]);
 }
 
 // ===================================================================
@@ -23421,7 +23722,7 @@ void CCSUsrMsg_PostRoundDamageReport::InternalSwap(CCSUsrMsg_PostRoundDamageRepo
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_PostRoundDamageReport::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[72]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[73]);
 }
 
 // ===================================================================
@@ -23612,7 +23913,7 @@ void CCSUsrMsg_CurrentRoundOdds::InternalSwap(CCSUsrMsg_CurrentRoundOdds* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_CurrentRoundOdds::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[73]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[74]);
 }
 
 // ===================================================================
@@ -23822,7 +24123,7 @@ void CCSUsrMsg_DeepStats::InternalSwap(CCSUsrMsg_DeepStats* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_DeepStats::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[74]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[75]);
 }
 
 // ===================================================================
@@ -24160,7 +24461,7 @@ void CCSUsrMsg_ShootInfo::InternalSwap(CCSUsrMsg_ShootInfo* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ShootInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[75]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[76]);
 }
 
 // ===================================================================
@@ -24351,7 +24652,7 @@ void CCSUsrMsg_ResetHud::InternalSwap(CCSUsrMsg_ResetHud* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ResetHud::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[76]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[77]);
 }
 
 // ===================================================================
@@ -24542,7 +24843,7 @@ void CCSUsrMsg_GameTitle::InternalSwap(CCSUsrMsg_GameTitle* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_GameTitle::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[77]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[78]);
 }
 
 // ===================================================================
@@ -24733,7 +25034,7 @@ void CCSUsrMsg_RequestState::InternalSwap(CCSUsrMsg_RequestState* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RequestState::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[78]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[79]);
 }
 
 // ===================================================================
@@ -24924,7 +25225,7 @@ void CCSUsrMsg_StopSpectatorMode::InternalSwap(CCSUsrMsg_StopSpectatorMode* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_StopSpectatorMode::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[79]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[80]);
 }
 
 // ===================================================================
@@ -25115,7 +25416,7 @@ void CCSUsrMsg_DisconnectToLobby::InternalSwap(CCSUsrMsg_DisconnectToLobby* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_DisconnectToLobby::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[80]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[81]);
 }
 
 // ===================================================================
@@ -25306,7 +25607,7 @@ void CCSUsrMsg_ClientInfo::InternalSwap(CCSUsrMsg_ClientInfo* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ClientInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[81]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[82]);
 }
 
 // ===================================================================
@@ -25557,7 +25858,7 @@ void CCSUsrMsg_ServerRankRevealAll::InternalSwap(CCSUsrMsg_ServerRankRevealAll* 
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_ServerRankRevealAll::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[82]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[83]);
 }
 
 // ===================================================================
@@ -25853,7 +26154,7 @@ void CCSUsrMsgPreMatchSayText::InternalSwap(CCSUsrMsgPreMatchSayText* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsgPreMatchSayText::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[83]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[84]);
 }
 
 // ===================================================================
@@ -26090,7 +26391,7 @@ void CCSUsrMsg_CounterStrafe::InternalSwap(CCSUsrMsg_CounterStrafe* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_CounterStrafe::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[84]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[85]);
 }
 
 // ===================================================================
@@ -26557,7 +26858,7 @@ void CCSUsrMsg_DamagePrediction::InternalSwap(CCSUsrMsg_DamagePrediction* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_DamagePrediction::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[85]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[86]);
 }
 
 // ===================================================================
@@ -26807,7 +27108,7 @@ void CCSUsrMsg_RecurringMissionSchema::InternalSwap(CCSUsrMsg_RecurringMissionSc
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_RecurringMissionSchema::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[86]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[87]);
 }
 
 // ===================================================================
@@ -27092,7 +27393,7 @@ void CCSUsrMsg_SendPlayerLoadout_LoadoutItem::InternalSwap(CCSUsrMsg_SendPlayerL
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SendPlayerLoadout_LoadoutItem::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[87]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[88]);
 }
 
 // ===================================================================
@@ -27317,7 +27618,7 @@ void CCSUsrMsg_SendPlayerLoadout::InternalSwap(CCSUsrMsg_SendPlayerLoadout* othe
 ::PROTOBUF_NAMESPACE_ID::Metadata CCSUsrMsg_SendPlayerLoadout::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fusermessages_2eproto_getter, &descriptor_table_cstrike15_5fusermessages_2eproto_once,
-      file_level_metadata_cstrike15_5fusermessages_2eproto[88]);
+      file_level_metadata_cstrike15_5fusermessages_2eproto[89]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -27421,6 +27722,10 @@ Arena::CreateMaybeMessage< ::CCSUsrMsg_ReloadEffect >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CCSUsrMsg_WeaponSound*
 Arena::CreateMaybeMessage< ::CCSUsrMsg_WeaponSound >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CCSUsrMsg_WeaponSound >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CCSUsrMsg_WeaponMagDrop*
+Arena::CreateMaybeMessage< ::CCSUsrMsg_WeaponMagDrop >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CCSUsrMsg_WeaponMagDrop >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CCSUsrMsg_UpdateScreenHealthBar*
 Arena::CreateMaybeMessage< ::CCSUsrMsg_UpdateScreenHealthBar >(Arena* arena) {
