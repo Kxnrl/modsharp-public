@@ -72,6 +72,14 @@ public interface ILibraryModule
     nint FindString(string str);
 
     /// <summary>
+    ///     Find address of the given string in the module's data section.
+    ///     An exact match ensures the string is not a partial substring of another string by verifying it is located at the start of the data or immediately preceded by a null terminator.
+    ///     (e.g., searching for "Error" will match a standalone "Error", but will skip over "FatalError").
+    /// </summary>
+    /// <param name="str">The string literal to search for</param>
+    nint FindStringExact(string str);
+
+    /// <summary>
     ///     Find the address in memory that contains a pointer to the specific value provided.
     /// </summary>
     /// <param name="ptr">The value/address to search for within the module's memory space</param>

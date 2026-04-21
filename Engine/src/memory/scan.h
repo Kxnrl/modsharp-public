@@ -30,7 +30,7 @@ namespace scan
 {
 CAddress              FindPattern(uint8_t* data, std::size_t size, std::string_view pattern) noexcept;
 std::vector<CAddress> FindPatternMulti(uint8_t* data, std::size_t size, std::string_view pattern) noexcept;
-CAddress              FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated = false) noexcept;
+CAddress              FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated = false, bool exact = false) noexcept;
 
 CAddress              FindRVA(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;
 std::vector<CAddress> FindRVAs(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;

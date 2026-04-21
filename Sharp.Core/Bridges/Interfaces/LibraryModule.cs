@@ -71,6 +71,8 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
     public partial bool GetFunctionRangeEx(nint middle, nint* start, nint* end);
 
+    public partial nint FindStringExactEx(string str);
+
 #endregion
 
     public nint FindPattern(string pattern, nint startAddress = 0)
@@ -116,6 +118,9 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
     public nint FindString(string str)
         => FindStringEx(str);
+
+    public nint FindStringExact(string str)
+        => FindStringExactEx(str);
 
     public nint FindPtr(nint ptr)
         => FindPtrEx(ptr);

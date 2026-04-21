@@ -67,7 +67,7 @@ CAddress CModule::FindPatternStrict(std::string_view pattern) const
     return result[0];
 }
 
-CAddress CModule::FindString(const std::string& str, bool read_only) const
+CAddress CModule::FindString(const std::string& str, bool read_only, bool exact) const
 {
     for (auto&& segment : _segments)
     {
@@ -77,7 +77,7 @@ CAddress CModule::FindString(const std::string& str, bool read_only) const
         if (read_only && (segment.flags & FLAG_W) != 0)
             continue;
 
-        if (auto result = scan::FindStr(reinterpret_cast<uint8_t*>(segment.address), segment.size, str, true))
+        if (auto result = scan::FindStr(reinterpret_cast<uint8_t*>(segment.address), segment.size, str, true, exact))
         {
             if (result > 0)
                 return segment.address + result;
@@ -523,7 +523,7 @@ std::vector<uintptr_t> CModule::FindAllFunctionsFromStringRefs(const std::vector
 
     for (const auto& s : strs)
     {
-        auto str_addr = FindString(s, false);
+        auto str_addr = FindString(s, false, true);
         if (!str_addr.IsValid())
         {
             FERROR("String \"%s\" not found.", s.c_str());

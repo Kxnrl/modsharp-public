@@ -154,6 +154,7 @@ public:
     [[nodiscard]] virtual bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVector<CUtlString>* strs, CUtlLeanVector<std::uintptr_t>* results)      = 0;
     [[nodiscard]] virtual bool FindAllFunctionsFromPointersRefsEx(CUtlLeanVector<std::uintptr_t>* ptrs, CUtlLeanVector<std::uintptr_t>* results) = 0;
     virtual bool               GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end)                             = 0;
+    [[nodiscard]] virtual void* FindStringExactEx(const char* str)                                                                               = 0;
 };
 
 enum SegmentFlags : uint8_t
@@ -271,7 +272,7 @@ public:
 
     [[nodiscard]] CAddress              FindPattern(std::string_view pattern) const;
     [[nodiscard]] CAddress              FindPatternStrict(std::string_view pattern) const;
-    [[nodiscard]] CAddress              FindString(const std::string& str, bool read_only) const;
+    [[nodiscard]] CAddress              FindString(const std::string& str, bool read_only, bool exact = false) const;
     [[nodiscard]] CAddress              FindData(const uint8_t* needle, std::size_t needle_size, bool read_only) const;
     [[nodiscard]] CAddress              FindPtr(std::uintptr_t ptr) const;
     [[nodiscard]] std::vector<CAddress> FindPtrs(std::uintptr_t ptr) const;
@@ -434,6 +435,11 @@ public:
         *start = 0;
         *end   = 0;
         return false;
+    }
+
+    [[nodiscard]] void* FindStringExactEx(const char* str) override
+    {
+        return FindString(str, false, true);
     }
 };
 
