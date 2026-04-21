@@ -146,7 +146,7 @@ void CCSPlayerController::RoundRespawn()
             SetPawn(pawn, true, false, false, false);
     }
 
-    static auto offset = g_pGameData->GetVFunctionIndex("CBasePlayerController::RoundRespawn");
+    static auto offset = g_pGameData->GetVFunctionIndex("CCSPlayerController::RoundRespawn");
     CALL_VIRTUAL(void, offset, this);
 }
 
