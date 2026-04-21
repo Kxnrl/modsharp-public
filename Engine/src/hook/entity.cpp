@@ -541,6 +541,7 @@ class CEntityListener : public IEntityListener
 static void PatchEnableHammerUniqueId()
 {
     const auto svr_mod = modules::server;
+    const auto base    = svr_mod->Base();
 
     auto vapp_interface_name_addr = svr_mod->FindString("VApplication001", true);
     if (!vapp_interface_name_addr.IsValid())
@@ -716,17 +717,99 @@ static void PatchEnableHammerUniqueId()
         return;
     }
 
-    auto enabled_hammer_unique_id_func = base_entity_vtable.Offset(vtable_offset).Dereference().As<uint8_t*>();
+    auto enabled_hammer_unique_id_func = base_entity_vtable.Offset(vtable_offset).Dereference();
 
     // mov al, 1;
     // ret
     constexpr std::array<uint8_t, 3> patch_bytes = {0xB0, 0x01, 0xC3};
 
-    auto protect = safetyhook::unprotect(enabled_hammer_unique_id_func, patch_bytes.size());
-    if (protect.has_value())
+    if (auto protect = safetyhook::unprotect(enabled_hammer_unique_id_func.As<uint8_t*>(), patch_bytes.size()); protect.has_value())
     {
-        memcpy(enabled_hammer_unique_id_func, patch_bytes.data(), patch_bytes.size());
-        FLOG("Patched CBaseEntity::EnableHammerUniqueId @ server+0x%llx", enabled_hammer_unique_id_func - svr_mod->Base());
+        memcpy(enabled_hammer_unique_id_func.As<uint8_t*>(), patch_bytes.data(), patch_bytes.size());
+        FLOG("Patched CBaseEntity::EnableHammerUniqueId @ server+0x%llx", enabled_hammer_unique_id_func.GetPtr() - base);
+    }
+
+    auto spawn_index = g_pGameData->GetVFunctionIndex("CBaseEntity::Spawn");
+    auto spawn_func  = base_entity_vtable.Offset(spawn_index * sizeof(void*)).Dereference();
+    if (auto range = svr_mod->GetFunctionRange(spawn_func))
+    {
+        ZydisUtility::ScanInstructions(range->start, range->end,
+                                       [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                                           // 1. Look for: lea rdx, [enabled_hammer_unique_id_func]
+                                           if (instr.mnemonic != ZYDIS_MNEMONIC_LEA || operands[0].reg.value != ZYDIS_REGISTER_RDX)
+                                           {
+                                               return false;
+                                           }
+
+                                           if (ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) != enabled_hammer_unique_id_func)
+                                           {
+                                               return false;
+                                           }
+
+                                           // 2. Scan ahead slightly to find the CMP followed by the JCC
+                                           uintptr_t search_ip = ip + instr.length;
+                                           for (int i = 0; i < 10; ++i)
+                                           {
+                                               ZydisDecodedInstruction fwd_instr;
+                                               ZydisDecodedOperand     fwd_ops[ZYDIS_MAX_OPERAND_COUNT];
+
+                                               if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
+                                                                                        reinterpret_cast<void*>(search_ip),
+                                                                                        ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                                                        &fwd_instr,
+                                                                                        fwd_ops)))
+                                               {
+                                                   break;
+                                               }
+
+                                               // 3. Catch the conditional jump
+                                               if (fwd_instr.meta.category != ZYDIS_CATEGORY_COND_BR)
+                                               {
+                                                   search_ip += fwd_instr.length;
+                                                   continue;
+                                               }
+                                               uintptr_t jump_target = ZydisUtility::GetAbsoluteAddress(fwd_instr, fwd_ops[0], search_ip);
+
+                                               // 4. Scan the "skipped" block for RET or INT3
+                                               bool      skips_early_exit = false;
+                                               uintptr_t block_ip         = search_ip + fwd_instr.length;
+
+                                               while (block_ip < jump_target)
+                                               {
+                                                   ZydisDecodedInstruction block_instr;
+                                                   if (!ZYAN_SUCCESS(ZydisDecoderDecodeInstruction(&ZydisUtility::DefaultDecoder,
+                                                                                                   nullptr,
+                                                                                                   reinterpret_cast<void*>(block_ip),
+                                                                                                   ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                                                                   &block_instr)))
+                                                   {
+                                                       break;
+                                                   }
+
+                                                   if (block_instr.mnemonic == ZYDIS_MNEMONIC_RET || block_instr.mnemonic == ZYDIS_MNEMONIC_INT3)
+                                                   {
+                                                       skips_early_exit = true;
+                                                       break;
+                                                   }
+                                                   block_ip += block_instr.length;
+                                               }
+
+                                               // 5. If the skipped block is an exit, we found our Gatekeeper
+                                               if (skips_early_exit)
+                                               {
+                                                   auto protect = safetyhook::unprotect(reinterpret_cast<uint8_t*>(search_ip), 1);
+                                                   if (protect.has_value())
+                                                   {
+                                                       // Change conditional jump to unconditional JMP
+                                                       *reinterpret_cast<uint8_t*>(search_ip) = 0xEB;
+                                                       FLOG("Patched CBaseEntity::EnableHammerUniqueId gatekeeper in CBaseEntity::Spawn at server+0x%llx. Redirecting to server+0x%llx", search_ip - base, jump_target - base);
+                                                       return true;
+                                                   }
+                                               }
+                                               search_ip += fwd_instr.length;
+                                           }
+                                           return false;
+                                       });
     }
 }
 
