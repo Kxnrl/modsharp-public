@@ -38,16 +38,6 @@ public interface IWeaponService : IPlayerPawnComponent
     float NextAttack { get; set; }
 
     /// <summary>
-    ///     m_bIsLookingAtWeapon
-    /// </summary>
-    bool IsLookingAtWeapon { get; }
-
-    /// <summary>
-    ///     m_bIsHoldingLookAtWeapon
-    /// </summary>
-    bool IsHoldingLookAtWeapon { get; }
-
-    /// <summary>
     ///     m_hSavedWeapon
     /// </summary>
     CEntityHandle<IBaseWeapon> SavedWeaponHandle { get; set; }

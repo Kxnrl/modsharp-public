@@ -39,12 +39,6 @@ internal partial class WeaponService : PlayerPawnComponent, IWeaponService
     [NativeSchemaField("CCSPlayer_WeaponServices", "m_flNextAttack", typeof(float))]
     private partial SchemaField GetNextAttackField();
 
-    [NativeSchemaField("CCSPlayer_WeaponServices", "m_bIsLookingAtWeapon", typeof(bool))]
-    private partial SchemaField GetIsLookingAtWeaponField();
-
-    [NativeSchemaField("CCSPlayer_WeaponServices", "m_bIsHoldingLookAtWeapon", typeof(bool))]
-    private partial SchemaField GetIsHoldingLookAtWeaponField();
-
     [NativeSchemaField("CCSPlayer_WeaponServices", "m_bIsPickingUpItemWithUse", typeof(bool))]
     private partial SchemaField GetIsPickingUpItemWithUseField();
 
