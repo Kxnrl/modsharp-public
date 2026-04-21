@@ -180,35 +180,35 @@ private:
     virtual void SetClientProximity()  = 0; // 93
     virtual void Unknown94()           = 0; // 94
     virtual void Unknown95()           = 0; // 95
+    virtual void Unknown96() = 0;           // 96
 
 public:
     // Server 跟 disconnect时的提示有关系, 我也不知道取值
-    virtual void  KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason) = 0; // 96
-    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick)      = 0; // 97
-    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick)              = 0; // 98
+    virtual void  KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason) = 0; // 97
+    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick) = 0;      // 98
+    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick) = 0;              // 99
 
-    virtual bool  StartHltvReplay(PlayerSlot_t slot, int64_t unknown2); // 99
-    virtual void* StopHltvReplay(PlayerSlot_t slot);                    // 100
-    virtual void  StopHltvReplayAll();                                  // 101
+    virtual bool  StartHltvReplay(PlayerSlot_t slot, int64_t unknown2); // 100
+    virtual void* StopHltvReplay(PlayerSlot_t slot);                    // 101
+    virtual void  StopHltvReplayAll();                                  // 102
 
 private:
     // client  virtual 70 -> offset 3120
-    virtual void* GetClientUnknown(PlayerSlot_t slot) = 0; // 102
+    virtual void* GetClientUnknown(PlayerSlot_t slot) = 0; // 103
 
-    virtual void Unknown103() = 0; // 103
     virtual void Unknown104() = 0; // 104
     virtual void Unknown105() = 0; // 105
     virtual void Unknown106() = 0; // 106
+    virtual void Unknown107() = 0; // 107
 
     // Find client exists by offset 3120
-    virtual bool CheckClientUnknown()                               = 0; // 107
-    virtual void SetClientUpdateRate(PlayerSlot_t slot, float rate) = 0; // 108
-    virtual void UpdateClientRate(PlayerSlot_t nSlot)               = 0; // 109
+    virtual bool CheckClientUnknown() = 0;                               // 108
+    virtual void SetClientUpdateRate(PlayerSlot_t slot, float rate) = 0; // 109
+    virtual void UpdateClientRate(PlayerSlot_t nSlot) = 0;               // 110
 
-    virtual void Unknown110() = 0; // 110
     virtual void Unknown111() = 0; // 111
     virtual void Unknown112() = 0; // 112
-
+    virtual void Unknown113() = 0; // 113
     // more rest
 };
 
