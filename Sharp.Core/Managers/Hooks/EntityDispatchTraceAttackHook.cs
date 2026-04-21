@@ -452,7 +452,7 @@ internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFun
 
     public int TotalledDamageDealt
     {
-        get => Result->TotalledDamageDealt;
+        get => (int)Result->TotalledDamageDealt;
         set
         {
             CheckEditable();
