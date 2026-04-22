@@ -43,7 +43,7 @@ internal partial class AimPunchService : PlayerPawnComponent, IAimPunchService
     [NativeSchemaField("CCSPlayer_AimPunchServices", "m_unpredictableBaseTick", typeof(int))]
     private partial SchemaField GetUnpredictableBaseTickField();
 
-    [NativeSchemaField("CCSPlayer_AimPunchServices", "m_unpredictableBaseAngle", typeof(int))]
+    [NativeSchemaField("CCSPlayer_AimPunchServices", "m_unpredictableBaseAngle", typeof(Vector))]
     private partial SchemaField GetUnpredictableBaseAngleField();
 
 #endregion
