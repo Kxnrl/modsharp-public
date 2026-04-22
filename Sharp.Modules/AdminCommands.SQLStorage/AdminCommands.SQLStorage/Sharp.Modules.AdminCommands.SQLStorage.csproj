@@ -8,14 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MySqlConnector" Version="2.5.0"/>
-        <PackageReference Include="Npgsql" Version="10.0.1"/>
-        <PackageReference Include="SqlSugarCoreNoDrive" Version="5.1.4.211"/>
+        <PackageReference Include="MySqlConnector" Version="2.5.0" />
+        <PackageReference Include="Npgsql" Version="10.0.2" />
+        <PackageReference Include="SqlSugarCoreNoDrive" Version="5.1.4.213" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
-        <ProjectReference Include="..\..\AdminCommands\Shared\Sharp.Modules.AdminCommands.Shared.csproj" Private="false" ExcludeAssets="runtime"/>
+        <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
+        <ProjectReference Include="..\..\AdminCommands\Shared\Sharp.Modules.AdminCommands.Shared.csproj" Private="false" ExcludeAssets="runtime" />
     </ItemGroup>
 
 
