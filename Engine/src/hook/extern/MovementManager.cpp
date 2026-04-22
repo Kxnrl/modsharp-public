@@ -283,6 +283,9 @@ BeginMemberHookScope(CCSPlayerController)
 
                 auto iter = pMoves->begin();
 
+                // have no time to re-write this shit
+                // currently copy from cs2fixes
+
                 while (iter != pMoves->end())
                 {
                     const auto button = iter->button();

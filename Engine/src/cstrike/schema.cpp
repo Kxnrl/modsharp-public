@@ -22,9 +22,10 @@
 #include "gamedata.h"
 #include "global.h"
 #include "logging.h"
+#include "memory/zydis_utility.h"
+#include "module.h"
 #include "types.h"
 #include "vhook/call.h"
-#include "module.h"
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/ISchemaSystem.h"
@@ -35,8 +36,6 @@
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Variant.h"
 #include "cstrike/type/CUtlMap.h"
-
-#include "memory/zydis_utility.h"
 
 #include <cstdint>
 #include <unordered_map>
