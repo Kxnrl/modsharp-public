@@ -27,8 +27,6 @@ namespace Sharp.Modules.EntityEnhancements.Modules;
 
 internal sealed unsafe class FilterCrashFixes : IEnhancement
 {
-    private const string GameDataKey = "CBaseFilter::InputTestActivator";
-
     private static delegate* unmanaged<nint, InputData*, void> _sTrampoline;
     private static FilterCrashFixes?                           _sInstance;
 
@@ -52,7 +50,7 @@ internal sealed unsafe class FilterCrashFixes : IEnhancement
 
     public void Init()
     {
-        _hook.Prepare(_sharedSystem.GetModSharp().GetGameData().GetAddress("CBaseFilter", "InputTestActivator"),
+        _hook.Prepare(_sharedSystem.GetSchemaManager().GetDataMapInputFunc("CBaseFilter", "InputTestActivator"),
                       (nint) (delegate* unmanaged<nint, InputData*, void>) (&Hook));
 
         if (!_hook.Install())
