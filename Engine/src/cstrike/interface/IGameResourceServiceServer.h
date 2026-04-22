@@ -47,7 +47,7 @@ public:
     void PrecacheEntitiesAndConfirmResourcesAreLoaded(SpawnGroup_t hSpawnGroup, int nCount, const EntitySpawnInfo_t& info, const matrix3x4_t& matrix)
     {
         static auto offset = g_pGameData->GetVFunctionIndex("CGameResourceService::PrecacheEntitiesAndConfirmResourcesAreLoaded");
-        vhook::call::CallVirtual<void>(offset, this, hSpawnGroup, nCount, &info, &matrix);
+        CALL_VIRTUAL(void, offset, this, hSpawnGroup, nCount, &info, &matrix);
     }
 };
 
