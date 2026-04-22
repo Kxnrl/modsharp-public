@@ -1,0 +1,107 @@
+name: Docker Image
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/modsharp
+
+jobs:
+  # Reuse the existing build jobs to produce artifacts, then package
+  # them into a Docker image with a CS2 dedicated server base.
+  build-image:
+    runs-on: ubuntu-latest
+    needs: []
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Download latest release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.release.tag_name || 'latest' }}"
+          mkdir -p /tmp/modsharp-linux /tmp/modsharp-linux-ext
+
+          if [ "$TAG" = "latest" ]; then
+            TAG=$(gh release view --json tagName -q .tagName 2>/dev/null || echo "")
+          fi
+
+          if [ -n "$TAG" ]; then
+            # Download from the release
+            gh release download "$TAG" \
+              --pattern "ModSharp-*-linux.zip" \
+              --dir /tmp/modsharp-linux || true
+            gh release download "$TAG" \
+              --pattern "ModSharp-*-linux-extensions.zip" \
+              --dir /tmp/modsharp-linux-ext || true
+          fi
+
+          # Fallback: download from latest workflow run artifacts
+          if [ ! -f /tmp/modsharp-linux/*.zip ]; then
+            echo "No release assets, trying workflow artifacts..."
+            RUN_ID=$(gh run list --workflow=master.yml --status=success --limit=1 --json databaseId -q '.[0].databaseId')
+            if [ -n "$RUN_ID" ]; then
+              gh run download "$RUN_ID" --name "*-linux" --dir /tmp/modsharp-linux 2>/dev/null || true
+              gh run download "$RUN_ID" --name "*-linux-extensions" --dir /tmp/modsharp-linux-ext 2>/dev/null || true
+            fi
+          fi
+
+          # Extract
+          mkdir -p /tmp/overlay
+          for z in /tmp/modsharp-linux/*.zip; do
+            [ -f "$z" ] && unzip -qo "$z" -d /tmp/overlay/
+          done
+          for z in /tmp/modsharp-linux-ext/*.zip; do
+            [ -f "$z" ] && unzip -qo "$z" -d /tmp/overlay/sharp/extensions/
+          done
+
+          # If artifacts were directories (not zips), copy directly
+          if [ -d "/tmp/modsharp-linux/sharp" ]; then
+            cp -r /tmp/modsharp-linux/sharp /tmp/overlay/
+          fi
+
+          echo "=== Overlay contents ==="
+          ls -la /tmp/overlay/sharp/bin/ 2>/dev/null || echo "no bin"
+          ls /tmp/overlay/sharp/core/ 2>/dev/null | head -5 || echo "no core"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{raw}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            OVERLAY_DIR=/tmp/overlay
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
