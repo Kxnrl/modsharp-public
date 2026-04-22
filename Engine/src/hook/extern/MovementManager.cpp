@@ -272,39 +272,35 @@ BeginMemberHookScope(CCSPlayerController)
 
         if (commandCount > 0 && ms_disable_usercmd_subtick_moves->GetValue<bool>())
         {
-            constexpr uint64_t EButtonInAttack = static_cast<uint64_t>(EButtons::IN_ATTACK);
-            constexpr uint64_t EButtonInUse    = static_cast<uint64_t>(EButtons::IN_USE);
-            constexpr uint64_t EButtonInReload = static_cast<uint64_t>(EButtons::IN_RELOAD);
-            constexpr uint64_t LeftsButtons    = EButtonInAttack | EButtonInUse | EButtonInReload;
+            constexpr uint64_t EButtonInUse = static_cast<uint64_t>(EButtons::IN_USE);
+            constexpr uint64_t EButtonDuck  = static_cast<uint64_t>(EButtons::IN_DUCK);
+            constexpr uint64_t EButtonMoveR = static_cast<uint64_t>(EButtons::IN_MOVERIGHT);
 
             for (auto i = 0; i < commandCount; i++)
             {
                 const auto pCommand = &pCommands[i].Command;
                 const auto pMoves   = pCommand->mutable_base()->mutable_subtick_moves();
 
-                for (int32_t j = pMoves->size() - 1; j >= 0; --j)
-                {
-                    const auto pMove   = pMoves->Mutable(j);
-                    const auto buttons = pMove->button();
+                auto iter = pMoves->begin();
 
-                    if ((pMove->has_pitch_delta() && std::abs(pMove->pitch_delta() - 0) > FLT_EPSILON
-                         || (pMove->has_yaw_delta() && std::abs(pMove->yaw_delta() - 0) > FLT_EPSILON)))
+                while (iter != pMoves->end())
+                {
+                    const auto button = iter->button();
+
+                    // Remove normal subtick movement inputs by button
+                    // Unfortunately, we also need to ignore IN_JUMP, because de-subticking jumps somehow conflicts with other subtick inputs pressed at the same time
+                    if (button >= EButtonDuck && button <= EButtonMoveR && button != EButtonInUse)
                     {
-                        // LOG("Removed due to delta");
-                        pMoves->DeleteSubrange(j, 1);
-                    }
-                    else if (const auto modified = buttons & LeftsButtons)
-                    {
-                        if (buttons != modified)
-                        {
-                            // LOG("Adjust Buttons -> %llu :: %llu", pMove->button(), buttons);
-                            pMove->set_button(buttons);
-                        }
+                        pMoves->erase(iter);
                     }
                     else
                     {
-                        // LOG("Removed Buttons -> %llu", pMove->button());
-                        pMoves->DeleteSubrange(j, 1);
+                        // Remove subtick movement viewangles by pitch/yaw
+                        if (iter->pitch_delta() != 0.0f) iter->set_pitch_delta(0.0f);
+
+                        if (iter->yaw_delta() != 0.0f) iter->set_yaw_delta(0.0f);
+
+                        ++iter;
                     }
                 }
             }
