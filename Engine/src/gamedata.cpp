@@ -174,7 +174,7 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         if (raw_str.find("[ptr]") == std::string::npos)
         {
             if (!collect_refs(raw_str, "String", [&]() -> CAddress {
-                    return module_ptr->FindString(raw_str, false);
+                return module_ptr->FindString(raw_str, false, true);
                 }))
                 return RefResult::Failed;
 
@@ -190,7 +190,7 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         auto        substr_sv = trim(str_sv.substr(0, ptr_idx));
         std::string search_str(substr_sv);
 
-        auto str_address = module_ptr->FindString(search_str, false);
+        auto str_address = module_ptr->FindString(search_str, false, true);
         if (!str_address)
         {
             continue;
