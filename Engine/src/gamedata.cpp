@@ -25,7 +25,9 @@
 #include "strtool.h"
 
 #include "cstrike/interface/ICvar.h"
+#include "memory/zydis_utility.h"
 
+#include <Zydis.h>
 #include <json.hpp>
 #include <safetyhook.hpp>
 
@@ -317,9 +319,50 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         {
             auto refs = module_ptr->GetReferenceRange(ptr_to_cvar - sizeof(void*));
             if (!refs.empty())
-                merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
-        }
+            {
+                for (const auto& ref : refs)
+                {
+                    constexpr int SEARCH_WINDOW = 64;
+                    bool          pattern_found = false;
 
+                    auto scan_start = ref.source_ip - SEARCH_WINDOW;
+                    auto scan_end   = ref.source_ip + SEARCH_WINDOW;
+                    auto current    = scan_start;
+
+                    while (current < scan_end)
+                    {
+                        ZydisDecodedInstruction inst;
+                        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
+
+                        if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(current), 15, &inst, operands)))
+                        {
+                            if (inst.mnemonic == ZYDIS_MNEMONIC_MOV && inst.operand_count >= 2)
+                            {
+                                auto& op_dest = operands[0];
+                                auto& op_src  = operands[1];
+
+                                bool is_target_reg =
+                                    (op_dest.type == ZYDIS_OPERAND_TYPE_REGISTER) && (op_dest.reg.value == ZYDIS_REGISTER_EDX || op_dest.reg.value == ZYDIS_REGISTER_ESI);
+
+                                bool is_target_imm =
+                                    (op_src.type == ZYDIS_OPERAND_TYPE_IMMEDIATE) && (static_cast<uint32_t>(op_src.imm.value.u) == 0xFFFFFFFF);
+
+                                if (is_target_reg && is_target_imm)
+                                {
+                                    pattern_found = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        current++;
+                    }
+
+                    if (pattern_found)
+                        merged_refs.push_back(ref);
+                }
+            }
+        }
         if (merged_refs.empty())
         {
             std::string type_str = (add_ptr && add_handle) ? "Ptr or Handle" : (add_handle ? "Handle" : "Ptr");

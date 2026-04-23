@@ -18,7 +18,6 @@
  */
 
 using Sharp.Shared.Attributes;
-using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
 using Sharp.Shared.Types;
@@ -169,6 +168,11 @@ public interface IPlayerPawn : IBasePlayerPawn
     ///     DamageReactService
     /// </summary>
     IDamageReactService? GetDamageReactService();
+
+    /// <summary>
+    ///     AimPunchService
+    /// </summary>
+    IAimPunchService? GetAimPunchService();
 
     /// <summary>
     ///     Glove Econ
