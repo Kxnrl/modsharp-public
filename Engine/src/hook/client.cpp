@@ -54,17 +54,11 @@
 
 constexpr int32_t NET_MESSAGE_ID_VOICE = 47;
 
-static CServerSideClient* s_pCommandContextClient  = nullptr;
-static CConVarBaseData*   ms_log_chat              = nullptr;
-static CConVarBaseData*   ms_chat_block_whitespace = nullptr;
-static CConVarBaseData*   ms_fix_voice_chat        = nullptr;
-static uint64_t           s_RandomSeed;
-static uint64_t           s_PlayerSeed[CS_MAX_PLAYERS];
-
-void SetFakeClientCommandContext(CServerSideClient* pClient)
-{
-    s_pCommandContextClient = pClient;
-}
+static CConVarBaseData* ms_log_chat              = nullptr;
+static CConVarBaseData* ms_chat_block_whitespace = nullptr;
+static CConVarBaseData* ms_fix_voice_chat        = nullptr;
+static uint64_t         s_RandomSeed;
+static uint64_t         s_PlayerSeed[CS_MAX_PLAYERS];
 
 BeginMemberHookScope(CSource2GameClients)
 {
@@ -269,12 +263,11 @@ BeginMemberHookScope(CSource2GameClients)
     // 因为里面判断了是否是已经注册ConCommand且符合FCVAR_CHEAT | FCVAR_CLIENT_CAN_EXECUTE等判断
     DeclareMemberDetourHook(Command, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const CCommand* pCommand))
     {
-        AssertPtr(s_pCommandContextClient);
-        AssertBool((s_pCommandContextClient->GetSlot() == slot));
+        const auto client = sv->GetClientSafety(slot);
+        
+        if (client == nullptr) return;
 
-        const auto pClient = s_pCommandContextClient;
-
-        if (natives::client::PostCommand(pClient, pCommand->Arg(0), pCommand->ArgC() > 1 ? pCommand->ArgS() : nullptr) >= ECommandAction::Handled)
+        if (natives::client::PostCommand(client, pCommand->Arg(0), pCommand->ArgC() > 1 ? pCommand->ArgS() : nullptr) >= ECommandAction::Handled)
             return;
 
         Command(pServerGameClient, slot, pCommand);
@@ -298,11 +291,7 @@ BeginMemberHookScope(CServerSideClient)
         if (natives::client::PostCommand(pClient, pCommandString) == ECommandAction::Stopped)
             return true;
 
-        AssertBool((s_pCommandContextClient == nullptr));
-
-        s_pCommandContextClient = pClient;
-        const auto result       = ExecuteStringCommand(pClient, pConCommand);
-        s_pCommandContextClient = nullptr;
+        const auto result = ExecuteStringCommand(pClient, pConCommand);
 
         return result;
     }

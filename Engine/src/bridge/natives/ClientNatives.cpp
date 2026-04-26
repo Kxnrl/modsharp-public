@@ -271,13 +271,11 @@ static void FakeClientCommand(CServerSideClient* pClient, const char* pCommand)
 {
     AssertPtr(pClient);
 
-    SetFakeClientCommandContext(pClient);
     {
         CCommand command;
         if (command.Tokenize(pCommand))
             gameClients->ClientCommand(pClient->GetSlot(), command);
     }
-    SetFakeClientCommandContext(nullptr);
 }
 static void ExecuteStringCommand(CServerSideClient* pClient, const char* pCommand)
 {
