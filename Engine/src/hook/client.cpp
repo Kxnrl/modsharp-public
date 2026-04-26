@@ -264,8 +264,12 @@ BeginMemberHookScope(CSource2GameClients)
     DeclareMemberDetourHook(Command, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const CCommand* pCommand))
     {
         const auto client = sv->GetClientSafety(slot);
-        
-        if (client == nullptr) return;
+
+        if (client == nullptr)
+        {
+            WARN("Failed to get client for slot #%d with command \"%s\"", slot, pCommand->GetCommandString());
+            return;
+        }
 
         if (natives::client::PostCommand(client, pCommand->Arg(0), pCommand->ArgC() > 1 ? pCommand->ArgS() : nullptr) >= ECommandAction::Handled)
             return;
