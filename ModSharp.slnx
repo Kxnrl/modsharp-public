@@ -1,0 +1,36 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Engine/ModSharp.vcxproj">
+    <BuildType Project="Release" />
+  </Project>
+  <Project Path="Sharp.Core/Sharp.Core.csproj" />
+  <Project Path="Sharp.Extensions/CommandManager/src/Sharp.Extensions.CommandManager.csproj" />
+  <Project Path="Sharp.Extensions/EntityHookManager/src/Sharp.Extensions.EntityHookManager.csproj" />
+  <Project Path="Sharp.Extensions/GameEventManager/src/Sharp.Extensions.GameEventManager.csproj" />
+  <Project Path="Sharp.Generator.Sdk/Sharp.Generator.Sdk.csproj" />
+  <Project Path="Sharp.Generator/Sharp.Generator.csproj" />
+  <Project Path="Sharp.Modules/AdminCommands.SQLStorage/AdminCommands.SQLStorage/Sharp.Modules.AdminCommands.SQLStorage.csproj" />
+  <Project Path="Sharp.Modules/AdminCommands/Shared/Sharp.Modules.AdminCommands.Shared.csproj" />
+  <Project Path="Sharp.Modules/AdminCommands/src/Sharp.Modules.AdminCommands.csproj" />
+  <Project Path="Sharp.Modules/AdminFlatFile/src/Sharp.Modules.AdminFlatFile.csproj" />
+  <Project Path="Sharp.Modules/AdminManager/Shared/Sharp.Modules.AdminManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/AdminManager/src/Sharp.Modules.AdminManager.csproj" />
+  <Project Path="Sharp.Modules/ClientPreferences/Shared/Sharp.Modules.ClientPreferences.Shared.csproj" />
+  <Project Path="Sharp.Modules/ClientPreferences/src/Sharp.Modules.ClientPreferences.csproj" />
+  <Project Path="Sharp.Modules/CommandCenter/Shared/Sharp.Modules.CommandCenter.Shared.csproj" />
+  <Project Path="Sharp.Modules/CommandCenter/src/Sharp.Modules.CommandCenter.csproj" />
+  <Project Path="Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj" />
+  <Project Path="Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj" />
+  <Project Path="Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/LocalizerManager/src/Sharp.Modules.LocalizerManager.csproj" />
+  <Project Path="Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj" />
+  <Project Path="Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/TargetingManager/src/Sharp.Modules.TargetingManager.csproj" />
+  <Project Path="Sharp.Shared/Sharp.Shared.csproj" />
+</Solution>
