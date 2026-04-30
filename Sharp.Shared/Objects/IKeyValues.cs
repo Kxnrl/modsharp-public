@@ -162,7 +162,24 @@ public interface IKeyValues3 : INativeObject
 
     bool LoadFromFile(string file, string pathId, out string error);
 
+    /// <summary>
+    ///     Load the <see cref="ResourceBlockType.DATA" /> type from the given compiled resource
+    /// </summary>
+    /// <param name="file">Path to compiled resource, the function will append "_" if it doesn't end with it</param>
+    /// <param name="pathId">GAME path id, using GAME is sufficient in most cases</param>
+    /// <param name="error">Error message if it fails</param>
+    /// <returns></returns>
     bool LoadFromCompiledFile(string file, string pathId, out string error);
+
+    /// <summary>
+    ///     Load the given datablock type from the given compiled resource
+    /// </summary>
+    /// <param name="file">Path to compiled resource, the function will append "_" if it doesn't end with it</param>
+    /// <param name="pathId">GAME path id, using GAME is sufficient in most cases</param>
+    /// <param name="block">Resource data block type</param>
+    /// <param name="error">Error message if it fails</param>
+    /// <returns></returns>
+    bool LoadFromCompiledFile(string file, string pathId, ResourceBlockType block, out string error);
 
     bool LoadFromBuffer(byte[] buffer, out string error);
 

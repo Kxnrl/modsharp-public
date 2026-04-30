@@ -69,9 +69,8 @@ bool CSharpKeyValues3Helper::LoadFromFile(KeyValues3* kv, char* error, const cha
     return ret;
 }
 
-bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const
+bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId, uint32_t resource_block_type) const
 {
-#ifdef OPTIMIZE_LOAD_FROM_COMPILED_FILE
     CUtlBuffer buffer{0, 0, CUtlBuffer::TEXT_BUFFER};
 
     if (!g_pFullFileSystem->ReadFile(filename, pathId, buffer))
@@ -81,38 +80,13 @@ bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, c
     }
 
     CResourceBlockInfo output{};
-    if (!Resource_FindBlockInfo(static_cast<const ResourceFileHeader_t*>(buffer.Base()), g_ResourceBlockId_Data, output))
+    if (!Resource_FindBlockInfo(static_cast<const ResourceFileHeader_t*>(buffer.Base()), resource_block_type, output))
     {
         StrCopy(error, 256, "Failed to load resource");
         return false;
     }
 
     return LoadFromBuffer(kv, error, output.m_pBlockData, output.m_nSize, "");
-#else
-
-    const auto handle = g_pFullFileSystem->Open(filename, "rb", pathId);
-    if (handle == nullptr)
-    {
-        StrCopy(error, 256, "Invalid file");
-        return false;
-    }
-
-    const auto size = g_pFullFileSystem->Size(handle);
-
-    std::vector<uint8_t> buffer{};
-    buffer.resize(size);
-    g_pFullFileSystem->Read(buffer.data(), size, handle);
-    g_pFullFileSystem->Close(handle);
-
-    CResourceBlockInfo output{};
-    if (!Resource_FindBlockInfo(reinterpret_cast<const ResourceFileHeader_t*>(buffer.data()), g_ResourceBlockId_Data, output))
-    {
-        StrCopy(error, 256, "Failed to load resource");
-        return false;
-    }
-
-    return LoadFromBuffer(kv, error, output.m_pBlockData, output.m_nSize, "");
-#endif
 }
 
 bool CSharpKeyValues3Helper::LoadFromBuffer(KeyValues3* kv, char* error, const char* input, int bufferSize, const char* kvName) const

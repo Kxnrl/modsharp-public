@@ -111,7 +111,7 @@ internal unsafe partial class KeyValues3Helper : NativeObject
     // loader
     public partial bool LoadFromFile(nint kv, void* error, string file, string path);
 
-    public partial bool LoadFromCompiledFile(nint kv, void* error, string file, string path);
+    public partial bool LoadFromCompiledFile(nint kv, void* error, string file, string path, ResourceBlockType type);
 
     public partial bool LoadFromBuffer(nint kv, void* error, byte* buffer, int length, string kvName);
 

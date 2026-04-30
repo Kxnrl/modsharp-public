@@ -42,6 +42,11 @@ public:
         return m_Put;
     }
 
+    void* Base()
+    {
+        return m_Memory.Base();
+    }
+
     CUtlLeanVector<uint8_t> m_Memory;
     int32_t                 m_Get;
     int32_t                 m_Put;

@@ -44,7 +44,7 @@ public:
 
     // loader
     virtual bool LoadFromFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const;
-    virtual bool LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const;
+    virtual bool LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId, uint32_t resource_block_type) const;
     virtual bool LoadFromBuffer(KeyValues3* kv, char* error, const char* input, int bufferSize, const char* kvName) const;
 
     virtual uint8_t GetType(KeyValues3* kv);

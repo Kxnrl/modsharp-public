@@ -319,7 +319,23 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
         }
 
         var ptr     = stackalloc byte[256];
-        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path);
+        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path, ResourceBlockType.DATA);
+        error = Marshal.PtrToStringUTF8((nint) ptr) ?? string.Empty;
+
+        return success;
+    }
+
+    public bool LoadFromCompiledFile(string file, string path, ResourceBlockType block, out string error)
+    {
+        CheckDisposed();
+
+        if (!file.EndsWith("_c"))
+        {
+            file += "_c";
+        }
+
+        var ptr     = stackalloc byte[256];
+        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path, block);
         error = Marshal.PtrToStringUTF8((nint) ptr) ?? string.Empty;
 
         return success;
