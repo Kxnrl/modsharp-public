@@ -563,6 +563,21 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
         return Utils.ReadString(CoreBridge.KeyValues3HelperInstance.GetString(_this, def));
     }
 
+    public ReadOnlySpan<byte> GetBinaryBlob()
+    {
+        CheckDisposed();
+
+        var size = CoreBridge.KeyValues3HelperInstance.GetBinaryBlobSize(_this);
+        var data = CoreBridge.KeyValues3HelperInstance.GetBinaryBlob(_this);
+
+        if (data is null || size is 0)
+        {
+            return ReadOnlySpan<byte>.Empty;
+        }
+
+        return new ReadOnlySpan<byte>(data, (int) size).ToArray();
+    }
+
     public Color32 GetColor()
     {
         var c = new Color32();

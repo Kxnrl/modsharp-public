@@ -169,6 +169,10 @@ internal unsafe partial class KeyValues3Helper : NativeObject
 
     public partial sbyte* GetString(nint kv, string def);
 
+    public partial byte* GetBinaryBlob(nint kv);
+
+    public partial ulong GetBinaryBlobSize(nint kv);
+
     public partial void GetColor(nint kv, Color32* value);
 
     public partial void GetVector(nint kv, Vector* value);

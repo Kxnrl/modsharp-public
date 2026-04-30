@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
@@ -259,6 +260,8 @@ public interface IKeyValues3 : INativeObject
     double GetDouble(double defaultValue = 0);
 
     string GetString(string defaultValue = "");
+
+    ReadOnlySpan<byte> GetBinaryBlob();
 
     Color32 GetColor();
 

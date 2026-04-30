@@ -76,6 +76,9 @@ public:
     DECL_KV3_GETTER(double, Double, 0);
     DECL_KV3_GETTER(const char*, String, "");
 
+    virtual uint8_t* GetBinaryBlob(KeyValues3* kv);
+    virtual size_t   GetBinaryBlobSize(KeyValues3* kv);
+
     virtual void GetColor(KeyValues3* kv, Color32* color);
     virtual void GetVector(KeyValues3* kv, Vector* vector);
     virtual void GetQAngle(KeyValues3* kv, Vector* vector);

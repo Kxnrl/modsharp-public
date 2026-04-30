@@ -177,6 +177,16 @@ IMPL_KV3_GETTER(float, Float);
 IMPL_KV3_GETTER(double, Double);
 IMPL_KV3_GETTER(const char*, String);
 
+uint8_t* CSharpKeyValues3Helper::GetBinaryBlob(KeyValues3* kv)
+{
+    return kv->GetBinaryBlob();
+}
+
+size_t CSharpKeyValues3Helper::GetBinaryBlobSize(KeyValues3* kv)
+{
+    return kv->GetBinaryBlobSize();
+}
+
 void CSharpKeyValues3Helper::GetColor(KeyValues3* kv, Color32* color)
 {
     const auto v = kv->GetColor();
