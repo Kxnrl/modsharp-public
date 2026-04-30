@@ -210,7 +210,7 @@ MS_GLOBAL_IMPORT bool LoadKV3FromFile(KeyValues3* kv, CUtlString* error, const c
 
 struct KV3BinaryBlob_t
 {
-    size_t m_nSize;
+    std::size_t m_nSize;
 
     union
     {
@@ -257,7 +257,7 @@ public:
         }
     }
 
-    size_t GetBinaryBlobSize()
+    std::size_t GetBinaryBlobSize()
     {
         if (GetType() != KV3_TYPE_BINARY_BLOB || !m_pBinaryBlob) return 0;
 

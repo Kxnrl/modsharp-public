@@ -182,7 +182,7 @@ uint8_t* CSharpKeyValues3Helper::GetBinaryBlob(KeyValues3* kv)
     return kv->GetBinaryBlob();
 }
 
-size_t CSharpKeyValues3Helper::GetBinaryBlobSize(KeyValues3* kv)
+std::size_t CSharpKeyValues3Helper::GetBinaryBlobSize(KeyValues3* kv)
 {
     return kv->GetBinaryBlobSize();
 }
