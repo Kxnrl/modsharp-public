@@ -20,6 +20,7 @@
 #ifndef MS_ROOT_KV3PROXY_H
 #define MS_ROOT_KV3PROXY_H
 
+#include <cstddef>
 #include <cstdint>
 
 class Color32;
