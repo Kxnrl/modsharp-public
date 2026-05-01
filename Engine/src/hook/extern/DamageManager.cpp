@@ -67,7 +67,7 @@ BeginMemberHookScope(CBaseEntity)
             }
             if (action != EHookAction::Ignored)
             {
-                FatalError("Not impl yet");
+                FatalError("OnPlayerDispatchTraceAttackPre: unsupported hook action '%s'", EHookActionName(action));
             }
             const auto result = DispatchTraceAttack(pEntity, pInfo, pResult);
             forwards::OnPlayerDispatchTraceAttackPost->Invoke(pClient, pController, pPlayer, pInfo, pResult, action);
@@ -83,7 +83,7 @@ BeginMemberHookScope(CBaseEntity)
         }
         if (action != EHookAction::Ignored)
         {
-            FatalError("Not impl yet");
+            FatalError("OnEntityDispatchTraceAttackPre: unsupported hook action '%s'", EHookActionName(action));
         }
         const auto result = DispatchTraceAttack(pEntity, pInfo, pResult);
         forwards::OnEntityDispatchTraceAttackPost->Invoke(pEntity, pInfo, pResult, action);

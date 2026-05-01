@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -37,6 +37,30 @@ enum class EHookAction : uint8_t
     IgnoreParamReturnOverride, // 忽略参数后调用原始Function -> 我们提供的返回值
     SkipCallReturnOverride,    // 忽略原始Function, 使用我们提供的返回值
 };
+
+constexpr const char* ECommandActionName(ECommandAction action)
+{
+    switch (action)
+    {
+    case ECommandAction::Skipped: return "Skipped";
+    case ECommandAction::Handled: return "Handled";
+    case ECommandAction::Stopped: return "Stopped";
+    }
+    return "Unknown";
+}
+
+constexpr const char* EHookActionName(EHookAction action)
+{
+    switch (action)
+    {
+    case EHookAction::Ignored: return "Ignored";
+    case EHookAction::ChangeParamReturnDefault: return "ChangeParamReturnDefault";
+    case EHookAction::ChangeParamReturnOverride: return "ChangeParamReturnOverride";
+    case EHookAction::IgnoreParamReturnOverride: return "IgnoreParamReturnOverride";
+    case EHookAction::SkipCallReturnOverride: return "SkipCallReturnOverride";
+    }
+    return "Unknown";
+}
 
 using PlayerSlot_t      = uint8_t;
 using EntityIndex_t     = int32_t;

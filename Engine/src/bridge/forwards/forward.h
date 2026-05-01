@@ -106,7 +106,7 @@ DECLARE_FORWARD(Client, OnClientDisconnected, void, FORWARD_ARG(CServerSideClien
 DECLARE_FORWARD(Client, OnClientSettingChanged, void, FORWARD_ARG(CServerSideClient*));
 DECLARE_FORWARD(Client, OnClientStringCommand, ECommandAction, FORWARD_ARG(CServerSideClient*, const char*, bool, const char*));
 DECLARE_FORWARD(Client, OnClientSayCommand, ECommandAction, FORWARD_ARG(CServerSideClient*, bool, const char*, const char*));
-DECLARE_FORWARD(Client, OnClientAllowHear, EHookAction, FORWARD_ARG(CServerSideClient*, CServerSideClient*, bool*));
+DECLARE_FORWARD(Client, OnClientCanHear, EHookAction, FORWARD_ARG(CServerSideClient*, CServerSideClient*, bool*));
 DECLARE_FORWARD(Client, OnClientConsoleCommand, ECommandAction, FORWARD_ARG(CServerSideClient*, const char*, const char*));
 DECLARE_FORWARD(Client, OnClientSpeakPre, EHookAction, FORWARD_ARG(CServerSideClient*, uint64_t, uint32_t, const char*, size_t));
 DECLARE_FORWARD(Client, OnClientSpeakPost, void, FORWARD_ARG(CServerSideClient*, uint64_t, uint32_t, const char*, size_t, EHookAction));

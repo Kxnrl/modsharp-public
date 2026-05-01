@@ -106,7 +106,7 @@ BeginMemberHookScope(CSource2GameClients)
         }
         else
         {
-            FatalError("Not impl yet");
+            FatalError("OnClientConnect: unsupported hook action '%s'", EHookActionName(action));
             return false;
         }
 
@@ -313,15 +313,15 @@ BeginMemberHookScope(CServerSideClient)
         AssertPtr(pSource);
 
         auto       allow  = true;
-        const auto action = forwards::OnClientAllowHear->Invoke(pClient, pSource, &allow);
+        const auto action = forwards::OnClientCanHear->Invoke(pClient, pSource, &allow);
         if (action == EHookAction::Ignored)
             return IsHearingClient(pClient, nSlot);
 
         if (action == EHookAction::SkipCallReturnOverride)
             return allow;
 
-        FatalError("Not impl yet!");
-        return false;
+        FatalError("OnClientCanHear: unsupported hook action '%s'", EHookActionName(action));
+        return IsHearingClient(pClient, nSlot);
     }
 
     DeclareVirtualHook(CLCMsg_VoiceData, bool, (CServerSideClient * pClient, CNetMessage * pVoiceData))
@@ -348,7 +348,7 @@ BeginMemberHookScope(CServerSideClient)
             return true;
         }
 
-        FatalError("Not impl yet!");
+        FatalError("OnClientSpeakPre: unsupported hook action '%s'", EHookActionName(action));
         return true;
     }
 
@@ -410,7 +410,7 @@ BeginStaticHookScope(HostSay)
                 return;
             }
 
-            FatalError("Not impl yet!");
+            FatalError("OnConsoleSay(HostSay): unsupported command action '%s'", ECommandActionName(action));
             return;
         }
 
@@ -505,7 +505,7 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
             return;
         }
 
-        FatalError("Not impl yet!");
+        FatalError("OnConsoleSay(ScriptPrintMessageChatAll): unsupported command action '%s'", ECommandActionName(action));
     }
 }
 

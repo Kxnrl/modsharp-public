@@ -48,7 +48,7 @@ internal static class Client
 
     public delegate ECommandAction DelegateOnClientSayCommand(nint ptr, bool teamOnly, string command, string message);
 
-    public delegate HookReturnValue<bool> DelegateOnClientAllowHear(nint ptr, nint source);
+    public delegate HookReturnValue<bool> DelegateOnClientCanHear(nint ptr, nint source);
 
     public delegate ECommandAction DelegateOnClientConsoleCommand(nint ptr, string command, string? arguments);
 
@@ -76,7 +76,7 @@ internal static class Client
     public static event DelegateOnClientSettingChanged? OnClientSettingChanged;
     public static event DelegateOnClientStringCommand?  OnClientStringCommand;
     public static event DelegateOnClientSayCommand?     OnClientSayCommand;
-    public static event DelegateOnClientAllowHear?      OnClientAllowHear;
+    public static event DelegateOnClientCanHear?        OnClientCanHear;
     public static event DelegateOnClientConsoleCommand? OnClientConsoleCommand;
     public static event DelegateClientSpeakPre?         OnClientSpeakPre;
     public static event DelegateClientSpeakPost?        OnClientSpeakPost;
@@ -175,14 +175,14 @@ internal static class Client
     }
 
     [UnmanagedCallersOnly]
-    public static unsafe EHookAction OnClientAllowHearExport(nint ptr, nint ptrSource, bool* returnValue)
+    public static unsafe EHookAction OnClientCanHearExport(nint ptr, nint ptrSource, bool* returnValue)
     {
-        if (OnClientAllowHear is null)
+        if (OnClientCanHear is null)
         {
             return EHookAction.Ignored;
         }
 
-        var action = OnClientAllowHear.Invoke(ptr, ptrSource);
+        var action = OnClientCanHear.Invoke(ptr, ptrSource);
 
         *returnValue = action.ReturnValue;
 

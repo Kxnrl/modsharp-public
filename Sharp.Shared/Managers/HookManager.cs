@@ -50,6 +50,11 @@ public interface IHookManager
 
     /// <summary>
     ///     CNetworkGameServer::ConnectClient
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IConnectClientHookParams, NetworkDisconnectionReason> ConnectClient { get; }
 
@@ -61,11 +66,21 @@ public interface IHookManager
 
     /// <summary>
     ///     CServerSideClient::ClientCanHear
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IClientCanHearHookParams, bool> ClientCanHear { get; }
 
     /// <summary>
     ///     CServerSideClient:CLCMsg_VoiceData
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IClientSpeakingHookParams, EmptyHookReturn> ClientSpeaking { get; }
 
@@ -75,11 +90,22 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayerPawn->WeaponService::WeaponCanUse
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.IgnoreParamReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanUseHookParams, bool> PlayerWeaponCanUse { get; }
 
     /// <summary>
     ///     CCSPlayerPawn->WeaponService::WeaponCanSwitch
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanSwitchHookParams, bool> PlayerWeaponCanSwitch { get; }
 
@@ -91,6 +117,11 @@ public interface IHookManager
     ///         Forcing true still won't allow picking up weapons that fail VIS check <br />
     ///         This is just for convenience to hook CanEquip
     ///     </remarks>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanEquipHookParams, bool> PlayerWeaponCanEquip { get; }
 
@@ -100,22 +131,44 @@ public interface IHookManager
 
     /// <summary>
     ///     CCSPlayerPawn::GetPlayerMaxSpeed
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerGetMaxSpeedHookParams, float> PlayerGetMaxSpeed { get; }
 
     /// <summary>
     ///     CCSPlayer_ItemServices::CanAcquire
     ///     <remarks>Used for checking if the player can acquire an item or weapon</remarks>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerCanAcquireHookParams, EAcquireResult> PlayerCanAcquire { get; }
 
     /// <summary>
     ///     CCSPlayerController::HandleCommandJoinTeam
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IHandleCommandJoinTeamHookParams, bool> HandleCommandJoinTeam { get; }
 
     /// <summary>
     ///     CCSPlayerPawn->ItemService::GiveNamedItem
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
     /// </summary>
     IHookType<IGiveNamedItemHookParams, IBaseWeapon> GiveNamedItem { get; }
 
@@ -129,6 +182,11 @@ public interface IHookManager
     ///         Fields in MovementService is from the last frame. To get Buttons you can get it from
     ///         <see cref="IPlayerRunCommandHookParams" />
     ///     </remarks>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPlayerRunCommandHookParams, EmptyHookReturn> PlayerRunCommand { get; }
 
@@ -138,11 +196,23 @@ public interface IHookManager
 
     /// <summary>
     ///     CSoundEmitterSystem::EmitSound
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
     /// </summary>
     IHookType<IEmitSoundHookParams, SoundOpEventGuid> EmitSound { get; }
 
     /// <summary>
     ///     SoundOpGameSystem::DoStartSoundEvent
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
     /// </summary>
     IHookType<ISoundEventHookParams, SoundOpEventGuid> SoundEvent { get; }
 
@@ -165,6 +235,11 @@ public interface IHookManager
     ///         To make a player take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack" /> on the player
     ///         pawn entity.
     ///     </para>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </remarks>
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
 
@@ -183,6 +258,11 @@ public interface IHookManager
     ///         To make an entity take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack" /> on the
     ///         target entity.
     ///     </para>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </remarks>
     IHookType<IEntityDispatchTraceAttackHookParams, long> EntityDispatchTraceAttack { get; }
 
@@ -192,29 +272,58 @@ public interface IHookManager
 
     /// <summary>
     ///     CPointServerCommand::InputCommand
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPointServerCommandHookParams, EmptyHookReturn> PointServerCommand { get; }
 
     /// <summary>
     ///     'status' Command <br />
     ///     <remarks>When client is null means it is sent by server</remarks>
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///     </para>
     /// </summary>
     IHookType<IPrintStatusHookParams, EmptyHookReturn> PrintStatus { get; }
 
     /// <summary>
     ///     NetworkMessages::CUserMsgTextMSG
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
+    /// </summary>
     /// </summary>
     /// <returns>The new Receiver Bits</returns>
     IHookType<ITextMsgHookParams, NetworkReceiver> TextMsg { get; }
 
     /// <summary>
     ///     IGameEventSystem::PostEventAbstract
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
     /// </summary>
     /// <returns>The new Receiver Bits</returns>
     IHookType<IPostEventAbstractHookParams, NetworkReceiver> PostEventAbstract { get; }
 
     /// <summary>
     ///     CCSGameRules::TerminateRound
+    ///     <para>
+    ///         Supported HookAction:
+    ///         <see cref="EHookAction.Ignored"/>,
+    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///     </para>
     /// </summary>
     IHookType<ITerminateRoundHookParams, EmptyHookReturn> TerminateRound { get; }
 

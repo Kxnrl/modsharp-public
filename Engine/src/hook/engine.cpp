@@ -196,7 +196,7 @@ BeginMemberHookScope(CNetworkGameServer)
             return;
         }
 
-        FatalError("Not impl yet");
+        FatalError("OnPrintStatus: unsupported hook action '%s'", EHookActionName(action));
     }
 
     DeclareMemberDetourHook(GetFreeClient, CServerSideClient*, (CNetworkGameServer * pServer, void* a2, int64_t a3, int64_t a4, int8_t a5, void* a6))
@@ -247,7 +247,7 @@ BeginMemberHookScope(CNetworkGameServer)
 
         VPROF_MS_HOOK();
 
-        CUtlBuffer buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
+        CUtlBuffer      buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
         const SteamId_t steamId = *(SteamId_t*)(buffer.PeekGet(sizeof(SteamId_t), 0));
 
         // 无法获取SteamId直接拒绝连接
@@ -268,15 +268,12 @@ BeginMemberHookScope(CNetworkGameServer)
 
         const auto ip = pNetAddress->GetIPHostByteOrder();
 
-        switch (forwards::OnConnectClient->Invoke(steamId, pName, pNetInfo, ip))
-        {
-        case EHookAction::SkipCallReturnOverride:
+        const auto action = forwards::OnConnectClient->Invoke(steamId, pName, pNetInfo, ip);
+        if (action == EHookAction::SkipCallReturnOverride)
             return nullptr;
-        case EHookAction::Ignored:
-            break;
-        default:
-            FatalError("Not impl yet");
-        }
+
+        if (action != EHookAction::Ignored)
+            FatalError("OnConnectClient: unsupported hook action '%s'", EHookActionName(action));
 
         return ConnectClient(pServer, pName, pNetAddress, pNetInfo, pMsg, pszPassword, hashedCdKey, cdkeyLength, bLowViolence);
     }
