@@ -114,7 +114,7 @@ BeginMemberHookScope(CCSGameRules)
 
         if (action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
         {
-            FatalError("Not impl yet");
+            FatalError("OnTerminateRoundPre: unsupported hook action '%s'", EHookActionName(action));
             return;
         }
 

@@ -126,7 +126,7 @@ BeginMemberHookScope(CPlayer_MovementServices)
 
         if (action != EHookAction::Ignored)
         {
-            FatalError("Not Impl Yet");
+            FatalError("RunCommand: unsupported hook action '%s'", EHookActionName(action));
         }
 
         RunCommand(pService, pCommand);

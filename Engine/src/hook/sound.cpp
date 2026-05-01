@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -38,9 +38,9 @@
 // #define SOUND_HOOK_ASSERT
 // #define SOUND_SET_PARAMS_HOOK
 
-static bool                                   s_bInSoundEmitter      = false;
-static CConVarBaseData*                       ms_hook_map_music      = nullptr;
-static CConVarBaseData*                       ms_map_music_threshold = nullptr;
+static bool             s_bInSoundEmitter      = false;
+static CConVarBaseData* ms_hook_map_music      = nullptr;
+static CConVarBaseData* ms_map_music_threshold = nullptr;
 
 static std::unordered_map<std::string, float, StringHash, std::equal_to<>> s_SoundEventDuration{};
 static std::unordered_map<std::string, bool, StringHash, std::equal_to<>>  s_SoundEventIsMusic{};
@@ -107,7 +107,7 @@ BeginMemberHookScope(CSoundEmitterSystem)
             break;
         }
         default: {
-            FatalError("Not impl yet");
+            FatalError("OnEmitSound: unsupported hook action '%s'", EHookActionName(action));
             break;
         }
         }
@@ -135,7 +135,7 @@ BeginMemberHookScope(SoundOpGameSystem)
     {
         return g_pSoundEventManager->GetSoundEventName(pSound);
     }
-    
+
     static inline float GetSoundDuration(const char* pszSound)
     {
         const std::string_view key{pszSound};
@@ -291,7 +291,7 @@ BeginMemberHookScope(SoundOpGameSystem)
             break;
         }
         default: {
-            FatalError("Not impl yet");
+            FatalError("OnSoundEvent: unsupported hook action '%s'", EHookActionName(action));
             break;
         }
         }

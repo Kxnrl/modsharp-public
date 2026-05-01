@@ -54,17 +54,11 @@
 
 constexpr int32_t NET_MESSAGE_ID_VOICE = 47;
 
-static CServerSideClient* s_pCommandContextClient  = nullptr;
-static CConVarBaseData*   ms_log_chat              = nullptr;
-static CConVarBaseData*   ms_chat_block_whitespace = nullptr;
-static CConVarBaseData*   ms_fix_voice_chat        = nullptr;
-static uint64_t           s_RandomSeed;
-static uint64_t           s_PlayerSeed[CS_MAX_PLAYERS];
-
-void SetFakeClientCommandContext(CServerSideClient* pClient)
-{
-    s_pCommandContextClient = pClient;
-}
+static CConVarBaseData* ms_log_chat              = nullptr;
+static CConVarBaseData* ms_chat_block_whitespace = nullptr;
+static CConVarBaseData* ms_fix_voice_chat        = nullptr;
+static uint64_t         s_RandomSeed;
+static uint64_t         s_PlayerSeed[CS_MAX_PLAYERS];
 
 BeginMemberHookScope(CSource2GameClients)
 {
@@ -112,7 +106,7 @@ BeginMemberHookScope(CSource2GameClients)
         }
         else
         {
-            FatalError("Not impl yet");
+            FatalError("OnClientConnect: unsupported hook action '%s'", EHookActionName(action));
             return false;
         }
 
@@ -269,12 +263,15 @@ BeginMemberHookScope(CSource2GameClients)
     // 因为里面判断了是否是已经注册ConCommand且符合FCVAR_CHEAT | FCVAR_CLIENT_CAN_EXECUTE等判断
     DeclareMemberDetourHook(Command, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const CCommand* pCommand))
     {
-        AssertPtr(s_pCommandContextClient);
-        AssertBool((s_pCommandContextClient->GetSlot() == slot));
+        const auto client = sv->GetClientSafety(slot);
 
-        const auto pClient = s_pCommandContextClient;
+        if (client == nullptr)
+        {
+            WARN("Failed to get client for slot #%d with command \"%s\"", slot, pCommand->GetCommandString());
+            return;
+        }
 
-        if (natives::client::PostCommand(pClient, pCommand->Arg(0), pCommand->ArgC() > 1 ? pCommand->ArgS() : nullptr) >= ECommandAction::Handled)
+        if (natives::client::PostCommand(client, pCommand->Arg(0), pCommand->ArgC() > 1 ? pCommand->ArgS() : nullptr) >= ECommandAction::Handled)
             return;
 
         Command(pServerGameClient, slot, pCommand);
@@ -298,11 +295,7 @@ BeginMemberHookScope(CServerSideClient)
         if (natives::client::PostCommand(pClient, pCommandString) == ECommandAction::Stopped)
             return true;
 
-        AssertBool((s_pCommandContextClient == nullptr));
-
-        s_pCommandContextClient = pClient;
-        const auto result       = ExecuteStringCommand(pClient, pConCommand);
-        s_pCommandContextClient = nullptr;
+        const auto result = ExecuteStringCommand(pClient, pConCommand);
 
         return result;
     }
@@ -320,15 +313,15 @@ BeginMemberHookScope(CServerSideClient)
         AssertPtr(pSource);
 
         auto       allow  = true;
-        const auto action = forwards::OnClientAllowHear->Invoke(pClient, pSource, &allow);
+        const auto action = forwards::OnClientCanHear->Invoke(pClient, pSource, &allow);
         if (action == EHookAction::Ignored)
             return IsHearingClient(pClient, nSlot);
 
         if (action == EHookAction::SkipCallReturnOverride)
             return allow;
 
-        FatalError("Not impl yet!");
-        return false;
+        FatalError("OnClientCanHear: unsupported hook action '%s'", EHookActionName(action));
+        return IsHearingClient(pClient, nSlot);
     }
 
     DeclareVirtualHook(CLCMsg_VoiceData, bool, (CServerSideClient * pClient, CNetMessage * pVoiceData))
@@ -355,7 +348,7 @@ BeginMemberHookScope(CServerSideClient)
             return true;
         }
 
-        FatalError("Not impl yet!");
+        FatalError("OnClientSpeakPre: unsupported hook action '%s'", EHookActionName(action));
         return true;
     }
 
@@ -417,7 +410,7 @@ BeginStaticHookScope(HostSay)
                 return;
             }
 
-            FatalError("Not impl yet!");
+            FatalError("OnConsoleSay(HostSay): unsupported command action '%s'", ECommandActionName(action));
             return;
         }
 
@@ -512,7 +505,7 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
             return;
         }
 
-        FatalError("Not impl yet!");
+        FatalError("OnConsoleSay(ScriptPrintMessageChatAll): unsupported command action '%s'", ECommandActionName(action));
     }
 }
 

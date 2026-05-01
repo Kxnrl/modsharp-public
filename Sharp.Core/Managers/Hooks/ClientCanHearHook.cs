@@ -28,7 +28,7 @@ namespace Sharp.Core.Managers.Hooks;
 internal class ClientCanHearHook : HookType<IClientCanHearHookParams, bool, ClientCanHearHook>
 {
     public ClientCanHearHook(ILoggerFactory factory) : base(factory)
-        => Bridges.Forwards.Client.OnClientAllowHear += CServerSideClient_CanHear;
+        => Bridges.Forwards.Client.OnClientCanHear += CServerSideClient_CanHear;
 
     private HookReturnValue<bool> CServerSideClient_CanHear(nint ptrClient, nint ptrSource)
     {

@@ -149,7 +149,7 @@ BeginMemberHookScope(CCSPlayerPawn)
 
         if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
         {
-            FatalError("Not impl yet");
+            FatalError("OnPlayerGetMaxSpeed: unsupported hook action '%s'.", EHookActionName(action));
         }
     }
 #else
@@ -167,7 +167,7 @@ BeginMemberHookScope(CCSPlayerPawn)
         }
         if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
         {
-            FatalError("Not impl yet");
+            FatalError("OnPlayerGetMaxSpeed: unsupported hook action '%s'.", EHookActionName(action));
         }
 
         return originalSpeed * GetPlayerRunSpeedValue(pController);
@@ -256,7 +256,7 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 
                 if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride)
                 {
-                    FatalError("Not impl yet");
+                    FatalError("OnPlayerWeaponCanUse: unsupported hook action '%s'", EHookActionName(action));
                 }
             }
         }
@@ -287,7 +287,7 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 
                 if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
                 {
-                    FatalError("Not impl yet");
+                    FatalError("OnPlayerWeaponCanSwitch: unsupported hook action '%s'", EHookActionName(action));
                 }
             }
         }
@@ -312,7 +312,7 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 
                 if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
                 {
-                    FatalError("Not impl yet");
+                    FatalError("OnPlayerWeaponCanEquip: unsupported hook action '%s'", EHookActionName(action));
                 }
             }
         }

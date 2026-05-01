@@ -20,12 +20,12 @@
 #include "address.h"
 #include "bridge/forwards/forward.h"
 #include "global.h"
+#include "hook/installer.h"
 #include "manager/HookManager.h"
+#include "memory/zydis_utility.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
-#include "hook/installer.h"
-#include "memory/zydis_utility.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseWeapon.h"
@@ -211,7 +211,7 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 
         if (action == EHookAction::SkipCallReturnOverride || action == EHookAction::ChangeParamReturnOverride || action == EHookAction::IgnoreParamReturnOverride)
         {
-            FatalError("Not impl yet!");
+            FatalError("GiveNamedItem: unsupported hook action '%s'", EHookActionName(action));
         }
 
         if (action == EHookAction::ChangeParamReturnDefault)
@@ -289,8 +289,8 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
         if (action == EHookAction::SkipCallReturnOverride)
             return proxyResult;
 
-        FatalError("Not implemented");
-        return 0;
+        FatalError("CanAcquire: unsupported hook action '%s'", EHookActionName(action));
+        return acquireResult;
     }
 }
 
