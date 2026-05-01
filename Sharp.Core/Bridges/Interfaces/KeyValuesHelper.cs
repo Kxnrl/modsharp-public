@@ -111,7 +111,7 @@ internal unsafe partial class KeyValues3Helper : NativeObject
     // loader
     public partial bool LoadFromFile(nint kv, void* error, string file, string path);
 
-    public partial bool LoadFromCompiledFile(nint kv, void* error, string file, string path);
+    public partial bool LoadFromCompiledFile(nint kv, void* error, string file, string path, ResourceBlockType type);
 
     public partial bool LoadFromBuffer(nint kv, void* error, byte* buffer, int length, string kvName);
 
@@ -168,6 +168,10 @@ internal unsafe partial class KeyValues3Helper : NativeObject
     public partial double GetDouble(nint kv, double def);
 
     public partial sbyte* GetString(nint kv, string def);
+
+    public partial byte* GetBinaryBlob(nint kv);
+
+    public partial ulong GetBinaryBlobSize(nint kv);
 
     public partial void GetColor(nint kv, Color32* value);
 

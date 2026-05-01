@@ -203,9 +203,11 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
     /// </summary>
     public float DistToSqr(Vector other)
     {
-        var delta = new Vector(X - other.X, Y - other.Y, Z - other.Z);
+        var dx = X - other.X;
+        var dy = Y - other.Y;
+        var dz = Z - other.Z;
 
-        return delta.LengthSqr();
+        return dx * dx + dy * dy + dz * dz;
     }
 
     public float DistTo(Vector other)

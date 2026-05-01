@@ -208,6 +208,19 @@ MS_GLOBAL_IMPORT bool LoadKV3(KeyValues3* kv, CUtlString* error, CUtlBuffer* inp
 MS_GLOBAL_IMPORT bool LoadKV3(KeyValues3* kv, CUtlString* error, const char* input, const KV3ID_t& format, const char* kv_name, uint32_t flags = KV3_LOAD_TEXT_NONE);
 MS_GLOBAL_IMPORT bool LoadKV3FromFile(KeyValues3* kv, CUtlString* error, const char* filename, const char* path, const KV3ID_t& format, uint32_t flags = KV3_LOAD_TEXT_NONE);
 
+struct KV3BinaryBlob_t
+{
+    std::size_t m_nSize;
+
+    union
+    {
+        uint8_t* m_pubData;
+        uint8_t  m_ubData[1];
+    };
+
+    bool m_bFreeMemory;
+};
+
 class KeyValues3
 {
 public:
@@ -233,6 +246,23 @@ public:
     uint64_t GetUInt64(uint64_t defaultValue = 0) { return GetValue<uint64_t>(defaultValue); }
     float    GetFloat(float defaultValue = 0.0f) { return GetValue<float>(defaultValue); }
     double   GetDouble(double defaultValue = 0.0) { return GetValue<double>(defaultValue); }
+
+    uint8_t* GetBinaryBlob()
+    {
+        switch (GetTypeEx())
+        {
+        case KV3_TYPEEX_BINARY_BLOB: return m_pBinaryBlob ? m_pBinaryBlob->m_ubData : nullptr;
+        case KV3_TYPEEX_BINARY_BLOB_EXTERN: return m_pBinaryBlob ? m_pBinaryBlob->m_pubData : nullptr;
+        default: return nullptr;
+        }
+    }
+
+    std::size_t GetBinaryBlobSize()
+    {
+        if (GetType() != KV3_TYPE_BINARY_BLOB || !m_pBinaryBlob) return 0;
+
+        return m_pBinaryBlob->m_nSize;
+    }
 
     void SetBool(bool value);
     void SetInt8(int8_t value);
@@ -319,7 +349,7 @@ private:
         const char* m_pString;
         char        m_szStringShort[8];
 
-        void* m_pBinaryBlob;
+        KV3BinaryBlob_t* m_pBinaryBlob;
 
         void*    m_pArray;
         float*   m_f32Array;

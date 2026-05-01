@@ -20,6 +20,7 @@
 #ifndef MS_ROOT_KV3PROXY_H
 #define MS_ROOT_KV3PROXY_H
 
+#include <cstddef>
 #include <cstdint>
 
 class Color32;
@@ -44,7 +45,7 @@ public:
 
     // loader
     virtual bool LoadFromFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const;
-    virtual bool LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId) const;
+    virtual bool LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId, uint32_t resource_block_type) const;
     virtual bool LoadFromBuffer(KeyValues3* kv, char* error, const char* input, int bufferSize, const char* kvName) const;
 
     virtual uint8_t GetType(KeyValues3* kv);
@@ -75,6 +76,9 @@ public:
     DECL_KV3_GETTER(float, Float, 0);
     DECL_KV3_GETTER(double, Double, 0);
     DECL_KV3_GETTER(const char*, String, "");
+
+    virtual uint8_t*    GetBinaryBlob(KeyValues3* kv);
+    virtual std::size_t GetBinaryBlobSize(KeyValues3* kv);
 
     virtual void GetColor(KeyValues3* kv, Color32* color);
     virtual void GetVector(KeyValues3* kv, Vector* vector);

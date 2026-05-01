@@ -319,7 +319,23 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
         }
 
         var ptr     = stackalloc byte[256];
-        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path);
+        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path, ResourceBlockType.DATA);
+        error = Marshal.PtrToStringUTF8((nint) ptr) ?? string.Empty;
+
+        return success;
+    }
+
+    public bool LoadFromCompiledFile(string file, string path, ResourceBlockType block, out string error)
+    {
+        CheckDisposed();
+
+        if (!file.EndsWith("_c"))
+        {
+            file += "_c";
+        }
+
+        var ptr     = stackalloc byte[256];
+        var success = CoreBridge.KeyValues3HelperInstance.LoadFromCompiledFile(_this, ptr, file, path, block);
         error = Marshal.PtrToStringUTF8((nint) ptr) ?? string.Empty;
 
         return success;
@@ -545,6 +561,21 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
         CheckDisposed();
 
         return Utils.ReadString(CoreBridge.KeyValues3HelperInstance.GetString(_this, def));
+    }
+
+    public ReadOnlySpan<byte> GetBinaryBlob()
+    {
+        CheckDisposed();
+
+        var size = CoreBridge.KeyValues3HelperInstance.GetBinaryBlobSize(_this);
+        var data = CoreBridge.KeyValues3HelperInstance.GetBinaryBlob(_this);
+
+        if (data is null || size is 0)
+        {
+            return ReadOnlySpan<byte>.Empty;
+        }
+
+        return new ReadOnlySpan<byte>(data, (int) size).ToArray();
     }
 
     public Color32 GetColor()
