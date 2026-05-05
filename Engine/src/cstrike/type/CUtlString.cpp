@@ -36,12 +36,14 @@ CUtlString::CUtlString(const char* pString) :
     Set(pString);
 }
 
-CUtlString::CUtlString(const char* pString, int length)
+CUtlString::CUtlString(const char* pString, int length) :
+    m_pString(nullptr)
 {
     SetDirect(pString, length);
 }
 
-CUtlString::CUtlString(const CUtlString& string)
+CUtlString::CUtlString(const CUtlString& string) :
+    m_pString(nullptr)
 {
     SetDirect(string.Get(), string.Length());
 }
