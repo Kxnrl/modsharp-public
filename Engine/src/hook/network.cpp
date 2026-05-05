@@ -27,12 +27,17 @@
 
 #include "cstrike/entity/PlayerPawn.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/interface/IGameEvent.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/IProtobufBinding.h"
+#include "cstrike/interface/IServerGameClient.h"
 #include "cstrike/type/CEffectData.h"
 
+#include "hook/extern/ExtraAddon.h"
+
 #include <proto/cs_gameevents.pb.h>
+#include <proto/gameevents.pb.h>
 #include <proto/te.pb.h>
 #include <proto/usermessages.pb.h>
 
@@ -272,6 +277,25 @@ BeginMemberHookScope(IGameEventSystem)
         case TE_BloodStreamId:
         case TE_ArmorRicochetId: {
             TransmitCheckBloodEffect(clients);
+            return PostEventAbstract(pGameEventSystem, nSlot, bLocalOnly, nClientCount, clients, pEvent, pData, nSize, bufType);
+        }
+        // For addon loop chat spam
+        case GE_Source1LegacyGameEvent: {
+            if (ExtraAddon::GetBlockDisconnectMessages() && eventManager)
+            {
+                const auto msg               = reinterpret_cast<const CMsgSource1LegacyGameEvent*>(pMsg);
+                static const int sDisconnectEventId = eventManager->LookupEventId("player_disconnect");
+                if (sDisconnectEventId != -1 && msg->eventid() == sDisconnectEventId)
+                {
+                    if (auto* pGameEvent = eventManager->UnserializeEvent(msg))
+                    {
+                        const auto reason = pGameEvent->GetInt("reason");
+                        eventManager->FreeEvent(pGameEvent);
+                        if (reason == NETWORK_DISCONNECT_LOOPSHUTDOWN)
+                            *const_cast<NetworkReceiver_t*>(clients) = 0;
+                    }
+                }
+            }
             return PostEventAbstract(pGameEventSystem, nSlot, bLocalOnly, nClientCount, clients, pEvent, pData, nSize, bufType);
         }
         case UM_TextMsg: {

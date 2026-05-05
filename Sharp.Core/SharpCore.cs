@@ -1419,6 +1419,78 @@ internal partial class SharpCore : ISharpCore
 
 #endregion
 
+#region Extra Addon
+
+    private static string[] SplitAddonCsv(nint csvPtr)
+    {
+        var csv = Marshal.PtrToStringUTF8(csvPtr);
+        if (string.IsNullOrEmpty(csv))
+            return Array.Empty<string>();
+        return csv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    public ulong[] ExtraAddonGetIds()
+    {
+        var span = Game.ExtraAddonGetIds();
+        return span.AsSpan().ToArray();
+    }
+
+    public string[] ExtraAddonGetServerAddons()
+        => SplitAddonCsv(Game.ExtraAddonGetServerAddons());
+
+    public string[] ExtraAddonGetGlobalClientAddons()
+        => SplitAddonCsv(Game.ExtraAddonGetGlobalClientAddons());
+
+    public string[] ExtraAddonGetMountedAddons()
+        => SplitAddonCsv(Game.ExtraAddonGetMountedAddons());
+
+    public string[] ExtraAddonGetClientAddons(SteamID steamId)
+        => SplitAddonCsv(Game.ExtraAddonGetClientAddons(steamId));
+
+    public string? ExtraAddonGetCurrentWorkshopMap()
+        => Marshal.PtrToStringUTF8(Game.ExtraAddonGetCurrentWorkshopMap());
+
+    public bool ExtraAddonAddAddon(string addon, bool refresh = false)
+        => Game.ExtraAddonAddAddon(addon, refresh);
+
+    public bool ExtraAddonRemoveAddon(string addon, bool refresh = false)
+        => Game.ExtraAddonRemoveAddon(addon, refresh);
+
+    public void ExtraAddonClearAddons()
+        => Game.ExtraAddonClearAddons();
+
+    public void ExtraAddonRefreshAddons(bool reloadMap = false)
+        => Game.ExtraAddonRefreshAddons(reloadMap);
+
+    public void ExtraAddonReloadMap()
+        => Game.ExtraAddonReloadMap();
+
+    public bool ExtraAddonMount(string addon, bool addToTail = false)
+        => Game.ExtraAddonMount(addon, addToTail);
+
+    public bool ExtraAddonUnmount(string addon)
+        => Game.ExtraAddonUnmount(addon);
+
+    public bool ExtraAddonIsMounted(string addon, bool checkWorkshopMap = false)
+        => Game.ExtraAddonIsMounted(addon, checkWorkshopMap);
+
+    public void ExtraAddonAddClientAddon(string addon, SteamID steamId = default, bool refresh = false)
+        => Game.ExtraAddonAddClientAddon(addon, steamId, refresh);
+
+    public void ExtraAddonRemoveClientAddon(string addon, SteamID steamId = default)
+        => Game.ExtraAddonRemoveClientAddon(addon, steamId);
+
+    public void ExtraAddonClearClientAddons(SteamID steamId = default)
+        => Game.ExtraAddonClearClientAddons(steamId);
+
+    public bool ExtraAddonDownload(string addon, bool important = false, bool force = false)
+        => Game.ExtraAddonDownload(addon, important, force);
+
+    public bool ExtraAddonHasUGCConnection()
+        => Game.ExtraAddonHasUGCConnection();
+
+#endregion
+
 #region DedicatedServerWorkshopManager
 
     public bool AddWorkshopMap(ulong sharedFileId, string mapName, string path)

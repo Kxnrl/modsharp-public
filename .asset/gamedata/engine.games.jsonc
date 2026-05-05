@@ -106,6 +106,17 @@
         ]
       }
     },
+    // str "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+    "ReplyConnection": {
+      "library": "engine",
+      "linux": "55 48 8D 05 ? ? ? ? 66 0F EF C0 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC",
+      "windows": "48 8B C4 55 41 55 41 56",
+      "refs": {
+        "strings": [
+          "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+        ]
+      }
+    },
     "Source2_Init": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 89 BD ? ? ? ? 48 8B 3D ? ? ? ? 48 85 FF",
@@ -122,6 +133,11 @@
     "CNetworkGameServer::m_ServerState": {
       "linux": 56,
       "windows": 56
+    },
+    // str "Sending S2C_CONNECTION to %s [addons:'%s']\n" 中的 addons 字段
+    "CNetworkGameServer::m_Addons": {
+      "linux": 344,
+      "windows": 344
     },
     "CNetworkGameServer::m_vecClients": {
       "linux": 592,

@@ -81,6 +81,11 @@
     - name: ICommandManager
       href: command-manager.md
 
+- name: Workshop Addons
+  items:
+    - name: Extra Addon
+      href: extra-addon.md
+
 - name: FirstParty Modules
   items:
     - name: Client Preferences

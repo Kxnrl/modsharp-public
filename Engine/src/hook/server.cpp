@@ -23,6 +23,7 @@
 #include "global.h"
 #include "hook/installer.h"
 #include "logging.h"
+#include "hook/extern/ExtraAddon.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -84,6 +85,7 @@ BeginMemberHookScope(CSource2Server)
 
         GameServerSteamAPIActivated(pServer);
         InitApiContext();
+        ExtraAddon::OnSteamApiActivated();
     }
 
     DeclareVirtualHook(GameServerSteamAPIDeactivated, void, (CSource2Server * pServer))

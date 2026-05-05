@@ -65,6 +65,8 @@ ISteamApiProxy*                   g_pSteamApiProxy      = &g_SteamApiProxy;
 uint64_t                          g_unDualAddonId       = 0;
 bool                              g_bDualAddonAvailable = false;
 
+extern "C" void ExtraAddon_OnSteamDownloadItemResult(uint64_t fileId, int eResult);
+
 void InitApiContext()
 {
     if (CommandLine()->HasParam("-dual_addon"))
@@ -165,6 +167,8 @@ void CallbackListener::OnDownloadItemResult(DownloadItemResult_t* pParam)
         LogInfo("Downloaded addon %llu", id);
     }
 #endif
+
+    ExtraAddon_OnSteamDownloadItemResult(id, pParam->m_eResult);
 
     forwards::OnDownloadItemResult->Invoke(id, pParam->m_eResult);
 }

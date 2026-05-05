@@ -28,3 +28,11 @@ You can learn how to work with **ConVar** through the example project, [Jump Lin
 | ms_fix_spawngroups_leak | Fix SpawnGroup leak issue | false | - |
 | ms_hook_map_music | Hook map music | false | - |
 | ms_map_music_threshold | Hook map music and forward to Transmit functionality | 15 | 5 - 300 |
+| ms_extra_addons | Workshop IDs of server-side extra addons (comma-separated). See [Workshop Addons](workshop-addons.md). | (CLI value) | - |
+| ms_client_extra_addons | Workshop IDs delivered to all clients, download-only | "" | - |
+| ms_extra_addons_timeout | Reconnect timeout (seconds) while clients download addons | 10 | 1 - 600 |
+| ms_extra_addons_debug | Verbose debug logging for the extra addon flow | false | - |
+| ms_cache_clients_with_addons | Cache per-client downloaded-addons list to skip redownload on reconnect | false | - |
+| ms_cache_clients_duration | Cache duration in seconds (0 = forever) | 0 | 0 - ∞ |
+| ms_block_disconnect_messages | Suppress "loop shutdown" disconnect messages during addon-driven reconnects | false | - |
+| ms_addon_mount_download | Always re-download addons when mounting, even if already installed | false | - |
