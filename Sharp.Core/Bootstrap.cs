@@ -565,6 +565,7 @@ public static class Bootstrap
         services.AddSingleton<ICorePhysicsQueryManager, PhysicsQueryManager>();
         services.AddSingleton<ICoreSharpModuleManager, SharpModuleManager>();
         services.AddSingleton<ICoreParticleManager, ParticleManager>();
+        services.AddSingleton<ICoreAddonManager, AddonManager>();
         services.AddSingleton<ISharedManager, SharedManager>();
     }
 
@@ -584,6 +585,7 @@ public static class Bootstrap
         services.GetRequiredService<ICorePhysicsQueryManager>();
         services.GetRequiredService<ICoreSharpModuleManager>();
         services.GetRequiredService<ICoreParticleManager>();
+        services.GetRequiredService<ICoreAddonManager>();
 
         services.GetRequiredService<ExceptionHandler>().Start();
         services.GetRequiredService<ISharpCore>().InitMainThread();
