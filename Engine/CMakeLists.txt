@@ -93,6 +93,7 @@ set(modsharp_SOURCES
 	"src/hook/engine.cpp"
 	"src/hook/entity.cpp"
 	"src/hook/event.cpp"
+	"src/hook/extern/AddonHooks.cpp"
 	"src/hook/extern/DamageManager.cpp"
 	"src/hook/extern/DualMountAddon.cpp"
 	"src/hook/extern/ExtraAddon.cpp"
