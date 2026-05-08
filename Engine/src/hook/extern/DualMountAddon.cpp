@@ -42,9 +42,8 @@
 
 // #define DUAL_ADDON_ASSERT
 
-constexpr int32_t NET_MESSAGE_ID_SIGNON = 7;
-constexpr double  DUAL_ADDON_TIMEOUT    = 20;
-constexpr double  BYPASS_ADDON_TIMEOUT  = 600;
+constexpr double DUAL_ADDON_TIMEOUT   = 20;
+constexpr double BYPASS_ADDON_TIMEOUT = 600;
 
 static std::unordered_map<SteamId_t, double> s_PendingMountClient;
 static std::unordered_map<SteamId_t, double> s_BypassCheckingTime;

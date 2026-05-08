@@ -24,6 +24,7 @@
 #include "hook/network.h"
 
 #include "cstrike/interface/INetChannel.h"
+#include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/IProtobufBinding.h"
 #include "cstrike/type/CHostState.h"
 
