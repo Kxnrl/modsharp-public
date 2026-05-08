@@ -99,7 +99,7 @@ ConVars enabled (recommended for production), this only happens on first visit
 
 ### Runtime API
 
-The `IModSharp` interface exposes the full ExtraAddon surface. Highlights:
+The `IAddonManager` interface (obtained via `ISharedSystem.GetAddonManager()`) exposes the full ExtraAddon surface. Highlights:
 
 | Method | Purpose |
 |---|---|

@@ -92,7 +92,7 @@ ModSharp 提供两种向客户端分发创意工坊插件的方式：
 
 ### 运行时 API
 
-`IModSharp` 接口暴露了 ExtraAddon 的完整 API，常用方法如下：
+`IAddonManager` 接口（通过 `ISharedSystem.GetAddonManager()` 获取）暴露了 ExtraAddon 的完整 API，常用方法如下：
 
 | 方法 | 用途 |
 |---|---|

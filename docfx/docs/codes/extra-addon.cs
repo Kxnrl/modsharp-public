@@ -24,20 +24,20 @@ public sealed class ExtraAddon : IModSharpModule
 
     public bool Init()
     {
-        var ms = _sharedSystem.GetModSharp();
+        var addons = _sharedSystem.GetAddonManager();
 
         // Add an addon to the server-side mounted list (similar to specifying it via -extra_addons).
         // refresh: true triggers a remount + map reload if needed.
-        ms.ExtraAddonAddAddon("123123123123", refresh: true);
+        addons.ExtraAddonAddAddon("123123123123", refresh: true);
 
         // Push an addon to all connecting clients (download-only, not mounted server-side).
-        ms.ExtraAddonAddClientAddon("123123123456");
+        addons.ExtraAddonAddClientAddon("123123123456");
 
         // Push an addon to a specific client only.
-        ms.ExtraAddonAddClientAddon("123123123789", new SteamID(76561198000000000UL));
+        addons.ExtraAddonAddClientAddon("123123123789", new SteamID(76561198000000000UL));
 
         // Inspect what's currently mounted.
-        foreach (var addon in ms.ExtraAddonGetMountedAddons())
+        foreach (var addon in addons.ExtraAddonGetMountedAddons())
         {
             _logger.LogInformation("Mounted addon: {Addon}", addon);
         }
