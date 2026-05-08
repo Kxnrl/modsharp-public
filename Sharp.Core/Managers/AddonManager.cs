@@ -21,7 +21,7 @@ using System;
 using System.Runtime.InteropServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared.Managers;
-using Sharp.Shared.Types;
+using Sharp.Shared.Units;
 
 namespace Sharp.Core.Managers;
 

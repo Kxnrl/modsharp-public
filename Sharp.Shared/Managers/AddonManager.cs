@@ -17,7 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Sharp.Shared.Types;
+using Sharp.Shared.Units;
 
 namespace Sharp.Shared.Managers;
 
