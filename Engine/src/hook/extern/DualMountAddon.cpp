@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -19,7 +19,7 @@
 
 #include "gamedata.h"
 #include "global.h"
-#include "hook/installer.h"
+#include "hook/extern/AddonHooks.h"
 #include "hook/network.h"
 #include "logging.h"
 #include "manager/ConVarManager.h"
@@ -39,8 +39,6 @@
 #include "cstrike/type/KeyValues.h"
 
 #include <proto/networkbasetypes.pb.h>
-
-#include <safetyhook.hpp>
 
 // #define DUAL_ADDON_ASSERT
 
@@ -96,9 +94,10 @@ static CServerSideClient* GetPendingClient(const INetChannel* pNetChan)
     return nullptr;
 }
 
-BeginStaticHookScope(HostStateRequest)
+class DualMountAddonStrategy : public AddonHooks::IAddonStrategy
 {
-    DeclareStaticDetourHook(HostStateRequest, void, (void* a1, CHostStateRequest* pRequest))
+public:
+    void OnHostStateRequestPre(void* /*a1*/, CHostStateRequest* pRequest) override
     {
         s_IsOfficialWorkshopMap = false;
         s_bReconnectionRequired = false;
@@ -106,7 +105,7 @@ BeginStaticHookScope(HostStateRequest)
 
         const auto addonId = GetDualAddonId();
         if (addonId == 0)
-            return HostStateRequest(a1, pRequest);
+            return;
 
         LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=[%s]", pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
 
@@ -155,7 +154,7 @@ BeginStaticHookScope(HostStateRequest)
         }
 
         std::vector<std::string> addons{};
-        const auto addonIdString = std::to_string(addonId);
+        const auto               addonIdString = std::to_string(addonId);
 
         if (!s_CurrentWorkshopMap.empty() && strcasecmp(addonIdString.c_str(), s_CurrentWorkshopMap.c_str()) == 0)
         {
@@ -185,22 +184,12 @@ BeginStaticHookScope(HostStateRequest)
             s_CurrentWorkshopMap.c_str(),
             BooleanSTR(s_IsOfficialWorkshopMap),
             BooleanSTR(s_bReconnectionRequired));
-
-        HostStateRequest(a1, pRequest);
     }
-}
 
-BeginMemberHookScope(INetChannel)
-{
-    DeclareMemberDetourHook(SendNetMessage, bool, (INetChannel * pNetChannel, CNetMessagePB<CNETMsg_SignonState> * pData, int a4))
+    void OnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData) override
     {
-        if (s_bBypassNetMessageHook)
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        const auto pInfo = pData->GetNetMessage()->GetNetMessageInfo();
-
-        if (pInfo->m_MessageId != NET_MESSAGE_ID_SIGNON || !s_bReconnectionRequired)
-            return SendNetMessage(pNetChannel, pData, a4);
+        if (!s_bReconnectionRequired)
+            return;
 
 #ifdef DUAL_ADDON_ASSERT
         LOG("SignonState State=%d Addons=[%s]", pData->signon_state(), pData->addons().c_str());
@@ -208,11 +197,11 @@ BeginMemberHookScope(INetChannel)
 
         const auto addonId = GetDualAddonId();
         if (addonId == 0)
-            return SendNetMessage(pNetChannel, pData, a4);
+            return;
 
         const auto pClient = GetPendingClient(pNetChannel);
         if (!pClient)
-            return SendNetMessage(pNetChannel, pData, a4);
+            return;
 
         // HACK Valve 24/7/27更新损坏了这个, 如果你在服务器里的时候, 因为原生换图下发了2个或以上的ID, 客户端会直接卡住
         if (strchr(pData->addons().c_str(), ',') != nullptr)
@@ -238,10 +227,10 @@ BeginMemberHookScope(INetChannel)
             pData->set_addons(buffer);
             pData->set_signon_state(SIGNONSTATE_CHANGELEVEL);
         }
-
-        return SendNetMessage(pNetChannel, pData, a4);
     }
-}
+};
+
+static DualMountAddonStrategy s_DualMountAddonStrategy;
 
 static void OnClientConnectPre(PlayerSlot_t slot, const char* name, SteamId_t steamId, bool bot)
 {
@@ -323,8 +312,7 @@ void InstallDualMountAddonHooks()
         }
     });
 
-    SHOOK(HostStateRequest);
-    HOOK(INetChannel, SendNetMessage);
+    AddonHooks::Install(&s_DualMountAddonStrategy);
 }
 
 void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)

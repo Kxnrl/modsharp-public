@@ -12,9 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  * ============================================================================
  * Acknowledgements
  *
@@ -32,6 +29,7 @@
 
 #include "gamedata.h"
 #include "global.h"
+#include "hook/extern/AddonHooks.h"
 #include "hook/installer.h"
 #include "hook/network.h"
 #include "logging.h"
@@ -55,8 +53,6 @@
 #include <proto/networkbasetypes.pb.h>
 
 #include <safetyhook.hpp>
-
-constexpr int32_t NET_MESSAGE_ID_SIGNON = 7;
 
 static CServerSideClient* GetClientByNetChannel(const INetChannel* pNetChan)
 {
@@ -92,15 +88,16 @@ static std::vector<std::string> GetRemainingAddons(SteamId_t steamId)
     return all;
 }
 
-BeginStaticHookScope(HostStateRequest)
+class ExtraAddonStrategy : public AddonHooks::IAddonStrategy
 {
-    DeclareStaticDetourHook(HostStateRequest, void, (void* a1, CHostStateRequest* pRequest))
+public:
+    void OnHostStateRequestPre(void* /*a1*/, CHostStateRequest* pRequest) override
     {
         ExtraAddon::SetOfficialWorkshopMap(false);
         ExtraAddon::ClearCurrentWorkshopMap();
 
         if (!ExtraAddon::IsEnabled())
-            return HostStateRequest(a1, pRequest);
+            return;
 
         if (ExtraAddon::GetDebug())
         {
@@ -141,10 +138,58 @@ BeginStaticHookScope(HostStateRequest)
                     ExtraAddon::GetCurrentWorkshopMap().c_str(),
                     BooleanSTR(ExtraAddon::IsOfficialWorkshopMap()));
         }
-
-        HostStateRequest(a1, pRequest);
     }
-}
+
+    void OnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData) override
+    {
+        if (!ExtraAddon::IsEnabled())
+            return;
+
+        const auto pClient = GetClientByNetChannel(pNetChannel);
+        if (!pClient || pClient->IsFakeClient())
+            return;
+
+        const auto steamId = pClient->GetSteamId();
+        if (steamId == 0)
+            return;
+
+        auto& info          = ExtraAddon::GetClientInfo(steamId);
+        info.lastActiveTime = Plat_FloatTime();
+
+        if (ExtraAddon::GetDebug())
+        {
+            LogInfo("[ExtraAddon] SendNetMessage -> Steam=%llu State=%d Addons=[%s]",
+                    static_cast<unsigned long long>(steamId), pData->signon_state(), pData->addons().c_str());
+        }
+
+        if (pData->signon_state() == SIGNONSTATE_CHANGELEVEL)
+        {
+            if (const auto addonsStr = pData->addons(); addonsStr.find(',') != std::string::npos)
+            {
+                if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty() && !ExtraAddon::IsOfficialWorkshopMap())
+                {
+                    pData->set_addons(vecAddons[0]);
+                    info.currentPendingAddon = vecAddons[0];
+                }
+            }
+            else if (!pData->addons().empty())
+            {
+                info.currentPendingAddon = pData->addons();
+            }
+            return;
+        }
+
+        const auto remaining = GetRemainingAddons(steamId);
+        if (remaining.empty())
+            return;
+
+        info.currentPendingAddon = remaining[0];
+        pData->set_addons(remaining[0]);
+        pData->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+    }
+};
+
+static ExtraAddonStrategy s_ExtraAddonStrategy;
 
 BeginStaticHookScope(ReplyConnection)
 {
@@ -192,81 +237,19 @@ BeginStaticHookScope(ReplyConnection)
         if (clientAddons.empty())
             return ReplyConnection(pServer, pClient);
 
-        static auto addonsOffset  = g_pGameData->GetOffset("CNetworkGameServer::m_Addons");
-        auto        pServerAddons = reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(pServer) + addonsOffset);
-        CUtlString  originalAddons = *pServerAddons;
+        const std::string originalAddons = pServer->GetAddonName() ? pServer->GetAddonName() : "";
 
-        *pServerAddons = StringJoin(clientAddons, ",").c_str();
+        pServer->SetAddonName(StringJoin(clientAddons, ",").c_str());
 
         if (ExtraAddon::GetDebug())
         {
             LogInfo("[ExtraAddon] ReplyConnection -> Steam=%llu Addons=[%s] (original=[%s])",
-                    static_cast<unsigned long long>(steamId), pServerAddons->Get(), originalAddons.Get());
+                    static_cast<unsigned long long>(steamId), pServer->GetAddonName(), originalAddons.c_str());
         }
 
         ReplyConnection(pServer, pClient);
 
-        *pServerAddons = originalAddons;
-    }
-}
-
-BeginMemberHookScope(INetChannel)
-{
-    DeclareMemberDetourHook(SendNetMessage, bool, (INetChannel * pNetChannel, CNetMessagePB<CNETMsg_SignonState> * pData, int a4))
-    {
-        if (s_bBypassNetMessageHook)
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        const auto pInfo = pData->GetNetMessage()->GetNetMessageInfo();
-        if (pInfo->m_MessageId != NET_MESSAGE_ID_SIGNON)
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        if (!ExtraAddon::IsEnabled())
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        const auto pClient = GetClientByNetChannel(pNetChannel);
-        if (!pClient || pClient->IsFakeClient())
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        const auto steamId = pClient->GetSteamId();
-        if (steamId == 0)
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        auto& info          = ExtraAddon::GetClientInfo(steamId);
-        info.lastActiveTime = Plat_FloatTime();
-
-        if (ExtraAddon::GetDebug())
-        {
-            LogInfo("[ExtraAddon] SendNetMessage -> Steam=%llu State=%d Addons=[%s]",
-                    static_cast<unsigned long long>(steamId), pData->signon_state(), pData->addons().c_str());
-        }
-
-        if (pData->signon_state() == SIGNONSTATE_CHANGELEVEL)
-        {
-            if (const auto addonsStr = pData->addons(); addonsStr.find(',') != std::string::npos)
-            {
-                if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty() && !ExtraAddon::IsOfficialWorkshopMap())
-                {
-                    pData->set_addons(vecAddons[0]);
-                    info.currentPendingAddon = vecAddons[0];
-                }
-            }
-            else if (!pData->addons().empty())
-            {
-                info.currentPendingAddon = pData->addons();
-            }
-            return SendNetMessage(pNetChannel, pData, a4);
-        }
-
-        const auto remaining = GetRemainingAddons(steamId);
-        if (remaining.empty())
-            return SendNetMessage(pNetChannel, pData, a4);
-
-        info.currentPendingAddon = remaining[0];
-        pData->set_addons(remaining[0]);
-        pData->set_signon_state(SIGNONSTATE_CHANGELEVEL);
-
-        return SendNetMessage(pNetChannel, pData, a4);
+        pServer->SetAddonName(originalAddons.c_str());
     }
 }
 
@@ -500,8 +483,8 @@ void InstallExtraAddonHooks()
     g_pHookManager->Hook_GameFrame(HookType_Post, OnGameFrame);
     g_pHookManager->Hook_ServerInit(HookType_Post, OnServerInitPost);
 
-    SHOOK(HostStateRequest);
     SHOOK(ReplyConnection);
     SHOOK(ScriptGetAddon);
-    HOOK(INetChannel, SendNetMessage);
+
+    AddonHooks::Install(&s_ExtraAddonStrategy);
 }
