@@ -60,7 +60,7 @@ internal class GagService : ICommandCategory, IGagService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target) || target.IsFakeClient)
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
@@ -72,12 +72,12 @@ internal class GagService : ICommandCategory, IGagService
 
         var reason = ctx.GetReason(3);
 
-        _ = ExecuteGagAsync(ctx, target, duration, reason, issuer)
+        _ = ExecuteGagAsync(ctx, targets, targetLabel, duration, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process gag for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process gag batch");
                                   ctx.Reply("Failed to process gag. Check server logs.");
                               }
                           },
@@ -85,19 +85,36 @@ internal class GagService : ICommandCategory, IGagService
     }
 
     private async Task ExecuteGagAsync(CommandContext ctx,
-        IGameClient                                   target,
+        IReadOnlyList<IGameClient>                    targets,
+        string                                        targetLabel,
         TimeSpan?                                     duration,
         string                                        reason,
         IGameClient?                                  issuer)
     {
-        if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
-        {
-            ctx.ReplyKey("Admin.AlreadyGagged", "{0} is already gagged.", target.Name);
+        var count = 0;
 
-            return;
+        foreach (var target in targets)
+        {
+            if (target.IsFakeClient)
+            {
+                continue;
+            }
+
+            if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
+            {
+                _logger.LogDebug("Skip gag for {Target} ({SteamId}): already gagged", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.ApplyOnline(issuer, target, AdminOperationType.Gag, duration, reason);
+            count++;
         }
 
-        _engine.ApplyOnline(issuer, target, AdminOperationType.Gag, duration, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Gagged", "{0} Gagged {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     private void OnCommandUngag(IGameClient? issuer, StringCommand command)
@@ -109,35 +126,50 @@ internal class GagService : ICommandCategory, IGagService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target))
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
 
         var reason = ctx.GetReason(2);
 
-        _ = ExecuteUngagAsync(ctx, target, reason, issuer)
+        _ = ExecuteUngagAsync(ctx, targets, targetLabel, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process ungag for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process ungag batch");
                                   ctx.Reply("Failed to process ungag. Check server logs.");
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteUngagAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)
+    private async Task ExecuteUngagAsync(CommandContext ctx,
+        IReadOnlyList<IGameClient>                     targets,
+        string                                         targetLabel,
+        string                                         reason,
+        IGameClient?                                   issuer)
     {
-        if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
-        {
-            ctx.ReplyKey("Admin.NotGagged", "{0} is not gagged.", target.Name);
+        var count = 0;
 
-            return;
+        foreach (var target in targets)
+        {
+            if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
+            {
+                _logger.LogDebug("Skip ungag for {Target} ({SteamId}): not gagged", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.RemoveOnline(issuer, target, AdminOperationType.Gag, reason);
+            count++;
         }
 
-        _engine.RemoveOnline(issuer, target, AdminOperationType.Gag, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Ungagged", "{0} Ungagged {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     public void Gag(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

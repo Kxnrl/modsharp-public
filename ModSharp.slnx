@@ -4,7 +4,7 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="Engine/ModSharp.vcxproj">
+  <Project Path="Engine/ModSharp.vcxproj" Id="2e9e0584-8b32-4e94-ba17-20febbbed37c">
     <BuildType Project="Release" />
   </Project>
   <Project Path="Sharp.Core/Sharp.Core.csproj" />
