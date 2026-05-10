@@ -19,6 +19,7 @@
 
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Common;
+using Sharp.Modules.AdminCommands.Services.Handlers;
 using Sharp.Modules.AdminCommands.Services.Internal;
 using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Shared.Enums;
@@ -44,6 +45,13 @@ internal class AdminOperationEngine : IClientListener
 
     private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)> _handlers;
 
+    /// <summary>
+    ///     Backup of core handlers displaced by external handler registrations.
+    ///     Keyed by <see cref="AdminOperationType"/>. Restored when the external module unregisters.
+    /// </summary>
+    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)>
+        _coreHandlers = [];
+
     public AdminOperationEngine(ILogger<AdminOperationEngine> logger,
         InterfaceBridge                                       bridge,
         AdminOperationService                                 operations,
@@ -59,16 +67,41 @@ internal class AdminOperationEngine : IClientListener
                                           h => (h, AdminCommands.AssemblyName));
     }
 
+    /// <summary>
+    ///     Returns the currently registered handler for the given operation type, or <c>null</c> if none is registered.
+    /// </summary>
+    public IAdminOperationHandler? GetHandler(AdminOperationType type)
+        => _handlers.TryGetValue(type, out var entry) ? entry.Handler : null;
+
     public void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler)
     {
-        if (!_handlers.TryAdd(handler.Type, (handler, moduleIdentity)))
+        if (_handlers.TryGetValue(handler.Type, out var existing))
         {
-            _logger.LogWarning("Failed to register handler for {Type} from {Module}: Handler already registered.",
-                               handler.Type,
-                               moduleIdentity);
+            // Save the displaced handler for restoration when this module unregisters.
+            if (existing.ModuleIdentity == AdminCommands.AssemblyName)
+            {
+                if (!_coreHandlers.TryAdd(handler.Type, existing))
+                {
+                    _logger.LogWarning(
+                        "Core handler for {Type} was already backed up (possible duplicate registration). "
+                        + "Skipping to preserve the original core handler.",
+                        handler.Type);
+                }
+            }
 
-            return;
+            // Unregister hooks of the old handler before replacing it.
+            if (existing.Handler is IAdminOperationHookRegistrar oldRegistrar)
+            {
+                oldRegistrar.UnregisterHooks();
+            }
+
+            _logger.LogWarning("Operation handler for {Type} is being replaced: {OldModule} -> {NewModule}",
+                               handler.Type,
+                               existing.ModuleIdentity,
+                               moduleIdentity);
         }
+
+        _handlers[handler.Type] = (handler, moduleIdentity);
 
         _logger.LogDebug("Registered admin operation handler for {Type} (Module: {Module})", handler.Type, moduleIdentity);
     }
@@ -81,7 +114,30 @@ internal class AdminOperationEngine : IClientListener
 
         foreach (var type in toRemove)
         {
-            if (_handlers.Remove(type))
+            // Unregister hooks of the handler being removed before restoring core.
+            if (_handlers.TryGetValue(type, out var removed)
+                && removed.Handler is IAdminOperationHookRegistrar removedRegistrar)
+            {
+                removedRegistrar.UnregisterHooks();
+            }
+
+            _handlers.Remove(type);
+
+            // Restore the core handler that was displaced, if any.
+            if (_coreHandlers.Remove(type, out var coreHandler))
+            {
+                _handlers[type] = coreHandler;
+
+                if (coreHandler.Handler is IAdminOperationHookRegistrar coreRegistrar)
+                {
+                    coreRegistrar.RegisterHooks();
+                }
+
+                _logger.LogDebug("Restored core handler for {Type} after {Module} unregistered",
+                                 type,
+                                 moduleIdentity);
+            }
+            else
             {
                 _logger.LogDebug("Unregistered admin operation handler for {Type} (Module: {Module})",
                                  type,
