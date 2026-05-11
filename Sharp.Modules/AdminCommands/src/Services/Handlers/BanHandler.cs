@@ -102,7 +102,6 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     {
         var steamId = @params.SteamId;
 
-        // todo: use @params.Ip
         if (!IsBanned(steamId, @params.Ip))
         {
             return new HookReturnValue<NetworkDisconnectionReason>();

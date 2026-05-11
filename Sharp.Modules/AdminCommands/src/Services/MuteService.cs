@@ -60,7 +60,7 @@ internal class MuteService : ICommandCategory, IMuteService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target) || target.IsFakeClient)
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
@@ -72,12 +72,12 @@ internal class MuteService : ICommandCategory, IMuteService
 
         var reason = ctx.GetReason(3);
 
-        _ = ExecuteMuteAsync(ctx, target, duration, reason, issuer)
+        _ = ExecuteMuteAsync(ctx, targets, targetLabel, duration, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process mute for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process mute batch");
                                   ctx.Reply("Failed to process mute. Check server logs.");
                               }
                           },
@@ -85,19 +85,36 @@ internal class MuteService : ICommandCategory, IMuteService
     }
 
     private async Task ExecuteMuteAsync(CommandContext ctx,
-        IGameClient                                    target,
+        IReadOnlyList<IGameClient>                     targets,
+        string                                         targetLabel,
         TimeSpan?                                      duration,
         string                                         reason,
         IGameClient?                                   issuer)
     {
-        if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
-        {
-            ctx.ReplyKey("Admin.AlreadyMuted", "{0} is already muted.", target.Name);
+        var count = 0;
 
-            return;
+        foreach (var target in targets)
+        {
+            if (target.IsFakeClient)
+            {
+                continue;
+            }
+
+            if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
+            {
+                _logger.LogDebug("Skip mute for {Target} ({SteamId}): already muted", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
+            count++;
         }
 
-        _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Muted", "{0} Muted {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     private void OnCommandUnmute(IGameClient? issuer, StringCommand command)
@@ -109,35 +126,50 @@ internal class MuteService : ICommandCategory, IMuteService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target))
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
 
         var reason = ctx.GetReason(2);
 
-        _ = ExecuteUnmuteAsync(ctx, target, reason, issuer)
+        _ = ExecuteUnmuteAsync(ctx, targets, targetLabel, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process unmute for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process unmute batch");
                                   ctx.Reply("Failed to process unmute. Check server logs.");
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteUnmuteAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)
+    private async Task ExecuteUnmuteAsync(CommandContext ctx,
+        IReadOnlyList<IGameClient>                      targets,
+        string                                          targetLabel,
+        string                                          reason,
+        IGameClient?                                    issuer)
     {
-        if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
-        {
-            ctx.ReplyKey("Admin.NotMuted", "{0} is not muted.", target.Name);
+        var count = 0;
 
-            return;
+        foreach (var target in targets)
+        {
+            if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
+            {
+                _logger.LogDebug("Skip unmute for {Target} ({SteamId}): not muted", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason);
+            count++;
         }
 
-        _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Unmuted", "{0} Unmuted {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     public void Mute(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

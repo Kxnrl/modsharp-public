@@ -71,4 +71,7 @@ internal sealed class AdminService : IAdminService
 
     public void Remove(IGameClient? admin, SteamID target, AdminOperationType type, string reason)
         => _engine.RemoveOffline(admin, target, target.ToString(), type, reason);
+
+    public IAdminOperationHandler? GetHandler(AdminOperationType type)
+        => _engine.GetHandler(type);
 }
