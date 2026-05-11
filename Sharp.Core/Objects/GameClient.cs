@@ -45,6 +45,8 @@ internal partial class GameClient : NativeObject, IGameClient
     private static int? IsWarmupOffset;
     private static int? RestartRoundTimeOffset;
 
+    private static int _lastGameRestartTick = -1;
+
     private GameClient(nint ptr) : base(ptr)
     {
         _defaultUserId  = ptr.GetUInt16(CoreGameData.GameClient.UserId);
@@ -232,18 +234,27 @@ internal partial class GameClient : NativeObject, IGameClient
         IsWarmupOffset         ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_bWarmupPeriod");
         RestartRoundTimeOffset ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_flRestartRoundTime");
 
+        // avoid redundant reads + SetNetVarBool within the same server tick
         unsafe
         {
+            var tick = *(int*) (Bridges.Natives.Core.GetGlobals() + GlobalVars.TickCountOffset);
+
+            if (tick == _lastGameRestartTick)
+                return;
+
+            _lastGameRestartTick = tick;
+
             // stop if during warmup
             if (*(bool*) (gamerules + IsWarmupOffset.Value))
                 return;
 
+            var engineTime     = Bridges.Natives.Core.GetEngineTime();
             var restartRoundTime = *(float*) (gamerules + RestartRoundTimeOffset.Value);
 
             SchemaSystem.SetNetVarBool(gamerules,
                                        "CCSGameRules",
                                        "m_bGameRestart",
-                                       restartRoundTime < Bridges.Natives.Core.GetEngineTime());
+                                       restartRoundTime < engineTime);
         }
     }
 

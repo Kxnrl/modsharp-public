@@ -25,13 +25,27 @@ namespace Sharp.Core.Objects;
 
 internal partial class GlobalVars : NativeObject, IGlobalVars
 {
+    public const int RealTimeOffset                     = 0x00;
+    public const int FrameCountOffset                   = 0x04;
+    public const int AbsoluteFrameTimeOffset            = 0x08;
+    public const int AbsoluteFrameStartTimeStdDevOffset = 0x0C;
+    public const int MaxClientsOffset                   = 0x10;
+    public const int CurTimeOffset                      = 0x30;
+    public const int FrameTimeOffset                    = 0x34;
+    public const int RenderTimeOffset                   = 0x38;
+    public const int InSimulationOffset                 = 0x40;
+    public const int TickCountOffset                    = 0x44;
+    public const int SubTickFractionOffset              = 0x50;
+    public const int MapNameOffset                      = 0x60;
+    public const int MaxEntitiesOffset                  = 0x78;
+
     public float RealTime
     {
         get
         {
             CheckDisposed();
 
-            return _this.GetFloat(0);
+            return _this.GetFloat(RealTimeOffset);
         }
     }
 
@@ -41,7 +55,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetInt32(4);
+            return _this.GetInt32(FrameCountOffset);
         }
     }
 
@@ -51,7 +65,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(8);
+            return _this.GetFloat(AbsoluteFrameTimeOffset);
         }
     }
 
@@ -61,7 +75,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(12);
+            return _this.GetFloat(AbsoluteFrameStartTimeStdDevOffset);
         }
     }
 
@@ -71,7 +85,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetInt32(16);
+            return _this.GetInt32(MaxClientsOffset);
         }
     }
 
@@ -81,7 +95,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(0x34);
+            return _this.GetFloat(FrameTimeOffset);
         }
     }
 
@@ -91,7 +105,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(0x30);
+            return _this.GetFloat(CurTimeOffset);
         }
     }
 
@@ -101,7 +115,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(56);
+            return _this.GetFloat(RenderTimeOffset);
         }
     }
 
@@ -111,7 +125,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetBool(68);
+            return _this.GetBool(InSimulationOffset);
         }
     }
 
@@ -121,7 +135,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetInt32(0x44);
+            return _this.GetInt32(TickCountOffset);
         }
     }
 
@@ -131,7 +145,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetFloat(0x50);
+            return _this.GetFloat(SubTickFractionOffset);
         }
     }
 
@@ -141,7 +155,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetPtrString(0x60);
+            return _this.GetPtrString(MapNameOffset);
         }
     }
 
@@ -151,7 +165,7 @@ internal partial class GlobalVars : NativeObject, IGlobalVars
         {
             CheckDisposed();
 
-            return _this.GetInt32(0x78);
+            return _this.GetInt32(MaxEntitiesOffset);
         }
     }
 }
