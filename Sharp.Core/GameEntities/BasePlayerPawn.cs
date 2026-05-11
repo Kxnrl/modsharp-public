@@ -62,6 +62,16 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
         controller.Print(channel, message, param1, param2, param3, param4);
     }
 
+    public void PrintCenterHTML(string message, int duration = 1)
+    {
+        if (GetController() is not { } controller)
+        {
+            throw new EntryPointNotFoundException("Controller is null");
+        }
+
+        controller.PrintCenterHTML(message, duration);
+    }
+
     protected abstract bool IsObserver();
 
     public bool IsPlayer(bool nativeCall = false)

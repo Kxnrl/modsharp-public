@@ -59,22 +59,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
             return;
         }
 
-        Print(Client, _cacheContent);
-    }
-
-    private void Print(IGameClient client, string content)
-    {
-        if (_showSurvivalRespawnStatusEvent is null)
-        {
-            _showSurvivalRespawnStatusEvent = EventManager.CreateEvent("show_survival_respawn_status", false)
-                                              ?? throw new Exception("Failed to create event");
-
-            _showSurvivalRespawnStatusEvent.SetInt("duration", 1);
-            _showSurvivalRespawnStatusEvent.SetInt("userid",   -1);
-        }
-
-        _showSurvivalRespawnStatusEvent.SetString("loc_token", content);
-        _showSurvivalRespawnStatusEvent.FireToClient(client);
+        Client.PrintCenterHTML(_cacheContent);
     }
 
     private readonly Guid    _timer;
