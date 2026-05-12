@@ -237,24 +237,25 @@ internal partial class GameClient : NativeObject, IGameClient
         // avoid redundant reads + SetNetVarBool within the same server tick
         unsafe
         {
-            var tick = *(int*) (Bridges.Natives.Core.GetGlobals() + GlobalVars.TickCountOffset);
+            // stop if during warmup
+            if (*(bool*) (gamerules + IsWarmupOffset.Value))
+                return;
+
+            var globalPtr = Bridges.Natives.Core.GetGlobals();
+            var tick      = *(int*) (globalPtr + GlobalVars.TickCountOffset);
 
             if (tick == _lastGameRestartTick)
                 return;
 
             _lastGameRestartTick = tick;
 
-            // stop if during warmup
-            if (*(bool*) (gamerules + IsWarmupOffset.Value))
-                return;
-
-            var engineTime     = Bridges.Natives.Core.GetEngineTime();
+            var time             = *(float*) (globalPtr + GlobalVars.CurTimeOffset);
             var restartRoundTime = *(float*) (gamerules + RestartRoundTimeOffset.Value);
 
             SchemaSystem.SetNetVarBool(gamerules,
                                        "CCSGameRules",
                                        "m_bGameRestart",
-                                       restartRoundTime < engineTime);
+                                       restartRoundTime < time);
         }
     }
 
