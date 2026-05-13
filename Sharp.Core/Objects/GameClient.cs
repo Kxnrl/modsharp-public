@@ -203,12 +203,14 @@ internal partial class GameClient : NativeObject, IGameClient
     {
         CheckDisposed();
 
+        if (IsFakeClient)
+            return;
+
         if (_showSurvivalRespawnStatusEvent is null)
         {
             _showSurvivalRespawnStatusEvent = GameEvent.CreateEditable(Event.CreateEvent("show_survival_respawn_status", true))
                                               ?? throw new Exception("Failed to create event show_survival_respawn_status");
 
-            _showSurvivalRespawnStatusEvent.SetInt("duration", 1);
             _showSurvivalRespawnStatusEvent.SetInt("userid", -1);
         }
 
