@@ -59,7 +59,7 @@ internal class SurvivalStatusMenuController : BaseMenuController
             return;
         }
 
-        Client.PrintCenterHTML(_cacheContent);
+        Client.PrintCenterHtml(_cacheContent);
     }
 
     private readonly Guid    _timer;

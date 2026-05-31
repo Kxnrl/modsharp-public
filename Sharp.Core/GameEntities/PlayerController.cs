@@ -47,9 +47,9 @@ internal partial class PlayerController : BaseEntity, IPlayerController
         NetMessageHelper.PrintChannelFilter(new RecipientFilter(Index), channel, message, param1, param2, param3, param4);
     }
 
-    public void PrintCenterHTML(string message, int duration = 1)
+    public void PrintCenterHtml(string message, int duration = 1)
     {
-        GetGameClient()?.PrintCenterHTML(message, duration);
+        GetGameClient()?.PrintCenterHtml(message, duration);
     }
 
     public float LaggedMovement

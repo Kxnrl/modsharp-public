@@ -82,7 +82,7 @@ public interface IPlayerController : IBaseEntity
     /// </summary>
     /// <param name="message">Message to print</param>
     /// <param name="duration">How long will the message last</param>
-    void PrintCenterHTML(string message, int duration = 1);
+    void PrintCenterHtml(string message, int duration = 1);
 
     /// <summary>
     ///     Change team without slaying
