@@ -623,6 +623,12 @@ internal class ClientManager : ICoreClientManager
         return _sQueryCookie;
     }
 
+    public void PrintCenterHtmlToAll(string message, int duration = 1)
+        => CenterHtmlHelper.PrintCenterHtmlToAll(message, duration);
+
+    public void PrintCenterHtmlToClients(IEnumerable<IGameClient> clients, string message, int duration = 1)
+        => CenterHtmlHelper.PrintCenterHtmlToClients(clients, message, duration);
+
     public void ReloadAdmins()
     {
         if (_sReloadAdmin)

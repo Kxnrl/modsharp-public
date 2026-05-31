@@ -77,6 +77,14 @@ public interface IPlayerController : IBaseEntity
         string?                param4 = null);
 
     /// <summary>
+    ///     Print a hud message with limited html format support to this player.
+    ///     This includes the workaround for fixing the flashing issue.
+    /// </summary>
+    /// <param name="message">Message to print</param>
+    /// <param name="duration">How long will the message last</param>
+    void PrintCenterHtml(string message, int duration = 1);
+
+    /// <summary>
     ///     Change team without slaying
     /// </summary>
     void SwitchTeam(CStrikeTeam team);
