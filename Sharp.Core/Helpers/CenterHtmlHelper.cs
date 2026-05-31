@@ -17,7 +17,23 @@ internal static class CenterHtmlHelper
     private static int? _isWarmupOffset;
     private static int? _restartRoundTimeOffset;
 
+    private static int _gameTypeVal;
+    private static int _gameModeVal;
+
     private static int _lastGameRestartTick = -1;
+
+    public static void InitDelegates()
+    {
+        Bridges.Forwards.Game.OnServerActivate += OnServerActivate;
+    }
+
+    private static void OnServerActivate()
+    {
+        InitializeResources();
+
+        _gameTypeVal = _gameType?.GetInt32() ?? 0;
+        _gameModeVal = _gameMode?.GetInt32() ?? 0;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void PrintCenterHtmlToAll(string message, int duration = 1)
@@ -77,6 +93,7 @@ internal static class CenterHtmlHelper
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void PrepareEvent(string message, int duration)
     {
         if (_showSurvivalRespawnStatusEvent is null || _gameType is null || _gameMode is null)
@@ -133,7 +150,7 @@ internal static class CenterHtmlHelper
     private static unsafe void FixHtmlFlashing()
     {
         // wouldnt work for deathmatch
-        if (_gameType!.GetInt32() == 1 && _gameMode!.GetInt32() == 2)
+        if (_gameTypeVal == 1 && _gameModeVal == 2)
             return;
 
         var globalPtr = Bridges.Natives.Core.GetGlobals();
