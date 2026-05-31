@@ -38,15 +38,6 @@ internal partial class GameClient : NativeObject, IGameClient
 {
     private        KeyValues? _conVars;
 
-    private static GameEvent? _showSurvivalRespawnStatusEvent;
-    private static ConVar?    _gameType;
-    private static ConVar?    _gameMode;
-
-    private static int? IsWarmupOffset;
-    private static int? RestartRoundTimeOffset;
-
-    private static int _lastGameRestartTick = -1;
-
     private GameClient(nint ptr) : base(ptr)
     {
         _defaultUserId  = ptr.GetUInt16(CoreGameData.GameClient.UserId);
@@ -206,59 +197,7 @@ internal partial class GameClient : NativeObject, IGameClient
         if (IsFakeClient)
             return;
 
-        if (_showSurvivalRespawnStatusEvent is null)
-        {
-            _showSurvivalRespawnStatusEvent = GameEvent.CreateEditable(Event.CreateEvent("show_survival_respawn_status", true))
-                                              ?? throw new Exception("Failed to create event show_survival_respawn_status");
-
-            _showSurvivalRespawnStatusEvent.SetInt("userid", -1);
-        }
-
-        _gameType ??= ConVar.Create(Cvar.FindConVar("game_type", true))
-                      ?? throw new Exception("Failed to find cvar \"game_type\"");
-
-        _gameMode ??= ConVar.Create(Cvar.FindConVar("game_mode", true))
-                      ?? throw new Exception("Failed to find cvar \"game_mode\"");
-
-        _showSurvivalRespawnStatusEvent.SetString("loc_token", message);
-        _showSurvivalRespawnStatusEvent.SetInt("duration", duration);
-        _showSurvivalRespawnStatusEvent.FireToClient(this);
-
-        // wouldnt work for deathmatch
-        if (_gameType.GetInt32() == 1 && _gameMode.GetInt32() == 2)
-            return;
-
-        var gamerules = Bridges.Natives.Core.GetGameRules();
-
-        if (gamerules == nint.Zero)
-            return;
-
-        IsWarmupOffset         ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_bWarmupPeriod");
-        RestartRoundTimeOffset ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_flRestartRoundTime");
-
-        // avoid redundant reads + SetNetVarBool within the same server tick
-        unsafe
-        {
-            // stop if during warmup
-            if (*(bool*) (gamerules + IsWarmupOffset.Value))
-                return;
-
-            var globalPtr = Bridges.Natives.Core.GetGlobals();
-            var tick      = *(int*) (globalPtr + GlobalVars.TickCountOffset);
-
-            if (tick == _lastGameRestartTick)
-                return;
-
-            _lastGameRestartTick = tick;
-
-            var time             = *(float*) (globalPtr + GlobalVars.CurTimeOffset);
-            var restartRoundTime = *(float*) (gamerules + RestartRoundTimeOffset.Value);
-
-            SchemaSystem.SetNetVarBool(gamerules,
-                                       "CCSGameRules",
-                                       "m_bGameRestart",
-                                       restartRoundTime < time);
-        }
+        CenterHtmlHelper.PrintCenterHtmlToClient(this, message, duration);
     }
 
     // identity

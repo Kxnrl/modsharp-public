@@ -124,6 +124,16 @@ public interface IClientManager
     int QueryConVar(IGameClient client, string name, Action<IGameClient, QueryConVarValueStatus, string, string> callback);
 
     /// <summary>
+    ///     Send center HTML message to all players
+    /// </summary>
+    void PrintCenterHtmlToAll(string message, int duration = 1);
+
+    /// <summary>
+    ///     Send center HTML message to multiple players
+    /// </summary>
+    void PrintCenterHtmlToClients(IEnumerable<IGameClient> clients, string message, int duration = 1);
+
+    /// <summary>
     ///     Clear Admins and re-trigger OnAdminReload
     /// </summary>
     [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
