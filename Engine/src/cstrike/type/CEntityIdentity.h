@@ -35,6 +35,8 @@ class CEntityIdentity
     static constexpr uint32_t EF_FLAG_INVALID_HANDLE = 0x001;
     static constexpr uint32_t EF_FLAG_KILL_ME        = 0x200;
 
+    DECLARE_SCHEMA_CLASS(CEntityIdentity)
+
 public:
     CEntityIdentity() = delete;
 
@@ -70,6 +72,8 @@ public:
     {
         return reinterpret_cast<T>(m_pInstance);
     }
+
+    SCHEMA_FIELD(CEntityIdentity*, m_pNextByClass);
 
 private:
     CEntityInstance* m_pInstance;          // 0x00

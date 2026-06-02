@@ -68,6 +68,11 @@ static CBaseEntity* FindEntityByClassname(CBaseEntity* pStart, const char* class
     return g_pGameEntitySystem->FindByClassname(pStart, classname);
 }
 
+static int32_t EnumerateEntitiesByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity)
+{
+    return g_pGameEntitySystem->EnumerateByClassname(classname, buffer, capacity);
+}
+
 static CBaseEntity* FindEntityByName(CBaseEntity* pStart, const char* name)
 {
     return g_pGameEntitySystem->FindByName(pStart, name);
@@ -465,6 +470,7 @@ void Init()
     // Entity List
     bridge::CreateNative("Entity.FindByEHandle", reinterpret_cast<void*>(FindEntityByEHandle));
     bridge::CreateNative("Entity.FindByIndex", reinterpret_cast<void*>(FindEntityByIndex));
+    bridge::CreateNative("Entity.EnumerateByClassname", reinterpret_cast<void*>(EnumerateEntitiesByClassname));
     bridge::CreateNative("Entity.FindByClassname", reinterpret_cast<void*>(FindEntityByClassname));
     bridge::CreateNative("Entity.FindByName", reinterpret_cast<void*>(FindEntityByName));
     bridge::CreateNative("Entity.FindInSphere", reinterpret_cast<void*>(FindEntityInSphere));

@@ -504,6 +504,11 @@
       "linux": "55 45 31 C0 31 C9 48 89 E5 53 48 8D 5D ? 48 83 EC ? 48 89 DF",
       "windows": "48 83 EC 68 45 33 C9"
     },
+    "CGameEntitySystem::FindEntityClassByClassname": {
+      "library": "server",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC ? 48 89 75 ? 48 85 F6 0F 84 ? ? ? ? 80 3E",
+      "windows": "4C 8B DC 49 89 5B ? 49 89 73 ? 49 89 53 ? 57 48 83 EC"
+    },
     "CGameEntitySystem::FindByName": {
       "library": "server",
       "linux": "55 48 89 E5 41 54 53 48 83 EC ? 48 85 D2",
