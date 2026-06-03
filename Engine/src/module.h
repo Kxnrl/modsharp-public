@@ -241,6 +241,11 @@ private:
 #ifndef PLATFORM_WINDOWS
     std::unordered_map<std::string, uintptr_t> _exports{};
     void                                       DumpExports(void* module_base);
+
+    std::uintptr_t                                     _eh_frame_hdr_addr{};
+    std::vector<std::uintptr_t>                        _eh_fde_starts{};
+    std::unordered_map<std::uintptr_t, std::uintptr_t> _eh_fde_ends{};
+    void                                               ParseEhFrameHeader();
 #endif
 
     std::uintptr_t GetFunctionEntry(std::uintptr_t middle);

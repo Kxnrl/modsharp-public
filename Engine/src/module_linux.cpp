@@ -111,6 +111,12 @@ void CModule::GetModuleInfo(std::string_view mod)
             continue;
         }
 
+        if (type == PT_GNU_EH_FRAME)
+        {
+            _eh_frame_hdr_addr = address;
+            continue;
+        }
+
         if (type != PT_LOAD)
             continue;
 
@@ -142,6 +148,10 @@ void CModule::GetModuleInfo(std::string_view mod)
     {
         ScopedTimer timer(_module_name + "::DumpVTables");
         DumpVtables();
+    }
+    {
+        ScopedTimer timer(_module_name + "::ParseEhFrameHeader");
+        ParseEhFrameHeader();
     }
     {
         ScopedTimer timer(_module_name + "::BuildFunctionIndexAndReferences");
@@ -481,6 +491,338 @@ void CModule::DumpVtables()
 #    endif
 }
 
+void CModule::ParseEhFrameHeader()
+{
+    if (_eh_frame_hdr_addr == 0)
+        return;
+
+    const auto* hdr              = reinterpret_cast<const std::uint8_t*>(_eh_frame_hdr_addr);
+    const auto  version          = hdr[0];
+    const auto  eh_frame_ptr_enc = hdr[1];
+    const auto  fde_count_enc    = hdr[2];
+    const auto  table_enc        = hdr[3];
+
+    constexpr std::uint8_t DW_EH_PE_pcrel      = 0x10;
+    constexpr std::uint8_t DW_EH_PE_datarel    = 0x30;
+    constexpr std::uint8_t DW_EH_PE_sdata4     = 0x0B;
+    constexpr std::uint8_t DW_EH_PE_udata4     = 0x03;
+    constexpr std::uint8_t EXPECTED_EH_PTR_ENC = DW_EH_PE_pcrel | DW_EH_PE_sdata4;   // 0x1B
+    constexpr std::uint8_t EXPECTED_TABLE_ENC  = DW_EH_PE_datarel | DW_EH_PE_sdata4; // 0x3B
+
+    if (version != 1 || eh_frame_ptr_enc != EXPECTED_EH_PTR_ENC
+        || fde_count_enc != DW_EH_PE_udata4 || table_enc != EXPECTED_TABLE_ENC)
+    {
+#    ifdef DEBUG
+        printf("[%s] ParseEhFrameHeader: unsupported encoding (ver=%u, eh_enc=%#x, cnt_enc=%#x, tbl_enc=%#x)\n",
+               _module_name.c_str(), version, eh_frame_ptr_enc, fde_count_enc, table_enc);
+#    endif
+        return;
+    }
+
+    const auto  fde_count = *reinterpret_cast<const std::uint32_t*>(hdr + 8);
+    const auto* table     = reinterpret_cast<const std::int32_t*>(hdr + 12);
+    const auto  hdr_addr  = _eh_frame_hdr_addr;
+
+    std::uintptr_t exec_start = 0;
+    std::uintptr_t exec_end   = 0;
+    for (const auto& seg : _segments)
+    {
+        if (seg.flags & FLAG_X)
+        {
+            exec_start = seg.address;
+            exec_end   = seg.address + seg.size;
+            break;
+        }
+    }
+    if (exec_start == 0)
+        return;
+
+    _eh_fde_starts.reserve(fde_count);
+    _eh_fde_ends.reserve(fde_count);
+
+    for (std::uint32_t i = 0; i < fde_count; ++i)
+    {
+        const auto initial_rel = table[i * 2];
+        const auto fde_rel     = table[i * 2 + 1];
+
+        const auto pc_begin = static_cast<std::uintptr_t>(
+            static_cast<std::int64_t>(hdr_addr) + initial_rel);
+        const auto fde_addr = static_cast<std::uintptr_t>(
+            static_cast<std::int64_t>(hdr_addr) + fde_rel);
+
+        if (pc_begin < exec_start || pc_begin >= exec_end)
+            continue;
+
+        // FDE layout: [length:u32] [cie_ptr:u32] [pc_begin:sdata4] [pc_range:u32] ...
+        const auto* fde_ptr    = reinterpret_cast<const std::uint8_t*>(fde_addr);
+        const auto  fde_length = *reinterpret_cast<const std::uint32_t*>(fde_ptr);
+
+        // length 0 / 0xFFFFFFFF marks the terminator; cie_ptr == 0 marks a CIE.
+        if (fde_length == 0 || fde_length == 0xFFFFFFFFu)
+            continue;
+        const auto cie_ptr = *reinterpret_cast<const std::uint32_t*>(fde_ptr + 4);
+        if (cie_ptr == 0)
+            continue;
+
+        const auto pc_begin_rel  = *reinterpret_cast<const std::int32_t*>(fde_ptr + 8);
+        const auto pc_range      = *reinterpret_cast<const std::uint32_t*>(fde_ptr + 12);
+        const auto pc_begin_self = static_cast<std::uintptr_t>(
+            static_cast<std::int64_t>(fde_addr) + 8 + pc_begin_rel);
+
+        // Cross-decoded pc_begin must match the index entry, else our encoding
+        // assumption is wrong for this FDE - skip it.
+        if (pc_begin_self != pc_begin)
+            continue;
+
+        _eh_fde_starts.push_back(pc_begin);
+        // Same pc_begin can recur across fragments; keep the largest pc_range.
+        auto&      slot     = _eh_fde_ends[pc_begin];
+        const auto frag_end = pc_begin + pc_range;
+        if (frag_end > slot)
+            slot = frag_end;
+    }
+
+    std::ranges::sort(_eh_fde_starts);
+    const auto [first, last] = std::ranges::unique(_eh_fde_starts);
+    _eh_fde_starts.erase(first, last);
+
+#    ifdef DEBUG
+    printf("[%s] ParseEhFrameHeader: %u FDEs, %zu unique pc_begin in .text\n",
+           _module_name.c_str(), fde_count, _eh_fde_starts.size());
+#    endif
+}
+
+// CFG-based function-end finder. For each known start we:
+//   1. BFS the forward control-flow graph (fallthrough + in-range direct
+//      branches), splitting blocks on RET / INT3 / UD2 / any branch.
+//   2. Take end = max(block.end). Blocks needn't be contiguous - compilers
+//      split hot/cold halves of one function with padding in between.
+//   3. Extend past code only reachable via paths the CFG can't follow (switch
+//      jump tables, EH cleanup) by decoding forward to the next start (see
+//      find_last_real_insn_end).
+//   4. Union with the FDE pc_range from .eh_frame_hdr when present - an
+//      independent lower bound covering tails the CFG walk misses.
+//
+// This replaces an older padding-based scheme that broke on GNU-ld binaries:
+// their alignment NOPs land mid-function after `jmp loc_FAR`, fooling its
+// run-end == 16-aligned filter. Decoding instructions sidesteps that entirely.
+// Capped per function so a pathological case can't dominate runtime.
+namespace
+{
+
+struct CfgBasicBlock
+{
+    std::uintptr_t start;
+    std::uintptr_t end;
+};
+
+// Decode one instruction at `ip`, returning length on success or 0 on failure.
+// Caller bounds `ip < hard_end` and ensures `ip` is in an executable segment.
+[[nodiscard]] std::uint32_t cfg_decode_one(ZydisDecoder*            decoder,
+                                           std::uintptr_t           ip,
+                                           std::uintptr_t           hard_end,
+                                           ZydisDecodedInstruction& out) noexcept
+{
+    if (ip >= hard_end)
+        return 0;
+    if (ZYAN_FAILED(ZydisDecoderDecodeInstruction(decoder, nullptr,
+                                                  reinterpret_cast<const void*>(ip),
+                                                  hard_end - ip, &out)))
+        return 0;
+    return out.length;
+}
+
+[[nodiscard]] std::vector<CfgBasicBlock> cfg_collect_blocks(ZydisDecoder*  decoder,
+                                                            std::uintptr_t start,
+                                                            std::uintptr_t hard_end)
+{
+    std::vector<CfgBasicBlock>         blocks;
+    std::unordered_set<std::uintptr_t> visited;
+    std::vector<std::uintptr_t>        worklist;
+
+    worklist.push_back(start);
+    visited.insert(start);
+
+    ZydisDecodedInstruction instr{};
+
+    while (!worklist.empty())
+    {
+        const auto block_start = worklist.back();
+        worklist.pop_back();
+
+        auto ip = block_start;
+        while (ip < hard_end)
+        {
+            const auto len = cfg_decode_one(decoder, ip, hard_end, instr);
+            if (len == 0)
+                break;
+
+            const auto next_ip = ip + len;
+
+            // terminal instructions (no fallthrough)
+            if (instr.meta.category == ZYDIS_CATEGORY_RET
+                || instr.mnemonic == ZYDIS_MNEMONIC_INT3
+                || instr.mnemonic == ZYDIS_MNEMONIC_UD2)
+            {
+                blocks.push_back({block_start, next_ip});
+                goto next_in_worklist;
+            }
+
+            // direct branches: enqueue in-range target; for conditional also enqueue fallthrough
+            if ((instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
+                && (instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR
+                    || instr.meta.category == ZYDIS_CATEGORY_COND_BR))
+            {
+                const auto target = ip + len + static_cast<std::int64_t>(instr.raw.imm[0].value.s);
+                blocks.push_back({block_start, next_ip});
+
+                if (target >= start && target < hard_end && visited.insert(target).second)
+                    worklist.push_back(target);
+                if (instr.meta.category == ZYDIS_CATEGORY_COND_BR
+                    && next_ip < hard_end && visited.insert(next_ip).second)
+                    worklist.push_back(next_ip);
+
+                goto next_in_worklist;
+            }
+
+            // indirect branches: terminate without successors (jump tables, vtable thunks)
+            if (instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR
+                || instr.meta.category == ZYDIS_CATEGORY_COND_BR)
+            {
+                blocks.push_back({block_start, next_ip});
+                goto next_in_worklist;
+            }
+
+            // calls and everything else: fall through, step over
+            ip = next_ip;
+        }
+
+        if (ip > block_start)
+            blocks.push_back({block_start, ip});
+
+    next_in_worklist:;
+    }
+
+    std::ranges::sort(blocks, {}, &CfgBasicBlock::start);
+    std::vector<CfgBasicBlock> merged;
+    merged.reserve(blocks.size());
+    for (const auto& b : blocks)
+    {
+        if (!merged.empty() && b.start <= merged.back().end)
+            merged.back().end = std::max(merged.back().end, b.end);
+        else
+            merged.push_back(b);
+    }
+    return merged;
+}
+
+// Walk forward through the gap [floor, limit) and return the end of the last
+// VERIFIED real-code chain. `floor` is the CFG-proven end, `limit` the next
+// known start; `exec_start`/`exec_end` bound .text for the CALL witness.
+//
+// We decode forward (rather than scan for a known padding byte-set) so the same
+// code handles mold's `cc cc ...` and GNU ld's multi-byte NOPs uniformly.
+// Because x86 is dense, random bytes often decode as valid instructions, so we
+// only move the boundary when a chain is backed by a structural witness:
+//
+//   1. Control-flow terminator (RET, unconditional JMP, UD2) - end-of-block
+//      marker for switch-case fragments and EH cleanup blocks.
+//   2. INT3 following a real instruction - the trap mold emits after a
+//      noreturn call.
+//   3. Direct CALL rel32 (E8) whose target lands in .text - vanishingly
+//      unlikely by chance, and the only witness for noreturn-CALL chains
+//      (assert/_Unwind_Resume) that have no in-function terminator.
+//
+// Plain instructions (MOV, LEA, ...) advance the cursor but don't commit on
+// their own. NOP and 0x00 reset the chain without committing; a decode failure
+// abandons it. Any chain still uncommitted at `limit` is dropped. The FDE
+// refinement in the caller is the backstop for the rare case this misses.
+[[nodiscard]] std::uintptr_t find_last_real_insn_end(ZydisDecoder*  decoder,
+                                                     std::uintptr_t limit,
+                                                     std::uintptr_t floor,
+                                                     std::uintptr_t exec_start,
+                                                     std::uintptr_t exec_end) noexcept
+{
+    auto                    end_of_real_code = floor;
+    auto                    cur              = floor;
+    bool                    chain_has_insn   = false;
+    ZydisDecodedInstruction instr{};
+
+    while (cur < limit)
+    {
+        const auto b = *reinterpret_cast<const std::uint8_t*>(cur);
+
+        // 0x00: alignment slack. Resets the chain without committing.
+        if (b == 0x00)
+        {
+            ++cur;
+            chain_has_insn = false;
+            continue;
+        }
+
+        // 0xCC: INT3. Commits only if a real instruction preceded it (trap
+        // after a noreturn call); otherwise it's padding fill.
+        if (b == 0xCC)
+        {
+            ++cur;
+            if (chain_has_insn)
+                end_of_real_code = cur;
+            chain_has_insn = false;
+            continue;
+        }
+
+        // Non-decodable junk: abandon the chain.
+        if (ZYAN_FAILED(ZydisDecoderDecodeInstruction(decoder, nullptr,
+                                                      reinterpret_cast<const void*>(cur),
+                                                      limit - cur, &instr)))
+        {
+            ++cur;
+            chain_has_insn = false;
+            continue;
+        }
+
+        const auto insn_ip = cur;
+        cur += instr.length;
+
+        // Multi-byte NOP: alignment padding, resets the chain without committing.
+        if (instr.mnemonic == ZYDIS_MNEMONIC_NOP)
+        {
+            chain_has_insn = false;
+            continue;
+        }
+
+        chain_has_insn = true;
+
+        // Control-flow terminator: commit and reset. Conditional branches do
+        // NOT terminate here (the block continues at the fall-through).
+        if (instr.meta.category == ZYDIS_CATEGORY_RET
+            || instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR
+            || instr.mnemonic == ZYDIS_MNEMONIC_UD2)
+        {
+            end_of_real_code = cur;
+            chain_has_insn   = false;
+            continue;
+        }
+
+        // Direct CALL rel32 (E8) targeting .text: commit but keep the chain
+        // open, since noreturn-CALL chains can stack several CALLs in a row.
+        if (instr.opcode == 0xE8
+            && instr.meta.category == ZYDIS_CATEGORY_CALL
+            && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+        {
+            const auto target = insn_ip + instr.length
+                                + static_cast<std::int64_t>(instr.raw.imm[0].value.s);
+            if (target >= exec_start && target < exec_end)
+                end_of_real_code = cur;
+        }
+    }
+
+    return end_of_real_code;
+}
+
+} // namespace
+
+
 void CModule::BuildFunctionIndexAndReferences()
 {
     std::uintptr_t exec_start{}, exec_end{}, exec_size{};
@@ -538,15 +880,13 @@ void CModule::BuildFunctionIndexAndReferences()
         }
     }
 
-    // phase2: disassembles the entire executable section in a single pass to
-    // 1. find INT3(0xCC) padding
-    // 2. find the potential function entries
-    // 3. find pointer references in .text section
-
+    // phase2: single-pass disassembly of .text to find 
+    // 1. function entries (E8 call targets, E9 tail-call jumps, RIP-relative LEAs)
+    // 2. pointer references within .text. 
+    // Phase 3's CFG walk handles boundaries, so unlike the old scheme we collect no padding here.
     struct ChunkResult
     {
         std::vector<std::uintptr_t> functions;
-        std::vector<std::uintptr_t> paddings;
         std::vector<ReferenceEntry> refs;
     };
 
@@ -570,7 +910,6 @@ void CModule::BuildFunctionIndexAndReferences()
 
         auto& result = chunk_results[idx];
         result.functions.reserve(chunk_size / 64);
-        result.paddings.reserve(chunk_size / 200);
         result.refs.reserve(chunk_size / 8);
 
         ZydisDecodedInstruction instr{};
@@ -594,44 +933,40 @@ void CModule::BuildFunctionIndexAndReferences()
             // only record results after warm-up phase
             if (ip >= chunk_start)
             {
-                if (instr.mnemonic == ZYDIS_MNEMONIC_INT3)
-                {
-                    result.paddings.push_back(ip);
-                    ip += length;
-
-                    while (ip < chunk_end && *reinterpret_cast<const std::uint8_t*>(ip) == 0xCC)
-                        ++ip;
-
-                    has_prev = false;
-                    continue;
-                }
-
                 if (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
                 {
-                    if (instr.meta.category == ZYDIS_CATEGORY_CALL)
+                    // Direct CALL rel32 (E8). Gate on opcode, not the CALL
+                    // category: an indirect `call [rip+disp32]` (FF /2) is also
+                    // a relative CALL but its operand is the GOT slot, not the
+                    // callee. Those are handled by the disp branch below.
+                    if (instr.opcode == 0xE8 && instr.meta.category == ZYDIS_CATEGORY_CALL)
                     {
                         const auto target = ip + length + instr.raw.imm[0].value.s;
                         if (is_function_pointer(target))
                             result.functions.push_back(target);
                     }
-                    else if (instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR && instr.opcode == 0xE9 && prev_category != ZYDIS_CATEGORY_CALL)
+                    else if (instr.opcode == 0xE9 && instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR && prev_category != ZYDIS_CATEGORY_CALL)
                     {
                         const auto target = ip + length + instr.raw.imm[0].value.s;
 
-                        // a function entry always aligns to 16 bytes, by doing so we can filter out most of the
-                        // jmp label instructions and nullsub_xxx functions
+                        // Function entries are 16-byte aligned; this filters out
+                        // most jmp-label and nullsub targets.
                         if ((target & 15) == 0 && is_function_pointer(target))
                         {
-                            // detect tail calls by checking stack cleanup before jmp instruction.
-                            // there are other ways to detect tail call function but it is
-                            // very likely to have false positive so we dont add it here
+                            // Treat as a tail call only when preceded by stack
+                            // cleanup. Stay conservative to avoid false positives;
+                            // FDE seeding recovers anything we skip here.
                             if (has_prev && (prev_category == ZYDIS_CATEGORY_POP || prev_mnemonic == ZYDIS_MNEMONIC_LEAVE))
                             {
                                 result.functions.push_back(target);
                             }
                         }
                     }
-                    else if (instr.raw.disp.offset != 0)
+
+                    // Additive (not else-if): catches RIP-relative displacements
+                    // (LEA, MOV, indirect CALL/JMP, CMP/TEST [rip+disp], ...).
+                    // E8/E9 have no ModR/M displacement, so no double-count risk.
+                    if (instr.raw.disp.offset != 0)
                     {
                         const auto target = ip + length + instr.raw.disp.value;
 
@@ -676,66 +1011,125 @@ void CModule::BuildFunctionIndexAndReferences()
 
     // merge results from each thread
     std::size_t total_funcs = seen_functions.size();
-    std::size_t total_pads  = 0;
     std::size_t total_refs  = 0;
 
     for (const auto& r : chunk_results)
     {
         total_funcs += r.functions.size();
-        total_pads += r.paddings.size();
         total_refs += r.refs.size();
     }
 
-    std::vector<std::uintptr_t> padding_addrs;
     std::vector<ReferenceEntry> temp_refs;
-
-    padding_addrs.reserve(total_pads);
     temp_refs.reserve(total_refs);
-    seen_functions.reserve(total_funcs);
+    seen_functions.reserve(total_funcs + _eh_fde_starts.size());
 
     for (auto& r : chunk_results)
     {
         // todo: C++23 .append_range(std::views::as_rvalue(r.abc));
-        padding_addrs.insert(padding_addrs.end(), std::move_iterator(r.paddings.begin()), std::move_iterator(r.paddings.end()));
         temp_refs.insert(temp_refs.end(), std::move_iterator(r.refs.begin()), std::move_iterator(r.refs.end()));
         seen_functions.insert(seen_functions.end(), std::move_iterator(r.functions.begin()), std::move_iterator(r.functions.end()));
     }
+
+    // Seed with FDE pc_begin entries: leaf functions reached only via indirect
+    // dispatch or an uncaught tail-call jmp, and cold-split fragments the linker
+    // put in their own FDE - all invisible to phases 1/2. ~500 extra per
+    // libserver.so in practice.
+    seen_functions.insert(seen_functions.end(), _eh_fde_starts.begin(), _eh_fde_starts.end());
 
     if (seen_functions.empty()) [[unlikely]]
         return;
 
     // sort merged results
-    std::ranges::sort(padding_addrs);
     std::ranges::sort(temp_refs, std::less{}, &ReferenceEntry::source_ip);
     std::ranges::sort(seen_functions);
 
     const auto [first, last] = std::ranges::unique(seen_functions);
     seen_functions.erase(first, last);
 
-    // phase3: build function boundary
-    _function_entries.reserve(seen_functions.size());
+    // phase3: build function boundaries by walking the CFG from each start
+    // (see the finder comment above). Parallelized over `seen_functions` slices.
+    // based on the implementation in kananlib by @praydog
+    // https://github.com/cursey/kananlib/blob/49fdf2d3b1db350e370beacb607d5721bc2911ad/src/Scan.cpp#L1478
+    constexpr std::size_t kCfgPerFuncCap = 100'000;
 
-    auto       pad_it  = padding_addrs.begin();
-    const auto pad_end = padding_addrs.end();
+    _function_entries.assign(seen_functions.size(), FunctionEntry{0, 0});
 
-    for (std::size_t idx = 0; idx < seen_functions.size(); ++idx)
     {
-        const auto start           = seen_functions[idx];
-        const auto next_func_start = (idx + 1 < seen_functions.size()) ? seen_functions[idx + 1] : exec_end;
-        auto       end             = next_func_start;
+        const auto               cfg_chunk = (seen_functions.size() + num_threads - 1) / num_threads;
+        std::vector<std::thread> cfg_threads;
+        cfg_threads.reserve(num_threads);
 
-        while (pad_it != pad_end && *pad_it <= start)
-            ++pad_it;
+        auto cfg_worker = [&](std::size_t lo, std::size_t hi) {
+            ZydisDecoder decoder{};
+            if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
+                return;
 
-        if (pad_it == pad_end) [[unlikely]]
-            break;
+            for (std::size_t i = lo; i < hi; ++i)
+            {
+                const auto start = seen_functions[i];
+                const auto next  = (i + 1 < seen_functions.size()) ? seen_functions[i + 1] : exec_end;
+                // hard_end bounds the CFG walk; we never legitimately cross into
+                // the next known function. The cap is a runtime safety net.
+                const auto hard_end = std::min<std::uintptr_t>(next, start + kCfgPerFuncCap);
+                if (start >= exec_end || hard_end <= start)
+                    continue;
 
-        if (*pad_it < next_func_start)
-            end = *pad_it;
+                const auto blocks = cfg_collect_blocks(&decoder, start, hard_end);
 
-        if (start < end) [[likely]]
-            _function_entries.emplace_back(start, end);
+                std::uintptr_t end = start;
+                if (blocks.empty())
+                {
+                    // Fallback: single-instruction span (decode failed at start, very rare).
+                    ZydisDecodedInstruction first{};
+                    const auto              len = cfg_decode_one(&decoder, start, hard_end, first);
+                    end                         = start + (len ? len : 1);
+                }
+                else
+                {
+                    for (const auto& b : blocks)
+                        end = std::max<std::uintptr_t>(end, b.end);
+                }
+
+                // Recover code reachable only via indirect dispatch (switch
+                // tables, EH cleanup) by scanning the gap to `next`. Skipped
+                // when the cap clamped hard_end, since it then lands mid-body
+                // rather than in padding.
+                if (next == hard_end)
+                {
+                    const auto extended = find_last_real_insn_end(&decoder, next, end, exec_start, exec_end);
+                    if (extended > end)
+                        end = extended;
+                }
+
+                // FDE refinement: union with the eh_frame_hdr pc_end, an
+                // independent lower bound that catches tails the CFG walk and
+                // forward scan both miss (cleanup landing pads, EH fragments).
+                if (const auto fde_it = _eh_fde_ends.find(start); fde_it != _eh_fde_ends.end())
+                {
+                    const auto fde_end = std::min(fde_it->second, hard_end);
+                    if (fde_end > end)
+                        end = fde_end;
+                }
+
+                if (end > start)
+                    _function_entries[i] = {start, end};
+            }
+        };
+
+        for (std::uint32_t t = 0; t < num_threads; ++t)
+        {
+            const auto lo = static_cast<std::size_t>(t) * cfg_chunk;
+            if (lo >= seen_functions.size())
+                break;
+            const auto hi = std::min(lo + cfg_chunk, seen_functions.size());
+            cfg_threads.emplace_back(cfg_worker, lo, hi);
+        }
+        for (auto& th : cfg_threads)
+            th.join();
     }
+
+    // drop empty entries (e.g. start at/after exec_end, decode failure)
+    std::erase_if(_function_entries, [](const FunctionEntry& e) { return e.end <= e.start; });
 
     if (_function_entries.empty()) [[unlikely]]
         return;
