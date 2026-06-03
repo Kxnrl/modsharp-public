@@ -188,7 +188,7 @@ void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int see
         pItem->m_iItemIDLow(-1);
         pItem->m_bInitialized(true);
 
-        SetBodyGroupByName("default_gloves", 1);
+        address::server::CCSPlayerPawn_SetGlovesBodyGroup(this, false);
     }
 }
 
