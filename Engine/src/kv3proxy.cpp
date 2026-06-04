@@ -71,7 +71,7 @@ bool CSharpKeyValues3Helper::LoadFromFile(KeyValues3* kv, char* error, const cha
 
 bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, const char* filename, const char* pathId, uint32_t resource_block_type) const
 {
-    CUtlBuffer buffer{0, 0, CUtlBuffer::TEXT_BUFFER};
+    CUtlBuffer buffer{0, 0, CUtlBuffer::NONE};
 
     if (!g_pFullFileSystem->ReadFile(filename, pathId, buffer))
     {
