@@ -75,6 +75,7 @@ struct DownloadEntry_t
 {
     uint64_t fileId;
     bool     important; // triggers ReloadMap when this and all other important downloads complete
+    bool     remount;   // addon was mounted before this (re)download; remount it once done
 };
 static std::deque<DownloadEntry_t> s_DownloadQueue;
 
@@ -169,6 +170,36 @@ bool IsAddonMounted(const char* pszAddon, bool checkWorkshopMap)
 
 const std::vector<std::string>& GetMountedAddons() { return s_MountedAddons; }
 
+static bool MountAddonFiles(const char* pszAddon, bool addToTail)
+{
+    if (std::ranges::find(s_MountedAddons, pszAddon) != s_MountedAddons.end())
+        return true; // already mounted
+
+    char path[kAddonPathBufSize];
+    BuildAddonPath(pszAddon, path, sizeof(path), false);
+    if (!g_pFullFileSystem->FileExists(path))
+    {
+        BuildAddonPath(pszAddon, path, sizeof(path), true);
+        if (!g_pFullFileSystem->FileExists(path))
+        {
+            LogInfo("[ExtraAddon] MountAddon: %s not found at %s", pszAddon, path);
+            return false;
+        }
+    }
+    else
+    {
+        BuildAddonPath(pszAddon, path, sizeof(path), true);
+    }
+
+    g_pFullFileSystem->AddSearchPath(path, "GAME",
+                                     addToTail ? PATH_ADD_TO_TAIL : PATH_ADD_TO_HEAD,
+                                     SEARCH_PATH_PRIORITY_VPK);
+    s_MountedAddons.emplace_back(pszAddon);
+
+    LogInfo("[ExtraAddon] Mounted addon %s -> %s", pszAddon, path);
+    return true;
+}
+
 bool MountAddon(const char* pszAddon, bool addToTail)
 {
     if (!pszAddon || !*pszAddon)
@@ -209,31 +240,7 @@ bool MountAddon(const char* pszAddon, bool addToTail)
         }
     }
 
-    char path[kAddonPathBufSize];
-    BuildAddonPath(pszAddon, path, sizeof(path), false);
-    if (!g_pFullFileSystem->FileExists(path))
-    {
-        // Pre-multi-chunk legacy addon (no _dir suffix)
-        BuildAddonPath(pszAddon, path, sizeof(path), true);
-        if (!g_pFullFileSystem->FileExists(path))
-        {
-            LogInfo("[ExtraAddon] MountAddon: %s not found at %s", pszAddon, path);
-            return false;
-        }
-    }
-    else
-    {
-        // FileSystem appends suffixes; path without _dir is what AddSearchPath wants.
-        BuildAddonPath(pszAddon, path, sizeof(path), true);
-    }
-
-    g_pFullFileSystem->AddSearchPath(path, "GAME",
-                                     addToTail ? PATH_ADD_TO_TAIL : PATH_ADD_TO_HEAD,
-                                     SEARCH_PATH_PRIORITY_VPK);
-    s_MountedAddons.emplace_back(pszAddon);
-
-    LogInfo("[ExtraAddon] Mounted addon %s -> %s", pszAddon, path);
-    return true;
+    return MountAddonFiles(pszAddon, addToTail);
 }
 
 bool UnmountAddon(const char* pszAddon)
@@ -497,13 +504,28 @@ bool DownloadAddon(const char* pszAddon, bool important, bool force)
         return true;
     }
 
+    // If forcing a (re)download of an addon that is currently mounted, the
+    // engine holds an open handle on its .vpk
+    // On Windows that handle locks the file, so Steam cannot replace it when committing the update
+    // and the download fails with k_EResultLockingFailed (33)
+    // Unmount first to release the lock, and remember to remount once the download finishes
+    bool remount = false;
+    if (force && IsAddonMounted(pszAddon))
+    {
+        LogInfo("[ExtraAddon] DownloadAddon: unmounting %llu before update to release the file lock", fileId);
+        UnmountAddon(pszAddon);
+        remount = true;
+    }
+
     if (!g_pSteamApiProxy->DownloadItem(fileId, false))
     {
         LogInfo("[ExtraAddon] DownloadAddon: failed to start for %llu", fileId);
+        if (remount)
+            MountAddonFiles(pszAddon, false); // restore the mount we just removed
         return false;
     }
 
-    s_DownloadQueue.push_back({fileId, important});
+    s_DownloadQueue.push_back({fileId, important, remount});
     LogInfo("[ExtraAddon] Download started for %llu", fileId);
     return true;
 }
@@ -515,12 +537,20 @@ void OnAddonDownloadCompleted(uint64_t fileId, int eResult)
         return; // not our download
 
     const bool wasImportant = it->important;
+    const bool needRemount  = it->remount;
     s_DownloadQueue.erase(it);
 
     if (eResult == k_EResultOK)
         LogInfo("[ExtraAddon] Addon %llu downloaded", fileId);
     else
         LogInfo("[ExtraAddon] Addon %llu download failed (%d)", fileId, eResult);
+
+    if (needRemount)
+    {
+        char idStr[32];
+        snprintf(idStr, sizeof(idStr), "%llu", fileId);
+        MountAddonFiles(idStr, false);
+    }
 
     // When the last important download finishes, reload the map so the addon
     // takes effect.
