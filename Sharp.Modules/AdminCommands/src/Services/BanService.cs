@@ -292,34 +292,50 @@ internal class BanService : ICommandCategory, IBanService
         IGameClient?                                  issuer,
         BanType                                       type)
     {
-        try
-        {
-            if (await _operations.HasActiveAsync(targetId, AdminOperationType.Ban).ConfigureAwait(false))
-            {
-                ctx.ReplyKey("Admin.AlreadyBanned", "{0} is already banned.", targetDisplayName);
+        var banned = await _operations.HasActiveAsync(targetId, AdminOperationType.Ban).ConfigureAwait(false);
 
-                return;
-            }
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+                     {
+                         if (banned)
+                         {
+                             ctx.ReplyKey("Admin.AlreadyBanned", "{0} is already banned.", targetDisplayName);
 
-            if (_bridge.ClientManager.GetGameClient(targetId) is { } targetClient)
-            {
-                var metadata = CreateBanMetadata(targetClient, type);
-                _engine.ApplyOnline(issuer, targetClient, AdminOperationType.Ban, duration, reason, metadata: metadata);
-            }
-            else
-            {
-                var metadata = JsonSerializer.Serialize(new { bantype = (int) type });
-                _engine.ApplyOffline(issuer, targetId, targetDisplayName, AdminOperationType.Ban, duration, reason, metadata);
-            }
+                             return;
+                         }
 
-            var durationStr = FormatDuration(duration);
-            ctx.ReplySuccessKey("Admin.Banned", "Banned {0} {1}. Reason: {2}", targetDisplayName, durationStr, reason);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to process ban for {SteamId}", targetId);
-            ctx.Reply("Failed to process ban. Check server logs.");
-        }
+                         if (_bridge.ClientManager.GetGameClient(targetId) is { } targetClient)
+                         {
+                             var metadata = CreateBanMetadata(targetClient, type);
+
+                             _engine.ApplyOnline(issuer,
+                                                 targetClient,
+                                                 AdminOperationType.Ban,
+                                                 duration,
+                                                 reason,
+                                                 metadata: metadata);
+                         }
+                         else
+                         {
+                             var metadata = JsonSerializer.Serialize(new { bantype = (int) type });
+
+                             _engine.ApplyOffline(issuer,
+                                                  targetId,
+                                                  targetDisplayName,
+                                                  AdminOperationType.Ban,
+                                                  duration,
+                                                  reason,
+                                                  metadata);
+                         }
+
+                         var durationStr = FormatDuration(duration);
+
+                         ctx.ReplySuccessKey("Admin.Banned",
+                                             "Banned {0} {1}. Reason: {2}",
+                                             targetDisplayName,
+                                             durationStr,
+                                             reason);
+                     })
+                     .ConfigureAwait(false);
     }
 
     private static bool TryParseSteamId(string raw, out SteamID steamId)

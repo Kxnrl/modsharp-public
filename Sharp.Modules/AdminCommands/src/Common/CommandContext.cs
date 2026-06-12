@@ -48,6 +48,12 @@ internal sealed class CommandContext
         _issuer        = issuer;
         _command       = command;
         _logger        = logger;
+
+        IssuerName = issuer is null
+            ? "Console"
+            : string.IsNullOrWhiteSpace(issuer.Name)
+                ? "Unknown"
+                : issuer.Name;
     }
 
     /// <summary>
@@ -279,7 +285,7 @@ internal sealed class CommandContext
     public void ReplySuccess(string message)
         => ReplyInternal(message, true);
 
-    public string IssuerName => _issuer is null ? "Console" : _issuer.Name;
+    public string IssuerName { get; }
 
     private bool ShouldBroadcast
     {

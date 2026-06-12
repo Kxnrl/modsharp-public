@@ -155,29 +155,62 @@ internal class AdminOperationEngine : IClientListener
         _bridge.ClientManager.RemoveClientListener(this);
     }
 
-    public void ApplyOnline(IGameClient? admin,
-        IGameClient                      target,
-        AdminOperationType               type,
-        TimeSpan?                        duration,
-        string                           reason,
-        bool                             silent   = false,
-        string?                          metadata = null)
-        => ApplyCore(admin, target, target.SteamId, target.Name, target.Slot, type, duration, reason, metadata, silent);
+    public void ApplyOnline(IGameClient?       admin,
+                            IGameClient        target,
+                            AdminOperationType type,
+                            TimeSpan?          duration,
+                            string             reason,
+                            bool               silent   = false,
+                            string?            metadata = null)
+    {
+        _bridge.ModSharp.InvokeAction(() =>
+        {
+            if (!target.IsValid)
+            {
+                _logger.LogWarning("Discarding {type} apply: target is invalid", type);
 
-    public void ApplyOffline(IGameClient? admin,
-        SteamID                           steamId,
-        string                            targetName,
-        AdminOperationType                type,
-        TimeSpan?                         duration,
-        string                            reason,
-        string?                           metadata = null)
-        => ApplyCore(admin, null, steamId, targetName, null, type, duration, reason, metadata, true);
+                return;
+            }
+
+            ApplyCore(admin is { IsValid: true } ? admin : null,
+                      target,
+                      target.SteamId,
+                      target.Name,
+                      target.Slot,
+                      type,
+                      duration,
+                      reason,
+                      metadata,
+                      silent);
+        });
+    }
+
+    public void ApplyOffline(IGameClient?       admin,
+                             SteamID            steamId,
+                             string             targetName,
+                             AdminOperationType type,
+                             TimeSpan?          duration,
+                             string             reason,
+                             string?            metadata = null)
+        => _bridge.ModSharp.InvokeAction(() =>
+        {
+            ApplyCore(admin is { IsValid: true } ? admin : null,
+                      null,
+                      steamId,
+                      targetName,
+                      null,
+                      type,
+                      duration,
+                      reason,
+                      metadata,
+                      true);
+        });
 
     public void RemoveOnline(IGameClient? admin,
-        IGameClient                       target,
-        AdminOperationType                type,
-        string                            reason,
-        bool                              silent = false)
+                             IGameClient                       target,
+                             AdminOperationType                type,
+                             string                            reason,
+                             bool                              silent = false)
         => RemoveCore(admin, target, target.SteamId, target.Name, target.Slot, type, reason, silent);
 
     public void RemoveOffline(IGameClient? admin,
@@ -305,12 +338,14 @@ internal class AdminOperationEngine : IClientListener
         LocalizedDuration      duration,
         string                 reason)
     {
+        var targetName = target?.Name;
+
         _bridge.ModSharp.InvokeFrameAction(() =>
         {
-            if (target is not null && _moduleContext.LocalizerManager is { } localizer)
+            if (targetName is not null && _moduleContext.LocalizerManager is { } localizer)
             {
                 var locale = localizer.ForMany(_bridge.ClientManager.GetGameClients(true));
-                locale.Localized(locKey, adminName, target.Name, duration, reason).Print();
+                locale.Localized(locKey, adminName, targetName, duration, reason).Print();
             }
             else
             {

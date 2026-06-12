@@ -30,16 +30,19 @@ namespace Sharp.Modules.AdminCommands.Services;
 internal class MuteService : ICommandCategory, IMuteService
 {
     private readonly ILogger<MuteService>  _logger;
+    private readonly InterfaceBridge       _bridge;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
 
-    public MuteService(ILogger<MuteService> logger,
-        AdminOperationService               operations,
-        AdminOperationEngine                engine,
-        CommandContextFactory               contextFactory)
+    public MuteService(ILogger<MuteService>  logger,
+                       InterfaceBridge       bridge,
+                       AdminOperationService operations,
+                       AdminOperationEngine  engine,
+                       CommandContextFactory contextFactory)
     {
         _logger         = logger;
+        _bridge         = bridge;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
@@ -91,30 +94,49 @@ internal class MuteService : ICommandCategory, IMuteService
         string                                         reason,
         IGameClient?                                   issuer)
     {
-        var count = 0;
+        var candidates = targets.Where(t => !t.IsFakeClient)
+                                .Select(t => (Client: t, t.SteamId))
+                                .ToList();
 
-        foreach (var target in targets)
+        var targetToApply = new List<(IGameClient client, SteamID steamId)>();
+
+        foreach (var (client, steamId) in candidates)
         {
-            if (target.IsFakeClient)
+            if (await _operations.HasActiveAsync(steamId, AdminOperationType.Mute).ConfigureAwait(false))
             {
+                _logger.LogDebug("Skip mute for {SteamId}: already muted", steamId);
+
                 continue;
             }
 
-            if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
-            {
-                _logger.LogDebug("Skip mute for {Target} ({SteamId}): already muted", target.Name, target.SteamId);
+            targetToApply.Add((client, steamId));
+        }
 
-                continue;
+        if (targetToApply.Count == 0)
+        {
+            return;
+        }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId) in targetToApply)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is null)
+                    continue;
+
+                _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
+                count++;
             }
 
-            _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
-            count++;
-        }
-
-        if (count > 0)
-        {
-            ctx.ReplySuccessKey("Admin.Muted", "{0} Muted {1}.", ctx.IssuerName, targetLabel);
-        }
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Muted", "{0} Muted {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     private void OnCommandUnmute(IGameClient? issuer, StringCommand command)
