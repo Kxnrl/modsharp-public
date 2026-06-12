@@ -65,7 +65,19 @@ internal sealed class KickCommands : ICommandCategory
 
         foreach (var target in targets)
         {
-            _bridge.ClientManager.KickClient(target, reason, NetworkDisconnectionReason.Kicked);
+            // Defer the kick to the end of the current frame instead of
+            // disconnecting mid-callback: tearing the client down while a
+            // snapshot for it is in flight races the engine's send path
+            // (observed SIGSEGV at libengine2 SendSnapshot, null netchan deref).
+            _bridge.ModSharp.InvokeFrameAction(() =>
+                                               {
+                                                   if (target.IsValid)
+                                                   {
+                                                       _bridge.ClientManager.KickClient(target,
+                                                           reason,
+                                                           NetworkDisconnectionReason.Kicked);
+                                                   }
+                                               });
             count++;
 
             _logger.LogInformation("Kick issued by {Admin}: {Target} ({SteamId}). Reason: {Reason}",
