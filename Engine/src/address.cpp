@@ -24,15 +24,18 @@
 #include "logging.h"
 #include "memory/zydis_utility.h"
 #include "module.h"
+#include "murmurhash.h"
 #include "scopetimer.h"
 #include "types.h"
 
 #include "cstrike/interface/IGameSystem.h"
+#include "memory/zydis_utility.h"
 #include "cstrike/type/CEntityClass.h"
 
 #include <Zydis.h>
 
 #include <array>
+#include <unordered_set>
 
 class CBaseGameSystemFactory;
 
@@ -204,6 +207,108 @@ static void FindGameSystemFactory()
     FatalError("Found IGameSystem::InitAllSystems but failed to find instruction sequence within limit(50 times)");
 }
 
+static void FindCCSPlayerPawn_SetDefaultGloves()
+{
+    auto svr_mod = modules::server;
+
+    CAddress addr{};
+
+    constexpr std::string_view token_str = "first_or_third_person";
+
+    constexpr uint32_t token = MurmurHash2(token_str, MURMURHASH_SEED);
+    static_assert(token == 0x3C74EB85, "Token for first_or_third_person mismatched");
+
+    auto token_address = svr_mod->FindData(reinterpret_cast<const uint8_t*>(&token), sizeof(uint32_t), false);
+    if (token_address.IsValid())
+    {
+        auto references = svr_mod->GetReferenceRange(token_address);
+
+        std::unordered_set<uintptr_t> sets{};
+
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
+
+        for (auto [target, source_ip] : references)
+        {
+            if (auto entry = svr_mod->GetFunctionRange(source_ip))
+            {
+                if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
+                                                         reinterpret_cast<const void*>(source_ip),
+                                                         ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                         &instr, operands)))
+                {
+                    continue;
+                }
+
+                bool is_read_only_reference = false;
+
+                for (uint8_t i = 0; i < instr.operand_count; ++i)
+                {
+                    const auto& operand = operands[i];
+
+                    if (operand.type == ZYDIS_OPERAND_TYPE_MEMORY)
+                    {
+                        bool is_read  = false;
+                        bool is_write = false;
+
+                        switch (operand.actions)
+                        {
+                        case ZYDIS_OPERAND_ACTION_READ:
+                        case ZYDIS_OPERAND_ACTION_CONDREAD: {
+                            is_read = true;
+                            break;
+                        }
+                        case ZYDIS_OPERAND_ACTION_WRITE:
+                        case ZYDIS_OPERAND_ACTION_CONDWRITE: {
+                            is_write = true;
+                            break;
+                        }
+                        case ZYDIS_OPERAND_ACTION_READWRITE:
+                        case ZYDIS_OPERAND_ACTION_READ_CONDWRITE:
+                        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE: {
+                            is_read  = true;
+                            is_write = true;
+                            break;
+                        }
+                        default: break;
+                        }
+
+                        if (is_read && !is_write)
+                        {
+                            is_read_only_reference = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (is_read_only_reference)
+                {
+                    sets.insert(entry->start);
+                }
+            }
+        }
+
+        auto size = sets.size();
+        if (size != 1)
+        {
+            WARN("Expected to have one function that references token '%s' but got %zu, falling back to signature", token_str.data(), size);
+        }
+        else
+        {
+            addr = *sets.begin();
+        }
+    }
+
+    if (addr == 0)
+    {
+        address::server::CCSPlayerPawn_SetDefaultGloves = g_pGameData->GetAddress<address::server::CCSPlayerPawn_SetDefaultGloves_t>("CCSPlayerPawn::SetDefaultGloves");
+    }
+    else
+    {
+        address::server::CCSPlayerPawn_SetDefaultGloves = addr.As<address::server::CCSPlayerPawn_SetDefaultGloves_t>();
+    }
+}
+
 static void FindCEntityClassEntityListOffset()
 {
     const auto find_by_classname = reinterpret_cast<std::uintptr_t>(address::server::CGameEntitySystem_FindByClassname);
@@ -350,6 +455,7 @@ bool address::Initialize()
 
     FindGameSystemFactory();
     FindCEntityIdentity_SetEntityName();
+    FindCCSPlayerPawn_SetDefaultGloves();
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 

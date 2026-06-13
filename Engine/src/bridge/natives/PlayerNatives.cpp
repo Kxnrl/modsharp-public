@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -170,6 +170,11 @@ static void PawnSwitchWeapon(CCSPlayerPawn* pPawn, CBaseWeapon* pWeapon)
     return pPawn->SwitchWeapon(pWeapon);
 }
 
+static void PawnSetDefaultGloves(CCSPlayerPawn* pPawn, bool draw)
+{
+    return pPawn->SetDefaultGloves(draw);
+}
+
 static void PawnGiveGloves(CCSPlayerPawn* pPawn, int itemDefIndex, int prefab, float wear, int seed)
 {
     pPawn->GiveGloves(itemDefIndex, prefab, wear, seed);
@@ -185,7 +190,7 @@ static int64_t PawnEmitSoundClient(CBasePlayerPawn* pPawn, const char* sound, Nu
     const auto pVolume = volume->HasValue() ? &volume->GetValue() : nullptr;
     return pPawn->EmitSoundClient(sound, pVolume);
 }
-    
+
 static bool PawnIsPlayer(CCSPlayerPawnBase* pPawn)
 {
     return pPawn->IsPlayer();
@@ -225,6 +230,7 @@ void Init()
     bridge::CreateNative("Player.PawnSelectItem", reinterpret_cast<void*>(PawnSelectItem));
     bridge::CreateNative("Player.PawnDetachWeapon", reinterpret_cast<void*>(PawnDetachWeapon));
     bridge::CreateNative("Player.PawnSwitchWeapon", reinterpret_cast<void*>(PawnSwitchWeapon));
+    bridge::CreateNative("Player.PawnSetDefaultGloves", reinterpret_cast<void*>(PawnSetDefaultGloves));
     bridge::CreateNative("Player.PawnGiveGloves", reinterpret_cast<void*>(PawnGiveGloves));
     bridge::CreateNative("Player.PawnEmitSoundClient", reinterpret_cast<void*>(PawnEmitSoundClient));
     bridge::CreateNative("Player.PawnIsPlayer", reinterpret_cast<void*>(PawnIsPlayer));

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -173,6 +173,11 @@ SndOpEventGuid_t CBasePlayerPawn::EmitSoundClient(const char* pszSound, const fl
     return pController->EmitSoundClient(pszSound, pVolume);
 }
 
+void CCSPlayerPawn::SetDefaultGloves(bool draw)
+{
+    address::server::CCSPlayerPawn_SetDefaultGloves(this, draw);
+}
+
 void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int seed)
 {
     AssertBool(itemDefIndex >= 0 && itemDefIndex <= 65535);
@@ -188,7 +193,7 @@ void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int see
         pItem->m_iItemIDLow(-1);
         pItem->m_bInitialized(true);
 
-        SetBodyGroupByName("default_gloves", 1);
+        SetDefaultGloves(false);
     }
 }
 

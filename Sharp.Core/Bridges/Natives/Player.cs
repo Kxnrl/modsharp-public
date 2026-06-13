@@ -96,6 +96,8 @@ public static unsafe partial class Player
 
     public static partial void PawnSwitchWeapon(IntPtr ptr, IntPtr entityPtr);
 
+    public static partial void PawnSetDefaultGloves(IntPtr ptr, bool hide);
+
     public static partial void PawnGiveGloves(IntPtr ptr, int itemDefIndex, int prefab, float wear, int seed);
 
     public static partial SoundOpEventGuid PawnEmitSoundClient(IntPtr ptr, string sound, float?* volume);
