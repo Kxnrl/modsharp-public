@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="LiteDB" Version="5.0.21" />
-        <PackageReference Include="Refit" Version="10.1.6" />
+        <PackageReference Include="Refit" Version="11.0.1" />
     </ItemGroup>
 
     <ItemGroup>
