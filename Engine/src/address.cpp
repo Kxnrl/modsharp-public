@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -22,13 +22,13 @@
 #include "gamedata.h"
 #include "global.h"
 #include "logging.h"
+#include "memory/zydis_utility.h"
 #include "module.h"
 #include "scopetimer.h"
 #include "types.h"
 
 #include "cstrike/interface/IGameSystem.h"
 #include "cstrike/type/CEntityClass.h"
-#include "memory/zydis_utility.h"
 
 #include <Zydis.h>
 
@@ -138,10 +138,10 @@ static void FindGameSystemFactory()
     for (auto i = 0; i < 50; ++i)
     {
         if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder,
-            reinterpret_cast<const void*>(ip),
-            ZYDIS_MAX_INSTRUCTION_LENGTH,
-            &instr,
-            operands))) [[unlikely]]
+                                                 reinterpret_cast<const void*>(ip),
+                                                 ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                 &instr,
+                                                 operands))) [[unlikely]]
             break;
 
         // mov reg, cs:CBaseGameSystemFactory::sm_pFirst
@@ -251,8 +251,8 @@ static void FindCEntityClassEntityListOffset()
     constexpr ZydisRegister kArg0Register = ZYDIS_REGISTER_RDI;
 #endif
 
-    ZydisRegister  class_reg = ZYDIS_REGISTER_NONE;
-    std::uint32_t  offset    = 0;
+    ZydisRegister class_reg = ZYDIS_REGISTER_NONE;
+    std::uint32_t offset    = 0;
 
     ZydisUtility::ScanInstructions(iter_range->start, iter_range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
         if (instr.mnemonic != ZYDIS_MNEMONIC_MOV || instr.operand_count_visible != 2)

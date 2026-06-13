@@ -51,8 +51,8 @@ internal class EntityManager : ICoreEntityManager
 
     public EntityManager(ILogger<EntityManager> logger)
     {
-        _logger     = logger;
-        _listeners  = [];
+        _logger    = logger;
+        _listeners = [];
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
