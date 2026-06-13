@@ -107,6 +107,7 @@ namespace address
 {
 
 bool Initialize();
+void PostSchemaInit();
 
 namespace engine
 {
@@ -308,12 +309,6 @@ inline CGameEntitySystem_GetSpawnOriginOffset_t            CGameEntitySystem_Get
 inline CCSPlayerPawn_SetDefaultGloves_t                    CCSPlayerPawn_SetDefaultGloves;
 
 } // namespace server
-
-namespace resource
-{
-using CResourceNameTyped_ResolveResourceName_t = bool (*)(CResourceNameTyped& info, const char* fileName);
-inline CResourceNameTyped_ResolveResourceName_t CResourceNameTyped_ResolveResourceName;
-} // namespace resource
 
 } // namespace address
 

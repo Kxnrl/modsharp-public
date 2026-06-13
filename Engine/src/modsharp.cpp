@@ -246,6 +246,7 @@ bool ModSharp_Init()
 #endif
 
     InitSchemaSystem();
+    address::PostSchemaInit();
     InitGameEntitySystem();
     InitHookManager();
     InitEconItemSchema();

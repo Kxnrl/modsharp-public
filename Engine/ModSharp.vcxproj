@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\address_engine.cpp" />
+    <ClCompile Include="src\address_server.cpp" />
     <ClCompile Include="src\bridge\hookbridge.cpp" />
     <ClCompile Include="src\bridge\natives\NetNatives.cpp" />
     <ClCompile Include="src\bridge\natives\SoundNatives.cpp" />
@@ -115,6 +117,7 @@
     <ClCompile Include="vendors\zydis\Zydis.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\address_resolve.h" />
     <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
     <ClInclude Include="src\bridge\natives\NetNatives.h" />
     <ClInclude Include="src\bridge\natives\SoundNatives.h" />

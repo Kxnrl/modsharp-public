@@ -18,6 +18,7 @@
  */
 
 #include "address.h"
+#include "address_resolve.h"
 
 #include "gamedata.h"
 #include "global.h"
@@ -37,11 +38,6 @@
 #include <array>
 #include <unordered_set>
 
-class CBaseGameSystemFactory;
-
-#define RESOLVE_GAMEDATA_ADDRESS(name, variable) \
-    (variable) = g_pGameData->GetAddress<decltype(variable)>(name)
-
 #ifdef PLATFORM_WINDOWS
 #    define RELATE_SERVER_LIB_FILE_PATH "../../csgo/bin/win64/"
 #else
@@ -52,358 +48,6 @@ GameData*   g_pGameData;
 extern void InitializeInterfaces();
 
 CBaseGameSystemFactory** CBaseGameSystemFactory::sm_ppFirst = nullptr;
-
-static void FindCEntityIdentity_SetEntityName()
-{
-    const auto set_entity_name_functions = modules::server->FindAllFunctionsFromStringRefs({"CEntityIdentity::SetEntityName called, but there is no entity name string table pointer!\n"});
-    if (set_entity_name_functions.empty()) [[unlikely]]
-    {
-        FatalError("Failed to find CEntityIdentity::SetEntityName");
-        return;
-    }
-
-    const auto point_script_set_entity_name = modules::server->FindFunctionFromStringRefs({"SetEntityName",
-                                                                                           "(name: string)"});
-    if (!point_script_set_entity_name.IsValid())
-    {
-        FatalError("Failed to find CPointScript::SetEntityName");
-        return;
-    }
-
-    const auto range = modules::server->GetFunctionRange(point_script_set_entity_name);
-    if (!range)
-    {
-        FatalError("Failed to get function range for CPointScript::SetEntityName");
-        return;
-    }
-
-    ZydisDecoder decoder{};
-    if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
-    {
-        FatalError("Failed to initialize Zydis decoder");
-        return;
-    }
-
-    ZydisDecodedInstruction instr;
-
-    for (auto ip = range->start; ip < range->end;)
-    {
-        if (ZYAN_FAILED(ZydisDecoderDecodeInstruction(&decoder, nullptr, reinterpret_cast<const void*>(ip), range->end - ip, &instr)))
-        {
-            ip++;
-            continue;
-        }
-
-        if (instr.opcode == 0xE8)
-        {
-            auto target = ip + instr.length + static_cast<std::int32_t>(instr.raw.imm[0].value.s);
-            for (const auto& func : set_entity_name_functions)
-            {
-                if (target == func)
-                {
-                    FLOG("Found CEntityIdentity::SetEntityName at server+0x%llx", func - modules::server->Base());
-                    address::server::CEntityIdentity_SetEntityName = reinterpret_cast<address::server::CEntityIdentity_SetEntityName_t>(func);
-                    return;
-                }
-            }
-        }
-
-        ip += instr.length;
-    }
-
-    FatalError("Failed to find CEntityIdentity::SetEntityName call in CPointScript::SetEntityName");
-}
-
-static void FindGameSystemFactory()
-{
-    const auto function_address = modules::server->FindFunctionFromStringRef("Game System %s is defined twice!\n");
-    if (!function_address.IsValid()) [[unlikely]]
-    {
-        FatalError("Failed to find IGameSystem::InitAllSystems");
-        return;
-    }
-
-    ZydisDecoder decoder;
-    if (!ZYAN_SUCCESS(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64))) [[unlikely]]
-    {
-        FatalError("Failed to initialize Zydis decoder.");
-        return;
-    }
-
-    ZydisDecodedInstruction instr;
-    ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
-
-    std::uintptr_t ip = function_address;
-
-    std::uintptr_t pending_addr = 0;
-    ZydisRegister  pending_reg  = ZYDIS_REGISTER_NONE;
-
-    for (auto i = 0; i < 50; ++i)
-    {
-        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder,
-                                                 reinterpret_cast<const void*>(ip),
-                                                 ZYDIS_MAX_INSTRUCTION_LENGTH,
-                                                 &instr,
-                                                 operands))) [[unlikely]]
-            break;
-
-        // mov reg, cs:CBaseGameSystemFactory::sm_pFirst
-        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) && instr.operand_count_visible == 2)
-        {
-            const auto& dst = operands[0];
-            const auto& src = operands[1];
-
-            if (dst.type == ZYDIS_OPERAND_TYPE_REGISTER && src.type == ZYDIS_OPERAND_TYPE_MEMORY)
-            {
-                pending_reg  = dst.reg.value;
-                pending_addr = ip + instr.length + src.mem.disp.value;
-            }
-        }
-        // test reg, reg
-        else if (pending_reg != ZYDIS_REGISTER_NONE && instr.mnemonic == ZYDIS_MNEMONIC_TEST && instr.operand_count_visible == 2)
-        {
-            const auto& op1 = operands[0];
-            const auto& op2 = operands[1];
-
-            if (op1.type == ZYDIS_OPERAND_TYPE_REGISTER && op1.reg.value == pending_reg && op2.type == ZYDIS_OPERAND_TYPE_REGISTER && op2.reg.value == pending_reg)
-            {
-                auto temp  = reinterpret_cast<CBaseGameSystemFactory**>(pending_addr);
-                auto first = *temp;
-                if (first == nullptr)
-                {
-                    WARN("Candidate at server+0x%llx rejected: factory pointer is null", pending_addr - modules::server->Base());
-                    pending_reg  = ZYDIS_REGISTER_NONE;
-                    pending_addr = 0;
-                    continue;
-                }
-
-                if (!modules::server->IsPointerDerivedFrom(first->m_pInstance, "IGameSystem"))
-                {
-                    WARN("Candidate at server+0x%llx rejected: m_pInstance is not derived from IGameSystem", pending_addr - modules::server->Base());
-                    pending_reg  = ZYDIS_REGISTER_NONE;
-                    pending_addr = 0;
-                    continue;
-                }
-
-                FLOG("Found CBaseGameSystemFactory::sm_ppFirst at sever+0x%llx", pending_addr - modules::server->Base());
-                CBaseGameSystemFactory::sm_ppFirst = temp;
-                return;
-            }
-
-            pending_reg = ZYDIS_REGISTER_NONE;
-        }
-        else if (pending_reg != ZYDIS_REGISTER_NONE && instr.operand_count_visible > 0)
-        {
-            if (operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER && operands[0].reg.value == pending_reg && (operands[0].actions & ZYDIS_OPERAND_ACTION_WRITE))
-            {
-                pending_reg  = ZYDIS_REGISTER_NONE;
-                pending_addr = 0;
-            }
-        }
-
-        ip += instr.length;
-    }
-
-    FatalError("Found IGameSystem::InitAllSystems but failed to find instruction sequence within limit(50 times)");
-}
-
-static void FindCCSPlayerPawn_SetDefaultGloves()
-{
-    auto svr_mod = modules::server;
-
-    CAddress addr{};
-
-    constexpr std::string_view token_str = "first_or_third_person";
-
-    constexpr uint32_t token = MurmurHash2(token_str, MURMURHASH_SEED);
-    static_assert(token == 0x3C74EB85, "Token for first_or_third_person mismatched");
-
-    auto token_address = svr_mod->FindData(reinterpret_cast<const uint8_t*>(&token), sizeof(uint32_t), false);
-    if (token_address.IsValid())
-    {
-        auto references = svr_mod->GetReferenceRange(token_address);
-
-        std::unordered_set<uintptr_t> sets{};
-
-        ZydisDecodedInstruction instr{};
-        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
-
-        for (auto [target, source_ip] : references)
-        {
-            if (auto entry = svr_mod->GetFunctionRange(source_ip))
-            {
-                if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
-                                                         reinterpret_cast<const void*>(source_ip),
-                                                         ZYDIS_MAX_INSTRUCTION_LENGTH,
-                                                         &instr, operands)))
-                {
-                    continue;
-                }
-
-                bool is_read_only_reference = false;
-
-                for (uint8_t i = 0; i < instr.operand_count; ++i)
-                {
-                    const auto& operand = operands[i];
-
-                    if (operand.type == ZYDIS_OPERAND_TYPE_MEMORY)
-                    {
-                        bool is_read  = false;
-                        bool is_write = false;
-
-                        switch (operand.actions)
-                        {
-                        case ZYDIS_OPERAND_ACTION_READ:
-                        case ZYDIS_OPERAND_ACTION_CONDREAD: {
-                            is_read = true;
-                            break;
-                        }
-                        case ZYDIS_OPERAND_ACTION_WRITE:
-                        case ZYDIS_OPERAND_ACTION_CONDWRITE: {
-                            is_write = true;
-                            break;
-                        }
-                        case ZYDIS_OPERAND_ACTION_READWRITE:
-                        case ZYDIS_OPERAND_ACTION_READ_CONDWRITE:
-                        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE: {
-                            is_read  = true;
-                            is_write = true;
-                            break;
-                        }
-                        default: break;
-                        }
-
-                        if (is_read && !is_write)
-                        {
-                            is_read_only_reference = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (is_read_only_reference)
-                {
-                    sets.insert(entry->start);
-                }
-            }
-        }
-
-        auto size = sets.size();
-        if (size != 1)
-        {
-            WARN("Expected to have one function that references token '%s' but got %zu, falling back to signature", token_str.data(), size);
-        }
-        else
-        {
-            addr = *sets.begin();
-        }
-    }
-
-    if (addr == 0)
-    {
-        address::server::CCSPlayerPawn_SetDefaultGloves = g_pGameData->GetAddress<address::server::CCSPlayerPawn_SetDefaultGloves_t>("CCSPlayerPawn::SetDefaultGloves");
-    }
-    else
-    {
-        address::server::CCSPlayerPawn_SetDefaultGloves = addr.As<address::server::CCSPlayerPawn_SetDefaultGloves_t>();
-    }
-}
-
-static void FindCEntityClassEntityListOffset()
-{
-    const auto find_by_classname = reinterpret_cast<std::uintptr_t>(address::server::CGameEntitySystem_FindByClassname);
-    if (find_by_classname == 0) [[unlikely]]
-    {
-        FatalError("Failed to resolve CEntityClass entity list offset: CGameEntitySystem::FindByClassname is null");
-        return;
-    }
-
-    const auto* wrapper_range = modules::server->GetFunctionRange(find_by_classname);
-    if (!wrapper_range) [[unlikely]]
-    {
-        FatalError("Failed to get function range for CGameEntitySystem::FindByClassname");
-        return;
-    }
-
-    std::uintptr_t next_by_classname = 0;
-    ZydisUtility::ScanInstructions(wrapper_range->start, wrapper_range->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-        if (instr.opcode == 0xE8 && instr.mnemonic == ZYDIS_MNEMONIC_CALL)
-        {
-            if (const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip))
-            {
-                next_by_classname = target;
-            }
-        }
-        return false;
-    });
-
-    if (next_by_classname == 0) [[unlikely]]
-    {
-        FatalError("Failed to find CEntityIterator::NextByClassname call in CGameEntitySystem::FindByClassname");
-        return;
-    }
-
-    const auto* iter_range = modules::server->GetFunctionRange(next_by_classname);
-    if (!iter_range) [[unlikely]]
-    {
-        FatalError("Failed to get function range for CEntityIterator::NextByClassname");
-        return;
-    }
-
-#ifdef PLATFORM_WINDOWS
-    constexpr ZydisRegister kArg0Register = ZYDIS_REGISTER_RCX;
-#else
-    constexpr ZydisRegister kArg0Register = ZYDIS_REGISTER_RDI;
-#endif
-
-    ZydisRegister class_reg = ZYDIS_REGISTER_NONE;
-    std::uint32_t offset    = 0;
-
-    ZydisUtility::ScanInstructions(iter_range->start, iter_range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-        if (instr.mnemonic != ZYDIS_MNEMONIC_MOV || instr.operand_count_visible != 2)
-        {
-            return false;
-        }
-
-        const auto& dst = operands[0];
-        const auto& src = operands[1];
-
-        if (dst.type != ZYDIS_OPERAND_TYPE_REGISTER || src.type != ZYDIS_OPERAND_TYPE_MEMORY || src.mem.index != ZYDIS_REGISTER_NONE)
-        {
-            return false;
-        }
-
-        const auto base_reg = ZydisUtility::GetBaseRegister(src.mem.base);
-
-        if (class_reg == ZYDIS_REGISTER_NONE)
-        {
-            // mov class_reg, [arg0 + 0x20]
-            if (base_reg == kArg0Register && src.mem.disp.has_displacement && src.mem.disp.value == 0x20)
-            {
-                class_reg = ZydisUtility::GetBaseRegister(dst.reg.value);
-            }
-            return false;
-        }
-
-        // mov dst, [class_reg + disp32]
-        if (base_reg == class_reg && src.mem.disp.has_displacement && src.mem.disp.value > 0)
-        {
-            offset = static_cast<std::uint32_t>(src.mem.disp.value);
-            return true;
-        }
-
-        return false;
-    });
-
-    if (offset == 0 || offset >= 0x2000) [[unlikely]]
-    {
-        FatalError("Failed to resolve CEntityClass entity list offset (got 0x%x)", offset);
-        return;
-    }
-
-    FLOG("Found CEntityClass entity list head offset at 0x%x", offset);
-    CEntityClass::sm_nEntityListHeadOffset = offset;
-}
 
 bool address::Initialize()
 {
@@ -456,6 +100,24 @@ bool address::Initialize()
     FindGameSystemFactory();
     FindCEntityIdentity_SetEntityName();
     FindCCSPlayerPawn_SetDefaultGloves();
+
+    // GameData auto-resolve (does not require schema system) — resolved addresses overwrite
+    // gamedata where the scan succeeds, and fall back to gamedata otherwise.
+    FindCCSPlayerWeaponServices_DestroyWeapon();
+    FindSetModel();
+    FindCCSPlayerWeaponService_FindWeaponBySlot();
+    ResolveCCSPlayerPawnStateActive();
+    ResolveCBaseEntity_IsWeapon();
+    ResolveCBaseEntityTeleport();
+    ResolveCBaseEntity_GetEyeAngles();
+    ResolveCBaseEntity_GetEyePosition();
+    ResolveCBaseEntity_ChangeTeam();
+    ResolveServerSideClientOffsets();
+    ResolveNetworkGameServerOffsets();
+    ResolveCBaseEntity_EventKill();
+    ResolveCBaseEntity_AbsOrigin();
+    ResolveCBaseEntity_Precache();
+    ResolveCCSPlayerPawn_IsPlayer();
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 
@@ -572,7 +234,19 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("GetLegacyGameEventListener", address::server::GetLegacyGameEventListener);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::GetSpawnOriginOffset", address::server::CGameEntitySystem_GetSpawnOriginOffset);
 
-    // ResourceSystem
-    RESOLVE_GAMEDATA_ADDRESS("CResourceNameTyped::ResolveResourceName", address::resource::CResourceNameTyped_ResolveResourceName);
     return true;
+}
+
+void address::PostSchemaInit()
+{
+    // These resolvers depend on the schema system being initialized (they call
+    // schemas::GetOffset), so they must run after InitSchemaSystem().
+    ResolveCBaseEntity_GetCenter();
+    Resolve_CBaseEntity_Use_StartTouch_Touch_EndTouch();
+    ResolveCEntityInstance_GetDynamicBinding();
+    ResolveCCSPlayerWeaponServices();
+    ResolveCCSPlayerItemServices();
+    ResolveCBasePlayerController_CanHearAndReadChatFrom();
+    ResolveCCSPlayerController_RoundRespawn();
+    ResolveCBasePlayerPawn_CommitSuicide();
 }

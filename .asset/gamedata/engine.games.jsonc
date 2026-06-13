@@ -127,6 +127,11 @@
       "linux": 592,
       "windows": 592
     },
+    // 搜 "map/mapname", 上面最后一个 qword load [this + disp] 就是
+    "CNetworkGameServer::m_MapName": {
+      "linux": 336,
+      "windows": 336
+    },
     // 搜 "CServerSideClientBase::SpawnPlayer"
     // 找到带 client->m_Slot + 1 的引用
     "CServerSideClient::m_ControllerEntityIndex": {
@@ -159,6 +164,11 @@
     "CServerSideClient::m_Name": {
       "linux": 64,
       "windows": 64
+    },
+    // 搜 "CServerSideClientBase::SpawnPlayer" 的调用者, 第一个 qword load [this + disp] 就是
+    "CServerSideClient::m_GameServer": {
+      "linux": 80,
+      "windows": 80
     },
     // "'%s' already awaiting full update\n", 往下找 if (var == -1)
     // 如果 var 是从a1里拿的那就是m_nDeltaTick

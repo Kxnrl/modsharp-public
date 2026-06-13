@@ -39,6 +39,8 @@ set(modsharp_SOURCES
 	"src/CoreCLR/RuntimeProtobufMessage.cpp"
 	"src/CoreCLR/coreclr.cpp"
 	"src/address.cpp"
+	"src/address_engine.cpp"
+	"src/address_server.cpp"
 	"src/bridge/adapter.cpp"
 	"src/bridge/corebridge.cpp"
 	"src/bridge/hookbridge.cpp"

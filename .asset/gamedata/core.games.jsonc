@@ -1,12 +1,5 @@
 {
   "Addresses": {
-    // 搜 "Unsupported version %d for resource '%s' (Expected %d)\n" 
-    // 往上会有判断a2 (CBufferString) 为valid的条件里调用的函数就是 CResourceNameTyped::ResolveResourceName
-    "CResourceNameTyped::ResolveResourceName": {
-      "library": "resourcesystem",
-      "linux": "55 48 89 F2",
-      "windows": "48 89 5C 24 ? 57 48 83 EC ? 8B 41 ? 48 8D 79"
-    },
     // str "CNetChan::SendNetMessage: SerializeAbstract for message %s failed!\n"
     "INetChannel::SendNetMessage": {
       "library": "networksystem",
@@ -42,7 +35,7 @@
       "windows": 7
     },
     // server.dll -> xref 'sv_phys_stop_at_collision' 最上面的 __fastcall
-    "CVPhys2World::GetTouchingList": {
+    "CVPhys2World::GenerateIntersectionNotifications": {
       "linux": 121,
       "windows": 121
     },

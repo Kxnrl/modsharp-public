@@ -369,9 +369,9 @@ BeginMemberHookScope(CVPhys2World)
     };
     static_assert(sizeof(TouchLinked_t) == 256, "Touch_t size mismatch");
 
-    DeclareVirtualHook(GetTouchingList, void, (void* pVphysicsWorld, CUtlVector<TouchLinked_t>* pList, bool unknown))
+    DeclareVirtualHook(GenerateIntersectionNotifications, void, (void* pVphysicsWorld, CUtlVector<TouchLinked_t>* pList, bool unknown))
     {
-        GetTouchingList(pVphysicsWorld, pList, unknown);
+        GenerateIntersectionNotifications(pVphysicsWorld, pList, unknown);
 
         if (pList->Count() <= 1 || !ms_fix_entities_touching_list->GetValue<bool>())
             return;
@@ -813,6 +813,104 @@ static void PatchEnableHammerUniqueId()
     }
 }
 
+
+static int GetGenerateIntersectionNotificationsIndex()
+{
+    auto svr_mod = modules::server;
+
+    int gamedata_index = g_pGameData->GetVFunctionIndex("CVPhys2World::GenerateIntersectionNotifications");
+
+    auto function = svr_mod->FindFunctionFromStringRefs({"StartTouch+Collision", "INVALID CGameEventStartTouchCollideAdaptor", "%s( %s, %s )\n"});
+    if (!function.IsValid())
+    {
+        WARN("Failed to find function CPhysicsGameSystem::ProcessWorldIntersectionNotifications, falling back to gamedata");
+        return gamedata_index;
+    }
+
+    auto range = svr_mod->GetFunctionRange(function);
+    if (range == nullptr)
+    {
+        WARN("Failed to get function function range CPhysicsGameSystem::ProcessWorldIntersectionNotifications, falling back to gamedata");
+        return gamedata_index;
+    }
+
+    auto legacy_collision_vtable = svr_mod->GetVirtualTableByName("CLegacyCollisionData");
+
+    int index = -1;
+
+    ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
+        {
+            if (operands[0].mem.disp.has_displacement && operands[0].mem.base != ZYDIS_REGISTER_RIP && operands[0].mem.base != ZYDIS_REGISTER_NONE)
+            {
+                index = static_cast<int>(operands[0].mem.disp.value / sizeof(void*));
+                return true;
+            }
+        }
+
+        // stop at
+        // lea reg, CLegacyCollisionDataVtable
+        if (instr.mnemonic == ZYDIS_MNEMONIC_LEA
+            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && operands[1].mem.base == ZYDIS_REGISTER_RIP)
+        {
+            if (legacy_collision_vtable.IsValid()
+                && ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == legacy_collision_vtable)
+            {
+                return true;
+            }
+        }
+
+        // test 32reg, 32reg
+        if (instr.mnemonic == ZYDIS_MNEMONIC_TEST
+            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && operands[0].reg.value == operands[1].reg.value)
+        {
+            if (ZydisRegisterGetWidth(ZYDIS_MACHINE_MODE_LONG_64, operands[0].reg.value) == 32)
+            {
+                return true;
+            }
+        }
+
+        // cmp 32reg, 0FFFFFFFFh
+        // cmp 32reg, 0FFFFFFFEh
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CMP
+            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+        {
+            if (ZydisRegisterGetWidth(ZYDIS_MACHINE_MODE_LONG_64, operands[0].reg.value) == 32)
+            {
+                uint32_t imm_val = static_cast<uint32_t>(operands[1].imm.value.u);
+
+                if (imm_val == 0xFFFFFFFF || imm_val == 0xFFFFFFFE)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    });
+
+    if (index > -1)
+    {
+        FLOG("Found vfunc index for CVPhys2World::GenerateIntersectionNotifications: %d", index);
+
+        if (index != gamedata_index)
+        {
+            WARN("Gamedata index for CVPhys2World::GenerateIntersectionNotifications mismatches. GameData: %d, auto-disassemble: %d", gamedata_index, index);
+        }
+
+        return index;
+    }
+
+    WARN("Failed to find index for CVPhys2World::GenerateIntersectionNotifications, falling back to gamedata");
+
+    return gamedata_index;
+}
+
 void InstallEntityHooks()
 {
     PatchEnableHammerUniqueId();
@@ -829,7 +927,11 @@ void InstallEntityHooks()
     VHOOK(CTriggerGravity, EndTouch, server, {.gamedata = "CBaseEntity::EndTouch"});
     VHOOK(CTriggerPush, Touch, server, {.gamedata = "CBaseEntity::Touch"});
     VHOOK(CPhysBox, Use, server, {.gamedata = "CBaseEntity::Use"});
-    VHOOK(CVPhys2World, GetTouchingList, vphysics2);
+
+    {
+        auto index = GetGenerateIntersectionNotificationsIndex();
+        VHOOK(CVPhys2World, GenerateIntersectionNotifications, vphysics2, {.index = index});
+    }
 
     g_pHookManager->Hook_PlayerSpawned(HookType_Post, [](CCSPlayerPawn* pPawn, CServerSideClient* pClient) {
         if (g_pScriptVM)

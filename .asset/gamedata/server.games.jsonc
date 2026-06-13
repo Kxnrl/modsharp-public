@@ -275,6 +275,7 @@
       }
     },
     "CCSPlayer_ItemServices::RemovePlayerItem": {
+      "on_demand": true,
       "library": "server",
       "linux": "55 48 89 E5 41 54 49 89 FC 53 48 89 F3 E8 ? ? ? ? 48 39 C3",
       "windows": "48 85 D2 0F 84 ? ? ? ? 48 89 5C 24 08 57 48 83 EC ? 48 8B DA 48 8B F9 E8 ? ? ? ?"
@@ -683,15 +684,6 @@
         "signature": "48 8B 0D ? ? ? ? 4D 8B C7 89 45 ? 48 8B 45"
       }
     },
-    "GameSystemFactory::m_FactoryList": {
-      "base": "UTIL_GetGameSystemFactory",
-      "linux": {
-        "factory": "+17 r d"
-      },
-      "windows": {
-        "factory": "+10 r d"
-      }
-    },
     // 搜 "CSource2GameClients::StartHLTVServer: game event %s not found.\n"
     "GetLegacyGameEventListener": {
       "library": "server",
@@ -947,11 +939,6 @@
       "library": "server",
       "linux": "55 48 89 E5 41 54 53 48 8B 1D ? ? ? ? 48 85 DB 74 ? 48 89 D8",
       "windows": "48 83 EC ? 48 8B 05 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 48 89 5C 24 30 B9 ? ? ? ? 48 89 7C 24 20 E8 ? ? ? ? 33 FF 48 8B D8 48 85 C0 74 ? 48 8D 05 ? ? ? ? 48 89 7B 08 B9 ? ? ? ? 48 89 03 E8 ? ? ? ? 48 85 C0 74 ? 48 8B C8 E8 ? ? ? ? 48 8B F8 48 8D 05 ? ? ? ? 48 89 7B 08 48 8B 7C 24 20"
-    },
-    "UTIL_GetGameSystemFactory": {
-      "library": "server",
-      "linux": "48 8D 05 ? ? ? ? 48 89 77 ? 48 89 07 48 8B 05",
-      "windows": "48 89 51 10 48 89 01 48 8B 05 ? ? ? ? 48 89 41 08"
     },
     // string '#Game_radio_location' near &CCSUsrMsg_RadioText_t::`vftable'
     "UTIL_RadioMessage": {

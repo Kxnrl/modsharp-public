@@ -34,6 +34,7 @@
 #include <charconv>
 #include <deque>
 #include <fstream>
+#include <map>
 
 // #define DEBUG
 
@@ -431,6 +432,257 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
     return RefResult::Success;
 }
 
+static CAddress GetVScriptFunction(const std::string& name)
+{
+    CAddress final_address{};
+
+    ZydisDecoder decoder;
+    if (!ZYAN_SUCCESS(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
+    {
+        FatalError("Failed to initialize decoder");
+        return final_address;
+    }
+
+    auto decode_control_flow = [&decoder](uintptr_t start_addr) -> uintptr_t {
+        constexpr int max_decode_instructions     = 128;
+        constexpr int max_peek_instructions       = 16;
+        constexpr int max_validation_instructions = 16;
+
+        uintptr_t current_ip = start_addr;
+
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
+
+#ifdef PLATFORM_WINDOWS
+        // decode the string reference instruction to get the register it gets pushed into
+        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(current_ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+        {
+            return 0;
+        }
+
+        if (operands[0].type != ZYDIS_OPERAND_TYPE_REGISTER)
+        {
+            return 0;
+        }
+
+        const ZydisRegister str_req = operands[0].reg.value;
+        current_ip += instr.length;
+
+        bool valid_context = false;
+
+        // now we look for any of these
+        /*
+            lea     rax, aGetvelocity ; "GetVelocity"
+            mov     [r8], rax
+            lea     rax, aGetabsvelocity ; "GetAbsVelocity"
+            mov     [r8+8], rax
+        */
+
+        for (int i = 0; i < max_validation_instructions; i++)
+        {
+            if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(current_ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+                break;
+
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER && operands[1].reg.value == str_req)
+            {
+                if (operands[0].mem.disp.value == 0 || operands[0].mem.disp.value == 8)
+                {
+                    valid_context = true;
+                    current_ip += instr.length;
+                    break;
+                }
+            }
+            current_ip += instr.length;
+        }
+
+        if (!valid_context)
+        {
+            return 0;
+        }
+
+#else
+        /*
+        .text:0000000000EAA84F F2 0F 12 05 69 D3 2C 01                                         movddup xmm0, cs:off_2177BC0 ; "GetLocalVelocity"
+        .text:0000000000EAA857 48 98                                                           cdqe
+        .text:0000000000EAA859 48 8D 04 80                                                     lea     rax, [rax+rax*4]
+        ; or
+        .text:0000000000EAA9CD 48 8D 15 3A 6F 9E FF                                            lea     rdx, aGetabsvelocity ; "GetAbsVelocity"
+        .text:0000000000EAA9D4 BE 03 00 00 00                                                  mov     esi, 3
+        .text:0000000000EAA9D9 F3 0F 7E 05 E7 D1 2C 01                                         movq    xmm0, cs:off_2177BC8 ; "GetVelocity"
+        .text:0000000000EAA9E1 48 98                                                           cdqe
+        .text:0000000000EAA9E3 48 8D 04 80                                                     lea     rax, [rax+rax*4]
+         */
+        bool valid_context = false;
+
+        auto is_table_index_lea = [](const ZydisDecodedInstruction& ins, const ZydisDecodedOperand* ops) -> bool {
+            // lea reg, [reg2+reg2*4] — vscript registration table index calculation
+            // base and index must be the same register, scale must be 4
+            // dst register can differ (e.g. lea rcx, [r12+r12*4])
+            return ins.mnemonic == ZYDIS_MNEMONIC_LEA
+                   && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                   && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                   && ops[1].mem.base != ZYDIS_REGISTER_NONE
+                   && ops[1].mem.base == ops[1].mem.index
+                   && ops[1].mem.scale == 4;
+        };
+
+        // Scan forward from string reference
+        for (int i = 0; i < max_validation_instructions; i++)
+        {
+            if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(current_ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+                break;
+
+            if (is_table_index_lea(instr, operands))
+            {
+                valid_context = true;
+                current_ip += instr.length;
+                break;
+            }
+
+            current_ip += instr.length;
+        }
+
+        // If not found forward, scan backward from function start to string reference
+        if (!valid_context)
+        {
+            auto* func_range = modules::server->GetFunctionRange(start_addr);
+            if (func_range && func_range->start < start_addr)
+            {
+                uintptr_t scan_ip = func_range->start;
+
+                while (scan_ip < start_addr)
+                {
+                    if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(scan_ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+                        break;
+
+                    if (is_table_index_lea(instr, operands))
+                    {
+                        valid_context = true;
+                        current_ip = start_addr;
+                    }
+
+                    scan_ip += instr.length;
+                }
+            }
+        }
+
+        if (!valid_context)
+            return 0;
+#endif
+        std::vector<uintptr_t>             known_functions;
+        std::map<ZydisRegister, uintptr_t> reg_values;
+        uintptr_t                          identified_wrapper = 0;
+
+        for (auto i = 0; i < max_decode_instructions; ++i)
+        {
+            if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(current_ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands)))
+            {
+                break;
+            }
+
+            // 1. Track ALL LEA targets indiscriminately
+            if (instr.mnemonic == ZYDIS_MNEMONIC_LEA && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                uintptr_t lea_target = 0;
+                ZydisCalcAbsoluteAddress(&instr, &operands[1], current_ip, &lea_target);
+
+                if (operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER)
+                {
+                    reg_values[operands[0].reg.value] = lea_target;
+                }
+
+                // Record complex functions to the fallback history list
+                if (modules::server->IsKnownFunctionEntry(lea_target))
+                {
+                    if (std::ranges::find(known_functions, lea_target) == known_functions.end())
+                    {
+                        known_functions.push_back(lea_target);
+                    }
+                }
+            }
+
+            // 2. Identify the Wrapper via the +0x38 write
+            if ((instr.mnemonic == ZYDIS_MNEMONIC_MOV || instr.mnemonic == ZYDIS_MNEMONIC_MOVQ)
+                && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
+                && operands[0].mem.disp.value == 0x38
+                && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER)
+            {
+                identified_wrapper = reg_values[operands[1].reg.value];
+            }
+
+            // 3. Catch the C++ Target being written to +0x40
+            if ((instr.mnemonic == ZYDIS_MNEMONIC_MOV || instr.mnemonic == ZYDIS_MNEMONIC_MOVQ || instr.mnemonic == ZYDIS_MNEMONIC_MOVAPS || instr.mnemonic == ZYDIS_MNEMONIC_MOVUPS)
+                && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                if (operands[0].mem.disp.value == 0x40 || operands[0].mem.disp.value < 0)
+                {
+                    if (operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER)
+                    {
+                        uintptr_t direct_target = reg_values[operands[1].reg.value];
+
+                        // TIER 1: Direct Write
+                        // If the compiler routed the pointer via a standard register, trust it absolutely.
+                        // This perfectly catches small getters like `GetRefEHandle` that fail IsKnownFunctionEntry.
+                        if (direct_target != 0 && direct_target != identified_wrapper)
+                        {
+                            return direct_target;
+                        }
+                    }
+
+                    // TIER 2: Vector Fallback
+                    // If the compiler vectorized the pointer (e.g., movq [r8+40h], xmm0), our direct tracking
+                    // register will be 0. Fall back to the history list of known complex functions.
+                    for (auto it = known_functions.rbegin(); it != known_functions.rend(); ++it)
+                    {
+                        if (*it != identified_wrapper && *it != 0)
+                        {
+                            return *it;
+                        }
+                    }
+                }
+            }
+
+            current_ip += instr.length;
+        }
+        return 0;
+    };
+
+    auto try_find_match = [&](const CAddress& target_ref) -> CAddress {
+        if (!target_ref.IsValid()) return {};
+
+        auto references = modules::server->GetReferenceRange(target_ref);
+
+        for (const auto& reference : references)
+        {
+            auto start_ip = reference.source_ip;
+
+            uintptr_t result = decode_control_flow(start_ip);
+            if (result != 0)
+            {
+                return result;
+            }
+        }
+        return {};
+    };
+
+    auto string_address = modules::server->FindString(name, false, true);
+
+    final_address = try_find_match(string_address);
+
+    if (!final_address.IsValid())
+    {
+        auto string_ptrs = modules::server->FindPtrs(string_address);
+        for (const auto& ptr : string_ptrs)
+        {
+            final_address = try_find_match(ptr);
+            if (final_address.IsValid())
+                return final_address;
+        }
+    }
+
+    return final_address;
+}
+
 static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>>& addresses, std::string_view name, std::uintptr_t& pAddress)
 {
     auto it = addresses.find(name);
@@ -457,48 +709,51 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringH
     }
     else if (!item.m_Module.empty())
     {
-        auto has_signature = item.m_Signature.empty() == false;
+        std::uintptr_t sig_addr      = 0;
+        bool           sig_found     = false;
+        bool           has_signature = !item.m_Signature.empty();
+        auto           ref_result    = RefResult::Failed;
 
-        std::uintptr_t ref_addr   = 0;
-        auto           ref_result = FindFunctionFromReferences(item, name, ref_addr);
-
-        if (ref_result == RefResult::Success)
+        if (!item.m_VScriptFunction.empty())
         {
-            address = ref_addr;
+            address = GetVScriptFunction(item.m_VScriptFunction);
+            if (address == 0)
+            {
+                WARN("Failed to find vscript function '%s', falling back to ref scan or sig scan", item.m_VScriptFunction.c_str());
+            }
         }
 
-        std::uintptr_t sig_addr  = 0;
-        bool           sig_found = false;
+        if (address == 0)
+        {
+            ref_result = FindFunctionFromReferences(item, name, address);
+        }
 
         if (has_signature && (address == 0 || IsDebugMode()))
         {
             sig_found = FindPattern(item.m_Module, item.m_Signature, sig_addr);
         }
 
-        if (address == 0)
+        if (address == 0 && sig_found)
         {
-            if (ref_result == RefResult::Failed && has_signature)
+            if (ref_result == RefResult::Failed)
             {
                 WARN("Failed to find address for '%s', falling back to signature.", name.data());
             }
 
-            if (sig_found)
-            {
-                address = sig_addr;
-            }
+            address = sig_addr;
         }
 
         if (IsDebugMode() && address != 0 && sig_found && address != sig_addr)
         {
             auto module       = GetModuleByName(item.m_Module);
-            auto base_address = module->Base();
+            auto base_address = module ? module->Base() : 0;
 
-            auto rva_scan = address > base_address ? address - base_address : 0;
-            auto rva_sig  = sig_addr > base_address ? sig_addr - base_address : 0;
+            auto rva_scan = (address > base_address) ? address - base_address : 0;
+            auto rva_sig  = (sig_addr > base_address) ? sig_addr - base_address : 0;
 
             WARN("Address mismatch for %s!\n"
-                 " > [Ref Scan]: %s+0x%llx\n"
-                 " > [Sig Scan]: %s+0x%llx",
+                 " > [Primary Scan]: %s+0x%llx\n"
+                 " > [Sig Scan]:     %s+0x%llx",
                  name.data(),
                  item.m_Module.c_str(), rva_scan,
                  item.m_Module.c_str(), rva_sig);
@@ -739,6 +994,20 @@ static void ParseAddresses(const std::filesystem::path& path, std::string_view p
         if (auto base_object = entry_object.find("base"); base_object != entry_object.end() && base_object->is_string())
         {
             item.m_Base = base_object->get<std::string>();
+        }
+
+        if (auto vscript_object = entry_object.find("vscript"); vscript_object != entry_object.end() && vscript_object->is_string())
+        {
+            if (strcasecmp(item.m_Module.c_str(), "server") == 0)
+            {
+                item.m_VScriptFunction = vscript_object->get<std::string>();
+            }
+            else
+            {
+                WARN("Entry \"%s\" defines 'vscript', but module is \"%s\" (expected \"server\"). Ignoring vscript.",
+                     key.c_str(),
+                     item.m_Module.c_str());
+            }
         }
 
         if (auto optional_object = entry_object.find("on_demand"); optional_object != entry_object.end() && optional_object->is_boolean())
@@ -1135,4 +1404,42 @@ void* GameData::GetAddressInternal(const char* name)
     }
 
     return reinterpret_cast<void*>(address);
+}
+
+bool GameData::OverwriteOffset(const char* name, int32_t value)
+{
+    auto it = m_Offsets.find(name);
+    if (it == m_Offsets.end())
+    {
+        FERROR("OverwriteOffset: '%s' not found.", name);
+        return false;
+    }
+
+    auto old_value = it->second.m_Index;
+    if (old_value == value)
+        return true;
+
+    it->second.m_Index = value;
+
+    FLOG("OverwriteOffset: '%s' %d -> %d", name, old_value, value);
+    return true;
+}
+
+bool GameData::OverwriteVFuncIndex(const char* name, int32_t value)
+{
+    auto it = m_VFuncs.find(name);
+    if (it == m_VFuncs.end())
+    {
+        FERROR("OverwriteVFuncIndex: '%s' not found.", name);
+        return false;
+    }
+
+    auto old_value = it->second.m_Index;
+    if (old_value == value)
+        return true;
+
+    it->second.m_Index = value;
+
+    FLOG("OverwriteVFuncIndex: '%s' %d -> %d", name, old_value, value);
+    return true;
 }

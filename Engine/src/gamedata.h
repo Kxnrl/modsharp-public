@@ -44,6 +44,7 @@ inline constexpr int FindTypeScopeForModule = 13;
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class IGameData
@@ -69,6 +70,7 @@ struct GameDataAddress
 {
     std::string              m_Module;
     std::string              m_Signature;
+    std::string              m_VScriptFunction{};
     std::string              m_Base;
     std::string              m_Factory;
     std::vector<std::string> m_StringRefs{};
@@ -109,6 +111,9 @@ public:
     void Unregister(const char* name);
     int  GetOffset(const char* name);
     int  GetVFunctionIndex(const char* name);
+
+    bool OverwriteOffset(const char* name, int32_t value);
+    bool OverwriteVFuncIndex(const char* name, int32_t value);
 
     template <typename T>
     T GetAddress(const char* name)
