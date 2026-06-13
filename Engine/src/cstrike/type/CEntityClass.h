@@ -12,9 +12,11 @@ class CEntityClass
 public:
     CEntityClass() = delete;
 
+    inline static uint32_t sm_nEntityListHeadOffset = 0;
+
     [[nodiscard]] CEntityIdentity* GetEntityListHead() const
     {
-        return *reinterpret_cast<CEntityIdentity* const*>(reinterpret_cast<const uintptr_t>(this) + 0x128);
+        return *reinterpret_cast<CEntityIdentity* const*>(reinterpret_cast<const uintptr_t>(this) + sm_nEntityListHeadOffset);
     }
 };
 
