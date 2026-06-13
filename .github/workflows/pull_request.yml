@@ -2,11 +2,6 @@ name: Pull Request Build
 
 on: [pull_request]
 
-# Workaround for Refit author signing certificate revocation (NU3012).
-# Skip the online revocation check during NuGet restore on CI runners.
-env:
-  NUGET_CERT_REVOCATION_MODE: offline
-
 jobs:
   windows:
     runs-on: windows-2022
