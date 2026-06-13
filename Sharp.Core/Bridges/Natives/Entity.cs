@@ -50,6 +50,8 @@ public static unsafe partial class Entity
 
     public static partial IntPtr FindByClassname(IntPtr start, string classname);
 
+    public static partial int EnumerateByClassname(string classname, IntPtr* buffer, int capacity);
+
     public static partial IntPtr FindByName(IntPtr start, string name);
 
     public static partial IntPtr FindInSphere(IntPtr start, Vector* center, float radius);

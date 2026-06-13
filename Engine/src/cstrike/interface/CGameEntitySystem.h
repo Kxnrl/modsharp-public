@@ -27,6 +27,7 @@ class CBaseHandle;
 class CBaseEntity;
 class Variant_t;
 class Vector;
+class CEntityClass;
 
 class IEntityListener
 {
@@ -80,6 +81,9 @@ public:
     CBaseEntity* CreateEntityByName(const char* classname) const;
 
     void AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID);
+
+    CEntityClass* FindEntityClassByName(const char* classname) const;
+    int32_t       EnumerateByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity) const; 
 
     template <typename T>
     T CreateEntityByNameAs(const char* classname) const
