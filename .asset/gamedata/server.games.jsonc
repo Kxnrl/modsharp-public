@@ -405,7 +405,7 @@
         ]
       }
     },
-    "CCSPlayerPawn::SetGlovesBodyGroup": {
+    "CCSPlayerPawn::SetDefaultGloves": {
       "on_demand": true,
       "library": "server",
       "linux": "48 85 FF 0F 84 ? ? ? ? 55 48 89 E5 41 56 41 55 41 54 41 89 F4",

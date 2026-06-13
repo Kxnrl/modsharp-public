@@ -207,7 +207,7 @@ static void FindGameSystemFactory()
     FatalError("Found IGameSystem::InitAllSystems but failed to find instruction sequence within limit(50 times)");
 }
 
-static void FindCCSPlayerPawn_SetGlovesBodyGroup()
+static void FindCCSPlayerPawn_SetDefaultGloves()
 {
     auto svr_mod = modules::server;
 
@@ -233,9 +233,9 @@ static void FindCCSPlayerPawn_SetGlovesBodyGroup()
             if (auto entry = svr_mod->GetFunctionRange(source_ip))
             {
                 if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
-                    reinterpret_cast<const void*>(source_ip),
-                    ZYDIS_MAX_INSTRUCTION_LENGTH,
-                    &instr, operands)))
+                                                         reinterpret_cast<const void*>(source_ip),
+                                                         ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                         &instr, operands)))
                 {
                     continue;
                 }
@@ -301,11 +301,11 @@ static void FindCCSPlayerPawn_SetGlovesBodyGroup()
 
     if (addr == 0)
     {
-        address::server::CCSPlayerPawn_SetGlovesBodyGroup = g_pGameData->GetAddress<address::server::CCSPlayerPawn_SetGlovesBodyGroup_t>("CCSPlayerPawn::SetGlovesBodyGroup");
+        address::server::CCSPlayerPawn_SetDefaultGloves = g_pGameData->GetAddress<address::server::CCSPlayerPawn_SetDefaultGloves_t>("CCSPlayerPawn::SetDefaultGloves");
     }
     else
     {
-        address::server::CCSPlayerPawn_SetGlovesBodyGroup = addr.As<address::server::CCSPlayerPawn_SetGlovesBodyGroup_t>();
+        address::server::CCSPlayerPawn_SetDefaultGloves = addr.As<address::server::CCSPlayerPawn_SetDefaultGloves_t>();
     }
 }
 
@@ -455,7 +455,7 @@ bool address::Initialize()
 
     FindGameSystemFactory();
     FindCEntityIdentity_SetEntityName();
-    FindCCSPlayerPawn_SetGlovesBodyGroup();
+    FindCCSPlayerPawn_SetDefaultGloves();
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 

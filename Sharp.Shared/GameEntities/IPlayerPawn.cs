@@ -95,6 +95,12 @@ public interface IPlayerPawn : IBasePlayerPawn
     void SwitchWeapon(IBaseWeapon? weapon);
 
     /// <summary>
+    ///     Set player gloves's visibility
+    /// </summary>
+    /// <param name="hide"></param>
+    void SetDefaultGloves(bool hide);
+
+    /// <summary>
     ///     Give gloves to player
     /// </summary>
     void GiveGloves(int itemDefIndex, int prefab, float wear, int seed);
