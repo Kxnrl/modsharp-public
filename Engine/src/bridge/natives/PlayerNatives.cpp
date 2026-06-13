@@ -170,9 +170,9 @@ static void PawnSwitchWeapon(CCSPlayerPawn* pPawn, CBaseWeapon* pWeapon)
     return pPawn->SwitchWeapon(pWeapon);
 }
 
-static void PawnSetDefaultGloves(CCSPlayerPawn* pPawn, bool hide)
+static void PawnSetDefaultGloves(CCSPlayerPawn* pPawn, bool draw)
 {
-    return pPawn->SetDefaultGloves(hide);
+    return pPawn->SetDefaultGloves(draw);
 }
 
 static void PawnGiveGloves(CCSPlayerPawn* pPawn, int itemDefIndex, int prefab, float wear, int seed)

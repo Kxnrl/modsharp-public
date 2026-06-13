@@ -822,7 +822,6 @@ struct CfgBasicBlock
 
 } // namespace
 
-
 void CModule::BuildFunctionIndexAndReferences()
 {
     std::uintptr_t exec_start{}, exec_end{}, exec_size{};
@@ -880,9 +879,9 @@ void CModule::BuildFunctionIndexAndReferences()
         }
     }
 
-    // phase2: single-pass disassembly of .text to find 
+    // phase2: single-pass disassembly of .text to find
     // 1. function entries (E8 call targets, E9 tail-call jumps, RIP-relative LEAs)
-    // 2. pointer references within .text. 
+    // 2. pointer references within .text.
     // Phase 3's CFG walk handles boundaries, so unlike the old scheme we collect no padding here.
     struct ChunkResult
     {

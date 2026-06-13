@@ -21,6 +21,7 @@
 #define MS_ROOT_ADDRESS_H
 
 #include "definitions.h"
+
 #include "cstrike/type/CUtlVector.h"
 
 #include <cstdint>

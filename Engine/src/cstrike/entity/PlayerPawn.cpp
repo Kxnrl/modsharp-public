@@ -173,9 +173,9 @@ SndOpEventGuid_t CBasePlayerPawn::EmitSoundClient(const char* pszSound, const fl
     return pController->EmitSoundClient(pszSound, pVolume);
 }
 
-void CCSPlayerPawn::SetDefaultGloves(bool hide)
+void CCSPlayerPawn::SetDefaultGloves(bool draw)
 {
-    address::server::CCSPlayerPawn_SetDefaultGloves(this, hide);
+    address::server::CCSPlayerPawn_SetDefaultGloves(this, draw);
 }
 
 void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int seed)
@@ -193,7 +193,7 @@ void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int see
         pItem->m_iItemIDLow(-1);
         pItem->m_bInitialized(true);
 
-        address::server::CCSPlayerPawn_SetDefaultGloves(this, false);
+        SetDefaultGloves(false);
     }
 }
 
