@@ -40,16 +40,6 @@ public interface IEntityManager
     void RemoveEntityListener(IEntityListener listener);
 
     /// <summary>
-    ///     Get all currently existing entities
-    /// </summary>
-    IEnumerable<IBaseEntity> GetAllEntities();
-
-    /// <summary>
-    ///     Get all currently existing entities of a specific type
-    /// </summary>
-    IEnumerable<T> GetAllEntities<T>() where T : class, IBaseEntity;
-
-    /// <summary>
     ///     Get all currently existing entities matching a classname
     /// </summary>
     /// <param name="classname">

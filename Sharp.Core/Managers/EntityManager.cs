@@ -44,14 +44,8 @@ internal interface ICoreEntityManager : IEntityManager;
 // ReSharper disable ForCanBeConvertedToForeach
 internal class EntityManager : ICoreEntityManager
 {
-    private const int MaxEntities    = 16384;
-    private const int BitBucketCount = MaxEntities / 32; // 512
-
     private readonly List<IEntityListener>  _listeners;
     private readonly ILogger<EntityManager> _logger;
-    private readonly IBaseEntity?[]         _entities;
-    private readonly string?[]              _classnames;
-    private readonly uint[]                 _activeBits;
 
     private PlayerSlot _maxSlots;
 
@@ -59,13 +53,9 @@ internal class EntityManager : ICoreEntityManager
     {
         _logger     = logger;
         _listeners  = [];
-        _entities   = new IBaseEntity?[MaxEntities];
-        _classnames = new string?[MaxEntities];
-        _activeBits = new uint[BitBucketCount];
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
-        Forward.OnEntityDeletedPost += OnEntityDeletedPost;
         Forward.OnEntitySpawned     += OnEntitySpawned;
         Forward.OnEntityFollowed    += OnEntityFollowed;
         Forward.OnEntityFireOutput  += OnEntityFireOutput;
@@ -90,14 +80,6 @@ internal class EntityManager : ICoreEntityManager
             _logger.LogError("Entity is nullptr in OnEntityCreated");
 
             return;
-        }
-
-        if (entity.Index.IsNetworked())
-        {
-            var index = entity.Index.AsPrimitive();
-            _entities[index]                = entity;
-            _classnames[index]              = entity.Classname;
-            _activeBits[index >> 5] |= 1U << (index & 31);
         }
 
         for (var i = 0; i < _listeners.Count; i++)
@@ -140,24 +122,6 @@ internal class EntityManager : ICoreEntityManager
                                  nameof(OnEntityDeleted),
                                  _listeners[i].GetType().Name);
             }
-        }
-    }
-
-    private void OnEntityDeletedPost(nint ptr)
-    {
-        var entity = BaseEntity.Create(ptr);
-
-        if (entity is null)
-        {
-            return;
-        }
-
-        if (entity.Index.IsNetworked())
-        {
-            var index = entity.Index.AsPrimitive();
-            _entities[index]   = null;
-            _classnames[index] = null;
-            _activeBits[index >> 5] &= ~(1U << (index & 31));
         }
     }
 
@@ -323,46 +287,6 @@ internal class EntityManager : ICoreEntityManager
         if (!_listeners.Remove(listener))
         {
             _logger.LogError("You have not install listener yet!\n{stackTrace}", Environment.StackTrace);
-        }
-    }
-
-    private IEnumerable<int> EnumerateActiveIndices()
-    {
-        for (var bucket = 0; bucket < BitBucketCount; bucket++)
-        {
-            var bits = _activeBits[bucket];
-
-            while (bits != 0)
-            {
-                var bit   = System.Numerics.BitOperations.TrailingZeroCount(bits);
-                var index = (bucket << 5) | bit;
-
-                yield return index;
-
-                bits &= bits - 1;
-            }
-        }
-    }
-
-    public IEnumerable<IBaseEntity> GetAllEntities()
-    {
-        foreach (var index in EnumerateActiveIndices())
-        {
-            if (_entities[index] is { } entity)
-            {
-                yield return entity;
-            }
-        }
-    }
-
-    public IEnumerable<T> GetAllEntities<T>() where T : class, IBaseEntity
-    {
-        foreach (var index in EnumerateActiveIndices())
-        {
-            if (_entities[index]?.As<T>() is { } entity)
-            {
-                yield return entity;
-            }
         }
     }
 
