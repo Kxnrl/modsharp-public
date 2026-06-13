@@ -67,8 +67,28 @@ public record SchemaField
 /// </summary>
 public static class SharedGameObject
 {
-    public static FrozenDictionary<string, SchemaClass>         SchemaInfo                = null!;
-    public static FrozenDictionary<ushort, IEconItemDefinition> EconItemDefinitionsById   = null!;
-    public static FrozenDictionary<string, IEconItemDefinition> EconItemDefinitionsByName = null!;
-    public static FrozenDictionary<uint, IPaintKit>             PaintKits                 = null!;
+    public static FrozenDictionary<string, SchemaClass>         SchemaInfo                { get; private set; } = null!;
+    public static FrozenDictionary<ushort, IEconItemDefinition> EconItemDefinitionsById   { get; private set; } = null!;
+    public static FrozenDictionary<string, IEconItemDefinition> EconItemDefinitionsByName { get; private set; } = null!;
+    public static FrozenDictionary<uint, IPaintKit>             PaintKits                 { get; private set; } = null!;
+
+    private static bool _initialized;
+
+    public static void Init(FrozenDictionary<string, SchemaClass> schema,
+        FrozenDictionary<ushort, IEconItemDefinition>             ei,
+        FrozenDictionary<string, IEconItemDefinition>             en,
+        FrozenDictionary<uint, IPaintKit>                         paints)
+    {
+        if (_initialized)
+        {
+            throw new System.InvalidOperationException("what are you doing?");
+        }
+
+        SchemaInfo                = schema;
+        EconItemDefinitionsById   = ei;
+        EconItemDefinitionsByName = en;
+        PaintKits                 = paints;
+
+        _initialized = true;
+    }
 }
