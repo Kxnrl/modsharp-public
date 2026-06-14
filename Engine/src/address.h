@@ -230,6 +230,8 @@ using FindWeaponVDataByName_t                      = CCSWeaponBaseVData* (*)(int
 using GetLegacyGameEventListener_t                 = IGameEventListener2* (*)(int32_t);
 using CGameEntitySystem_GetSpawnOriginOffset_t     = matrix3x4_t& (*)(const CGameEntitySystem*);
 using CCSPlayerPawn_SetDefaultGloves_t             = void (*)(CCSPlayerPawn* pawn, bool hide);
+using CBasePlayerPawn_SnapViewAngles_t               = void (*)(CBasePlayerPawn*, QAngle*);
+using CreateTriggerInternal_t                          = void* (*)(Vector*, Vector*, Vector*);
 
 inline NetworkStateChanged_t                               NetworkStateChanged;
 inline StateChanged_t                                      StateChanged;
