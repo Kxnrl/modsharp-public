@@ -72,6 +72,11 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
     IPlayerController? GetOriginalController();
 
     /// <summary>
+    ///     Set player's viewangles (like setang command).
+    /// </summary>
+    void SnapViewAngles(Vector angles);
+
+    /// <summary>
     ///     Eye angles
     /// </summary>
     Vector GetEyeAngles();

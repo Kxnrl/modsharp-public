@@ -305,6 +305,8 @@ inline CCSPlayer_MovementServices_TracePlayerBBox_t        CCSPlayer_MovementSer
 inline CTraceFilterPlayerMovementCS_ctor_t                 CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                             FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                        GetLegacyGameEventListener;
+inline CBasePlayerPawn_SnapViewAngles_t                      CBasePlayerPawn_SnapViewAngles;
+inline CreateTriggerInternal_t                                 CreateTriggerInternal;
 inline CGameEntitySystem_GetSpawnOriginOffset_t            CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                    CCSPlayerPawn_SetDefaultGloves;
 

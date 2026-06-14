@@ -131,6 +131,8 @@ void ResolveCCSPlayerPawn_IsPlayer();
 void ResolveCBasePlayerController_CanHearAndReadChatFrom();
 void ResolveCCSPlayerController_RoundRespawn();
 void ResolveCBasePlayerPawn_CommitSuicide();
+void ResolveCBasePlayerPawn_SnapViewAngles();
+void ResolveCreateTriggerInternal();
 
 // address_engine.cpp
 void ResolveServerSideClientOffsets();

@@ -168,6 +168,7 @@ void FindCCSPlayerWeaponServices_DestroyWeapon()
     auto svr_mod = modules::server;
 
     uintptr_t target_call_addr = 0;
+    bool found = false;
 
     auto functions            = svr_mod->FindAllFunctionsFromStringRefs({"DestroyWeapon", "Method %s.%s invoked with unrecognized 'this' value."});
     auto range                = functions.size() == 1 ? svr_mod->GetFunctionRange(functions.front()) : nullptr;
@@ -275,6 +276,7 @@ void FindSetModel()
     auto svr_mod = modules::server;
 
     uintptr_t target_call_addr = 0;
+    bool found = false;
 
     auto functions = svr_mod->FindAllFunctionsFromStringRefs({"weapons/models/defuser/defuser.vmdl", "defuser_dropped"});
     auto range     = functions.size() == 1 ? svr_mod->GetFunctionRange(functions.front()) : nullptr;
@@ -2010,4 +2012,179 @@ void ResolveCBasePlayerPawn_CommitSuicide()
     }
 
     try_overwrite_vfunc("CBasePlayerPawn::CommitSuicide", result_idx);
+}
+
+void ResolveCBasePlayerPawn_SnapViewAngles()
+{
+    auto svr_mod = modules::server;
+
+    constexpr std::string_view usage_substr = "Usage:  setang pitch yaw";
+    auto                       usage_str    = svr_mod->FindData(
+        reinterpret_cast<const uint8_t*>(usage_substr.data()),
+        usage_substr.size(),
+        false);
+    if (!usage_str.IsValid()) [[unlikely]]
+    {
+        WARN("Failed to find 'Usage:  setang pitch yaw ...' string.");
+        return;
+    }
+
+    auto refs = svr_mod->GetReferenceRange(usage_str);
+    if (refs.empty())
+    {
+        WARN("No references to 'Usage:  setang pitch yaw' string.");
+        return;
+    }
+
+    // Collect unique containing functions from the references
+    std::unordered_set<uintptr_t> handler_candidates;
+    for (const auto& ref : refs)
+    {
+        auto entry = svr_mod->GetFunctionRange(ref.source_ip);
+        if (entry)
+            handler_candidates.insert(entry->start);
+    }
+
+    if (handler_candidates.size() != 1)
+    {
+        WARN("Expected 1 handler for setang, got %zu.", handler_candidates.size());
+        return;
+    }
+
+    auto handler_addr  = *handler_candidates.begin();
+    auto handler_range = svr_mod->GetFunctionRange(handler_addr);
+    if (!handler_range)
+    {
+        WARN("Failed to get function range for setang handler.");
+        return;
+    }
+
+    FLOG("Found setang handler at server+0x%llx", handler_addr - svr_mod->Base());
+
+    // Collect every RELATIVE CALL target in the handler body
+    std::vector<uintptr_t> call_targets;
+
+    ZydisUtility::ScanInstructions(handler_range->start, handler_range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL
+            && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
+            && operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+        {
+            auto target = ZydisUtility::GetAbsoluteAddress(instr, operands[0], ip);
+            if (target != 0 && svr_mod->IsInModule(target))
+                call_targets.push_back(target);
+        }
+        return false;
+    });
+
+    if (call_targets.empty())
+    {
+        WARN("No relative call targets found in setang handler.");
+        return;
+    }
+
+    // Verification: the real SnapViewAngles writes to the "v_angle" QAngle field
+    // (and also reads from it — it saves the old value to v_anglePrevious).
+    // Most other functions called from the handler do not touch v_angle at all.
+    auto v_angle_offset = schemas::GetOffset("CBasePlayerPawn", "v_angle").offset;
+    if (v_angle_offset <= 0)
+    {
+        WARN("Failed to get schema offset for CBasePlayerPawn::v_angle.");
+        return;
+    }
+
+    uintptr_t snap_view_angles_addr = 0;
+
+    for (auto target : call_targets)
+    {
+        auto      target_range = svr_mod->GetFunctionRange(target);
+        uintptr_t scan_start   = target;
+        uintptr_t scan_end     = target_range ? target_range->end : (target + 512);
+
+        bool reads_v_angle  = false;
+        bool writes_v_angle = false;
+
+        ZydisUtility::ScanInstructions(scan_start, scan_end, [&](uintptr_t ip2, const ZydisDecodedInstruction& instr2, const ZydisDecodedOperand* operands2) -> bool {
+            for (int i = 0; i < instr2.operand_count; i++)
+            {
+                if (operands2[i].type != ZYDIS_OPERAND_TYPE_MEMORY)
+                    continue;
+
+                auto& mem = operands2[i].mem;
+                if (!mem.disp.has_displacement)
+                    continue;
+
+                if (static_cast<int32_t>(mem.disp.value) != v_angle_offset)
+                    continue;
+
+                if (mem.index != ZYDIS_REGISTER_NONE)
+                    continue;
+
+                // Exclude RIP-relative accesses (global data, not this pointer)
+                auto base = ZydisUtility::GetBaseRegister(mem.base);
+                if (base == ZYDIS_REGISTER_RIP || base == ZYDIS_REGISTER_RSP || base == ZYDIS_REGISTER_RBP)
+                    continue;
+
+                if (operands2[i].actions & ZYDIS_OPERAND_ACTION_READ)
+                    reads_v_angle = true;
+                if (operands2[i].actions & ZYDIS_OPERAND_ACTION_WRITE)
+                    writes_v_angle = true;
+            }
+
+            return false;
+        });
+
+        if (reads_v_angle && writes_v_angle)
+        {
+            snap_view_angles_addr = target;
+            break;
+        }
+    }
+
+    AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles,
+                     snap_view_angles_addr, "CBasePlayerPawn::SnapViewAngles");
+}
+
+void ResolveCreateTriggerInternal()
+{
+    auto svr_mod = modules::server;
+
+    auto str_addr = svr_mod->FindString("Script_CreateTrigger", false, true);
+    if (!str_addr.IsValid())
+    {
+        WARN("Failed to find string 'Script_CreateTrigger'");
+        return;
+    }
+
+    auto ptr_addr = svr_mod->FindPtr(str_addr.GetPtr());
+    if (!ptr_addr.IsValid())
+    {
+        WARN("Failed to find pointer to 'Script_CreateTrigger' string");
+        return;
+    }
+
+    auto wrapper_func = *reinterpret_cast<uintptr_t*>(ptr_addr.GetPtr() + 0x38);
+    if (!svr_mod->IsInModule(wrapper_func))
+    {
+        WARN("Function pointer at Script_CreateTrigger descriptor+0x38 is not in module");
+        return;
+    }
+
+    uintptr_t target_call_addr = 0;
+
+    ZydisUtility::ScanInstructions(wrapper_func, wrapper_func + 256, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL
+            && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
+            && operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+        {
+            auto target = ZydisUtility::GetAbsoluteAddress(instr, operands[0], ip);
+            if (target != 0 && target != wrapper_func)
+            {
+                target_call_addr = target;
+                return true;
+            }
+        }
+        return false;
+    });
+
+    AssignOrFallback(svr_mod, address::server::CreateTriggerInternal, target_call_addr, "CreateTriggerInternal");
 }

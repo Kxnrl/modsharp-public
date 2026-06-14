@@ -62,6 +62,8 @@ public static unsafe partial class Entity
 
     public static partial IntPtr CreateByName(string classname);
 
+    public static partial IntPtr CreateTrigger(Vector* origin, Vector* mins, Vector* maxs);
+
     public static partial IntPtr AllocPooledString(string content);
 
     public static partial void HookOutput(string classname, string output);
@@ -138,6 +140,8 @@ public static unsafe partial class Entity
     public static partial Vector* GetEyeAngles(IntPtr entity);
 
     public static partial Vector* GetEyePosition(IntPtr entity);
+
+    public static partial void SnapViewAngles(IntPtr entity, Vector* angles);
 
     public static partial Vector* GetAbsAngles(IntPtr entity);
 

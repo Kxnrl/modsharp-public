@@ -249,4 +249,6 @@ void address::PostSchemaInit()
     ResolveCBasePlayerController_CanHearAndReadChatFrom();
     ResolveCCSPlayerController_RoundRespawn();
     ResolveCBasePlayerPawn_CommitSuicide();
+    ResolveCBasePlayerPawn_SnapViewAngles();
+    ResolveCreateTriggerInternal();
 }

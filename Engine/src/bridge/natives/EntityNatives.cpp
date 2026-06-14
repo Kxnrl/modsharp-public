@@ -332,6 +332,16 @@ static const Vector& EntityGetEyePosition(CBaseEntity* pEntity)
     return pEntity->GetEyePosition();
 }
 
+static void EntitySnapViewAngles(CBasePlayerPawn* pEntity, QAngle* angles)
+{
+    address::server::CBasePlayerPawn_SnapViewAngles(pEntity, angles);
+}
+
+static CBaseEntity* EntityCreateTrigger(Vector* origin, Vector* mins, Vector* maxs)
+{
+    return static_cast<CBaseEntity*>(address::server::CreateTriggerInternal(origin, mins, maxs));
+}
+
 static const QAngle& EntityGetAbsAngles(CBaseEntity* pEntity)
 {
     return pEntity->GetAbsAngles();
@@ -477,6 +487,7 @@ void Init()
     bridge::CreateNative("Entity.SpawnEntitySync", reinterpret_cast<void*>(SpawnEntitySync));
     bridge::CreateNative("Entity.CreateByName", reinterpret_cast<void*>(CreateEntityByName));
     bridge::CreateNative("Entity.AllocPooledString", reinterpret_cast<void*>(AllocPooledString));
+    bridge::CreateNative("Entity.CreateTrigger", reinterpret_cast<void*>(EntityCreateTrigger));
     bridge::CreateNative("Entity.HookOutput", reinterpret_cast<void*>(HookEntityOutput));
     bridge::CreateNative("Entity.HookInput", reinterpret_cast<void*>(HookEntityInput));
 
@@ -513,6 +524,7 @@ void Init()
     bridge::CreateNative("Entity.GetCenter", reinterpret_cast<void*>(EntityGetCenter));
     bridge::CreateNative("Entity.GetEyeAngles", reinterpret_cast<void*>(EntityGetEyeAngles));
     bridge::CreateNative("Entity.GetEyePosition", reinterpret_cast<void*>(EntityGetEyePosition));
+    bridge::CreateNative("Entity.SnapViewAngles", reinterpret_cast<void*>(EntitySnapViewAngles));
     bridge::CreateNative("Entity.GetAbsAngles", reinterpret_cast<void*>(EntityGetAbsAngles));
     bridge::CreateNative("Entity.SetAbsAngles", reinterpret_cast<void*>(EntitySetAbsAngles));
     bridge::CreateNative("Entity.GetAbsOrigin", reinterpret_cast<void*>(EntityGetAbsOrigin));
