@@ -108,14 +108,7 @@ public unsafe struct CUtlString : IDisposable
             return 0;
         }
 
-        var length = 0;
-
-        while (_pString[length] != 0)
-        {
-            length++;
-        }
-
-        return length;
+        return MemoryMarshal.CreateReadOnlySpanFromNullTerminated(_pString).Length;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

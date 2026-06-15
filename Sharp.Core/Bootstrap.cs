@@ -138,7 +138,7 @@ public static class Bootstrap
         public string NameString => Name.Get();
     }
 
-    private static unsafe bool InitSchema()
+    private static unsafe FrozenDictionary<string, SchemaClass>? InitSchema()
     {
         ref var schemaList = ref Unsafe.AsRef<CUtlVector<Pointer<CSchemaClass>>>(Schema.GetSchemas().ToPointer());
 
@@ -196,23 +196,23 @@ public static class Bootstrap
                        });
         }
 
-        SharedGameObject.SchemaInfo = schema.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        var info = schema.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
         if (Debugger.IsAttached)
         {
             File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "data", "schema.dump.json"),
-                              System.Text.Json.JsonSerializer.Serialize(SharedGameObject.SchemaInfo));
+                              System.Text.Json.JsonSerializer.Serialize(info));
         }
 
-        // validate used schema field
-        return SchemaValidate.SchemaValidator.Validate();
+        return info;
     }
 
 #endregion
 
 #region EconItem
 
-    private static unsafe bool InitEconItemDefinitions()
+    private static unsafe (FrozenDictionary<ushort, IEconItemDefinition> EconItemDefinitionsById,
+        FrozenDictionary<string, IEconItemDefinition> EconItemDefinitionsByName)? InitEconItemDefinitions()
     {
         ref var itemDefinitions = ref Unsafe.AsRef<CUtlVector<nint>>(Econ.GetItemDefinitions().ToPointer());
 
@@ -220,7 +220,7 @@ public static class Bootstrap
 
         if (size == 0)
         {
-            return false;
+            return null;
         }
 
         var idDictionary   = new Dictionary<ushort, IEconItemDefinition>(size);
@@ -248,19 +248,21 @@ public static class Bootstrap
             }
         }
 
-        SharedGameObject.EconItemDefinitionsById   = idDictionary.ToFrozenDictionary();
-        SharedGameObject.EconItemDefinitionsByName = nameDictionary.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        if (!success)
+        {
+            return null;
+        }
 
-        return success;
+        return (idDictionary.ToFrozenDictionary(), nameDictionary.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase));
     }
 
-    private static unsafe bool InitPaintKits()
+    private static unsafe FrozenDictionary<uint, IPaintKit>? InitPaintKits()
     {
         ref var paintKits = ref Unsafe.AsRef<CUtlVector<nint>>(Econ.GetPaintKits().ToPointer());
 
         if (paintKits.Size == 0)
         {
-            return false;
+            return null;
         }
 
         var dictionary = new Dictionary<uint, IPaintKit>(paintKits.Size);
@@ -274,9 +276,7 @@ public static class Bootstrap
             dictionary.Add(index, paintKit);
         }
 
-        SharedGameObject.PaintKits = dictionary.ToFrozenDictionary();
-
-        return true;
+        return dictionary.ToFrozenDictionary();
     }
 
 #endregion
@@ -294,7 +294,9 @@ public static class Bootstrap
             var ap = Stopwatch.StartNew();
 
             // prepare schemas
-            if (!InitSchema())
+            var schema = InitSchema();
+
+            if (schema is null)
             {
                 Bridges.Natives.Core.LogWarning("Failed to init schema system!\n");
 
@@ -311,7 +313,10 @@ public static class Bootstrap
 
             ap.Restart();
 
-            if (!InitEconItemDefinitions())
+            // prepare economy
+            var economy = InitEconItemDefinitions();
+
+            if (economy is null)
             {
                 Bridges.Natives.Core.LogWarning("Failed to init econ item definitions!\n");
 
@@ -328,7 +333,10 @@ public static class Bootstrap
 
             ap.Restart();
 
-            if (!InitPaintKits())
+            // prepare paints
+            var paints = InitPaintKits();
+
+            if (paints is null)
             {
                 Bridges.Natives.Core.LogWarning("Failed to init paint kits!\n");
 
@@ -340,6 +348,29 @@ public static class Bootstrap
             if (benchmark)
             {
                 Bridges.Natives.Core.LogWarning($"InitPaintKits in {ap.ElapsedMilliseconds}ms\n");
+                Debugger.Break();
+            }
+
+            SharedGameObject.Init(schema,
+                                  economy.Value.EconItemDefinitionsById,
+                                  economy.Value.EconItemDefinitionsByName,
+                                  paints);
+
+            ap.Restart();
+
+            // validate used schema field
+            if (!SchemaValidate.SchemaValidator.Validate())
+            {
+                Bridges.Natives.Core.LogWarning("Failed to verify schemas!\n");
+
+                return 1;
+            }
+
+            ap.Stop();
+
+            if (benchmark)
+            {
+                Bridges.Natives.Core.LogWarning($"Verify schemas in {ap.ElapsedMilliseconds}ms\n");
                 Debugger.Break();
             }
 
