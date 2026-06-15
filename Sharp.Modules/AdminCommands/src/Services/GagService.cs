@@ -146,10 +146,10 @@ internal class GagService : ICommandCategory, IGagService
     }
 
     private async Task ExecuteUngagAsync(CommandContext ctx,
-        IReadOnlyList<IGameClient>                     targets,
-        string                                         targetLabel,
-        string                                         reason,
-        IGameClient?                                   issuer)
+        IReadOnlyList<IGameClient>                      targets,
+        string                                          targetLabel,
+        string                                          reason,
+        IGameClient?                                    issuer)
     {
         var count = 0;
 

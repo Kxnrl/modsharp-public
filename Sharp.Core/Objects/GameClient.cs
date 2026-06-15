@@ -36,7 +36,7 @@ namespace Sharp.Core.Objects;
 
 internal partial class GameClient : NativeObject, IGameClient
 {
-    private        KeyValues? _conVars;
+    private KeyValues? _conVars;
 
     private GameClient(nint ptr) : base(ptr)
     {
@@ -195,7 +195,9 @@ internal partial class GameClient : NativeObject, IGameClient
         CheckDisposed();
 
         if (IsFakeClient)
+        {
             return;
+        }
 
         CenterHtmlHelper.PrintCenterHtmlToClient(this, message, duration);
     }

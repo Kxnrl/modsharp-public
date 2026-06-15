@@ -47,7 +47,7 @@ internal class AdminOperationEngine : IClientListener
 
     /// <summary>
     ///     Backup of core handlers displaced by external handler registrations.
-    ///     Keyed by <see cref="AdminOperationType"/>. Restored when the external module unregisters.
+    ///     Keyed by <see cref="AdminOperationType" />. Restored when the external module unregisters.
     /// </summary>
     private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)>
         _coreHandlers = [];
@@ -82,10 +82,9 @@ internal class AdminOperationEngine : IClientListener
             {
                 if (!_coreHandlers.TryAdd(handler.Type, existing))
                 {
-                    _logger.LogWarning(
-                        "Core handler for {Type} was already backed up (possible duplicate registration). "
-                        + "Skipping to preserve the original core handler.",
-                        handler.Type);
+                    _logger.LogWarning("Core handler for {Type} was already backed up (possible duplicate registration). "
+                                       + "Skipping to preserve the original core handler.",
+                                       handler.Type);
                 }
             }
 

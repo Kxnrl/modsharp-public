@@ -1,3 +1,22 @@
+/*
+ * ModSharp
+ * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
+ *
+ * This file is part of ModSharp.
+ * ModSharp is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * ModSharp is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -47,7 +66,9 @@ internal static class CenterHtmlHelper
     public static void PrintCenterHtmlToClient(IGameClient client, string message, int duration = 1)
     {
         if (client.IsFakeClient || !client.IsConnected)
+        {
             return;
+        }
 
         PrepareEvent(message, duration);
 
@@ -76,7 +97,9 @@ internal static class CenterHtmlHelper
         foreach (var client in clients)
         {
             if (client.IsFakeClient || !client.IsConnected)
+            {
                 continue;
+            }
 
             if (!hasValidClient)
             {
@@ -113,7 +136,9 @@ internal static class CenterHtmlHelper
         foreach (var client in clients)
         {
             if (client.IsFakeClient || !client.IsConnected)
+            {
                 continue;
+            }
 
             if (!hasValidClient)
             {
@@ -125,7 +150,9 @@ internal static class CenterHtmlHelper
         }
 
         if (hasValidClient)
+        {
             FixHtmlFlashing();
+        }
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
@@ -151,32 +178,42 @@ internal static class CenterHtmlHelper
     {
         // wouldnt work for deathmatch
         if (_gameTypeVal == 1 && _gameModeVal == 2)
+        {
             return;
+        }
 
         var globalPtr = Bridges.Natives.Core.GetGlobals();
 
         if (globalPtr == nint.Zero)
+        {
             return;
+        }
 
-        var tick      = *(int*) (globalPtr + GlobalVars.TickCountOffset);
+        var tick = *(int*) (globalPtr + GlobalVars.TickCountOffset);
 
         // avoid redundant reads + SetNetVarBool within the same server tick
         if (tick == _lastGameRestartTick)
+        {
             return;
+        }
 
         _lastGameRestartTick = tick;
 
         var gamerules = Bridges.Natives.Core.GetGameRules();
 
         if (gamerules == nint.Zero)
+        {
             return;
+        }
 
         _isWarmupOffset         ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_bWarmupPeriod");
         _restartRoundTimeOffset ??= SchemaSystem.GetNetVarOffset("CCSGameRules", "m_flRestartRoundTime");
 
         // stop if during warmup
         if (*(bool*) (gamerules + _isWarmupOffset.Value))
+        {
             return;
+        }
 
         var time             = *(float*) (globalPtr + GlobalVars.CurTimeOffset);
         var restartRoundTime = *(float*) (gamerules + _restartRoundTimeOffset.Value);

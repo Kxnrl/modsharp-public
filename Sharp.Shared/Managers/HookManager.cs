@@ -52,8 +52,8 @@ public interface IHookManager
     ///     CNetworkGameServer::ConnectClient
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IConnectClientHookParams, NetworkDisconnectionReason> ConnectClient { get; }
@@ -68,8 +68,8 @@ public interface IHookManager
     ///     CServerSideClient::ClientCanHear
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IClientCanHearHookParams, bool> ClientCanHear { get; }
@@ -78,8 +78,8 @@ public interface IHookManager
     ///     CServerSideClient:CLCMsg_VoiceData
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IClientSpeakingHookParams, EmptyHookReturn> ClientSpeaking { get; }
@@ -92,9 +92,9 @@ public interface IHookManager
     ///     CCSPlayerPawn->WeaponService::WeaponCanUse
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.IgnoreParamReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.IgnoreParamReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanUseHookParams, bool> PlayerWeaponCanUse { get; }
@@ -103,8 +103,8 @@ public interface IHookManager
     ///     CCSPlayerPawn->WeaponService::WeaponCanSwitch
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanSwitchHookParams, bool> PlayerWeaponCanSwitch { get; }
@@ -119,8 +119,8 @@ public interface IHookManager
     ///     </remarks>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerWeaponCanEquipHookParams, bool> PlayerWeaponCanEquip { get; }
@@ -133,8 +133,8 @@ public interface IHookManager
     ///     CCSPlayerPawn::GetPlayerMaxSpeed
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerGetMaxSpeedHookParams, float> PlayerGetMaxSpeed { get; }
@@ -144,8 +144,8 @@ public interface IHookManager
     ///     <remarks>Used for checking if the player can acquire an item or weapon</remarks>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerCanAcquireHookParams, EAcquireResult> PlayerCanAcquire { get; }
@@ -154,10 +154,10 @@ public interface IHookManager
     ///     CCSPlayerController::HandleCommandJoinTeam
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />,
+    ///         <see cref="EHookAction.ChangeParamReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IHandleCommandJoinTeamHookParams, bool> HandleCommandJoinTeam { get; }
@@ -166,8 +166,8 @@ public interface IHookManager
     ///     CCSPlayerPawn->ItemService::GiveNamedItem
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     IHookType<IGiveNamedItemHookParams, IBaseWeapon> GiveNamedItem { get; }
@@ -184,8 +184,8 @@ public interface IHookManager
     ///     </remarks>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPlayerRunCommandHookParams, EmptyHookReturn> PlayerRunCommand { get; }
@@ -198,9 +198,9 @@ public interface IHookManager
     ///     CSoundEmitterSystem::EmitSound
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     IHookType<IEmitSoundHookParams, SoundOpEventGuid> EmitSound { get; }
@@ -209,9 +209,9 @@ public interface IHookManager
     ///     SoundOpGameSystem::DoStartSoundEvent
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     IHookType<ISoundEventHookParams, SoundOpEventGuid> SoundEvent { get; }
@@ -237,8 +237,8 @@ public interface IHookManager
     ///     </para>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </remarks>
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
@@ -260,8 +260,8 @@ public interface IHookManager
     ///     </para>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </remarks>
     IHookType<IEntityDispatchTraceAttackHookParams, long> EntityDispatchTraceAttack { get; }
@@ -274,8 +274,8 @@ public interface IHookManager
     ///     CPointServerCommand::InputCommand
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPointServerCommandHookParams, EmptyHookReturn> PointServerCommand { get; }
@@ -285,8 +285,8 @@ public interface IHookManager
     ///     <remarks>When client is null means it is sent by server</remarks>
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
     /// </summary>
     IHookType<IPrintStatusHookParams, EmptyHookReturn> PrintStatus { get; }
@@ -295,9 +295,9 @@ public interface IHookManager
     ///     NetworkMessages::CUserMsgTextMSG
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     /// </summary>
@@ -308,9 +308,9 @@ public interface IHookManager
     ///     IGameEventSystem::PostEventAbstract
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     /// <returns>The new Receiver Bits</returns>
@@ -320,9 +320,9 @@ public interface IHookManager
     ///     CCSGameRules::TerminateRound
     ///     <para>
     ///         Supported HookAction:
-    ///         <see cref="EHookAction.Ignored"/>,
-    ///         <see cref="EHookAction.SkipCallReturnOverride"/>,
-    ///         <see cref="EHookAction.ChangeParamReturnDefault"/>
+    ///         <see cref="EHookAction.Ignored" />,
+    ///         <see cref="EHookAction.SkipCallReturnOverride" />,
+    ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
     /// </summary>
     IHookType<ITerminateRoundHookParams, EmptyHookReturn> TerminateRound { get; }

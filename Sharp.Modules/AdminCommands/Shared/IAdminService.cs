@@ -100,7 +100,7 @@ public interface IAdminService
     ///     Returns the currently registered handler for the given operation type, or <c>null</c> if none is registered.
     ///     <para>
     ///         This enables external modules to implement the decorator pattern: query the current handler, wrap it,
-    ///         and re-register the derived handler via <see cref="RegisterHandler"/>.
+    ///         and re-register the derived handler via <see cref="RegisterHandler" />.
     ///     </para>
     /// </summary>
     IAdminOperationHandler? GetHandler(AdminOperationType type);

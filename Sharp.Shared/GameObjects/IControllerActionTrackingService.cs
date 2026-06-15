@@ -95,7 +95,7 @@ public interface IMatchStats : IPerRoundStats
 
     int EntryCount { get; set; }
 
-    int EntryWins  { get; set; }
+    int EntryWins { get; set; }
 }
 
 [NetClass("CSAdditionalPerRoundStats_t")]

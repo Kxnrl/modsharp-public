@@ -146,10 +146,10 @@ internal class SilenceService : ICommandCategory, ISilenceService
     }
 
     private async Task ExecuteUnsilenceAsync(CommandContext ctx,
-        IReadOnlyList<IGameClient>                       targets,
-        string                                           targetLabel,
-        string                                           reason,
-        IGameClient?                                     issuer)
+        IReadOnlyList<IGameClient>                          targets,
+        string                                              targetLabel,
+        string                                              reason,
+        IGameClient?                                        issuer)
     {
         var count = 0;
 

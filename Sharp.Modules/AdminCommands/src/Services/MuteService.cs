@@ -146,10 +146,10 @@ internal class MuteService : ICommandCategory, IMuteService
     }
 
     private async Task ExecuteUnmuteAsync(CommandContext ctx,
-        IReadOnlyList<IGameClient>                      targets,
-        string                                          targetLabel,
-        string                                          reason,
-        IGameClient?                                    issuer)
+        IReadOnlyList<IGameClient>                       targets,
+        string                                           targetLabel,
+        string                                           reason,
+        IGameClient?                                     issuer)
     {
         var count = 0;
 
