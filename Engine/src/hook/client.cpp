@@ -560,7 +560,7 @@ void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommand
 
     msg->set_command(pCommandString);
 
-    CServerSideClient_Hooks::ExecuteStringCommand(pClient, msg);
+    CServerSideClient_Hooks::Detour_ExecuteStringCommand(pClient, msg);
 
     g_pMemAlloc->Free(msg);
 }
