@@ -163,25 +163,37 @@ internal class AdminOperationEngine : IClientListener
                             bool               silent   = false,
                             string?            metadata = null)
     {
+        var targetId   = target.SteamId;
+        var targetName = target.Name;
+
         _bridge.ModSharp.InvokeAction(() =>
         {
-            if (!target.IsValid)
+            if (target.IsValid)
             {
-                _logger.LogWarning("Discarding {type} apply: target is invalid", type);
+                ApplyCore(admin is { IsValid: true } ? admin : null,
+                          target,
+                          target.SteamId,
+                          target.Name,
+                          target.Slot,
+                          type,
+                          duration,
+                          reason,
+                          metadata,
+                          silent);
 
                 return;
             }
 
             ApplyCore(admin is { IsValid: true } ? admin : null,
-                      target,
-                      target.SteamId,
-                      target.Name,
-                      target.Slot,
+                      null,
+                      targetId,
+                      targetName,
+                      null,
                       type,
                       duration,
                       reason,
                       metadata,
-                      silent);
+                      true);
         });
     }
 
