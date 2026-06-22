@@ -46,6 +46,9 @@ public readonly unsafe struct EntityKeyValuesVariantValue
     [FieldOffset(8)]
     private readonly nint _pValue;
 
+    [FieldOffset(8)]
+    private readonly ulong _u64Value;
+
     public static implicit operator EntityKeyValuesVariantValue(KeyValuesVariantValueItem item)
         => item.Type switch
         {
@@ -54,6 +57,7 @@ public readonly unsafe struct EntityKeyValuesVariantValue
             EntityKeyValuesVariantType.Float   => new EntityKeyValuesVariantValue(item.FloatValue),
             EntityKeyValuesVariantType.String  => new EntityKeyValuesVariantValue(item.StringValue),
             EntityKeyValuesVariantType.Pointer => new EntityKeyValuesVariantValue(item.PointerValue),
+            EntityKeyValuesVariantType.UInt64  => new EntityKeyValuesVariantValue(item.UInt64Value),
             _                                  => throw new NotSupportedException("Missing type mapping"),
         };
 
@@ -85,5 +89,11 @@ public readonly unsafe struct EntityKeyValuesVariantValue
     {
         _type   = EntityKeyValuesVariantType.Pointer;
         _pValue = v;
+    }
+
+    private EntityKeyValuesVariantValue(ulong v)
+    {
+        _type     = EntityKeyValuesVariantType.UInt64;
+        _u64Value = v;
     }
 }

@@ -127,7 +127,10 @@ CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classna
             case KeyValuesVariantValueItemType_Pointer:
                 pKeyValues->SetPointer(item.Key, item.Value.pValue);
                 break;
-            default: 
+            case KeyValuesVariantValueItemType_UInt64:
+                pKeyValues->SetUInt64(item.Key, item.Value.u64Value);
+                break;
+            default:
                 FatalError("Not supported KeyValuesVariantValueItemType");
                 break;
             

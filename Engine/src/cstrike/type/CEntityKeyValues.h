@@ -85,6 +85,7 @@ public:
     void SetFloat(const CHashKey& key, float value, bool as_attribute = false);
     void SetString(const CHashKey& key, const char* value, bool as_attribute = false);
     void SetPointer(const CHashKey& key, void* value, bool as_attribute = false);
+    void SetUInt64(const CHashKey& key, uint64_t value, bool as_attribute = false);
 
     [[nodiscard]] int GetNumConnectionDesc() const
     {
