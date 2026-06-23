@@ -324,7 +324,15 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 
 void CCSPlayer_WeaponServices::EquipWeapon(CBaseWeapon* weapon)
 {
+    if (!weapon)
+        return;
+
     CCSPlayer_WeaponServices_Hooks::EquipWeapon(this, weapon);
+    // to work around an issue where EquipWeapon does not auto deploy weapon for bots
+    if (auto pawn = this->GetPawn<CCSPlayerPawn*>(); pawn && pawn->IsPlayer() && pawn->IsPlayerPawn() && (pawn->GetFlags() & EntityFlags_t::FL_BOT) != 0)
+    {
+        auto unused = this->SelectItem(weapon);
+    }
 }
 
 void InstallPlayerHooks()
