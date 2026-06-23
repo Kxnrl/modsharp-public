@@ -78,6 +78,10 @@ public static unsafe partial class Player
 
     public static partial IntPtr PawnGiveNamedItem(IntPtr ptr, string name);
 
+    public static partial IntPtr ItemServicesGiveNamedItem(IntPtr ptr, string name, IntPtr viewPtr, bool force);
+
+    public static partial void WeaponServicesEquipWeapon(IntPtr ptr, IntPtr weaponPtr);
+
     public static partial IntPtr PawnFindBySlot(long slot);
 
     public static partial IntPtr PawnGetActiveWeapon(IntPtr ptr);
