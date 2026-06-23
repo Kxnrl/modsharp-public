@@ -131,6 +131,8 @@ void ResolveCCSPlayerPawn_IsPlayer();
 void ResolveCBasePlayerController_CanHearAndReadChatFrom();
 void ResolveCCSPlayerController_RoundRespawn();
 void ResolveCBasePlayerPawn_CommitSuicide();
+void ResolveCCSPlayerPawn_SetDefaultGloves();
+void ResolveCEntityClassEntityListOffset();
 void ResolveCBasePlayerPawn_SnapViewAngles();
 void ResolveCreateTriggerInternal();
 

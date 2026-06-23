@@ -99,7 +99,6 @@ bool address::Initialize()
 
     FindGameSystemFactory();
     FindCEntityIdentity_SetEntityName();
-    FindCCSPlayerPawn_SetDefaultGloves();
 
     // GameData auto-resolve (does not require schema system) — resolved addresses overwrite
     // gamedata where the scan succeeds, and fall back to gamedata otherwise.
@@ -118,6 +117,9 @@ bool address::Initialize()
     ResolveCBaseEntity_AbsOrigin();
     ResolveCBaseEntity_Precache();
     ResolveCCSPlayerPawn_IsPlayer();
+    ResolveCCSPlayerPawn_SetDefaultGloves();
+    ResolveCEntityClassEntityListOffset();
+    ResolveCreateTriggerInternal();
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 
@@ -169,8 +171,6 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::RemoveListenerEntity", address::server::CGameEntitySystem_RemoveListenerEntity);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::AllocPooledString", address::server::CGameEntitySystem_AllocPooledString);
     RESOLVE_GAMEDATA_ADDRESS("CGameEntitySystem::AddEntityIOEvent", address::server::CGameEntitySystem_AddEntityIOEvent);
-
-    FindCEntityClassEntityListOffset();
 
     // PlayerPawn
     RESOLVE_GAMEDATA_ADDRESS("CBasePlayerPawn::FindMatchingWeaponsForTeamLoadout", address::server::CBasePlayerPawn_FindMatchingWeaponsForTeamLoadout);
@@ -250,5 +250,4 @@ void address::PostSchemaInit()
     ResolveCCSPlayerController_RoundRespawn();
     ResolveCBasePlayerPawn_CommitSuicide();
     ResolveCBasePlayerPawn_SnapViewAngles();
-    ResolveCreateTriggerInternal();
 }

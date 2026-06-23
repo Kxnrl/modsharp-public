@@ -33,7 +33,6 @@ class CModule;
 
 namespace modules
 {
-
 inline CModule* engine;
 inline CModule* tier0;
 inline CModule* server;
@@ -49,7 +48,6 @@ inline CModule* filesystem;
 inline CModule* steamsockets;
 inline CModule* materialsystem2;
 inline CModule* animationsystem;
-
 } // namespace modules
 
 class CBaseEntity;
@@ -105,7 +103,6 @@ class CUtlSymbolLarge;
 
 namespace address
 {
-
 bool Initialize();
 void PostSchemaInit();
 
@@ -116,7 +113,6 @@ inline void* Source2_Init;
 
 namespace server
 {
-
 // 一般来说，最好是函数先定义好类型然后再声明
 // 不然的话东西多起来就是噩梦
 using NetworkStateChanged_t                         = void (*)(void* chainEntity, CNetworkStateChangedInfo& info);
@@ -230,8 +226,8 @@ using FindWeaponVDataByName_t                      = CCSWeaponBaseVData* (*)(int
 using GetLegacyGameEventListener_t                 = IGameEventListener2* (*)(int32_t);
 using CGameEntitySystem_GetSpawnOriginOffset_t     = matrix3x4_t& (*)(const CGameEntitySystem*);
 using CCSPlayerPawn_SetDefaultGloves_t             = void (*)(CCSPlayerPawn* pawn, bool hide);
-using CBasePlayerPawn_SnapViewAngles_t               = void (*)(CBasePlayerPawn*, QAngle*);
-using CreateTriggerInternal_t                          = void* (*)(Vector*, Vector*, Vector*);
+using CBasePlayerPawn_SnapViewAngles_t             = void (*)(CBasePlayerPawn*, QAngle*);
+using CreateTriggerInternal_t                      = void* (*)(Vector*, Vector*, Vector*);
 
 inline NetworkStateChanged_t                               NetworkStateChanged;
 inline StateChanged_t                                      StateChanged;
@@ -307,13 +303,11 @@ inline CCSPlayer_MovementServices_TracePlayerBBox_t        CCSPlayer_MovementSer
 inline CTraceFilterPlayerMovementCS_ctor_t                 CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                             FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                        GetLegacyGameEventListener;
-inline CBasePlayerPawn_SnapViewAngles_t                      CBasePlayerPawn_SnapViewAngles;
-inline CreateTriggerInternal_t                                 CreateTriggerInternal;
+inline CBasePlayerPawn_SnapViewAngles_t                    CBasePlayerPawn_SnapViewAngles;
+inline CreateTriggerInternal_t                             CreateTriggerInternal;
 inline CGameEntitySystem_GetSpawnOriginOffset_t            CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                    CCSPlayerPawn_SetDefaultGloves;
-
 } // namespace server
-
 } // namespace address
 
 #endif

@@ -26,6 +26,7 @@
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IGameSystem.h"
 #include "cstrike/schema.h"
+#include "cstrike/type/CEntityClass.h"
 
 #include <ranges>
 
@@ -161,6 +162,102 @@ void FindGameSystemFactory()
 
         return false;
     });
+}
+
+void ResolveCEntityClassEntityListOffset()
+{
+    const auto find_by_classname = g_pGameData->GetAddress<std::uintptr_t>("CGameEntitySystem::FindByClassname");
+    if (find_by_classname == 0) [[unlikely]]
+    {
+        FatalError("Failed to resolve CEntityClass entity list offset: CGameEntitySystem::FindByClassname is null");
+        return;
+    }
+
+    const auto* wrapper_range = modules::server->GetFunctionRange(find_by_classname);
+    if (!wrapper_range) [[unlikely]]
+    {
+        FatalError("Failed to get function range for CGameEntitySystem::FindByClassname");
+        return;
+    }
+
+    std::uintptr_t next_by_classname = 0;
+    ZydisUtility::ScanInstructions(wrapper_range->start, wrapper_range->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        if (instr.opcode == 0xE8 && instr.mnemonic == ZYDIS_MNEMONIC_CALL)
+        {
+            if (const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip))
+            {
+                next_by_classname = target;
+            }
+        }
+        return false;
+    });
+
+    if (next_by_classname == 0) [[unlikely]]
+    {
+        FatalError("Failed to find CEntityIterator::NextByClassname call in CGameEntitySystem::FindByClassname");
+        return;
+    }
+
+    const auto* iter_range = modules::server->GetFunctionRange(next_by_classname);
+    if (!iter_range) [[unlikely]]
+    {
+        FatalError("Failed to get function range for CEntityIterator::NextByClassname");
+        return;
+    }
+
+#ifdef PLATFORM_WINDOWS
+    constexpr ZydisRegister kArg0Register = ZYDIS_REGISTER_RCX;
+#else
+    constexpr ZydisRegister kArg0Register = ZYDIS_REGISTER_RDI;
+#endif
+
+    ZydisRegister class_reg = ZYDIS_REGISTER_NONE;
+    std::uint32_t offset    = 0;
+
+    ZydisUtility::ScanInstructions(iter_range->start, iter_range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        if (instr.mnemonic != ZYDIS_MNEMONIC_MOV || instr.operand_count_visible != 2)
+        {
+            return false;
+        }
+
+        const auto& dst = operands[0];
+        const auto& src = operands[1];
+
+        if (dst.type != ZYDIS_OPERAND_TYPE_REGISTER || src.type != ZYDIS_OPERAND_TYPE_MEMORY || src.mem.index != ZYDIS_REGISTER_NONE)
+        {
+            return false;
+        }
+
+        const auto base_reg = ZydisUtility::GetBaseRegister(src.mem.base);
+
+        if (class_reg == ZYDIS_REGISTER_NONE)
+        {
+            // mov class_reg, [arg0 + 0x20]
+            if (base_reg == kArg0Register && src.mem.disp.has_displacement && src.mem.disp.value == 0x20)
+            {
+                class_reg = ZydisUtility::GetBaseRegister(dst.reg.value);
+            }
+            return false;
+        }
+
+        // mov dst, [class_reg + disp32]
+        if (base_reg == class_reg && src.mem.disp.has_displacement && src.mem.disp.value > 0)
+        {
+            offset = static_cast<std::uint32_t>(src.mem.disp.value);
+            return true;
+        }
+
+        return false;
+    });
+
+    if (offset == 0 || offset >= 0x2000) [[unlikely]]
+    {
+        FatalError("Failed to resolve CEntityClass entity list offset (got 0x%x)", offset);
+        return;
+    }
+
+    FLOG("Found CEntityClass entity list head offset at 0x%x", offset);
+    CEntityClass::sm_nEntityListHeadOffset = offset;
 }
 
 void FindCCSPlayerWeaponServices_DestroyWeapon()
@@ -2012,6 +2109,95 @@ void ResolveCBasePlayerPawn_CommitSuicide()
     }
 
     try_overwrite_vfunc("CBasePlayerPawn::CommitSuicide", result_idx);
+}
+
+void ResolveCCSPlayerPawn_SetDefaultGloves()
+{
+    auto svr_mod = modules::server;
+
+    uintptr_t addr{};
+
+    constexpr std::string_view token_str = "first_or_third_person";
+
+    constexpr uint32_t token = MurmurHash2(token_str, MURMURHASH_SEED);
+    static_assert(token == 0x3C74EB85, "Token for first_or_third_person mismatched");
+
+    auto token_address = svr_mod->FindData(reinterpret_cast<const uint8_t*>(&token), sizeof(uint32_t), false);
+    if (token_address.IsValid())
+    {
+        auto references = svr_mod->GetReferenceRange(token_address);
+
+        std::unordered_set<uintptr_t> sets{};
+
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
+
+        for (auto [target, source_ip] : references)
+        {
+            if (auto entry = svr_mod->GetFunctionRange(source_ip))
+            {
+                if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
+                    reinterpret_cast<const void*>(source_ip),
+                    ZYDIS_MAX_INSTRUCTION_LENGTH,
+                    &instr, operands)))
+                {
+                    continue;
+                }
+
+                bool is_read_only_reference = false;
+
+                for (uint8_t i = 0; i < instr.operand_count; ++i)
+                {
+                    const auto& operand = operands[i];
+
+                    if (operand.type == ZYDIS_OPERAND_TYPE_MEMORY)
+                    {
+                        bool is_read  = false;
+                        bool is_write = false;
+
+                        switch (operand.actions)
+                        {
+                        case ZYDIS_OPERAND_ACTION_READ:
+                        case ZYDIS_OPERAND_ACTION_CONDREAD: is_read = true;
+                            break;
+                        case ZYDIS_OPERAND_ACTION_WRITE:
+                        case ZYDIS_OPERAND_ACTION_CONDWRITE: is_write = true;
+                            break;
+                        case ZYDIS_OPERAND_ACTION_READWRITE:
+                        case ZYDIS_OPERAND_ACTION_READ_CONDWRITE:
+                        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE: is_read = true;
+                            is_write = true;
+                            break;
+                        default: break;
+                        }
+
+                        if (is_read && !is_write)
+                        {
+                            is_read_only_reference = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (is_read_only_reference)
+                {
+                    sets.insert(entry->start);
+                }
+            }
+        }
+
+        auto size = sets.size();
+        if (size != 1)
+        {
+            WARN("Expected to have one function that references token '%s' but got %zu, falling back to signature", token_str.data(), size);
+        }
+        else
+        {
+            addr = *sets.begin();
+        }
+    }
+
+    AssignOrFallback(svr_mod, address::server::CCSPlayerPawn_SetDefaultGloves, addr, "CCSPlayerPawn::SetDefaultGloves");
 }
 
 void ResolveCBasePlayerPawn_SnapViewAngles()
