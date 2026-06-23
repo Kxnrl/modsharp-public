@@ -32,6 +32,7 @@
 #include "cstrike/interface/IGameSystem.h"
 #include "memory/zydis_utility.h"
 #include "cstrike/type/CEntityClass.h"
+#include "manager/HookManager.h"
 
 #include <Zydis.h>
 
@@ -119,7 +120,10 @@ bool address::Initialize()
     ResolveCCSPlayerPawn_IsPlayer();
     ResolveCCSPlayerPawn_SetDefaultGloves();
     ResolveCEntityClassEntityListOffset();
-    ResolveCreateTriggerInternal();
+
+    g_pHookManager->Hook_GameInit(HookType_Post, [] {
+        ResolveCreateTriggerInternal();
+    });
 
     RESOLVE_GAMEDATA_ADDRESS("Source2_Init", address::engine::Source2_Init);
 

@@ -2332,6 +2332,8 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
 
 void ResolveCreateTriggerInternal()
 {
+    if (address::server::CreateTriggerInternal != nullptr) return;
+
     auto svr_mod = modules::server;
 
     auto str_addr = svr_mod->FindString("Script_CreateTrigger", false, true);
