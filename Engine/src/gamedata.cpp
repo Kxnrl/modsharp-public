@@ -1443,3 +1443,22 @@ bool GameData::OverwriteVFuncIndex(const char* name, int32_t value)
     FLOG("OverwriteVFuncIndex: '%s' %d -> %d", name, old_value, value);
     return true;
 }
+
+bool GameData::OverwriteAddress(const char* name, std::uintptr_t value)
+{
+    auto it = m_Addresses.find(name);
+    if (it == m_Addresses.end())
+    {
+        FERROR("OverwriteAddress: '%s' not found.", name);
+        return false;
+    }
+
+    auto old_value = it->second.m_FoundAddress;
+    if (old_value == value)
+        return true;
+
+    it->second.m_FoundAddress = value;
+
+    FLOG("OverwriteAddress: '%s' 0x%llx -> 0x%llx", name, old_value, value);
+    return true;
+}

@@ -114,6 +114,7 @@ public:
 
     bool OverwriteOffset(const char* name, int32_t value);
     bool OverwriteVFuncIndex(const char* name, int32_t value);
+    bool OverwriteAddress(const char* name, std::uintptr_t value);
 
     template <typename T>
     T GetAddress(const char* name)

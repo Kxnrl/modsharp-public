@@ -365,7 +365,7 @@ void FindCCSPlayerWeaponServices_DestroyWeapon()
         });
     }
 
-    AssignOrFallback(svr_mod, address::server::PlayerPawnWeaponServices_RemovePlayerItem, target_call_addr, "CCSPlayer_WeaponServices::RemovePlayerItem");
+    AssignOrFallback(svr_mod, address::server::PlayerPawnWeaponServices_RemovePlayerItem, target_call_addr, "CCSPlayer_ItemServices::RemovePlayerItem");
 }
 
 void FindSetModel()

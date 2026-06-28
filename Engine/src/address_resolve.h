@@ -30,49 +30,6 @@
 #define RESOLVE_GAMEDATA_ADDRESS(name, variable) \
     (variable) = g_pGameData->GetAddress<decltype(variable)>(name)
 
-template <typename T>
-static void AssignOrFallback(CModule* mod, T& target_ptr, uintptr_t found_addr, const char* func_name, const char* gamedata_key = nullptr)
-{
-    const char* key = gamedata_key ? gamedata_key : func_name;
-
-    if (found_addr != 0)
-    {
-        FLOG("Found %s at server+0x%llx", func_name, found_addr - mod->Base());
-#ifdef DEBUG
-        uintptr_t gamedata_addr = 0;
-        if (g_pGameData->GetAddress(key, gamedata_addr) && gamedata_addr != 0)
-        {
-            if (gamedata_addr != found_addr)
-            {
-                WARN("GameData auto-resolve: %s resolved=server+0x%llx, gamedata=server+0x%llx (mismatch!).",
-                     key,
-                     found_addr - mod->Base(),
-                     gamedata_addr - mod->Base());
-            }
-            else
-            {
-                FLOG("GameData auto-resolve: %s resolved matches gamedata at server+0x%llx.", key, found_addr - mod->Base());
-            }
-        }
-#endif
-
-        target_ptr = reinterpret_cast<T>(found_addr);
-    }
-    else
-    {
-        target_ptr = g_pGameData->GetAddress<T>(key);
-
-        if (target_ptr == nullptr)
-        {
-            FatalError("Failed to find %s (Both Scanner and GameData failed)", func_name);
-        }
-        else
-        {
-            FLOG("Fallback: Loaded %s from GameData.\n", func_name);
-        }
-    }
-}
-
 inline void try_overwrite_vfunc(const char* name, int32_t resolved)
 {
     if (resolved == -1)
@@ -105,6 +62,62 @@ inline void try_overwrite_offset(const char* name, int32_t resolved)
     }
 
     g_pGameData->OverwriteOffset(name, resolved);
+}
+
+inline void try_overwrite_address(const char* name, uintptr_t resolved)
+{
+    if (resolved == 0)
+    {
+        WARN("GameData auto-resolve: failed to resolve %s.", name);
+        return;
+    }
+
+    g_pGameData->OverwriteAddress(name, resolved);
+}
+
+template <typename T>
+static void AssignOrFallback(CModule* mod, T& target_ptr, uintptr_t found_addr, const char* func_name, const char* gamedata_key = nullptr)
+{
+    const char* key = gamedata_key ? gamedata_key : func_name;
+
+    if (found_addr != 0)
+    {
+        FLOG("Found %s at server+0x%llx", func_name, found_addr - mod->Base());
+#ifdef DEBUG
+        uintptr_t gamedata_addr = 0;
+        if (g_pGameData->GetAddress(key, gamedata_addr) && gamedata_addr != 0)
+        {
+            if (gamedata_addr != found_addr)
+            {
+                WARN("GameData auto-resolve: %s resolved=server+0x%llx, gamedata=server+0x%llx (mismatch!).",
+                     key,
+                     found_addr - mod->Base(),
+                     gamedata_addr - mod->Base());
+            }
+            else
+            {
+                FLOG("GameData auto-resolve: %s resolved matches gamedata at server+0x%llx.", key, found_addr - mod->Base());
+            }
+        }
+#endif
+
+        target_ptr = reinterpret_cast<T>(found_addr);
+
+        try_overwrite_address(key, found_addr);
+    }
+    else
+    {
+        target_ptr = g_pGameData->GetAddress<T>(key);
+
+        if (target_ptr == nullptr)
+        {
+            FatalError("Failed to find %s (Both Scanner and GameData failed)", func_name);
+        }
+        else
+        {
+            FLOG("Fallback: Loaded %s from GameData.\n", func_name);
+        }
+    }
 }
 
 // address_server.cpp
