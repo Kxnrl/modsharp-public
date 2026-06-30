@@ -80,23 +80,25 @@ static void AssignOrFallback(CModule* mod, T& target_ptr, uintptr_t found_addr, 
 {
     const char* key = gamedata_key ? gamedata_key : func_name;
 
+    auto mod_name = mod ? mod->ModuleName() : std::string_view{"<unknown>"};
+
     if (found_addr != 0)
     {
-        FLOG("Found %s at server+0x%llx", func_name, found_addr - mod->Base());
+        FLOG("Found %s at %.*s+0x%llx", func_name, static_cast<int>(mod_name.size()), mod_name.data(), found_addr - mod->Base());
 #ifdef DEBUG
         uintptr_t gamedata_addr = 0;
         if (g_pGameData->GetAddress(key, gamedata_addr) && gamedata_addr != 0)
         {
             if (gamedata_addr != found_addr)
             {
-                WARN("GameData auto-resolve: %s resolved=server+0x%llx, gamedata=server+0x%llx (mismatch!).",
+                WARN("GameData auto-resolve: %s resolved=%.*s+0x%llx, gamedata=%.*s+0x%llx (mismatch!).",
                      key,
-                     found_addr - mod->Base(),
-                     gamedata_addr - mod->Base());
+                     static_cast<int>(mod_name.size()), mod_name.data(), found_addr - mod->Base(),
+                     static_cast<int>(mod_name.size()), mod_name.data(), gamedata_addr - mod->Base());
             }
             else
             {
-                FLOG("GameData auto-resolve: %s resolved matches gamedata at server+0x%llx.", key, found_addr - mod->Base());
+                FLOG("GameData auto-resolve: %s resolved matches gamedata at %.*s+0x%llx.", key, static_cast<int>(mod_name.size()), mod_name.data(), found_addr - mod->Base());
             }
         }
 #endif
