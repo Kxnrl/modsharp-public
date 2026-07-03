@@ -38,6 +38,15 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => 0;
 
+    /// <summary>
+    ///     How often handler caches are re-validated against storage, so operations removed
+    ///     externally (e.g. a website unban writing to a shared database) take effect without
+    ///     a reconnect or server restart.
+    /// </summary>
+    private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
+
+    private CancellationTokenSource? _refreshCts;
+
     private readonly ILogger<AdminOperationEngine> _logger;
     private readonly InterfaceBridge               _bridge;
     private readonly AdminOperationService         _operations;
@@ -148,10 +157,17 @@ internal class AdminOperationEngine : IClientListener
     public void Init()
     {
         _bridge.ClientManager.InstallClientListener(this);
+
+        _refreshCts = new CancellationTokenSource();
+        _           = RefreshCacheLoopAsync(_refreshCts.Token);
     }
 
     public void Shutdown()
     {
+        _refreshCts?.Cancel();
+        _refreshCts?.Dispose();
+        _refreshCts = null;
+
         _bridge.ClientManager.RemoveClientListener(this);
     }
 
@@ -493,6 +509,76 @@ internal class AdminOperationEngine : IClientListener
         {
             _logger.LogError(ex, "Failed to load operations for {SteamId}", steamId);
         }
+    }
+
+    private async Task RefreshCacheLoopAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(CacheRefreshInterval, token).ConfigureAwait(false);
+                await RefreshCachedOperationsAsync(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to refresh cached admin operations");
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Re-validates every handler's cached identities against storage and evicts entries
+    ///     that no longer have an active record (removed externally or expired).
+    /// </summary>
+    private async Task RefreshCachedOperationsAsync(CancellationToken token)
+    {
+        // Snapshot handler caches on the game thread; handlers are not thread-safe.
+        var snapshot = await _bridge.ModSharp
+                                    .InvokeFrameActionAsync(() => _handlers.Values
+                                            .Select(x => (x.Handler,
+                                                          Identities: x.Handler.GetCachedIdentities().ToArray()))
+                                            .Where(x => x.Identities.Length > 0)
+                                            .ToArray(),
+                                        token)
+                                    .ConfigureAwait(false);
+
+        var stale = new List<(IAdminOperationHandler Handler, SteamID SteamId)>();
+
+        foreach (var (handler, identities) in snapshot)
+        {
+            foreach (var steamId in identities)
+            {
+                // null = storage failure: keep the cached entry, never evict on a database outage.
+                if (await _operations.TryHasActiveAsync(steamId, handler.Type, token).ConfigureAwait(false) == false)
+                {
+                    stale.Add((handler, steamId));
+                }
+            }
+        }
+
+        if (stale.Count == 0)
+        {
+            return;
+        }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+                     {
+                         foreach (var (handler, steamId) in stale)
+                         {
+                             handler.OnRemoved(steamId, _bridge.ClientManager.GetGameClient(steamId));
+
+                             _logger.LogInformation("Evicted cached {Type} for {SteamId}: no active record in storage",
+                                                    handler.Type,
+                                                    steamId);
+                         }
+                     },
+                     token)
+                     .ConfigureAwait(false);
     }
 
 #endregion

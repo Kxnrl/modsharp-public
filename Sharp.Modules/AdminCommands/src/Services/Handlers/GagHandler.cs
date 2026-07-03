@@ -57,6 +57,9 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.GagRemoved", $"ungagged {target.Name}");
 
+    public IReadOnlyCollection<SteamID> GetCachedIdentities()
+        => _gags.Keys;
+
     public void RegisterHooks()
     {
         if (_hooksRegistered)

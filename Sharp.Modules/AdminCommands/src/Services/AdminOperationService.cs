@@ -54,6 +54,29 @@ internal sealed class AdminOperationService
         }
     }
 
+    /// <summary>
+    ///     Like <see cref="HasActiveAsync" /> but distinguishes storage failures (<c>null</c>) from a
+    ///     definitive "no active record" (<c>false</c>), so cache-eviction callers never treat a
+    ///     transient database outage as a removal.
+    /// </summary>
+    public async Task<bool?> TryHasActiveAsync(SteamID steamId,
+        AdminOperationType                             type,
+        CancellationToken                              cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        try
+        {
+            return await _storage.HasActiveAsync(steamId, type).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check active {Type} for {SteamId}", type, steamId);
+
+            return null;
+        }
+    }
+
     public async Task<bool> HasActiveAsync(SteamID steamId,
         AdminOperationType                         type,
         CancellationToken                          cancellationToken = default)

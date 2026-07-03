@@ -83,6 +83,9 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.BanRemoved", $"unbanned {target.Name}");
 
+    public IReadOnlyCollection<SteamID> GetCachedIdentities()
+        => _bans.Keys;
+
     public void RegisterHooks()
     {
         if (_hooksRegistered)

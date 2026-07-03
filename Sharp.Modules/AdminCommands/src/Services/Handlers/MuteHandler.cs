@@ -55,6 +55,9 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.MuteRemoved", $"unmuted {target.Name}");
 
+    public IReadOnlyCollection<SteamID> GetCachedIdentities()
+        => _mutes.Keys;
+
     public void RegisterHooks()
     {
         if (_hooksRegistered)
