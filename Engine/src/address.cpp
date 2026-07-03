@@ -77,6 +77,7 @@ bool address::Initialize()
         "engine.games.jsonc",
         "server.games.jsonc",
         "log.games.jsonc",
+        "networksystem.games.jsonc",
     };
 
     bool all_succeeded = true;

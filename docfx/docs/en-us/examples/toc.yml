@@ -51,6 +51,11 @@
     - name: Transmit Hook
       href: transmit.md
 
+- name: SendProxy
+  items:
+    - name: SendProxy
+      href: send-proxy.md
+
 - name: Game Calls
   items:
     - name: Native Call

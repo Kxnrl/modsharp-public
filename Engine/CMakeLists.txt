@@ -98,6 +98,7 @@ set(modsharp_SOURCES
 	"src/hook/extern/GiveNamedItem.cpp"
 	"src/hook/extern/HandleCommandJoinTeam.cpp"
 	"src/hook/extern/MovementManager.cpp"
+	"src/hook/extern/SendProxyManager.cpp"
 	"src/hook/extern/TransmitManager.cpp"
 	"src/hook/extern/ValveConsoleLog.cpp"
 	"src/hook/gamerule.cpp"

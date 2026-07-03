@@ -589,6 +589,7 @@ public static class Bootstrap
         services.AddSingleton<ICoreConVarManager, ConVarManager>();
         services.AddSingleton<ICoreHookManager, HookManager>();
         services.AddSingleton<ICoreTransmitManager, TransmitManager>();
+        services.AddSingleton<ICoreSendProxyManager, SendProxyManager>();
         services.AddSingleton<ICoreFileManager, FileManager>();
         services.AddSingleton<ICoreSchemaManager, SchemaManager>();
         services.AddSingleton<ICoreEconItemManager, EconItemManager>();

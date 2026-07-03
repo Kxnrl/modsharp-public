@@ -62,6 +62,9 @@ internal class SharedManager : ISharedManager
     public ITransmitManager GetTransmitManager()
         => _serviceProvider.GetRequiredService<ICoreTransmitManager>();
 
+    public ISendProxyManager GetSendProxyManager()
+        => _serviceProvider.GetRequiredService<ICoreSendProxyManager>();
+
     public IFileManager GetFileManager()
         => _serviceProvider.GetRequiredService<ICoreFileManager>();
 
