@@ -23,12 +23,14 @@ using Sharp.Modules.AdminCommands.Shared;
 using Sharp.Modules.AdminManager.Shared;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
+using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AdminCommands.Services;
 
 internal class SilenceService : ICommandCategory, ISilenceService
 {
     private readonly ILogger<SilenceService> _logger;
+    private readonly InterfaceBridge         _bridge;
     private readonly AdminOperationService   _operations;
     private readonly AdminOperationEngine    _engine;
     private readonly CommandContextFactory   _contextFactory;
@@ -40,6 +42,7 @@ internal class SilenceService : ICommandCategory, ISilenceService
         CommandContextFactory                     contextFactory)
     {
         _logger         = logger;
+        _bridge         = bridge;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
@@ -91,30 +94,59 @@ internal class SilenceService : ICommandCategory, ISilenceService
         string                                            reason,
         IGameClient?                                      issuer)
     {
-        var count = 0;
+        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
 
-        foreach (var target in targets)
+        var targetToApply = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
-            var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+            var isMuted = await _operations.HasActiveAsync(steamId, AdminOperationType.Mute).ConfigureAwait(false);
+            var isGag   = await _operations.HasActiveAsync(steamId, AdminOperationType.Gag).ConfigureAwait(false);
 
             if (isMuted && isGag)
             {
-                _logger.LogDebug("Skip silence for {Target} ({SteamId}): already fully silenced", target.Name, target.SteamId);
+                _logger.LogDebug("Skip silence for {SteamId}: already fully silenced", steamId);
 
                 continue;
             }
 
-            _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason, true);
-            _engine.ApplyOnline(issuer, target, AdminOperationType.Gag,  duration, reason, true);
-            _engine.NotifySilenceApplied(issuer, target, duration, reason);
-            count++;
+            targetToApply.Add((client, steamId, name));
         }
 
-        if (count > 0)
+        if (targetToApply.Count == 0)
         {
-            ctx.ReplySuccessKey("Admin.Silenced", "{0} Silenced {1}.", ctx.IssuerName, targetLabel);
+            return;
         }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToApply)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason, true);
+                    _engine.ApplyOnline(issuer, target, AdminOperationType.Gag,  duration, reason, true);
+                    _engine.NotifySilenceApplied(issuer, target, duration, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still persist so it re-applies on reconnect.
+                    _engine.ApplyOffline(issuer, steamId, name, AdminOperationType.Mute, duration, reason);
+                    _engine.ApplyOffline(issuer, steamId, name, AdminOperationType.Gag,  duration, reason);
+                }
+
+                count++;
+            }
+
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Silenced", "{0} Silenced {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     private void OnCommandUnSilence(IGameClient? issuer, StringCommand command)
@@ -151,30 +183,59 @@ internal class SilenceService : ICommandCategory, ISilenceService
         string                                              reason,
         IGameClient?                                        issuer)
     {
-        var count = 0;
+        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
 
-        foreach (var target in targets)
+        var targetToRemove = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
-            var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+            var isMuted = await _operations.HasActiveAsync(steamId, AdminOperationType.Mute).ConfigureAwait(false);
+            var isGag   = await _operations.HasActiveAsync(steamId, AdminOperationType.Gag).ConfigureAwait(false);
 
             if (!isMuted && !isGag)
             {
-                _logger.LogDebug("Skip unsilence for {Target} ({SteamId}): not silenced", target.Name, target.SteamId);
+                _logger.LogDebug("Skip unsilence for {SteamId}: not silenced", steamId);
 
                 continue;
             }
 
-            _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason, true);
-            _engine.RemoveOnline(issuer, target, AdminOperationType.Gag,  reason, true);
-            _engine.NotifySilenceRemoved(issuer, target, reason);
-            count++;
+            targetToRemove.Add((client, steamId, name));
         }
 
-        if (count > 0)
+        if (targetToRemove.Count == 0)
         {
-            ctx.ReplySuccessKey("Admin.Unsilenced", "{0} Unsilenced {1}.", ctx.IssuerName, targetLabel);
+            return;
         }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToRemove)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason, true);
+                    _engine.RemoveOnline(issuer, target, AdminOperationType.Gag,  reason, true);
+                    _engine.NotifySilenceRemoved(issuer, target, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still remove the stored records.
+                    _engine.RemoveOffline(issuer, steamId, name, AdminOperationType.Mute, reason);
+                    _engine.RemoveOffline(issuer, steamId, name, AdminOperationType.Gag,  reason);
+                }
+
+                count++;
+            }
+
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Unsilenced", "{0} Unsilenced {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     public void Silence(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

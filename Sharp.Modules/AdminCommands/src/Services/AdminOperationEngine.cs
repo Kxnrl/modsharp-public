@@ -218,19 +218,58 @@ internal class AdminOperationEngine : IClientListener
                       true);
         });
 
-    public void RemoveOnline(IGameClient? admin,
-                             IGameClient                       target,
-                             AdminOperationType                type,
-                             string                            reason,
-                             bool                              silent = false)
-        => RemoveCore(admin, target, target.SteamId, target.Name, target.Slot, type, reason, silent);
+    public void RemoveOnline(IGameClient?       admin,
+                             IGameClient        target,
+                             AdminOperationType type,
+                             string             reason,
+                             bool               silent = false)
+    {
+        var targetId   = target.SteamId;
+        var targetName = target.Name;
 
-    public void RemoveOffline(IGameClient? admin,
-        SteamID                            steamId,
-        string                             targetName,
-        AdminOperationType                 type,
-        string                             reason)
-        => RemoveCore(admin, null, steamId, targetName, null, type, reason, true);
+        _bridge.ModSharp.InvokeAction(() =>
+        {
+            if (target.IsValid)
+            {
+                RemoveCore(admin is { IsValid: true } ? admin : null,
+                           target,
+                           target.SteamId,
+                           target.Name,
+                           target.Slot,
+                           type,
+                           reason,
+                           silent);
+
+                return;
+            }
+
+            RemoveCore(admin is { IsValid: true } ? admin : null,
+                       null,
+                       targetId,
+                       targetName,
+                       null,
+                       type,
+                       reason,
+                       true);
+        });
+    }
+
+    public void RemoveOffline(IGameClient?       admin,
+                              SteamID            steamId,
+                              string             targetName,
+                              AdminOperationType type,
+                              string             reason)
+        => _bridge.ModSharp.InvokeAction(() =>
+        {
+            RemoveCore(admin is { IsValid: true } ? admin : null,
+                       null,
+                       steamId,
+                       targetName,
+                       null,
+                       type,
+                       reason,
+                       true);
+        });
 
     public void NotifySilenceApplied(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
     {
