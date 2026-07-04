@@ -24,16 +24,6 @@
       "linux": "55 48 8D 05 ? ? ? ? 45 31 DB 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D",
       "windows": "4C 89 4C 24 ? 4C 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 A8 8C 01 00"
     },
-    // Linux-only: field path in rdi. Inlined on Windows (use WriteFieldList_FieldPathSite there).
-    "CFlattenedSerializer::GetBitRange": {
-      "library": "networksystem",
-      "linux": "55 48 89 E5 53 48 89 FB 48 83 EC 08 83 FA FF 74"
-    },
-    // Windows-only: per-field site inside WriteFieldList, R12 = field index.
-    "CFlattenedSerializer::WriteFieldList_FieldPathSite": {
-      "library": "networksystem",
-      "windows": "44 8B C6 48 8D 55 ? 48 8D 8D ? ? ? ? E8"
-    },
     // Per-field bit copy (dst, src, bitcount) — the substitution point.
     "CFlattenedSerializer::BitCopyPrimitive": {
       "library": "networksystem",

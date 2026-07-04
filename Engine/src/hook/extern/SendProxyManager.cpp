@@ -52,9 +52,8 @@
 // Captures needed for a per-field substitution, each set by a hook on this thread and consumed at BitCopy:
 //   PerClientEncode        -> current recipient (CServerSideClient*)
 //   WriteDeltaEntity        -> current entity index
-//   WriteFieldList          -> current serializer
-//   GetBitRange (linux)     -> current CFieldPath* (Windows: WriteFieldList_FieldPathSite -> field index)
-//   BitCopyPrimitive        -> substitute: resolve field name, gate, fire forward, re-encode, emit fake bits.
+//   WriteFieldList          -> current serializer + the bit-offset table / snapshot buffer / field count
+//   BitCopyPrimitive        -> match src cursor to the table for the field index, gate, fire forward, emit bits.
 
 // Installed lazily on the first Hook so a server not using SendProxy pays nothing on the per-client encode.
 bool InstallSendProxyHooks();
@@ -66,7 +65,6 @@ bool g_installFailed = false;
 
 constexpr int       kMaxEdicts   = 16384;
 constexpr uintptr_t kUserMin     = 0x10000;
-constexpr int       kFieldPathMax = 3;
 
 enum class FieldType : uint8_t
 {
@@ -152,28 +150,31 @@ void                                     FlushPending();
 // Encoder fn -> FieldType, built once at install from the encoder-registry bucket table. Read-only after.
 std::unordered_map<uintptr_t, FieldType> g_encoderTypes;
 
-// Per-thread captures. Only the main thread's copies are ever read at a substitution (gated on recipient).
-thread_local void*    t_client     = nullptr;
-thread_local int      t_entityIdx  = -1;
-thread_local void*    t_serializer = nullptr;
-thread_local void*    t_fieldPath  = nullptr; // linux: CFieldPath* captured at GetBitRange (used on cache miss)
-thread_local int      t_fieldIndex = -1;      // windows: flattened-leaf index (used on cache miss)
-thread_local uint32_t t_fieldToken = 0;       // packed field-path token — the stable per-field cache key
+// Per-thread captures, all set by hooks on this thread and consumed at BitCopy (gated on recipient).
+// WriteFieldList seeks the src read cursor to each field's absolute start bit before every BitCopy, so the
+// cursor value (src+0x10) identifies the field: match it against the bit-offset table to get the flattened-leaf
+// index. Table/buffer/count come from WriteFieldList's 5th arg. No separate field-path hook is needed.
+thread_local void*          t_client     = nullptr;
+thread_local int            t_entityIdx  = -1;
+thread_local void*          t_serializer = nullptr;
+thread_local const int32_t* t_bitTable   = nullptr; // start bits: table[idx+1] for field idx (table[0] is skew)
+thread_local void*          t_srcData    = nullptr; // snapshot buffer; gate out BitCopy calls on other buffers
+thread_local int            t_fieldCount = 0;
 
-// Resolving a field name at every BitCopy (CFieldPath walk + string) is the dominant per-tick cost. The field
-// is identified by the engine's packed path token, so cache the resolve per (serializer, token): the walk runs
-// once per (serializer, field) and the hot path is an integer-keyed lookup after that.
+// Resolving a field (walk to the leaf record) at every BitCopy is the dominant per-tick cost. The flattened-leaf
+// index is stable per (serializer, field), so cache the resolve per (serializer, index): the walk runs once per
+// field and the hot path is the cursor→index binary search + an integer-keyed lookup.
 struct ResolveKey
 {
-    void*    serializer;
-    uint32_t token;
-    bool     operator==(const ResolveKey& o) const { return serializer == o.serializer && token == o.token; }
+    void* serializer;
+    int   index;
+    bool  operator==(const ResolveKey& o) const { return serializer == o.serializer && index == o.index; }
 };
 struct ResolveKeyHash
 {
     size_t operator()(const ResolveKey& k) const
     {
-        return std::hash<void*>{}(k.serializer) ^ (static_cast<size_t>(k.token) * 0x9E3779B97F4A7C15ull);
+        return std::hash<void*>{}(k.serializer) ^ (static_cast<size_t>(k.index) * 0x9E3779B97F4A7C15ull);
     }
 };
 struct Resolved
@@ -190,88 +191,12 @@ std::unordered_map<ResolveKey, Resolved, ResolveKeyHash> g_resolve;
 SafetyHookInline g_perClientHook{};
 SafetyHookInline g_wdeHook{};
 SafetyHookInline g_wflHook{};
-SafetyHookMid    g_bitRangeHook{};
 SafetyHookInline g_bitCopyHook{};
 
-// ── Field-path resolution (linux CFieldPath* walk) ──────────────────────────────────────────────────────
-bool IndexInBounds(void* serializer, int idx)
-{
-    if (!IsUserPtr(serializer))
-        return false;
-    int count = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(serializer) + 0x28);
-    return count > 0 && count <= 4096 && idx >= 0 && idx < count;
-}
+// ── Field resolution: flattened-leaf index -> leaf record (both platforms) ────────────────────────────────
 
-// Walk the CFieldPath (filled by GetBitRange) to the leaf record; returns the field-name char* and the leaf
-// record. Every deref is guarded — any bad pointer returns nullptr and the caller passes the real value.
-const char* ResolveFieldName(void* serializer, void* hdr, void** leafRecOut)
-{
-    *leafRecOut = nullptr;
-    if (!IsUserPtr(serializer) || !IsUserPtr(hdr))
-        return nullptr;
-
-    auto  h     = reinterpret_cast<uint8_t*>(hdr);
-    short count = *reinterpret_cast<short*>(h + 0x18);
-    if (count < 1 || count > kFieldPathMax)
-        return nullptr;
-
-    void* idxArr;
-    if (*(h + 0x1A) != 0)
-    {
-        idxArr = *reinterpret_cast<void**>(h);
-        if (!IsUserPtr(idxArr))
-            return nullptr;
-    }
-    else
-    {
-        idxArr = hdr;
-    }
-
-    void* serArr = serializer;
-    void* rec    = nullptr;
-
-    for (int k = 0; k < count; k++)
-    {
-        short idxK = *reinterpret_cast<short*>(reinterpret_cast<uint8_t*>(idxArr) + k * 2);
-        if (idxK == 0x7FFF)
-        {
-            if (k == 0)
-                return nullptr;
-            break;
-        }
-
-        if (k > 0)
-        {
-            void* child = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(rec) + 0x08);
-            if (!IsUserPtr(child))
-                return nullptr;
-            serArr = child;
-        }
-
-        if (!IndexInBounds(serArr, idxK))
-            return nullptr;
-
-        void* arr = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(serArr) + 0x30);
-        if (!IsUserPtr(arr))
-            return nullptr;
-
-        rec = reinterpret_cast<uint8_t*>(arr) + idxK * 0x2E;
-        if (!IsUserPtr(rec))
-            return nullptr;
-    }
-
-    void* pInfo = *reinterpret_cast<void**>(rec);
-    if (!IsUserPtr(pInfo))
-        return nullptr;
-
-    *leafRecOut = rec;
-    auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(pInfo) + 0x08);
-    return IsUserPtr(name) ? name : nullptr;
-}
-
-// Windows has no standalone GetBitRange (inlined), so the field is identified by a flattened-leaf INDEX (DFS
-// order) captured at the WriteFieldList inner site. Walk the serializer's leaf records in the same order and
-// return the record at `target`. Pure pointer walk (compiled on both platforms; only used on Windows).
+// Walk the serializer's leaf records in flattened DFS order and return the record at `target` — the same index
+// order the engine's bit-offset table uses, so the cursor-matched field index maps straight to its leaf.
 void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
 {
     if (depth > 4 || !IsUserPtr(serializer))
@@ -494,25 +419,49 @@ void* WriteDeltaEntity_Detour(void* a, void* b, void* c, void* d, void* e, void*
 
 void* WriteFieldList_Detour(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
 {
-    void* prev   = t_serializer;
+    void*          prevSer   = t_serializer;
+    const int32_t* prevTable = t_bitTable;
+    void*          prevData  = t_srcData;
+    int            prevCount = t_fieldCount;
+
     t_serializer = a;
-    auto* orig   = g_wflHook.original<void* (*)(void*, void*, void*, void*, void*, uint32_t, uint32_t, void*, uint32_t)>();
-    auto  ret    = orig(a, b, c, d, e, p6, p7, p8, p9);
-    t_serializer = prev;
+    // e = param_5: the field descriptor. table @+0x08 (start bits), snapshot buffer @+0x18, count @+0x30.
+    if (IsUserPtr(e))
+    {
+        t_bitTable   = *reinterpret_cast<const int32_t**>(reinterpret_cast<uint8_t*>(e) + 0x08);
+        t_srcData    = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(e) + 0x18);
+        t_fieldCount = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(e) + 0x30);
+    }
+
+    auto* orig = g_wflHook.original<void* (*)(void*, void*, void*, void*, void*, uint32_t, uint32_t, void*, uint32_t)>();
+    auto  ret  = orig(a, b, c, d, e, p6, p7, p8, p9);
+
+    t_serializer = prevSer;
+    t_bitTable   = prevTable;
+    t_srcData    = prevData;
+    t_fieldCount = prevCount;
     return ret;
 }
 
-void GetBitRange_Mid(SafetyHookContext& ctx)
+// Match the src read cursor (each field's absolute start bit, seeked by WriteFieldList) against the bit-offset
+// table to recover the field's flattened-leaf index. table[1..count] are strictly increasing start bits.
+int ResolveFieldIndex(int startBit)
 {
-    t_fieldPath  = reinterpret_cast<void*>(ctx.rdi);
-    t_fieldToken = static_cast<uint32_t>(ctx.rdx); // 3rd arg = the packed field-path token
-}
-
-// Windows: WriteFieldList inner site, R12 = current flattened-leaf index (survives the following call).
-void WindowsFieldIndexHook(SafetyHookContext& ctx)
-{
-    t_fieldIndex = static_cast<int>(ctx.r12);
-    t_fieldToken = static_cast<uint32_t>(ctx.r12); // the index is the stable per-field key on Windows
+    if (!IsUserPtr(t_bitTable) || t_fieldCount <= 0 || t_fieldCount > 4096)
+        return -1;
+    int lo = 1, hi = t_fieldCount;
+    while (lo <= hi)
+    {
+        int mid = (lo + hi) / 2;
+        int v   = t_bitTable[mid];
+        if (v == startBit)
+            return mid - 1; // table[idx+1] = start bit of field idx
+        if (v < startBit)
+            lo = mid + 1;
+        else
+            hi = mid - 1;
+    }
+    return -1;
 }
 
 uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
@@ -527,18 +476,21 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
-    // Resolve (serializer, token) -> {leafRec, kind, name} once; integer-keyed lookup on every BitCopy after.
-    auto rit = g_resolve.find(ResolveKey{t_serializer, t_fieldToken});
+    // Gate out BitCopy calls on other buffers (merge/scratch) — only the snapshot buffer carries our fields.
+    if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
+        return g_origBitCopy(dst, src, bitcount);
+
+    int index = ResolveFieldIndex(*reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + 0x10));
+    if (index < 0)
+        return g_origBitCopy(dst, src, bitcount);
+
+    // Resolve (serializer, index) -> {leafRec, kind, name} once; integer-keyed lookup on every BitCopy after.
+    auto rit = g_resolve.find(ResolveKey{t_serializer, index});
     if (rit == g_resolve.end())
     {
         void*       leafRec = nullptr;
-        const char* name;
-#ifdef PLATFORM_WINDOWS
-        name = ResolveFieldNameByIndex(t_serializer, t_fieldIndex, &leafRec);
-#else
-        name = IsUserPtr(t_fieldPath) ? ResolveFieldName(t_serializer, t_fieldPath, &leafRec) : nullptr;
-#endif
-        Resolved r;
+        const char* name    = ResolveFieldNameByIndex(t_serializer, index, &leafRec);
+        Resolved    r;
         if (name != nullptr && leafRec != nullptr)
         {
             r.leafRec = leafRec;
@@ -547,7 +499,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
             r.name    = name;
             r.hash    = MurmurHash2(name, MURMURHASH_SEED);
         }
-        rit = g_resolve.emplace(ResolveKey{t_serializer, t_fieldToken}, std::move(r)).first;
+        rit = g_resolve.emplace(ResolveKey{t_serializer, index}, std::move(r)).first;
     }
 
     const Resolved& rf = rit->second;
@@ -848,33 +800,7 @@ bool InstallSendProxyHooks()
         WARN("SendProxy: capture hooks incomplete — SendProxy disabled.");
         return false;
     }
-
-    // Field identity: linux hooks the standalone GetBitRange (CFieldPath* in rdi); Windows inlines it, so hook
-    // the WriteFieldList inner site (field index in r12) instead.
-#ifdef PLATFORM_WINDOWS
-    auto fieldPathAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::WriteFieldList_FieldPathSite");
-    auto fieldPathFn   = WindowsFieldIndexHook;
-    const char* fieldPathKey = "WriteFieldList_FieldPathSite";
-#else
-    auto fieldPathAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::GetBitRange");
-    auto fieldPathFn   = GetBitRange_Mid;
-    const char* fieldPathKey = "GetBitRange";
-#endif
-    if (!IsUserPtr(fieldPathAddr))
-    {
-        WARN("SendProxy: %s not resolved — SendProxy disabled.", fieldPathKey);
-        return false;
-    }
-    if (auto mid = safetyhook::MidHook::create(fieldPathAddr, fieldPathFn))
-    {
-        g_bitRangeHook = std::move(*mid);
-        g_pHookManager->Register(&g_bitRangeHook);
-    }
-    else
-    {
-        WARN("SendProxy: field-path mid-hook failed: %s", g_szMidFuncHookErrors[mid.error().type]);
-        return false;
-    }
+    // Field identity comes from WriteFieldList's cursor seek (matched at BitCopy) — no separate field-path hook.
 
     auto bitCopyAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::BitCopyPrimitive");
     if (!IsUserPtr(bitCopyAddr))
