@@ -39,13 +39,9 @@ internal class SendProxyManager : ICoreSendProxyManager
     private readonly ILogger<SendProxyManager> _logger;
     private readonly ICoreEntityManager        _entityManager;
 
-    // (entityIndex, murmur(field)) -> (field, callback). Native carries the field-path hash in the dispatch (not
-    // the name string) so routing is integer-keyed; the field name is kept for the native Unhook calls + logging.
-    // All access on the main thread (registration + per-client dispatch + module-unload purge, which runs on the
-    // main thread while this holds a strong ref to each delegate).
+    // (entity, murmur(field)) -> (field, callback); native routes by the hash, the field is kept for native Unhook.
     private readonly Dictionary<(int Entity, uint Hash), (string Field, ISendProxyManager.DelegateSendProxyBatch Callback)> _hooks;
 
-    // ALCs we've subscribed to so a module's hooks are purged if it unloads without cleaning up itself.
     private readonly HashSet<AssemblyLoadContext> _tracked;
 
     public SendProxyManager(ILogger<SendProxyManager> logger, ICoreEntityManager entityManager)
@@ -89,9 +85,8 @@ internal class SendProxyManager : ICoreSendProxyManager
         Native.ClearEntity((EntityIndex) index);
     }
 
-    // Subscribe once per module ALC so its hooks are dropped if the module unloads without calling Unhook.
-    // The manager holds a strong ref to every delegate, so a collectible ALC can only unload via the explicit
-    // main-thread unload — this fires there, never on a GC/finalizer thread.
+    // Drop a module's hooks if it unloads without calling Unhook. The strong delegate refs mean the ALC only
+    // unloads on the explicit main-thread unload, so this never fires on a GC/finalizer thread.
     private void TrackOwner(ISendProxyManager.DelegateSendProxyBatch callback)
     {
         var alc = AssemblyLoadContext.GetLoadContext(callback.Method.Module.Assembly);
@@ -131,13 +126,9 @@ internal class SendProxyManager : ICoreSendProxyManager
         }
     }
 
-    // Fires once per tick for a proxied (entity, field). Resolves the entity + callback once and lets the
-    // callback fill the native per-slot batch table; native then applies it to every receiver this tick.
     private void OnSendProxyBatch(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch)
     {
-        // Runs on the main thread deep inside the per-client encode; NOTHING may throw out of the
-        // unmanaged boundary (that fail-fasts the server), so the whole body is guarded — including the
-        // entity resolve.
+        // Main thread, inside the per-client encode; must not throw across the unmanaged boundary (fail-fasts).
         try
         {
             if (!_hooks.TryGetValue((entityIndex, fieldHash), out var hook))
