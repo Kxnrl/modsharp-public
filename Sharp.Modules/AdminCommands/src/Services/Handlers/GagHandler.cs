@@ -29,7 +29,7 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 {
     private readonly InterfaceBridge _bridge;
 
-    private readonly Dictionary<SteamID, DateTime?> _gags;
+    private readonly Dictionary<SteamID, (DateTime? ExpiresAt, DateTime AddedAt)> _gags;
 
     private bool _hooksRegistered;
 
@@ -57,8 +57,12 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.GagRemoved", $"ungagged {target.Name}");
 
-    public IReadOnlyCollection<SteamID> GetCachedIdentities()
-        => _gags.Keys;
+    public IReadOnlyCollection<SteamID> GetCachedIdentities(TimeSpan grace)
+    {
+        var cutoff = DateTime.UtcNow - grace;
+
+        return _gags.Where(x => x.Value.AddedAt <= cutoff).Select(x => x.Key).ToArray();
+    }
 
     public void RegisterHooks()
     {
@@ -91,12 +95,12 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 
     private bool IsGagged(SteamID steamId)
     {
-        if (!_gags.TryGetValue(steamId, out var expiresAt))
+        if (!_gags.TryGetValue(steamId, out var entry))
         {
             return false;
         }
 
-        if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
+        if (entry.ExpiresAt.HasValue && entry.ExpiresAt.Value < DateTime.UtcNow)
         {
             _gags.Remove(steamId);
 
@@ -110,7 +114,7 @@ internal class GagHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     {
         if (gagged)
         {
-            _gags[steamId] = expiresAt;
+            _gags[steamId] = (expiresAt, DateTime.UtcNow);
         }
         else
         {

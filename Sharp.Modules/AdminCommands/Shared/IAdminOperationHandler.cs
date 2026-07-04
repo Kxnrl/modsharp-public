@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
@@ -64,8 +65,10 @@ public interface IAdminOperationHandler
     ///     Returns the SteamIDs this handler currently has cached, so the periodic cache refresh
     ///     can re-validate them against storage and evict entries removed externally
     ///     (e.g. an unban written directly to a shared database). Called on the game thread. <br />
+    ///     Entries added within <paramref name="grace" /> must be excluded so a freshly-applied
+    ///     punishment is not evicted before its storage write has propagated. <br />
     ///     Handlers that do not cache state can rely on the default empty implementation.
     /// </summary>
-    IReadOnlyCollection<SteamID> GetCachedIdentities()
+    IReadOnlyCollection<SteamID> GetCachedIdentities(TimeSpan grace)
         => [];
 }

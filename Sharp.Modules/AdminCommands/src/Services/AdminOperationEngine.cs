@@ -45,6 +45,13 @@ internal class AdminOperationEngine : IClientListener
     /// </summary>
     private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
 
+    /// <summary>
+    ///     A freshly-applied punishment is written to storage asynchronously, so a cache entry younger than
+    ///     this is skipped by the re-check — otherwise the refresh could evict it before its write is visible
+    ///     (in particular across a shared/replicated database).
+    /// </summary>
+    private static readonly TimeSpan CacheGraceWindow = TimeSpan.FromSeconds(60);
+
     private CancellationTokenSource? _refreshCts;
 
     private readonly ILogger<AdminOperationEngine> _logger;
@@ -541,7 +548,7 @@ internal class AdminOperationEngine : IClientListener
         var snapshot = await _bridge.ModSharp
                                     .InvokeFrameActionAsync(() => _handlers.Values
                                             .Select(x => (x.Handler,
-                                                          Identities: x.Handler.GetCachedIdentities().ToArray()))
+                                                          Identities: x.Handler.GetCachedIdentities(CacheGraceWindow).ToArray()))
                                             .Where(x => x.Identities.Length > 0)
                                             .ToArray(),
                                         token)
