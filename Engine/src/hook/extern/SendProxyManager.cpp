@@ -753,7 +753,19 @@ void FlushPending()
 class SendProxyEntityListener : public IEntityListener
 {
 public:
-    void OnEntityCreated(CBaseEntity*) override {}
+    void OnEntityCreated(CBaseEntity* pEntity) override
+    {
+        // Entity indices are reused. A create over a still-hooked index means the previous entity's delete was
+        // missed, so the new entity would inherit stale hooks — clear defensively (as TransmitManager does).
+        if (!g_hasAnyHook)
+            return;
+        const int index = pEntity->GetEntityIndex();
+        if (index > 0 && index < kMaxEdicts && g_hooks[index] != nullptr)
+        {
+            WARN("SendProxy: entity created over hooked index %d — clearing stale hooks.", index);
+            SendProxyClearEntity(index);
+        }
+    }
     void OnEntityDeleted(CBaseEntity* pEntity) override
     {
         if (g_hasAnyHook)
