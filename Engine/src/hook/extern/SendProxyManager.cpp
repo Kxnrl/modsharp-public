@@ -56,8 +56,14 @@
 //   GetBitRange (linux)     -> current CFieldPath* (Windows: WriteFieldList_FieldPathSite -> field index)
 //   BitCopyPrimitive        -> substitute: resolve field name, gate, fire forward, re-encode, emit fake bits.
 
+// Installed lazily on the first Hook so a server not using SendProxy pays nothing on the per-client encode.
+bool InstallSendProxyHooks();
+
 namespace
 {
+bool g_installed     = false;
+bool g_installFailed = false;
+
 constexpr int       kMaxEdicts   = 16384;
 constexpr uintptr_t kUserMin     = 0x10000;
 constexpr int       kFieldPathMax = 3;
@@ -712,6 +718,8 @@ void SendProxyHookField(int entityIndex, const char* field)
 {
     if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr)
         return;
+    if (!InstallSendProxyHooks())
+        return;
     if (g_hooks[entityIndex] == nullptr)
         g_hooks[entityIndex] = new FieldMap();
     g_hooks[entityIndex]->try_emplace(field);
@@ -816,13 +824,21 @@ void Init()
 }
 } // namespace natives::sendproxy
 
-void InstallSendProxyHooks()
+bool InstallSendProxyHooks()
 {
+    if (g_installed)
+        return true;
+    if (g_installFailed)
+        return false;
+
+    // A failed install is latched so we don't re-attempt (and re-warn) on every Hook call.
+    g_installFailed = true;
+
     BuildEncoderMap();
     if (g_encoderTypes.empty())
     {
         WARN("SendProxy: no encoders classified — SendProxy disabled.");
-        return;
+        return false;
     }
 
     if (!InstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", PerClientEncode_Detour)
@@ -830,7 +846,7 @@ void InstallSendProxyHooks()
         || !InstallDetour(g_wflHook, "CFlattenedSerializer::WriteFieldList", WriteFieldList_Detour))
     {
         WARN("SendProxy: capture hooks incomplete — SendProxy disabled.");
-        return;
+        return false;
     }
 
     // Field identity: linux hooks the standalone GetBitRange (CFieldPath* in rdi); Windows inlines it, so hook
@@ -847,7 +863,7 @@ void InstallSendProxyHooks()
     if (!IsUserPtr(fieldPathAddr))
     {
         WARN("SendProxy: %s not resolved — SendProxy disabled.", fieldPathKey);
-        return;
+        return false;
     }
     if (auto mid = safetyhook::MidHook::create(fieldPathAddr, fieldPathFn))
     {
@@ -857,20 +873,20 @@ void InstallSendProxyHooks()
     else
     {
         WARN("SendProxy: field-path mid-hook failed: %s", g_szMidFuncHookErrors[mid.error().type]);
-        return;
+        return false;
     }
 
     auto bitCopyAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::BitCopyPrimitive");
     if (!IsUserPtr(bitCopyAddr))
     {
         WARN("SendProxy: BitCopyPrimitive not resolved — SendProxy disabled.");
-        return;
+        return false;
     }
     auto bc = safetyhook::InlineHook::create(bitCopyAddr, reinterpret_cast<void*>(BitCopy_Detour));
     if (!bc)
     {
         WARN("SendProxy: failed to hook BitCopyPrimitive: %s", g_szInlineHookErrors[bc.error().type]);
-        return;
+        return false;
     }
     g_bitCopyHook = std::move(*bc);
     g_origBitCopy = g_bitCopyHook.original<uint8_t (*)(void*, void*, uint32_t)>();
@@ -882,5 +898,8 @@ void InstallSendProxyHooks()
     // serializer pointer can't map an old token to the wrong field.
     g_pHookManager->Hook_GameDeactivate(HookType_Post, [] { g_resolve.clear(); });
 
+    g_installFailed = false;
+    g_installed     = true;
     FLOG("SendProxy: per-client hooks installed (%zu encoder types classified).", g_encoderTypes.size());
+    return true;
 }
