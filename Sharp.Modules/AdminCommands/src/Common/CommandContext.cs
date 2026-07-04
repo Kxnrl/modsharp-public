@@ -337,7 +337,9 @@ internal sealed class CommandContext
             return;
         }
 
-        if (_issuer is null)
+        // The reply can run a frame late (deferred/faulted continuation), by which point the issuer may have
+        // disconnected — fall back to the log rather than touching an invalid wrapper.
+        if (_issuer is not { IsValid: true })
         {
             _logger.LogInformation(message);
 

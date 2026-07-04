@@ -81,7 +81,7 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process gag batch");
-                                  ctx.Reply("Failed to process gag. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process gag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -167,7 +167,7 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ungag batch");
-                                  ctx.Reply("Failed to process ungag. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ungag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);

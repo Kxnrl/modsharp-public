@@ -81,7 +81,7 @@ internal class SilenceService : ICommandCategory, ISilenceService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process silence batch");
-                                  ctx.Reply("Failed to process silence. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process silence. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -94,7 +94,9 @@ internal class SilenceService : ICommandCategory, ISilenceService
         string                                            reason,
         IGameClient?                                      issuer)
     {
-        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
+        var candidates = targets.Where(t => !t.IsFakeClient)
+                                .Select(t => (Client: t, t.SteamId, t.Name))
+                                .ToList();
 
         var targetToApply = new List<(IGameClient Client, SteamID SteamId, string Name)>();
 
@@ -171,7 +173,7 @@ internal class SilenceService : ICommandCategory, ISilenceService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unsilence batch");
-                                  ctx.Reply("Failed to process unsilence. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unsilence. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -183,7 +185,9 @@ internal class SilenceService : ICommandCategory, ISilenceService
         string                                              reason,
         IGameClient?                                        issuer)
     {
-        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
+        var candidates = targets.Where(t => !t.IsFakeClient)
+                                .Select(t => (Client: t, t.SteamId, t.Name))
+                                .ToList();
 
         var targetToRemove = new List<(IGameClient Client, SteamID SteamId, string Name)>();
 

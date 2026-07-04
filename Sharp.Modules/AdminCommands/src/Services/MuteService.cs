@@ -81,7 +81,7 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process mute batch");
-                                  ctx.Reply("Failed to process mute. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process mute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -167,7 +167,7 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unmute batch");
-                                  ctx.Reply("Failed to process unmute. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unmute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);

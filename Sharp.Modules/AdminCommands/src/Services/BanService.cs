@@ -115,7 +115,7 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ban for {SteamId}", targetSteamId);
-                                  ctx.Reply("Failed to process ban. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -157,7 +157,7 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process banip for {SteamId}", targetSteamId);
-                                  ctx.Reply("Failed to process banip. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process banip. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -199,7 +199,7 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process bansubnet for {SteamId}", targetSteamId);
-                                  ctx.Reply("Failed to process subnet ban. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process subnet ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -234,7 +234,7 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ban for {SteamId}", steamId);
-                                  ctx.Reply("Failed to process ban. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -264,7 +264,7 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unban for {SteamId}", steamId);
-                                  ctx.Reply("Failed to process unban. Check server logs.");
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -272,16 +272,22 @@ internal class BanService : ICommandCategory, IBanService
 
     private async Task ExecuteUnbanAsync(CommandContext ctx, SteamID steamId, string reason, IGameClient? issuer)
     {
-        if (!await _operations.HasActiveAsync(steamId, AdminOperationType.Ban).ConfigureAwait(false))
-        {
-            ctx.ReplyKey("Admin.NotBanned", "{0} is not banned.", steamId);
+        var banned = await _operations.HasActiveAsync(steamId, AdminOperationType.Ban).ConfigureAwait(false);
 
-            return;
-        }
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+                     {
+                         if (!banned)
+                         {
+                             ctx.ReplyKey("Admin.NotBanned", "{0} is not banned.", steamId);
 
-        _engine.RemoveOffline(issuer, steamId, steamId.ToString(), AdminOperationType.Ban, reason);
+                             return;
+                         }
 
-        ctx.ReplySuccessKey("Admin.Unbanned", "Unbanned {0}. Reason: {1}", steamId, reason);
+                         _engine.RemoveOffline(issuer, steamId, steamId.ToString(), AdminOperationType.Ban, reason);
+
+                         ctx.ReplySuccessKey("Admin.Unbanned", "Unbanned {0}. Reason: {1}", steamId, reason);
+                     })
+                     .ConfigureAwait(false);
     }
 
     private async Task ExecuteBanAsync(CommandContext ctx,
