@@ -41,19 +41,9 @@
 
 #include <safetyhook.hpp>
 
-// SendProxy — per-client net-var value override during the flattened-serializer encode.
-//
-// Managed plugins register (entity, field) via natives; the shared snapshot pack is left untouched, and each
-// recipient's stream is corrected at the per-client BitCopy stage. That stage runs on the MAIN thread (the
-// per-client send loop is synchronous, after the parallel PackEntities join), so the value is resolved by
-// firing the OnSendProxyBatch forward into managed there — a plain main-thread callback, no worker-thread
-// re-entrancy.
-//
-// Captures needed for a per-field substitution, each set by a hook on this thread and consumed at BitCopy:
-//   PerClientEncode        -> current recipient (CServerSideClient*)
-//   WriteDeltaEntity        -> current entity index
-//   WriteFieldList          -> current serializer + the bit-offset table / snapshot buffer / field count
-//   BitCopyPrimitive        -> match src cursor to the table for the field index, gate, fire forward, emit bits.
+// SendProxy — per-client net-var override during the flattened-serializer encode. Managed code registers
+// (entity, field) via natives; the shared snapshot pack stays untouched and each recipient's stream is
+// corrected at the per-client BitCopy stage, which runs on the main thread.
 
 // Installed lazily on the first Hook so a server not using SendProxy pays nothing on the per-client encode.
 static bool InstallSendProxyHooks();
@@ -84,7 +74,6 @@ enum class SpFieldType : uint8_t
     ByteArray,
 };
 
-// SendProxyValue.kind
 constexpr int KIND_INT    = 0;
 constexpr int KIND_FLOAT  = 1;
 constexpr int KIND_BOOL   = 2;
@@ -113,11 +102,7 @@ constexpr int MAX_SLOTS    = 64;
 constexpr int MAX_DISTINCT = 16;  // distinct override values per (entity,field)/tick before we stop deduping
 constexpr int BLOB_CAP     = 320; // max encoded field size (string ≤ 256 + slack)
 
-// Per-slot override values filled by ONE batched callback per (entity, field) per tick, then served to every
-// receiver in that tick's per-client loop with no further managed call. `tick` is stamped from
-// gpGlobals->nTickCount so the first BitCopy of a (entity, field) in a tick refills it and the rest reuse it.
-// After the callback fills the typed values, each DISTINCT value is encoded ONCE into a blob (blobData) and
-// every slot points at its blob (slotBlob) — receivers 2..N just bit-splice the cached blob, never re-encode.
+// One batched callback per (entity, field) per tick fills every slot; each distinct value is encoded ONCE into a blob and equal-value slots reuse it via bit-splice.
 struct SpFieldBatch
 {
     int32_t        tick    = -1;
@@ -133,25 +118,18 @@ struct SpFieldBatch
 
 using SpFieldMap = std::unordered_map<std::string, SpFieldBatch, SpStringHash, std::equal_to<>>;
 
-// ── Registration store: pointer array indexed by entity index. All access is on the main thread
-//    (registration natives, the per-client encode, and entity-delete cleanup all run there). ────────────────
 static SpFieldMap* g_pHooks[MAX_ENTITY_COUNT] = {};
 static bool        g_hasAnyHook               = false;
 
-// A batch callback can synchronously Unhook/UnhookEntity itself; erasing the map node while native is still
-// reading `batch` would be a use-after-free. While dispatching we queue erasures and flush them afterward.
+// A callback can Unhook/UnhookEntity itself mid-dispatch; queue erasures and flush after, else erasing `batch` while native still reads it is a use-after-free.
 static bool                                     g_dispatching = false;
 static std::vector<std::pair<int, std::string>> g_pendingUnhook;
 static std::vector<int>                         g_pendingClear;
 static void                                     FlushPending();
 
-// Encoder fn -> SpFieldType, built once at install from the encoder-registry bucket table. Read-only after.
 static std::unordered_map<uintptr_t, SpFieldType> g_encoderTypes;
 
-// Per-thread captures, all set by hooks on this thread and consumed at BitCopy (gated on recipient).
-// WriteFieldList seeks the src read cursor to each field's absolute start bit before every BitCopy, so the
-// cursor value (src+0x10) identifies the field: match it against the bit-offset table to get the flattened-leaf
-// index. Table/buffer/count come from WriteFieldList's 5th arg. No separate field-path hook is needed.
+// Per-thread captures, set by hooks on this thread and consumed at BitCopy (field identity resolved via ResolveFieldIndex below).
 static thread_local void*          t_client     = nullptr;
 static thread_local int            t_entityIdx  = -1;
 static thread_local void*          t_serializer = nullptr;
@@ -159,9 +137,6 @@ static thread_local const int32_t* t_bitTable   = nullptr; // start bits: table[
 static thread_local void*          t_srcData    = nullptr; // snapshot buffer; gate out BitCopy calls on other buffers
 static thread_local int            t_fieldCount = 0;
 
-// Resolving a field (walk to the leaf record) at every BitCopy is the dominant per-tick cost. The flattened-leaf
-// index is stable per (serializer, field), so cache the resolve per (serializer, index): the walk runs once per
-// field and the hot path is the cursor→index binary search + an integer-keyed lookup.
 struct SpResolveKey
 {
     void* serializer;
@@ -185,16 +160,12 @@ struct SpResolved
 };
 static std::unordered_map<SpResolveKey, SpResolved, SpResolveKeyHash> g_resolve;
 
-// Hook objects.
 static SafetyHookInline g_perClientHook{};
 static SafetyHookInline g_wdeHook{};
 static SafetyHookInline g_wflHook{};
 static SafetyHookInline g_bitCopyHook{};
 
-// ── Field resolution: flattened-leaf index -> leaf record (both platforms) ────────────────────────────────
-
-// Walk the serializer's leaf records in flattened DFS order and return the record at `target` — the same index
-// order the engine's bit-offset table uses, so the cursor-matched field index maps straight to its leaf.
+// Walks leaf records in the same flattened DFS order as the bit-offset table, so `target` equals the cursor-matched field index.
 static void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
 {
     if (depth > 4 || !IsUserPtr(serializer))
@@ -281,8 +252,7 @@ static int KindForType(SpFieldType t)
         return KIND_VECTOR;
     case SpFieldType::String:
         return KIND_STRING;
-    // Quantized/coord/normal need the field's count/mode word from the live value, which the per-client
-    // path does not read — don't fire the forward for a kind Substitute can't emit (silent no-op otherwise).
+    // Quantized/coord/normal need a count/mode word this path doesn't read; return -1 so no forward fires.
     default:
         return -1;
     }
@@ -290,9 +260,6 @@ static int KindForType(SpFieldType t)
 
 static uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
 
-// Encode a value ONCE via the field's own encoder into `outBlob` (wire bits), returning the bit count in
-// `outBits`. Done at batch-fill time (not per receiver) so N receivers with the same value cost one encode and
-// then a bit-splice each — this is the maintainer's `SendProxyOverride{bitCount, bits}`. false = don't override.
 static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
 {
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
@@ -315,7 +282,6 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
         paramsPtr = reinterpret_cast<uint8_t*>(base) + paramOff;
     }
 
-    // Build the value in the layout this encoder reads, and the value pointer to hand it.
     uint8_t scratch[0x30]{};
     void*   strSlot  = nullptr;
     void*   valuePtr = scratch;
@@ -344,7 +310,7 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
         return false; // quantized/coord need the live count/mode word — unsupported here.
     }
 
-    // Encode into a local bf_write, then copy the used bytes into outBlob.
+    // Local bf_write layout: data ptr +0x00, byte size +0x08, bit size +0x0C, cursor bits +0x10.
     uint8_t data[512]{};
     uint8_t bw[0x40]{};
     *reinterpret_cast<void**>(bw + 0x00) = data;
@@ -365,8 +331,7 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
     return true;
 }
 
-// Splice a pre-encoded blob into dst: skip the real value in src, then copy the cached bits via the engine's
-// own BitCopy (a fresh bf_write over the blob at cursor 0). No re-encode.
+// Skips the real value in src, then emits the cached blob via a fresh bf_write through the engine's own BitCopy.
 static uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
 {
     uint8_t bw[0x40]{};
@@ -394,11 +359,9 @@ static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue&
     }
 }
 
-// ── Hooks ────────────────────────────────────────────────────────────────────────────────────────────────
 static void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
 {
-    // The whole substitution path assumes the per-client send runs on the main thread (so g_pHooks/g_resolve
-    // need no lock). Assert it — a violation here would corrupt regardless of any lock.
+    // The whole substitution path assumes main-thread execution (no locks on g_pHooks/g_resolve) — assert it.
     AssertBool(g_nMainThreadId == static_cast<uint64_t>(GetCurrentThreadId()));
 
     t_client   = b;
@@ -452,8 +415,7 @@ static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, 
     return ret;
 }
 
-// Match the src read cursor (each field's absolute start bit, seeked by WriteFieldList) against the bit-offset
-// table to recover the field's flattened-leaf index. table[1..count] are strictly increasing start bits.
+// Matches the src read cursor (each field's absolute start bit, seeked by WriteFieldList) against the bit-offset table to recover the flattened-leaf index. table[1..count] are strictly increasing start bits.
 static int ResolveFieldIndex(int startBit)
 {
     if (!IsUserPtr(t_bitTable) || t_fieldCount <= 0 || t_fieldCount > 4096)
@@ -480,9 +442,7 @@ static int ResolveFieldIndex(int startBit)
 
 static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 {
-    // Substitute only during a per-client send. t_client is a thread_local set only by the per-client encode
-    // (main thread); it is null on the shared-pack worker threads, so this check gates everything below to the
-    // main thread — no lock needed for g_hasAnyHook / g_pHooks, which are only touched there.
+    // t_client is set only during the per-client encode (main thread) and null on shared-pack worker threads, so this gate makes the whole path main-thread-only — no locks needed on g_hasAnyHook/g_pHooks.
     if (t_client == nullptr || !g_hasAnyHook || bitcount == 0 || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= MAX_ENTITY_COUNT)
         return g_origBitCopy(dst, src, bitcount);
 
@@ -530,8 +490,7 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 
     SpFieldBatch& batch = it->second;
 
-    // First BitCopy of this (entity, field) in the tick: fire ONE callback that fills the per-slot table;
-    // every other receiver this tick reads it below with no further managed call.
+    // First BitCopy this tick for (entity, field): fire the callback once; later receivers just reuse the batch.
     int tick = gpGlobals->nTickCount;
     if (batch.tick != tick)
     {
@@ -542,7 +501,6 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
         forwards::OnSendProxyBatch->Invoke(t_entityIdx, rf.hash, kind, &batch);
         g_dispatching = false;
 
-        // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).
         batch.encodeLeafRec = leafRec;
         batch.blobCount     = 0;
         for (int s = 0; s < MAX_SLOTS; s++)
@@ -580,8 +538,7 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     int     slot        = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
     uint8_t result      = 0;
     bool    substituted = false;
-    // Only substitute the exact leaf the blobs were encoded with — a same-named leaf elsewhere in the tree can
-    // use a different encoder, and its blob would be malformed bits.
+    // Only substitute the exact leaf the blobs were encoded with — a same-named leaf elsewhere could use a different encoder and produce malformed bits.
     if (slot >= 0 && slot < MAX_SLOTS && (batch.hasMask & (1ull << slot)) != 0 && leafRec == batch.encodeLeafRec)
     {
         int bi = batch.slotBlob[slot];
@@ -592,13 +549,11 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
         }
     }
 
-    // `batch`/`it` may be erased by a deferred Unhook the callback requested — done using them now.
     FlushPending();
 
     return substituted ? result : g_origBitCopy(dst, src, bitcount);
 }
 
-// ── Encoder enumeration (for ClassifyLeaf) ───────────────────────────────────────────────────────────────
 static SpFieldType ClassifyEntry(int bucket, const char* name)
 {
     auto eq  = [&](const char* s) { return name != nullptr && strcmp(name, s) == 0; };
@@ -672,7 +627,6 @@ static void BuildEncoderMap()
     }
 }
 
-// ── Natives ──────────────────────────────────────────────────────────────────────────────────────────────
 static void RecomputeHasAny()
 {
     for (auto* p : g_pHooks)
@@ -740,7 +694,6 @@ static void FlushPending()
     if (g_pendingUnhook.empty() && g_pendingClear.empty())
         return;
 
-    // g_dispatching is false here, so these run the real erase path.
     auto unhook = std::move(g_pendingUnhook);
     auto clear  = std::move(g_pendingClear);
     g_pendingUnhook.clear();
@@ -757,8 +710,7 @@ class SendProxyEntityListener : public IEntityListener
 public:
     void OnEntityCreated(CBaseEntity* pEntity) override
     {
-        // Entity indices are reused. A create over a still-hooked index means the previous entity's delete was
-        // missed, so the new entity would inherit stale hooks — clear defensively (as TransmitManager does).
+        // Entity indices are reused; a create over a still-hooked index means the previous delete was missed — clear stale hooks defensively (as TransmitManager does).
         if (!g_hasAnyHook)
             return;
         const int index = pEntity->GetEntityIndex();
@@ -831,7 +783,6 @@ static bool InstallSendProxyHooks()
         WARN("SendProxy: capture hooks incomplete — SendProxy disabled.");
         return false;
     }
-    // Field identity comes from WriteFieldList's cursor seek (matched at BitCopy) — no separate field-path hook.
 
     auto bitCopyAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::BitCopyPrimitive");
     if (!IsUserPtr(bitCopyAddr))
@@ -851,9 +802,7 @@ static bool InstallSendProxyHooks()
 
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
 
-    // On a map change the serializers (and their leaf records) are rebuilt and entity teardown isn't guaranteed
-    // to fire per hooked entity, so drop everything: the resolve cache (stale serializer/index) and all
-    // registrations (else leaked FieldMaps keep g_hasAnyHook true forever).
+    // A map change rebuilds serializers (staling the resolve cache) and entity teardown isn't guaranteed per hooked entity, so drop everything here — else leaked FieldMaps keep g_hasAnyHook true across maps.
     g_pHookManager->Hook_GameDeactivate(HookType_Post, [] {
         for (auto*& p : g_pHooks)
         {
