@@ -56,17 +56,15 @@
 //   BitCopyPrimitive        -> match src cursor to the table for the field index, gate, fire forward, emit bits.
 
 // Installed lazily on the first Hook so a server not using SendProxy pays nothing on the per-client encode.
-bool InstallSendProxyHooks();
+static bool InstallSendProxyHooks();
 
-namespace
-{
-bool g_installed     = false;
-bool g_installFailed = false;
+static bool g_installed     = false;
+static bool g_installFailed = false;
 
 constexpr int       MAX_ENTITY_COUNT = 16384;
 constexpr uintptr_t USER_PTR_MIN     = 0x10000;
 
-enum class FieldType : uint8_t
+enum class SpFieldType : uint8_t
 {
     Unsupported = 0,
     Int32,
@@ -93,19 +91,19 @@ constexpr int KIND_BOOL   = 2;
 constexpr int KIND_VECTOR = 3;
 constexpr int KIND_STRING = 4;
 
-bool IsUserPtr(uintptr_t p)
+static bool IsUserPtr(uintptr_t p)
 {
     return p >= USER_PTR_MIN;
 }
 
-bool IsUserPtr(const void* p)
+static bool IsUserPtr(const void* p)
 {
     return reinterpret_cast<uintptr_t>(p) >= USER_PTR_MIN;
 }
 
-using EncodeFn = void (*)(void* bf, void* fieldInfo, void* params, void* valuePtr, uint32_t extra);
+using SpEncodeFn = void (*)(void* bf, void* fieldInfo, void* params, void* valuePtr, uint32_t extra);
 
-struct string_hash
+struct SpStringHash
 {
     using is_transparent = void;
     size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
@@ -120,7 +118,7 @@ constexpr int BLOB_CAP     = 320; // max encoded field size (string ≤ 256 + sl
 // gpGlobals->nTickCount so the first BitCopy of a (entity, field) in a tick refills it and the rest reuse it.
 // After the callback fills the typed values, each DISTINCT value is encoded ONCE into a blob (blobData) and
 // every slot points at its blob (slotBlob) — receivers 2..N just bit-splice the cached blob, never re-encode.
-struct FieldBatch
+struct SpFieldBatch
 {
     int32_t        tick    = -1;
     int32_t        kind    = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
@@ -133,71 +131,71 @@ struct FieldBatch
     uint8_t        blobData[MAX_DISTINCT][BLOB_CAP]{};
 };
 
-using FieldMap = std::unordered_map<std::string, FieldBatch, string_hash, std::equal_to<>>;
+using SpFieldMap = std::unordered_map<std::string, SpFieldBatch, SpStringHash, std::equal_to<>>;
 
 // ── Registration store: pointer array indexed by entity index. All access is on the main thread
 //    (registration natives, the per-client encode, and entity-delete cleanup all run there). ────────────────
-FieldMap* g_pHooks[MAX_ENTITY_COUNT] = {};
-bool      g_hasAnyHook               = false;
+static SpFieldMap* g_pHooks[MAX_ENTITY_COUNT] = {};
+static bool        g_hasAnyHook               = false;
 
 // A batch callback can synchronously Unhook/UnhookEntity itself; erasing the map node while native is still
 // reading `batch` would be a use-after-free. While dispatching we queue erasures and flush them afterward.
-bool                                     g_dispatching = false;
-std::vector<std::pair<int, std::string>> g_pendingUnhook;
-std::vector<int>                         g_pendingClear;
-void                                     FlushPending();
+static bool                                     g_dispatching = false;
+static std::vector<std::pair<int, std::string>> g_pendingUnhook;
+static std::vector<int>                         g_pendingClear;
+static void                                     FlushPending();
 
-// Encoder fn -> FieldType, built once at install from the encoder-registry bucket table. Read-only after.
-std::unordered_map<uintptr_t, FieldType> g_encoderTypes;
+// Encoder fn -> SpFieldType, built once at install from the encoder-registry bucket table. Read-only after.
+static std::unordered_map<uintptr_t, SpFieldType> g_encoderTypes;
 
 // Per-thread captures, all set by hooks on this thread and consumed at BitCopy (gated on recipient).
 // WriteFieldList seeks the src read cursor to each field's absolute start bit before every BitCopy, so the
 // cursor value (src+0x10) identifies the field: match it against the bit-offset table to get the flattened-leaf
 // index. Table/buffer/count come from WriteFieldList's 5th arg. No separate field-path hook is needed.
-thread_local void*          t_client     = nullptr;
-thread_local int            t_entityIdx  = -1;
-thread_local void*          t_serializer = nullptr;
-thread_local const int32_t* t_bitTable   = nullptr; // start bits: table[idx+1] for field idx (table[0] is skew)
-thread_local void*          t_srcData    = nullptr; // snapshot buffer; gate out BitCopy calls on other buffers
-thread_local int            t_fieldCount = 0;
+static thread_local void*          t_client     = nullptr;
+static thread_local int            t_entityIdx  = -1;
+static thread_local void*          t_serializer = nullptr;
+static thread_local const int32_t* t_bitTable   = nullptr; // start bits: table[idx+1] for field idx (table[0] is skew)
+static thread_local void*          t_srcData    = nullptr; // snapshot buffer; gate out BitCopy calls on other buffers
+static thread_local int            t_fieldCount = 0;
 
 // Resolving a field (walk to the leaf record) at every BitCopy is the dominant per-tick cost. The flattened-leaf
 // index is stable per (serializer, field), so cache the resolve per (serializer, index): the walk runs once per
 // field and the hot path is the cursor→index binary search + an integer-keyed lookup.
-struct ResolveKey
+struct SpResolveKey
 {
     void* serializer;
     int   index;
-    bool  operator==(const ResolveKey& o) const { return serializer == o.serializer && index == o.index; }
+    bool  operator==(const SpResolveKey& o) const { return serializer == o.serializer && index == o.index; }
 };
-struct ResolveKeyHash
+struct SpResolveKeyHash
 {
-    size_t operator()(const ResolveKey& k) const
+    size_t operator()(const SpResolveKey& k) const
     {
         return std::hash<void*>{}(k.serializer) ^ (static_cast<size_t>(k.index) * 0x9E3779B97F4A7C15ull);
     }
 };
-struct Resolved
+struct SpResolved
 {
     void*       leafRec = nullptr;
-    FieldType   type    = FieldType::Unsupported;
+    SpFieldType type    = SpFieldType::Unsupported;
     int         kind    = -1;
     uint32_t    hash    = 0; // murmur of the field name — carried to managed so it routes by hash, not string
     std::string name;
 };
-std::unordered_map<ResolveKey, Resolved, ResolveKeyHash> g_resolve;
+static std::unordered_map<SpResolveKey, SpResolved, SpResolveKeyHash> g_resolve;
 
 // Hook objects.
-SafetyHookInline g_perClientHook{};
-SafetyHookInline g_wdeHook{};
-SafetyHookInline g_wflHook{};
-SafetyHookInline g_bitCopyHook{};
+static SafetyHookInline g_perClientHook{};
+static SafetyHookInline g_wdeHook{};
+static SafetyHookInline g_wflHook{};
+static SafetyHookInline g_bitCopyHook{};
 
 // ── Field resolution: flattened-leaf index -> leaf record (both platforms) ────────────────────────────────
 
 // Walk the serializer's leaf records in flattened DFS order and return the record at `target` — the same index
 // order the engine's bit-offset table uses, so the cursor-matched field index maps straight to its leaf.
-void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
+static void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
 {
     if (depth > 4 || !IsUserPtr(serializer))
         return nullptr;
@@ -229,7 +227,7 @@ void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
     return nullptr;
 }
 
-const char* ResolveFieldNameByIndex(void* serializer, int index, void** leafRecOut)
+static const char* ResolveFieldNameByIndex(void* serializer, int index, void** leafRecOut)
 {
     *leafRecOut = nullptr;
     if (index < 0)
@@ -249,39 +247,39 @@ const char* ResolveFieldNameByIndex(void* serializer, int index, void** leafRecO
     return IsUserPtr(name) ? name : nullptr;
 }
 
-FieldType ClassifyLeaf(void* leafRec)
+static SpFieldType ClassifyLeaf(void* leafRec)
 {
     if (!IsUserPtr(leafRec))
-        return FieldType::Unsupported;
+        return SpFieldType::Unsupported;
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
     if (!IsUserPtr(fieldInfo))
-        return FieldType::Unsupported;
+        return SpFieldType::Unsupported;
     void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x38);
     if (!IsUserPtr(dispatch))
-        return FieldType::Unsupported;
+        return SpFieldType::Unsupported;
     auto encFn = *reinterpret_cast<uintptr_t*>(dispatch);
     auto it    = g_encoderTypes.find(encFn);
-    return it == g_encoderTypes.end() ? FieldType::Unsupported : it->second;
+    return it == g_encoderTypes.end() ? SpFieldType::Unsupported : it->second;
 }
 
-int KindForType(FieldType t)
+static int KindForType(SpFieldType t)
 {
     switch (t)
     {
-    case FieldType::Int32:
-    case FieldType::UInt32:
-    case FieldType::Int64:
-    case FieldType::Fixed32:
-    case FieldType::Fixed64:
+    case SpFieldType::Int32:
+    case SpFieldType::UInt32:
+    case SpFieldType::Int64:
+    case SpFieldType::Fixed32:
+    case SpFieldType::Fixed64:
         return KIND_INT;
-    case FieldType::Bool:
+    case SpFieldType::Bool:
         return KIND_BOOL;
-    case FieldType::Float32:
+    case SpFieldType::Float32:
         return KIND_FLOAT;
-    case FieldType::QAngle3:
-    case FieldType::Vector3:
+    case SpFieldType::QAngle3:
+    case SpFieldType::Vector3:
         return KIND_VECTOR;
-    case FieldType::String:
+    case SpFieldType::String:
         return KIND_STRING;
     // Quantized/coord/normal need the field's count/mode word from the live value, which the per-client
     // path does not read — don't fire the forward for a kind Substitute can't emit (silent no-op otherwise).
@@ -290,12 +288,12 @@ int KindForType(FieldType t)
     }
 }
 
-uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
+static uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
 
 // Encode a value ONCE via the field's own encoder into `outBlob` (wire bits), returning the bit count in
 // `outBits`. Done at batch-fill time (not per receiver) so N receivers with the same value cost one encode and
 // then a bit-splice each — this is the maintainer's `SendProxyOverride{bitCount, bits}`. false = don't override.
-bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
+static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
 {
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
     if (!IsUserPtr(fieldInfo))
@@ -303,7 +301,7 @@ bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_
     void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x38);
     if (!IsUserPtr(dispatch))
         return false;
-    auto encFn = *reinterpret_cast<EncodeFn*>(dispatch);
+    auto encFn = *reinterpret_cast<SpEncodeFn*>(dispatch);
     if (!IsUserPtr(reinterpret_cast<void*>(encFn)))
         return false;
 
@@ -323,20 +321,20 @@ bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_
     void*   valuePtr = scratch;
     switch (type)
     {
-    case FieldType::UInt32: *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i); break;
-    case FieldType::Int32:
-    case FieldType::Int64:
-    case FieldType::Fixed32:
-    case FieldType::Fixed64: *reinterpret_cast<int64_t*>(scratch) = v.i; break;
-    case FieldType::Bool: scratch[0] = v.i != 0 ? 1 : 0; break;
-    case FieldType::Float32: *reinterpret_cast<double*>(scratch) = v.f; break;
-    case FieldType::QAngle3:
-    case FieldType::Vector3:
+    case SpFieldType::UInt32: *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i); break;
+    case SpFieldType::Int32:
+    case SpFieldType::Int64:
+    case SpFieldType::Fixed32:
+    case SpFieldType::Fixed64: *reinterpret_cast<int64_t*>(scratch) = v.i; break;
+    case SpFieldType::Bool: scratch[0] = v.i != 0 ? 1 : 0; break;
+    case SpFieldType::Float32: *reinterpret_cast<double*>(scratch) = v.f; break;
+    case SpFieldType::QAngle3:
+    case SpFieldType::Vector3:
         reinterpret_cast<float*>(scratch)[0] = v.x;
         reinterpret_cast<float*>(scratch)[1] = v.y;
         reinterpret_cast<float*>(scratch)[2] = v.z;
         break;
-    case FieldType::String:
+    case SpFieldType::String:
         if (v.strLen < 0 || v.strLen >= static_cast<int>(sizeof(v.str)))
             return false;
         strSlot  = const_cast<char*>(v.str); // encoder reads *valuePtr as char*
@@ -369,7 +367,7 @@ bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_
 
 // Splice a pre-encoded blob into dst: skip the real value in src, then copy the cached bits via the engine's
 // own BitCopy (a fresh bf_write over the blob at cursor 0). No re-encode.
-uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
+static uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
 {
     uint8_t bw[0x40]{};
     *reinterpret_cast<const void**>(bw + 0x00) = blob;
@@ -381,7 +379,7 @@ uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob,
     return g_origBitCopy(dst, bw, static_cast<uint32_t>(bits));
 }
 
-bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
+static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 {
     switch (kind)
     {
@@ -397,7 +395,7 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 }
 
 // ── Hooks ────────────────────────────────────────────────────────────────────────────────────────────────
-void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
+static void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
 {
     // The whole substitution path assumes the per-client send runs on the main thread (so g_pHooks/g_resolve
     // need no lock). Assert it — a violation here would corrupt regardless of any lock.
@@ -410,7 +408,7 @@ void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* 
     return ret;
 }
 
-void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e, void* f)
+static void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e, void* f)
 {
     int prev = t_entityIdx;
     if (IsUserPtr(b))
@@ -421,7 +419,7 @@ void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e, void*
     return ret;
 }
 
-void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
+static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
 {
     void*          prevSer   = t_serializer;
     const int32_t* prevTable = t_bitTable;
@@ -456,7 +454,7 @@ void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_
 
 // Match the src read cursor (each field's absolute start bit, seeked by WriteFieldList) against the bit-offset
 // table to recover the field's flattened-leaf index. table[1..count] are strictly increasing start bits.
-int ResolveFieldIndex(int startBit)
+static int ResolveFieldIndex(int startBit)
 {
     if (!IsUserPtr(t_bitTable) || t_fieldCount <= 0 || t_fieldCount > 4096)
         return -1;
@@ -480,7 +478,7 @@ int ResolveFieldIndex(int startBit)
     return -1;
 }
 
-uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
+static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 {
     // Substitute only during a per-client send. t_client is a thread_local set only by the per-client encode
     // (main thread); it is null on the shared-pack worker threads, so this check gates everything below to the
@@ -501,12 +499,12 @@ uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
         return g_origBitCopy(dst, src, bitcount);
 
     // Resolve (serializer, index) -> {leafRec, kind, name} once; integer-keyed lookup on every BitCopy after.
-    auto rit = g_resolve.find(ResolveKey{t_serializer, index});
+    auto rit = g_resolve.find(SpResolveKey{t_serializer, index});
     if (rit == g_resolve.end())
     {
         void*       leafRec = nullptr;
         const char* name    = ResolveFieldNameByIndex(t_serializer, index, &leafRec);
-        Resolved    r;
+        SpResolved  r;
         if (name != nullptr && leafRec != nullptr)
         {
             r.leafRec = leafRec;
@@ -515,10 +513,10 @@ uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
             r.name    = name;
             r.hash    = MurmurHash2(name, MURMURHASH_SEED);
         }
-        rit = g_resolve.emplace(ResolveKey{t_serializer, index}, std::move(r)).first;
+        rit = g_resolve.emplace(SpResolveKey{t_serializer, index}, std::move(r)).first;
     }
 
-    const Resolved& rf = rit->second;
+    const SpResolved& rf = rit->second;
     if (rf.leafRec == nullptr || rf.kind < 0)
         return g_origBitCopy(dst, src, bitcount);
 
@@ -526,11 +524,11 @@ uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     if (it == fieldMap->end())
         return g_origBitCopy(dst, src, bitcount);
 
-    void*     leafRec = rf.leafRec;
-    int       kind    = rf.kind;
-    FieldType type    = rf.type;
+    void*       leafRec = rf.leafRec;
+    int         kind    = rf.kind;
+    SpFieldType type    = rf.type;
 
-    FieldBatch& batch = it->second;
+    SpFieldBatch& batch = it->second;
 
     // First BitCopy of this (entity, field) in the tick: fire ONE callback that fills the per-slot table;
     // every other receiver this tick reads it below with no further managed call.
@@ -601,32 +599,32 @@ uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 }
 
 // ── Encoder enumeration (for ClassifyLeaf) ───────────────────────────────────────────────────────────────
-FieldType ClassifyEntry(int bucket, const char* name)
+static SpFieldType ClassifyEntry(int bucket, const char* name)
 {
     auto eq  = [&](const char* s) { return name != nullptr && strcmp(name, s) == 0; };
     bool def = eq("default");
     switch (bucket)
     {
-    case 1: return def ? FieldType::Int32 : eq("fixed32") ? FieldType::Fixed32 :
-                                        eq("fixed64")     ? FieldType::Fixed64 :
-                                                            FieldType::Unsupported;
-    case 2: return def ? FieldType::UInt32 : eq("fixed32") ? FieldType::Fixed32 :
-                                         eq("fixed64")     ? FieldType::Fixed64 :
-                                                             FieldType::Unsupported;
+    case 1: return def ? SpFieldType::Int32 : eq("fixed32") ? SpFieldType::Fixed32 :
+                                          eq("fixed64")     ? SpFieldType::Fixed64 :
+                                                              SpFieldType::Unsupported;
+    case 2: return def ? SpFieldType::UInt32 : eq("fixed32") ? SpFieldType::Fixed32 :
+                                           eq("fixed64")     ? SpFieldType::Fixed64 :
+                                                               SpFieldType::Unsupported;
     case 3:
-        return def ? FieldType::QuantizedFloat : (eq("qangle") || eq("qangle_pitch_yaw") || eq("qangle_precise")) ? FieldType::QAngle3 :
-                                             eq("normal")                                                         ? FieldType::Normal3 :
-                                             eq("coord")                                                          ? FieldType::Coord3 :
-                                             eq("coord_integral")                                                 ? FieldType::CoordIntegral3 :
-                                                                                                                    FieldType::Unsupported;
-    case 4: return def ? FieldType::Float32 : FieldType::Unsupported;
-    case 5: return def ? FieldType::String : FieldType::Unsupported;
-    case 7: return def ? FieldType::Bool : FieldType::Unsupported;
-    default: return FieldType::Unsupported;
+        return def ? SpFieldType::QuantizedFloat : (eq("qangle") || eq("qangle_pitch_yaw") || eq("qangle_precise")) ? SpFieldType::QAngle3 :
+                                               eq("normal")                                                         ? SpFieldType::Normal3 :
+                                               eq("coord")                                                          ? SpFieldType::Coord3 :
+                                               eq("coord_integral")                                                 ? SpFieldType::CoordIntegral3 :
+                                                                                                                      SpFieldType::Unsupported;
+    case 4: return def ? SpFieldType::Float32 : SpFieldType::Unsupported;
+    case 5: return def ? SpFieldType::String : SpFieldType::Unsupported;
+    case 7: return def ? SpFieldType::Bool : SpFieldType::Unsupported;
+    default: return SpFieldType::Unsupported;
     }
 }
 
-void BuildEncoderMap()
+static void BuildEncoderMap()
 {
     auto registry = g_pGameData->GetAddress<uintptr_t>("CFlattenedSerializer::EncoderRegistry");
     if (!IsUserPtr(registry))
@@ -668,14 +666,14 @@ void BuildEncoderMap()
                 continue;
             auto name = *reinterpret_cast<char**>(entry + 0x00);
             auto type = ClassifyEntry(bucket, IsUserPtr(reinterpret_cast<void*>(name)) ? name : nullptr);
-            if (type != FieldType::Unsupported)
+            if (type != SpFieldType::Unsupported)
                 g_encoderTypes.emplace(fn, type);
         }
     }
 }
 
 // ── Natives ──────────────────────────────────────────────────────────────────────────────────────────────
-void RecomputeHasAny()
+static void RecomputeHasAny()
 {
     for (auto* p : g_pHooks)
     {
@@ -688,19 +686,19 @@ void RecomputeHasAny()
     g_hasAnyHook = false;
 }
 
-void SendProxyManagerHookField(int entityIndex, const char* field)
+static void SendProxyManagerHookField(int entityIndex, const char* field)
 {
     if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT || field == nullptr)
         return;
     if (!InstallSendProxyHooks())
         return;
     if (g_pHooks[entityIndex] == nullptr)
-        g_pHooks[entityIndex] = new FieldMap();
+        g_pHooks[entityIndex] = new SpFieldMap();
     g_pHooks[entityIndex]->try_emplace(field);
     g_hasAnyHook = true;
 }
 
-bool SendProxyManagerUnhookField(int entityIndex, const char* field)
+static bool SendProxyManagerUnhookField(int entityIndex, const char* field)
 {
     if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT || field == nullptr)
         return false;
@@ -721,7 +719,7 @@ bool SendProxyManagerUnhookField(int entityIndex, const char* field)
     return removed;
 }
 
-void SendProxyManagerClearEntity(int entityIndex)
+static void SendProxyManagerClearEntity(int entityIndex)
 {
     if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT)
         return;
@@ -737,7 +735,7 @@ void SendProxyManagerClearEntity(int entityIndex)
     RecomputeHasAny();
 }
 
-void FlushPending()
+static void FlushPending()
 {
     if (g_pendingUnhook.empty() && g_pendingClear.empty())
         return;
@@ -780,7 +778,7 @@ public:
 } static s_entityListener;
 
 template <typename Fn>
-bool TryInstallDetour(SafetyHookInline& hook, const char* key, Fn detour)
+static bool TryInstallDetour(SafetyHookInline& hook, const char* key, Fn detour)
 {
     auto addr = g_pGameData->GetAddress<void*>(key);
     if (!IsUserPtr(addr))
@@ -798,7 +796,6 @@ bool TryInstallDetour(SafetyHookInline& hook, const char* key, Fn detour)
     g_pHookManager->Register(&hook);
     return true;
 }
-} // namespace
 
 namespace natives::sendproxy
 {
@@ -810,7 +807,7 @@ void Init()
 }
 } // namespace natives::sendproxy
 
-bool InstallSendProxyHooks()
+static bool InstallSendProxyHooks()
 {
     if (g_installed)
         return true;
