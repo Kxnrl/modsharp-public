@@ -140,7 +140,8 @@ std::unordered_map<uintptr_t, FieldType> g_encoderTypes;
 thread_local void* t_client     = nullptr;
 thread_local int   t_entityIdx  = -1;
 thread_local void* t_serializer = nullptr;
-thread_local void* t_fieldPath  = nullptr;
+thread_local void* t_fieldPath  = nullptr; // linux: CFieldPath* captured at GetBitRange
+thread_local int   t_fieldIndex = -1;      // windows: flattened-leaf index captured at WriteFieldList_FieldPathSite
 
 // Hook objects.
 SafetyHookInline g_perClientHook{};
@@ -222,6 +223,61 @@ const char* ResolveFieldName(void* serializer, void* hdr, void** leafRecOut)
 
     *leafRecOut = rec;
     auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(pInfo) + 0x08);
+    return IsUserPtr(name) ? name : nullptr;
+}
+
+// Windows has no standalone GetBitRange (inlined), so the field is identified by a flattened-leaf INDEX (DFS
+// order) captured at the WriteFieldList inner site. Walk the serializer's leaf records in the same order and
+// return the record at `target`. Pure pointer walk (compiled on both platforms; only used on Windows).
+void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
+{
+    if (depth > 4 || !IsUserPtr(serializer))
+        return nullptr;
+
+    int count = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(serializer) + 0x28);
+    if (count <= 0 || count > 4096)
+        return nullptr;
+
+    void* arr = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(serializer) + 0x30);
+    if (!IsUserPtr(arr))
+        return nullptr;
+
+    for (int i = 0; i < count; i++)
+    {
+        void* rec   = reinterpret_cast<uint8_t*>(arr) + i * 0x2E;
+        void* child = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(rec) + 0x08);
+        if (IsUserPtr(child))
+        {
+            if (void* found = WalkToLeafRec(child, current, target, depth + 1))
+                return found;
+            continue;
+        }
+
+        if (current == target)
+            return rec;
+        current++;
+    }
+
+    return nullptr;
+}
+
+const char* ResolveFieldNameByIndex(void* serializer, int index, void** leafRecOut)
+{
+    *leafRecOut = nullptr;
+    if (index < 0)
+        return nullptr;
+
+    int   current = 0;
+    void* rec     = WalkToLeafRec(serializer, current, index, 0);
+    if (!IsUserPtr(rec))
+        return nullptr;
+
+    void* fieldInfo = *reinterpret_cast<void**>(rec);
+    if (!IsUserPtr(fieldInfo))
+        return nullptr;
+
+    *leafRecOut = rec;
+    auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x08);
     return IsUserPtr(name) ? name : nullptr;
 }
 
@@ -417,20 +473,33 @@ void GetBitRange_Mid(SafetyHookContext& ctx)
     t_fieldPath = reinterpret_cast<void*>(ctx.rdi);
 }
 
+// Windows: WriteFieldList inner site, R12 = current flattened-leaf index (survives the following call).
+void WindowsFieldIndexHook(SafetyHookContext& ctx)
+{
+    t_fieldIndex = static_cast<int>(ctx.r12);
+}
+
 uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
 {
     // Substitute only during a per-client send. t_client is a thread_local set only by the per-client encode
     // (main thread); it is null on the shared-pack worker threads, so this check gates everything below to the
     // main thread — no lock needed for g_hasAnyHook / g_hooks, which are only touched there.
-    if (t_client == nullptr || !g_hasAnyHook || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts || !IsUserPtr(t_fieldPath))
+    if (t_client == nullptr || !g_hasAnyHook || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts)
         return g_origBitCopy(dst, src, bitcount);
 
     auto* fieldMap = g_hooks[t_entityIdx];
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
-    void*       leafRec   = nullptr;
-    const char* fieldName = ResolveFieldName(t_serializer, t_fieldPath, &leafRec);
+    void*       leafRec = nullptr;
+    const char* fieldName;
+#ifdef PLATFORM_WINDOWS
+    fieldName = ResolveFieldNameByIndex(t_serializer, t_fieldIndex, &leafRec);
+#else
+    if (!IsUserPtr(t_fieldPath))
+        return g_origBitCopy(dst, src, bitcount);
+    fieldName = ResolveFieldName(t_serializer, t_fieldPath, &leafRec);
+#endif
     if (fieldName == nullptr || leafRec == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
@@ -661,13 +730,6 @@ void Init()
 
 void InstallSendProxyHooks()
 {
-#ifdef PLATFORM_WINDOWS
-    // Windows inlines GetBitRange, so the field path must be resolved from a field index via a serializer
-    // leaf-DFS (as the standalone plugin does but never verified on hardware). Not ported — per-client override
-    // is Linux-only until that path is added and tested. Don't install unverified detours for zero function.
-    WARN("SendProxy: per-client override is Linux-only for now (Windows field-path resolution not implemented).");
-    return;
-#else
     BuildEncoderMap();
     if (g_encoderTypes.empty())
     {
@@ -683,13 +745,23 @@ void InstallSendProxyHooks()
         return;
     }
 
-    auto bitRangeAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::GetBitRange");
-    if (!IsUserPtr(bitRangeAddr))
+    // Field identity: linux hooks the standalone GetBitRange (CFieldPath* in rdi); Windows inlines it, so hook
+    // the WriteFieldList inner site (field index in r12) instead.
+#ifdef PLATFORM_WINDOWS
+    auto fieldPathAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::WriteFieldList_FieldPathSite");
+    auto fieldPathFn   = WindowsFieldIndexHook;
+    const char* fieldPathKey = "WriteFieldList_FieldPathSite";
+#else
+    auto fieldPathAddr = g_pGameData->GetAddress<void*>("CFlattenedSerializer::GetBitRange");
+    auto fieldPathFn   = GetBitRange_Mid;
+    const char* fieldPathKey = "GetBitRange";
+#endif
+    if (!IsUserPtr(fieldPathAddr))
     {
-        WARN("SendProxy: GetBitRange not resolved — SendProxy disabled.");
+        WARN("SendProxy: %s not resolved — SendProxy disabled.", fieldPathKey);
         return;
     }
-    if (auto mid = safetyhook::MidHook::create(bitRangeAddr, GetBitRange_Mid))
+    if (auto mid = safetyhook::MidHook::create(fieldPathAddr, fieldPathFn))
     {
         g_bitRangeHook = std::move(*mid);
         g_pHookManager->Register(&g_bitRangeHook);
@@ -719,5 +791,4 @@ void InstallSendProxyHooks()
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
 
     FLOG("SendProxy: per-client hooks installed (%zu encoder types classified).", g_encoderTypes.size());
-#endif
 }
