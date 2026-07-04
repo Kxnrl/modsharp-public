@@ -869,6 +869,5 @@ bool InstallSendProxyHooks()
 
     g_installFailed = false;
     g_installed     = true;
-    FLOG("SendProxy: per-client hooks installed (%zu encoder types classified).", g_encoderTypes.size());
     return true;
 }
