@@ -187,7 +187,7 @@ public delegate void SendProxyCallback(IBaseEntity entity, SendProxyBatch batch)
 ///     is never changed.
 ///     <para>Supported value kinds: <b>int, float, bool, qangle, string</b> (byte-array is not supported).</para>
 ///     <para>Remove your hooks in <c>Shutdown</c> with <see cref="Unhook" />/<see cref="UnhookEntity" />; a
-///     module's hooks are also dropped automatically if it unloads. Currently <b>Linux only</b>.</para>
+///     module's hooks are also dropped automatically if it unloads.</para>
 /// </summary>
 public interface ISendProxyManager
 {
