@@ -24,6 +24,7 @@
 #include "global.h"
 #include "logging.h"
 #include "manager/HookManager.h"
+#include "murmurhash.h"
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/CGameEntitySystem.h"
@@ -174,6 +175,7 @@ struct Resolved
     void*       leafRec = nullptr;
     FieldType   type    = FieldType::Unsupported;
     int         kind    = -1;
+    uint32_t    hash    = 0; // murmur of the field name — carried to managed so it routes by hash, not string
     std::string name;
 };
 std::unordered_map<ResolveKey, Resolved, ResolveKeyHash> g_resolve;
@@ -537,6 +539,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
             r.type    = ClassifyLeaf(leafRec);
             r.kind    = KindForType(r.type);
             r.name    = name;
+            r.hash    = MurmurHash2(name, MURMURHASH_SEED);
         }
         rit = g_resolve.emplace(ResolveKey{t_serializer, t_fieldToken}, std::move(r)).first;
     }
@@ -564,7 +567,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         batch.kind    = kind;
         batch.hasMask = 0;
         g_dispatching = true;
-        forwards::OnSendProxyBatch->Invoke(t_entityIdx, rf.name.c_str(), kind, &batch);
+        forwards::OnSendProxyBatch->Invoke(t_entityIdx, rf.hash, kind, &batch);
         g_dispatching = false;
 
         // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).

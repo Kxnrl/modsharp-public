@@ -18,9 +18,9 @@
  */
 
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.Utilities;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Units;
@@ -35,9 +35,11 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     private readonly ILogger<SendProxyManager> _logger;
     private readonly ICoreEntityManager        _entityManager;
 
-    // (entityIndex, field) -> callback. All access on the main thread (registration + per-client dispatch +
-    // module-unload purge, which runs on the main thread while this holds a strong ref to each delegate).
-    private readonly Dictionary<(int Entity, string Field), SendProxyCallback> _hooks = new();
+    // (entityIndex, murmur(field)) -> (field, callback). Native carries the field-path hash in the dispatch (not
+    // the name string) so routing is integer-keyed; the field name is kept for the native Unhook calls + logging.
+    // All access on the main thread (registration + per-client dispatch + module-unload purge, which runs on the
+    // main thread while this holds a strong ref to each delegate).
+    private readonly Dictionary<(int Entity, uint Hash), (string Field, SendProxyCallback Callback)> _hooks = new();
 
     // ALCs we've subscribed to so a module's hooks are purged if it unloads without cleaning up itself.
     private readonly HashSet<AssemblyLoadContext> _tracked = new();
@@ -52,14 +54,14 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     public void Hook(IBaseEntity entity, string field, SendProxyCallback callback)
     {
         var index = entity.Index.AsPrimitive();
-        var key   = (index, field);
+        var key   = (index, MurmurHash2.Compute(field));
 
-        if (_hooks.TryGetValue(key, out var existing) && existing != callback)
+        if (_hooks.TryGetValue(key, out var existing) && existing.Callback != callback)
         {
             _logger.LogWarning("SendProxy hook on entity {Entity} field {Field} replaced by another registration", index, field);
         }
 
-        _hooks[key] = callback;
+        _hooks[key] = (field, callback);
         TrackOwner(callback);
         CoreSendProxy.HookField(index, field);
     }
@@ -67,7 +69,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     public void Unhook(IBaseEntity entity, string field)
     {
         var index = entity.Index.AsPrimitive();
-        if (_hooks.Remove((index, field)))
+        if (_hooks.Remove((index, MurmurHash2.Compute(field))))
         {
             CoreSendProxy.UnhookField(index, field);
         }
@@ -95,17 +97,17 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     private void OnOwnerUnloading(AssemblyLoadContext alc)
     {
         _tracked.Remove(alc);
-        RemoveWhere(k => AssemblyLoadContext.GetLoadContext(_hooks[k].Method.Module.Assembly) == alc);
+        RemoveWhere(k => AssemblyLoadContext.GetLoadContext(_hooks[k].Callback.Method.Module.Assembly) == alc);
     }
 
-    private void RemoveWhere(System.Func<(int Entity, string Field), bool> predicate)
+    private void RemoveWhere(System.Func<(int Entity, uint Hash), bool> predicate)
     {
-        List<(int Entity, string Field)>? toRemove = null;
+        List<(int Entity, uint Hash)>? toRemove = null;
         foreach (var key in _hooks.Keys)
         {
             if (predicate(key))
             {
-                (toRemove ??= new List<(int, string)>()).Add(key);
+                (toRemove ??= new List<(int, uint)>()).Add(key);
             }
         }
 
@@ -116,22 +118,22 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
 
         foreach (var key in toRemove)
         {
+            var field = _hooks[key].Field;
             _hooks.Remove(key);
-            CoreSendProxy.UnhookField(key.Entity, key.Field);
+            CoreSendProxy.UnhookField(key.Entity, field);
         }
     }
 
     // Fires once per tick for a proxied (entity, field). Resolves the entity + callback once and lets the
     // callback fill the native per-slot batch table; native then applies it to every receiver this tick.
-    private void Dispatch(int entityIndex, nint ptrField, int fieldType, nint ptrBatch)
+    private void Dispatch(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch)
     {
         // Runs on the main thread deep inside the per-client encode; NOTHING may throw out of the
         // unmanaged boundary (that fail-fasts the server), so the whole body is guarded — including the
-        // field marshal and entity resolve.
+        // entity resolve.
         try
         {
-            var field = Marshal.PtrToStringUTF8(ptrField);
-            if (field is null || !_hooks.TryGetValue((entityIndex, field), out var callback))
+            if (!_hooks.TryGetValue((entityIndex, fieldHash), out var hook))
             {
                 return;
             }
@@ -143,7 +145,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
             }
 
             var batch = new SendProxyBatch(ptrBatch, (SendProxyValueKind) fieldType);
-            callback(entity, batch);
+            hook.Callback(entity, batch);
         }
         catch (System.Exception ex)
         {

@@ -173,7 +173,7 @@ DECLARE_FORWARD(Extern.PointServerCommand, OnPointServerCommand, EHookAction, FO
 
 // SendProxy — per-client net-var value override. Fired ONCE per (entity, field) per tick on the main thread
 // (first per-client encounter). Managed fills a per-slot batch table; native applies it to each receiver.
-DECLARE_FORWARD(Extern.SendProxy, OnSendProxyBatch, void, FORWARD_ARG(int32_t, const char*, int32_t, void*));
+DECLARE_FORWARD(Extern.SendProxy, OnSendProxyBatch, void, FORWARD_ARG(int32_t, uint32_t, int32_t, void*));
 
 // DamageManager
 DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*, const CTakeDamageResult*));

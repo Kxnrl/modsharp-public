@@ -23,11 +23,11 @@ namespace Sharp.Core.Bridges.Forwards.Extern;
 
 internal static class SendProxy
 {
-    public delegate void DelegateSendProxyBatch(int entityIndex, nint ptrField, int fieldType, nint ptrBatch);
+    public delegate void DelegateSendProxyBatch(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch);
 
     public static event DelegateSendProxyBatch? OnSendProxyBatch;
 
     [UnmanagedCallersOnly]
-    public static void OnSendProxyBatchExport(int entityIndex, nint ptrField, int fieldType, nint ptrBatch)
-        => OnSendProxyBatch?.Invoke(entityIndex, ptrField, fieldType, ptrBatch);
+    public static void OnSendProxyBatchExport(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch)
+        => OnSendProxyBatch?.Invoke(entityIndex, fieldHash, fieldType, ptrBatch);
 }
