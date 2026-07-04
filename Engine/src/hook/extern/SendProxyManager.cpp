@@ -27,6 +27,7 @@
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/type/CGlobalVars.h"
 
 #include <cstring>
 #include <memory>
@@ -43,7 +44,7 @@
 // Managed plugins register (entity, field) via natives; the shared snapshot pack is left untouched, and each
 // recipient's stream is corrected at the per-client BitCopy stage. That stage runs on the MAIN thread (the
 // per-client send loop is synchronous, after the parallel PackEntities join), so the value is resolved by
-// firing the OnSendProxyValue forward into managed there — a plain main-thread callback, no worker-thread
+// firing the OnSendProxyBatch forward into managed there — a plain main-thread callback, no worker-thread
 // re-entrancy.
 //
 // Captures needed for a per-field substitution, each set by a hook on this thread and consumed at BitCopy:
@@ -104,11 +105,24 @@ struct string_hash
     size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
 };
 
-using FieldSet = std::unordered_set<std::string, string_hash, std::equal_to<>>;
+constexpr int kMaxSlots = 64;
+
+// Per-slot override values filled by ONE batched callback per (entity, field) per tick, then served to every
+// receiver in that tick's per-client loop with no further managed call. `tick` is stamped from
+// gpGlobals->nTickCount so the first BitCopy of a (entity, field) in a tick refills it and the rest reuse it.
+struct FieldBatch
+{
+    int32_t        tick = -1;
+    int32_t        type = 0; // FieldType, filled by native before the callback
+    uint64_t       hasMask = 0;
+    SendProxyValue values[kMaxSlots]{};
+};
+
+using FieldMap = std::unordered_map<std::string, FieldBatch, string_hash, std::equal_to<>>;
 
 // ── Registration store: pointer array indexed by entity index. All access is on the main thread
 //    (registration natives, the per-client encode, and entity-delete cleanup all run there). ────────────────
-FieldSet* g_hooks[kMaxEdicts] = {};
+FieldMap* g_hooks[kMaxEdicts] = {};
 bool      g_hasAnyHook        = false;
 
 // Encoder fn -> FieldType, built once at install from the encoder-registry bucket table. Read-only after.
@@ -403,13 +417,17 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     if (t_client == nullptr || !g_hasAnyHook || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts || !IsUserPtr(t_fieldPath))
         return g_origBitCopy(dst, src, bitcount);
 
-    auto* hookSet = g_hooks[t_entityIdx];
-    if (hookSet == nullptr)
+    auto* fieldMap = g_hooks[t_entityIdx];
+    if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
     void*       leafRec   = nullptr;
     const char* fieldName = ResolveFieldName(t_serializer, t_fieldPath, &leafRec);
-    if (fieldName == nullptr || leafRec == nullptr || !hookSet->contains(std::string_view(fieldName)))
+    if (fieldName == nullptr || leafRec == nullptr)
+        return g_origBitCopy(dst, src, bitcount);
+
+    auto it = fieldMap->find(std::string_view(fieldName));
+    if (it == fieldMap->end())
         return g_origBitCopy(dst, src, bitcount);
 
     FieldType type = ClassifyLeaf(leafRec);
@@ -417,14 +435,25 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     if (kind < 0)
         return g_origBitCopy(dst, src, bitcount);
 
-    SendProxyValue value{};
-    value.kind = kind;
+    FieldBatch& batch = it->second;
 
-    auto action = forwards::OnSendProxyValue->Invoke(
-        reinterpret_cast<CServerSideClient*>(t_client), t_entityIdx, fieldName, static_cast<int32_t>(type), &value);
+    // First BitCopy of this (entity, field) in the tick: fire ONE callback that fills the per-slot table;
+    // every other receiver this tick reads it below with no further managed call.
+    int tick = gpGlobals->nTickCount;
+    if (batch.tick != tick)
+    {
+        batch.tick    = tick;
+        batch.type    = kind;
+        batch.hasMask = 0;
+        forwards::OnSendProxyBatch->Invoke(t_entityIdx, fieldName, kind, &batch);
+    }
+
+    int slot = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(t_client) + 0x48);
+    if (slot < 0 || slot >= kMaxSlots || (batch.hasMask & (1ull << slot)) == 0)
+        return g_origBitCopy(dst, src, bitcount);
 
     uint8_t result;
-    if (action == EHookAction::SkipCallReturnOverride && Substitute(leafRec, type, value, dst, src, bitcount, result))
+    if (Substitute(leafRec, type, batch.values[slot], dst, src, bitcount, result))
         return result;
 
     return g_origBitCopy(dst, src, bitcount);
@@ -517,8 +546,8 @@ void SendProxyHookField(int entityIndex, const char* field)
     if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr)
         return;
     if (g_hooks[entityIndex] == nullptr)
-        g_hooks[entityIndex] = new FieldSet();
-    g_hooks[entityIndex]->emplace(field);
+        g_hooks[entityIndex] = new FieldMap();
+    g_hooks[entityIndex]->try_emplace(field);
     g_hasAnyHook = true;
 }
 

@@ -11,6 +11,7 @@ namespace SendProxyExample;
 public sealed class SendProxyExample : IModSharpModule
 {
     private readonly ISendProxyManager _sendProxy;
+    private readonly IClientManager    _clients;
     private IBaseEntity?               _pawn;
     private IBaseEntity?               _controller;
 
@@ -22,58 +23,73 @@ public sealed class SendProxyExample : IModSharpModule
         bool                              hotReload)
     {
         _sendProxy = sharedSystem.GetSendProxyManager();
+        _clients   = sharedSystem.GetClientManager();
     }
 
     public bool Init() => true;
 
-    // Register per-client overrides on a player. The callback runs per recipient; return false to send the
-    // real value. Set the value with the method matching value.Kind.
+    // Register per-recipient overrides on a player. The callback fires once per tick and fills the values each
+    // client should see; clients you don't set receive the real value. Set the value matching batch.Kind.
     public void Hook(IBaseEntity pawn, IBaseEntity controller)
     {
         _pawn       = pawn;
         _controller = controller;
 
-        // int — everyone but the player sees 1 HP
-        _sendProxy.Hook(pawn, "m_iHealth", (client, entity, ref value) =>
+        // int — show 1 HP to everyone except the player themselves
+        _sendProxy.Hook(pawn, "m_iHealth", (entity, batch) =>
         {
-            if (client.Slot.AsPrimitive() == 0) return false;
-            value.SetInt(1);
-            return true;
+            foreach (var client in _clients.GetGameClients())
+            {
+                if (client.Slot.AsPrimitive() != 0)
+                {
+                    batch.SetFor(client, 1L);
+                }
+            }
         });
 
-        // float — fake a scalar float field
-        _sendProxy.Hook(pawn, "m_flSomeFloat", (client, entity, ref value) =>
+        // float — fake a scalar float for every client
+        _sendProxy.Hook(pawn, "m_flSomeFloat", (entity, batch) =>
         {
-            value.SetFloat(0.0f);
-            return true;
+            foreach (var client in _clients.GetGameClients())
+            {
+                batch.SetFor(client, 0.0f);
+            }
         });
 
         // bool — fake a bool field
-        _sendProxy.Hook(pawn, "m_bSomeBool", (client, entity, ref value) =>
+        _sendProxy.Hook(pawn, "m_bSomeBool", (entity, batch) =>
         {
-            value.SetBool(true);
-            return true;
+            foreach (var client in _clients.GetGameClients())
+            {
+                batch.SetFor(client, true);
+            }
         });
 
         // qangle/vector — fake eye angles
-        _sendProxy.Hook(pawn, "m_angEyeAngles", (client, entity, ref value) =>
+        _sendProxy.Hook(pawn, "m_angEyeAngles", (entity, batch) =>
         {
-            value.SetVector(new Vector(0, 90, 0));
-            return true;
+            foreach (var client in _clients.GetGameClients())
+            {
+                batch.SetFor(client, new Vector(0, 90, 0));
+            }
         });
 
         // string — show a different player name to everyone else
-        _sendProxy.Hook(controller, "m_iszPlayerName", (client, entity, ref value) =>
+        _sendProxy.Hook(controller, "m_iszPlayerName", (entity, batch) =>
         {
-            if (client.Slot.AsPrimitive() == 0) return false;
-            value.SetString("Anonymous");
-            return true;
+            foreach (var client in _clients.GetGameClients())
+            {
+                if (client.Slot.AsPrimitive() != 0)
+                {
+                    batch.SetFor(client, "Anonymous");
+                }
+            }
         });
     }
 
     public void Shutdown()
     {
-        // Remove only our own hooks — never call Clear() here, it wipes every module's hooks.
+        // Remove only our own hooks — a module's hooks are also dropped automatically if it unloads.
         if (_pawn is not null) _sendProxy.UnhookEntity(_pawn);
         if (_controller is not null) _sendProxy.UnhookEntity(_controller);
     }

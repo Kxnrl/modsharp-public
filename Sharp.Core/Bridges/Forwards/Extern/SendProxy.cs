@@ -18,17 +18,16 @@
  */
 
 using System.Runtime.InteropServices;
-using Sharp.Shared.Enums;
 
 namespace Sharp.Core.Bridges.Forwards.Extern;
 
 internal static class SendProxy
 {
-    public delegate EHookAction DelegateSendProxyValue(nint ptrClient, int entityIndex, nint ptrField, int fieldType, nint ptrValue);
+    public delegate void DelegateSendProxyBatch(int entityIndex, nint ptrField, int fieldType, nint ptrBatch);
 
-    public static event DelegateSendProxyValue? OnSendProxyValue;
+    public static event DelegateSendProxyBatch? OnSendProxyBatch;
 
     [UnmanagedCallersOnly]
-    public static EHookAction OnSendProxyValueExport(nint ptrClient, int entityIndex, nint ptrField, int fieldType, nint ptrValue)
-        => OnSendProxyValue?.Invoke(ptrClient, entityIndex, ptrField, fieldType, ptrValue) ?? EHookAction.Ignored;
+    public static void OnSendProxyBatchExport(int entityIndex, nint ptrField, int fieldType, nint ptrBatch)
+        => OnSendProxyBatch?.Invoke(entityIndex, ptrField, fieldType, ptrBatch);
 }

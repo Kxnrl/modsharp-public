@@ -47,7 +47,6 @@ class INetChannel;
 struct FireBulletParams;
 struct CTakeDamageResult;
 struct TeamRewardInfo;
-struct SendProxyValue;
 
 namespace google::protobuf
 {
@@ -172,9 +171,9 @@ DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void,
 // PointServerCommand
 DECLARE_FORWARD(Extern.PointServerCommand, OnPointServerCommand, EHookAction, FORWARD_ARG(CBaseEntity*, const char*));
 
-// SendProxy — per-client net-var value override. Fired on the main thread from the per-client encode when a
-// registered (entity, field) is written for a recipient. Managed fills the value; SkipCallReturnOverride applies it.
-DECLARE_FORWARD(Extern.SendProxy, OnSendProxyValue, EHookAction, FORWARD_ARG(CServerSideClient*, int32_t, const char*, int32_t, SendProxyValue*));
+// SendProxy — per-client net-var value override. Fired ONCE per (entity, field) per tick on the main thread
+// (first per-client encounter). Managed fills a per-slot batch table; native applies it to each receiver.
+DECLARE_FORWARD(Extern.SendProxy, OnSendProxyBatch, void, FORWARD_ARG(int32_t, const char*, int32_t, void*));
 
 // DamageManager
 DECLARE_FORWARD(Extern.DamageProcessor, OnPlayerDispatchTraceAttackPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const CTakeDamageInfo*, const CTakeDamageResult*));

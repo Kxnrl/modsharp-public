@@ -18,13 +18,9 @@
  */
 
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
-using Sharp.Core.Objects;
-using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Units;
@@ -50,7 +46,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     {
         _logger                                              = logger;
         _entityManager                                       = entityManager;
-        Bridges.Forwards.Extern.SendProxy.OnSendProxyValue += Dispatch;
+        Bridges.Forwards.Extern.SendProxy.OnSendProxyBatch += Dispatch;
     }
 
     public void Hook(IBaseEntity entity, string field, SendProxyCallback callback)
@@ -125,34 +121,32 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
         }
     }
 
-    private unsafe EHookAction Dispatch(nint ptrClient, int entityIndex, nint ptrField, int fieldType, nint ptrValue)
+    // Fires once per tick for a proxied (entity, field). Resolves the entity + callback once and lets the
+    // callback fill the native per-slot batch table; native then applies it to every receiver this tick.
+    private void Dispatch(int entityIndex, nint ptrField, int fieldType, nint ptrBatch)
     {
         var field = Marshal.PtrToStringUTF8(ptrField);
         if (field is null || !_hooks.TryGetValue((entityIndex, field), out var callback))
         {
-            return EHookAction.Ignored;
+            return;
         }
 
-        var client = GameClient.Create(ptrClient);
         var entity = _entityManager.FindEntityByIndex((EntityIndex) entityIndex);
-        if (client is null || entity is null)
+        if (entity is null)
         {
-            return EHookAction.Ignored;
+            return;
         }
 
-        // This runs on the main thread deep inside the per-client encode; a module exception must never escape
-        // the unmanaged boundary (that fail-fasts the server) — log it and send the real value.
+        // Runs on the main thread deep inside the per-client encode; a module exception must never escape the
+        // unmanaged boundary (that fail-fasts the server) — log it and leave the real value.
         try
         {
-            ref var value = ref Unsafe.AsRef<SendProxyValue>((void*) ptrValue);
-
-            return callback(client, entity, ref value) ? EHookAction.SkipCallReturnOverride : EHookAction.Ignored;
+            var batch = new SendProxyBatch(ptrBatch, (SendProxyValueKind) fieldType);
+            callback(entity, batch);
         }
         catch (System.Exception ex)
         {
             _logger.LogError(ex, "SendProxy callback threw for entity {Entity} field {Field}", entityIndex, field);
-
-            return EHookAction.Ignored;
         }
     }
 }
