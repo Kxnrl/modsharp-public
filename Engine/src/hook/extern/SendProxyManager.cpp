@@ -106,17 +106,25 @@ struct string_hash
     size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
 };
 
-constexpr int kMaxSlots = 64;
+constexpr int kMaxSlots    = 64;
+constexpr int kMaxDistinct = 16;  // distinct override values per (entity,field)/tick before we stop deduping
+constexpr int kBlobCap     = 320; // max encoded field size (string ≤ 256 + slack)
 
 // Per-slot override values filled by ONE batched callback per (entity, field) per tick, then served to every
 // receiver in that tick's per-client loop with no further managed call. `tick` is stamped from
 // gpGlobals->nTickCount so the first BitCopy of a (entity, field) in a tick refills it and the rest reuse it.
+// After the callback fills the typed values, each DISTINCT value is encoded ONCE into a blob (blobData) and
+// every slot points at its blob (slotBlob) — receivers 2..N just bit-splice the cached blob, never re-encode.
 struct FieldBatch
 {
     int32_t        tick = -1;
     int32_t        kind = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
     uint64_t       hasMask = 0;
-    SendProxyValue values[kMaxSlots]{};
+    SendProxyValue values[kMaxSlots]{};   // managed writes up to here (offset 16); the rest is native-only.
+    int8_t         slotBlob[kMaxSlots]{}; // per set slot: blob index, or -1 (passthrough)
+    int32_t        blobBits[kMaxDistinct]{};
+    int32_t        blobCount = 0;
+    uint8_t        blobData[kMaxDistinct][kBlobCap]{};
 };
 
 using FieldMap = std::unordered_map<std::string, FieldBatch, string_hash, std::equal_to<>>;
@@ -322,13 +330,12 @@ int KindForType(FieldType t)
     }
 }
 
-// Encode the overridden value into a scratch bf_write via the field's own encoder, then emit those bits into
-// dst through the original BitCopy after skipping the real value in src. Returns false to pass the real value.
 uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
 
-// Returns true if the fake value was emitted (outResult holds the engine's BitCopy return); false means
-// "pass the real value" and the caller must do the original copy.
-bool Substitute(void* leafRec, FieldType type, const SendProxyValue& v, void* dst, void* src, uint32_t bitcount, uint8_t& outResult)
+// Encode a value ONCE via the field's own encoder into `outBlob` (wire bits), returning the bit count in
+// `outBits`. Done at batch-fill time (not per receiver) so N receivers with the same value cost one encode and
+// then a bit-splice each — this is the maintainer's `SendProxyOverride{bitCount, bits}`. false = don't override.
+bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
 {
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
     if (!IsUserPtr(fieldInfo))
@@ -346,95 +353,86 @@ bool Substitute(void* leafRec, FieldType type, const SendProxyValue& v, void* ds
     {
         void* base = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x40);
         if (!IsUserPtr(base))
-            return false; // encoder expects params but the base is unreadable — send the real value.
+            return false;
         paramsPtr = reinterpret_cast<uint8_t*>(base) + paramOff;
     }
 
-    // Build the value in the layout this encoder reads.
+    // Build the value in the layout this encoder reads, and the value pointer to hand it.
     uint8_t scratch[0x30]{};
-
-    // String encoder reads *valuePtr as a char*; point it at the inline (null-terminated) buffer. Handled
-    // separately from the numeric scratch because its value pointer is a pointer-to-pointer.
-    if (type == FieldType::String)
-    {
-        const char* strPtr = v.str;
-        // Ensure null-terminated within bounds even if strLen is bogus.
-        if (v.strLen < 0 || v.strLen >= static_cast<int>(sizeof(v.str)))
-            return false;
-
-        void*   sv          = const_cast<char*>(strPtr);
-        uint8_t data[512]{};
-        uint8_t bw[0x40]{};
-        *reinterpret_cast<void**>(bw + 0x00) = data;
-        *reinterpret_cast<int*>(bw + 0x08)   = sizeof(data);
-        *reinterpret_cast<int*>(bw + 0x0C)   = sizeof(data) * 8;
-        *reinterpret_cast<int*>(bw + 0x10)   = 0;
-
-        encFn(bw, fieldInfo, paramsPtr, &sv, 0);
-
-        int     encodedBits = *reinterpret_cast<int*>(bw + 0x10);
-        uint8_t overflow    = *(bw + 0x20);
-        if (overflow != 0 || encodedBits <= 0)
-            return false;
-
-        *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + 0x10) += static_cast<int>(bitcount);
-        *reinterpret_cast<int*>(bw + 0x10) = 0;
-        outResult                          = g_origBitCopy(dst, bw, static_cast<uint32_t>(encodedBits));
-        return true;
-    }
-
+    void*   strSlot   = nullptr;
+    void*   valuePtr  = scratch;
     switch (type)
     {
-        case FieldType::UInt32:
-            *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i);
-            break;
+        case FieldType::UInt32: *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i); break;
         case FieldType::Int32:
         case FieldType::Int64:
         case FieldType::Fixed32:
-        case FieldType::Fixed64:
-            *reinterpret_cast<int64_t*>(scratch) = v.i;
-            break;
-        case FieldType::Bool:
-            scratch[0] = v.i != 0 ? 1 : 0;
-            break;
-        case FieldType::Float32:
-            *reinterpret_cast<double*>(scratch) = v.f;
-            break;
+        case FieldType::Fixed64: *reinterpret_cast<int64_t*>(scratch) = v.i; break;
+        case FieldType::Bool: scratch[0] = v.i != 0 ? 1 : 0; break;
+        case FieldType::Float32: *reinterpret_cast<double*>(scratch) = v.f; break;
         case FieldType::QAngle3:
         case FieldType::Vector3:
             reinterpret_cast<float*>(scratch)[0] = v.x;
             reinterpret_cast<float*>(scratch)[1] = v.y;
             reinterpret_cast<float*>(scratch)[2] = v.z;
             break;
+        case FieldType::String:
+            if (v.strLen < 0 || v.strLen >= static_cast<int>(sizeof(v.str)))
+                return false;
+            strSlot  = const_cast<char*>(v.str); // encoder reads *valuePtr as char*
+            valuePtr = &strSlot;
+            break;
         default:
-            // Quantized/coord/normal need the field's count/mode word from the live value; not supported for
-            // per-client without a live-value read. Pass through rather than emit a wrong quantization.
-            return false;
+            return false; // quantized/coord need the live count/mode word — unsupported here.
     }
 
-    // Scratch bf_write (data +0x00, nDataBytes +0x08, nDataBits +0x0c, cursor +0x10, overflow +0x20, flag +0x22).
-    constexpr int kBound   = 64;
-    constexpr int kBfSize  = 0x40;
-    uint8_t       data[kBound]{};
-    uint8_t       bw[kBfSize]{};
+    // Encode into a local bf_write, then copy the used bytes into outBlob.
+    uint8_t data[512]{};
+    uint8_t bw[0x40]{};
     *reinterpret_cast<void**>(bw + 0x00) = data;
-    *reinterpret_cast<int*>(bw + 0x08)   = kBound;
-    *reinterpret_cast<int*>(bw + 0x0C)   = kBound * 8;
+    *reinterpret_cast<int*>(bw + 0x08)   = sizeof(data);
+    *reinterpret_cast<int*>(bw + 0x0C)   = sizeof(data) * 8;
     *reinterpret_cast<int*>(bw + 0x10)   = 0;
 
-    encFn(bw, fieldInfo, paramsPtr, scratch, 0);
+    encFn(bw, fieldInfo, paramsPtr, valuePtr, 0);
 
     int     encodedBits = *reinterpret_cast<int*>(bw + 0x10);
     uint8_t overflow    = *(bw + 0x20);
-    if (overflow != 0 || encodedBits <= 0)
+    int     bytes       = (encodedBits + 7) / 8;
+    if (overflow != 0 || encodedBits <= 0 || bytes > outCap)
         return false;
 
-    // Skip the real value in src, rewind scratch, copy the fake bits (propagating the engine's return so an
-    // over-long substitution that overflows dst is reported, not masked).
-    *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + 0x10) += static_cast<int>(bitcount);
-    *reinterpret_cast<int*>(bw + 0x10) = 0;
-    outResult = g_origBitCopy(dst, bw, static_cast<uint32_t>(encodedBits));
+    memcpy(outBlob, data, bytes);
+    outBits = encodedBits;
     return true;
+}
+
+// Splice a pre-encoded blob into dst: skip the real value in src, then copy the cached bits via the engine's
+// own BitCopy (a fresh bf_write over the blob at cursor 0). No re-encode.
+uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
+{
+    uint8_t bw[0x40]{};
+    *reinterpret_cast<const void**>(bw + 0x00) = blob;
+    *reinterpret_cast<int*>(bw + 0x08)         = (bits + 7) / 8;
+    *reinterpret_cast<int*>(bw + 0x0C)         = bits;
+    *reinterpret_cast<int*>(bw + 0x10)         = 0;
+
+    *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + 0x10) += static_cast<int>(bitcount);
+    return g_origBitCopy(dst, bw, static_cast<uint32_t>(bits));
+}
+
+bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
+{
+    switch (kind)
+    {
+        case kKindInt:
+        case kKindBool: return a.i == b.i;
+        case kKindFloat: return a.f == b.f;
+        case kKindVector: return a.x == b.x && a.y == b.y && a.z == b.z;
+        case kKindString:
+            return a.strLen == b.strLen && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
+        default: return false;
+    }
 }
 
 // ── Hooks ────────────────────────────────────────────────────────────────────────────────────────────────
@@ -525,12 +523,53 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         g_dispatching = true;
         forwards::OnSendProxyBatch->Invoke(t_entityIdx, fieldName, kind, &batch);
         g_dispatching = false;
+
+        // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).
+        batch.blobCount = 0;
+        for (int s = 0; s < kMaxSlots; s++)
+        {
+            if ((batch.hasMask & (1ull << s)) == 0)
+                continue;
+
+            int reuse = -1;
+            for (int p = 0; p < s; p++)
+            {
+                if ((batch.hasMask & (1ull << p)) != 0 && batch.slotBlob[p] >= 0
+                    && ValuesEqual(kind, batch.values[s], batch.values[p]))
+                {
+                    reuse = batch.slotBlob[p];
+                    break;
+                }
+            }
+
+            if (reuse >= 0)
+            {
+                batch.slotBlob[s] = static_cast<int8_t>(reuse);
+            }
+            else if (batch.blobCount < kMaxDistinct
+                     && EncodeToBlob(leafRec, type, batch.values[s], batch.blobData[batch.blobCount], kBlobCap, batch.blobBits[batch.blobCount]))
+            {
+                batch.slotBlob[s] = static_cast<int8_t>(batch.blobCount++);
+            }
+            else
+            {
+                batch.slotBlob[s] = -1; // encode failed or pool full — this slot gets the real value.
+            }
+        }
     }
 
-    int     slot        = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
-    uint8_t result      = 0;
-    bool    substituted = slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0
-                       && Substitute(leafRec, type, batch.values[slot], dst, src, bitcount, result);
+    int     slot   = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
+    uint8_t result = 0;
+    bool    substituted = false;
+    if (slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0)
+    {
+        int bi = batch.slotBlob[slot];
+        if (bi >= 0 && bi < batch.blobCount)
+        {
+            result      = SpliceBlob(dst, src, bitcount, batch.blobData[bi], batch.blobBits[bi]);
+            substituted = true;
+        }
+    }
 
     // `batch`/`it` may be erased by a deferred Unhook the callback requested — done using them now.
     FlushPending();
