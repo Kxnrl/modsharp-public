@@ -17,9 +17,9 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "bridge/natives/SendProxyManager.h"
 #include "bridge/adapter.h"
 #include "bridge/forwards/forward.h"
-#include "bridge/natives/SendProxyManager.h"
 #include "gamedata.h"
 #include "global.h"
 #include "logging.h"
@@ -63,8 +63,8 @@ namespace
 bool g_installed     = false;
 bool g_installFailed = false;
 
-constexpr int       kMaxEdicts   = 16384;
-constexpr uintptr_t kUserMin     = 0x10000;
+constexpr int       kMaxEdicts = 16384;
+constexpr uintptr_t kUserMin   = 0x10000;
 
 enum class FieldType : uint8_t
 {
@@ -122,12 +122,12 @@ constexpr int kBlobCap     = 320; // max encoded field size (string ≤ 256 + sl
 // every slot points at its blob (slotBlob) — receivers 2..N just bit-splice the cached blob, never re-encode.
 struct FieldBatch
 {
-    int32_t        tick = -1;
-    int32_t        kind = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
+    int32_t        tick    = -1;
+    int32_t        kind    = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
     uint64_t       hasMask = 0;
-    SendProxyValue values[kMaxSlots]{};    // managed writes up to here (offset 16); the rest is native-only.
+    SendProxyValue values[kMaxSlots]{};     // managed writes up to here (offset 16); the rest is native-only.
     void*          encodeLeafRec = nullptr; // the leaf the blobs were encoded with (a same-named leaf differs)
-    int8_t         slotBlob[kMaxSlots]{};  // per set slot: blob index, or -1 (passthrough)
+    int8_t         slotBlob[kMaxSlots]{};   // per set slot: blob index, or -1 (passthrough)
     int32_t        blobBits[kMaxDistinct]{};
     int32_t        blobCount = 0;
     uint8_t        blobData[kMaxDistinct][kBlobCap]{};
@@ -268,25 +268,25 @@ int KindForType(FieldType t)
 {
     switch (t)
     {
-        case FieldType::Int32:
-        case FieldType::UInt32:
-        case FieldType::Int64:
-        case FieldType::Fixed32:
-        case FieldType::Fixed64:
-            return kKindInt;
-        case FieldType::Bool:
-            return kKindBool;
-        case FieldType::Float32:
-            return kKindFloat;
-        case FieldType::QAngle3:
-        case FieldType::Vector3:
-            return kKindVector;
-        case FieldType::String:
-            return kKindString;
-        // Quantized/coord/normal need the field's count/mode word from the live value, which the per-client
-        // path does not read — don't fire the forward for a kind Substitute can't emit (silent no-op otherwise).
-        default:
-            return -1;
+    case FieldType::Int32:
+    case FieldType::UInt32:
+    case FieldType::Int64:
+    case FieldType::Fixed32:
+    case FieldType::Fixed64:
+        return kKindInt;
+    case FieldType::Bool:
+        return kKindBool;
+    case FieldType::Float32:
+        return kKindFloat;
+    case FieldType::QAngle3:
+    case FieldType::Vector3:
+        return kKindVector;
+    case FieldType::String:
+        return kKindString;
+    // Quantized/coord/normal need the field's count/mode word from the live value, which the per-client
+    // path does not read — don't fire the forward for a kind Substitute can't emit (silent no-op otherwise).
+    default:
+        return -1;
     }
 }
 
@@ -319,31 +319,31 @@ bool EncodeToBlob(void* leafRec, FieldType type, const SendProxyValue& v, uint8_
 
     // Build the value in the layout this encoder reads, and the value pointer to hand it.
     uint8_t scratch[0x30]{};
-    void*   strSlot   = nullptr;
-    void*   valuePtr  = scratch;
+    void*   strSlot  = nullptr;
+    void*   valuePtr = scratch;
     switch (type)
     {
-        case FieldType::UInt32: *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i); break;
-        case FieldType::Int32:
-        case FieldType::Int64:
-        case FieldType::Fixed32:
-        case FieldType::Fixed64: *reinterpret_cast<int64_t*>(scratch) = v.i; break;
-        case FieldType::Bool: scratch[0] = v.i != 0 ? 1 : 0; break;
-        case FieldType::Float32: *reinterpret_cast<double*>(scratch) = v.f; break;
-        case FieldType::QAngle3:
-        case FieldType::Vector3:
-            reinterpret_cast<float*>(scratch)[0] = v.x;
-            reinterpret_cast<float*>(scratch)[1] = v.y;
-            reinterpret_cast<float*>(scratch)[2] = v.z;
-            break;
-        case FieldType::String:
-            if (v.strLen < 0 || v.strLen >= static_cast<int>(sizeof(v.str)))
-                return false;
-            strSlot  = const_cast<char*>(v.str); // encoder reads *valuePtr as char*
-            valuePtr = &strSlot;
-            break;
-        default:
-            return false; // quantized/coord need the live count/mode word — unsupported here.
+    case FieldType::UInt32: *reinterpret_cast<uint64_t*>(scratch) = static_cast<uint32_t>(v.i); break;
+    case FieldType::Int32:
+    case FieldType::Int64:
+    case FieldType::Fixed32:
+    case FieldType::Fixed64: *reinterpret_cast<int64_t*>(scratch) = v.i; break;
+    case FieldType::Bool: scratch[0] = v.i != 0 ? 1 : 0; break;
+    case FieldType::Float32: *reinterpret_cast<double*>(scratch) = v.f; break;
+    case FieldType::QAngle3:
+    case FieldType::Vector3:
+        reinterpret_cast<float*>(scratch)[0] = v.x;
+        reinterpret_cast<float*>(scratch)[1] = v.y;
+        reinterpret_cast<float*>(scratch)[2] = v.z;
+        break;
+    case FieldType::String:
+        if (v.strLen < 0 || v.strLen >= static_cast<int>(sizeof(v.str)))
+            return false;
+        strSlot  = const_cast<char*>(v.str); // encoder reads *valuePtr as char*
+        valuePtr = &strSlot;
+        break;
+    default:
+        return false; // quantized/coord need the live count/mode word — unsupported here.
     }
 
     // Encode into a local bf_write, then copy the used bytes into outBlob.
@@ -385,14 +385,14 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 {
     switch (kind)
     {
-        case kKindInt:
-        case kKindBool: return a.i == b.i;
-        case kKindFloat: return a.f == b.f;
-        case kKindVector: return a.x == b.x && a.y == b.y && a.z == b.z;
-        case kKindString:
-            return a.strLen >= 0 && a.strLen < static_cast<int>(sizeof(a.str)) && a.strLen == b.strLen
-                && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
-        default: return false;
+    case kKindInt:
+    case kKindBool: return a.i == b.i;
+    case kKindFloat: return a.f == b.f;
+    case kKindVector: return a.x == b.x && a.y == b.y && a.z == b.z;
+    case kKindString:
+        return a.strLen >= 0 && a.strLen < static_cast<int>(sizeof(a.str)) && a.strLen == b.strLen
+               && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
+    default: return false;
     }
 }
 
@@ -575,8 +575,8 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         }
     }
 
-    int     slot   = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
-    uint8_t result = 0;
+    int     slot        = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
+    uint8_t result      = 0;
     bool    substituted = false;
     // Only substitute the exact leaf the blobs were encoded with — a same-named leaf elsewhere in the tree can
     // use a different encoder, and its blob would be malformed bits.
@@ -603,19 +603,22 @@ FieldType ClassifyEntry(int bucket, const char* name)
     bool def = eq("default");
     switch (bucket)
     {
-        case 1: return def ? FieldType::Int32 : eq("fixed32") ? FieldType::Fixed32 : eq("fixed64") ? FieldType::Fixed64 : FieldType::Unsupported;
-        case 2: return def ? FieldType::UInt32 : eq("fixed32") ? FieldType::Fixed32 : eq("fixed64") ? FieldType::Fixed64 : FieldType::Unsupported;
-        case 3:
-            return def                                                               ? FieldType::QuantizedFloat
-                   : (eq("qangle") || eq("qangle_pitch_yaw") || eq("qangle_precise")) ? FieldType::QAngle3
-                   : eq("normal")                                                     ? FieldType::Normal3
-                   : eq("coord")                                                      ? FieldType::Coord3
-                   : eq("coord_integral")                                             ? FieldType::CoordIntegral3
-                                                                                      : FieldType::Unsupported;
-        case 4: return def ? FieldType::Float32 : FieldType::Unsupported;
-        case 5: return def ? FieldType::String : FieldType::Unsupported;
-        case 7: return def ? FieldType::Bool : FieldType::Unsupported;
-        default: return FieldType::Unsupported;
+    case 1: return def ? FieldType::Int32 : eq("fixed32") ? FieldType::Fixed32 :
+                                        eq("fixed64")     ? FieldType::Fixed64 :
+                                                            FieldType::Unsupported;
+    case 2: return def ? FieldType::UInt32 : eq("fixed32") ? FieldType::Fixed32 :
+                                         eq("fixed64")     ? FieldType::Fixed64 :
+                                                             FieldType::Unsupported;
+    case 3:
+        return def ? FieldType::QuantizedFloat : (eq("qangle") || eq("qangle_pitch_yaw") || eq("qangle_precise")) ? FieldType::QAngle3 :
+                                             eq("normal")                                                         ? FieldType::Normal3 :
+                                             eq("coord")                                                          ? FieldType::Coord3 :
+                                             eq("coord_integral")                                                 ? FieldType::CoordIntegral3 :
+                                                                                                                    FieldType::Unsupported;
+    case 4: return def ? FieldType::Float32 : FieldType::Unsupported;
+    case 5: return def ? FieldType::String : FieldType::Unsupported;
+    case 7: return def ? FieldType::Bool : FieldType::Unsupported;
+    default: return FieldType::Unsupported;
     }
 }
 
@@ -629,9 +632,12 @@ void BuildEncoderMap()
     }
 
     const char* keys[] = {
-        "CFlattenedSerializer::EncoderBucket1", "CFlattenedSerializer::EncoderBucket2",
-        "CFlattenedSerializer::EncoderBucket3", "CFlattenedSerializer::EncoderBucket4",
-        "CFlattenedSerializer::EncoderBucket5", "CFlattenedSerializer::EncoderBucket6",
+        "CFlattenedSerializer::EncoderBucket1",
+        "CFlattenedSerializer::EncoderBucket2",
+        "CFlattenedSerializer::EncoderBucket3",
+        "CFlattenedSerializer::EncoderBucket4",
+        "CFlattenedSerializer::EncoderBucket5",
+        "CFlattenedSerializer::EncoderBucket6",
         "CFlattenedSerializer::EncoderBucket7",
     };
 
