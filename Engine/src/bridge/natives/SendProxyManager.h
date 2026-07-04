@@ -22,9 +22,8 @@
 
 #include <cstdint>
 
-// Value passed across the OnSendProxyValue forward. Native pre-fills only `kind` (the value fields default to
-// 0 — the real value is NOT decoded); the managed callback sets the matching field and the forward returns
-// EHookAction::SkipCallReturnOverride to apply it. Layout is blittable and mirrored by the managed struct.
+// One recipient's override value inside a per-(entity,field) batch. The managed batch callback fills the slots
+// it wants; native applies each to the matching client. Layout is blittable and mirrored by the managed struct.
 struct SendProxyValue
 {
     int32_t kind; // 0 int, 1 float, 2 bool, 3 vector, 4 string

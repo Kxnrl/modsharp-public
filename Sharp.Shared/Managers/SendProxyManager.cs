@@ -84,6 +84,7 @@ internal unsafe struct SendProxyValue
 ///     Fills the per-recipient values for one (entity, field) in a tick. Set a value only for the clients that
 ///     should see a faked value with the method matching <see cref="Kind" />; clients you don't set receive the
 ///     real value. The callback runs once per tick per field, so iterate the clients you care about here.
+///     <para><b>Valid only for the duration of the callback</b> — do not store it or use it afterwards.</para>
 /// </summary>
 public readonly unsafe struct SendProxyBatch
 {

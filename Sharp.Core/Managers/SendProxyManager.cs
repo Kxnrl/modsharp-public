@@ -125,28 +125,29 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     // callback fill the native per-slot batch table; native then applies it to every receiver this tick.
     private void Dispatch(int entityIndex, nint ptrField, int fieldType, nint ptrBatch)
     {
-        var field = Marshal.PtrToStringUTF8(ptrField);
-        if (field is null || !_hooks.TryGetValue((entityIndex, field), out var callback))
-        {
-            return;
-        }
-
-        var entity = _entityManager.FindEntityByIndex((EntityIndex) entityIndex);
-        if (entity is null)
-        {
-            return;
-        }
-
-        // Runs on the main thread deep inside the per-client encode; a module exception must never escape the
-        // unmanaged boundary (that fail-fasts the server) — log it and leave the real value.
+        // Runs on the main thread deep inside the per-client encode; NOTHING may throw out of the
+        // unmanaged boundary (that fail-fasts the server), so the whole body is guarded — including the
+        // field marshal and entity resolve.
         try
         {
+            var field = Marshal.PtrToStringUTF8(ptrField);
+            if (field is null || !_hooks.TryGetValue((entityIndex, field), out var callback))
+            {
+                return;
+            }
+
+            var entity = _entityManager.FindEntityByIndex((EntityIndex) entityIndex);
+            if (entity is null)
+            {
+                return;
+            }
+
             var batch = new SendProxyBatch(ptrBatch, (SendProxyValueKind) fieldType);
             callback(entity, batch);
         }
         catch (System.Exception ex)
         {
-            _logger.LogError(ex, "SendProxy callback threw for entity {Entity} field {Field}", entityIndex, field);
+            _logger.LogError(ex, "SendProxy callback threw for entity {Entity}", entityIndex);
         }
     }
 }

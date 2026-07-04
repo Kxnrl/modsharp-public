@@ -28,6 +28,7 @@
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CGlobalVars.h"
+#include "cstrike/type/CServerSideClient.h"
 
 #include <cstring>
 #include <memory>
@@ -113,7 +114,7 @@ constexpr int kMaxSlots = 64;
 struct FieldBatch
 {
     int32_t        tick = -1;
-    int32_t        type = 0; // FieldType, filled by native before the callback
+    int32_t        kind = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
     uint64_t       hasMask = 0;
     SendProxyValue values[kMaxSlots]{};
 };
@@ -124,6 +125,13 @@ using FieldMap = std::unordered_map<std::string, FieldBatch, string_hash, std::e
 //    (registration natives, the per-client encode, and entity-delete cleanup all run there). ────────────────
 FieldMap* g_hooks[kMaxEdicts] = {};
 bool      g_hasAnyHook        = false;
+
+// A batch callback can synchronously Unhook/UnhookEntity itself; erasing the map node while native is still
+// reading `batch` would be a use-after-free. While dispatching we queue erasures and flush them afterward.
+bool                                     g_dispatching = false;
+std::vector<std::pair<int, std::string>> g_pendingUnhook;
+std::vector<int>                         g_pendingClear;
+void                                     FlushPending();
 
 // Encoder fn -> FieldType, built once at install from the encoder-registry bucket table. Read-only after.
 std::unordered_map<uintptr_t, FieldType> g_encoderTypes;
@@ -443,20 +451,22 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     if (batch.tick != tick)
     {
         batch.tick    = tick;
-        batch.type    = kind;
+        batch.kind    = kind;
         batch.hasMask = 0;
+        g_dispatching = true;
         forwards::OnSendProxyBatch->Invoke(t_entityIdx, fieldName, kind, &batch);
+        g_dispatching = false;
     }
 
-    int slot = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(t_client) + 0x48);
-    if (slot < 0 || slot >= kMaxSlots || (batch.hasMask & (1ull << slot)) == 0)
-        return g_origBitCopy(dst, src, bitcount);
+    int     slot        = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
+    uint8_t result      = 0;
+    bool    substituted = slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0
+                       && Substitute(leafRec, type, batch.values[slot], dst, src, bitcount, result);
 
-    uint8_t result;
-    if (Substitute(leafRec, type, batch.values[slot], dst, src, bitcount, result))
-        return result;
+    // `batch`/`it` may be erased by a deferred Unhook the callback requested — done using them now.
+    FlushPending();
 
-    return g_origBitCopy(dst, src, bitcount);
+    return substituted ? result : g_origBitCopy(dst, src, bitcount);
 }
 
 // ── Encoder enumeration (for ClassifyLeaf) ───────────────────────────────────────────────────────────────
@@ -553,7 +563,14 @@ void SendProxyHookField(int entityIndex, const char* field)
 
 bool SendProxyUnhookField(int entityIndex, const char* field)
 {
-    if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr || g_hooks[entityIndex] == nullptr)
+    if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr)
+        return false;
+    if (g_dispatching)
+    {
+        g_pendingUnhook.emplace_back(entityIndex, field);
+        return true;
+    }
+    if (g_hooks[entityIndex] == nullptr)
         return false;
     bool removed = g_hooks[entityIndex]->erase(field) > 0;
     if (g_hooks[entityIndex]->empty())
@@ -567,11 +584,35 @@ bool SendProxyUnhookField(int entityIndex, const char* field)
 
 void SendProxyClearEntity(int entityIndex)
 {
-    if (entityIndex <= 0 || entityIndex >= kMaxEdicts || g_hooks[entityIndex] == nullptr)
+    if (entityIndex <= 0 || entityIndex >= kMaxEdicts)
+        return;
+    if (g_dispatching)
+    {
+        g_pendingClear.push_back(entityIndex);
+        return;
+    }
+    if (g_hooks[entityIndex] == nullptr)
         return;
     delete g_hooks[entityIndex];
     g_hooks[entityIndex] = nullptr;
     RecomputeHasAny();
+}
+
+void FlushPending()
+{
+    if (g_pendingUnhook.empty() && g_pendingClear.empty())
+        return;
+
+    // g_dispatching is false here, so these run the real erase path.
+    auto unhook = std::move(g_pendingUnhook);
+    auto clear  = std::move(g_pendingClear);
+    g_pendingUnhook.clear();
+    g_pendingClear.clear();
+
+    for (auto& [entityIndex, field] : unhook)
+        SendProxyUnhookField(entityIndex, field.c_str());
+    for (int entityIndex : clear)
+        SendProxyClearEntity(entityIndex);
 }
 
 class SendProxyEntityListener : public IEntityListener
