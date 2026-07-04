@@ -17,20 +17,24 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Utilities;
+using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
+using Sharp.Shared.Types;
 using Sharp.Shared.Units;
-using CoreSendProxy = Sharp.Core.Bridges.Natives.SendProxy;
+using Native = Sharp.Core.Bridges.Natives.SendProxy;
+using Forward = Sharp.Core.Bridges.Forwards.Extern.SendProxy;
 
 namespace Sharp.Core.Managers;
 
 internal interface ICoreSendProxyManager : ISendProxyManager;
 
-internal sealed class SendProxyManager : ICoreSendProxyManager
+internal class SendProxyManager : ICoreSendProxyManager
 {
     private readonly ILogger<SendProxyManager> _logger;
     private readonly ICoreEntityManager        _entityManager;
@@ -39,19 +43,22 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     // the name string) so routing is integer-keyed; the field name is kept for the native Unhook calls + logging.
     // All access on the main thread (registration + per-client dispatch + module-unload purge, which runs on the
     // main thread while this holds a strong ref to each delegate).
-    private readonly Dictionary<(int Entity, uint Hash), (string Field, SendProxyCallback Callback)> _hooks = new();
+    private readonly Dictionary<(int Entity, uint Hash), (string Field, ISendProxyManager.DelegateSendProxyBatch Callback)> _hooks;
 
     // ALCs we've subscribed to so a module's hooks are purged if it unloads without cleaning up itself.
-    private readonly HashSet<AssemblyLoadContext> _tracked = new();
+    private readonly HashSet<AssemblyLoadContext> _tracked;
 
     public SendProxyManager(ILogger<SendProxyManager> logger, ICoreEntityManager entityManager)
     {
-        _logger                                              = logger;
-        _entityManager                                       = entityManager;
-        Bridges.Forwards.Extern.SendProxy.OnSendProxyBatch += Dispatch;
+        _logger         = logger;
+        _entityManager  = entityManager;
+        _hooks          = new();
+        _tracked        = [];
+
+        Forward.OnSendProxyBatch += OnSendProxyBatch;
     }
 
-    public void Hook(IBaseEntity entity, string field, SendProxyCallback callback)
+    public void Hook(IBaseEntity entity, string field, ISendProxyManager.DelegateSendProxyBatch callback)
     {
         var index = entity.Index.AsPrimitive();
         var key   = (index, MurmurHash2.Compute(field));
@@ -63,7 +70,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
 
         _hooks[key] = (field, callback);
         TrackOwner(callback);
-        CoreSendProxy.HookField(index, field);
+        Native.HookField((EntityIndex) index, field);
     }
 
     public void Unhook(IBaseEntity entity, string field)
@@ -71,7 +78,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
         var index = entity.Index.AsPrimitive();
         if (_hooks.Remove((index, MurmurHash2.Compute(field))))
         {
-            CoreSendProxy.UnhookField(index, field);
+            Native.UnhookField((EntityIndex) index, field);
         }
     }
 
@@ -79,13 +86,13 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
     {
         var index = entity.Index.AsPrimitive();
         RemoveWhere(k => k.Entity == index);
-        CoreSendProxy.ClearEntity(index);
+        Native.ClearEntity((EntityIndex) index);
     }
 
     // Subscribe once per module ALC so its hooks are dropped if the module unloads without calling Unhook.
     // The manager holds a strong ref to every delegate, so a collectible ALC can only unload via the explicit
     // main-thread unload — this fires there, never on a GC/finalizer thread.
-    private void TrackOwner(SendProxyCallback callback)
+    private void TrackOwner(ISendProxyManager.DelegateSendProxyBatch callback)
     {
         var alc = AssemblyLoadContext.GetLoadContext(callback.Method.Module.Assembly);
         if (alc is { IsCollectible: true } && _tracked.Add(alc))
@@ -100,7 +107,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
         RemoveWhere(k => AssemblyLoadContext.GetLoadContext(_hooks[k].Callback.Method.Module.Assembly) == alc);
     }
 
-    private void RemoveWhere(System.Func<(int Entity, uint Hash), bool> predicate)
+    private void RemoveWhere(Func<(int Entity, uint Hash), bool> predicate)
     {
         List<(int Entity, uint Hash)>? toRemove = null;
         foreach (var key in _hooks.Keys)
@@ -120,13 +127,13 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
         {
             var field = _hooks[key].Field;
             _hooks.Remove(key);
-            CoreSendProxy.UnhookField(key.Entity, field);
+            Native.UnhookField((EntityIndex) key.Entity, field);
         }
     }
 
     // Fires once per tick for a proxied (entity, field). Resolves the entity + callback once and lets the
     // callback fill the native per-slot batch table; native then applies it to every receiver this tick.
-    private void Dispatch(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch)
+    private void OnSendProxyBatch(int entityIndex, uint fieldHash, int fieldType, nint ptrBatch)
     {
         // Runs on the main thread deep inside the per-client encode; NOTHING may throw out of the
         // unmanaged boundary (that fail-fasts the server), so the whole body is guarded — including the
@@ -147,7 +154,7 @@ internal sealed class SendProxyManager : ICoreSendProxyManager
             var batch = new SendProxyBatch(ptrBatch, (SendProxyValueKind) fieldType);
             hook.Callback(entity, batch);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "SendProxy callback threw for entity {Entity}", entityIndex);
         }

@@ -17,15 +17,16 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using Sharp.Shared.Units;
+namespace Sharp.Shared.Enums;
 
-namespace Sharp.Core.Bridges.Natives;
-
-public static partial class SendProxy
+/// <summary>
+///     The value kind the encoder expects for the field being proxied.
+/// </summary>
+public enum SendProxyValueKind
 {
-    public static partial void HookField(EntityIndex entityIndex, string field);
-
-    public static partial bool UnhookField(EntityIndex entityIndex, string field);
-
-    public static partial void ClearEntity(EntityIndex entityIndex);
+    Int    = 0,
+    Float  = 1,
+    Bool   = 2,
+    Vector = 3,
+    String = 4,
 }
