@@ -120,8 +120,9 @@ struct FieldBatch
     int32_t        tick = -1;
     int32_t        kind = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
     uint64_t       hasMask = 0;
-    SendProxyValue values[kMaxSlots]{};   // managed writes up to here (offset 16); the rest is native-only.
-    int8_t         slotBlob[kMaxSlots]{}; // per set slot: blob index, or -1 (passthrough)
+    SendProxyValue values[kMaxSlots]{};    // managed writes up to here (offset 16); the rest is native-only.
+    void*          encodeLeafRec = nullptr; // the leaf the blobs were encoded with (a same-named leaf differs)
+    int8_t         slotBlob[kMaxSlots]{};  // per set slot: blob index, or -1 (passthrough)
     int32_t        blobBits[kMaxDistinct]{};
     int32_t        blobCount = 0;
     uint8_t        blobData[kMaxDistinct][kBlobCap]{};
@@ -456,7 +457,8 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
         case kKindFloat: return a.f == b.f;
         case kKindVector: return a.x == b.x && a.y == b.y && a.z == b.z;
         case kKindString:
-            return a.strLen == b.strLen && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
+            return a.strLen >= 0 && a.strLen < static_cast<int>(sizeof(a.str)) && a.strLen == b.strLen
+                && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
         default: return false;
     }
 }
@@ -566,7 +568,8 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         g_dispatching = false;
 
         // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).
-        batch.blobCount = 0;
+        batch.encodeLeafRec = leafRec;
+        batch.blobCount     = 0;
         for (int s = 0; s < kMaxSlots; s++)
         {
             if ((batch.hasMask & (1ull << s)) == 0)
@@ -602,7 +605,9 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     int     slot   = reinterpret_cast<CServerSideClient*>(t_client)->GetSlot();
     uint8_t result = 0;
     bool    substituted = false;
-    if (slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0)
+    // Only substitute the exact leaf the blobs were encoded with — a same-named leaf elsewhere in the tree can
+    // use a different encoder, and its blob would be malformed bits.
+    if (slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0 && leafRec == batch.encodeLeafRec)
     {
         int bi = batch.slotBlob[slot];
         if (bi >= 0 && bi < batch.blobCount)
