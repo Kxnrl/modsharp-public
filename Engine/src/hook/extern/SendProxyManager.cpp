@@ -432,6 +432,13 @@ void* WriteFieldList_Detour(void* a, void* b, void* c, void* d, void* e, uint32_
         t_srcData    = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(e) + 0x18);
         t_fieldCount = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(e) + 0x30);
     }
+    else
+    {
+        // Clear, not leave stale — else this frame resolves against the outer frame's table + a fresh serializer.
+        t_bitTable   = nullptr;
+        t_srcData    = nullptr;
+        t_fieldCount = 0;
+    }
 
     auto* orig = g_wflHook.original<void* (*)(void*, void*, void*, void*, void*, uint32_t, uint32_t, void*, uint32_t)>();
     auto  ret  = orig(a, b, c, d, e, p6, p7, p8, p9);
@@ -455,7 +462,12 @@ int ResolveFieldIndex(int startBit)
         int mid = (lo + hi) / 2;
         int v   = t_bitTable[mid];
         if (v == startBit)
+        {
+            // Zero-width fields share a start bit; the one actually being copied is the last of the run.
+            while (mid < t_fieldCount && t_bitTable[mid + 1] == startBit)
+                mid++;
             return mid - 1; // table[idx+1] = start bit of field idx
+        }
         if (v < startBit)
             lo = mid + 1;
         else
@@ -469,7 +481,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     // Substitute only during a per-client send. t_client is a thread_local set only by the per-client encode
     // (main thread); it is null on the shared-pack worker threads, so this check gates everything below to the
     // main thread — no lock needed for g_hasAnyHook / g_hooks, which are only touched there.
-    if (t_client == nullptr || !g_hasAnyHook || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts)
+    if (t_client == nullptr || !g_hasAnyHook || bitcount == 0 || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts)
         return g_origBitCopy(dst, src, bitcount);
 
     auto* fieldMap = g_hooks[t_entityIdx];
@@ -821,7 +833,7 @@ bool InstallSendProxyHooks()
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
 
     // Serializers (and their leaf records) are rebuilt on a map change; drop the resolve cache so a reused
-    // serializer pointer can't map an old token to the wrong field.
+    // serializer pointer can't map an old index to the wrong field.
     g_pHookManager->Hook_GameDeactivate(HookType_Post, [] { g_resolve.clear(); });
 
     g_installFailed = false;
