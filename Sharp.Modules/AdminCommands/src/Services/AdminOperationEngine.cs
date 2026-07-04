@@ -48,9 +48,10 @@ internal class AdminOperationEngine : IClientListener
     /// <summary>
     ///     A freshly-applied punishment is written to storage asynchronously, so a cache entry younger than
     ///     this is skipped by the re-check — otherwise the refresh could evict it before its write is visible
-    ///     (in particular across a shared/replicated database).
+    ///     (in particular across a shared/replicated database). Two full refresh cycles of headroom so a
+    ///     slow write (retry/replication lag) can't drop a just-applied punishment.
     /// </summary>
-    private static readonly TimeSpan CacheGraceWindow = TimeSpan.FromSeconds(60);
+    private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
 
     private CancellationTokenSource? _refreshCts;
 
@@ -527,12 +528,14 @@ internal class AdminOperationEngine : IClientListener
                 await Task.Delay(CacheRefreshInterval, token).ConfigureAwait(false);
                 await RefreshCachedOperationsAsync(token).ConfigureAwait(false);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
                 break;
             }
             catch (Exception ex)
             {
+                // Anything else (incl. a stray OCE from a handler) is logged and the loop continues — a single
+                // bad cycle must not permanently stop external-removal eviction.
                 _logger.LogError(ex, "Failed to refresh cached admin operations");
             }
         }
@@ -575,13 +578,43 @@ internal class AdminOperationEngine : IClientListener
 
         await _bridge.ModSharp.InvokeFrameActionAsync(() =>
                      {
+                         // Re-validate on the game thread. Since the storage check, the handler may have been
+                         // replaced/unregistered, and the entry may have been re-applied (and re-persisted) by an
+                         // admin — a re-applied entry has a fresh AddedAt, so it is now grace-excluded. Only evict
+                         // what the currently-registered handler still reports as eligible.
+                         var stillCached = new Dictionary<AdminOperationType, HashSet<SteamID>>();
+
                          foreach (var (handler, steamId) in stale)
                          {
-                             handler.OnRemoved(steamId, _bridge.ClientManager.GetGameClient(steamId));
+                             if (!_handlers.TryGetValue(handler.Type, out var current)
+                                 || !ReferenceEquals(current.Handler, handler))
+                             {
+                                 continue;
+                             }
 
-                             _logger.LogInformation("Evicted cached {Type} for {SteamId}: no active record in storage",
-                                                    handler.Type,
-                                                    steamId);
+                             if (!stillCached.TryGetValue(handler.Type, out var eligible))
+                             {
+                                 eligible                   = handler.GetCachedIdentities(CacheGraceWindow).ToHashSet();
+                                 stillCached[handler.Type] = eligible;
+                             }
+
+                             if (!eligible.Contains(steamId))
+                             {
+                                 continue;
+                             }
+
+                             try
+                             {
+                                 handler.OnRemoved(steamId, _bridge.ClientManager.GetGameClient(steamId));
+
+                                 _logger.LogInformation("Evicted cached {Type} for {SteamId}: no active record in storage",
+                                                        handler.Type,
+                                                        steamId);
+                             }
+                             catch (Exception ex)
+                             {
+                                 _logger.LogError(ex, "Failed to evict cached {Type} for {SteamId}", handler.Type, steamId);
+                             }
                          }
                      },
                      token)
