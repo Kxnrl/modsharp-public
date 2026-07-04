@@ -145,11 +145,37 @@ void                                     FlushPending();
 std::unordered_map<uintptr_t, FieldType> g_encoderTypes;
 
 // Per-thread captures. Only the main thread's copies are ever read at a substitution (gated on recipient).
-thread_local void* t_client     = nullptr;
-thread_local int   t_entityIdx  = -1;
-thread_local void* t_serializer = nullptr;
-thread_local void* t_fieldPath  = nullptr; // linux: CFieldPath* captured at GetBitRange
-thread_local int   t_fieldIndex = -1;      // windows: flattened-leaf index captured at WriteFieldList_FieldPathSite
+thread_local void*    t_client     = nullptr;
+thread_local int      t_entityIdx  = -1;
+thread_local void*    t_serializer = nullptr;
+thread_local void*    t_fieldPath  = nullptr; // linux: CFieldPath* captured at GetBitRange (used on cache miss)
+thread_local int      t_fieldIndex = -1;      // windows: flattened-leaf index (used on cache miss)
+thread_local uint32_t t_fieldToken = 0;       // packed field-path token — the stable per-field cache key
+
+// Resolving a field name at every BitCopy (CFieldPath walk + string) is the dominant per-tick cost. The field
+// is identified by the engine's packed path token, so cache the resolve per (serializer, token): the walk runs
+// once per (serializer, field) and the hot path is an integer-keyed lookup after that.
+struct ResolveKey
+{
+    void*    serializer;
+    uint32_t token;
+    bool     operator==(const ResolveKey& o) const { return serializer == o.serializer && token == o.token; }
+};
+struct ResolveKeyHash
+{
+    size_t operator()(const ResolveKey& k) const
+    {
+        return std::hash<void*>{}(k.serializer) ^ (static_cast<size_t>(k.token) * 0x9E3779B97F4A7C15ull);
+    }
+};
+struct Resolved
+{
+    void*       leafRec = nullptr;
+    FieldType   type    = FieldType::Unsupported;
+    int         kind    = -1;
+    std::string name;
+};
+std::unordered_map<ResolveKey, Resolved, ResolveKeyHash> g_resolve;
 
 // Hook objects.
 SafetyHookInline g_perClientHook{};
@@ -468,13 +494,15 @@ void* WriteFieldList_Detour(void* a, void* b, void* c, void* d, void* e, uint32_
 
 void GetBitRange_Mid(SafetyHookContext& ctx)
 {
-    t_fieldPath = reinterpret_cast<void*>(ctx.rdi);
+    t_fieldPath  = reinterpret_cast<void*>(ctx.rdi);
+    t_fieldToken = static_cast<uint32_t>(ctx.rdx); // 3rd arg = the packed field-path token
 }
 
 // Windows: WriteFieldList inner site, R12 = current flattened-leaf index (survives the following call).
 void WindowsFieldIndexHook(SafetyHookContext& ctx)
 {
     t_fieldIndex = static_cast<int>(ctx.r12);
+    t_fieldToken = static_cast<uint32_t>(ctx.r12); // the index is the stable per-field key on Windows
 }
 
 uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
@@ -489,26 +517,39 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
-    void*       leafRec = nullptr;
-    const char* fieldName;
+    // Resolve (serializer, token) -> {leafRec, kind, name} once; integer-keyed lookup on every BitCopy after.
+    auto rit = g_resolve.find(ResolveKey{t_serializer, t_fieldToken});
+    if (rit == g_resolve.end())
+    {
+        void*       leafRec = nullptr;
+        const char* name;
 #ifdef PLATFORM_WINDOWS
-    fieldName = ResolveFieldNameByIndex(t_serializer, t_fieldIndex, &leafRec);
+        name = ResolveFieldNameByIndex(t_serializer, t_fieldIndex, &leafRec);
 #else
-    if (!IsUserPtr(t_fieldPath))
-        return g_origBitCopy(dst, src, bitcount);
-    fieldName = ResolveFieldName(t_serializer, t_fieldPath, &leafRec);
+        name = IsUserPtr(t_fieldPath) ? ResolveFieldName(t_serializer, t_fieldPath, &leafRec) : nullptr;
 #endif
-    if (fieldName == nullptr || leafRec == nullptr)
+        Resolved r;
+        if (name != nullptr && leafRec != nullptr)
+        {
+            r.leafRec = leafRec;
+            r.type    = ClassifyLeaf(leafRec);
+            r.kind    = KindForType(r.type);
+            r.name    = name;
+        }
+        rit = g_resolve.emplace(ResolveKey{t_serializer, t_fieldToken}, std::move(r)).first;
+    }
+
+    const Resolved& rf = rit->second;
+    if (rf.leafRec == nullptr || rf.kind < 0)
         return g_origBitCopy(dst, src, bitcount);
 
-    auto it = fieldMap->find(std::string_view(fieldName));
+    auto it = fieldMap->find(std::string_view(rf.name));
     if (it == fieldMap->end())
         return g_origBitCopy(dst, src, bitcount);
 
-    FieldType type = ClassifyLeaf(leafRec);
-    int       kind = KindForType(type);
-    if (kind < 0)
-        return g_origBitCopy(dst, src, bitcount);
+    void*     leafRec = rf.leafRec;
+    int       kind    = rf.kind;
+    FieldType type    = rf.type;
 
     FieldBatch& batch = it->second;
 
@@ -521,7 +562,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         batch.kind    = kind;
         batch.hasMask = 0;
         g_dispatching = true;
-        forwards::OnSendProxyBatch->Invoke(t_entityIdx, fieldName, kind, &batch);
+        forwards::OnSendProxyBatch->Invoke(t_entityIdx, rf.name.c_str(), kind, &batch);
         g_dispatching = false;
 
         // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).
@@ -828,6 +869,10 @@ void InstallSendProxyHooks()
     g_pHookManager->Register(&g_bitCopyHook);
 
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
+
+    // Serializers (and their leaf records) are rebuilt on a map change; drop the resolve cache so a reused
+    // serializer pointer can't map an old token to the wrong field.
+    g_pHookManager->Hook_GameDeactivate(HookType_Post, [] { g_resolve.clear(); });
 
     FLOG("SendProxy: per-client hooks installed (%zu encoder types classified).", g_encoderTypes.size());
 }
