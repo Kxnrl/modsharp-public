@@ -399,6 +399,10 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 // ── Hooks ────────────────────────────────────────────────────────────────────────────────────────────────
 void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
 {
+    // The whole substitution path assumes the per-client send runs on the main thread (so g_pHooks/g_resolve
+    // need no lock). Assert it — a violation here would corrupt regardless of any lock.
+    AssertBool(g_nMainThreadId == static_cast<uint64_t>(GetCurrentThreadId()));
+
     t_client   = b;
     auto* orig = g_perClientHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
     auto  ret  = orig(a, b, c, d, e, f);
@@ -850,9 +854,18 @@ bool InstallSendProxyHooks()
 
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
 
-    // Serializers (and their leaf records) are rebuilt on a map change; drop the resolve cache so a reused
-    // serializer pointer can't map an old index to the wrong field.
-    g_pHookManager->Hook_GameDeactivate(HookType_Post, [] { g_resolve.clear(); });
+    // On a map change the serializers (and their leaf records) are rebuilt and entity teardown isn't guaranteed
+    // to fire per hooked entity, so drop everything: the resolve cache (stale serializer/index) and all
+    // registrations (else leaked FieldMaps keep g_hasAnyHook true forever).
+    g_pHookManager->Hook_GameDeactivate(HookType_Post, [] {
+        for (auto*& p : g_pHooks)
+        {
+            delete p;
+            p = nullptr;
+        }
+        g_hasAnyHook = false;
+        g_resolve.clear();
+    });
 
     g_installFailed = false;
     g_installed     = true;
