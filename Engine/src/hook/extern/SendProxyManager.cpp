@@ -63,8 +63,8 @@ namespace
 bool g_installed     = false;
 bool g_installFailed = false;
 
-constexpr int       kMaxEdicts = 16384;
-constexpr uintptr_t kUserMin   = 0x10000;
+constexpr int       MAX_ENTITY_COUNT = 16384;
+constexpr uintptr_t USER_PTR_MIN     = 0x10000;
 
 enum class FieldType : uint8_t
 {
@@ -87,20 +87,20 @@ enum class FieldType : uint8_t
 };
 
 // SendProxyValue.kind
-constexpr int kKindInt    = 0;
-constexpr int kKindFloat  = 1;
-constexpr int kKindBool   = 2;
-constexpr int kKindVector = 3;
-constexpr int kKindString = 4;
+constexpr int KIND_INT    = 0;
+constexpr int KIND_FLOAT  = 1;
+constexpr int KIND_BOOL   = 2;
+constexpr int KIND_VECTOR = 3;
+constexpr int KIND_STRING = 4;
 
 bool IsUserPtr(uintptr_t p)
 {
-    return p >= kUserMin;
+    return p >= USER_PTR_MIN;
 }
 
 bool IsUserPtr(const void* p)
 {
-    return reinterpret_cast<uintptr_t>(p) >= kUserMin;
+    return reinterpret_cast<uintptr_t>(p) >= USER_PTR_MIN;
 }
 
 using EncodeFn = void (*)(void* bf, void* fieldInfo, void* params, void* valuePtr, uint32_t extra);
@@ -111,9 +111,9 @@ struct string_hash
     size_t operator()(std::string_view s) const noexcept { return std::hash<std::string_view>{}(s); }
 };
 
-constexpr int kMaxSlots    = 64;
-constexpr int kMaxDistinct = 16;  // distinct override values per (entity,field)/tick before we stop deduping
-constexpr int kBlobCap     = 320; // max encoded field size (string ≤ 256 + slack)
+constexpr int MAX_SLOTS    = 64;
+constexpr int MAX_DISTINCT = 16;  // distinct override values per (entity,field)/tick before we stop deduping
+constexpr int BLOB_CAP     = 320; // max encoded field size (string ≤ 256 + slack)
 
 // Per-slot override values filled by ONE batched callback per (entity, field) per tick, then served to every
 // receiver in that tick's per-client loop with no further managed call. `tick` is stamped from
@@ -125,20 +125,20 @@ struct FieldBatch
     int32_t        tick    = -1;
     int32_t        kind    = 0; // SendProxyValueKind (also passed to the callback via the forward arg)
     uint64_t       hasMask = 0;
-    SendProxyValue values[kMaxSlots]{};     // managed writes up to here (offset 16); the rest is native-only.
+    SendProxyValue values[MAX_SLOTS]{};     // managed writes up to here (offset 16); the rest is native-only.
     void*          encodeLeafRec = nullptr; // the leaf the blobs were encoded with (a same-named leaf differs)
-    int8_t         slotBlob[kMaxSlots]{};   // per set slot: blob index, or -1 (passthrough)
-    int32_t        blobBits[kMaxDistinct]{};
+    int8_t         slotBlob[MAX_SLOTS]{};   // per set slot: blob index, or -1 (passthrough)
+    int32_t        blobBits[MAX_DISTINCT]{};
     int32_t        blobCount = 0;
-    uint8_t        blobData[kMaxDistinct][kBlobCap]{};
+    uint8_t        blobData[MAX_DISTINCT][BLOB_CAP]{};
 };
 
 using FieldMap = std::unordered_map<std::string, FieldBatch, string_hash, std::equal_to<>>;
 
 // ── Registration store: pointer array indexed by entity index. All access is on the main thread
 //    (registration natives, the per-client encode, and entity-delete cleanup all run there). ────────────────
-FieldMap* g_hooks[kMaxEdicts] = {};
-bool      g_hasAnyHook        = false;
+FieldMap* g_pHooks[MAX_ENTITY_COUNT] = {};
+bool      g_hasAnyHook               = false;
 
 // A batch callback can synchronously Unhook/UnhookEntity itself; erasing the map node while native is still
 // reading `batch` would be a use-after-free. While dispatching we queue erasures and flush them afterward.
@@ -273,16 +273,16 @@ int KindForType(FieldType t)
     case FieldType::Int64:
     case FieldType::Fixed32:
     case FieldType::Fixed64:
-        return kKindInt;
+        return KIND_INT;
     case FieldType::Bool:
-        return kKindBool;
+        return KIND_BOOL;
     case FieldType::Float32:
-        return kKindFloat;
+        return KIND_FLOAT;
     case FieldType::QAngle3:
     case FieldType::Vector3:
-        return kKindVector;
+        return KIND_VECTOR;
     case FieldType::String:
-        return kKindString;
+        return KIND_STRING;
     // Quantized/coord/normal need the field's count/mode word from the live value, which the per-client
     // path does not read — don't fire the forward for a kind Substitute can't emit (silent no-op otherwise).
     default:
@@ -385,11 +385,11 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 {
     switch (kind)
     {
-    case kKindInt:
-    case kKindBool: return a.i == b.i;
-    case kKindFloat: return a.f == b.f;
-    case kKindVector: return a.x == b.x && a.y == b.y && a.z == b.z;
-    case kKindString:
+    case KIND_INT:
+    case KIND_BOOL: return a.i == b.i;
+    case KIND_FLOAT: return a.f == b.f;
+    case KIND_VECTOR: return a.x == b.x && a.y == b.y && a.z == b.z;
+    case KIND_STRING:
         return a.strLen >= 0 && a.strLen < static_cast<int>(sizeof(a.str)) && a.strLen == b.strLen
                && memcmp(a.str, b.str, static_cast<size_t>(a.strLen)) == 0;
     default: return false;
@@ -397,7 +397,7 @@ bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
 }
 
 // ── Hooks ────────────────────────────────────────────────────────────────────────────────────────────────
-void* PerClientEncode_Detour(void* a, void* b, void* c, void* d, void* e, void* f)
+void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
 {
     t_client   = b;
     auto* orig = g_perClientHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
@@ -406,7 +406,7 @@ void* PerClientEncode_Detour(void* a, void* b, void* c, void* d, void* e, void* 
     return ret;
 }
 
-void* WriteDeltaEntity_Detour(void* a, void* b, void* c, void* d, void* e, void* f)
+void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e, void* f)
 {
     int prev = t_entityIdx;
     if (IsUserPtr(b))
@@ -417,7 +417,7 @@ void* WriteDeltaEntity_Detour(void* a, void* b, void* c, void* d, void* e, void*
     return ret;
 }
 
-void* WriteFieldList_Detour(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
+void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
 {
     void*          prevSer   = t_serializer;
     const int32_t* prevTable = t_bitTable;
@@ -476,15 +476,15 @@ int ResolveFieldIndex(int startBit)
     return -1;
 }
 
-uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
+uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 {
     // Substitute only during a per-client send. t_client is a thread_local set only by the per-client encode
     // (main thread); it is null on the shared-pack worker threads, so this check gates everything below to the
-    // main thread — no lock needed for g_hasAnyHook / g_hooks, which are only touched there.
-    if (t_client == nullptr || !g_hasAnyHook || bitcount == 0 || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= kMaxEdicts)
+    // main thread — no lock needed for g_hasAnyHook / g_pHooks, which are only touched there.
+    if (t_client == nullptr || !g_hasAnyHook || bitcount == 0 || !IsUserPtr(t_serializer) || t_entityIdx < 0 || t_entityIdx >= MAX_ENTITY_COUNT)
         return g_origBitCopy(dst, src, bitcount);
 
-    auto* fieldMap = g_hooks[t_entityIdx];
+    auto* fieldMap = g_pHooks[t_entityIdx];
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
@@ -543,7 +543,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
         // Encode each DISTINCT overridden value ONCE; every slot points at its blob (reused for equal values).
         batch.encodeLeafRec = leafRec;
         batch.blobCount     = 0;
-        for (int s = 0; s < kMaxSlots; s++)
+        for (int s = 0; s < MAX_SLOTS; s++)
         {
             if ((batch.hasMask & (1ull << s)) == 0)
                 continue;
@@ -563,8 +563,8 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
             {
                 batch.slotBlob[s] = static_cast<int8_t>(reuse);
             }
-            else if (batch.blobCount < kMaxDistinct
-                     && EncodeToBlob(leafRec, type, batch.values[s], batch.blobData[batch.blobCount], kBlobCap, batch.blobBits[batch.blobCount]))
+            else if (batch.blobCount < MAX_DISTINCT
+                     && EncodeToBlob(leafRec, type, batch.values[s], batch.blobData[batch.blobCount], BLOB_CAP, batch.blobBits[batch.blobCount]))
             {
                 batch.slotBlob[s] = static_cast<int8_t>(batch.blobCount++);
             }
@@ -580,7 +580,7 @@ uint8_t BitCopy_Detour(void* dst, void* src, uint32_t bitcount)
     bool    substituted = false;
     // Only substitute the exact leaf the blobs were encoded with — a same-named leaf elsewhere in the tree can
     // use a different encoder, and its blob would be malformed bits.
-    if (slot >= 0 && slot < kMaxSlots && (batch.hasMask & (1ull << slot)) != 0 && leafRec == batch.encodeLeafRec)
+    if (slot >= 0 && slot < MAX_SLOTS && (batch.hasMask & (1ull << slot)) != 0 && leafRec == batch.encodeLeafRec)
     {
         int bi = batch.slotBlob[slot];
         if (bi >= 0 && bi < batch.blobCount)
@@ -673,7 +673,7 @@ void BuildEncoderMap()
 // ── Natives ──────────────────────────────────────────────────────────────────────────────────────────────
 void RecomputeHasAny()
 {
-    for (auto* p : g_hooks)
+    for (auto* p : g_pHooks)
     {
         if (p != nullptr)
         {
@@ -684,52 +684,52 @@ void RecomputeHasAny()
     g_hasAnyHook = false;
 }
 
-void SendProxyHookField(int entityIndex, const char* field)
+void SendProxyManagerHookField(int entityIndex, const char* field)
 {
-    if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr)
+    if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT || field == nullptr)
         return;
     if (!InstallSendProxyHooks())
         return;
-    if (g_hooks[entityIndex] == nullptr)
-        g_hooks[entityIndex] = new FieldMap();
-    g_hooks[entityIndex]->try_emplace(field);
+    if (g_pHooks[entityIndex] == nullptr)
+        g_pHooks[entityIndex] = new FieldMap();
+    g_pHooks[entityIndex]->try_emplace(field);
     g_hasAnyHook = true;
 }
 
-bool SendProxyUnhookField(int entityIndex, const char* field)
+bool SendProxyManagerUnhookField(int entityIndex, const char* field)
 {
-    if (entityIndex <= 0 || entityIndex >= kMaxEdicts || field == nullptr)
+    if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT || field == nullptr)
         return false;
     if (g_dispatching)
     {
         g_pendingUnhook.emplace_back(entityIndex, field);
         return true;
     }
-    if (g_hooks[entityIndex] == nullptr)
+    if (g_pHooks[entityIndex] == nullptr)
         return false;
-    bool removed = g_hooks[entityIndex]->erase(field) > 0;
-    if (g_hooks[entityIndex]->empty())
+    bool removed = g_pHooks[entityIndex]->erase(field) > 0;
+    if (g_pHooks[entityIndex]->empty())
     {
-        delete g_hooks[entityIndex];
-        g_hooks[entityIndex] = nullptr;
+        delete g_pHooks[entityIndex];
+        g_pHooks[entityIndex] = nullptr;
         RecomputeHasAny();
     }
     return removed;
 }
 
-void SendProxyClearEntity(int entityIndex)
+void SendProxyManagerClearEntity(int entityIndex)
 {
-    if (entityIndex <= 0 || entityIndex >= kMaxEdicts)
+    if (entityIndex <= 0 || entityIndex >= MAX_ENTITY_COUNT)
         return;
     if (g_dispatching)
     {
         g_pendingClear.push_back(entityIndex);
         return;
     }
-    if (g_hooks[entityIndex] == nullptr)
+    if (g_pHooks[entityIndex] == nullptr)
         return;
-    delete g_hooks[entityIndex];
-    g_hooks[entityIndex] = nullptr;
+    delete g_pHooks[entityIndex];
+    g_pHooks[entityIndex] = nullptr;
     RecomputeHasAny();
 }
 
@@ -745,9 +745,9 @@ void FlushPending()
     g_pendingClear.clear();
 
     for (auto& [entityIndex, field] : unhook)
-        SendProxyUnhookField(entityIndex, field.c_str());
+        SendProxyManagerUnhookField(entityIndex, field.c_str());
     for (int entityIndex : clear)
-        SendProxyClearEntity(entityIndex);
+        SendProxyManagerClearEntity(entityIndex);
 }
 
 class SendProxyEntityListener : public IEntityListener
@@ -760,23 +760,23 @@ public:
         if (!g_hasAnyHook)
             return;
         const int index = pEntity->GetEntityIndex();
-        if (index > 0 && index < kMaxEdicts && g_hooks[index] != nullptr)
+        if (index > 0 && index < MAX_ENTITY_COUNT && g_pHooks[index] != nullptr)
         {
             WARN("SendProxy: entity created over hooked index %d — clearing stale hooks.", index);
-            SendProxyClearEntity(index);
+            SendProxyManagerClearEntity(index);
         }
     }
     void OnEntityDeleted(CBaseEntity* pEntity) override
     {
         if (g_hasAnyHook)
-            SendProxyClearEntity(pEntity->GetEntityIndex());
+            SendProxyManagerClearEntity(pEntity->GetEntityIndex());
     }
     void OnEntitySpawned(CBaseEntity*) override {}
     void OnEntityFollowed(CBaseEntity*, CBaseEntity*) override {}
 } static s_entityListener;
 
 template <typename Fn>
-bool InstallDetour(SafetyHookInline& hook, const char* key, Fn detour)
+bool TryInstallDetour(SafetyHookInline& hook, const char* key, Fn detour)
 {
     auto addr = g_pGameData->GetAddress<void*>(key);
     if (!IsUserPtr(addr))
@@ -800,9 +800,9 @@ namespace natives::sendproxy
 {
 void Init()
 {
-    bridge::CreateNative("SendProxy.HookField", reinterpret_cast<void*>(SendProxyHookField));
-    bridge::CreateNative("SendProxy.UnhookField", reinterpret_cast<void*>(SendProxyUnhookField));
-    bridge::CreateNative("SendProxy.ClearEntity", reinterpret_cast<void*>(SendProxyClearEntity));
+    bridge::CreateNative("SendProxy.HookField", reinterpret_cast<void*>(SendProxyManagerHookField));
+    bridge::CreateNative("SendProxy.UnhookField", reinterpret_cast<void*>(SendProxyManagerUnhookField));
+    bridge::CreateNative("SendProxy.ClearEntity", reinterpret_cast<void*>(SendProxyManagerClearEntity));
 }
 } // namespace natives::sendproxy
 
@@ -823,9 +823,9 @@ bool InstallSendProxyHooks()
         return false;
     }
 
-    if (!InstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", PerClientEncode_Detour)
-        || !InstallDetour(g_wdeHook, "CNetworkGameServerBase::WriteDeltaEntity_Internal", WriteDeltaEntity_Detour)
-        || !InstallDetour(g_wflHook, "CFlattenedSerializer::WriteFieldList", WriteFieldList_Detour))
+    if (!TryInstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", Detour_PerClientEncode)
+        || !TryInstallDetour(g_wdeHook, "CNetworkGameServerBase::WriteDeltaEntity_Internal", Detour_WriteDeltaEntity)
+        || !TryInstallDetour(g_wflHook, "CFlattenedSerializer::WriteFieldList", Detour_WriteFieldList))
     {
         WARN("SendProxy: capture hooks incomplete — SendProxy disabled.");
         return false;
@@ -838,7 +838,7 @@ bool InstallSendProxyHooks()
         WARN("SendProxy: BitCopyPrimitive not resolved — SendProxy disabled.");
         return false;
     }
-    auto bc = safetyhook::InlineHook::create(bitCopyAddr, reinterpret_cast<void*>(BitCopy_Detour));
+    auto bc = safetyhook::InlineHook::create(bitCopyAddr, reinterpret_cast<void*>(Detour_BitCopy));
     if (!bc)
     {
         WARN("SendProxy: failed to hook BitCopyPrimitive: %s", g_szInlineHookErrors[bc.error().type]);
