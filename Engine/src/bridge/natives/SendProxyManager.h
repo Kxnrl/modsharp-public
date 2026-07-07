@@ -24,15 +24,28 @@
 
 // One recipient's override value inside a per-(entity,field) batch. The managed batch callback fills the slots
 // it wants; native applies each to the matching client. Layout is blittable and mirrored by the managed struct.
+// A union: the batch-level kind decides which member is read, so the payloads share storage.
 struct SendProxyValue
 {
-    int32_t kind; // 0 int, 1 float, 2 bool, 3 vector, 4 string
-    int64_t i;
-    float   f;
-    float   x, y, z;
-    int32_t strLen;   // UTF8 byte length in str (excludes the null terminator)
-    char    str[256]; // inline so it stays alive from the callback through the re-encode on the same frame
+    union
+    {
+        int64_t i; // also bool (0/1)
+        float   f;
+
+        struct
+        {
+            float x, y, z;
+        };
+
+        struct
+        {
+            int32_t strLen;   // UTF8 byte length in str (excludes the null terminator)
+            char    str[256]; // inline so it stays alive from the callback through the re-encode on the same frame
+        };
+    };
 };
+
+static_assert(sizeof(SendProxyValue) == 264, "must match the managed SendProxyValue Size");
 
 namespace natives::sendproxy
 {

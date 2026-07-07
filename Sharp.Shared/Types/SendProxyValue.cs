@@ -24,18 +24,33 @@ using System.Text;
 namespace Sharp.Shared.Types;
 
 /// <summary>
-///     Per-slot value one client receives for the proxied field. Mirrors the native SendProxyValue layout.
+///     Per-slot value one client receives for the proxied field. Mirrors the native SendProxyValue layout:
+///     a union of the payloads — the batch-level kind decides which member the encoder reads.
 /// </summary>
-[StructLayout(LayoutKind.Sequential)]
+[StructLayout(LayoutKind.Explicit, Size = 264)]
 internal unsafe struct SendProxyValue
 {
     private const int StrCap = 256;
 
-    private int        _kind;
-    private long       _i;
-    private float      _f;
-    private float      _x, _y, _z;
-    private int        _strLen;
+    [FieldOffset(0)]
+    private long _i;
+
+    [FieldOffset(0)]
+    private float _f;
+
+    [FieldOffset(0)]
+    private float _x;
+
+    [FieldOffset(4)]
+    private float _y;
+
+    [FieldOffset(8)]
+    private float _z;
+
+    [FieldOffset(0)]
+    private int _strLen;
+
+    [FieldOffset(4)]
     private fixed byte _str[StrCap];
 
     public void SetInt(long value)    => _i = value;
