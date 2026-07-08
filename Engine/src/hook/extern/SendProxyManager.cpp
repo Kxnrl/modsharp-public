@@ -384,15 +384,16 @@ static void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e
 }
 
 // The from-baseline writer for a client's initial full snapshot. It never enters WriteDeltaEntity_Internal, so
-// without this t_entityIdx stays -1 and BitCopy passes real bits through. arg2 is the SAME per-entity ctx the
+// without this t_entityIdx stays -1 and BitCopy passes real bits through. pEntityCtx is the SAME per-entity ctx the
 // delta writer gets (entity index at +0x34, dst bf_write at +0x88 — both paths write the same per-client buffer).
-static void Detour_WriteEnterPVS(void* a, void* b)
+// void(server, entityCtx): both call sites set only rdi/rsi and discard the return (verified in libengine2).
+static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
 {
     int prev = t_entityIdx;
-    if (IsUserPtr(b))
-        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(b) + 0x34);
+    if (IsUserPtr(pEntityCtx))
+        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(pEntityCtx) + 0x34);
     auto* orig = g_enterPvsHook.original<void (*)(void*, void*)>();
-    orig(a, b);
+    orig(pServer, pEntityCtx);
     t_entityIdx = prev;
 }
 
