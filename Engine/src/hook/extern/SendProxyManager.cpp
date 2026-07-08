@@ -52,6 +52,11 @@
 // Installed lazily on the first Hook so a server not using SendProxy pays nothing on the per-client encode.
 static bool InstallSendProxyHooks();
 
+// Defined below; forward-declared so BuildEncoderMap (which runs before the offset-resolution block) can boot-
+// derive the encoder-registry strides and commit them with the same gamedata-fallback semantics as the rest.
+static void AssignOffset(int& slot, int resolved, const char* gdKey);
+static void ResolveEncoderRegistryStrides(int& bucketStride, int& bucketCount, int& entryStride, int& entryName);
+
 static bool g_installed     = false;
 static bool g_installFailed = false;
 
@@ -799,11 +804,18 @@ static void BuildEncoderMap()
         "CFlattenedSerializer::EncoderBucket7",
     };
 
-    static auto bucketCountOff = g_pGameData->GetOffset("SendProxy_EncoderBucket_Count");
-    static auto entryFuncOff    = g_pGameData->GetOffset("SendProxy_EncoderEntry_Func");
-    static auto entryNameOff    = g_pGameData->GetOffset("SendProxy_EncoderEntry_Name");
-    static auto bucketStride    = g_pGameData->GetOffset("SendProxy_EncoderBucket_Stride");
-    static auto entryStride      = g_pGameData->GetOffset("SendProxy_EncoderEntry_Stride");
+    // Four strides boot-derived from the registry-walk function (zero-touch across game updates); AssignOffset
+    // prefers the derived value, falls back to the gamedata literal if the anchor is gone, and WARNs on mismatch.
+    // EncoderEntry_Func stays gamedata — its offset is structurally indistinguishable from the entry's other
+    // code-pointer fields (see ResolveEncoderRegistryStrides); a wrong classification only skips substitution.
+    int rBucketStride = -1, rBucketCount = -1, rEntryStride = -1, rEntryName = -1;
+    ResolveEncoderRegistryStrides(rBucketStride, rBucketCount, rEntryStride, rEntryName);
+    int bucketStride = 0, bucketCountOff = 0, entryStride = 0, entryNameOff = 0;
+    AssignOffset(bucketStride, rBucketStride, "SendProxy_EncoderBucket_Stride");
+    AssignOffset(bucketCountOff, rBucketCount, "SendProxy_EncoderBucket_Count");
+    AssignOffset(entryStride, rEntryStride, "SendProxy_EncoderEntry_Stride");
+    AssignOffset(entryNameOff, rEntryName, "SendProxy_EncoderEntry_Name");
+    const auto entryFuncOff = g_pGameData->GetOffset("SendProxy_EncoderEntry_Func");
 
     for (int i = 0; i < 7; i++)
     {
@@ -1399,6 +1411,173 @@ static void ResolveSerializerFieldInfoOffsets(int& count, int& arr, int& stride,
             }
         }
         break;
+    }
+}
+
+// Derive the encoder-registry strides (EncoderBucket_Stride/Count, EncoderEntry_Stride/Name) from the
+// registry-walk function (CNetworkSerializer's InitFakeField, string-anchored on its "Unable to find network
+// encoder"/"InitFakeField: Couldn't find type lookup" literals) so a game update that shifts the registry
+// layout needs no gamedata edit. That function loads the registry via `lea R, [rip+EncoderRegistry]` and then,
+// per bucket, reads count and the entries pointer off R and walks the entry array. The two platforms encode the
+// bucket index divergently — Linux folds it into the base (`shl idx,4; add R,idx` → `[R+8]`), Windows keeps a
+// scaled index (`add idx,idx; [R + idx*8 + 8]`) — but the EFFECTIVE per-bucket byte stride is 16 on both, so we
+// decode the addressing SEMANTICS (fold-scale vs operand scale×index-prescale) rather than the raw immediates.
+// EntryStride is the entry-cursor advance (`sub cur,-0x80` on both) and EntryName the disp-0 qword read off the
+// cursor that feeds the name strcmp. EncoderEntry_Func is NOT derived here: five distinct code-pointer fields in
+// the entry struct are indistinguishable to any structural or single-instruction test, so it stays gamedata.
+// Verified derived==gamedata for the four on libnetworksystem.so + networksystem.dll. Any field not recovered
+// unambiguously stays -1 → gamedata; a wrong stride only degrades encoder classification (no substitution), the
+// same failure mode as a stale literal, so it never corrupts a stream.
+static void ResolveEncoderRegistryStrides(int& bucketStride, int& bucketCount, int& entryStride, int& entryName)
+{
+    bucketStride = bucketCount = entryStride = entryName = -1;
+
+    std::uintptr_t regAddr = 0;
+    if (!g_pGameData->GetAddress("CFlattenedSerializer::EncoderRegistry", regAddr) || !IsUserPtr(regAddr))
+        return;
+    const auto walkAddr = g_pGameData->GetAddress<uintptr_t>("CFlattenedSerializer::InitFakeField");
+    if (!IsUserPtr(walkAddr))
+        return;
+    const auto* range = modules::network->GetFunctionRange(walkAddr);
+    if (range == nullptr)
+        return;
+
+    // Decode once; capture the registry-load `lea R0, [rip+EncoderRegistry]` inline (needs the runtime ip to
+    // resolve the rip-relative target). R0 is the register that subsequently addresses the bucket array.
+    std::vector<SpDecoded> code;
+    code.reserve(2048);
+    ZydisRegister R0  = ZYDIS_REGISTER_NONE;
+    int           i0  = -1;
+    for (auto ip = range->start; ip < range->end;)
+    {
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     ops[ZYDIS_MAX_OPERAND_COUNT]{};
+        if (ZYAN_FAILED(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops)))
+            break;
+        if (R0 == ZYDIS_REGISTER_NONE && instr.mnemonic == ZYDIS_MNEMONIC_LEA && instr.operand_count_visible == 2
+            && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[1].mem.base == ZYDIS_REGISTER_RIP
+            && static_cast<std::uintptr_t>(ip + instr.length + ops[1].mem.disp.value) == regAddr)
+        {
+            R0 = ZydisUtility::GetBaseRegister(ops[0].reg.value);
+            i0 = static_cast<int>(code.size());
+        }
+        SpDecoded d{};
+        d.mnem    = instr.mnemonic;
+        d.visible = instr.operand_count_visible;
+        for (int i = 0; i < ZYDIS_MAX_OPERAND_COUNT; i++)
+            d.ops[i] = ops[i];
+        code.push_back(d);
+        ip += instr.length;
+    }
+    if (R0 == ZYDIS_REGISTER_NONE || i0 < 0)
+        return;
+
+    const int n       = static_cast<int>(code.size());
+    auto      memBase = [](const ZydisDecodedOperand& o) { return ZydisUtility::GetBaseRegister(o.mem.base); };
+    auto      memIdx  = [](const ZydisDecodedOperand& o) { return o.mem.index == ZYDIS_REGISTER_NONE ? ZYDIS_REGISTER_NONE : ZydisUtility::GetBaseRegister(o.mem.index); };
+    auto      regOf   = [](const ZydisDecodedOperand& o) { return ZydisUtility::GetBaseRegister(o.reg.value); };
+
+    // Effective self-scale of an index register: how much it multiplies the bucket loop counter, from its most
+    // recent definition before `upto` (`add r,r` ×2, `shl r,s` ×2^s, `imul r,_,k` ×k, else already the counter ×1).
+    auto selfScale = [&](int upto, ZydisRegister reg) -> int {
+        for (int j = upto - 1; j >= 0; j--)
+        {
+            const auto& x = code[j];
+            if (x.visible < 1 || x.ops[0].type != ZYDIS_OPERAND_TYPE_REGISTER || regOf(x.ops[0]) != reg)
+                continue;
+            if (x.mnem == ZYDIS_MNEMONIC_ADD && x.visible == 2 && x.ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER && regOf(x.ops[1]) == reg)
+                return 2;
+            if (x.mnem == ZYDIS_MNEMONIC_SHL && x.visible == 2 && x.ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+                return 1 << (x.ops[1].imm.value.u & 0x3F);
+            if (x.mnem == ZYDIS_MNEMONIC_IMUL && x.visible == 3 && x.ops[2].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+                return static_cast<int>(x.ops[2].imm.value.s);
+            return 1;
+        }
+        return 1;
+    };
+
+    // Case B (Linux): the bucket index is folded into the base (`add R0, T` → the count/entries reads are plain
+    // `[base + disp]`), so the effective stride is T's own scale. Case A (Windows): R0 stays the array base and
+    // the reads carry a scaled index, so the effective stride is operand-scale × index self-scale.
+    ZydisRegister bucketBase = ZYDIS_REGISTER_NONE, foldIdx = ZYDIS_REGISTER_NONE;
+    bool          caseB = false;
+    for (int i = i0 + 1; i <= i0 + 7 && i < n; i++)
+    {
+        const auto& x = code[i];
+        if (x.mnem == ZYDIS_MNEMONIC_ADD && x.visible == 2 && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && x.ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER)
+        {
+            const auto a = regOf(x.ops[0]), b = regOf(x.ops[1]);
+            if (a == R0 || b == R0)
+            {
+                bucketBase = (a == R0) ? a : b;
+                foldIdx    = (a == R0) ? b : a;
+                caseB      = true;
+                break;
+            }
+        }
+    }
+
+    ZydisRegister entReg = ZYDIS_REGISTER_NONE;
+    for (int i = i0; i <= i0 + 13 && i < n; i++)
+    {
+        const auto& x = code[i];
+        for (int oi = 0; oi < x.visible; oi++)
+        {
+            const auto& op = x.ops[oi];
+            if (op.type != ZYDIS_OPERAND_TYPE_MEMORY)
+                continue;
+            const int disp = static_cast<int>(op.mem.disp.value);
+            if (caseB)
+            {
+                if (memBase(op) != bucketBase || op.mem.index != ZYDIS_REGISTER_NONE)
+                    continue;
+                if (op.size == 32 && (x.mnem == ZYDIS_MNEMONIC_MOV || x.mnem == ZYDIS_MNEMONIC_MOVSXD) && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && bucketCount < 0)
+                    bucketCount = disp;
+                else if (op.size == 64 && x.mnem == ZYDIS_MNEMONIC_MOV && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && disp == 0 && entReg == ZYDIS_REGISTER_NONE)
+                    entReg = regOf(x.ops[0]);
+            }
+            else
+            {
+                if (memBase(op) != R0 || op.mem.index == ZYDIS_REGISTER_NONE)
+                    continue;
+                const int eff = op.mem.scale * selfScale(i, memIdx(op));
+                if (op.size == 32 && (x.mnem == ZYDIS_MNEMONIC_MOV || x.mnem == ZYDIS_MNEMONIC_MOVSXD) && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && bucketCount < 0)
+                {
+                    bucketCount  = disp;
+                    bucketStride = eff;
+                }
+                else if (op.size == 64 && x.mnem == ZYDIS_MNEMONIC_MOV && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && disp == 0 && entReg == ZYDIS_REGISTER_NONE)
+                    entReg = regOf(x.ops[0]);
+            }
+        }
+    }
+    if (caseB && foldIdx != ZYDIS_REGISTER_NONE)
+        bucketStride = selfScale(i0, foldIdx);
+
+    // Entry cursor: stride from its loop advance (`sub cur,-0x80` / `add cur,0x80`); name from the smallest-disp
+    // qword LOAD (source read) off the cursor — both within the classification loop right after the entries read.
+    if (entReg != ZYDIS_REGISTER_NONE)
+    {
+        for (int i = i0; i <= i0 + 40 && i < n; i++)
+        {
+            const auto& x = code[i];
+            if ((x.mnem == ZYDIS_MNEMONIC_SUB || x.mnem == ZYDIS_MNEMONIC_ADD) && x.visible == 2 && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && regOf(x.ops[0]) == entReg && x.ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+            {
+                int v = static_cast<int>(x.ops[1].imm.value.s);
+                if (x.mnem == ZYDIS_MNEMONIC_SUB)
+                    v = -v;
+                if (v != 0 && entryStride < 0)
+                    entryStride = v < 0 ? -v : v;
+            }
+            if (x.mnem == ZYDIS_MNEMONIC_MOV && x.visible == 2 && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && x.ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && x.ops[1].size == 64 && memBase(x.ops[1]) == entReg && x.ops[1].mem.index == ZYDIS_REGISTER_NONE)
+            {
+                const int disp = static_cast<int>(x.ops[1].mem.disp.value);
+                if (entryName < 0 || disp < entryName)
+                    entryName = disp;
+            }
+        }
     }
 }
 

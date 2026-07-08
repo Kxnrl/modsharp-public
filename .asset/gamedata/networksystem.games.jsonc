@@ -56,6 +56,17 @@
         "strings": [ "CFlattenedSerializer::MaybeWriteFlattenedSerializers_R, skipping already wrote stable %s : %d\n" ]
       }
     },
+    // Registry-walk (CNetworkSerializer::InitFakeField). NOT hooked — scanned once at boot to auto-derive the
+    // encoder-registry strides (it loads EncoderRegistry via lea and walks the bucket/entry arrays). String-
+    // anchored on its self-naming assert; byte sig kept as fallback.
+    "CFlattenedSerializer::InitFakeField": {
+      "library": "networksystem",
+      "linux": "55 48 89 E5 41 57 41 56 48 8D 85 ? ? ? ? 41 55 49 89 C7 41 54 53 4C 89 CB 48 81 EC",
+      "windows": "4C 89 4C 24 20 4C 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 95",
+      "refs": {
+        "strings": [ "InitFakeField:  Couldn't find type lookup for '%s' of type '%s'\n" ]
+      }
+    },
     // 8-bucket encoder table for field-type classification (buckets 1 int, 2 uint, 3 vec, 4 float, 5 string, 7 bool).
     // Byte sig + factory (+3 r → registry base): the lea is deep in its fn, so a string anchor would be more fragile.
     "CFlattenedSerializer::EncoderRegistry": {
@@ -71,9 +82,11 @@
     "CFlattenedSerializer::EncoderBucket7": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +112 d" }, "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +112 d" } }
   },
   // SendProxy struct offsets (windows==linux, both confirmed). Most are boot-derived at runtime (bf_write from
-  // BitCopyPrimitive; serializer-node + fieldInfo dispatch from MaybeWriteFlattenedSerializers_R) — these literals
-  // are the fallback if the disassembly anchor is gone. FieldInfo_Name + the encoder-registry strides stay numeric
-  // (no stable cross-platform anchor), so a shift in those needs an edit here (not a recompile).
+  // BitCopyPrimitive; serializer-node + fieldInfo dispatch from MaybeWriteFlattenedSerializers_R; the encoder
+  // bucket/entry strides from InitFakeField) — these literals are the fallback if the disassembly anchor is gone.
+  // FieldInfo_Name + EncoderEntry_Func stay numeric (no unambiguous cross-platform derivation — FieldInfo_Name
+  // aliases SerializerField_Child at +8 and its struct is runtime-heap; EncoderEntry_Func is one of five look-alike
+  // code-pointer fields), so a shift in those two needs an edit here (not a recompile).
   "Offsets": {
     // Flattened-serializer node (walked by WalkToLeafRec): field count, record array, record stride, child ptr.
     // Boot-derived (ResolveSerializerFieldInfoOffsets); fallback only.
@@ -81,7 +94,8 @@
     "SendProxy_Serializer_FieldsArray": { "linux": 48, "windows": 48 },
     "SendProxy_Serializer_FieldStride": { "linux": 46, "windows": 46 },
     "SendProxy_SerializerField_Child": { "linux": 8, "windows": 8 },
-    // FieldInfo: name (numeric), encoder dispatch, params base, param-offset byte (0xFF = no params).
+    // FieldInfo: name (numeric — aliases SerializerField_Child at +8, runtime-heap struct, no offline proof),
+    // encoder dispatch, params base, param-offset byte (0xFF = no params).
     // Dispatch/base/param-offset boot-derived (ResolveSerializerFieldInfoOffsets); fallback only. Name stays numeric.
     "SendProxy_FieldInfo_Name": { "linux": 8, "windows": 8 },
     "SendProxy_FieldInfo_EncoderDispatch": { "linux": 56, "windows": 56 },
@@ -93,7 +107,8 @@
     "SendProxy_BfWrite_BitCap": { "linux": 12, "windows": 12 },
     "SendProxy_BfWrite_CurBit": { "linux": 16, "windows": 16 },
     "SendProxy_BfWrite_Overflow": { "linux": 32, "windows": 32 },
-    // Encoder registry: bucket {entries*, count} + strides, entry {name, fn}.
+    // Encoder registry: bucket {entries*, count} + strides, entry {name, fn}. Count/Bucket_Stride/Entry_Stride/
+    // Entry_Name boot-derived (ResolveEncoderRegistryStrides); fallback only. Entry_Func stays numeric (ambiguous).
     "SendProxy_EncoderBucket_Count": { "linux": 8, "windows": 8 },
     "SendProxy_EncoderBucket_Stride": { "linux": 16, "windows": 16 },
     "SendProxy_EncoderEntry_Stride": { "linux": 128, "windows": 128 },
