@@ -73,6 +73,17 @@ static int g_offBfReadCurBit    = -1;
 static int g_offWriteInfoBitTable   = -1;
 static int g_offWriteInfoSnapshot   = -1;
 static int g_offWriteInfoFieldCount = -1;
+// Flattened-serializer node (FieldCount/FieldsArray/FieldStride/Child) + fieldInfo encoder dispatch
+// (EncoderDispatch/EncoderBase/ParamOffset) — all boot-derived together from the string-anchored
+// CFlattenedSerializer::MaybeWriteFlattenedSerializers_R, which walks the field-record tree and, per leaf,
+// reads the encoder dispatch. Fall back to gamedata if the anchor/scan is gone; -1 = unresolved.
+static int g_offSerFieldCount  = -1;
+static int g_offSerFieldsArray = -1;
+static int g_offSerFieldStride = -1;
+static int g_offSerChild       = -1;
+static int g_offFiDispatch     = -1;
+static int g_offFiBase         = -1;
+static int g_offFiParamOff     = -1;
 
 // Offset-drift safety. The boot-resolved offsets are trusted over the gamedata literals, so before ANY bit is
 // substituted they must prove themselves once against live encode data — else a wrong derivation on a future game
@@ -206,21 +217,9 @@ struct SpSerializerNode
 {
     uint8_t* base;
     explicit SpSerializerNode(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
-    [[nodiscard]] int FieldCount() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldCount");
-        return *reinterpret_cast<int*>(base + off);
-    }
-    [[nodiscard]] void* FieldsArray() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldsArray");
-        return *reinterpret_cast<void**>(base + off);
-    }
-    static int FieldStride()
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldStride");
-        return off;
-    }
+    [[nodiscard]] int FieldCount() const { return *reinterpret_cast<int*>(base + g_offSerFieldCount); }
+    [[nodiscard]] void* FieldsArray() const { return *reinterpret_cast<void**>(base + g_offSerFieldsArray); }
+    static int FieldStride() { return g_offSerFieldStride; }
 };
 
 // One field record inside a node's array. record[0] == fieldInfo; a non-null Child means a sub-serializer.
@@ -228,11 +227,7 @@ struct SpSerializerField
 {
     uint8_t* rec;
     explicit SpSerializerField(void* p) : rec(reinterpret_cast<uint8_t*>(p)) {}
-    [[nodiscard]] void* Child() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_SerializerField_Child");
-        return *reinterpret_cast<void**>(rec + off);
-    }
+    [[nodiscard]] void* Child() const { return *reinterpret_cast<void**>(rec + g_offSerChild); }
     [[nodiscard]] void* FieldInfo() const { return *reinterpret_cast<void**>(rec); }
 };
 
@@ -246,21 +241,9 @@ struct SpFieldInfo
         static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_Name");
         return *reinterpret_cast<char**>(base + off);
     }
-    [[nodiscard]] void* EncoderDispatch() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
-        return *reinterpret_cast<void**>(base + off);
-    }
-    [[nodiscard]] void* EncoderBase() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderBase");
-        return *reinterpret_cast<void**>(base + off);
-    }
-    [[nodiscard]] uint8_t ParamOffset() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_ParamOffset");
-        return *(base + off);
-    }
+    [[nodiscard]] void* EncoderDispatch() const { return *reinterpret_cast<void**>(base + g_offFiDispatch); }
+    [[nodiscard]] void* EncoderBase() const { return *reinterpret_cast<void**>(base + g_offFiBase); }
+    [[nodiscard]] uint8_t ParamOffset() const { return *(base + g_offFiParamOff); }
 };
 
 // WriteFieldList's per-call field descriptor (detour arg5): source snapshot + start-bit table + field count.
@@ -1233,6 +1216,192 @@ static void ResolveWriteInfoOffsets(int& table, int& snapshot, int& count)
         table = snapshot = count = -1;
 }
 
+// Derive the flattened-serializer node offsets (FieldCount/FieldsArray/FieldStride/Child) AND the fieldInfo
+// encoder-dispatch offsets (EncoderDispatch/EncoderBase/ParamOffset) from CFlattenedSerializer::
+// MaybeWriteFlattenedSerializers_R so a game update that shifts those layouts needs no gamedata edit. That
+// function is string-anchored (its own self-naming assert literal) and walks the field-record tree exactly as
+// WalkToLeafRec does: it forms `rec = FieldsArray + index*FieldStride` (`imul r,r,stride` on Windows / a loop
+// `add [slot], stride` on Linux), reads `fieldInfo = rec[0]`, `child = rec[+C]`, and per leaf reads the encoder
+// dispatch with the tell `movzx r32, byte[fieldInfo + ParamOffset]; cmp r8, 0xFF` flanked by `mov r64,
+// [fieldInfo + EncoderDispatch]` and `add r64, [fieldInfo + EncoderBase]`. Verified derived==gamedata for all
+// seven on libnetworksystem.so + networksystem.dll. Any field not recovered unambiguously stays -1 → gamedata.
+// A wrong serializer-tree offset is caught by the Detour_BitCopy V1 drift gate (leaf count != field count →
+// substitution goes inert); a wrong dispatch/base/param offset degrades to "no substitution" via ClassifyLeaf
+// (encoder fn not in the map) and EncodeToBlob's IsUserPtr + ParamOffset (0xFF / >=0x80) plausibility guards.
+struct SpDecoded
+{
+    ZydisMnemonic       mnem;
+    uint8_t             visible;
+    ZydisDecodedOperand ops[ZYDIS_MAX_OPERAND_COUNT];
+};
+
+static void ResolveSerializerFieldInfoOffsets(int& count, int& arr, int& stride, int& child, int& dispatch, int& base, int& paramOff)
+{
+    count = arr = stride = child = dispatch = base = paramOff = -1;
+
+    const auto addr = g_pGameData->GetAddress<uintptr_t>("CFlattenedSerializer::MaybeWriteFlattenedSerializers_R");
+    if (!IsUserPtr(addr))
+        return;
+    const auto* range = modules::network->GetFunctionRange(addr);
+    if (range == nullptr)
+        return;
+
+    // Decode the function once so the passes below can look both ways (the encoder dispatch is loaded just
+    // before its own param-offset tell, and the record fields just after the array-base add).
+    std::vector<SpDecoded> code;
+    code.reserve(2048);
+    for (auto ip = range->start; ip < range->end;)
+    {
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     ops[ZYDIS_MAX_OPERAND_COUNT]{};
+        if (ZYAN_FAILED(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops)))
+            break;
+        SpDecoded d{};
+        d.mnem    = instr.mnemonic;
+        d.visible = instr.operand_count_visible;
+        for (int i = 0; i < ZYDIS_MAX_OPERAND_COUNT; i++)
+            d.ops[i] = ops[i];
+        code.push_back(d);
+        ip += instr.length;
+    }
+
+    const int n       = static_cast<int>(code.size());
+    auto      memBase = [](const ZydisDecodedOperand& o) { return ZydisUtility::GetBaseRegister(o.mem.base); };
+    auto      regBase = [](const ZydisDecodedOperand& o) { return ZydisUtility::GetBaseRegister(o.reg.value); };
+
+    // Pass 1: fieldInfo triple. The param-offset byte read `movzx r32, byte[R+d]` immediately guarded by
+    // `cmp r8, 0xFF` (the "no params" sentinel) both pins ParamOffset=d and identifies R as the fieldInfo reg.
+    ZydisRegister fiReg = ZYDIS_REGISTER_NONE;
+    int           fiIdx = -1;
+    for (int i = 0; i < n && fiReg == ZYDIS_REGISTER_NONE; i++)
+    {
+        const auto& x = code[i];
+        if (x.mnem == ZYDIS_MNEMONIC_MOVZX && x.visible == 2 && x.ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && x.ops[1].size == 8 && x.ops[1].mem.index == ZYDIS_REGISTER_NONE && x.ops[1].mem.disp.has_displacement)
+        {
+            for (int j = i + 1; j <= i + 2 && j < n; j++)
+            {
+                const auto& y = code[j];
+                if (y.mnem == ZYDIS_MNEMONIC_CMP && y.visible == 2 && y.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && y.ops[0].size == 8 && y.ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && (y.ops[1].imm.value.u & 0xFF) == 0xFF)
+                {
+                    paramOff = static_cast<int>(x.ops[1].mem.disp.value);
+                    fiReg    = memBase(x.ops[1]);
+                    fiIdx    = i;
+                    break;
+                }
+            }
+        }
+    }
+    // dispatch (`mov r64, [fi+e]`, sits just before the tell) + base (`add r64, [fi+f]`, just after) off fiReg.
+    if (fiReg != ZYDIS_REGISTER_NONE)
+    {
+        const int lo = fiIdx - 6 < 0 ? 0 : fiIdx - 6;
+        const int hi = fiIdx + 8 > n ? n : fiIdx + 8;
+        for (int i = lo; i < hi; i++)
+        {
+            const auto& x = code[i];
+            if (x.visible != 2 || x.ops[0].type != ZYDIS_OPERAND_TYPE_REGISTER || x.ops[1].type != ZYDIS_OPERAND_TYPE_MEMORY
+                || x.ops[1].size != 64 || x.ops[1].mem.index != ZYDIS_REGISTER_NONE || memBase(x.ops[1]) != fiReg)
+                continue;
+            if (x.mnem == ZYDIS_MNEMONIC_MOV && dispatch < 0)
+                dispatch = static_cast<int>(x.ops[1].mem.disp.value);
+            else if (x.mnem == ZYDIS_MNEMONIC_ADD && base < 0)
+                base = static_cast<int>(x.ops[1].mem.disp.value);
+        }
+    }
+
+    // Pass 2: record quadruple. `add rREC, qword[node+Darr]` (array base) followed within a few insns by
+    // `mov rFI, [rREC]` (fieldInfo = record[0]) and `mov rX, [rREC+C]` (child) pins FieldsArray=Darr, Child=C
+    // and the node register. The record stride is the imul that fed rREC (Windows) or a loop `add [slot], imm`
+    // (Linux); the field count is the small dword read off the same node just before the array base add.
+    ZydisRegister lastImulReg = ZYDIS_REGISTER_NONE;
+    int64_t       lastImulImm = 0;
+    for (int i = 0; i < n; i++)
+    {
+        const auto& x = code[i];
+        if (x.mnem == ZYDIS_MNEMONIC_IMUL && x.visible == 3 && x.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && x.ops[2].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+        {
+            lastImulReg = regBase(x.ops[0]);
+            lastImulImm = x.ops[2].imm.value.s;
+        }
+        if (x.mnem != ZYDIS_MNEMONIC_ADD || x.visible != 2 || x.ops[0].type != ZYDIS_OPERAND_TYPE_REGISTER
+            || x.ops[1].type != ZYDIS_OPERAND_TYPE_MEMORY || x.ops[1].size != 64 || x.ops[1].mem.index != ZYDIS_REGISTER_NONE)
+            continue;
+
+        const auto recReg  = regBase(x.ops[0]);
+        const auto nodeReg = memBase(x.ops[1]);
+        const int  darr    = static_cast<int>(x.ops[1].mem.disp.value);
+        if (recReg == ZYDIS_REGISTER_NONE || nodeReg == ZYDIS_REGISTER_NONE || darr <= 0)
+            continue;
+
+        bool gotFi = false;
+        int  ch    = -1;
+        for (int j = i + 1; j <= i + 5 && j < n; j++)
+        {
+            const auto& y = code[j];
+            if (y.mnem == ZYDIS_MNEMONIC_MOV && y.visible == 2 && y.ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && y.ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && y.ops[1].size == 64
+                && y.ops[1].mem.index == ZYDIS_REGISTER_NONE && memBase(y.ops[1]) == recReg)
+            {
+                const int dd = static_cast<int>(y.ops[1].mem.disp.value);
+                if (dd == 0)
+                    gotFi = true;
+                else if (dd > 0 && dd < 0x20 && ch < 0)
+                    ch = dd;
+            }
+        }
+        if (!gotFi || ch <= 0)
+            continue;
+
+        arr   = darr;
+        child = ch;
+        if (lastImulReg == recReg)
+            stride = static_cast<int>(lastImulImm);
+        // FieldCount: earliest small dword read/cmp off the same node register in the window before the add.
+        const int flo = i - 40 < 0 ? 0 : i - 40;
+        for (int j = flo; j < i && count < 0; j++)
+        {
+            const auto& y = code[j];
+            if (y.visible < 2)
+                continue;
+            int mo = -1;
+            if (y.ops[0].type == ZYDIS_OPERAND_TYPE_MEMORY && y.ops[0].size == 32
+                && y.ops[0].mem.index == ZYDIS_REGISTER_NONE && memBase(y.ops[0]) == nodeReg)
+                mo = static_cast<int>(y.ops[0].mem.disp.value);
+            else if (y.ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && y.ops[1].size == 32
+                     && y.ops[1].mem.index == ZYDIS_REGISTER_NONE && memBase(y.ops[1]) == nodeReg)
+                mo = static_cast<int>(y.ops[1].mem.disp.value);
+            if (mo >= 0x20 && mo < 0x30)
+                count = mo;
+        }
+        // Stride fallback (Linux has no record imul — the loop bumps the record cursor by the stride).
+        if (stride < 0)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                const auto& y = code[j];
+                if (y.mnem == ZYDIS_MNEMONIC_ADD && y.visible == 2 && y.ops[0].type == ZYDIS_OPERAND_TYPE_MEMORY
+                    && y.ops[0].size == 64 && y.ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+                {
+                    const auto b = ZydisUtility::GetBaseRegister(y.ops[0].mem.base);
+                    if (b == ZYDIS_REGISTER_RBP || b == ZYDIS_REGISTER_RSP)
+                    {
+                        const int v = static_cast<int>(y.ops[1].imm.value.s);
+                        if (v >= 0x10 && v < 0x80 && (v & 1) == 0)
+                        {
+                            stride = v;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        break;
+    }
+}
+
 static bool InstallSendProxyHooks()
 {
     if (g_installed)
@@ -1290,6 +1459,18 @@ static bool InstallSendProxyHooks()
         AssignOffset(g_offWriteInfoBitTable, table, "SendProxy_WriteInfo_BitOffsetTable");
         AssignOffset(g_offWriteInfoSnapshot, snapshot, "SendProxy_WriteInfo_SnapshotBuffer");
         AssignOffset(g_offWriteInfoFieldCount, fieldCount, "SendProxy_WriteInfo_FieldCount");
+
+        // Serializer-tree + fieldInfo dispatch offsets (one string-anchored scan yields all seven). The V1
+        // drift gate covers a wrong tree offset; ClassifyLeaf/EncodeToBlob guards cover a wrong dispatch offset.
+        int serCount = -1, serArr = -1, serStride = -1, serChild = -1, fiDisp = -1, fiBase = -1, fiParam = -1;
+        ResolveSerializerFieldInfoOffsets(serCount, serArr, serStride, serChild, fiDisp, fiBase, fiParam);
+        AssignOffset(g_offSerFieldCount, serCount, "SendProxy_Serializer_FieldCount");
+        AssignOffset(g_offSerFieldsArray, serArr, "SendProxy_Serializer_FieldsArray");
+        AssignOffset(g_offSerFieldStride, serStride, "SendProxy_Serializer_FieldStride");
+        AssignOffset(g_offSerChild, serChild, "SendProxy_SerializerField_Child");
+        AssignOffset(g_offFiDispatch, fiDisp, "SendProxy_FieldInfo_EncoderDispatch");
+        AssignOffset(g_offFiBase, fiBase, "SendProxy_FieldInfo_EncoderBase");
+        AssignOffset(g_offFiParamOff, fiParam, "SendProxy_FieldInfo_ParamOffset");
     }
 
     if (!TryInstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", Detour_PerClientEncode)

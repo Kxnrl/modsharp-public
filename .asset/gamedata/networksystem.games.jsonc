@@ -45,6 +45,17 @@
       "linux": "55 48 89 F0 41 89 D0 48 89 E5 41 57 41 56 41 55",
       "windows": "48 8B C4 44 89 40 ? 48 89 48 ? 41 57 48 83 EC 30"
     },
+    // Recursive flattened-serializer table writer. NOT hooked — scanned once at boot to auto-derive the
+    // serializer-node + fieldInfo struct offsets (it walks the field-record tree and reads each leaf's encoder
+    // dispatch). String-anchored on its self-naming assert; byte sig kept as fallback.
+    "CFlattenedSerializer::MaybeWriteFlattenedSerializers_R": {
+      "library": "networksystem",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 4D 89 C4 53 48 89 FB 48 81 EC 18 01 00 00",
+      "windows": "4D 89 6B D0 ? ? 49 89 73 18 48 8B D1 88 81 11 02 00 00 48 8B CB 49 89 7B D8",
+      "refs": {
+        "strings": [ "CFlattenedSerializer::MaybeWriteFlattenedSerializers_R, skipping already wrote stable %s : %d\n" ]
+      }
+    },
     // 8-bucket encoder table for field-type classification (buckets 1 int, 2 uint, 3 vec, 4 float, 5 string, 7 bool).
     // Byte sig + factory (+3 r → registry base): the lea is deep in its fn, so a string anchor would be more fragile.
     "CFlattenedSerializer::EncoderRegistry": {
@@ -59,15 +70,19 @@
     "CFlattenedSerializer::EncoderBucket5": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +80 d" },  "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +80 d" } },
     "CFlattenedSerializer::EncoderBucket7": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +112 d" }, "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +112 d" } }
   },
-  // SendProxy struct offsets (windows==linux, both confirmed). bf_write is boot-derived at runtime — these are its
-  // fallback; serializer/fieldInfo/registry are numeric, so a layout shift needs an edit here (not a recompile).
+  // SendProxy struct offsets (windows==linux, both confirmed). Most are boot-derived at runtime (bf_write from
+  // BitCopyPrimitive; serializer-node + fieldInfo dispatch from MaybeWriteFlattenedSerializers_R) — these literals
+  // are the fallback if the disassembly anchor is gone. FieldInfo_Name + the encoder-registry strides stay numeric
+  // (no stable cross-platform anchor), so a shift in those needs an edit here (not a recompile).
   "Offsets": {
     // Flattened-serializer node (walked by WalkToLeafRec): field count, record array, record stride, child ptr.
+    // Boot-derived (ResolveSerializerFieldInfoOffsets); fallback only.
     "SendProxy_Serializer_FieldCount": { "linux": 40, "windows": 40 },
     "SendProxy_Serializer_FieldsArray": { "linux": 48, "windows": 48 },
     "SendProxy_Serializer_FieldStride": { "linux": 46, "windows": 46 },
     "SendProxy_SerializerField_Child": { "linux": 8, "windows": 8 },
-    // FieldInfo: name, encoder dispatch, params base, param-offset byte (0xFF = no params).
+    // FieldInfo: name (numeric), encoder dispatch, params base, param-offset byte (0xFF = no params).
+    // Dispatch/base/param-offset boot-derived (ResolveSerializerFieldInfoOffsets); fallback only. Name stays numeric.
     "SendProxy_FieldInfo_Name": { "linux": 8, "windows": 8 },
     "SendProxy_FieldInfo_EncoderDispatch": { "linux": 56, "windows": 56 },
     "SendProxy_FieldInfo_EncoderBase": { "linux": 64, "windows": 64 },
