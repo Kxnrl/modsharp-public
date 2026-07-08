@@ -137,16 +137,6 @@ static void                                     FlushPending();
 
 static std::unordered_map<uintptr_t, SpFieldType> g_encoderTypes;
 
-// Offset-drift safety. SendProxy only ever substitutes bits into a client's stream AFTER the offsets used to
-// locate a field have proven themselves against the LIVE data (VerifyOffsetPathOnce below). Until then real bits
-// pass through untouched, so a gamedata offset that drifts on a game update can only make SendProxy inert — never
-// silently corrupt the wire. Persistent non-verification is latched and logged loudly instead of retried forever.
-static bool     g_pathVerified  = false; // the resolve+encode offsets are confirmed consistent with live structures
-static bool     g_pathBroken    = false; // gave up verifying (offsets look drifted) — substitution stays disabled
-static uint64_t g_verifyAttempts = 0;    // hooked-entity BitCopy calls seen while still unverified
-static bool     g_encodeWarned  = false; // one-shot warn when the engine encoder rejects our scratch bf_write
-static bool     g_encodeChecked = false; // first engine-encode has been sanity-checked for bf_write layout drift
-
 // Per-thread captures, set by hooks on this thread and consumed at BitCopy (field identity resolved via ResolveFieldIndex below).
 static thread_local void*          t_client     = nullptr;
 static thread_local int            t_entityIdx  = -1;
@@ -184,29 +174,178 @@ static SafetyHookInline g_enterPvsHook{};
 static SafetyHookInline g_wflHook{};
 static SafetyHookInline g_bitCopyHook{};
 
+// ─── Typed accessors over the engine's flattened-serializer structures ───
+// Each reads its layout from the SendProxy_* gamedata offsets (same names/values as before — only the
+// access is named now), mirroring the house pattern in cstrike/type/CServerSideClient.h so the scattered
+// +offset math stays out of the substitution logic.
+
+// A flattened-serializer tree node, walked in the same DFS order as the bit-offset table.
+struct SpSerializerNode
+{
+    uint8_t* base;
+    explicit SpSerializerNode(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] int FieldCount() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldCount");
+        return *reinterpret_cast<int*>(base + off);
+    }
+    [[nodiscard]] void* FieldsArray() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldsArray");
+        return *reinterpret_cast<void**>(base + off);
+    }
+    static int FieldStride()
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_Serializer_FieldStride");
+        return off;
+    }
+};
+
+// One field record inside a node's array. record[0] == fieldInfo; a non-null Child means a sub-serializer.
+struct SpSerializerField
+{
+    uint8_t* rec;
+    explicit SpSerializerField(void* p) : rec(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] void* Child() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_SerializerField_Child");
+        return *reinterpret_cast<void**>(rec + off);
+    }
+    [[nodiscard]] void* FieldInfo() const { return *reinterpret_cast<void**>(rec); }
+};
+
+// FieldInfo: encoder dispatch / params / name for a leaf field.
+struct SpFieldInfo
+{
+    uint8_t* base;
+    explicit SpFieldInfo(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] char* Name() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_Name");
+        return *reinterpret_cast<char**>(base + off);
+    }
+    [[nodiscard]] void* EncoderDispatch() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
+        return *reinterpret_cast<void**>(base + off);
+    }
+    [[nodiscard]] void* EncoderBase() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderBase");
+        return *reinterpret_cast<void**>(base + off);
+    }
+    [[nodiscard]] uint8_t ParamOffset() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_FieldInfo_ParamOffset");
+        return *(base + off);
+    }
+};
+
+// WriteFieldList's per-call field descriptor (detour arg5): source snapshot + start-bit table + field count.
+struct SpWriteInfo
+{
+    uint8_t* base;
+    explicit SpWriteInfo(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] const int32_t* BitOffsetTable() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_BitOffsetTable");
+        return *reinterpret_cast<const int32_t**>(base + off);
+    }
+    [[nodiscard]] void* SnapshotBuffer() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_SnapshotBuffer");
+        return *reinterpret_cast<void**>(base + off);
+    }
+    [[nodiscard]] int32_t FieldCount() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_FieldCount");
+        return *reinterpret_cast<int32_t*>(base + off);
+    }
+};
+
+// Per-entity pack context (arg2 of the delta / EnterPVS writers). The entity-index displacement is resolved
+// at load into g_offEntityIndex (ResolveEntityIndexOffset, gamedata fallback), so it's read via that, not a name.
+struct SpPackContext
+{
+    uint8_t* base;
+    explicit SpPackContext(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] int EntityIndex() const { return *reinterpret_cast<int*>(base + g_offEntityIndex); }
+};
+
+// Local bf_write scratch we build to drive the engine encoder — layout mirrors the engine's bf_write.
+struct SpBfWrite
+{
+    uint8_t* base;
+    explicit SpBfWrite(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    void SetData(const void* d)
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
+        *reinterpret_cast<const void**>(base + off) = d;
+    }
+    void SetByteCap(int v)
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
+        *reinterpret_cast<int*>(base + off) = v;
+    }
+    void SetBitCap(int v)
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
+        *reinterpret_cast<int*>(base + off) = v;
+    }
+    void SetCurBit(int v)
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
+        *reinterpret_cast<int*>(base + off) = v;
+    }
+    [[nodiscard]] int CurBit() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
+        return *reinterpret_cast<int*>(base + off);
+    }
+    [[nodiscard]] uint8_t Overflow() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_Overflow");
+        return *(base + off);
+    }
+};
+
+// Engine bf_read cursor on the snapshot buffer — only the read-position field is needed.
+struct SpBfRead
+{
+    uint8_t* base;
+    explicit SpBfRead(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
+    [[nodiscard]] int CurBit() const
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
+        return *reinterpret_cast<int*>(base + off);
+    }
+    void Advance(int bits)
+    {
+        static auto off = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
+        *reinterpret_cast<int*>(base + off) += bits;
+    }
+};
+
 // Walks leaf records in the same flattened DFS order as the bit-offset table, so `target` equals the cursor-matched field index.
 static void* WalkToLeafRec(void* serializer, int& current, int target, int depth)
 {
     if (depth > 4 || !IsUserPtr(serializer))
         return nullptr;
 
-    static auto fieldCountOff  = g_pGameData->GetOffset("SendProxy_Serializer_FieldCount");
-    static auto fieldsArrayOff = g_pGameData->GetOffset("SendProxy_Serializer_FieldsArray");
-    static auto fieldStride    = g_pGameData->GetOffset("SendProxy_Serializer_FieldStride");
-    static auto childOff       = g_pGameData->GetOffset("SendProxy_SerializerField_Child");
-
-    int count = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(serializer) + fieldCountOff);
+    const SpSerializerNode node(serializer);
+    const int              count = node.FieldCount();
     if (count <= 0 || count > 4096)
         return nullptr;
 
-    void* arr = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(serializer) + fieldsArrayOff);
+    void* arr = node.FieldsArray();
     if (!IsUserPtr(arr))
         return nullptr;
 
+    const int stride = SpSerializerNode::FieldStride();
     for (int i = 0; i < count; i++)
     {
-        void* rec   = reinterpret_cast<uint8_t*>(arr) + i * fieldStride;
-        void* child = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(rec) + childOff);
+        void* rec   = reinterpret_cast<uint8_t*>(arr) + i * stride;
+        void* child = SpSerializerField(rec).Child();
         if (IsUserPtr(child))
         {
             if (void* found = WalkToLeafRec(child, current, target, depth + 1))
@@ -233,14 +372,12 @@ static const char* ResolveFieldNameByIndex(void* serializer, int index, void** l
     if (!IsUserPtr(rec))
         return nullptr;
 
-    void* fieldInfo = *reinterpret_cast<void**>(rec);
+    void* fieldInfo = SpSerializerField(rec).FieldInfo();
     if (!IsUserPtr(fieldInfo))
         return nullptr;
 
-    static auto nameOff = g_pGameData->GetOffset("SendProxy_FieldInfo_Name");
-
     *leafRecOut = rec;
-    auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(fieldInfo) + nameOff);
+    auto name   = SpFieldInfo(fieldInfo).Name();
     if (!IsUserPtr(name))
         return nullptr;
     // A real field name starts with an identifier char. If SendProxy_FieldInfo_Name drifts, this reads a garbage
@@ -256,11 +393,10 @@ static SpFieldType ClassifyLeaf(void* leafRec)
 {
     if (!IsUserPtr(leafRec))
         return SpFieldType::Unsupported;
-    void* fieldInfo = *reinterpret_cast<void**>(leafRec);
+    void* fieldInfo = SpSerializerField(leafRec).FieldInfo();
     if (!IsUserPtr(fieldInfo))
         return SpFieldType::Unsupported;
-    static auto dispatchOff = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
-    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + dispatchOff);
+    void* dispatch = SpFieldInfo(fieldInfo).EncoderDispatch();
     if (!IsUserPtr(dispatch))
         return SpFieldType::Unsupported;
     auto encFn = *reinterpret_cast<uintptr_t*>(dispatch);
@@ -297,37 +433,27 @@ static uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
 
 static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
 {
-    static auto dispatchOff    = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
-    static auto paramOffsetOff  = g_pGameData->GetOffset("SendProxy_FieldInfo_ParamOffset");
-    static auto encoderBaseOff  = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderBase");
-
-    void* fieldInfo = *reinterpret_cast<void**>(leafRec);
+    void* fieldInfo = SpSerializerField(leafRec).FieldInfo();
     if (!IsUserPtr(fieldInfo))
         return false;
-    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + dispatchOff);
+    const SpFieldInfo info(fieldInfo);
+    void*             dispatch = info.EncoderDispatch();
     if (!IsUserPtr(dispatch))
         return false;
     auto encFn = *reinterpret_cast<SpEncodeFn*>(dispatch);
     if (!IsUserPtr(reinterpret_cast<void*>(encFn)))
         return false;
 
-    uint8_t paramOff  = *(reinterpret_cast<uint8_t*>(fieldInfo) + paramOffsetOff);
+    uint8_t paramOff  = info.ParamOffset();
     void*   paramsPtr = nullptr;
-    // A real param offset is either the 0xFF "no params" sentinel or a small index into the params blob. A value
-    // in between means SendProxy_FieldInfo_ParamOffset (or _EncoderBase) drifted — refuse to build a params
-    // pointer from it and hand it to the engine encoder. Returning false leaves the real value in the stream.
+    // Plausibility guard: a real param offset is either the 0xFF "no params" sentinel or a small index into the
+    // params blob. A value in between means the ParamOffset/EncoderBase layout is off — refuse rather than build a
+    // bogus params pointer and hand it to the engine encoder. Returning false leaves the real value in the stream.
     if (paramOff != 0xFF && paramOff >= 0x80)
-    {
-        if (!g_encodeWarned)
-        {
-            g_encodeWarned = true;
-            WARN("SendProxy: implausible FieldInfo param-offset 0x%02x — SendProxy_FieldInfo_ParamOffset/_EncoderBase may have drifted; not substituting this field.", paramOff);
-        }
         return false;
-    }
     if (paramOff != 0xFF)
     {
-        void* base = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + encoderBaseOff);
+        void* base = info.EncoderBase();
         if (!IsUserPtr(base))
             return false;
         paramsPtr = reinterpret_cast<uint8_t*>(base) + paramOff;
@@ -361,40 +487,20 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
         return false; // quantized/coord need the live count/mode word — unsupported here.
     }
 
-    // Local bf_write layout (offsets from gamedata): data ptr, byte cap, bit cap, cursor bits, overflow byte.
-    static auto bwDataOff     = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
-    static auto bwByteCapOff  = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
-    static auto bwBitCapOff   = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
-    static auto bwCurBitOff   = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
-    static auto bwOverflowOff = g_pGameData->GetOffset("SendProxy_BfWrite_Overflow");
+    // Local bf_write scratch we build to drive the engine encoder (layout mirrors the engine's bf_write).
+    uint8_t   data[512]{};
+    uint8_t   bwBuf[0x40]{};
+    SpBfWrite bw(bwBuf);
+    bw.SetData(data);
+    bw.SetByteCap(sizeof(data));
+    bw.SetBitCap(sizeof(data) * 8);
+    bw.SetCurBit(0);
 
-    uint8_t data[512]{};
-    uint8_t bw[0x40]{};
-    *reinterpret_cast<void**>(bw + bwDataOff)  = data;
-    *reinterpret_cast<int*>(bw + bwByteCapOff) = sizeof(data);
-    *reinterpret_cast<int*>(bw + bwBitCapOff)  = sizeof(data) * 8;
-    *reinterpret_cast<int*>(bw + bwCurBitOff)  = 0;
+    encFn(bwBuf, fieldInfo, paramsPtr, valuePtr, 0);
 
-    encFn(bw, fieldInfo, paramsPtr, valuePtr, 0);
-
-    int     encodedBits = *reinterpret_cast<int*>(bw + bwCurBitOff);
-    uint8_t overflow    = *(bw + bwOverflowOff);
+    int     encodedBits = bw.CurBit();
+    uint8_t overflow    = bw.Overflow();
     int     bytes       = (encodedBits + 7) / 8;
-
-    // First drive of the engine encoder into our scratch bf_write: an impossible result (overflow flag not 0/1,
-    // or a bit count that can't fit the 512-byte buffer) means the SendProxy_BfWrite_* layout offsets drifted.
-    // Disable substitution loudly rather than risk splicing malformed bits. Latched — the hot path below is the
-    // ordinary graceful reject (value legitimately didn't fit), which just leaves the real bits in the stream.
-    if (!g_encodeChecked)
-    {
-        g_encodeChecked = true;
-        if (overflow > 1 || encodedBits < 0 || encodedBits > static_cast<int>(sizeof(data)) * 8)
-        {
-            g_pathBroken = true;
-            WARN("SendProxy: bf_write scratch produced an impossible encode (bits=%d overflow=%d) — SendProxy_BfWrite_* offsets look drifted; substitution disabled.", encodedBits, static_cast<int>(overflow));
-            return false;
-        }
-    }
 
     if (overflow != 0 || encodedBits <= 0 || bytes > outCap)
         return false;
@@ -407,20 +513,15 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
 // Skips the real value in src, then emits the cached blob via a fresh bf_write through the engine's own BitCopy.
 static uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
 {
-    static auto bwDataOff      = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
-    static auto bwByteCapOff   = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
-    static auto bwBitCapOff    = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
-    static auto bwCurBitOff    = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
-    static auto readCurBitOff  = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
+    uint8_t   bwBuf[0x40]{};
+    SpBfWrite bw(bwBuf);
+    bw.SetData(blob);
+    bw.SetByteCap((bits + 7) / 8);
+    bw.SetBitCap(bits);
+    bw.SetCurBit(0);
 
-    uint8_t bw[0x40]{};
-    *reinterpret_cast<const void**>(bw + bwDataOff) = blob;
-    *reinterpret_cast<int*>(bw + bwByteCapOff)      = (bits + 7) / 8;
-    *reinterpret_cast<int*>(bw + bwBitCapOff)       = bits;
-    *reinterpret_cast<int*>(bw + bwCurBitOff)       = 0;
-
-    *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff) += static_cast<int>(bitcount);
-    return g_origBitCopy(dst, bw, static_cast<uint32_t>(bits));
+    SpBfRead(src).Advance(static_cast<int>(bitcount)); // skip the real value in the source stream
+    return g_origBitCopy(dst, bwBuf, static_cast<uint32_t>(bits));
 }
 
 static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue& b)
@@ -438,25 +539,31 @@ static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue&
     }
 }
 
-static void* Detour_PerClientEncode(void* a, void* b, void* c, void* d, void* e, void* f)
+// CNetworkGameServer::PerClientEncode(this, recipient, ..): arg1 is the server (this), arg2 the CServerSideClient
+// recipient we capture as t_client. arg3..arg6 are the engine's per-frame encode context (snapshot/baseline/pack
+// buffers/flags), opaque to the substitution path and forwarded to the original verbatim.
+static void* Detour_PerClientEncode(void* pServer, void* pClient, void* arg3, void* arg4, void* arg5, void* arg6)
 {
     // The whole substitution path assumes main-thread execution (no locks on g_pHooks/g_resolve) — assert it.
     AssertBool(g_nMainThreadId == static_cast<uint64_t>(GetCurrentThreadId()));
 
-    t_client   = b;
+    t_client   = pClient;
     auto* orig = g_perClientHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
-    auto  ret  = orig(a, b, c, d, e, f);
+    auto  ret  = orig(pServer, pClient, arg3, arg4, arg5, arg6);
     t_client   = nullptr;
     return ret;
 }
 
-static void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e, void* f)
+// CNetworkGameServerBase::WriteDeltaEntity_Internal(server, entityCtx, ..): arg1 is the server (this), arg2 the
+// per-entity pack context we read the entity index from. arg3 is used by the engine but opaque to us; arg4..arg6
+// are unused by the function — all forwarded to the original verbatim.
+static void* Detour_WriteDeltaEntity(void* pServer, void* pEntityCtx, void* arg3, void* arg4, void* arg5, void* arg6)
 {
     int prev = t_entityIdx;
-    if (IsUserPtr(b))
-        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(b) + g_offEntityIndex);
+    if (IsUserPtr(pEntityCtx))
+        t_entityIdx = SpPackContext(pEntityCtx).EntityIndex();
     auto* orig  = g_wdeHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
-    auto  ret   = orig(a, b, c, d, e, f);
+    auto  ret   = orig(pServer, pEntityCtx, arg3, arg4, arg5, arg6);
     t_entityIdx = prev;
     return ret;
 }
@@ -469,30 +576,29 @@ static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
 {
     int prev = t_entityIdx;
     if (IsUserPtr(pEntityCtx))
-        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(pEntityCtx) + g_offEntityIndex);
+        t_entityIdx = SpPackContext(pEntityCtx).EntityIndex();
     auto* orig = g_enterPvsHook.original<void (*)(void*, void*)>();
     orig(pServer, pEntityCtx);
     t_entityIdx = prev;
 }
 
-static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
+// CFlattenedSerializer::WriteFieldList(serializer, .., fieldDesc[arg5], ..). arg1 is the serializer being written
+// and arg5 is the per-call field descriptor (start-bit table + source snapshot + field count); the remaining args
+// (arg2/3/4 and arg6..9) are opaque to the substitution path and forwarded to the original verbatim.
+static void* Detour_WriteFieldList(void* pSerializer, void* arg2, void* arg3, void* arg4, void* pFieldDesc, uint32_t arg6, uint32_t arg7, void* arg8, uint32_t arg9)
 {
     void*          prevSer   = t_serializer;
     const int32_t* prevTable = t_bitTable;
     void*          prevData  = t_srcData;
     int            prevCount = t_fieldCount;
 
-    // e = param_5: the field descriptor. table (start bits), snapshot buffer, field count — offsets from gamedata.
-    static auto bitTableOff = g_pGameData->GetOffset("SendProxy_WriteInfo_BitOffsetTable");
-    static auto srcDataOff  = g_pGameData->GetOffset("SendProxy_WriteInfo_SnapshotBuffer");
-    static auto fieldCntOff = g_pGameData->GetOffset("SendProxy_WriteInfo_FieldCount");
-
-    t_serializer = a;
-    if (IsUserPtr(e))
+    t_serializer = pSerializer;
+    if (IsUserPtr(pFieldDesc))
     {
-        t_bitTable   = *reinterpret_cast<const int32_t**>(reinterpret_cast<uint8_t*>(e) + bitTableOff);
-        t_srcData    = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(e) + srcDataOff);
-        t_fieldCount = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(e) + fieldCntOff);
+        const SpWriteInfo info(pFieldDesc);
+        t_bitTable   = info.BitOffsetTable();
+        t_srcData    = info.SnapshotBuffer();
+        t_fieldCount = info.FieldCount();
     }
     else
     {
@@ -503,7 +609,7 @@ static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, 
     }
 
     auto* orig = g_wflHook.original<void* (*)(void*, void*, void*, void*, void*, uint32_t, uint32_t, void*, uint32_t)>();
-    auto  ret  = orig(a, b, c, d, e, p6, p7, p8, p9);
+    auto  ret  = orig(pSerializer, arg2, arg3, arg4, pFieldDesc, arg6, arg7, arg8, arg9);
 
     t_serializer = prevSer;
     t_bitTable   = prevTable;
@@ -537,48 +643,6 @@ static int ResolveFieldIndex(int startBit)
     return -1;
 }
 
-// One-time positive verification of every offset on the resolve+encode path, cross-checked against the live
-// structures the engine just handed us. It runs only while unverified and ALWAYS does a plain pass-through copy
-// (we never substitute on an unverified path), so it cannot corrupt anything. It confirms the offsets only when
-// three independent invariants hold together on the same call — a drifted offset cannot satisfy all three by
-// chance. Returns true (with *out set) when it handled the copy; the caller then returns *out without substituting.
-//   V1  serializer tree (FieldCount/FieldsArray/FieldStride/Child) walks to exactly t_fieldCount leaves
-//   V2  bit-offset table (WriteInfo BitOffsetTable + FieldCount) is non-decreasing and bounded — the binary
-//       search in ResolveFieldIndex depends on this, so a wrong table pointer cannot pass it
-//   V3  the bf_read cursor (BfRead_CurBit) advances by exactly bitcount across the engine's own copy
-static bool VerifyOffsetPathOnce(void* dst, void* src, uint32_t bitcount, int readCurBitOff, uint8_t* out)
-{
-    const int pre = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff);
-    *out          = g_origBitCopy(dst, src, bitcount); // always a real copy while unverified — never a splice
-    const int post = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff);
-
-    // V3 — cursor advanced by exactly the bits copied (proves BfRead_CurBit points at the real read cursor).
-    if (post - pre != static_cast<int>(bitcount))
-        return true;
-
-    // V2 — start-bit table monotonic (equal allowed: zero-width fields share a start bit) and in range.
-    if (!IsUserPtr(t_bitTable) || t_fieldCount <= 0 || t_fieldCount > 4096)
-        return true;
-    int prev = -1;
-    for (int i = 1; i <= t_fieldCount; i++)
-    {
-        const int v = t_bitTable[i];
-        if (v < prev || v < 0 || v > (1 << 28))
-            return true;
-        prev = v;
-    }
-
-    // V1 — the tree walk yields exactly one leaf per bit-table entry (0x7fffffff never matches, so it walks all).
-    int leaves = 0;
-    WalkToLeafRec(t_serializer, leaves, 0x7fffffff, 0);
-    if (leaves != t_fieldCount)
-        return true;
-
-    // All three independent invariants agree → the whole offset path is consistent. Trust it from here on.
-    g_pathVerified = true;
-    return true;
-}
-
 static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 {
     // t_client is set only during the per-client encode (main thread) and null on shared-pack worker threads, so this gate makes the whole path main-thread-only — no locks needed on g_hasAnyHook/g_pHooks.
@@ -589,35 +653,11 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
-    // Substitution is gated on VerifyOffsetPathOnce having confirmed the offsets. If they never verify (drift),
-    // latch it once with a loud warning so the feature goes visibly inert rather than silently — but stay
-    // pass-through (never corrupt). The threshold is far above a healthy server's warm-up (it verifies within the
-    // first few snapshot copies), so crossing it means the SendProxy_* offsets no longer match this build.
-    if (g_pathBroken)
-        return g_origBitCopy(dst, src, bitcount);
-    if (!g_pathVerified && ++g_verifyAttempts > 200000)
-    {
-        g_pathBroken = true;
-        WARN("SendProxy: offset path never structurally verified after %llu encodes — substitution disabled. Check the SendProxy_* gamedata offsets against this game build.", static_cast<unsigned long long>(g_verifyAttempts));
-        return g_origBitCopy(dst, src, bitcount);
-    }
-
     // Gate out BitCopy calls on other buffers (merge/scratch) — only the snapshot buffer carries our fields.
     if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
         return g_origBitCopy(dst, src, bitcount);
 
-    static auto readCurBitOff = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
-
-    // Never substitute until the offsets have proven themselves on the live data. While unverified this always
-    // returns a plain copy, so a drifted offset degrades to "SendProxy does nothing", never to a corrupt stream.
-    if (!g_pathVerified)
-    {
-        uint8_t vout = 0;
-        if (VerifyOffsetPathOnce(dst, src, bitcount, readCurBitOff, &vout))
-            return vout;
-    }
-
-    int index = ResolveFieldIndex(*reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff));
+    int index = ResolveFieldIndex(SpBfRead(src).CurBit());
     if (index < 0)
         return g_origBitCopy(dst, src, bitcount);
 
