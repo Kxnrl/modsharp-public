@@ -90,10 +90,13 @@ static int g_offFiDispatch     = -1;
 static int g_offFiBase         = -1;
 static int g_offFiParamOff     = -1;
 
-// Offset-drift safety. The boot-resolved offsets are trusted over the gamedata literals, so before ANY bit is
-// substituted they must prove themselves once against live encode data — else a wrong derivation on a future game
-// build would silently corrupt every hooked client's stream. Until verified, real bits pass through untouched;
-// a failed check latches substitution off with a loud warning. One-time, so no steady-state cost.
+// Offset-drift safety (one-time, before any substitution). V3 validates the bf cursor offset (src advances by
+// exactly bitcount); V1 validates the serializer-tree offsets + WriteInfo_FieldCount (walk yields one leaf per
+// field). These two gate the field-RESOLUTION path. The ENCODE-path offsets (FieldInfo dispatch, bf_write layout,
+// registry) are NOT gated here — they rely on their own guards: encoder-map lookup (dispatch), overflow/byte-cap
+// reject (bf_write), name match (bit table), src-buffer gate (snapshot). A wrong value is inert via one of those,
+// or a loud crash (BfWrite_Data) — never silent corruption, now that params-using QAngle is excluded (see
+// KindForType). Until verified, real bits pass through; a failed V3/V1 latches substitution off with a WARN.
 static bool g_offsetsVerified = false;
 static bool g_offsetsBad      = false;
 
@@ -384,12 +387,15 @@ static int KindForType(SpFieldType t)
         return KIND_BOOL;
     case SpFieldType::Float32:
         return KIND_FLOAT;
-    case SpFieldType::QAngle3:
     case SpFieldType::Vector3:
         return KIND_VECTOR;
-    case SpFieldType::String:
-        return KIND_STRING;
+    // QAngle deliberately excluded: it is the ONLY substituted type whose encoder dereferences the fieldInfo
+    // params pointer (a bit-count selector at params[0]), so a wrong FieldInfo_EncoderBase/ParamOffset (a future
+    // resolver misfire or a real layout drift) would feed it a bogus selector and emit a valid-but-wrong-format
+    // blob — silent client desync the drift gate can't catch (it never encodes). Re-enable only once the gate
+    // trial-encodes a live field and compares the blob to the real bits. Other types ignore params, so they're safe.
     // Quantized/coord/normal need a count/mode word this path doesn't read; return -1 so no forward fires.
+    case SpFieldType::QAngle3:
     default:
         return -1;
     }
@@ -1621,8 +1627,9 @@ static bool InstallSendProxyHooks()
 
     // Auto-resolve the bitbuf + WriteInfo struct offsets from the binary too (same zero-touch-across-updates goal;
     // AssignOffset prefers the derived value, falls back to gamedata if the anchor is gone, and WARNs on mismatch).
-    // Safe to prefer the derived value because Detour_BitCopy gates all substitution on a one-time live check of
-    // these offsets — a wrong derivation makes SendProxy inert, not corrupt (g_offsetsVerified/g_offsetsBad).
+    // Prefer the derived value: a wrong one is inert via V1 (tree offsets), the encoder-map lookup (dispatch), or
+    // the overflow/name/src-buffer guards (bf_write/WriteInfo) — or a loud crash (BfWrite_Data), never silent
+    // corruption (QAngle, the only params-using type, is excluded from substitution — see KindForType).
     {
         int data = -1, byteCap = -1, bitCap = -1, curBit = -1, overflow = -1;
         ResolveBitBufOffsets(data, byteCap, bitCap, curBit, overflow);
