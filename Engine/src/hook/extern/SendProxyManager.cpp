@@ -99,8 +99,8 @@ struct SpStringHash
 };
 
 constexpr int MAX_SLOTS    = 64;
-constexpr int MAX_DISTINCT = 16;  // distinct override values per (entity,field)/tick before we stop deduping
-constexpr int BLOB_CAP     = 320; // max encoded field size (string ≤ 256 + slack)
+constexpr int MAX_DISTINCT = MAX_SLOTS; // 64 slots => at most 64 distinct values, so the blob pool can never overflow
+constexpr int BLOB_CAP     = 320;       // max encoded field size (string ≤ 256 + slack)
 
 // One batched callback per (entity, field) per tick fills every slot; each distinct value is encoded ONCE into a blob and equal-value slots reuse it via bit-splice.
 struct SpFieldBatch

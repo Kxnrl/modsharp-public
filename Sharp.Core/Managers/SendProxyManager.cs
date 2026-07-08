@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.GameEntities;
 using Sharp.Core.Utilities;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
@@ -52,7 +53,33 @@ internal class SendProxyManager : ICoreSendProxyManager
         _tracked        = [];
 
         Forward.OnSendProxyBatch += OnSendProxyBatch;
+
+        // Native clears its own table on entity deletion and on map change; mirror both here so the managed
+        // dictionary can't keep dead (entity, field) entries the native side has already dropped.
+        Bridges.Forwards.Entity.OnEntityDeleted += OnEntityDeleted;
+        Bridges.Forwards.Game.OnGameDeactivate  += OnGameDeactivate;
     }
+
+    private void OnEntityDeleted(nint ptr)
+    {
+        if (_hooks.Count == 0)
+        {
+            return;
+        }
+
+        var entity = BaseEntity.Create(ptr);
+        if (entity is null)
+        {
+            return;
+        }
+
+        var index = entity.Index.AsPrimitive();
+        RemoveWhere(k => k.Entity == index);
+    }
+
+    // A map change rebuilds the serializers and wipes the native table wholesale; drop the managed mirror to match.
+    private void OnGameDeactivate()
+        => _hooks.Clear();
 
     public void Hook(IBaseEntity entity, string field, ISendProxyManager.DelegateSendProxyBatch callback)
     {

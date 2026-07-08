@@ -47,10 +47,13 @@ public interface ISendProxyManager
     /// <summary>
     ///     Register <paramref name="callback" /> for a field on a single entity. It fires once per tick while
     ///     that field is networked. <paramref name="field" /> is the network field name (e.g. <c>m_iHealth</c>).
-    ///     <para>The callback only fires when the entity is actually encoded into a client's delta. Entities that
-    ///     rarely change (e.g. <c>prop_dynamic</c>) are not re-encoded until a value changes, so a passive hook on
-    ///     one may never fire — proxy fields that update every tick (pawns, etc.), or mark the field dirty each
-    ///     tick yourself to force the entity into the delta.</para>
+    ///     <para>Delivery: the callback fires — and an override is applied — only while the field is being
+    ///     (re)networked to a client in a delta, i.e. the entity is re-encoded because one of its networked values
+    ///     genuinely changed. A field whose value is static is not re-sent, so a passive hook on a rarely-changing
+    ///     entity (e.g. <c>prop_dynamic</c>) may never fire — hook fields that change often (pawns, etc.). Changing
+    ///     only the spoofed value does not pull the field into the delta, so it alone triggers nothing; the real
+    ///     value must change. The override is likewise not applied during a client's initial full (from-baseline)
+    ///     snapshot.</para>
     /// </summary>
     void Hook(IBaseEntity entity, string field, DelegateSendProxyBatch callback);
 
