@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "address.h"
 #include "bridge/natives/SendProxyManager.h"
 #include "bridge/adapter.h"
 #include "bridge/forwards/forward.h"
@@ -24,6 +25,8 @@
 #include "global.h"
 #include "logging.h"
 #include "manager/HookManager.h"
+#include "memory/zydis_utility.h"
+#include "module.h"
 #include "murmurhash.h"
 
 #include "cstrike/entity/CBaseEntity.h"
@@ -39,6 +42,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include <Zydis.h>
 #include <safetyhook.hpp>
 
 // SendProxy — per-client net-var override during the flattened-serializer encode. Managed code registers
@@ -132,6 +136,16 @@ static std::vector<int>                         g_pendingClear;
 static void                                     FlushPending();
 
 static std::unordered_map<uintptr_t, SpFieldType> g_encoderTypes;
+
+// Offset-drift safety. SendProxy only ever substitutes bits into a client's stream AFTER the offsets used to
+// locate a field have proven themselves against the LIVE data (VerifyOffsetPathOnce below). Until then real bits
+// pass through untouched, so a gamedata offset that drifts on a game update can only make SendProxy inert — never
+// silently corrupt the wire. Persistent non-verification is latched and logged loudly instead of retried forever.
+static bool     g_pathVerified  = false; // the resolve+encode offsets are confirmed consistent with live structures
+static bool     g_pathBroken    = false; // gave up verifying (offsets look drifted) — substitution stays disabled
+static uint64_t g_verifyAttempts = 0;    // hooked-entity BitCopy calls seen while still unverified
+static bool     g_encodeWarned  = false; // one-shot warn when the engine encoder rejects our scratch bf_write
+static bool     g_encodeChecked = false; // first engine-encode has been sanity-checked for bf_write layout drift
 
 // Per-thread captures, set by hooks on this thread and consumed at BitCopy (field identity resolved via ResolveFieldIndex below).
 static thread_local void*          t_client     = nullptr;
@@ -227,7 +241,15 @@ static const char* ResolveFieldNameByIndex(void* serializer, int index, void** l
 
     *leafRecOut = rec;
     auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(fieldInfo) + nameOff);
-    return IsUserPtr(name) ? name : nullptr;
+    if (!IsUserPtr(name))
+        return nullptr;
+    // A real field name starts with an identifier char. If SendProxy_FieldInfo_Name drifts, this reads a garbage
+    // pointer; the leading-byte check plus the exact match against the hooked-field set below makes an accidental
+    // hit effectively impossible, so a wrong Name offset degrades to "no substitution", never a wrong one.
+    const char c = *name;
+    if (c != '_' && !(c >= 'A' && c <= 'Z') && !(c >= 'a' && c <= 'z'))
+        return nullptr;
+    return name;
 }
 
 static SpFieldType ClassifyLeaf(void* leafRec)
@@ -291,6 +313,18 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
 
     uint8_t paramOff  = *(reinterpret_cast<uint8_t*>(fieldInfo) + paramOffsetOff);
     void*   paramsPtr = nullptr;
+    // A real param offset is either the 0xFF "no params" sentinel or a small index into the params blob. A value
+    // in between means SendProxy_FieldInfo_ParamOffset (or _EncoderBase) drifted — refuse to build a params
+    // pointer from it and hand it to the engine encoder. Returning false leaves the real value in the stream.
+    if (paramOff != 0xFF && paramOff >= 0x80)
+    {
+        if (!g_encodeWarned)
+        {
+            g_encodeWarned = true;
+            WARN("SendProxy: implausible FieldInfo param-offset 0x%02x — SendProxy_FieldInfo_ParamOffset/_EncoderBase may have drifted; not substituting this field.", paramOff);
+        }
+        return false;
+    }
     if (paramOff != 0xFF)
     {
         void* base = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + encoderBaseOff);
@@ -346,6 +380,22 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
     int     encodedBits = *reinterpret_cast<int*>(bw + bwCurBitOff);
     uint8_t overflow    = *(bw + bwOverflowOff);
     int     bytes       = (encodedBits + 7) / 8;
+
+    // First drive of the engine encoder into our scratch bf_write: an impossible result (overflow flag not 0/1,
+    // or a bit count that can't fit the 512-byte buffer) means the SendProxy_BfWrite_* layout offsets drifted.
+    // Disable substitution loudly rather than risk splicing malformed bits. Latched — the hot path below is the
+    // ordinary graceful reject (value legitimately didn't fit), which just leaves the real bits in the stream.
+    if (!g_encodeChecked)
+    {
+        g_encodeChecked = true;
+        if (overflow > 1 || encodedBits < 0 || encodedBits > static_cast<int>(sizeof(data)) * 8)
+        {
+            g_pathBroken = true;
+            WARN("SendProxy: bf_write scratch produced an impossible encode (bits=%d overflow=%d) — SendProxy_BfWrite_* offsets look drifted; substitution disabled.", encodedBits, static_cast<int>(overflow));
+            return false;
+        }
+    }
+
     if (overflow != 0 || encodedBits <= 0 || bytes > outCap)
         return false;
 
@@ -487,6 +537,48 @@ static int ResolveFieldIndex(int startBit)
     return -1;
 }
 
+// One-time positive verification of every offset on the resolve+encode path, cross-checked against the live
+// structures the engine just handed us. It runs only while unverified and ALWAYS does a plain pass-through copy
+// (we never substitute on an unverified path), so it cannot corrupt anything. It confirms the offsets only when
+// three independent invariants hold together on the same call — a drifted offset cannot satisfy all three by
+// chance. Returns true (with *out set) when it handled the copy; the caller then returns *out without substituting.
+//   V1  serializer tree (FieldCount/FieldsArray/FieldStride/Child) walks to exactly t_fieldCount leaves
+//   V2  bit-offset table (WriteInfo BitOffsetTable + FieldCount) is non-decreasing and bounded — the binary
+//       search in ResolveFieldIndex depends on this, so a wrong table pointer cannot pass it
+//   V3  the bf_read cursor (BfRead_CurBit) advances by exactly bitcount across the engine's own copy
+static bool VerifyOffsetPathOnce(void* dst, void* src, uint32_t bitcount, int readCurBitOff, uint8_t* out)
+{
+    const int pre = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff);
+    *out          = g_origBitCopy(dst, src, bitcount); // always a real copy while unverified — never a splice
+    const int post = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff);
+
+    // V3 — cursor advanced by exactly the bits copied (proves BfRead_CurBit points at the real read cursor).
+    if (post - pre != static_cast<int>(bitcount))
+        return true;
+
+    // V2 — start-bit table monotonic (equal allowed: zero-width fields share a start bit) and in range.
+    if (!IsUserPtr(t_bitTable) || t_fieldCount <= 0 || t_fieldCount > 4096)
+        return true;
+    int prev = -1;
+    for (int i = 1; i <= t_fieldCount; i++)
+    {
+        const int v = t_bitTable[i];
+        if (v < prev || v < 0 || v > (1 << 28))
+            return true;
+        prev = v;
+    }
+
+    // V1 — the tree walk yields exactly one leaf per bit-table entry (0x7fffffff never matches, so it walks all).
+    int leaves = 0;
+    WalkToLeafRec(t_serializer, leaves, 0x7fffffff, 0);
+    if (leaves != t_fieldCount)
+        return true;
+
+    // All three independent invariants agree → the whole offset path is consistent. Trust it from here on.
+    g_pathVerified = true;
+    return true;
+}
+
 static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
 {
     // t_client is set only during the per-client encode (main thread) and null on shared-pack worker threads, so this gate makes the whole path main-thread-only — no locks needed on g_hasAnyHook/g_pHooks.
@@ -497,11 +589,34 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     if (fieldMap == nullptr)
         return g_origBitCopy(dst, src, bitcount);
 
+    // Substitution is gated on VerifyOffsetPathOnce having confirmed the offsets. If they never verify (drift),
+    // latch it once with a loud warning so the feature goes visibly inert rather than silently — but stay
+    // pass-through (never corrupt). The threshold is far above a healthy server's warm-up (it verifies within the
+    // first few snapshot copies), so crossing it means the SendProxy_* offsets no longer match this build.
+    if (g_pathBroken)
+        return g_origBitCopy(dst, src, bitcount);
+    if (!g_pathVerified && ++g_verifyAttempts > 200000)
+    {
+        g_pathBroken = true;
+        WARN("SendProxy: offset path never structurally verified after %llu encodes — substitution disabled. Check the SendProxy_* gamedata offsets against this game build.", static_cast<unsigned long long>(g_verifyAttempts));
+        return g_origBitCopy(dst, src, bitcount);
+    }
+
     // Gate out BitCopy calls on other buffers (merge/scratch) — only the snapshot buffer carries our fields.
     if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
         return g_origBitCopy(dst, src, bitcount);
 
     static auto readCurBitOff = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
+
+    // Never substitute until the offsets have proven themselves on the live data. While unverified this always
+    // returns a plain copy, so a drifted offset degrades to "SendProxy does nothing", never to a corrupt stream.
+    if (!g_pathVerified)
+    {
+        uint8_t vout = 0;
+        if (VerifyOffsetPathOnce(dst, src, bitcount, readCurBitOff, &vout))
+            return vout;
+    }
+
     int index = ResolveFieldIndex(*reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff));
     if (index < 0)
         return g_origBitCopy(dst, src, bitcount);
@@ -813,6 +928,57 @@ void Init()
 }
 } // namespace natives::sendproxy
 
+// Auto-derive the pack-context entity-index offset from libengine2 so a game update that shifts it needs no
+// gamedata edit. Anchor: CNetworkGameServerBase::WriteEnterPVS reads the entity index as the FIRST dword load
+// from its entityCtx arg (arg1) right in the prologue — `mov r32, [arg1 + 0x34]` — then immediately masks it
+// with 0x3ff to index the edict-chunk table, a stable Valve idiom. Returns the displacement, or -1 if the
+// anchor is gone (the caller then falls back to the gamedata literal). Verified derived==52 on both the current
+// libengine2.so and engine2.dll; this is the only SendProxy offset with an unambiguous single-instruction anchor
+// — the rest stay on gamedata because a wrong displacement here corrupts the stream silently rather than crashing.
+static int ResolveEntityIndexOffset()
+{
+    const auto addr = g_pGameData->GetAddress<uintptr_t>("CNetworkGameServerBase::WriteEnterPVS");
+    if (!IsUserPtr(addr))
+        return -1;
+
+    const auto* range = modules::engine->GetFunctionRange(addr);
+    if (range == nullptr)
+        return -1;
+
+#ifdef PLATFORM_WINDOWS
+    constexpr auto kArg1 = ZYDIS_REGISTER_RDX; // WriteEnterPVS(server=rcx, entityCtx=rdx)
+#else
+    constexpr auto kArg1 = ZYDIS_REGISTER_RSI; // WriteEnterPVS(server=rdi, entityCtx=rsi)
+#endif
+
+    // Bound the scan to the prologue: the read is at +0x17/+0x19, so a match past this window would be an
+    // unrelated arg1 access on a shifted binary — better to miss (and fall back) than to grab a wrong offset.
+    const uintptr_t windowEnd = range->start + 0x60;
+    const uintptr_t scanEnd    = windowEnd < range->end ? windowEnd : range->end;
+
+    int result = -1;
+    ZydisUtility::ScanInstructions(range->start, scanEnd, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        // first `mov r32, dword [entityCtx + disp]`
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+            && instr.operand_count_visible == 2
+            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && operands[1].size == 32
+            && ZydisUtility::GetBaseRegister(operands[1].mem.base) == kArg1
+            && operands[1].mem.index == ZYDIS_REGISTER_NONE
+            && operands[1].mem.disp.has_displacement
+            && operands[1].mem.disp.value > 0
+            && operands[1].mem.disp.value < 0x1000)
+        {
+            result = static_cast<int>(operands[1].mem.disp.value);
+            return true;
+        }
+        return false;
+    });
+
+    return result;
+}
+
 static bool InstallSendProxyHooks()
 {
     if (g_installed)
@@ -831,7 +997,25 @@ static bool InstallSendProxyHooks()
     }
 
     // Resolve once here (before the detours below are installed) so both entity-index detours read a plain int.
-    g_offEntityIndex = g_pGameData->GetOffset("SendProxy_PackContext_EntityIndex");
+    // Prefer the value auto-derived from libengine2 (zero-touch across game updates); fall back to the gamedata
+    // literal if the disassembly anchor is gone, and WARN on any mismatch so a stale gamedata value is visible.
+    {
+        int        gd       = 0;
+        const bool haveGd   = g_pGameData->GetOffset("SendProxy_PackContext_EntityIndex", &gd);
+        const int  resolved = ResolveEntityIndexOffset();
+        if (resolved > 0)
+        {
+            if (haveGd && resolved != gd)
+                WARN("SendProxy: PackContext_EntityIndex auto-resolved=%d differs from gamedata=%d — using resolved (gamedata literal may be stale).", resolved, gd);
+            g_offEntityIndex = resolved;
+        }
+        else
+        {
+            // Anchor missing — fall back to gamedata (FatalErrors if that too is absent; never a silent 0).
+            WARN("SendProxy: PackContext_EntityIndex auto-resolve failed — falling back to gamedata.");
+            g_offEntityIndex = g_pGameData->GetOffset("SendProxy_PackContext_EntityIndex");
+        }
+    }
 
     if (!TryInstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", Detour_PerClientEncode)
         || !TryInstallDetour(g_wdeHook, "CNetworkGameServerBase::WriteDeltaEntity_Internal", Detour_WriteDeltaEntity)
