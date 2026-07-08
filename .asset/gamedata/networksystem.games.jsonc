@@ -91,9 +91,13 @@
     // Overflow flag byte.
     "SendProxy_BfWrite_Overflow": { "linux": 32, "windows": 32 },
 
-    // Encoder registry (BuildEncoderMap). Bucket record = { entries*, count }; entry stride 0x80.
+    // Encoder registry (BuildEncoderMap). Bucket record = { entries*, count }; entries are fixed-stride records.
     // count (int) within a bucket record.
     "SendProxy_EncoderBucket_Count": { "linux": 8, "windows": 8 },
+    // Stride (bytes) between bucket records in the registry array.
+    "SendProxy_EncoderBucket_Stride": { "linux": 16, "windows": 16 },
+    // Stride (bytes) between encoder entry records within a bucket.
+    "SendProxy_EncoderEntry_Stride": { "linux": 128, "windows": 128 },
     // char* encoder name within an entry.
     "SendProxy_EncoderEntry_Name": { "linux": 0, "windows": 0 },
     // Encode function pointer within an entry.

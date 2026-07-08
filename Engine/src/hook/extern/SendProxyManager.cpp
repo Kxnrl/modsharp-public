@@ -647,8 +647,10 @@ static void BuildEncoderMap()
     };
 
     static auto bucketCountOff = g_pGameData->GetOffset("SendProxy_EncoderBucket_Count");
-    static auto entryFuncOff   = g_pGameData->GetOffset("SendProxy_EncoderEntry_Func");
-    static auto entryNameOff   = g_pGameData->GetOffset("SendProxy_EncoderEntry_Name");
+    static auto entryFuncOff    = g_pGameData->GetOffset("SendProxy_EncoderEntry_Func");
+    static auto entryNameOff    = g_pGameData->GetOffset("SendProxy_EncoderEntry_Name");
+    static auto bucketStride    = g_pGameData->GetOffset("SendProxy_EncoderBucket_Stride");
+    static auto entryStride      = g_pGameData->GetOffset("SendProxy_EncoderEntry_Stride");
 
     for (int i = 0; i < 7; i++)
     {
@@ -661,13 +663,13 @@ static void BuildEncoderMap()
         if (!IsUserPtr(handler))
             continue;
 
-        int count = *reinterpret_cast<int*>(registry + bucket * 16 + bucketCountOff);
+        int count = *reinterpret_cast<int*>(registry + bucket * bucketStride + bucketCountOff);
         if (count <= 0 || count > 32)
             continue;
 
         for (int e = 0; e < count; e++)
         {
-            auto entry = handler + static_cast<uintptr_t>(e) * 0x80;
+            auto entry = handler + static_cast<uintptr_t>(e) * entryStride;
             auto fn    = *reinterpret_cast<uintptr_t*>(entry + entryFuncOff);
             if (!IsUserPtr(fn))
                 continue;
