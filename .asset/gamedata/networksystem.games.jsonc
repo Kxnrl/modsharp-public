@@ -12,9 +12,7 @@
         "strings": [ "WriteOOPVSDeltaEntities" ]
       }
     },
-    // Per-entity delta writer — entity index at arg2+0x34. (libengine2)
-    // String-anchored on its own merge-diagnostic log line (only this function references it — verified
-    // derived==byte-sig on both libengine2.so and engine2.dll). Byte sigs kept as fallback + debug cross-check.
+    // Per-entity delta writer (entity index at arg2+0x34). String-anchored; byte sig kept as fallback.
     "CNetworkGameServerBase::WriteDeltaEntity_Internal": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 81 EC 28 01 00 00",
@@ -23,8 +21,7 @@
         "strings": [ "SV: CNetworkGameServerBase::WriteDeltaEntity_Internal merging changes added in %d additional fields!\n" ]
       }
     },
-    // Per-entity from-baseline writer for a client's initial full snapshot — SAME per-entity ctx as the delta
-    // writer (entity index at arg2+0x34, dst bf_write at arg2+0x88); never enters WriteDeltaEntity_Internal. (libengine2)
+    // From-baseline writer for a client's first full snapshot — same per-entity ctx as the delta writer.
     "CNetworkGameServerBase::WriteEnterPVS": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 53 48 81 EC 88 00 00 00 8B 76 34",
@@ -33,9 +30,7 @@
         "strings": [ "WriteEnterPVS: missing instance baseline for '%s'." ]
       }
     },
-    // serializer is arg0.
-    // String-anchored on the self-naming literal it references (unique to this function — verified derived==byte-sig
-    // on both libnetworksystem.so and networksystem.dll). Byte sigs kept as fallback + debug cross-check.
+    // serializer is arg0. String-anchored on its self-naming literal; byte sig kept as fallback.
     "CFlattenedSerializer::WriteFieldList": {
       "library": "networksystem",
       "linux": "55 48 8D 05 ? ? ? ? 45 31 DB 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D",
@@ -44,19 +39,14 @@
         "strings": [ "CFlattenedSerializer::WriteFieldList" ]
       }
     },
-    // Per-field bit copy (dst, src, bitcount) — the substitution point.
-    // Stays a byte sig: this primitive references no string of its own on either platform, so there is no
-    // resilient string anchor (the only reachable strings belong to callers, not a stable single-instruction path).
+    // Per-field bit copy (dst, src, bitcount) — substitution point. Byte sig: references no string of its own.
     "CFlattenedSerializer::BitCopyPrimitive": {
       "library": "networksystem",
       "linux": "55 48 89 F0 41 89 D0 48 89 E5 41 57 41 56 41 55",
       "windows": "48 8B C4 44 89 40 ? 48 89 48 ? 41 57 48 83 EC 30"
     },
-    // 8-bucket encoder table (for field-type classification): bucket = { entries*, count }, entry stride 0x80
-    // (name +0x00, fn +0x30). Buckets: 1 int, 2 uint, 3 qangle/vector/qfloat, 4 float32, 5 string, 7 bool.
-    // Resolved from a data-table lea via signature+factory (a `+3 r` follows the rip-relative to the registry base).
-    // Kept as a byte sig: the lea sits ~1.5 KB into its containing function, so a string-anchor + fixed `+N r` would
-    // be strictly more fragile than matching the lea bytes directly (no stable string anchor for a data table).
+    // 8-bucket encoder table for field-type classification (buckets 1 int, 2 uint, 3 vec, 4 float, 5 string, 7 bool).
+    // Byte sig + factory (+3 r → registry base): the lea is deep in its fn, so a string anchor would be more fragile.
     "CFlattenedSerializer::EncoderRegistry": {
       "library": "networksystem",
       "linux":   { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r" },
@@ -69,53 +59,30 @@
     "CFlattenedSerializer::EncoderBucket5": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +80 d" },  "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +80 d" } },
     "CFlattenedSerializer::EncoderBucket7": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +112 d" }, "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +112 d" } }
   },
-  // SendProxy per-client encode struct offsets — migrated out of hardcoded literals in
-  // Engine/src/hook/extern/SendProxyManager.cpp so a game update that shifts one of these layouts is a
-  // gamedata edit, not a recompile. windows == linux mirrors the original code (it had NO #ifdef); these
-  // values were NOT independently re-confirmed on Windows — they preserve the Linux literals as-is.
+  // SendProxy struct offsets (windows==linux, both confirmed). bf_write is boot-derived at runtime — these are its
+  // fallback; serializer/fieldInfo/registry are numeric, so a layout shift needs an edit here (not a recompile).
   "Offsets": {
-    // Flattened-serializer tree node, walked by WalkToLeafRec in the same DFS order as the bit-offset table.
-    // Field count (int) on the serializer node.
+    // Flattened-serializer node (walked by WalkToLeafRec): field count, record array, record stride, child ptr.
     "SendProxy_Serializer_FieldCount": { "linux": 40, "windows": 40 },
-    // Pointer to the field-record array on the serializer node.
     "SendProxy_Serializer_FieldsArray": { "linux": 48, "windows": 48 },
-    // Stride (bytes) between field records in that array.
     "SendProxy_Serializer_FieldStride": { "linux": 46, "windows": 46 },
-    // Child-serializer pointer inside a field record (non-null => recurse, null => leaf record).
     "SendProxy_SerializerField_Child": { "linux": 8, "windows": 8 },
-
-    // FieldInfo (record[0] -> fieldInfo): encoder dispatch / params live here.
-    // char* field name.
+    // FieldInfo: name, encoder dispatch, params base, param-offset byte (0xFF = no params).
     "SendProxy_FieldInfo_Name": { "linux": 8, "windows": 8 },
-    // Encoder dispatch pointer; *dispatch = the encode function.
     "SendProxy_FieldInfo_EncoderDispatch": { "linux": 56, "windows": 56 },
-    // Encoder params base pointer (params = base + ParamOffset).
     "SendProxy_FieldInfo_EncoderBase": { "linux": 64, "windows": 64 },
-    // Byte param-offset (0xFF => encoder takes no params).
     "SendProxy_FieldInfo_ParamOffset": { "linux": 201, "windows": 201 },
-
-    // Local bf_write scratch we build to drive the engine encoder — layout must match the engine's bf_write.
-    // Data pointer.
+    // bf_write scratch layout — boot-derived (ResolveBitBufOffsets); fallback only.
     "SendProxy_BfWrite_Data": { "linux": 0, "windows": 0 },
-    // Byte capacity.
     "SendProxy_BfWrite_ByteCap": { "linux": 8, "windows": 8 },
-    // Bit capacity.
     "SendProxy_BfWrite_BitCap": { "linux": 12, "windows": 12 },
-    // Current bit cursor (= encoded bit count after the encoder runs).
     "SendProxy_BfWrite_CurBit": { "linux": 16, "windows": 16 },
-    // Overflow flag byte.
     "SendProxy_BfWrite_Overflow": { "linux": 32, "windows": 32 },
-
-    // Encoder registry (BuildEncoderMap). Bucket record = { entries*, count }; entries are fixed-stride records.
-    // count (int) within a bucket record.
+    // Encoder registry: bucket {entries*, count} + strides, entry {name, fn}.
     "SendProxy_EncoderBucket_Count": { "linux": 8, "windows": 8 },
-    // Stride (bytes) between bucket records in the registry array.
     "SendProxy_EncoderBucket_Stride": { "linux": 16, "windows": 16 },
-    // Stride (bytes) between encoder entry records within a bucket.
     "SendProxy_EncoderEntry_Stride": { "linux": 128, "windows": 128 },
-    // char* encoder name within an entry.
     "SendProxy_EncoderEntry_Name": { "linux": 0, "windows": 0 },
-    // Encode function pointer within an entry.
     "SendProxy_EncoderEntry_Func": { "linux": 48, "windows": 48 }
   }
 }

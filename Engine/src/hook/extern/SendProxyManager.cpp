@@ -59,6 +59,21 @@ static bool g_installFailed = false;
 // Read by BOTH entity-index detours (WriteDeltaEntity_Internal + WriteEnterPVS), so it lives at file scope.
 static int g_offEntityIndex = -1;
 
+// SendProxy struct offsets auto-resolved from the binary in InstallSendProxyHooks (before any encode), so a game
+// update that shifts these layouts needs no gamedata edit. Each falls back to its gamedata literal if the
+// disassembly anchor is gone (never a silent 0); -1 = unresolved. The typed accessors below read these.
+// bf_write scratch + bf_read cursor — derived together from CFlattenedSerializer::BitCopyPrimitive.
+static int g_offBfWriteData     = -1;
+static int g_offBfWriteByteCap  = -1;
+static int g_offBfWriteBitCap   = -1;
+static int g_offBfWriteCurBit   = -1;
+static int g_offBfWriteOverflow = -1;
+static int g_offBfReadCurBit    = -1;
+// WriteFieldList field descriptor (arg5) — derived from CFlattenedSerializer::WriteFieldList.
+static int g_offWriteInfoBitTable   = -1;
+static int g_offWriteInfoSnapshot   = -1;
+static int g_offWriteInfoFieldCount = -1;
+
 constexpr int       MAX_ENTITY_COUNT = 16384;
 constexpr uintptr_t USER_PTR_MIN     = 0x10000;
 
@@ -246,21 +261,9 @@ struct SpWriteInfo
 {
     uint8_t* base;
     explicit SpWriteInfo(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
-    [[nodiscard]] const int32_t* BitOffsetTable() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_BitOffsetTable");
-        return *reinterpret_cast<const int32_t**>(base + off);
-    }
-    [[nodiscard]] void* SnapshotBuffer() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_SnapshotBuffer");
-        return *reinterpret_cast<void**>(base + off);
-    }
-    [[nodiscard]] int32_t FieldCount() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_WriteInfo_FieldCount");
-        return *reinterpret_cast<int32_t*>(base + off);
-    }
+    [[nodiscard]] const int32_t* BitOffsetTable() const { return *reinterpret_cast<const int32_t**>(base + g_offWriteInfoBitTable); }
+    [[nodiscard]] void*          SnapshotBuffer() const { return *reinterpret_cast<void**>(base + g_offWriteInfoSnapshot); }
+    [[nodiscard]] int32_t        FieldCount() const { return *reinterpret_cast<int32_t*>(base + g_offWriteInfoFieldCount); }
 };
 
 // Per-entity pack context (arg2 of the delta / EnterPVS writers). The entity-index displacement is resolved
@@ -277,36 +280,12 @@ struct SpBfWrite
 {
     uint8_t* base;
     explicit SpBfWrite(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
-    void SetData(const void* d)
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
-        *reinterpret_cast<const void**>(base + off) = d;
-    }
-    void SetByteCap(int v)
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
-        *reinterpret_cast<int*>(base + off) = v;
-    }
-    void SetBitCap(int v)
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
-        *reinterpret_cast<int*>(base + off) = v;
-    }
-    void SetCurBit(int v)
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
-        *reinterpret_cast<int*>(base + off) = v;
-    }
-    [[nodiscard]] int CurBit() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
-        return *reinterpret_cast<int*>(base + off);
-    }
-    [[nodiscard]] uint8_t Overflow() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfWrite_Overflow");
-        return *(base + off);
-    }
+    void SetData(const void* d) { *reinterpret_cast<const void**>(base + g_offBfWriteData) = d; }
+    void SetByteCap(int v) { *reinterpret_cast<int*>(base + g_offBfWriteByteCap) = v; }
+    void SetBitCap(int v) { *reinterpret_cast<int*>(base + g_offBfWriteBitCap) = v; }
+    void SetCurBit(int v) { *reinterpret_cast<int*>(base + g_offBfWriteCurBit) = v; }
+    [[nodiscard]] int     CurBit() const { return *reinterpret_cast<int*>(base + g_offBfWriteCurBit); }
+    [[nodiscard]] uint8_t Overflow() const { return *(base + g_offBfWriteOverflow); }
 };
 
 // Engine bf_read cursor on the snapshot buffer — only the read-position field is needed.
@@ -314,16 +293,8 @@ struct SpBfRead
 {
     uint8_t* base;
     explicit SpBfRead(void* p) : base(reinterpret_cast<uint8_t*>(p)) {}
-    [[nodiscard]] int CurBit() const
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
-        return *reinterpret_cast<int*>(base + off);
-    }
-    void Advance(int bits)
-    {
-        static auto off = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
-        *reinterpret_cast<int*>(base + off) += bits;
-    }
+    [[nodiscard]] int CurBit() const { return *reinterpret_cast<int*>(base + g_offBfReadCurBit); }
+    void              Advance(int bits) { *reinterpret_cast<int*>(base + g_offBfReadCurBit) += bits; }
 };
 
 // Walks leaf records in the same flattened DFS order as the bit-offset table, so `target` equals the cursor-matched field index.
@@ -540,30 +511,33 @@ static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue&
 }
 
 // CNetworkGameServer::PerClientEncode(this, recipient, ..): arg1 is the server (this), arg2 the CServerSideClient
-// recipient we capture as t_client. arg3..arg6 are the engine's per-frame encode context (snapshot/baseline/pack
-// buffers/flags), opaque to the substitution path and forwarded to the original verbatim.
-static void* Detour_PerClientEncode(void* pServer, void* pClient, void* arg3, void* arg4, void* arg5, void* arg6)
+// recipient we capture as t_client. The remaining args are the engine's per-frame OO-PVS encode context —
+// pFrameSnapshot (the shared packed frame), pClientFrame (this client's frame state), pPackBuffers (the pack/scratch
+// buffers, member read at +0x30), and transmitFlags (a flags word passed in r9d); all opaque to the substitution
+// path and forwarded to the original verbatim.
+static void* Detour_PerClientEncode(void* pServer, void* pClient, void* pFrameSnapshot, void* pClientFrame, void* pPackBuffers, void* transmitFlags)
 {
     // The whole substitution path assumes main-thread execution (no locks on g_pHooks/g_resolve) — assert it.
     AssertBool(g_nMainThreadId == static_cast<uint64_t>(GetCurrentThreadId()));
 
     t_client   = pClient;
     auto* orig = g_perClientHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
-    auto  ret  = orig(pServer, pClient, arg3, arg4, arg5, arg6);
+    auto  ret  = orig(pServer, pClient, pFrameSnapshot, pClientFrame, pPackBuffers, transmitFlags);
     t_client   = nullptr;
     return ret;
 }
 
 // CNetworkGameServerBase::WriteDeltaEntity_Internal(server, entityCtx, ..): arg1 is the server (this), arg2 the
-// per-entity pack context we read the entity index from. arg3 is used by the engine but opaque to us; arg4..arg6
-// are unused by the function — all forwarded to the original verbatim.
-static void* Detour_WriteDeltaEntity(void* pServer, void* pEntityCtx, void* arg3, void* arg4, void* arg5, void* arg6)
+// per-entity pack context we read the entity index from. pFrameSnapshot is consumed by the engine but opaque to us;
+// pBaselineData/pWriteContext/writeOptions are the trailing delta-write context the function itself never reads (RE
+// verified) — all forwarded to the original verbatim.
+static void* Detour_WriteDeltaEntity(void* pServer, void* pEntityCtx, void* pFrameSnapshot, void* pBaselineData, void* pWriteContext, void* writeOptions)
 {
     int prev = t_entityIdx;
     if (IsUserPtr(pEntityCtx))
         t_entityIdx = SpPackContext(pEntityCtx).EntityIndex();
     auto* orig  = g_wdeHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
-    auto  ret   = orig(pServer, pEntityCtx, arg3, arg4, arg5, arg6);
+    auto  ret   = orig(pServer, pEntityCtx, pFrameSnapshot, pBaselineData, pWriteContext, writeOptions);
     t_entityIdx = prev;
     return ret;
 }
@@ -582,10 +556,13 @@ static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
     t_entityIdx = prev;
 }
 
-// CFlattenedSerializer::WriteFieldList(serializer, .., fieldDesc[arg5], ..). arg1 is the serializer being written
-// and arg5 is the per-call field descriptor (start-bit table + source snapshot + field count); the remaining args
-// (arg2/3/4 and arg6..9) are opaque to the substitution path and forwarded to the original verbatim.
-static void* Detour_WriteFieldList(void* pSerializer, void* arg2, void* arg3, void* arg4, void* pFieldDesc, uint32_t arg6, uint32_t arg7, void* arg8, uint32_t arg9)
+// CFlattenedSerializer::WriteFieldList(serializer, dstBitWrite, fieldList, fieldContext, fieldDesc, ..). arg1 is the
+// serializer being written; pFieldDesc (arg5) is the per-call field descriptor (start-bit table + source snapshot +
+// field count) we read. The others are the engine's write context, opaque to the substitution path and forwarded
+// verbatim: pDstBitWrite (destination bf_write), pFieldList (CUtlVector of field records to write, {data@+0x10,
+// count@+8}), pFieldContext (per-write context, count read at +0x10), nFieldFlags/nFieldCount (words in r9d/arg7),
+// pFieldPathFilter (an optional int*: null-checked, its int compared), and nWriteFlags (trailing flags word).
+static void* Detour_WriteFieldList(void* pSerializer, void* pDstBitWrite, void* pFieldList, void* pFieldContext, void* pFieldDesc, uint32_t nFieldFlags, uint32_t nFieldCount, void* pFieldPathFilter, uint32_t nWriteFlags)
 {
     void*          prevSer   = t_serializer;
     const int32_t* prevTable = t_bitTable;
@@ -609,7 +586,7 @@ static void* Detour_WriteFieldList(void* pSerializer, void* arg2, void* arg3, vo
     }
 
     auto* orig = g_wflHook.original<void* (*)(void*, void*, void*, void*, void*, uint32_t, uint32_t, void*, uint32_t)>();
-    auto  ret  = orig(pSerializer, arg2, arg3, arg4, pFieldDesc, arg6, arg7, arg8, arg9);
+    auto  ret  = orig(pSerializer, pDstBitWrite, pFieldList, pFieldContext, pFieldDesc, nFieldFlags, nFieldCount, pFieldPathFilter, nWriteFlags);
 
     t_serializer = prevSer;
     t_bitTable   = prevTable;
@@ -1019,6 +996,205 @@ static int ResolveEntityIndexOffset()
     return result;
 }
 
+// Commits a boot-derived offset into `slot`: prefer the value auto-resolved from the binary (zero-touch across
+// game updates), fall back to the gamedata literal if the anchor is gone, and WARN on any mismatch so a stale
+// gamedata value is visible. Never leaves a silent 0 — the gamedata path FatalErrors if the key is absent.
+static void AssignOffset(int& slot, int resolved, const char* gdKey)
+{
+    int        gd     = 0;
+    const bool haveGd = g_pGameData->GetOffset(gdKey, &gd);
+    if (resolved >= 0)
+    {
+        if (haveGd && resolved != gd)
+            WARN("SendProxy: %s auto-resolved=%d differs from gamedata=%d — using resolved (gamedata literal may be stale).", gdKey, resolved, gd);
+        slot = resolved;
+    }
+    else
+    {
+        WARN("SendProxy: %s auto-resolve failed — falling back to gamedata.", gdKey);
+        slot = g_pGameData->GetOffset(gdKey);
+    }
+}
+
+// Derive the engine bitbuf (CBitWrite/CBitRead) field offsets from CFlattenedSerializer::BitCopyPrimitive so a
+// game update that shifts the bitbuf layout needs no gamedata edit. BitCopy(dst, src, bitCount) treats its src
+// arg (a register on both platforms — reg-copied here, never spilled) as a bitbuf and reads: data ptr at +0
+// (first qword load), byte cap at +8 (dword compare), bit cap at +0xC (first dword load), cur-bit cursor at
+// +0x10 (first dword store from a register), overflow flag at +0x20 (byte store of an immediate). The scratch
+// bf_write we build shares this exact layout and the snapshot bf_read's cursor is the same +0x10, so one pass
+// yields all six. Verified derived==gamedata on both libnetworksystem.so and networksystem.dll; any field the
+// scan misses stays -1 and falls back to gamedata.
+static void ResolveBitBufOffsets(int& data, int& byteCap, int& bitCap, int& curBit, int& overflow)
+{
+    data = byteCap = bitCap = curBit = overflow = -1;
+
+    const auto addr = g_pGameData->GetAddress<uintptr_t>("CFlattenedSerializer::BitCopyPrimitive");
+    if (!IsUserPtr(addr))
+        return;
+    const auto* range = modules::network->GetFunctionRange(addr);
+    if (range == nullptr)
+        return;
+
+#ifdef PLATFORM_WINDOWS
+    constexpr auto kSrc = ZYDIS_REGISTER_RDX; // BitCopy(dst=rcx, src=rdx, bitCount=r8)
+#else
+    constexpr auto kSrc = ZYDIS_REGISTER_RSI; // BitCopy(dst=rdi, src=rsi, bitCount=edx)
+#endif
+
+    std::unordered_set<ZydisRegister> src{kSrc};
+    ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* ops) {
+        // store into the src struct: cursor (dword from a register) / overflow flag (byte immediate)
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2 && ops[0].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && ops[0].mem.index == ZYDIS_REGISTER_NONE && src.contains(ZydisUtility::GetBaseRegister(ops[0].mem.base)))
+        {
+            const auto disp = static_cast<int>(ops[0].mem.disp.value);
+            if (ops[0].size == 32 && ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER && curBit < 0)
+                curBit = disp;
+            else if (ops[0].size == 8 && ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && overflow < 0)
+                overflow = disp;
+        }
+        // load from the src struct: data ptr (qword) / bit cap (dword) via MOV, byte cap via CMP
+        if (instr.operand_count_visible == 2 && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && ops[1].mem.index == ZYDIS_REGISTER_NONE && src.contains(ZydisUtility::GetBaseRegister(ops[1].mem.base)))
+        {
+            const auto disp = static_cast<int>(ops[1].mem.disp.value);
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER)
+            {
+                if (ops[1].size == 64 && data < 0)
+                    data = disp;
+                else if (ops[1].size == 32 && bitCap < 0)
+                    bitCap = disp;
+            }
+            else if (instr.mnemonic == ZYDIS_MNEMONIC_CMP && ops[1].size == 32 && byteCap < 0)
+                byteCap = disp;
+        }
+        // follow reg-copies of src; drop a tracked reg when it is overwritten by a non-copy
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2 && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER)
+        {
+            const auto dst = ZydisUtility::GetBaseRegister(ops[0].reg.value);
+            if (ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER && src.contains(ZydisUtility::GetBaseRegister(ops[1].reg.value)))
+                src.insert(dst);
+            else if (ops[1].type != ZYDIS_OPERAND_TYPE_REGISTER)
+                src.erase(dst);
+        }
+        return false; // scan the whole function
+    });
+}
+
+// Derive the WriteFieldList field-descriptor (arg5) offsets from CFlattenedSerializer::WriteFieldList so a game
+// update that shifts them needs no gamedata edit. In its per-field write loop the function reads, off arg5: the
+// start-bit table pointer (its result is indexed with a scale-4 subscript), the snapshot source buffer, and the
+// field count (a dword compare). arg5 is a register on Linux (r8) and a stack argument on Windows (recovered from
+// the frame); we track its reg-copies and stack spills through the function and classify the reads. Verified
+// derived==gamedata on both libnetworksystem.so and networksystem.dll; if the full {table, snapshot, count} shape
+// isn't recovered unambiguously the outputs stay -1 and each falls back to gamedata.
+static void ResolveWriteInfoOffsets(int& table, int& snapshot, int& count)
+{
+    table = snapshot = count = -1;
+
+    const auto addr = g_pGameData->GetAddress<uintptr_t>("CFlattenedSerializer::WriteFieldList");
+    if (!IsUserPtr(addr))
+        return;
+    const auto* range = modules::network->GetFunctionRange(addr);
+    if (range == nullptr)
+        return;
+
+    std::unordered_set<ZydisRegister>      argRegs;   // registers currently aliasing arg5
+    std::unordered_set<int64_t>            argSlots;  // rbp/rsp-relative slots holding arg5
+    std::unordered_map<ZydisRegister, int> tableCand; // reg -> disp it was loaded from off arg5 (bit-table candidate)
+    std::unordered_set<int>                qwords;    // non-zero qword-read displacements off arg5
+
+#ifdef PLATFORM_WINDOWS
+    // arg5 is the 5th (first stack) argument: [entry_rsp + 0x28] becomes [rbp + N*8 + 0x28] once the frame ptr is
+    // set by `lea rbp, [rsp - D]` after N pushes. Recover its rbp-relative slot from the prologue.
+    {
+        int  pushes = 0;
+        bool found  = false;
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* ops) {
+            if (instr.mnemonic == ZYDIS_MNEMONIC_PUSH)
+                pushes++;
+            else if (instr.mnemonic == ZYDIS_MNEMONIC_LEA && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && ops[0].reg.value == ZYDIS_REGISTER_RBP
+                     && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[1].mem.base == ZYDIS_REGISTER_RSP)
+            {
+                argSlots.insert(-ops[1].mem.disp.value + 8LL * pushes + 0x28);
+                found = true;
+                return true;
+            }
+            return false;
+        });
+        if (!found)
+            return;
+    }
+#else
+    argRegs.insert(ZYDIS_REGISTER_R8); // WriteFieldList(serializer=rdi, .., arg5=r8, ..)
+#endif
+
+    ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* ops) {
+        // reads off arg5: qword field (table candidate / snapshot) via MOV, field count via dword CMP
+        if (instr.operand_count_visible == 2 && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+            && ops[1].mem.index == ZYDIS_REGISTER_NONE && argRegs.contains(ZydisUtility::GetBaseRegister(ops[1].mem.base)))
+        {
+            const auto disp = static_cast<int>(ops[1].mem.disp.value);
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER && ops[1].size == 64 && disp != 0)
+            {
+                tableCand[ZydisUtility::GetBaseRegister(ops[0].reg.value)] = disp;
+                qwords.insert(disp);
+            }
+            else if (instr.mnemonic == ZYDIS_MNEMONIC_CMP && ops[1].size == 32 && count < 0)
+                count = disp;
+        }
+        // a scale-4 index off a table candidate confirms the bit-offset table
+        for (int i = 0; i < instr.operand_count_visible; i++)
+        {
+            if (ops[i].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[i].mem.scale == 4 && ops[i].mem.index != ZYDIS_REGISTER_NONE)
+            {
+                auto it = tableCand.find(ZydisUtility::GetBaseRegister(ops[i].mem.base));
+                if (it != tableCand.end() && table < 0)
+                    table = it->second;
+            }
+        }
+        // propagate arg5 through reg-copies and stack spills/reloads
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2)
+        {
+            if (ops[0].type == ZYDIS_OPERAND_TYPE_REGISTER)
+            {
+                const auto dst = ZydisUtility::GetBaseRegister(ops[0].reg.value);
+                const bool fromReg  = ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER && argRegs.contains(ZydisUtility::GetBaseRegister(ops[1].reg.value));
+                const bool fromSlot = ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[1].mem.index == ZYDIS_REGISTER_NONE
+                                      && (ops[1].mem.base == ZYDIS_REGISTER_RBP || ops[1].mem.base == ZYDIS_REGISTER_RSP)
+                                      && argSlots.contains(ops[1].mem.disp.value);
+                // a qword field load off arg5 makes dst a fresh table candidate (set just above) — keep it; it holds
+                // the table pointer, not arg5 itself, so it still leaves argRegs.
+                const bool loadedField = ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[1].mem.index == ZYDIS_REGISTER_NONE
+                                         && argRegs.contains(ZydisUtility::GetBaseRegister(ops[1].mem.base));
+                if (fromReg || fromSlot)
+                    argRegs.insert(dst);
+                else
+                {
+                    argRegs.erase(dst);
+                    if (!loadedField)
+                        tableCand.erase(dst); // reassigned to a non-arg5 value — invalidate any stale table pointer
+                }
+            }
+            else if (ops[0].type == ZYDIS_OPERAND_TYPE_MEMORY && ops[0].mem.index == ZYDIS_REGISTER_NONE
+                     && (ops[0].mem.base == ZYDIS_REGISTER_RBP || ops[0].mem.base == ZYDIS_REGISTER_RSP)
+                     && ops[1].type == ZYDIS_OPERAND_TYPE_REGISTER && argRegs.contains(ZydisUtility::GetBaseRegister(ops[1].reg.value)))
+                argSlots.insert(ops[0].mem.disp.value); // spill arg5 to stack
+        }
+        return false;
+    });
+
+    // The bit-offset table is the *4-indexed qword read; the snapshot is the single OTHER non-zero qword read.
+    if (table >= 0)
+        qwords.erase(table);
+    if (qwords.size() == 1)
+        snapshot = *qwords.begin();
+
+    // Ship only a complete, unambiguous shape; otherwise fall back to gamedata for every field.
+    if (table < 0 || snapshot < 0 || count < 0)
+        table = snapshot = count = -1;
+}
+
 static bool InstallSendProxyHooks()
 {
     if (g_installed)
@@ -1055,6 +1231,25 @@ static bool InstallSendProxyHooks()
             WARN("SendProxy: PackContext_EntityIndex auto-resolve failed — falling back to gamedata.");
             g_offEntityIndex = g_pGameData->GetOffset("SendProxy_PackContext_EntityIndex");
         }
+    }
+
+    // Auto-resolve the bitbuf + WriteInfo struct offsets from the binary too (same zero-touch-across-updates goal;
+    // AssignOffset prefers the derived value, falls back to gamedata if the anchor is gone, and WARNs on mismatch).
+    {
+        int data = -1, byteCap = -1, bitCap = -1, curBit = -1, overflow = -1;
+        ResolveBitBufOffsets(data, byteCap, bitCap, curBit, overflow);
+        AssignOffset(g_offBfWriteData, data, "SendProxy_BfWrite_Data");
+        AssignOffset(g_offBfWriteByteCap, byteCap, "SendProxy_BfWrite_ByteCap");
+        AssignOffset(g_offBfWriteBitCap, bitCap, "SendProxy_BfWrite_BitCap");
+        AssignOffset(g_offBfWriteCurBit, curBit, "SendProxy_BfWrite_CurBit");
+        AssignOffset(g_offBfWriteOverflow, overflow, "SendProxy_BfWrite_Overflow");
+        AssignOffset(g_offBfReadCurBit, curBit, "SendProxy_BfRead_CurBit"); // same cursor field as bf_write
+
+        int table = -1, snapshot = -1, fieldCount = -1;
+        ResolveWriteInfoOffsets(table, snapshot, fieldCount);
+        AssignOffset(g_offWriteInfoBitTable, table, "SendProxy_WriteInfo_BitOffsetTable");
+        AssignOffset(g_offWriteInfoSnapshot, snapshot, "SendProxy_WriteInfo_SnapshotBuffer");
+        AssignOffset(g_offWriteInfoFieldCount, fieldCount, "SendProxy_WriteInfo_FieldCount");
     }
 
     if (!TryInstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", Detour_PerClientEncode)
