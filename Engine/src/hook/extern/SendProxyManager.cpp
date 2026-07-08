@@ -74,6 +74,13 @@ static int g_offWriteInfoBitTable   = -1;
 static int g_offWriteInfoSnapshot   = -1;
 static int g_offWriteInfoFieldCount = -1;
 
+// Offset-drift safety. The boot-resolved offsets are trusted over the gamedata literals, so before ANY bit is
+// substituted they must prove themselves once against live encode data — else a wrong derivation on a future game
+// build would silently corrupt every hooked client's stream. Until verified, real bits pass through untouched;
+// a failed check latches substitution off with a loud warning. One-time, so no steady-state cost.
+static bool g_offsetsVerified = false;
+static bool g_offsetsBad      = false;
+
 constexpr int       MAX_ENTITY_COUNT = 16384;
 constexpr uintptr_t USER_PTR_MIN     = 0x10000;
 
@@ -633,6 +640,37 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     // Gate out BitCopy calls on other buffers (merge/scratch) — only the snapshot buffer carries our fields.
     if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
         return g_origBitCopy(dst, src, bitcount);
+
+    // Prove the boot-resolved offsets against live data before ever substituting (once). V3: the src cursor
+    // advances by exactly bitcount → BfRead/BfWrite_CurBit is right. V1: the serializer walk yields one leaf per
+    // bit-table entry → the tree offsets + t_fieldCount (hence WriteInfo_FieldCount) are right. A wrong offset
+    // fails one of these → substitution stays off (inert), never corrupts. Latches on the first hooked field.
+    if (g_offsetsBad)
+        return g_origBitCopy(dst, src, bitcount);
+    if (!g_offsetsVerified)
+    {
+        const int     before = SpBfRead(src).CurBit();
+        const uint8_t out    = g_origBitCopy(dst, src, bitcount);
+        const int     after  = SpBfRead(src).CurBit();
+        if (after - before != static_cast<int>(bitcount))
+        {
+            g_offsetsBad = true;
+            WARN("SendProxy: bf cursor offset failed live check (advanced %d, expected %u) — SendProxy_Bf* offsets look drifted; substitution disabled.", after - before, bitcount);
+            return out;
+        }
+        int leaves = 0;
+        WalkToLeafRec(t_serializer, leaves, 0x7fffffff, 0);
+        if (t_fieldCount > 0 && leaves == t_fieldCount)
+        {
+            g_offsetsVerified = true; // proven consistent — substitute from the next field on
+        }
+        else
+        {
+            g_offsetsBad = true;
+            WARN("SendProxy: serializer walk yielded %d leaves for %d fields — SendProxy_Serializer/WriteInfo offsets look drifted; substitution disabled.", leaves, t_fieldCount);
+        }
+        return out; // this field passes through real; substitution begins once verified
+    }
 
     int index = ResolveFieldIndex(SpBfRead(src).CurBit());
     if (index < 0)
@@ -1235,6 +1273,8 @@ static bool InstallSendProxyHooks()
 
     // Auto-resolve the bitbuf + WriteInfo struct offsets from the binary too (same zero-touch-across-updates goal;
     // AssignOffset prefers the derived value, falls back to gamedata if the anchor is gone, and WARNs on mismatch).
+    // Safe to prefer the derived value because Detour_BitCopy gates all substitution on a one-time live check of
+    // these offsets — a wrong derivation makes SendProxy inert, not corrupt (g_offsetsVerified/g_offsetsBad).
     {
         int data = -1, byteCap = -1, bitCap = -1, curBit = -1, overflow = -1;
         ResolveBitBufOffsets(data, byteCap, bitCap, curBit, overflow);
