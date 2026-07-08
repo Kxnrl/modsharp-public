@@ -52,8 +52,8 @@ public interface ISendProxyManager
     ///     genuinely changed. A field whose value is static is not re-sent, so a passive hook on a rarely-changing
     ///     entity (e.g. <c>prop_dynamic</c>) may never fire — hook fields that change often (pawns, etc.). Changing
     ///     only the spoofed value does not pull the field into the delta, so it alone triggers nothing; the real
-    ///     value must change. The override is likewise not applied during a client's initial full (from-baseline)
-    ///     snapshot.</para>
+    ///     value must change. The override is also applied during a client's initial full (from-baseline) snapshot
+    ///     (coverage RE-verified, pending live test).</para>
     /// </summary>
     void Hook(IBaseEntity entity, string field, DelegateSendProxyBatch callback);
 

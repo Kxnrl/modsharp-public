@@ -162,6 +162,7 @@ static std::unordered_map<SpResolveKey, SpResolved, SpResolveKeyHash> g_resolve;
 
 static SafetyHookInline g_perClientHook{};
 static SafetyHookInline g_wdeHook{};
+static SafetyHookInline g_enterPvsHook{};
 static SafetyHookInline g_wflHook{};
 static SafetyHookInline g_bitCopyHook{};
 
@@ -380,6 +381,19 @@ static void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e
     auto  ret   = orig(a, b, c, d, e, f);
     t_entityIdx = prev;
     return ret;
+}
+
+// The from-baseline writer for a client's initial full snapshot. It never enters WriteDeltaEntity_Internal, so
+// without this t_entityIdx stays -1 and BitCopy passes real bits through. arg2 is the SAME per-entity ctx the
+// delta writer gets (entity index at +0x34, dst bf_write at +0x88 — both paths write the same per-client buffer).
+static void Detour_WriteEnterPVS(void* a, void* b)
+{
+    int prev = t_entityIdx;
+    if (IsUserPtr(b))
+        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(b) + 0x34);
+    auto* orig = g_enterPvsHook.original<void (*)(void*, void*)>();
+    orig(a, b);
+    t_entityIdx = prev;
 }
 
 static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, uint32_t p6, uint32_t p7, void* p8, uint32_t p9)
@@ -799,6 +813,11 @@ static bool InstallSendProxyHooks()
     g_bitCopyHook = std::move(*bc);
     g_origBitCopy = g_bitCopyHook.original<uint8_t (*)(void*, void*, uint32_t)>();
     g_pHookManager->Register(&g_bitCopyHook);
+
+    // Best-effort: extends override coverage to a client's initial from-baseline snapshot. Unlike the trio above
+    // we don't gate on it — if the sig fails to resolve the delta path is unaffected (late joiners just miss the
+    // override on their first snapshot). TryInstallDetour already WARNs the specifics on failure.
+    TryInstallDetour(g_enterPvsHook, "CNetworkGameServerBase::WriteEnterPVS", Detour_WriteEnterPVS);
 
     g_pGameEntitySystem->AddListenerEntity(&s_entityListener);
 
