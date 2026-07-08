@@ -218,6 +218,35 @@
     "CServerSideClient::m_vecLoadedSpawnGroups": {
       "linux": 376,
       "windows": 376
+    },
+    // SendProxy per-client encode struct offsets (libengine2) — migrated out of hardcoded literals in
+    // Engine/src/hook/extern/SendProxyManager.cpp. windows == linux mirrors the original code (NO #ifdef).
+    // Only the pack-context entity index was re-confirmed on Windows (`mov [rdx+0x34]`); the rest preserve
+    // the Linux literals the working code already used and were NOT independently re-confirmed on Windows.
+    // Per-entity pack context: entity index (int). Read by BOTH WriteDeltaEntity_Internal and WriteEnterPVS detours.
+    "SendProxy_PackContext_EntityIndex": {
+      "linux": 52,
+      "windows": 52
+    },
+    // WriteFieldList field descriptor (param_5): pointer to the per-field start-bit table.
+    "SendProxy_WriteInfo_BitOffsetTable": {
+      "linux": 8,
+      "windows": 8
+    },
+    // WriteFieldList field descriptor: pointer to the snapshot source buffer.
+    "SendProxy_WriteInfo_SnapshotBuffer": {
+      "linux": 24,
+      "windows": 24
+    },
+    // WriteFieldList field descriptor: field count (int).
+    "SendProxy_WriteInfo_FieldCount": {
+      "linux": 48,
+      "windows": 48
+    },
+    // bf_read source cursor (current bit): read at BitCopy, advanced when splicing a blob.
+    "SendProxy_BfRead_CurBit": {
+      "linux": 16,
+      "windows": 16
     }
   },
   "VFuncs": {

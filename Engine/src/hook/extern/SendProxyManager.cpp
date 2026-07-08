@@ -51,6 +51,10 @@ static bool InstallSendProxyHooks();
 static bool g_installed     = false;
 static bool g_installFailed = false;
 
+// Pack-context entity-index offset, resolved once in InstallSendProxyHooks (before any detour is installed).
+// Read by BOTH entity-index detours (WriteDeltaEntity_Internal + WriteEnterPVS), so it lives at file scope.
+static int g_offEntityIndex = -1;
+
 constexpr int       MAX_ENTITY_COUNT = 16384;
 constexpr uintptr_t USER_PTR_MIN     = 0x10000;
 
@@ -172,18 +176,23 @@ static void* WalkToLeafRec(void* serializer, int& current, int target, int depth
     if (depth > 4 || !IsUserPtr(serializer))
         return nullptr;
 
-    int count = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(serializer) + 0x28);
+    static auto fieldCountOff  = g_pGameData->GetOffset("SendProxy_Serializer_FieldCount");
+    static auto fieldsArrayOff = g_pGameData->GetOffset("SendProxy_Serializer_FieldsArray");
+    static auto fieldStride    = g_pGameData->GetOffset("SendProxy_Serializer_FieldStride");
+    static auto childOff       = g_pGameData->GetOffset("SendProxy_SerializerField_Child");
+
+    int count = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(serializer) + fieldCountOff);
     if (count <= 0 || count > 4096)
         return nullptr;
 
-    void* arr = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(serializer) + 0x30);
+    void* arr = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(serializer) + fieldsArrayOff);
     if (!IsUserPtr(arr))
         return nullptr;
 
     for (int i = 0; i < count; i++)
     {
-        void* rec   = reinterpret_cast<uint8_t*>(arr) + i * 0x2E;
-        void* child = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(rec) + 0x08);
+        void* rec   = reinterpret_cast<uint8_t*>(arr) + i * fieldStride;
+        void* child = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(rec) + childOff);
         if (IsUserPtr(child))
         {
             if (void* found = WalkToLeafRec(child, current, target, depth + 1))
@@ -214,8 +223,10 @@ static const char* ResolveFieldNameByIndex(void* serializer, int index, void** l
     if (!IsUserPtr(fieldInfo))
         return nullptr;
 
+    static auto nameOff = g_pGameData->GetOffset("SendProxy_FieldInfo_Name");
+
     *leafRecOut = rec;
-    auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x08);
+    auto name   = *reinterpret_cast<char**>(reinterpret_cast<uint8_t*>(fieldInfo) + nameOff);
     return IsUserPtr(name) ? name : nullptr;
 }
 
@@ -226,7 +237,8 @@ static SpFieldType ClassifyLeaf(void* leafRec)
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
     if (!IsUserPtr(fieldInfo))
         return SpFieldType::Unsupported;
-    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x38);
+    static auto dispatchOff = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
+    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + dispatchOff);
     if (!IsUserPtr(dispatch))
         return SpFieldType::Unsupported;
     auto encFn = *reinterpret_cast<uintptr_t*>(dispatch);
@@ -263,21 +275,25 @@ static uint8_t (*g_origBitCopy)(void* dst, void* src, uint32_t bits) = nullptr;
 
 static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& v, uint8_t* outBlob, int outCap, int& outBits)
 {
+    static auto dispatchOff    = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderDispatch");
+    static auto paramOffsetOff  = g_pGameData->GetOffset("SendProxy_FieldInfo_ParamOffset");
+    static auto encoderBaseOff  = g_pGameData->GetOffset("SendProxy_FieldInfo_EncoderBase");
+
     void* fieldInfo = *reinterpret_cast<void**>(leafRec);
     if (!IsUserPtr(fieldInfo))
         return false;
-    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x38);
+    void* dispatch = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + dispatchOff);
     if (!IsUserPtr(dispatch))
         return false;
     auto encFn = *reinterpret_cast<SpEncodeFn*>(dispatch);
     if (!IsUserPtr(reinterpret_cast<void*>(encFn)))
         return false;
 
-    uint8_t paramOff  = *(reinterpret_cast<uint8_t*>(fieldInfo) + 0xC9);
+    uint8_t paramOff  = *(reinterpret_cast<uint8_t*>(fieldInfo) + paramOffsetOff);
     void*   paramsPtr = nullptr;
     if (paramOff != 0xFF)
     {
-        void* base = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + 0x40);
+        void* base = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(fieldInfo) + encoderBaseOff);
         if (!IsUserPtr(base))
             return false;
         paramsPtr = reinterpret_cast<uint8_t*>(base) + paramOff;
@@ -311,18 +327,24 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
         return false; // quantized/coord need the live count/mode word — unsupported here.
     }
 
-    // Local bf_write layout: data ptr +0x00, byte size +0x08, bit size +0x0C, cursor bits +0x10.
+    // Local bf_write layout (offsets from gamedata): data ptr, byte cap, bit cap, cursor bits, overflow byte.
+    static auto bwDataOff     = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
+    static auto bwByteCapOff  = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
+    static auto bwBitCapOff   = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
+    static auto bwCurBitOff   = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
+    static auto bwOverflowOff = g_pGameData->GetOffset("SendProxy_BfWrite_Overflow");
+
     uint8_t data[512]{};
     uint8_t bw[0x40]{};
-    *reinterpret_cast<void**>(bw + 0x00) = data;
-    *reinterpret_cast<int*>(bw + 0x08)   = sizeof(data);
-    *reinterpret_cast<int*>(bw + 0x0C)   = sizeof(data) * 8;
-    *reinterpret_cast<int*>(bw + 0x10)   = 0;
+    *reinterpret_cast<void**>(bw + bwDataOff)  = data;
+    *reinterpret_cast<int*>(bw + bwByteCapOff) = sizeof(data);
+    *reinterpret_cast<int*>(bw + bwBitCapOff)  = sizeof(data) * 8;
+    *reinterpret_cast<int*>(bw + bwCurBitOff)  = 0;
 
     encFn(bw, fieldInfo, paramsPtr, valuePtr, 0);
 
-    int     encodedBits = *reinterpret_cast<int*>(bw + 0x10);
-    uint8_t overflow    = *(bw + 0x20);
+    int     encodedBits = *reinterpret_cast<int*>(bw + bwCurBitOff);
+    uint8_t overflow    = *(bw + bwOverflowOff);
     int     bytes       = (encodedBits + 7) / 8;
     if (overflow != 0 || encodedBits <= 0 || bytes > outCap)
         return false;
@@ -335,13 +357,19 @@ static bool EncodeToBlob(void* leafRec, SpFieldType type, const SendProxyValue& 
 // Skips the real value in src, then emits the cached blob via a fresh bf_write through the engine's own BitCopy.
 static uint8_t SpliceBlob(void* dst, void* src, uint32_t bitcount, const uint8_t* blob, int bits)
 {
-    uint8_t bw[0x40]{};
-    *reinterpret_cast<const void**>(bw + 0x00) = blob;
-    *reinterpret_cast<int*>(bw + 0x08)         = (bits + 7) / 8;
-    *reinterpret_cast<int*>(bw + 0x0C)         = bits;
-    *reinterpret_cast<int*>(bw + 0x10)         = 0;
+    static auto bwDataOff      = g_pGameData->GetOffset("SendProxy_BfWrite_Data");
+    static auto bwByteCapOff   = g_pGameData->GetOffset("SendProxy_BfWrite_ByteCap");
+    static auto bwBitCapOff    = g_pGameData->GetOffset("SendProxy_BfWrite_BitCap");
+    static auto bwCurBitOff    = g_pGameData->GetOffset("SendProxy_BfWrite_CurBit");
+    static auto readCurBitOff  = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
 
-    *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + 0x10) += static_cast<int>(bitcount);
+    uint8_t bw[0x40]{};
+    *reinterpret_cast<const void**>(bw + bwDataOff) = blob;
+    *reinterpret_cast<int*>(bw + bwByteCapOff)      = (bits + 7) / 8;
+    *reinterpret_cast<int*>(bw + bwBitCapOff)       = bits;
+    *reinterpret_cast<int*>(bw + bwCurBitOff)       = 0;
+
+    *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff) += static_cast<int>(bitcount);
     return g_origBitCopy(dst, bw, static_cast<uint32_t>(bits));
 }
 
@@ -376,7 +404,7 @@ static void* Detour_WriteDeltaEntity(void* a, void* b, void* c, void* d, void* e
 {
     int prev = t_entityIdx;
     if (IsUserPtr(b))
-        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(b) + 0x34);
+        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(b) + g_offEntityIndex);
     auto* orig  = g_wdeHook.original<void* (*)(void*, void*, void*, void*, void*, void*)>();
     auto  ret   = orig(a, b, c, d, e, f);
     t_entityIdx = prev;
@@ -391,7 +419,7 @@ static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
 {
     int prev = t_entityIdx;
     if (IsUserPtr(pEntityCtx))
-        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(pEntityCtx) + 0x34);
+        t_entityIdx = *reinterpret_cast<int*>(reinterpret_cast<uint8_t*>(pEntityCtx) + g_offEntityIndex);
     auto* orig = g_enterPvsHook.original<void (*)(void*, void*)>();
     orig(pServer, pEntityCtx);
     t_entityIdx = prev;
@@ -404,13 +432,17 @@ static void* Detour_WriteFieldList(void* a, void* b, void* c, void* d, void* e, 
     void*          prevData  = t_srcData;
     int            prevCount = t_fieldCount;
 
+    // e = param_5: the field descriptor. table (start bits), snapshot buffer, field count — offsets from gamedata.
+    static auto bitTableOff = g_pGameData->GetOffset("SendProxy_WriteInfo_BitOffsetTable");
+    static auto srcDataOff  = g_pGameData->GetOffset("SendProxy_WriteInfo_SnapshotBuffer");
+    static auto fieldCntOff = g_pGameData->GetOffset("SendProxy_WriteInfo_FieldCount");
+
     t_serializer = a;
-    // e = param_5: the field descriptor. table @+0x08 (start bits), snapshot buffer @+0x18, count @+0x30.
     if (IsUserPtr(e))
     {
-        t_bitTable   = *reinterpret_cast<const int32_t**>(reinterpret_cast<uint8_t*>(e) + 0x08);
-        t_srcData    = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(e) + 0x18);
-        t_fieldCount = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(e) + 0x30);
+        t_bitTable   = *reinterpret_cast<const int32_t**>(reinterpret_cast<uint8_t*>(e) + bitTableOff);
+        t_srcData    = *reinterpret_cast<void**>(reinterpret_cast<uint8_t*>(e) + srcDataOff);
+        t_fieldCount = *reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(e) + fieldCntOff);
     }
     else
     {
@@ -469,7 +501,8 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
         return g_origBitCopy(dst, src, bitcount);
 
-    int index = ResolveFieldIndex(*reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + 0x10));
+    static auto readCurBitOff = g_pGameData->GetOffset("SendProxy_BfRead_CurBit");
+    int index = ResolveFieldIndex(*reinterpret_cast<int32_t*>(reinterpret_cast<uint8_t*>(src) + readCurBitOff));
     if (index < 0)
         return g_origBitCopy(dst, src, bitcount);
 
@@ -613,6 +646,10 @@ static void BuildEncoderMap()
         "CFlattenedSerializer::EncoderBucket7",
     };
 
+    static auto bucketCountOff = g_pGameData->GetOffset("SendProxy_EncoderBucket_Count");
+    static auto entryFuncOff   = g_pGameData->GetOffset("SendProxy_EncoderEntry_Func");
+    static auto entryNameOff   = g_pGameData->GetOffset("SendProxy_EncoderEntry_Name");
+
     for (int i = 0; i < 7; i++)
     {
         int bucket = i + 1;
@@ -624,17 +661,17 @@ static void BuildEncoderMap()
         if (!IsUserPtr(handler))
             continue;
 
-        int count = *reinterpret_cast<int*>(registry + bucket * 16 + 0x08);
+        int count = *reinterpret_cast<int*>(registry + bucket * 16 + bucketCountOff);
         if (count <= 0 || count > 32)
             continue;
 
         for (int e = 0; e < count; e++)
         {
             auto entry = handler + static_cast<uintptr_t>(e) * 0x80;
-            auto fn    = *reinterpret_cast<uintptr_t*>(entry + 0x30);
+            auto fn    = *reinterpret_cast<uintptr_t*>(entry + entryFuncOff);
             if (!IsUserPtr(fn))
                 continue;
-            auto name = *reinterpret_cast<char**>(entry + 0x00);
+            auto name = *reinterpret_cast<char**>(entry + entryNameOff);
             auto type = ClassifyEntry(bucket, IsUserPtr(reinterpret_cast<void*>(name)) ? name : nullptr);
             if (type != SpFieldType::Unsupported)
                 g_encoderTypes.emplace(fn, type);
@@ -790,6 +827,9 @@ static bool InstallSendProxyHooks()
         WARN("SendProxy: no encoders classified — SendProxy disabled.");
         return false;
     }
+
+    // Resolve once here (before the detours below are installed) so both entity-index detours read a plain int.
+    g_offEntityIndex = g_pGameData->GetOffset("SendProxy_PackContext_EntityIndex");
 
     if (!TryInstallDetour(g_perClientHook, "CNetworkGameServer::PerClientEncode", Detour_PerClientEncode)
         || !TryInstallDetour(g_wdeHook, "CNetworkGameServerBase::WriteDeltaEntity_Internal", Detour_WriteDeltaEntity)
