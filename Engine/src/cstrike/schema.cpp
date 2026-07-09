@@ -465,6 +465,91 @@ static void ProcessDataMapFields(SchemaClass_t*                        derived_s
     }
 }
 
+// CS2 build 24116939 stopped reflecting two CBaseEntity members. The members themselves are still
+// there -- every other CBaseEntity field kept its offset across the update -- but they no longer have
+// a schema or a datamap entry, so nothing can look them up by name:
+//
+//   m_flSpeed          win 0x354 / linux 0x634   (was a schema field up to build 23669931)
+//   m_pSubclassVData   win 0x320 / linux 0x600   (never a schema field; was a datamap field)
+//
+// Each one sits in the hole between two neighbours that are still reflected, so recover the offset
+// from the preceding field rather than hardcoding a per-platform constant. The trailing neighbour is
+// only used to verify the hole is still exactly the right size; if the layout ever shifts we skip the
+// field entirely and let schemas::GetOffset() report the miss, rather than fabricate a bad offset.
+struct UnreflectedField_t
+{
+    const char*          name;
+    const char*          type;
+    SchemaTypeCategory_t category;
+    const char*          anchor;      // last reflected field before the hole
+    const char*          next;        // first reflected field after the hole
+    int32_t              anchor_size; // distance from anchor to the hole
+    int32_t              span;        // expected next - anchor while the member is present
+};
+
+static constexpr UnreflectedField_t unreflected_base_entity_fields[] = {
+    {"m_flSpeed", "float32", SCHEMA_TYPE_BUILTIN, "m_iSentToClients", "m_sUniqueHammerID", 4, 8},
+    {"m_pSubclassVData", "CEntitySubclassVDataBase*", SCHEMA_TYPE_POINTER, "m_nSubclassID", "m_flAnimTime", 4, 12},
+};
+
+static void SynthesizeUnreflectedFields(SchemaClass_t*                        derived_schema_class,
+                                        const SchemaClassInfoData_t*          current_class_info,
+                                        std::unordered_set<std::string_view>& added_field_names)
+{
+    if (strcmp(current_class_info->GetName(), "CBaseEntity") != 0)
+        return;
+
+    for (const auto& recovered : unreflected_base_entity_fields)
+    {
+        // Older builds still publish these; whatever the game reports wins.
+        if (added_field_names.contains(recovered.name))
+            continue;
+
+        int32_t anchor_offset = -1;
+        int32_t next_offset   = -1;
+
+        const auto* fields = current_class_info->GetFields();
+        for (int i = 0; i < current_class_info->GetFieldsSize(); ++i)
+        {
+            const std::string_view name(fields[i].m_pszName);
+
+            if (name == recovered.anchor)
+                anchor_offset = fields[i].m_nSingleInheritanceOffset;
+            else if (name == recovered.next)
+                next_offset = fields[i].m_nSingleInheritanceOffset;
+        }
+
+        if (anchor_offset < 0 || next_offset < 0 || next_offset - anchor_offset != recovered.span) [[unlikely]]
+        {
+            FLOG("[schema] Cannot recover CBaseEntity::%s: %s=0x%X, %s=0x%X (expected a gap of 0x%X)",
+                 recovered.name,
+                 recovered.anchor,
+                 anchor_offset,
+                 recovered.next,
+                 next_offset,
+                 recovered.span);
+            continue;
+        }
+
+        const int32_t field_offset = anchor_offset + recovered.anchor_size;
+
+        auto* new_field      = derived_schema_class->fields.AddToTailGetPtr();
+        new_field->name      = recovered.name;
+        new_field->type      = recovered.type;
+        new_field->offset    = field_offset;
+        new_field->networked = false;
+        new_field->category  = recovered.category;
+
+        char key_buffer[512];
+        snprintf(key_buffer, sizeof(key_buffer), "%s->%s", derived_schema_class->name.Get(), recovered.name);
+        const auto hashed_name = MurmurHash2(key_buffer, MURMURHASH_SEED_MODSHARP);
+
+        g_SchemaMap[hashed_name] = {.offset = field_offset, .networked = false, .valid = true};
+
+        added_field_names.insert(recovered.name);
+    }
+}
+
 static void BuildClassSchemaRecursive(SchemaClass_t*                                derived_schema_class,
                                       SchemaClassInfoData_t*                        current_class_info,
                                       std::unordered_set<std::string_view>&         added_field_names,
@@ -543,6 +628,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
     }
 
     ProcessDataMapFields(derived_schema_class, current_class_info, added_field_names);
+    SynthesizeUnreflectedFields(derived_schema_class, current_class_info, added_field_names);
 
     auto base_class_count = current_class_info->GetBaseClassSize();
     auto base_classes     = current_class_info->GetBaseClasses();

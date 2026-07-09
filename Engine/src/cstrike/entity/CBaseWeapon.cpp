@@ -26,8 +26,9 @@
 
 CCSWeaponBaseVData* CBaseWeapon::GetVData() const
 {
-    constexpr auto key    = MurmurHash2("CBaseEntity->m_pSubclassVData", MURMURHASH_SEED_MODSHARP);
-    static auto    offset = schemas::GetOffset(key).offset;
+    // m_pSubclassVData is not reflected by newer builds; schema.cpp rebuilds the entry.
+    // Resolve by name so a miss aborts loudly instead of silently reading offset 0.
+    static auto offset = schemas::GetOffset("CBaseEntity", "m_pSubclassVData").offset;
     return GetFieldValue<CCSWeaponBaseVData*>(offset);
 }
 
