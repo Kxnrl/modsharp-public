@@ -379,8 +379,8 @@ BeginMemberHookScope(CServerSideClient)
             {
                 const auto msg   = pData->ToPB<CSVCMsg_VoiceData>();
                 const auto slot  = pClient->GetSlot();
-                const auto index = msg->client();
-                const auto xuid  = s_PlayerSeed[slot] + index;
+                const auto index = msg->entity();
+                const auto xuid  = s_PlayerSeed[slot] + index - 1; // EntityIndex -> PlayerSlot
                 msg->set_xuid(xuid);
             }
         }

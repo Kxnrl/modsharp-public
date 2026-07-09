@@ -50,6 +50,7 @@
     <ClCompile Include="src\proto\cs_usercmd.pb.cc" />
     <ClCompile Include="src\proto\source2_steam_stats.pb.cc" />
     <ClCompile Include="src\proto\usercmd.pb.cc" />
+    <ClCompile Include="src\proto\valveextensions.pb.cc" />
     <ClCompile Include="src\sdkproxy.cpp" />
     <ClCompile Include="src\address.cpp" />
     <ClCompile Include="src\bridge\adapter.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="src\module.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\protobufproxy.h" />
+    <ClInclude Include="src\proto\valveextensions.pb.h" />
     <ClInclude Include="src\scopetimer.h" />
     <ClInclude Include="src\sdkproxy.h" />
     <ClInclude Include="src\steamproxy.h" />
