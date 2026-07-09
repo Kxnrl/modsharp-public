@@ -135,7 +135,7 @@ using CBaseEntity_AbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
 using CBaseEntity_AbsVelocity_t   = Vector (*)(CBaseEntity*);
 using CBaseEntity_LocalVelocity_t = Vector (*)(CBaseEntity*);
 #endif
-using CBaseEntity_SetAbsVelocity_t                        = void (*)(CBaseEntity*, Vector*);
+using CBaseEntity_SetAbsVelocity_t = void (*)(CBaseEntity*, Vector*);
 // build 24116939 dropped the trailing (int outputID, void*): this wrapper now takes 5 params and
 // hardcodes both to 0 when calling the inner handler, so passing an outputID has no effect.
 using CBaseEntity_AcceptInput_t                           = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&);
@@ -185,7 +185,7 @@ using CGameEntitySystem_FindByName_t                = CBaseEntity* (*)(CGameEnti
 using CGameEntitySystem_FindInSphere_t              = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, Vector* vector, float radius);
 using CGameEntitySystem_AddListenerEntity_t         = void (*)(CGameEntitySystem*, IEntityListener* listener);
 using CGameEntitySystem_RemoveListenerEntity_t      = void (*)(CGameEntitySystem*, IEntityListener* listener);
-using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, int, void*, void*);
+using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, void*, void*);
 using ScriptRegisterConVar_t                        = void* (*)(void*, const char*, const char*, const char*, int);
 using ScriptRegisterConCommand_t                    = void (*)(void*, const char*, void*, const char*, int);
 using ScriptSetConVarString_t                       = void (*)(BaseConVar* convar, int64_t, const char*);
@@ -209,11 +209,11 @@ using CBaseModelEntity_LookupBone_t                   = int32_t (*)(CBaseModelEn
 #ifdef PLATFORM_WINDOWS
 using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CBaseModelEntity*, CTransform* ret, int32_t bone);
 #else
-using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CTransform* ret, CBaseModelEntity*, int32_t bone);
+using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CTransform * ret, CBaseModelEntity*, int32_t bone);
 #endif
-using CBaseModelEntity_SetModelScale_t                = void (*)(CBaseModelEntity*, float);
-using CBaseModelEntity_SetCollisionBounds_t           = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
-using CGamePhysicsQueryInterface_TraceShape_t         = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
+using CBaseModelEntity_SetModelScale_t        = void (*)(CBaseModelEntity*, float);
+using CBaseModelEntity_SetCollisionBounds_t   = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
+using CGamePhysicsQueryInterface_TraceShape_t = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
 #ifdef PLATFORM_WINDOWS
 using StudioModel_LookupAttachment_t = int32_t (*)(void*, int32_t*, const char*);
 #else
