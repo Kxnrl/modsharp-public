@@ -204,13 +204,14 @@ jobs:
     steps:
       - name: Install Clang 21
         run: |
-          set -euo pipefail
+          set -eu
           echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
           apt-get update
           apt-get install -y --no-install-recommends wget gnupg ca-certificates
           install -d -m 0755 /etc/apt/keyrings
-          wget -qO- --tries=5 --retry-connrefused --timeout=20 https://apt.llvm.org/llvm-snapshot.gpg.key \
-            | gpg --dearmor --yes -o /etc/apt/keyrings/llvm.gpg
+          wget -q --tries=5 --retry-connrefused --timeout=20 -O /tmp/llvm.key https://apt.llvm.org/llvm-snapshot.gpg.key
+          gpg --dearmor --yes -o /etc/apt/keyrings/llvm.gpg /tmp/llvm.key
+          rm -f /tmp/llvm.key
           echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] ${LLVM_APT_MIRROR}/bullseye/ llvm-toolchain-bullseye-21 main" > /etc/apt/sources.list.d/llvm.list
           apt-get update
           apt-get install -y clang-21
