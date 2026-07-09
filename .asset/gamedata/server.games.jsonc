@@ -1096,8 +1096,8 @@
       "windows": 27
     },
     "CCSPlayer_MovementServices::CheckMovingGround": {
-      "linux": 42,
-      "windows": 41
+      "linux": 45,
+      "windows": 44
     },
     "CCSPlayer_WeaponServices::CanUse": {
       "linux": 28,
