@@ -87,7 +87,7 @@ public:
         {
             if (!desc.empty())
                 desc += ", ";
-            desc += std::format("{}(x{})", v, n);
+            desc += std::to_string(v) + "(x" + std::to_string(n) + ")";
         }
         return desc;
     }
