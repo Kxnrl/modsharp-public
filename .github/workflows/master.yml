@@ -215,7 +215,9 @@ jobs:
           wget -q --tries=5 --retry-connrefused --timeout=20 -O /tmp/llvm.key https://apt.llvm.org/llvm-snapshot.gpg.key
           gpg --dearmor --yes -o /etc/apt/keyrings/llvm.gpg /tmp/llvm.key
           rm -f /tmp/llvm.key
-          echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] ${LLVM_APT_MIRROR}/bullseye/ llvm-toolchain-bullseye-21 main" > /etc/apt/sources.list.d/llvm.list
+          # arch=amd64: the container enables i386 as a foreign arch, but the mirror only
+          # syncs amd64. Without this apt 404s on the i386 index it will never need.
+          echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/llvm.gpg] ${LLVM_APT_MIRROR}/bullseye/ llvm-toolchain-bullseye-21 main" > /etc/apt/sources.list.d/llvm.list
           apt-get update
           apt-get install -y clang-21
           echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
