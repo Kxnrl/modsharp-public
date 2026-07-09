@@ -59,9 +59,6 @@ extern CEntityMessagePlayJingleDefaultTypeInternal _CEntityMessagePlayJingle_def
 class CEntityMessagePropagateForce;
 struct CEntityMessagePropagateForceDefaultTypeInternal;
 extern CEntityMessagePropagateForceDefaultTypeInternal _CEntityMessagePropagateForce_default_instance_;
-class CEntityMessageRemoveAllDecals;
-struct CEntityMessageRemoveAllDecalsDefaultTypeInternal;
-extern CEntityMessageRemoveAllDecalsDefaultTypeInternal _CEntityMessageRemoveAllDecals_default_instance_;
 class CEntityMessageScreenOverlay;
 struct CEntityMessageScreenOverlayDefaultTypeInternal;
 extern CEntityMessageScreenOverlayDefaultTypeInternal _CEntityMessageScreenOverlay_default_instance_;
@@ -83,12 +80,6 @@ extern CUserMessageCameraTransitionDefaultTypeInternal _CUserMessageCameraTransi
 class CUserMessageCameraTransition_Transition_DataDriven;
 struct CUserMessageCameraTransition_Transition_DataDrivenDefaultTypeInternal;
 extern CUserMessageCameraTransition_Transition_DataDrivenDefaultTypeInternal _CUserMessageCameraTransition_Transition_DataDriven_default_instance_;
-class CUserMessageCloseCaption;
-struct CUserMessageCloseCaptionDefaultTypeInternal;
-extern CUserMessageCloseCaptionDefaultTypeInternal _CUserMessageCloseCaption_default_instance_;
-class CUserMessageCloseCaptionDirect;
-struct CUserMessageCloseCaptionDirectDefaultTypeInternal;
-extern CUserMessageCloseCaptionDirectDefaultTypeInternal _CUserMessageCloseCaptionDirect_default_instance_;
 class CUserMessageCloseCaptionPlaceholder;
 struct CUserMessageCloseCaptionPlaceholderDefaultTypeInternal;
 extern CUserMessageCloseCaptionPlaceholderDefaultTypeInternal _CUserMessageCloseCaptionPlaceholder_default_instance_;
@@ -224,6 +215,9 @@ extern CUserMessage_NotifyResponseFound_CriteriaDefaultTypeInternal _CUserMessag
 class CUserMessage_PlayResponseConditional;
 struct CUserMessage_PlayResponseConditionalDefaultTypeInternal;
 extern CUserMessage_PlayResponseConditionalDefaultTypeInternal _CUserMessage_PlayResponseConditional_default_instance_;
+class CUserMessage_UsageReport;
+struct CUserMessage_UsageReportDefaultTypeInternal;
+extern CUserMessage_UsageReportDefaultTypeInternal _CUserMessage_UsageReport_default_instance_;
 class CUserMessage_UtilMsg_Response;
 struct CUserMessage_UtilMsg_ResponseDefaultTypeInternal;
 extern CUserMessage_UtilMsg_ResponseDefaultTypeInternal _CUserMessage_UtilMsg_Response_default_instance_;
@@ -379,7 +373,6 @@ template<> ::CEntityMessageDoSpark* Arena::CreateMaybeMessage<::CEntityMessageDo
 template<> ::CEntityMessageFixAngle* Arena::CreateMaybeMessage<::CEntityMessageFixAngle>(Arena*);
 template<> ::CEntityMessagePlayJingle* Arena::CreateMaybeMessage<::CEntityMessagePlayJingle>(Arena*);
 template<> ::CEntityMessagePropagateForce* Arena::CreateMaybeMessage<::CEntityMessagePropagateForce>(Arena*);
-template<> ::CEntityMessageRemoveAllDecals* Arena::CreateMaybeMessage<::CEntityMessageRemoveAllDecals>(Arena*);
 template<> ::CEntityMessageScreenOverlay* Arena::CreateMaybeMessage<::CEntityMessageScreenOverlay>(Arena*);
 template<> ::CUserMessageAchievementEvent* Arena::CreateMaybeMessage<::CUserMessageAchievementEvent>(Arena*);
 template<> ::CUserMessageAmmoDenied* Arena::CreateMaybeMessage<::CUserMessageAmmoDenied>(Arena*);
@@ -387,8 +380,6 @@ template<> ::CUserMessageAnimStateGraphState* Arena::CreateMaybeMessage<::CUserM
 template<> ::CUserMessageAudioParameter* Arena::CreateMaybeMessage<::CUserMessageAudioParameter>(Arena*);
 template<> ::CUserMessageCameraTransition* Arena::CreateMaybeMessage<::CUserMessageCameraTransition>(Arena*);
 template<> ::CUserMessageCameraTransition_Transition_DataDriven* Arena::CreateMaybeMessage<::CUserMessageCameraTransition_Transition_DataDriven>(Arena*);
-template<> ::CUserMessageCloseCaption* Arena::CreateMaybeMessage<::CUserMessageCloseCaption>(Arena*);
-template<> ::CUserMessageCloseCaptionDirect* Arena::CreateMaybeMessage<::CUserMessageCloseCaptionDirect>(Arena*);
 template<> ::CUserMessageCloseCaptionPlaceholder* Arena::CreateMaybeMessage<::CUserMessageCloseCaptionPlaceholder>(Arena*);
 template<> ::CUserMessageColoredText* Arena::CreateMaybeMessage<::CUserMessageColoredText>(Arena*);
 template<> ::CUserMessageCreditsMsg* Arena::CreateMaybeMessage<::CUserMessageCreditsMsg>(Arena*);
@@ -434,6 +425,7 @@ template<> ::CUserMessage_Inventory_Response_InventoryDetail* Arena::CreateMaybe
 template<> ::CUserMessage_NotifyResponseFound* Arena::CreateMaybeMessage<::CUserMessage_NotifyResponseFound>(Arena*);
 template<> ::CUserMessage_NotifyResponseFound_Criteria* Arena::CreateMaybeMessage<::CUserMessage_NotifyResponseFound_Criteria>(Arena*);
 template<> ::CUserMessage_PlayResponseConditional* Arena::CreateMaybeMessage<::CUserMessage_PlayResponseConditional>(Arena*);
+template<> ::CUserMessage_UsageReport* Arena::CreateMaybeMessage<::CUserMessage_UsageReport>(Arena*);
 template<> ::CUserMessage_UtilMsg_Response* Arena::CreateMaybeMessage<::CUserMessage_UtilMsg_Response>(Arena*);
 template<> ::CUserMessage_UtilMsg_Response_ItemDetail* Arena::CreateMaybeMessage<::CUserMessage_UtilMsg_Response_ItemDetail>(Arena*);
 template<> ::CUserMsg_CustomGameEvent* Arena::CreateMaybeMessage<::CUserMsg_CustomGameEvent>(Arena*);
@@ -488,8 +480,6 @@ PROTOBUF_NAMESPACE_CLOSE
 
 enum EBaseUserMessages : int {
   UM_AchievementEvent = 101,
-  UM_CloseCaption = 102,
-  UM_CloseCaptionDirect = 103,
   UM_CurrentTimescale = 104,
   UM_DesiredTimescale = 105,
   UM_Fade = 106,
@@ -537,6 +527,8 @@ enum EBaseUserMessages : int {
   UM_ExtraUserData = 164,
   UM_NotifyResponseFound = 165,
   UM_PlayResponseConditional = 166,
+  UM_UserSentBugBug = 167,
+  UM_UsageReport = 168,
   UM_MAX_BASE = 200
 };
 bool EBaseUserMessages_IsValid(int value);
@@ -561,7 +553,6 @@ inline bool EBaseUserMessages_Parse(
 enum EBaseEntityMessages : int {
   EM_PlayJingle = 136,
   EM_ScreenOverlay = 137,
-  EM_RemoveAllDecals = 138,
   EM_PropagateForce = 139,
   EM_DoSpark = 140,
   EM_FixAngle = 141
@@ -860,416 +851,6 @@ class CUserMessageAchievementEvent /*final*/ :
 };
 // -------------------------------------------------------------------
 
-class CUserMessageCloseCaption /*final*/ :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaption) */ {
- public:
-  inline CUserMessageCloseCaption() : CUserMessageCloseCaption(nullptr) {}
-  ~CUserMessageCloseCaption() override;
-  explicit PROTOBUF_CONSTEXPR CUserMessageCloseCaption(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CUserMessageCloseCaption(const CUserMessageCloseCaption& from);
-  CUserMessageCloseCaption(CUserMessageCloseCaption&& from) noexcept
-    : CUserMessageCloseCaption() {
-    *this = ::std::move(from);
-  }
-
-  inline CUserMessageCloseCaption& operator=(const CUserMessageCloseCaption& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CUserMessageCloseCaption& operator=(CUserMessageCloseCaption&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CUserMessageCloseCaption& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CUserMessageCloseCaption* internal_default_instance() {
-    return reinterpret_cast<const CUserMessageCloseCaption*>(
-               &_CUserMessageCloseCaption_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(CUserMessageCloseCaption& a, CUserMessageCloseCaption& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CUserMessageCloseCaption* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CUserMessageCloseCaption* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CUserMessageCloseCaption* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CUserMessageCloseCaption>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CUserMessageCloseCaption& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CUserMessageCloseCaption& from) {
-    CUserMessageCloseCaption::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CUserMessageCloseCaption* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CUserMessageCloseCaption";
-  }
-  protected:
-  explicit CUserMessageCloseCaption(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kHashFieldNumber = 1,
-    kDurationFieldNumber = 2,
-    kFromPlayerFieldNumber = 3,
-    kEntIndexFieldNumber = 4,
-  };
-  // optional fixed32 hash = 1;
-  bool has_hash() const;
-  private:
-  bool _internal_has_hash() const;
-  public:
-  void clear_hash();
-  uint32_t hash() const;
-  void set_hash(uint32_t value);
-  private:
-  uint32_t _internal_hash() const;
-  void _internal_set_hash(uint32_t value);
-  public:
-
-  // optional float duration = 2;
-  bool has_duration() const;
-  private:
-  bool _internal_has_duration() const;
-  public:
-  void clear_duration();
-  float duration() const;
-  void set_duration(float value);
-  private:
-  float _internal_duration() const;
-  void _internal_set_duration(float value);
-  public:
-
-  // optional bool from_player = 3;
-  bool has_from_player() const;
-  private:
-  bool _internal_has_from_player() const;
-  public:
-  void clear_from_player();
-  bool from_player() const;
-  void set_from_player(bool value);
-  private:
-  bool _internal_from_player() const;
-  void _internal_set_from_player(bool value);
-  public:
-
-  // optional int32 ent_index = 4 [default = -1];
-  bool has_ent_index() const;
-  private:
-  bool _internal_has_ent_index() const;
-  public:
-  void clear_ent_index();
-  int32_t ent_index() const;
-  void set_ent_index(int32_t value);
-  private:
-  int32_t _internal_ent_index() const;
-  void _internal_set_ent_index(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CUserMessageCloseCaption)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    uint32_t hash_;
-    float duration_;
-    bool from_player_;
-    int32_t ent_index_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_usermessages_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CUserMessageCloseCaptionDirect /*final*/ :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaptionDirect) */ {
- public:
-  inline CUserMessageCloseCaptionDirect() : CUserMessageCloseCaptionDirect(nullptr) {}
-  ~CUserMessageCloseCaptionDirect() override;
-  explicit PROTOBUF_CONSTEXPR CUserMessageCloseCaptionDirect(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CUserMessageCloseCaptionDirect(const CUserMessageCloseCaptionDirect& from);
-  CUserMessageCloseCaptionDirect(CUserMessageCloseCaptionDirect&& from) noexcept
-    : CUserMessageCloseCaptionDirect() {
-    *this = ::std::move(from);
-  }
-
-  inline CUserMessageCloseCaptionDirect& operator=(const CUserMessageCloseCaptionDirect& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CUserMessageCloseCaptionDirect& operator=(CUserMessageCloseCaptionDirect&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CUserMessageCloseCaptionDirect& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CUserMessageCloseCaptionDirect* internal_default_instance() {
-    return reinterpret_cast<const CUserMessageCloseCaptionDirect*>(
-               &_CUserMessageCloseCaptionDirect_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(CUserMessageCloseCaptionDirect& a, CUserMessageCloseCaptionDirect& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CUserMessageCloseCaptionDirect* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CUserMessageCloseCaptionDirect* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CUserMessageCloseCaptionDirect* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CUserMessageCloseCaptionDirect>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CUserMessageCloseCaptionDirect& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CUserMessageCloseCaptionDirect& from) {
-    CUserMessageCloseCaptionDirect::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CUserMessageCloseCaptionDirect* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CUserMessageCloseCaptionDirect";
-  }
-  protected:
-  explicit CUserMessageCloseCaptionDirect(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kHashFieldNumber = 1,
-    kDurationFieldNumber = 2,
-    kFromPlayerFieldNumber = 3,
-    kEntIndexFieldNumber = 4,
-  };
-  // optional fixed32 hash = 1;
-  bool has_hash() const;
-  private:
-  bool _internal_has_hash() const;
-  public:
-  void clear_hash();
-  uint32_t hash() const;
-  void set_hash(uint32_t value);
-  private:
-  uint32_t _internal_hash() const;
-  void _internal_set_hash(uint32_t value);
-  public:
-
-  // optional float duration = 2;
-  bool has_duration() const;
-  private:
-  bool _internal_has_duration() const;
-  public:
-  void clear_duration();
-  float duration() const;
-  void set_duration(float value);
-  private:
-  float _internal_duration() const;
-  void _internal_set_duration(float value);
-  public:
-
-  // optional bool from_player = 3;
-  bool has_from_player() const;
-  private:
-  bool _internal_has_from_player() const;
-  public:
-  void clear_from_player();
-  bool from_player() const;
-  void set_from_player(bool value);
-  private:
-  bool _internal_from_player() const;
-  void _internal_set_from_player(bool value);
-  public:
-
-  // optional int32 ent_index = 4 [default = -1];
-  bool has_ent_index() const;
-  private:
-  bool _internal_has_ent_index() const;
-  public:
-  void clear_ent_index();
-  int32_t ent_index() const;
-  void set_ent_index(int32_t value);
-  private:
-  int32_t _internal_ent_index() const;
-  void _internal_set_ent_index(int32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CUserMessageCloseCaptionDirect)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    uint32_t hash_;
-    float duration_;
-    bool from_player_;
-    int32_t ent_index_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_usermessages_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CUserMessageCloseCaptionPlaceholder /*final*/ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageCloseCaptionPlaceholder) */ {
  public:
@@ -1325,7 +906,7 @@ class CUserMessageCloseCaptionPlaceholder /*final*/ :
                &_CUserMessageCloseCaptionPlaceholder_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    1;
 
   friend void swap(CUserMessageCloseCaptionPlaceholder& a, CUserMessageCloseCaptionPlaceholder& b) {
     a.Swap(&b);
@@ -1535,7 +1116,7 @@ class CUserMessageCurrentTimescale /*final*/ :
                &_CUserMessageCurrentTimescale_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    2;
 
   friend void swap(CUserMessageCurrentTimescale& a, CUserMessageCurrentTimescale& b) {
     a.Swap(&b);
@@ -1695,7 +1276,7 @@ class CUserMessageDesiredTimescale /*final*/ :
                &_CUserMessageDesiredTimescale_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    3;
 
   friend void swap(CUserMessageDesiredTimescale& a, CUserMessageDesiredTimescale& b) {
     a.Swap(&b);
@@ -1900,7 +1481,7 @@ class CUserMessageFade /*final*/ :
                &_CUserMessageFade_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    4;
 
   friend void swap(CUserMessageFade& a, CUserMessageFade& b) {
     a.Swap(&b);
@@ -2105,7 +1686,7 @@ class CUserMessageShake /*final*/ :
                &_CUserMessageShake_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    5;
 
   friend void swap(CUserMessageShake& a, CUserMessageShake& b) {
     a.Swap(&b);
@@ -2310,7 +1891,7 @@ class CUserMessageShakeDir /*final*/ :
                &_CUserMessageShakeDir_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    6;
 
   friend void swap(CUserMessageShakeDir& a, CUserMessageShakeDir& b) {
     a.Swap(&b);
@@ -2495,7 +2076,7 @@ class CUserMessageWaterShake /*final*/ :
                &_CUserMessageWaterShake_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    7;
 
   friend void swap(CUserMessageWaterShake& a, CUserMessageWaterShake& b) {
     a.Swap(&b);
@@ -2700,7 +2281,7 @@ class CUserMessageScreenTilt /*final*/ :
                &_CUserMessageScreenTilt_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    8;
 
   friend void swap(CUserMessageScreenTilt& a, CUserMessageScreenTilt& b) {
     a.Swap(&b);
@@ -2925,7 +2506,7 @@ class CUserMessageSayText /*final*/ :
                &_CUserMessageSayText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    9;
 
   friend void swap(CUserMessageSayText& a, CUserMessageSayText& b) {
     a.Swap(&b);
@@ -3120,7 +2701,7 @@ class CUserMessageSayText2 /*final*/ :
                &_CUserMessageSayText2_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    10;
 
   friend void swap(CUserMessageSayText2& a, CUserMessageSayText2& b) {
     a.Swap(&b);
@@ -3395,7 +2976,7 @@ class CUserMessageHudMsg /*final*/ :
                &_CUserMessageHudMsg_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    11;
 
   friend void swap(CUserMessageHudMsg& a, CUserMessageHudMsg& b) {
     a.Swap(&b);
@@ -3650,7 +3231,7 @@ class CUserMessageHudText /*final*/ :
                &_CUserMessageHudText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    12;
 
   friend void swap(CUserMessageHudText& a, CUserMessageHudText& b) {
     a.Swap(&b);
@@ -3815,7 +3396,7 @@ class CUserMessageTextMsg /*final*/ :
                &_CUserMessageTextMsg_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    13;
 
   friend void swap(CUserMessageTextMsg& a, CUserMessageTextMsg& b) {
     a.Swap(&b);
@@ -4000,7 +3581,7 @@ class CUserMessageGameTitle /*final*/ :
                &_CUserMessageGameTitle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    14;
 
   friend void swap(CUserMessageGameTitle& a, CUserMessageGameTitle& b) {
     a.Swap(&b);
@@ -4125,7 +3706,7 @@ class CUserMessageResetHUD /*final*/ :
                &_CUserMessageResetHUD_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    15;
 
   friend void swap(CUserMessageResetHUD& a, CUserMessageResetHUD& b) {
     a.Swap(&b);
@@ -4251,7 +3832,7 @@ class CUserMessageSendAudio /*final*/ :
                &_CUserMessageSendAudio_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    16;
 
   friend void swap(CUserMessageSendAudio& a, CUserMessageSendAudio& b) {
     a.Swap(&b);
@@ -4431,7 +4012,7 @@ class CUserMessageAudioParameter /*final*/ :
                &_CUserMessageAudioParameter_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    17;
 
   friend void swap(CUserMessageAudioParameter& a, CUserMessageAudioParameter& b) {
     a.Swap(&b);
@@ -4636,7 +4217,7 @@ class CUserMessageVoiceMask /*final*/ :
                &_CUserMessageVoiceMask_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    18;
 
   friend void swap(CUserMessageVoiceMask& a, CUserMessageVoiceMask& b) {
     a.Swap(&b);
@@ -4843,7 +4424,7 @@ class CUserMessageRequestState /*final*/ :
                &_CUserMessageRequestState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    19;
 
   friend void swap(CUserMessageRequestState& a, CUserMessageRequestState& b) {
     a.Swap(&b);
@@ -4969,7 +4550,7 @@ class CUserMessageRumble /*final*/ :
                &_CUserMessageRumble_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    20;
 
   friend void swap(CUserMessageRumble& a, CUserMessageRumble& b) {
     a.Swap(&b);
@@ -5159,7 +4740,7 @@ class CUserMessageSayTextChannel /*final*/ :
                &_CUserMessageSayTextChannel_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    21;
 
   friend void swap(CUserMessageSayTextChannel& a, CUserMessageSayTextChannel& b) {
     a.Swap(&b);
@@ -5354,7 +4935,7 @@ class CUserMessageColoredText /*final*/ :
                &_CUserMessageColoredText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    22;
 
   friend void swap(CUserMessageColoredText& a, CUserMessageColoredText& b) {
     a.Swap(&b);
@@ -5594,7 +5175,7 @@ class CUserMessageItemPickup /*final*/ :
                &_CUserMessageItemPickup_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    23;
 
   friend void swap(CUserMessageItemPickup& a, CUserMessageItemPickup& b) {
     a.Swap(&b);
@@ -5759,7 +5340,7 @@ class CUserMessageAmmoDenied /*final*/ :
                &_CUserMessageAmmoDenied_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    24;
 
   friend void swap(CUserMessageAmmoDenied& a, CUserMessageAmmoDenied& b) {
     a.Swap(&b);
@@ -5919,7 +5500,7 @@ class CUserMessageShowMenu /*final*/ :
                &_CUserMessageShowMenu_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    25;
 
   friend void swap(CUserMessageShowMenu& a, CUserMessageShowMenu& b) {
     a.Swap(&b);
@@ -6129,7 +5710,7 @@ class CUserMessageCreditsMsg /*final*/ :
                &_CUserMessageCreditsMsg_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    26;
 
   friend void swap(CUserMessageCreditsMsg& a, CUserMessageCreditsMsg& b) {
     a.Swap(&b);
@@ -6304,7 +5885,7 @@ class CEntityMessagePlayJingle /*final*/ :
                &_CEntityMessagePlayJingle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    27;
 
   friend void swap(CEntityMessagePlayJingle& a, CEntityMessagePlayJingle& b) {
     a.Swap(&b);
@@ -6469,7 +6050,7 @@ class CEntityMessageScreenOverlay /*final*/ :
                &_CEntityMessageScreenOverlay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    28;
 
   friend void swap(CEntityMessageScreenOverlay& a, CEntityMessageScreenOverlay& b) {
     a.Swap(&b);
@@ -6594,186 +6175,6 @@ class CEntityMessageScreenOverlay /*final*/ :
 };
 // -------------------------------------------------------------------
 
-class CEntityMessageRemoveAllDecals /*final*/ :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessageRemoveAllDecals) */ {
- public:
-  inline CEntityMessageRemoveAllDecals() : CEntityMessageRemoveAllDecals(nullptr) {}
-  ~CEntityMessageRemoveAllDecals() override;
-  explicit PROTOBUF_CONSTEXPR CEntityMessageRemoveAllDecals(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  CEntityMessageRemoveAllDecals(const CEntityMessageRemoveAllDecals& from);
-  CEntityMessageRemoveAllDecals(CEntityMessageRemoveAllDecals&& from) noexcept
-    : CEntityMessageRemoveAllDecals() {
-    *this = ::std::move(from);
-  }
-
-  inline CEntityMessageRemoveAllDecals& operator=(const CEntityMessageRemoveAllDecals& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CEntityMessageRemoveAllDecals& operator=(CEntityMessageRemoveAllDecals&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CEntityMessageRemoveAllDecals& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CEntityMessageRemoveAllDecals* internal_default_instance() {
-    return reinterpret_cast<const CEntityMessageRemoveAllDecals*>(
-               &_CEntityMessageRemoveAllDecals_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    31;
-
-  friend void swap(CEntityMessageRemoveAllDecals& a, CEntityMessageRemoveAllDecals& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CEntityMessageRemoveAllDecals* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CEntityMessageRemoveAllDecals* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CEntityMessageRemoveAllDecals* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CEntityMessageRemoveAllDecals>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const CEntityMessageRemoveAllDecals& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CEntityMessageRemoveAllDecals& from) {
-    CEntityMessageRemoveAllDecals::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CEntityMessageRemoveAllDecals* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "CEntityMessageRemoveAllDecals";
-  }
-  protected:
-  explicit CEntityMessageRemoveAllDecals(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kEntityMsgFieldNumber = 2,
-    kRemoveDecalsFieldNumber = 1,
-  };
-  // optional .CEntityMsg entity_msg = 2;
-  bool has_entity_msg() const;
-  private:
-  bool _internal_has_entity_msg() const;
-  public:
-  void clear_entity_msg();
-  const ::CEntityMsg& entity_msg() const;
-  PROTOBUF_NODISCARD ::CEntityMsg* release_entity_msg();
-  ::CEntityMsg* mutable_entity_msg();
-  void set_allocated_entity_msg(::CEntityMsg* entity_msg);
-  private:
-  const ::CEntityMsg& _internal_entity_msg() const;
-  ::CEntityMsg* _internal_mutable_entity_msg();
-  public:
-  void unsafe_arena_set_allocated_entity_msg(
-      ::CEntityMsg* entity_msg);
-  ::CEntityMsg* unsafe_arena_release_entity_msg();
-
-  // optional bool remove_decals = 1;
-  bool has_remove_decals() const;
-  private:
-  bool _internal_has_remove_decals() const;
-  public:
-  void clear_remove_decals();
-  bool remove_decals() const;
-  void set_remove_decals(bool value);
-  private:
-  bool _internal_remove_decals() const;
-  void _internal_set_remove_decals(bool value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:CEntityMessageRemoveAllDecals)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    ::CEntityMsg* entity_msg_;
-    bool remove_decals_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_usermessages_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CEntityMessagePropagateForce /*final*/ :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CEntityMessagePropagateForce) */ {
  public:
@@ -6829,7 +6230,7 @@ class CEntityMessagePropagateForce /*final*/ :
                &_CEntityMessagePropagateForce_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    29;
 
   friend void swap(CEntityMessagePropagateForce& a, CEntityMessagePropagateForce& b) {
     a.Swap(&b);
@@ -7014,7 +6415,7 @@ class CEntityMessageDoSpark /*final*/ :
                &_CEntityMessageDoSpark_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    30;
 
   friend void swap(CEntityMessageDoSpark& a, CEntityMessageDoSpark& b) {
     a.Swap(&b);
@@ -7289,7 +6690,7 @@ class CEntityMessageFixAngle /*final*/ :
                &_CEntityMessageFixAngle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    31;
 
   friend void swap(CEntityMessageFixAngle& a, CEntityMessageFixAngle& b) {
     a.Swap(&b);
@@ -7489,7 +6890,7 @@ class CUserMessageCameraTransition_Transition_DataDriven /*final*/ :
                &_CUserMessageCameraTransition_Transition_DataDriven_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    35;
+    32;
 
   friend void swap(CUserMessageCameraTransition_Transition_DataDriven& a, CUserMessageCameraTransition_Transition_DataDriven& b) {
     a.Swap(&b);
@@ -7684,7 +7085,7 @@ class CUserMessageCameraTransition /*final*/ :
                &_CUserMessageCameraTransition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    36;
+    33;
 
   friend void swap(CUserMessageCameraTransition& a, CUserMessageCameraTransition& b) {
     a.Swap(&b);
@@ -7880,7 +7281,7 @@ class CUserMsg_ParticleManager_ReleaseParticleIndex /*final*/ :
                &_CUserMsg_ParticleManager_ReleaseParticleIndex_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    37;
+    34;
 
   friend void swap(CUserMsg_ParticleManager_ReleaseParticleIndex& a, CUserMsg_ParticleManager_ReleaseParticleIndex& b) {
     a.Swap(&b);
@@ -8006,7 +7407,7 @@ class CUserMsg_ParticleManager_CreateParticle /*final*/ :
                &_CUserMsg_ParticleManager_CreateParticle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    38;
+    35;
 
   friend void swap(CUserMsg_ParticleManager_CreateParticle& a, CUserMsg_ParticleManager_CreateParticle& b) {
     a.Swap(&b);
@@ -8311,7 +7712,7 @@ class CUserMsg_ParticleManager_DestroyParticle /*final*/ :
                &_CUserMsg_ParticleManager_DestroyParticle_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    39;
+    36;
 
   friend void swap(CUserMsg_ParticleManager_DestroyParticle& a, CUserMsg_ParticleManager_DestroyParticle& b) {
     a.Swap(&b);
@@ -8471,7 +7872,7 @@ class CUserMsg_ParticleManager_DestroyParticleInvolving /*final*/ :
                &_CUserMsg_ParticleManager_DestroyParticleInvolving_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    40;
+    37;
 
   friend void swap(CUserMsg_ParticleManager_DestroyParticleInvolving& a, CUserMsg_ParticleManager_DestroyParticleInvolving& b) {
     a.Swap(&b);
@@ -8646,7 +8047,7 @@ class CUserMsg_ParticleManager_DestroyParticleNamed /*final*/ :
                &_CUserMsg_ParticleManager_DestroyParticleNamed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    41;
+    38;
 
   friend void swap(CUserMsg_ParticleManager_DestroyParticleNamed& a, CUserMsg_ParticleManager_DestroyParticleNamed& b) {
     a.Swap(&b);
@@ -8851,7 +8252,7 @@ class CUserMsg_ParticleManager_UpdateParticle_OBSOLETE /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticle_OBSOLETE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    42;
+    39;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticle_OBSOLETE& a, CUserMsg_ParticleManager_UpdateParticle_OBSOLETE& b) {
     a.Swap(&b);
@@ -9031,7 +8432,7 @@ class CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    43;
+    40;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE& a, CUserMsg_ParticleManager_UpdateParticleFwd_OBSOLETE& b) {
     a.Swap(&b);
@@ -9211,7 +8612,7 @@ class CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    44;
+    41;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE& a, CUserMsg_ParticleManager_UpdateParticleOrient_OBSOLETE& b) {
     a.Swap(&b);
@@ -9451,7 +8852,7 @@ class CUserMsg_ParticleManager_UpdateParticleTransform /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleTransform_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    45;
+    42;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleTransform& a, CUserMsg_ParticleManager_UpdateParticleTransform& b) {
     a.Swap(&b);
@@ -9666,7 +9067,7 @@ class CUserMsg_ParticleManager_UpdateParticleFallback /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleFallback_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    46;
+    43;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleFallback& a, CUserMsg_ParticleManager_UpdateParticleFallback& b) {
     a.Swap(&b);
@@ -9846,7 +9247,7 @@ class CUserMsg_ParticleManager_UpdateParticleOffset /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleOffset_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    47;
+    44;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleOffset& a, CUserMsg_ParticleManager_UpdateParticleOffset& b) {
     a.Swap(&b);
@@ -10046,7 +9447,7 @@ class CUserMsg_ParticleManager_UpdateParticleEnt /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleEnt_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    48;
+    45;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleEnt& a, CUserMsg_ParticleManager_UpdateParticleEnt& b) {
     a.Swap(&b);
@@ -10326,7 +9727,7 @@ class CUserMsg_ParticleManager_UpdateParticleSetFrozen /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleSetFrozen_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    49;
+    46;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleSetFrozen& a, CUserMsg_ParticleManager_UpdateParticleSetFrozen& b) {
     a.Swap(&b);
@@ -10501,7 +9902,7 @@ class CUserMsg_ParticleManager_UpdateParticleShouldDraw /*final*/ :
                &_CUserMsg_ParticleManager_UpdateParticleShouldDraw_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    50;
+    47;
 
   friend void swap(CUserMsg_ParticleManager_UpdateParticleShouldDraw& a, CUserMsg_ParticleManager_UpdateParticleShouldDraw& b) {
     a.Swap(&b);
@@ -10661,7 +10062,7 @@ class CUserMsg_ParticleManager_ChangeControlPointAttachment /*final*/ :
                &_CUserMsg_ParticleManager_ChangeControlPointAttachment_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    51;
+    48;
 
   friend void swap(CUserMsg_ParticleManager_ChangeControlPointAttachment& a, CUserMsg_ParticleManager_ChangeControlPointAttachment& b) {
     a.Swap(&b);
@@ -10851,7 +10252,7 @@ class CUserMsg_ParticleManager_UpdateEntityPosition /*final*/ :
                &_CUserMsg_ParticleManager_UpdateEntityPosition_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    52;
+    49;
 
   friend void swap(CUserMsg_ParticleManager_UpdateEntityPosition& a, CUserMsg_ParticleManager_UpdateEntityPosition& b) {
     a.Swap(&b);
@@ -11031,7 +10432,7 @@ class CUserMsg_ParticleManager_SetParticleFoWProperties /*final*/ :
                &_CUserMsg_ParticleManager_SetParticleFoWProperties_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    53;
+    50;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleFoWProperties& a, CUserMsg_ParticleManager_SetParticleFoWProperties& b) {
     a.Swap(&b);
@@ -11221,7 +10622,7 @@ class CUserMsg_ParticleManager_SetParticleShouldCheckFoW /*final*/ :
                &_CUserMsg_ParticleManager_SetParticleShouldCheckFoW_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    54;
+    51;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleShouldCheckFoW& a, CUserMsg_ParticleManager_SetParticleShouldCheckFoW& b) {
     a.Swap(&b);
@@ -11381,7 +10782,7 @@ class CUserMsg_ParticleManager_SetControlPointModel /*final*/ :
                &_CUserMsg_ParticleManager_SetControlPointModel_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    55;
+    52;
 
   friend void swap(CUserMsg_ParticleManager_SetControlPointModel& a, CUserMsg_ParticleManager_SetControlPointModel& b) {
     a.Swap(&b);
@@ -11561,7 +10962,7 @@ class CUserMsg_ParticleManager_SetControlPointSnapshot /*final*/ :
                &_CUserMsg_ParticleManager_SetControlPointSnapshot_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    56;
+    53;
 
   friend void swap(CUserMsg_ParticleManager_SetControlPointSnapshot& a, CUserMsg_ParticleManager_SetControlPointSnapshot& b) {
     a.Swap(&b);
@@ -11741,7 +11142,7 @@ class CUserMsg_ParticleManager_SetParticleText /*final*/ :
                &_CUserMsg_ParticleManager_SetParticleText_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    57;
+    54;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleText& a, CUserMsg_ParticleManager_SetParticleText& b) {
     a.Swap(&b);
@@ -11921,7 +11322,7 @@ class CUserMsg_ParticleManager_SetTextureAttribute /*final*/ :
                &_CUserMsg_ParticleManager_SetTextureAttribute_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    55;
 
   friend void swap(CUserMsg_ParticleManager_SetTextureAttribute& a, CUserMsg_ParticleManager_SetTextureAttribute& b) {
     a.Swap(&b);
@@ -12106,7 +11507,7 @@ class CUserMsg_ParticleManager_SetOverrideTexture /*final*/ :
                &_CUserMsg_ParticleManager_SetOverrideTexture_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    56;
 
   friend void swap(CUserMsg_ParticleManager_SetOverrideTexture& a, CUserMsg_ParticleManager_SetOverrideTexture& b) {
     a.Swap(&b);
@@ -12271,7 +11672,7 @@ class CUserMsg_ParticleManager_SetSceneObjectGenericFlag /*final*/ :
                &_CUserMsg_ParticleManager_SetSceneObjectGenericFlag_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    57;
 
   friend void swap(CUserMsg_ParticleManager_SetSceneObjectGenericFlag& a, CUserMsg_ParticleManager_SetSceneObjectGenericFlag& b) {
     a.Swap(&b);
@@ -12431,7 +11832,7 @@ class CUserMsg_ParticleManager_SetSceneObjectTintAndDesat /*final*/ :
                &_CUserMsg_ParticleManager_SetSceneObjectTintAndDesat_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    58;
 
   friend void swap(CUserMsg_ParticleManager_SetSceneObjectTintAndDesat& a, CUserMsg_ParticleManager_SetSceneObjectTintAndDesat& b) {
     a.Swap(&b);
@@ -12606,7 +12007,7 @@ class CUserMsg_ParticleManager_ParticleSkipToTime /*final*/ :
                &_CUserMsg_ParticleManager_ParticleSkipToTime_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    59;
 
   friend void swap(CUserMsg_ParticleManager_ParticleSkipToTime& a, CUserMsg_ParticleManager_ParticleSkipToTime& b) {
     a.Swap(&b);
@@ -12766,7 +12167,7 @@ class CUserMsg_ParticleManager_ParticleCanFreeze /*final*/ :
                &_CUserMsg_ParticleManager_ParticleCanFreeze_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    60;
 
   friend void swap(CUserMsg_ParticleManager_ParticleCanFreeze& a, CUserMsg_ParticleManager_ParticleCanFreeze& b) {
     a.Swap(&b);
@@ -12926,7 +12327,7 @@ class CUserMsg_ParticleManager_ParticleFreezeTransitionOverride /*final*/ :
                &_CUserMsg_ParticleManager_ParticleFreezeTransitionOverride_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    61;
 
   friend void swap(CUserMsg_ParticleManager_ParticleFreezeTransitionOverride& a, CUserMsg_ParticleManager_ParticleFreezeTransitionOverride& b) {
     a.Swap(&b);
@@ -13086,7 +12487,7 @@ class CUserMsg_ParticleManager_FreezeParticleInvolving /*final*/ :
                &_CUserMsg_ParticleManager_FreezeParticleInvolving_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    62;
 
   friend void swap(CUserMsg_ParticleManager_FreezeParticleInvolving& a, CUserMsg_ParticleManager_FreezeParticleInvolving& b) {
     a.Swap(&b);
@@ -13276,7 +12677,7 @@ class CUserMsg_ParticleManager_AddModellistOverrideElement /*final*/ :
                &_CUserMsg_ParticleManager_AddModellistOverrideElement_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    63;
 
   friend void swap(CUserMsg_ParticleManager_AddModellistOverrideElement& a, CUserMsg_ParticleManager_AddModellistOverrideElement& b) {
     a.Swap(&b);
@@ -13471,7 +12872,7 @@ class CUserMsg_ParticleManager_ClearModellistOverride /*final*/ :
                &_CUserMsg_ParticleManager_ClearModellistOverride_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    64;
 
   friend void swap(CUserMsg_ParticleManager_ClearModellistOverride& a, CUserMsg_ParticleManager_ClearModellistOverride& b) {
     a.Swap(&b);
@@ -13631,7 +13032,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue /*
                &_CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    65;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue& a, CUserMsg_ParticleManager_SetParticleNamedValueContext_FloatContextValue& b) {
     a.Swap(&b);
@@ -13806,7 +13207,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue /
                &_CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    66;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue& a, CUserMsg_ParticleManager_SetParticleNamedValueContext_VectorContextValue& b) {
     a.Swap(&b);
@@ -13986,7 +13387,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValu
                &_CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    67;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue& a, CUserMsg_ParticleManager_SetParticleNamedValueContext_TransformContextValue& b) {
     a.Swap(&b);
@@ -14186,7 +13587,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext /*fin
                &_CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    71;
+    68;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext& a, CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext& b) {
     a.Swap(&b);
@@ -14361,7 +13762,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext /*final*/ :
                &_CUserMsg_ParticleManager_SetParticleNamedValueContext_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    72;
+    69;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleNamedValueContext& a, CUserMsg_ParticleManager_SetParticleNamedValueContext& b) {
     a.Swap(&b);
@@ -14590,7 +13991,7 @@ class CUserMsg_ParticleManager_CreatePhysicsSim /*final*/ :
                &_CUserMsg_ParticleManager_CreatePhysicsSim_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    73;
+    70;
 
   friend void swap(CUserMsg_ParticleManager_CreatePhysicsSim& a, CUserMsg_ParticleManager_CreatePhysicsSim& b) {
     a.Swap(&b);
@@ -14784,7 +14185,7 @@ class CUserMsg_ParticleManager_DestroyPhysicsSim /*final*/ :
                &_CUserMsg_ParticleManager_DestroyPhysicsSim_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    74;
+    71;
 
   friend void swap(CUserMsg_ParticleManager_DestroyPhysicsSim& a, CUserMsg_ParticleManager_DestroyPhysicsSim& b) {
     a.Swap(&b);
@@ -14910,7 +14311,7 @@ class CUserMsg_ParticleManager_CreateSmokeGrid /*final*/ :
                &_CUserMsg_ParticleManager_CreateSmokeGrid_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    75;
+    72;
 
   friend void swap(CUserMsg_ParticleManager_CreateSmokeGrid& a, CUserMsg_ParticleManager_CreateSmokeGrid& b) {
     a.Swap(&b);
@@ -15075,7 +14476,7 @@ class CUserMsg_ParticleManager_SetVData /*final*/ :
                &_CUserMsg_ParticleManager_SetVData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    76;
+    73;
 
   friend void swap(CUserMsg_ParticleManager_SetVData& a, CUserMsg_ParticleManager_SetVData& b) {
     a.Swap(&b);
@@ -15240,7 +14641,7 @@ class CUserMsg_ParticleManager_SetMaterialOverride /*final*/ :
                &_CUserMsg_ParticleManager_SetMaterialOverride_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    77;
+    74;
 
   friend void swap(CUserMsg_ParticleManager_SetMaterialOverride& a, CUserMsg_ParticleManager_SetMaterialOverride& b) {
     a.Swap(&b);
@@ -15420,7 +14821,7 @@ class CUserMsg_ParticleManager_AddFan /*final*/ :
                &_CUserMsg_ParticleManager_AddFan_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    78;
+    75;
 
   friend void swap(CUserMsg_ParticleManager_AddFan& a, CUserMsg_ParticleManager_AddFan& b) {
     a.Swap(&b);
@@ -15870,7 +15271,7 @@ class CUserMsg_ParticleManager_UpdateFan /*final*/ :
                &_CUserMsg_ParticleManager_UpdateFan_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    79;
+    76;
 
   friend void swap(CUserMsg_ParticleManager_UpdateFan& a, CUserMsg_ParticleManager_UpdateFan& b) {
     a.Swap(&b);
@@ -16144,7 +15545,7 @@ class CUserMsg_ParticleManager_RemoveFan /*final*/ :
                &_CUserMsg_ParticleManager_RemoveFan_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    80;
+    77;
 
   friend void swap(CUserMsg_ParticleManager_RemoveFan& a, CUserMsg_ParticleManager_RemoveFan& b) {
     a.Swap(&b);
@@ -16270,7 +15671,7 @@ class CUserMsg_ParticleManager_SetParticleClusterGrowth /*final*/ :
                &_CUserMsg_ParticleManager_SetParticleClusterGrowth_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    81;
+    78;
 
   friend void swap(CUserMsg_ParticleManager_SetParticleClusterGrowth& a, CUserMsg_ParticleManager_SetParticleClusterGrowth& b) {
     a.Swap(&b);
@@ -16450,7 +15851,7 @@ class CUserMsg_ParticleManager /*final*/ :
                &_CUserMsg_ParticleManager_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    82;
+    79;
 
   friend void swap(CUserMsg_ParticleManager& a, CUserMsg_ParticleManager& b) {
     a.Swap(&b);
@@ -17679,7 +17080,7 @@ class CUserMsg_HudError /*final*/ :
                &_CUserMsg_HudError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    83;
+    80;
 
   friend void swap(CUserMsg_HudError& a, CUserMsg_HudError& b) {
     a.Swap(&b);
@@ -17839,7 +17240,7 @@ class CUserMsg_CustomGameEvent /*final*/ :
                &_CUserMsg_CustomGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    84;
+    81;
 
   friend void swap(CUserMsg_CustomGameEvent& a, CUserMsg_CustomGameEvent& b) {
     a.Swap(&b);
@@ -18024,7 +17425,7 @@ class CUserMessageHapticsManagerPulse /*final*/ :
                &_CUserMessageHapticsManagerPulse_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    85;
+    82;
 
   friend void swap(CUserMessageHapticsManagerPulse& a, CUserMessageHapticsManagerPulse& b) {
     a.Swap(&b);
@@ -18229,7 +17630,7 @@ class CUserMessageHapticsManagerEffect /*final*/ :
                &_CUserMessageHapticsManagerEffect_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    86;
+    83;
 
   friend void swap(CUserMessageHapticsManagerEffect& a, CUserMessageHapticsManagerEffect& b) {
     a.Swap(&b);
@@ -18419,7 +17820,7 @@ class CUserMessageAnimStateGraphState /*final*/ :
                &_CUserMessageAnimStateGraphState_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    87;
+    84;
 
   friend void swap(CUserMessageAnimStateGraphState& a, CUserMessageAnimStateGraphState& b) {
     a.Swap(&b);
@@ -18599,7 +18000,7 @@ class CUserMessageUpdateCssClasses /*final*/ :
                &_CUserMessageUpdateCssClasses_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    88;
+    85;
 
   friend void swap(CUserMessageUpdateCssClasses& a, CUserMessageUpdateCssClasses& b) {
     a.Swap(&b);
@@ -18794,7 +18195,7 @@ class CUserMessageServerFrameTime /*final*/ :
                &_CUserMessageServerFrameTime_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    89;
+    86;
 
   friend void swap(CUserMessageServerFrameTime& a, CUserMessageServerFrameTime& b) {
     a.Swap(&b);
@@ -18954,7 +18355,7 @@ class CUserMessageLagCompensationError /*final*/ :
                &_CUserMessageLagCompensationError_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    90;
+    87;
 
   friend void swap(CUserMessageLagCompensationError& a, CUserMessageLagCompensationError& b) {
     a.Swap(&b);
@@ -19114,7 +18515,7 @@ class CUserMessageRequestDllStatus /*final*/ :
                &_CUserMessageRequestDllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    91;
+    88;
 
   friend void swap(CUserMessageRequestDllStatus& a, CUserMessageRequestDllStatus& b) {
     a.Swap(&b);
@@ -19294,7 +18695,7 @@ class CUserMessageRequestUtilAction /*final*/ :
                &_CUserMessageRequestUtilAction_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    92;
+    89;
 
   friend void swap(CUserMessageRequestUtilAction& a, CUserMessageRequestUtilAction& b) {
     a.Swap(&b);
@@ -19514,7 +18915,7 @@ class CUserMessage_UtilMsg_Response_ItemDetail /*final*/ :
                &_CUserMessage_UtilMsg_Response_ItemDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    93;
+    90;
 
   friend void swap(CUserMessage_UtilMsg_Response_ItemDetail& a, CUserMessage_UtilMsg_Response_ItemDetail& b) {
     a.Swap(&b);
@@ -19724,7 +19125,7 @@ class CUserMessage_UtilMsg_Response /*final*/ :
                &_CUserMessage_UtilMsg_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    94;
+    91;
 
   friend void swap(CUserMessage_UtilMsg_Response& a, CUserMessage_UtilMsg_Response& b) {
     a.Swap(&b);
@@ -20074,7 +19475,7 @@ class CUserMessage_DllStatus_CVDiagnostic /*final*/ :
                &_CUserMessage_DllStatus_CVDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    95;
+    92;
 
   friend void swap(CUserMessage_DllStatus_CVDiagnostic& a, CUserMessage_DllStatus_CVDiagnostic& b) {
     a.Swap(&b);
@@ -20284,7 +19685,7 @@ class CUserMessage_DllStatus_CModule /*final*/ :
                &_CUserMessage_DllStatus_CModule_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    96;
+    93;
 
   friend void swap(CUserMessage_DllStatus_CModule& a, CUserMessage_DllStatus_CModule& b) {
     a.Swap(&b);
@@ -20494,7 +19895,7 @@ class CUserMessage_DllStatus /*final*/ :
                &_CUserMessage_DllStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    97;
+    94;
 
   friend void swap(CUserMessage_DllStatus& a, CUserMessage_DllStatus& b) {
     a.Swap(&b);
@@ -20782,7 +20183,7 @@ class CUserMessageRequestInventory /*final*/ :
                &_CUserMessageRequestInventory_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    98;
+    95;
 
   friend void swap(CUserMessageRequestInventory& a, CUserMessageRequestInventory& b) {
     a.Swap(&b);
@@ -20972,7 +20373,7 @@ class CUserMessage_Inventory_Response_InventoryDetail /*final*/ :
                &_CUserMessage_Inventory_Response_InventoryDetail_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    99;
+    96;
 
   friend void swap(CUserMessage_Inventory_Response_InventoryDetail& a, CUserMessage_Inventory_Response_InventoryDetail& b) {
     a.Swap(&b);
@@ -21277,7 +20678,7 @@ class CUserMessage_Inventory_Response /*final*/ :
                &_CUserMessage_Inventory_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    100;
+    97;
 
   friend void swap(CUserMessage_Inventory_Response& a, CUserMessage_Inventory_Response& b) {
     a.Swap(&b);
@@ -21634,7 +21035,7 @@ class CUserMessageRequestDiagnostic_Diagnostic /*final*/ :
                &_CUserMessageRequestDiagnostic_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    101;
+    98;
 
   friend void swap(CUserMessageRequestDiagnostic_Diagnostic& a, CUserMessageRequestDiagnostic_Diagnostic& b) {
     a.Swap(&b);
@@ -21989,7 +21390,7 @@ class CUserMessageRequestDiagnostic /*final*/ :
                &_CUserMessageRequestDiagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    102;
+    99;
 
   friend void swap(CUserMessageRequestDiagnostic& a, CUserMessageRequestDiagnostic& b) {
     a.Swap(&b);
@@ -22155,7 +21556,7 @@ class CUserMessage_Diagnostic_Response_Diagnostic /*final*/ :
                &_CUserMessage_Diagnostic_Response_Diagnostic_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    103;
+    100;
 
   friend void swap(CUserMessage_Diagnostic_Response_Diagnostic& a, CUserMessage_Diagnostic_Response_Diagnostic& b) {
     a.Swap(&b);
@@ -22545,7 +21946,7 @@ class CUserMessage_Diagnostic_Response /*final*/ :
                &_CUserMessage_Diagnostic_Response_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    104;
+    101;
 
   friend void swap(CUserMessage_Diagnostic_Response& a, CUserMessage_Diagnostic_Response& b) {
     a.Swap(&b);
@@ -22787,7 +22188,7 @@ class CUserMessage_ExtraUserData /*final*/ :
                &_CUserMessage_ExtraUserData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    105;
+    102;
 
   friend void swap(CUserMessage_ExtraUserData& a, CUserMessage_ExtraUserData& b) {
     a.Swap(&b);
@@ -23029,7 +22430,7 @@ class CUserMessage_NotifyResponseFound_Criteria /*final*/ :
                &_CUserMessage_NotifyResponseFound_Criteria_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    106;
+    103;
 
   friend void swap(CUserMessage_NotifyResponseFound_Criteria& a, CUserMessage_NotifyResponseFound_Criteria& b) {
     a.Swap(&b);
@@ -23209,7 +22610,7 @@ class CUserMessage_NotifyResponseFound /*final*/ :
                &_CUserMessage_NotifyResponseFound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    107;
+    104;
 
   friend void swap(CUserMessage_NotifyResponseFound& a, CUserMessage_NotifyResponseFound& b) {
     a.Swap(&b);
@@ -23615,7 +23016,7 @@ class CUserMessage_PlayResponseConditional /*final*/ :
                &_CUserMessage_PlayResponseConditional_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    108;
+    105;
 
   friend void swap(CUserMessage_PlayResponseConditional& a, CUserMessage_PlayResponseConditional& b) {
     a.Swap(&b);
@@ -23812,6 +23213,171 @@ class CUserMessage_PlayResponseConditional /*final*/ :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_usermessages_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CUserMessage_UsageReport /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_UsageReport) */ {
+ public:
+  inline CUserMessage_UsageReport() : CUserMessage_UsageReport(nullptr) {}
+  ~CUserMessage_UsageReport() override;
+  explicit PROTOBUF_CONSTEXPR CUserMessage_UsageReport(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMessage_UsageReport(const CUserMessage_UsageReport& from);
+  CUserMessage_UsageReport(CUserMessage_UsageReport&& from) noexcept
+    : CUserMessage_UsageReport() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMessage_UsageReport& operator=(const CUserMessage_UsageReport& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMessage_UsageReport& operator=(CUserMessage_UsageReport&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMessage_UsageReport& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMessage_UsageReport* internal_default_instance() {
+    return reinterpret_cast<const CUserMessage_UsageReport*>(
+               &_CUserMessage_UsageReport_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    106;
+
+  friend void swap(CUserMessage_UsageReport& a, CUserMessage_UsageReport& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMessage_UsageReport* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMessage_UsageReport* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMessage_UsageReport* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMessage_UsageReport>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMessage_UsageReport& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMessage_UsageReport& from) {
+    CUserMessage_UsageReport::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMessage_UsageReport* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMessage_UsageReport";
+  }
+  protected:
+  explicit CUserMessage_UsageReport(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUsageFieldNumber = 1,
+  };
+  // optional string usage = 1;
+  bool has_usage() const;
+  private:
+  bool _internal_has_usage() const;
+  public:
+  void clear_usage();
+  const std::string& usage() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_usage(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_usage();
+  PROTOBUF_NODISCARD std::string* release_usage();
+  void set_allocated_usage(std::string* usage);
+  private:
+  const std::string& _internal_usage() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_usage(const std::string& value);
+  std::string* _internal_mutable_usage();
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMessage_UsageReport)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr usage_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
 // ===================================================================
 
 
@@ -23849,238 +23415,6 @@ inline void CUserMessageAchievementEvent::_internal_set_achievement(uint32_t val
 inline void CUserMessageAchievementEvent::set_achievement(uint32_t value) {
   _internal_set_achievement(value);
   // @@protoc_insertion_point(field_set:CUserMessageAchievementEvent.achievement)
-}
-
-// -------------------------------------------------------------------
-
-// CUserMessageCloseCaption
-
-// optional fixed32 hash = 1;
-inline bool CUserMessageCloseCaption::_internal_has_hash() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaption::has_hash() const {
-  return _internal_has_hash();
-}
-inline void CUserMessageCloseCaption::clear_hash() {
-  _impl_.hash_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline uint32_t CUserMessageCloseCaption::_internal_hash() const {
-  return _impl_.hash_;
-}
-inline uint32_t CUserMessageCloseCaption::hash() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaption.hash)
-  return _internal_hash();
-}
-inline void CUserMessageCloseCaption::_internal_set_hash(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.hash_ = value;
-}
-inline void CUserMessageCloseCaption::set_hash(uint32_t value) {
-  _internal_set_hash(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaption.hash)
-}
-
-// optional float duration = 2;
-inline bool CUserMessageCloseCaption::_internal_has_duration() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaption::has_duration() const {
-  return _internal_has_duration();
-}
-inline void CUserMessageCloseCaption::clear_duration() {
-  _impl_.duration_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline float CUserMessageCloseCaption::_internal_duration() const {
-  return _impl_.duration_;
-}
-inline float CUserMessageCloseCaption::duration() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaption.duration)
-  return _internal_duration();
-}
-inline void CUserMessageCloseCaption::_internal_set_duration(float value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.duration_ = value;
-}
-inline void CUserMessageCloseCaption::set_duration(float value) {
-  _internal_set_duration(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaption.duration)
-}
-
-// optional bool from_player = 3;
-inline bool CUserMessageCloseCaption::_internal_has_from_player() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaption::has_from_player() const {
-  return _internal_has_from_player();
-}
-inline void CUserMessageCloseCaption::clear_from_player() {
-  _impl_.from_player_ = false;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline bool CUserMessageCloseCaption::_internal_from_player() const {
-  return _impl_.from_player_;
-}
-inline bool CUserMessageCloseCaption::from_player() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaption.from_player)
-  return _internal_from_player();
-}
-inline void CUserMessageCloseCaption::_internal_set_from_player(bool value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.from_player_ = value;
-}
-inline void CUserMessageCloseCaption::set_from_player(bool value) {
-  _internal_set_from_player(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaption.from_player)
-}
-
-// optional int32 ent_index = 4 [default = -1];
-inline bool CUserMessageCloseCaption::_internal_has_ent_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaption::has_ent_index() const {
-  return _internal_has_ent_index();
-}
-inline void CUserMessageCloseCaption::clear_ent_index() {
-  _impl_.ent_index_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline int32_t CUserMessageCloseCaption::_internal_ent_index() const {
-  return _impl_.ent_index_;
-}
-inline int32_t CUserMessageCloseCaption::ent_index() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaption.ent_index)
-  return _internal_ent_index();
-}
-inline void CUserMessageCloseCaption::_internal_set_ent_index(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.ent_index_ = value;
-}
-inline void CUserMessageCloseCaption::set_ent_index(int32_t value) {
-  _internal_set_ent_index(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaption.ent_index)
-}
-
-// -------------------------------------------------------------------
-
-// CUserMessageCloseCaptionDirect
-
-// optional fixed32 hash = 1;
-inline bool CUserMessageCloseCaptionDirect::_internal_has_hash() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaptionDirect::has_hash() const {
-  return _internal_has_hash();
-}
-inline void CUserMessageCloseCaptionDirect::clear_hash() {
-  _impl_.hash_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000001u;
-}
-inline uint32_t CUserMessageCloseCaptionDirect::_internal_hash() const {
-  return _impl_.hash_;
-}
-inline uint32_t CUserMessageCloseCaptionDirect::hash() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaptionDirect.hash)
-  return _internal_hash();
-}
-inline void CUserMessageCloseCaptionDirect::_internal_set_hash(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.hash_ = value;
-}
-inline void CUserMessageCloseCaptionDirect::set_hash(uint32_t value) {
-  _internal_set_hash(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaptionDirect.hash)
-}
-
-// optional float duration = 2;
-inline bool CUserMessageCloseCaptionDirect::_internal_has_duration() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaptionDirect::has_duration() const {
-  return _internal_has_duration();
-}
-inline void CUserMessageCloseCaptionDirect::clear_duration() {
-  _impl_.duration_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline float CUserMessageCloseCaptionDirect::_internal_duration() const {
-  return _impl_.duration_;
-}
-inline float CUserMessageCloseCaptionDirect::duration() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaptionDirect.duration)
-  return _internal_duration();
-}
-inline void CUserMessageCloseCaptionDirect::_internal_set_duration(float value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.duration_ = value;
-}
-inline void CUserMessageCloseCaptionDirect::set_duration(float value) {
-  _internal_set_duration(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaptionDirect.duration)
-}
-
-// optional bool from_player = 3;
-inline bool CUserMessageCloseCaptionDirect::_internal_has_from_player() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaptionDirect::has_from_player() const {
-  return _internal_has_from_player();
-}
-inline void CUserMessageCloseCaptionDirect::clear_from_player() {
-  _impl_.from_player_ = false;
-  _impl_._has_bits_[0] &= ~0x00000004u;
-}
-inline bool CUserMessageCloseCaptionDirect::_internal_from_player() const {
-  return _impl_.from_player_;
-}
-inline bool CUserMessageCloseCaptionDirect::from_player() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaptionDirect.from_player)
-  return _internal_from_player();
-}
-inline void CUserMessageCloseCaptionDirect::_internal_set_from_player(bool value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
-  _impl_.from_player_ = value;
-}
-inline void CUserMessageCloseCaptionDirect::set_from_player(bool value) {
-  _internal_set_from_player(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaptionDirect.from_player)
-}
-
-// optional int32 ent_index = 4 [default = -1];
-inline bool CUserMessageCloseCaptionDirect::_internal_has_ent_index() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool CUserMessageCloseCaptionDirect::has_ent_index() const {
-  return _internal_has_ent_index();
-}
-inline void CUserMessageCloseCaptionDirect::clear_ent_index() {
-  _impl_.ent_index_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000008u;
-}
-inline int32_t CUserMessageCloseCaptionDirect::_internal_ent_index() const {
-  return _impl_.ent_index_;
-}
-inline int32_t CUserMessageCloseCaptionDirect::ent_index() const {
-  // @@protoc_insertion_point(field_get:CUserMessageCloseCaptionDirect.ent_index)
-  return _internal_ent_index();
-}
-inline void CUserMessageCloseCaptionDirect::_internal_set_ent_index(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
-  _impl_.ent_index_ = value;
-}
-inline void CUserMessageCloseCaptionDirect::set_ent_index(int32_t value) {
-  _internal_set_ent_index(value);
-  // @@protoc_insertion_point(field_set:CUserMessageCloseCaptionDirect.ent_index)
 }
 
 // -------------------------------------------------------------------
@@ -27377,125 +26711,6 @@ inline void CEntityMessageScreenOverlay::set_allocated_entity_msg(::CEntityMsg* 
   }
   _impl_.entity_msg_ = entity_msg;
   // @@protoc_insertion_point(field_set_allocated:CEntityMessageScreenOverlay.entity_msg)
-}
-
-// -------------------------------------------------------------------
-
-// CEntityMessageRemoveAllDecals
-
-// optional bool remove_decals = 1;
-inline bool CEntityMessageRemoveAllDecals::_internal_has_remove_decals() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool CEntityMessageRemoveAllDecals::has_remove_decals() const {
-  return _internal_has_remove_decals();
-}
-inline void CEntityMessageRemoveAllDecals::clear_remove_decals() {
-  _impl_.remove_decals_ = false;
-  _impl_._has_bits_[0] &= ~0x00000002u;
-}
-inline bool CEntityMessageRemoveAllDecals::_internal_remove_decals() const {
-  return _impl_.remove_decals_;
-}
-inline bool CEntityMessageRemoveAllDecals::remove_decals() const {
-  // @@protoc_insertion_point(field_get:CEntityMessageRemoveAllDecals.remove_decals)
-  return _internal_remove_decals();
-}
-inline void CEntityMessageRemoveAllDecals::_internal_set_remove_decals(bool value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
-  _impl_.remove_decals_ = value;
-}
-inline void CEntityMessageRemoveAllDecals::set_remove_decals(bool value) {
-  _internal_set_remove_decals(value);
-  // @@protoc_insertion_point(field_set:CEntityMessageRemoveAllDecals.remove_decals)
-}
-
-// optional .CEntityMsg entity_msg = 2;
-inline bool CEntityMessageRemoveAllDecals::_internal_has_entity_msg() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  PROTOBUF_ASSUME(!value || _impl_.entity_msg_ != nullptr);
-  return value;
-}
-inline bool CEntityMessageRemoveAllDecals::has_entity_msg() const {
-  return _internal_has_entity_msg();
-}
-inline const ::CEntityMsg& CEntityMessageRemoveAllDecals::_internal_entity_msg() const {
-  const ::CEntityMsg* p = _impl_.entity_msg_;
-  return p != nullptr ? *p : reinterpret_cast<const ::CEntityMsg&>(
-      ::_CEntityMsg_default_instance_);
-}
-inline const ::CEntityMsg& CEntityMessageRemoveAllDecals::entity_msg() const {
-  // @@protoc_insertion_point(field_get:CEntityMessageRemoveAllDecals.entity_msg)
-  return _internal_entity_msg();
-}
-inline void CEntityMessageRemoveAllDecals::unsafe_arena_set_allocated_entity_msg(
-    ::CEntityMsg* entity_msg) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.entity_msg_);
-  }
-  _impl_.entity_msg_ = entity_msg;
-  if (entity_msg) {
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CEntityMessageRemoveAllDecals.entity_msg)
-}
-inline ::CEntityMsg* CEntityMessageRemoveAllDecals::release_entity_msg() {
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::CEntityMsg* temp = _impl_.entity_msg_;
-  _impl_.entity_msg_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
-}
-inline ::CEntityMsg* CEntityMessageRemoveAllDecals::unsafe_arena_release_entity_msg() {
-  // @@protoc_insertion_point(field_release:CEntityMessageRemoveAllDecals.entity_msg)
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  ::CEntityMsg* temp = _impl_.entity_msg_;
-  _impl_.entity_msg_ = nullptr;
-  return temp;
-}
-inline ::CEntityMsg* CEntityMessageRemoveAllDecals::_internal_mutable_entity_msg() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  if (_impl_.entity_msg_ == nullptr) {
-    auto* p = CreateMaybeMessage<::CEntityMsg>(GetArenaForAllocation());
-    _impl_.entity_msg_ = p;
-  }
-  return _impl_.entity_msg_;
-}
-inline ::CEntityMsg* CEntityMessageRemoveAllDecals::mutable_entity_msg() {
-  ::CEntityMsg* _msg = _internal_mutable_entity_msg();
-  // @@protoc_insertion_point(field_mutable:CEntityMessageRemoveAllDecals.entity_msg)
-  return _msg;
-}
-inline void CEntityMessageRemoveAllDecals::set_allocated_entity_msg(::CEntityMsg* entity_msg) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.entity_msg_);
-  }
-  if (entity_msg) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(entity_msg));
-    if (message_arena != submessage_arena) {
-      entity_msg = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, entity_msg, submessage_arena);
-    }
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.entity_msg_ = entity_msg;
-  // @@protoc_insertion_point(field_set_allocated:CEntityMessageRemoveAllDecals.entity_msg)
 }
 
 // -------------------------------------------------------------------
@@ -43759,13 +42974,81 @@ inline void CUserMessage_PlayResponseConditional::set_mix_priority(int32_t value
   // @@protoc_insertion_point(field_set:CUserMessage_PlayResponseConditional.mix_priority)
 }
 
+// -------------------------------------------------------------------
+
+// CUserMessage_UsageReport
+
+// optional string usage = 1;
+inline bool CUserMessage_UsageReport::_internal_has_usage() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMessage_UsageReport::has_usage() const {
+  return _internal_has_usage();
+}
+inline void CUserMessage_UsageReport::clear_usage() {
+  _impl_.usage_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMessage_UsageReport::usage() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UsageReport.usage)
+  return _internal_usage();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_UsageReport::set_usage(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.usage_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_UsageReport.usage)
+}
+inline std::string* CUserMessage_UsageReport::mutable_usage() {
+  std::string* _s = _internal_mutable_usage();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_UsageReport.usage)
+  return _s;
+}
+inline const std::string& CUserMessage_UsageReport::_internal_usage() const {
+  return _impl_.usage_.Get();
+}
+inline void CUserMessage_UsageReport::_internal_set_usage(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.usage_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UsageReport::_internal_mutable_usage() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.usage_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UsageReport::release_usage() {
+  // @@protoc_insertion_point(field_release:CUserMessage_UsageReport.usage)
+  if (!_internal_has_usage()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.usage_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.usage_.IsDefault()) {
+    _impl_.usage_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_UsageReport::set_allocated_usage(std::string* usage) {
+  if (usage != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.usage_.SetAllocated(usage, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.usage_.IsDefault()) {
+    _impl_.usage_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_UsageReport.usage)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

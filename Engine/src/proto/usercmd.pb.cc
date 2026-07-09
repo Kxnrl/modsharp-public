@@ -231,39 +231,41 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_usercmd_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rusercmd.proto\032\026networkbasetypes.proto\""
-  "T\n\020CInButtonStatePB\022\024\n\014buttonstate1\030\001 \001("
-  "\004\022\024\n\014buttonstate2\030\002 \001(\004\022\024\n\014buttonstate3\030"
-  "\003 \001(\004\"\242\001\n\020CSubtickMoveStep\022\016\n\006button\030\001 \001"
-  "(\004\022\017\n\007pressed\030\002 \001(\010\022\014\n\004when\030\003 \001(\002\022\034\n\024ana"
-  "log_forward_delta\030\004 \001(\002\022\031\n\021analog_left_d"
-  "elta\030\005 \001(\002\022\023\n\013pitch_delta\030\010 \001(\002\022\021\n\tyaw_d"
-  "elta\030\t \001(\002\"4\n\032CBaseUserCmdExecutionNotes"
-  "\022\026\n\016ignored_reason\030\001 \001(\t\"\231\004\n\016CBaseUserCm"
-  "dPB\022\035\n\025legacy_command_number\030\001 \001(\005\022\023\n\013cl"
-  "ient_tick\030\002 \001(\005\022$\n\034prediction_offset_tic"
-  "ks_x256\030\021 \001(\r\022%\n\nbuttons_pb\030\003 \001(\0132\021.CInB"
-  "uttonStatePB\022\037\n\nviewangles\030\004 \001(\0132\013.CMsgQ"
-  "Angle\022\023\n\013forwardmove\030\005 \001(\002\022\020\n\010leftmove\030\006"
-  " \001(\002\022\016\n\006upmove\030\007 \001(\002\022\017\n\007impulse\030\010 \001(\005\022\024\n"
-  "\014weaponselect\030\t \001(\005\022\023\n\013random_seed\030\n \001(\005"
-  "\022\017\n\007mousedx\030\013 \001(\005\022\017\n\007mousedy\030\014 \001(\005\022$\n\022pa"
-  "wn_entity_handle\030\016 \001(\r:\01016777215\022(\n\rsubt"
-  "ick_moves\030\022 \003(\0132\021.CSubtickMoveStep\022\020\n\010mo"
-  "ve_crc\030\023 \001(\014\022%\n\035consumed_server_angle_ch"
-  "anges\030\024 \001(\r\022\021\n\tcmd_flags\030\025 \001(\005\0224\n\017execut"
-  "ion_notes\030\026 \001(\0132\033.CBaseUserCmdExecutionN"
-  "otes\"/\n\016CUserCmdBasePB\022\035\n\004base\030\001 \001(\0132\017.C"
-  "BaseUserCmdPB"
+  "\n\rusercmd.proto\032\025valveextensions.proto\032\026"
+  "networkbasetypes.proto\"Z\n\020CInButtonState"
+  "PB\022\024\n\014buttonstate1\030\001 \001(\004\022\024\n\014buttonstate2"
+  "\030\002 \001(\004\022\024\n\014buttonstate3\030\003 \001(\004:\004\300\344\035\001\"\250\001\n\020C"
+  "SubtickMoveStep\022\016\n\006button\030\001 \001(\004\022\017\n\007press"
+  "ed\030\002 \001(\010\022\014\n\004when\030\003 \001(\002\022\034\n\024analog_forward"
+  "_delta\030\004 \001(\002\022\031\n\021analog_left_delta\030\005 \001(\002\022"
+  "\023\n\013pitch_delta\030\010 \001(\002\022\021\n\tyaw_delta\030\t \001(\002:"
+  "\004\300\344\035\001\":\n\032CBaseUserCmdExecutionNotes\022\026\n\016i"
+  "gnored_reason\030\001 \001(\t:\004\300\344\035\001\"\237\004\n\016CBaseUserC"
+  "mdPB\022\035\n\025legacy_command_number\030\001 \001(\005\022\023\n\013c"
+  "lient_tick\030\002 \001(\005\022$\n\034prediction_offset_ti"
+  "cks_x256\030\021 \001(\r\022%\n\nbuttons_pb\030\003 \001(\0132\021.CIn"
+  "ButtonStatePB\022\037\n\nviewangles\030\004 \001(\0132\013.CMsg"
+  "QAngle\022\023\n\013forwardmove\030\005 \001(\002\022\020\n\010leftmove\030"
+  "\006 \001(\002\022\016\n\006upmove\030\007 \001(\002\022\017\n\007impulse\030\010 \001(\005\022\024"
+  "\n\014weaponselect\030\t \001(\005\022\023\n\013random_seed\030\n \001("
+  "\005\022\017\n\007mousedx\030\013 \001(\005\022\017\n\007mousedy\030\014 \001(\005\022$\n\022p"
+  "awn_entity_handle\030\016 \001(\r:\01016777215\022(\n\rsub"
+  "tick_moves\030\022 \003(\0132\021.CSubtickMoveStep\022\020\n\010m"
+  "ove_crc\030\023 \001(\014\022%\n\035consumed_server_angle_c"
+  "hanges\030\024 \001(\r\022\021\n\tcmd_flags\030\025 \001(\005\0224\n\017execu"
+  "tion_notes\030\026 \001(\0132\033.CBaseUserCmdExecution"
+  "Notes:\004\300\344\035\001\"5\n\016CUserCmdBasePB\022\035\n\004base\030\001 "
+  "\001(\0132\017.CBaseUserCmdPB:\004\300\344\035\001"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_usercmd_2eproto_deps[1] = {
+static const ::_pbi::DescriptorTable* const descriptor_table_usercmd_2eproto_deps[2] = {
   &::descriptor_table_networkbasetypes_2eproto,
+  &::descriptor_table_valveextensions_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_usercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_usercmd_2eproto = {
-    false, false, 933, descriptor_table_protodef_usercmd_2eproto,
+    false, false, 986, descriptor_table_protodef_usercmd_2eproto,
     "usercmd.proto",
-    &descriptor_table_usercmd_2eproto_once, descriptor_table_usercmd_2eproto_deps, 1, 5,
+    &descriptor_table_usercmd_2eproto_once, descriptor_table_usercmd_2eproto_deps, 2, 5,
     schemas, file_default_instances, TableStruct_usercmd_2eproto::offsets,
     file_level_metadata_usercmd_2eproto, file_level_enum_descriptors_usercmd_2eproto,
     file_level_service_descriptors_usercmd_2eproto,

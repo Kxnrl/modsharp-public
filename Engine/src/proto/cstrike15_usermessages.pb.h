@@ -5369,6 +5369,7 @@ class CCSUsrMsg_WeaponSound /*final*/ :
     kOriginZFieldNumber = 4,
     kGameTimestampFieldNumber = 6,
     kSourceSoundscapeidFieldNumber = 7,
+    kStealthFieldNumber = 8,
     kEntidxFieldNumber = 1,
   };
   // optional string sound = 5;
@@ -5454,6 +5455,19 @@ class CCSUsrMsg_WeaponSound /*final*/ :
   void _internal_set_source_soundscapeid(uint32_t value);
   public:
 
+  // optional bool stealth = 8;
+  bool has_stealth() const;
+  private:
+  bool _internal_has_stealth() const;
+  public:
+  void clear_stealth();
+  bool stealth() const;
+  void set_stealth(bool value);
+  private:
+  bool _internal_stealth() const;
+  void _internal_set_stealth(bool value);
+  public:
+
   // optional int32 entidx = 1 [default = -1];
   bool has_entidx() const;
   private:
@@ -5483,6 +5497,7 @@ class CCSUsrMsg_WeaponSound /*final*/ :
     float origin_z_;
     float game_timestamp_;
     uint32_t source_soundscapeid_;
+    bool stealth_;
     int32_t entidx_;
   };
   union { Impl_ _impl_; };
@@ -21043,7 +21058,7 @@ inline void CCSUsrMsg_ReloadEffect::set_origin_z(float value) {
 
 // optional int32 entidx = 1 [default = -1];
 inline bool CCSUsrMsg_WeaponSound::_internal_has_entidx() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CCSUsrMsg_WeaponSound::has_entidx() const {
@@ -21051,7 +21066,7 @@ inline bool CCSUsrMsg_WeaponSound::has_entidx() const {
 }
 inline void CCSUsrMsg_WeaponSound::clear_entidx() {
   _impl_.entidx_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline int32_t CCSUsrMsg_WeaponSound::_internal_entidx() const {
   return _impl_.entidx_;
@@ -21061,7 +21076,7 @@ inline int32_t CCSUsrMsg_WeaponSound::entidx() const {
   return _internal_entidx();
 }
 inline void CCSUsrMsg_WeaponSound::_internal_set_entidx(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.entidx_ = value;
 }
 inline void CCSUsrMsg_WeaponSound::set_entidx(int32_t value) {
@@ -21275,6 +21290,34 @@ inline void CCSUsrMsg_WeaponSound::_internal_set_source_soundscapeid(uint32_t va
 inline void CCSUsrMsg_WeaponSound::set_source_soundscapeid(uint32_t value) {
   _internal_set_source_soundscapeid(value);
   // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponSound.source_soundscapeid)
+}
+
+// optional bool stealth = 8;
+inline bool CCSUsrMsg_WeaponSound::_internal_has_stealth() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CCSUsrMsg_WeaponSound::has_stealth() const {
+  return _internal_has_stealth();
+}
+inline void CCSUsrMsg_WeaponSound::clear_stealth() {
+  _impl_.stealth_ = false;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline bool CCSUsrMsg_WeaponSound::_internal_stealth() const {
+  return _impl_.stealth_;
+}
+inline bool CCSUsrMsg_WeaponSound::stealth() const {
+  // @@protoc_insertion_point(field_get:CCSUsrMsg_WeaponSound.stealth)
+  return _internal_stealth();
+}
+inline void CCSUsrMsg_WeaponSound::_internal_set_stealth(bool value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.stealth_ = value;
+}
+inline void CCSUsrMsg_WeaponSound::set_stealth(bool value) {
+  _internal_set_stealth(value);
+  // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponSound.stealth)
 }
 
 // -------------------------------------------------------------------

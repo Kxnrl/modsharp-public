@@ -41,20 +41,21 @@ public static partial class CsGameeventsReflection {
           "dHRhY2tfdGlja19mcmFjGAMgASgCEhkKEXJlbmRlcl90aWNrX2NvdW50GAQg",
           "ASgFEhgKEHJlbmRlcl90aWNrX2ZyYWMYBSABKAISFwoPaW5hY2N1cmFjeV9t",
           "b3ZlGAYgASgCEhYKDmluYWNjdXJhY3lfYWlyGAcgASgCEgwKBHR5cGUYCCAB",
-          "KAUiuQEKE0NNc2dQbGF5ZXJCdWxsZXRIaXQSGQoNYXR0YWNrZXJfc2xvdBgB",
+          "KAUi0AEKE0NNc2dQbGF5ZXJCdWxsZXRIaXQSGQoNYXR0YWNrZXJfc2xvdBgB",
           "IAEoBToCLTESFwoLdmljdGltX3Nsb3QYAiABKAU6Ai0xEh8KCnZpY3RpbV9w",
           "b3MYAyABKAsyCy5DTXNnVmVjdG9yEhEKCWhpdF9ncm91cBgEIAEoBRIOCgZk",
           "YW1hZ2UYBSABKAUSGQoRcGVuZXRyYXRpb25fY291bnQYBiABKAUSDwoHaXNf",
-          "a2lsbBgHIAEoCCp4Cg9FQ3Nnb0dhbWVFdmVudHMSGQoUR0VfUGxheWVyQW5p",
-          "bUV2ZW50SWQQwgMSGAoTR0VfUmFkaW9JY29uRXZlbnRJZBDDAxIVChBHRV9G",
-          "aXJlQnVsbGV0c0lkEMQDEhkKFEdFX1BsYXllckJ1bGxldEhpdElkEMUD"));
+          "a2lsbBgHIAEoCBIVCg10aHJvdWdoX3Ntb2tlGAggASgIKngKD0VDc2dvR2Ft",
+          "ZUV2ZW50cxIZChRHRV9QbGF5ZXJBbmltRXZlbnRJZBDCAxIYChNHRV9SYWRp",
+          "b0ljb25FdmVudElkEMMDEhUKEEdFX0ZpcmVCdWxsZXRzSWQQxAMSGQoUR0Vf",
+          "UGxheWVyQnVsbGV0SGl0SWQQxQM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ECsgoGameEvents), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEPlayerAnimEvent), global::CMsgTEPlayerAnimEvent.Parser, new[]{ "Player", "Event", "Data" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTERadioIcon), global::CMsgTERadioIcon.Parser, new[]{ "Player" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEFireBullets), global::CMsgTEFireBullets.Parser, new[]{ "Origin", "Angles", "WeaponId", "Mode", "Seed", "Player", "Inaccuracy", "RecoilIndex", "Spread", "SoundType", "ItemDefIndex", "SoundDspEffect", "EntOrigin", "NumBulletsRemaining", "AttackType", "PlayerInair", "PlayerScoped", "Tick", "Extra" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTEFireBullets.Types.Extra), global::CMsgTEFireBullets.Types.Extra.Parser, new[]{ "AimPunch", "AttackTickCount", "AttackTickFrac", "RenderTickCount", "RenderTickFrac", "InaccuracyMove", "InaccuracyAir", "Type" }, null, null, null, null)}),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlayerBulletHit), global::CMsgPlayerBulletHit.Parser, new[]{ "AttackerSlot", "VictimSlot", "VictimPos", "HitGroup", "Damage", "PenetrationCount", "IsKill" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlayerBulletHit), global::CMsgPlayerBulletHit.Parser, new[]{ "AttackerSlot", "VictimSlot", "VictimPos", "HitGroup", "Damage", "PenetrationCount", "IsKill", "ThroughSmoke" }, null, null, null, null)
         }));
   }
   #endregion
@@ -2320,6 +2321,7 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
     damage_ = other.damage_;
     penetrationCount_ = other.penetrationCount_;
     isKill_ = other.isKill_;
+    throughSmoke_ = other.throughSmoke_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -2503,6 +2505,33 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
     _hasBits0 &= ~32;
   }
 
+  /// <summary>Field number for the "through_smoke" field.</summary>
+  public const int ThroughSmokeFieldNumber = 8;
+  private readonly static bool ThroughSmokeDefaultValue = false;
+
+  private bool throughSmoke_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool ThroughSmoke {
+    get { if ((_hasBits0 & 64) != 0) { return throughSmoke_; } else { return ThroughSmokeDefaultValue; } }
+    set {
+      _hasBits0 |= 64;
+      throughSmoke_ = value;
+    }
+  }
+  /// <summary>Gets whether the "through_smoke" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasThroughSmoke {
+    get { return (_hasBits0 & 64) != 0; }
+  }
+  /// <summary>Clears the value of the "through_smoke" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearThroughSmoke() {
+    _hasBits0 &= ~64;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -2525,6 +2554,7 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
     if (Damage != other.Damage) return false;
     if (PenetrationCount != other.PenetrationCount) return false;
     if (IsKill != other.IsKill) return false;
+    if (ThroughSmoke != other.ThroughSmoke) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -2539,6 +2569,7 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
     if (HasDamage) hash ^= Damage.GetHashCode();
     if (HasPenetrationCount) hash ^= PenetrationCount.GetHashCode();
     if (HasIsKill) hash ^= IsKill.GetHashCode();
+    if (HasThroughSmoke) hash ^= ThroughSmoke.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -2585,6 +2616,10 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
       output.WriteRawTag(56);
       output.WriteBool(IsKill);
     }
+    if (HasThroughSmoke) {
+      output.WriteRawTag(64);
+      output.WriteBool(ThroughSmoke);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -2623,6 +2658,10 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
       output.WriteRawTag(56);
       output.WriteBool(IsKill);
     }
+    if (HasThroughSmoke) {
+      output.WriteRawTag(64);
+      output.WriteBool(ThroughSmoke);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -2652,6 +2691,9 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(PenetrationCount);
     }
     if (HasIsKill) {
+      size += 1 + 1;
+    }
+    if (HasThroughSmoke) {
       size += 1 + 1;
     }
     if (_unknownFields != null) {
@@ -2689,6 +2731,9 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
     }
     if (other.HasIsKill) {
       IsKill = other.IsKill;
+    }
+    if (other.HasThroughSmoke) {
+      ThroughSmoke = other.ThroughSmoke;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -2736,6 +2781,10 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
           IsKill = input.ReadBool();
           break;
         }
+        case 64: {
+          ThroughSmoke = input.ReadBool();
+          break;
+        }
       }
     }
   #endif
@@ -2780,6 +2829,10 @@ public sealed partial class CMsgPlayerBulletHit : pb::IMessage<CMsgPlayerBulletH
         }
         case 56: {
           IsKill = input.ReadBool();
+          break;
+        }
+        case 64: {
+          ThroughSmoke = input.ReadBool();
           break;
         }
       }

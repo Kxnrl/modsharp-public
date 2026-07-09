@@ -112,6 +112,7 @@ PROTOBUF_CONSTEXPR CMsgPlayerBulletHit::CMsgPlayerBulletHit(
   , /*decltype(_impl_.damage_)*/0
   , /*decltype(_impl_.penetration_count_)*/0
   , /*decltype(_impl_.is_kill_)*/false
+  , /*decltype(_impl_.through_smoke_)*/false
   , /*decltype(_impl_.attacker_slot_)*/-1
   , /*decltype(_impl_.victim_slot_)*/-1} {}
 struct CMsgPlayerBulletHitDefaultTypeInternal {
@@ -227,20 +228,22 @@ const uint32_t TableStruct_cs_5fgameevents_2eproto::offsets[] PROTOBUF_SECTION_V
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerBulletHit, _impl_.damage_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerBulletHit, _impl_.penetration_count_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerBulletHit, _impl_.is_kill_),
-  5,
+  PROTOBUF_FIELD_OFFSET(::CMsgPlayerBulletHit, _impl_.through_smoke_),
   6,
+  7,
   0,
   1,
   2,
   3,
   4,
+  5,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 9, -1, sizeof(::CMsgTEPlayerAnimEvent)},
   { 12, 19, -1, sizeof(::CMsgTERadioIcon)},
   { 20, 34, -1, sizeof(::CMsgTEFireBullets_Extra)},
   { 42, 67, -1, sizeof(::CMsgTEFireBullets)},
-  { 86, 99, -1, sizeof(::CMsgPlayerBulletHit)},
+  { 86, 100, -1, sizeof(::CMsgPlayerBulletHit)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -273,22 +276,22 @@ const char descriptor_table_protodef_cs_5fgameevents_2eproto[] PROTOBUF_SECTION_
   "ttack_tick_frac\030\003 \001(\002\022\031\n\021render_tick_cou"
   "nt\030\004 \001(\005\022\030\n\020render_tick_frac\030\005 \001(\002\022\027\n\017in"
   "accuracy_move\030\006 \001(\002\022\026\n\016inaccuracy_air\030\007 "
-  "\001(\002\022\014\n\004type\030\010 \001(\005\"\271\001\n\023CMsgPlayerBulletHi"
+  "\001(\002\022\014\n\004type\030\010 \001(\005\"\320\001\n\023CMsgPlayerBulletHi"
   "t\022\031\n\rattacker_slot\030\001 \001(\005:\002-1\022\027\n\013victim_s"
   "lot\030\002 \001(\005:\002-1\022\037\n\nvictim_pos\030\003 \001(\0132\013.CMsg"
   "Vector\022\021\n\thit_group\030\004 \001(\005\022\016\n\006damage\030\005 \001("
   "\005\022\031\n\021penetration_count\030\006 \001(\005\022\017\n\007is_kill\030"
-  "\007 \001(\010*x\n\017ECsgoGameEvents\022\031\n\024GE_PlayerAni"
-  "mEventId\020\302\003\022\030\n\023GE_RadioIconEventId\020\303\003\022\025\n"
-  "\020GE_FireBulletsId\020\304\003\022\031\n\024GE_PlayerBulletH"
-  "itId\020\305\003"
+  "\007 \001(\010\022\025\n\rthrough_smoke\030\010 \001(\010*x\n\017ECsgoGam"
+  "eEvents\022\031\n\024GE_PlayerAnimEventId\020\302\003\022\030\n\023GE"
+  "_RadioIconEventId\020\303\003\022\025\n\020GE_FireBulletsId"
+  "\020\304\003\022\031\n\024GE_PlayerBulletHitId\020\305\003"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fgameevents_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_cs_5fgameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fgameevents_2eproto = {
-    false, false, 1167, descriptor_table_protodef_cs_5fgameevents_2eproto,
+    false, false, 1190, descriptor_table_protodef_cs_5fgameevents_2eproto,
     "cs_gameevents.proto",
     &descriptor_table_cs_5fgameevents_2eproto_once, descriptor_table_cs_5fgameevents_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_cs_5fgameevents_2eproto::offsets,
@@ -2022,10 +2025,10 @@ class CMsgPlayerBulletHit::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgPlayerBulletHit>()._impl_._has_bits_);
   static void set_has_attacker_slot(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
+    (*has_bits)[0] |= 64u;
   }
   static void set_has_victim_slot(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
+    (*has_bits)[0] |= 128u;
   }
   static const ::CMsgVector& victim_pos(const CMsgPlayerBulletHit* msg);
   static void set_has_victim_pos(HasBits* has_bits) {
@@ -2042,6 +2045,9 @@ class CMsgPlayerBulletHit::_Internal {
   }
   static void set_has_is_kill(HasBits* has_bits) {
     (*has_bits)[0] |= 16u;
+  }
+  static void set_has_through_smoke(HasBits* has_bits) {
+    (*has_bits)[0] |= 32u;
   }
 };
 
@@ -2070,6 +2076,7 @@ CMsgPlayerBulletHit::CMsgPlayerBulletHit(const CMsgPlayerBulletHit& from)
     , decltype(_impl_.damage_){}
     , decltype(_impl_.penetration_count_){}
     , decltype(_impl_.is_kill_){}
+    , decltype(_impl_.through_smoke_){}
     , decltype(_impl_.attacker_slot_){}
     , decltype(_impl_.victim_slot_){}};
 
@@ -2095,6 +2102,7 @@ inline void CMsgPlayerBulletHit::SharedCtor(
     , decltype(_impl_.damage_){0}
     , decltype(_impl_.penetration_count_){0}
     , decltype(_impl_.is_kill_){false}
+    , decltype(_impl_.through_smoke_){false}
     , decltype(_impl_.attacker_slot_){-1}
     , decltype(_impl_.victim_slot_){-1}
   };
@@ -2129,10 +2137,10 @@ void CMsgPlayerBulletHit::Clear() {
     GOOGLE_DCHECK(_impl_.victim_pos_ != nullptr);
     _impl_.victim_pos_->Clear();
   }
-  if (cached_has_bits & 0x0000007eu) {
+  if (cached_has_bits & 0x000000feu) {
     ::memset(&_impl_.hit_group_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.is_kill_) -
-        reinterpret_cast<char*>(&_impl_.hit_group_)) + sizeof(_impl_.is_kill_));
+        reinterpret_cast<char*>(&_impl_.through_smoke_) -
+        reinterpret_cast<char*>(&_impl_.hit_group_)) + sizeof(_impl_.through_smoke_));
     _impl_.attacker_slot_ = -1;
     _impl_.victim_slot_ = -1;
   }
@@ -2209,6 +2217,15 @@ const char* CMsgPlayerBulletHit::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
+      // optional bool through_smoke = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _Internal::set_has_through_smoke(&has_bits);
+          _impl_.through_smoke_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -2241,13 +2258,13 @@ uint8_t* CMsgPlayerBulletHit::_InternalSerialize(
 
   cached_has_bits = _impl_._has_bits_[0];
   // optional int32 attacker_slot = 1 [default = -1];
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_attacker_slot(), target);
   }
 
   // optional int32 victim_slot = 2 [default = -1];
-  if (cached_has_bits & 0x00000040u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_victim_slot(), target);
   }
@@ -2283,6 +2300,12 @@ uint8_t* CMsgPlayerBulletHit::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(7, this->_internal_is_kill(), target);
   }
 
+  // optional bool through_smoke = 8;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(8, this->_internal_through_smoke(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2300,7 +2323,7 @@ size_t CMsgPlayerBulletHit::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000007fu) {
+  if (cached_has_bits & 0x000000ffu) {
     // optional .CMsgVector victim_pos = 3;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -2328,13 +2351,18 @@ size_t CMsgPlayerBulletHit::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional int32 attacker_slot = 1 [default = -1];
+    // optional bool through_smoke = 8;
     if (cached_has_bits & 0x00000020u) {
+      total_size += 1 + 1;
+    }
+
+    // optional int32 attacker_slot = 1 [default = -1];
+    if (cached_has_bits & 0x00000040u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attacker_slot());
     }
 
     // optional int32 victim_slot = 2 [default = -1];
-    if (cached_has_bits & 0x00000040u) {
+    if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_victim_slot());
     }
 
@@ -2358,7 +2386,7 @@ void CMsgPlayerBulletHit::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000007fu) {
+  if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_mutable_victim_pos()->::CMsgVector::MergeFrom(
           from._internal_victim_pos());
@@ -2376,9 +2404,12 @@ void CMsgPlayerBulletHit::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, co
       _this->_impl_.is_kill_ = from._impl_.is_kill_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.attacker_slot_ = from._impl_.attacker_slot_;
+      _this->_impl_.through_smoke_ = from._impl_.through_smoke_;
     }
     if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.attacker_slot_ = from._impl_.attacker_slot_;
+    }
+    if (cached_has_bits & 0x00000080u) {
       _this->_impl_.victim_slot_ = from._impl_.victim_slot_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
@@ -2402,8 +2433,8 @@ void CMsgPlayerBulletHit::InternalSwap(CMsgPlayerBulletHit* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgPlayerBulletHit, _impl_.is_kill_)
-      + sizeof(CMsgPlayerBulletHit::_impl_.is_kill_)
+      PROTOBUF_FIELD_OFFSET(CMsgPlayerBulletHit, _impl_.through_smoke_)
+      + sizeof(CMsgPlayerBulletHit::_impl_.through_smoke_)
       - PROTOBUF_FIELD_OFFSET(CMsgPlayerBulletHit, _impl_.victim_pos_)>(
           reinterpret_cast<char*>(&_impl_.victim_pos_),
           reinterpret_cast<char*>(&other->_impl_.victim_pos_));
