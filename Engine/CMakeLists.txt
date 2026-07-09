@@ -133,6 +133,7 @@ set(modsharp_SOURCES
 	"src/proto/steammessages.pb.cc"
 	"src/proto/usercmd.pb.cc"
 	"src/proto/usermessages.pb.cc"
+	"src/proto/valveextensions.pb.cc"
 	"src/protobufproxy.cpp"
 	"src/sdkproxy.cpp"
 	"src/steamproxy.cpp"
