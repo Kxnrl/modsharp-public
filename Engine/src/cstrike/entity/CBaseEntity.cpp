@@ -200,7 +200,10 @@ const Vector& CBaseEntity::GetCenter()
 
 bool CBaseEntity::AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value, int outputID)
 {
-    return address::server::CBaseEntity_AcceptInput(this, pszInputName, pActivator, pCaller, Value, outputID, nullptr);
+    // outputID is retained on the public API for source compatibility, but the engine wrapper no
+    // longer accepts it (dropped in build 24116939) and always behaves as if it were 0.
+    (void)outputID;
+    return address::server::CBaseEntity_AcceptInput(this, pszInputName, pActivator, pCaller, Value);
 }
 
 void CBaseEntity::CollisionRulesChanged()

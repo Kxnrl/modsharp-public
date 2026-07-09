@@ -19,6 +19,7 @@
 
 #include "address.h"
 #include "address_resolve.h"
+#include "address_scan.h"
 #include "logging.h"
 #include "memory/zydis_utility.h"
 
@@ -29,58 +30,26 @@ void ResolveServerSideClientOffsets()
     auto vfuncs_CServerSideClientBase = engine_mod->GetVFunctionsFromVTable("CServerSideClientBase");
     auto vfuncs_CServerSideClient     = engine_mod->GetVFunctionsFromVTable("CServerSideClient");
 
-    struct VFuncMatch
-    {
-        CAddress                      str;
-        const CModule::FunctionEntry* range;
-    };
+    using address_scan::kThisReg;
+    using address_scan::IsFieldMem;
 
-    // Find a vfunc from vtable that references the given string, return string address + function range
-    // skip: number of matches to skip (0 = first match, 1 = second match, ...)
-    auto find_vfunc_by_str = [&](const std::vector<uintptr_t>& vfuncs, const char* str_content, bool exact = false, int skip = 0) -> std::optional<VFuncMatch> {
+    // Every vfunc referencing the string, not just the first. Once a function is inlined into a
+    // second caller, its string ref appears in both and "the first vfunc that mentions it" starts
+    // reading whichever the vtable happens to list first.
+    auto find_vfunc_anchors = [&](const std::vector<uintptr_t>& vfuncs, const char* str_content, bool exact = false) {
         auto str = engine_mod->FindString(str_content, false, exact);
         if (!str.IsValid())
-        {
             WARN("GameData auto-resolve: string \"%s\" not found.", str_content);
-            return std::nullopt;
-        }
 
-        auto refs    = engine_mod->GetReferenceRange(str);
-        int  matched = 0;
+        auto anchors = address_scan::AnchorVFunctions(engine_mod, vfuncs, str);
+        if (anchors.empty() && str.IsValid())
+            WARN("GameData auto-resolve: no vfunc references \"%s\".", str_content);
 
-        for (uintptr_t vfunc : vfuncs)
-        {
-            auto range = engine_mod->GetFunctionRange(vfunc);
-            if (range == nullptr)
-                continue;
-
-            if (std::ranges::any_of(refs, [&](const CModule::ReferenceEntry& ref) {
-                    return ref.source_ip > range->start && ref.source_ip < range->end;
-                }))
-            {
-                if (matched++ < skip)
-                    continue;
-
-                return VFuncMatch{.str = str, .range = range};
-            }
-        }
-
-        WARN("GameData auto-resolve: no vfunc references \"%s\" (skip=%d, found=%d).", str_content, skip, matched);
-        return std::nullopt;
+        return std::pair{str, anchors};
     };
 
-#ifdef PLATFORM_WINDOWS
-    constexpr auto kThisReg = ZYDIS_REGISTER_RCX;
-#else
-    constexpr auto kThisReg = ZYDIS_REGISTER_RDI;
-#endif
-
     auto is_this_mem = [](const ZydisDecodedOperand& mem_op, ZydisRegister expected_base) {
-        return mem_op.type == ZYDIS_OPERAND_TYPE_MEMORY
-               && ZydisUtility::GetBaseRegister(mem_op.mem.base) == expected_base
-               && mem_op.mem.index == ZYDIS_REGISTER_NONE
-               && mem_op.mem.disp.has_displacement
-               && mem_op.mem.disp.value > 0;
+        return IsFieldMem(mem_op, expected_base);
     };
 
     // Check if operand is [base + disp] where base is either original or saved this
@@ -109,67 +78,139 @@ void ResolveServerSideClientOffsets()
         });
     };
 
-    // --- m_NetChannel, m_Name, m_UserId (from SetRate) ---
-    if (auto match = find_vfunc_by_str(vfuncs_CServerSideClient, "Client %d '%s' setting rate to %d\n"))
-    {
-        auto [str, range] = *match;
+    // Offsets of every qword field on `this` that is loaded and then dereferenced at +0, i.e. used
+    // as an object (vtable load ahead of a virtual call). A field merely passed to a function -
+    // m_ConVars into KeyValues::GetInt - never gets dereferenced here, which is what separates
+    // m_NetChannel from "the first qword this function happens to load".
+    auto find_dereferenced_this_fields = [&](const CModule::FunctionEntry* range) {
+        constexpr int kMaxUseGap = 8;
 
-        int32_t net_channel_off  = -1;
-        int32_t last_qword_off   = -1;
-        int32_t last_movzx_w_off = -1;
-        int32_t name_off         = -1;
-        int32_t userid_off       = -1;
+        std::vector<int32_t> results{};
 
-        scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
-            // m_NetChannel: first qword load from this
-            if (net_channel_off == -1
-                && instr.mnemonic == ZYDIS_MNEMONIC_MOV
+        ZydisRegister pending_reg = ZYDIS_REGISTER_NONE;
+        int32_t       pending_off = -1;
+        int           pending_ttl = 0;
+
+        scan_with_this(range, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
+            if (pending_reg != ZYDIS_REGISTER_NONE)
+            {
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                    && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                    && operands[1].size == 64
+                    && operands[1].mem.index == ZYDIS_REGISTER_NONE
+                    && operands[1].mem.disp.value == 0
+                    && ZydisUtility::GetBaseRegister(operands[1].mem.base) == pending_reg)
+                {
+                    if (std::ranges::find(results, pending_off) == results.end())
+                        results.emplace_back(pending_off);
+
+                    pending_reg = ZYDIS_REGISTER_NONE;
+                }
+                // A call clobbers it (and means it was only an argument), so does any write to it
+                else if (--pending_ttl <= 0
+                         || instr.mnemonic == ZYDIS_MNEMONIC_CALL
+                         || (operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                             && (operands[0].actions & ZYDIS_OPERAND_ACTION_MASK_WRITE) != 0
+                             && ZydisUtility::GetBaseRegister(operands[0].reg.value) == pending_reg))
+                {
+                    pending_reg = ZYDIS_REGISTER_NONE;
+                }
+            }
+
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
                 && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
                 && operands[1].size == 64
                 && is_any_this_mem(operands[1], saved_this))
             {
-                net_channel_off = static_cast<int32_t>(operands[1].mem.disp.value);
+                pending_reg = ZydisUtility::GetBaseRegister(operands[0].reg.value);
+                pending_off = static_cast<int32_t>(operands[1].mem.disp.value);
+                pending_ttl = kMaxUseGap;
             }
 
-            if (saved_this == ZYDIS_REGISTER_NONE)
-                return false;
-
-            // Track last qword load from saved_this (excluding m_NetChannel repeats)
-            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
-                && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-                && operands[1].size == 64
-                && is_this_mem(operands[1], saved_this)
-                && static_cast<int32_t>(operands[1].mem.disp.value) != net_channel_off)
-            {
-                last_qword_off = static_cast<int32_t>(operands[1].mem.disp.value);
-            }
-
-            // Track last MOVZX word load from saved_this
-            if (instr.mnemonic == ZYDIS_MNEMONIC_MOVZX
-                && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-                && operands[1].size == 16
-                && is_this_mem(operands[1], saved_this))
-            {
-                last_movzx_w_off = static_cast<int32_t>(operands[1].mem.disp.value);
-            }
-
-            // When we hit the format string LEA, capture m_Name and m_UserId
-            if (instr.mnemonic == ZYDIS_MNEMONIC_LEA && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
-            {
-                if (ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == str.GetPtr())
-                {
-                    name_off   = last_qword_off;
-                    userid_off = last_movzx_w_off;
-                    return true;
-                }
-            }
-
-            return false;
+            return false; // collect every match
         });
 
-        try_overwrite_offset("CServerSideClient::m_NetChannel", net_channel_off);
-        try_overwrite_offset("CServerSideClient::m_Name", name_off);
-        try_overwrite_offset("CServerSideClient::m_UserId", userid_off);
+        return results;
+    };
+
+
+    // --- m_NetChannel, m_Name, m_UserId (from SetRate) ---
+    //
+    // m_NetChannel is the qword field on this that gets used as an object:
+    //
+    //   mov  rdi, [this+58h]     ; m_NetChannel
+    //   test rdi, rdi
+    //   jz   short done
+    //   mov  rax, [rdi]          ; vtable load  <- this is the proof
+    //   call qword ptr [rax+28h]
+    //
+    // "First qword load from this" is not enough: SetRate also gets inlined into the vfunc that
+    // reads "rate" out of the userinfo KeyValues, and there the first such load is m_ConVars (272),
+    // which is only handed to KeyValues::GetInt and never dereferenced. Both copies of SetRate are
+    // scanned and must agree.
+    //
+    // m_Name / m_UserId are the last qword load and last MOVZX word load before the format string.
+    {
+        auto [str, anchors] = find_vfunc_anchors(vfuncs_CServerSideClient, "Client %d '%s' setting rate to %d\n");
+
+        ResolveVote net_channel{};
+        ResolveVote name{};
+        ResolveVote userid{};
+
+        for (const auto* range : anchors)
+        {
+            VoteCandidates(net_channel, find_dereferenced_this_fields(range));
+
+            int32_t last_qword_off   = -1;
+            int32_t last_movzx_w_off = -1;
+            int32_t name_off         = -1;
+            int32_t userid_off       = -1;
+
+            scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
+                if (saved_this == ZYDIS_REGISTER_NONE)
+                    return false;
+
+                // Track last qword load from saved_this (excluding m_NetChannel repeats)
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                    && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && operands[1].size == 64
+                    && is_this_mem(operands[1], saved_this)
+                    && static_cast<int32_t>(operands[1].mem.disp.value) != net_channel.Value())
+                {
+                    last_qword_off = static_cast<int32_t>(operands[1].mem.disp.value);
+                }
+
+                // Track last MOVZX word load from saved_this
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOVZX
+                    && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && operands[1].size == 16
+                    && is_this_mem(operands[1], saved_this))
+                {
+                    last_movzx_w_off = static_cast<int32_t>(operands[1].mem.disp.value);
+                }
+
+                // When we hit the format string LEA, capture m_Name and m_UserId
+                if (instr.mnemonic == ZYDIS_MNEMONIC_LEA && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+                {
+                    if (ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == str.GetPtr())
+                    {
+                        name_off   = last_qword_off;
+                        userid_off = last_movzx_w_off;
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            name.Add(name_off);
+            userid.Add(userid_off);
+        }
+
+        try_overwrite_offset("CServerSideClient::m_NetChannel", net_channel);
+        try_overwrite_offset("CServerSideClient::m_Name", name);
+        try_overwrite_offset("CServerSideClient::m_UserId", userid);
     }
 
     // --- m_SteamId, m_ConVars, m_Slot (from Create) ---
@@ -178,91 +219,114 @@ void ResolveServerSideClientOffsets()
     //   1. Before "userinfo" LEA: first qword store [this + disp] → m_SteamId
     //   2. After "userinfo" LEA: first qword store [this + disp] → m_ConVars
     //   3. Last dword load from [this + disp] in function → m_Slot
-    if (auto match = find_vfunc_by_str(vfuncs_CServerSideClient, "userinfo", true))
     {
-        auto [str, range] = *match;
+        auto [str, anchors] = find_vfunc_anchors(vfuncs_CServerSideClient, "userinfo", true);
 
-        int32_t steamid_off   = -1;
-        int32_t convars_off   = -1;
-        int32_t slot_off      = -1;
-        bool    found_str_ref = false;
+        ResolveVote steamid{};
+        ResolveVote convars{};
+        ResolveVote slot{};
 
-        scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
-            if (saved_this == ZYDIS_REGISTER_NONE)
-                return false;
+        for (const auto* range : anchors)
+        {
+            int32_t steamid_off   = -1;
+            int32_t convars_off   = -1;
+            int32_t slot_off      = -1;
+            bool    found_str_ref = false;
 
-            // Detect "userinfo" string ref
-            if (!found_str_ref && instr.mnemonic == ZYDIS_MNEMONIC_LEA && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
-            {
-                if (ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == str.GetPtr())
-                    found_str_ref = true;
-            }
+            scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
+                if (saved_this == ZYDIS_REGISTER_NONE)
+                    return false;
 
-            // Qword store to [this + disp]: m_SteamId (before str) / m_ConVars (after str)
-            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
-                && operands[0].size == 64
-                && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
-                && is_any_this_mem(operands[0], saved_this))
-            {
-                auto disp = static_cast<int32_t>(operands[0].mem.disp.value);
-
-                if (!found_str_ref)
+                // Detect "userinfo" string ref
+                if (!found_str_ref && instr.mnemonic == ZYDIS_MNEMONIC_LEA && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
                 {
-                    if (steamid_off == -1)
-                        steamid_off = disp;
+                    if (ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == str.GetPtr())
+                        found_str_ref = true;
                 }
-                else
+
+                // Qword store to [this + disp]: m_SteamId (before str) / m_ConVars (after str)
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                    && operands[0].size == 64
+                    && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && is_any_this_mem(operands[0], saved_this))
                 {
-                    if (convars_off == -1)
-                        convars_off = disp;
+                    auto disp = static_cast<int32_t>(operands[0].mem.disp.value);
+
+                    if (!found_str_ref)
+                    {
+                        if (steamid_off == -1)
+                            steamid_off = disp;
+                    }
+                    else
+                    {
+                        if (convars_off == -1)
+                            convars_off = disp;
+                    }
                 }
-            }
 
-            // Track last dword load from [this + disp] → m_Slot
-            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
-                && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-                && operands[1].size == 32
-                && is_any_this_mem(operands[1], saved_this))
-            {
-                slot_off = static_cast<int32_t>(operands[1].mem.disp.value);
-            }
+                // Track last dword load from [this + disp] → m_Slot
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                    && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                    && operands[1].size == 32
+                    && is_any_this_mem(operands[1], saved_this))
+                {
+                    slot_off = static_cast<int32_t>(operands[1].mem.disp.value);
+                }
 
-            return false; // scan entire function
-        });
+                return false; // scan entire function
+            });
 
-        try_overwrite_offset("CServerSideClient::m_SteamId", steamid_off);
-        try_overwrite_offset("CServerSideClient::m_ConVars", convars_off);
-        try_overwrite_offset("CServerSideClient::m_Slot", slot_off);
+            steamid.Add(steamid_off);
+            convars.Add(convars_off);
+            slot.Add(slot_off);
+        }
+
+        try_overwrite_offset("CServerSideClient::m_SteamId", steamid);
+        try_overwrite_offset("CServerSideClient::m_ConVars", convars);
+        try_overwrite_offset("CServerSideClient::m_Slot", slot);
     }
 
     // --- m_SignonState (from ProcessMove) ---
     //
-    // Pattern (both platforms):
-    //   First CMP dword [this_reg + disp], 6 in the function
+    // Primary: the IsActive() check is inlined, so the first CMP dword [this + disp], 6 wins.
     //   Windows: cmp dword ptr [rcx+64h], 6
     //   Linux:   cmp dword ptr [rdi+64h], 6
-    if (auto match = find_vfunc_by_str(vfuncs_CServerSideClient, "Too many move messages"))
+    //
+    // Fallback: newer Linux builds outline it, leaving no CMP in the vfunc at all -
+    //   call sub_523D30   ->   cmp dword ptr [rdi+64h], 6 ; setz al ; retn
     {
-        auto [str, range] = *match;
+        auto [str, anchors] = find_vfunc_anchors(vfuncs_CServerSideClient, "Too many move messages");
 
-        int32_t signon_off = -1;
+        ResolveVote signon{};
 
-        scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
-            // First CMP [this + disp], 6
-            if (instr.mnemonic == ZYDIS_MNEMONIC_CMP
-                && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-                && operands[1].imm.value.s == 6
-                && operands[0].size == 32
-                && is_any_this_mem(operands[0], saved_this))
-            {
-                signon_off = static_cast<int32_t>(operands[0].mem.disp.value);
-                return true;
-            }
+        // Matches `cmp dword [this + disp], 6` -> disp, else -1.
+        auto match_signon_cmp = [&](const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister this_reg) -> int32_t {
+            if (instr.mnemonic != ZYDIS_MNEMONIC_CMP
+                || operands[0].size != 32
+                || operands[1].type != ZYDIS_OPERAND_TYPE_IMMEDIATE
+                || operands[1].imm.value.s != 6
+                || !is_this_mem(operands[0], this_reg))
+                return -1;
 
-            return false;
-        });
+            return static_cast<int32_t>(operands[0].mem.disp.value);
+        };
 
-        try_overwrite_offset("CServerSideClient::m_SignonState", signon_off);
+        for (const auto* range : anchors)
+        {
+            int32_t signon_off = -1;
+
+            // Inlined IsActive(): CMP directly in the vfunc. Outlined: ScanWithLeaves follows the
+            // relative call into the 8-byte `cmp dword [rdi+64h], 6 ; setz al ; retn` helper.
+            address_scan::ScanWithLeaves(engine_mod, range->start, range->end, 0x10,
+                                         [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                                             signon_off = match_signon_cmp(instr, operands, kThisReg);
+                                             return signon_off != -1;
+                                         });
+
+            signon.Add(signon_off);
+        }
+
+        try_overwrite_offset("CServerSideClient::m_SignonState", signon);
     }
 
     // --- m_IsHLTV ---
@@ -271,41 +335,57 @@ void ResolveServerSideClientOffsets()
     //   First CMP byte [this_reg + disp], 0 in the function
     //   Linux:   cmp byte ptr [rdi+142h], 0       (immediate)
     //   Windows: cmp [rcx+322], dil               (register zeroed by xor edi,edi)
-    if (auto match = find_vfunc_by_str(vfuncs_CServerSideClient, "TV client has no downstream TV sink\n"))
     {
-        auto [str, range] = *match;
+        auto [str, anchors] = find_vfunc_anchors(vfuncs_CServerSideClient, "TV client has no downstream TV sink\n");
 
-        int32_t ishlv_off = -1;
+        ResolveVote ishltv{};
 
-        scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
-            // First CMP byte [this + disp], 0 (immediate or zeroed register)
-            if (instr.mnemonic == ZYDIS_MNEMONIC_CMP
-                && operands[0].size == 8
-                && is_any_this_mem(operands[0], saved_this))
-            {
-                ishlv_off = static_cast<int32_t>(operands[0].mem.disp.value);
-                return true;
-            }
+        for (const auto* range : anchors)
+        {
+            int32_t ishlv_off = -1;
 
-            return false;
-        });
+            scan_with_this(range, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands, ZydisRegister saved_this) -> bool {
+                // First CMP byte [this + disp], 0 (immediate or zeroed register)
+                if (instr.mnemonic == ZYDIS_MNEMONIC_CMP
+                    && operands[0].size == 8
+                    && is_any_this_mem(operands[0], saved_this))
+                {
+                    ishlv_off = static_cast<int32_t>(operands[0].mem.disp.value);
+                    return true;
+                }
 
-        try_overwrite_offset("CServerSideClient::m_IsHLTV", ishlv_off);
+                return false;
+            });
+
+            ishltv.Add(ishlv_off);
+        }
+
+        try_overwrite_offset("CServerSideClient::m_IsHLTV", ishltv);
     }
 
-    // --- m_FullyAuthenticated (from SteamOnAuthenticatedUser) ---
+    // --- m_FullyAuthenticated (from OnValidateAuthTicketResponse) ---
     //
-    // Pattern (both platforms): last MOV byte [reg + disp], 1 in the function.
-    //   Windows: mov byte ptr [rbx+9FAh], 1
-    //   Linux:   mov byte ptr [r12+9FAh], 1
-    if (auto func = engine_mod->FindFunctionFromStringRefs({"\"%s<%i><%s><>\" STEAM USERID validated\n", "SV: Canceling k_EAuthSessionResponseAuthTicketCanceled for %s because %s.\n"}); func.IsValid())
+    // The client's authentication flag is set on success: mov byte [client + 9FAh], 1. Note the
+    // base is the looked-up *client*, not `this` (the steam auth handler), so this is not a
+    // this-relative store.
+    //
+    // The old anchors ("STEAM USERID validated" + "SV: Canceling ...AuthTicketCanceled") stopped
+    // co-locating once build 24116939 split the function - the intersection requires both in one
+    // body and the Canceling log was rewritten out. "SV: OnValidateAuthTicketResponse duplicate
+    // authentication" survives and is referenced by exactly this one function.
+    //
+    // The flag is the only `mov byte [reg + disp], 1` in the function on both builds, so collecting
+    // distinct such offsets yields a single unambiguous candidate.
+    if (auto func = engine_mod->FindFunctionFromStringRef("SV: OnValidateAuthTicketResponse duplicate authentication"); func.IsValid())
     {
         auto range = engine_mod->GetFunctionRange(func);
 
-        int32_t fully_auth_off = -1;
+        ResolveVote fully_auth{};
 
         if (range != nullptr)
         {
+            std::vector<int32_t> candidates{};
+
             ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
                 if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
                     && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
@@ -314,83 +394,58 @@ void ResolveServerSideClientOffsets()
                     && operands[0].mem.disp.has_displacement
                     && operands[0].mem.disp.value > 0
                     && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-                    && operands[1].imm.value.u == 1)
+                    && operands[1].imm.value.u == 1
+                    && address_scan::IsObjectBase(operands[0].mem.base))
                 {
-                    auto base = ZydisUtility::GetBaseRegister(operands[0].mem.base);
-                    if (base != ZYDIS_REGISTER_NONE
-                        && base != ZYDIS_REGISTER_RSP
-                        && base != ZYDIS_REGISTER_RBP
-                        && base != ZYDIS_REGISTER_RIP)
-                    {
-                        fully_auth_off = static_cast<int32_t>(operands[0].mem.disp.value);
-                    }
+                    auto disp = static_cast<int32_t>(operands[0].mem.disp.value);
+                    if (std::ranges::find(candidates, disp) == candidates.end())
+                        candidates.emplace_back(disp);
                 }
 
                 return false;
             });
+
+            VoteCandidates(fully_auth, candidates);
         }
 
-        try_overwrite_offset("CServerSideClient::m_FullyAuthenticated", fully_auth_off);
+        try_overwrite_offset("CServerSideClient::m_FullyAuthenticated", fully_auth);
     }
 
     // --- m_vecLoadedSpawnGroups ---
     //
-    // Scan from string ref IP to skip unrelated vector accesses earlier in the function.
+    // CServerSideClientBase::OnSpawnGroupDeactivate drops the handle out of the vector:
+    //
+    //   Linux:    mov  edi, [rbx+178h]     ; m_Size
+    //             test edi, edi
+    //             jle  short done
+    //             mov  rcx, [rbx+180h]     ; m_pMemory (m_Size + 8)
+    //             ...
+    //             cmp  eax, [rcx+rdx*4]    ; SpawnGroup_t is 4 bytes
+    //
+    //   Windows:  mov  edx, [rsi+178h]
+    //             ...
+    //             mov  rcx, [rsi+180h]
+    //             cmp  [rcx], eax
+    //             add  rcx, 4              ; same 4-byte stride, walked by pointer bump
+    //
+    // The same function also pushes a delayed call into CUtlVector<CDelayedCall*> at 0xB48, whose
+    // {m_Size, m_pMemory} loads interleave with these across builds, so "first pair after the
+    // string" latched onto 0xB48 (2888). SpawnGroup_t is 4 bytes and CDelayedCall* is 8, so the
+    // element stride tells them apart - which is exactly what FindUtlVectors keys on. Requiring a
+    // single 4-byte vector in the function also gives us the uniqueness needed to trust it.
     {
-        auto str = engine_mod->FindString("%s:  Not sending unload group to client '%s' due to not being sent\n", true);
-        if (!str.IsValid())
+        auto str     = engine_mod->FindString("%s:  Not sending unload group to client '%s' due to not being sent\n", true);
+        auto anchors = address_scan::AnchorFunctions(engine_mod, str);
+        if (anchors.empty())
         {
-            WARN("GameData auto-resolve: m_vecLoadedSpawnGroups string not found.");
+            WARN("GameData auto-resolve: m_vecLoadedSpawnGroups anchor not found.");
         }
-        else
-        {
-            auto ref   = engine_mod->GetReferenceRange(str);
-            auto range = ref.empty() ? nullptr : engine_mod->GetFunctionRange(ref.front().source_ip);
 
-            int32_t spawn_groups_off = -1;
+        ResolveVote spawn_groups{};
+        for (const auto* range : anchors)
+            VoteCandidates(spawn_groups, address_scan::FindUtlVectors(range->start, range->end, 4));
 
-            if (range != nullptr)
-            {
-                ZydisRegister last_base_reg = ZYDIS_REGISTER_NONE;
-                int64_t       last_disp     = 0;
-
-                ZydisUtility::ScanInstructions(ref.front().source_ip, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-                    if (instr.mnemonic != ZYDIS_MNEMONIC_MOV
-                        || operands[0].type != ZYDIS_OPERAND_TYPE_REGISTER
-                        || operands[1].type != ZYDIS_OPERAND_TYPE_MEMORY
-                        || operands[1].mem.index != ZYDIS_REGISTER_NONE
-                        || !operands[1].mem.disp.has_displacement
-                        || operands[1].mem.disp.value <= 0)
-                        return false;
-
-                    auto base = ZydisUtility::GetBaseRegister(operands[1].mem.base);
-                    if (base == ZYDIS_REGISTER_NONE
-                        || base == ZYDIS_REGISTER_RSP
-                        || base == ZYDIS_REGISTER_RBP
-                        || base == ZYDIS_REGISTER_RIP)
-                        return false;
-
-                    // Step 1: 32-bit load → candidate m_Size
-                    if (operands[1].size == 32)
-                    {
-                        last_base_reg = base;
-                        last_disp     = operands[1].mem.disp.value;
-                    }
-                    // Step 2: 64-bit load from same base, disp == last_disp + 8 → m_pMemory
-                    else if (operands[1].size == 64
-                             && base == last_base_reg
-                             && operands[1].mem.disp.value == last_disp + 8)
-                    {
-                        spawn_groups_off = static_cast<int32_t>(last_disp);
-                        return true;
-                    }
-
-                    return false;
-                });
-            }
-
-            try_overwrite_offset("CServerSideClient::m_vecLoadedSpawnGroups", spawn_groups_off);
-        }
+        try_overwrite_offset("CServerSideClient::m_vecLoadedSpawnGroups", spawn_groups);
     }
 
     // --- m_nDeltaTick, m_FakeClient ---
@@ -494,9 +549,16 @@ void ResolveServerSideClientOffsets()
                 }
             }
 
-            int32_t delta_tick_off = delta_tick_primary;
-            try_overwrite_offset("CServerSideClient::m_nDeltaTick", delta_tick_off);
-            try_overwrite_offset("CServerSideClient::m_FakeClient", fake_client_off);
+            // Both are positional first-match heuristics (fast-path store / trivial getter), so they
+            // are treated as cross-checks: they confirm gamedata and warn on disagreement rather than
+            // silently overwriting a hand-verified value.
+            ResolveVote delta_tick{};
+            delta_tick.Add(delta_tick_primary);
+            ResolveVote fake_client{};
+            fake_client.Add(fake_client_off);
+
+            try_overwrite_offset("CServerSideClient::m_nDeltaTick", delta_tick);
+            try_overwrite_offset("CServerSideClient::m_FakeClient", fake_client);
         }
     }
 
@@ -595,8 +657,15 @@ void ResolveServerSideClientOffsets()
                     break;
             }
 
-            try_overwrite_offset("CServerSideClient::m_GameServer", game_server_off);
-            try_overwrite_offset("CServerSideClient::m_ControllerEntityIndex", ctrl_entity_off);
+            // m_ControllerEntityIndex is pinned structurally (slot load -> +1 -> store), so it can
+            // overwrite; m_GameServer is just the first qword field and only cross-checks gamedata.
+            ResolveVote ctrl_entity{};
+            ctrl_entity.Add(ctrl_entity_off, /*unique*/ true);
+            ResolveVote game_server{};
+            game_server.Add(game_server_off);
+
+            try_overwrite_offset("CServerSideClient::m_GameServer", game_server);
+            try_overwrite_offset("CServerSideClient::m_ControllerEntityIndex", ctrl_entity);
         }
     }
 
@@ -653,13 +722,19 @@ void ResolveServerSideClientOffsets()
         scan_trivial_getter(vfuncs_CServerSideClientBase);
         scan_trivial_getter(vfuncs_CServerSideClient);
 
-        try_overwrite_offset("CServerSideClient::m_PerfectWorld", perfect_world_off);
+        // The highest-offset trivial byte getter is m_PerfectWorld by construction; distinct getter
+        // offsets can't tie, so the winner is unambiguous and may overwrite gamedata.
+        ResolveVote perfect_world{};
+        perfect_world.Add(perfect_world_off, /*unique*/ true);
+        try_overwrite_offset("CServerSideClient::m_PerfectWorld", perfect_world);
     }
 }
 
 void ResolveNetworkGameServerOffsets()
 {
     auto engine_mod = modules::engine;
+
+    using address_scan::kThisReg;
 
     // --- CNetworkGameServer::m_ServerState ---
     //
@@ -671,11 +746,12 @@ void ResolveNetworkGameServerOffsets()
         auto func = engine_mod->FindFunctionFromStringRef("Paused: %s");
         if (func.IsValid())
         {
-            auto    range            = engine_mod->GetFunctionRange(func);
-            int32_t server_state_off = -1;
+            auto        range = engine_mod->GetFunctionRange(func);
+            ResolveVote server_state{};
 
             if (range != nullptr)
             {
+                int32_t server_state_off = -1;
                 ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
                     if (instr.mnemonic == ZYDIS_MNEMONIC_CMP
                         && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
@@ -690,18 +766,27 @@ void ResolveNetworkGameServerOffsets()
                     }
                     return false;
                 });
+                server_state.Add(server_state_off);
             }
 
-            try_overwrite_offset("CNetworkGameServer::m_ServerState", server_state_off);
+            try_overwrite_offset("CNetworkGameServer::m_ServerState", server_state);
         }
     }
 
     // --- CNetworkGameServer::m_vecClients ---
     //
     // Pattern: find com_cmd_users via "<slot:userid:\"name\">\n" string ref.
+    //
+    // Older builds inline the vector walk:
     //   CUtlVector layout: 32-bit m_Size at [base + disp], 64-bit m_pMemory at [base + disp + 8].
     //   Linux:   [r14+250h] (size), [r14+258h] (ptr)
     //   Windows: [rdi+250h] (size), [rdi+258h] (ptr)
+    //
+    // Newer ones call out-of-line accessors, so com_cmd_users holds no vector access at all:
+    //   CNetworkGameServer::GetClientCount():  mov eax, [this+248h] ; retn
+    //
+    // Prefer the leaf getter - a two-instruction `mov eax, [this + disp]; ret` cannot be
+    // confused with anything else - and fall back to the inlined pair.
     {
         auto str = engine_mod->FindString("<slot:userid:\"name\">\n", false);
         if (str.IsValid())
@@ -709,39 +794,24 @@ void ResolveNetworkGameServerOffsets()
             auto refs  = engine_mod->GetReferenceRange(str);
             auto range = refs.empty() ? nullptr : engine_mod->GetFunctionRange(refs.front().source_ip);
 
-            int32_t vec_clients_off = -1;
+            ResolveVote vec_clients{};
 
+            // Primary: com_cmd_users calls GetClientCount(), a `mov eax, [this+X] ; retn` leaf. That
+            // leaf getter is the single most stable place to read m_Size's offset from, so it may
+            // overwrite gamedata.
             if (range != nullptr)
             {
-                ZydisRegister last_base_reg = ZYDIS_REGISTER_NONE;
-                int64_t       last_disp     = 0;
-
                 ZydisUtility::ScanInstructions(refs.front().source_ip, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-                    if (instr.mnemonic != ZYDIS_MNEMONIC_MOV
-                        || operands[0].type != ZYDIS_OPERAND_TYPE_REGISTER
-                        || operands[1].type != ZYDIS_OPERAND_TYPE_MEMORY
-                        || operands[1].mem.index != ZYDIS_REGISTER_NONE
-                        || !operands[1].mem.disp.has_displacement
-                        || operands[1].mem.disp.value <= 0)
+                    if (instr.mnemonic != ZYDIS_MNEMONIC_CALL)
                         return false;
 
-                    auto base = ZydisUtility::GetBaseRegister(operands[1].mem.base);
-                    if (base == ZYDIS_REGISTER_NONE
-                        || base == ZYDIS_REGISTER_RSP
-                        || base == ZYDIS_REGISTER_RBP
-                        || base == ZYDIS_REGISTER_RIP)
+                    auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+                    if (target == 0)
                         return false;
 
-                    if (operands[1].size == 32)
+                    if (auto disp = address_scan::LeafFieldGetter(engine_mod, target); disp != -1)
                     {
-                        last_base_reg = base;
-                        last_disp     = operands[1].mem.disp.value;
-                    }
-                    else if (operands[1].size == 64
-                             && base == last_base_reg
-                             && operands[1].mem.disp.value == last_disp + 8)
-                    {
-                        vec_clients_off = static_cast<int32_t>(last_disp);
+                        vec_clients.Add(disp, /*unique*/ true);
                         return true;
                     }
 
@@ -749,7 +819,14 @@ void ResolveNetworkGameServerOffsets()
                 });
             }
 
-            try_overwrite_offset("CNetworkGameServer::m_vecClients", vec_clients_off);
+            // Fallback: builds that inline the vector walk (notably Windows). m_vecClients holds
+            // pointers, so its stride is 8. The walk is a bounds-checked loop that hoists the m_Size
+            // load ahead of the m_pMemory load, so use a wide pair gap; com_cmd_users touches only
+            // this one vector, so the stride check alone keeps it unambiguous.
+            if (vec_clients.Empty() && range != nullptr)
+                VoteCandidates(vec_clients, address_scan::FindUtlVectors(refs.front().source_ip, range->end, 8, /*max_pair_gap*/ 64));
+
+            try_overwrite_offset("CNetworkGameServer::m_vecClients", vec_clients);
         }
     }
 
@@ -805,7 +882,10 @@ void ResolveNetworkGameServerOffsets()
                 });
             }
 
-            try_overwrite_offset("CNetworkGameServer::m_MapName", map_name_off);
+            // Positional (last qword load before the string LEA), so cross-check only.
+            ResolveVote map_name{};
+            map_name.Add(map_name_off);
+            try_overwrite_offset("CNetworkGameServer::m_MapName", map_name);
         }
     }
 }

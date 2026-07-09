@@ -161,6 +161,7 @@ public interface IBaseEntity : ISchemaObject
     /// <summary>
     ///     m_flSpeed
     /// </summary>
+    [Obsolete("Removed by valve")]
     float Speed { get; set; }
 
     /// <summary>

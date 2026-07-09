@@ -339,6 +339,8 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
         set => SchemaSystem.SetNetVarUtlSymbolLarge(_this, "CBaseEntity", "m_iGlobalname", value);
     }
 
+    public float Speed { get; set; }
+
 #region Schemas
 
     [NativeSchemaField("CBaseEntity", "m_iHealth", typeof(int))]
@@ -373,9 +375,6 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
 
     [NativeSchemaField("CBaseEntity", "m_flCreateTime", typeof(float))]
     private partial SchemaField GetCreateTimeField();
-
-    [NativeSchemaField("CBaseEntity", "m_flSpeed", typeof(float))]
-    private partial SchemaField GetSpeedField();
 
     [NativeSchemaField("CBaseEntity", "m_hOwnerEntity", typeof(CEntityHandle<IBaseEntity>))]
     private partial SchemaField GetOwnerEntityHandleField();

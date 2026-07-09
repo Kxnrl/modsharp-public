@@ -88,6 +88,7 @@ class CTakeDamageInfo;
 struct SoundEventGuid_t;
 struct SndOpEventGuid_t;
 struct matrix3x4_t;
+class CTransform;
 class CEntityKeyValues;
 class HSCRIPT;
 class CEffectData;
@@ -135,7 +136,9 @@ using CBaseEntity_AbsVelocity_t   = Vector (*)(CBaseEntity*);
 using CBaseEntity_LocalVelocity_t = Vector (*)(CBaseEntity*);
 #endif
 using CBaseEntity_SetAbsVelocity_t                        = void (*)(CBaseEntity*, Vector*);
-using CBaseEntity_AcceptInput_t                           = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&, int, void*);
+// build 24116939 dropped the trailing (int outputID, void*): this wrapper now takes 5 params and
+// hardcodes both to 0 when calling the inner handler, so passing an outputID has no effect.
+using CBaseEntity_AcceptInput_t                           = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&);
 using CBaseEntity_DispatchSpawn_t                         = void (*)(CBaseEntity*, CEntityKeyValues*);
 using CBaseEntity_SetGroundEntity_t                       = void (*)(CBaseEntity*, CBaseEntity*, void*);
 using CBaseEntity_EmitSoundFilter_t                       = void (*)(CBaseEntity*, SndOpEventGuid_t*, IRecipientFilter* filter, const char*, float, Vector*);
@@ -201,7 +204,13 @@ using GetEconItemSchema_t                             = void* (*)();
 using CBaseModelEntity_SetBodyGroupByName_t           = void (*)(CBaseModelEntity*, const char*, int32_t);
 using CBaseModelEntity_SetMaterialGroupMask_t         = void (*)(CBaseModelEntity*, uint64_t);
 using CBaseModelEntity_LookupBone_t                   = int32_t (*)(CBaseModelEntity*, const char*);
-using CBaseModelEntity_GetBoneTransform_t             = void (*)(CBaseModelEntity*, int32_t, matrix3x4_t*);
+// CTransform CBaseModelEntity::GetBoneTransform(int nBone) - returns a 32-byte struct by value, so
+// both ABIs pass a hidden sret pointer, but in different slots: SysV puts it first, MSVC after `this`.
+#ifdef PLATFORM_WINDOWS
+using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CBaseModelEntity*, CTransform* ret, int32_t bone);
+#else
+using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CTransform* ret, CBaseModelEntity*, int32_t bone);
+#endif
 using CBaseModelEntity_SetModelScale_t                = void (*)(CBaseModelEntity*, float);
 using CBaseModelEntity_SetCollisionBounds_t           = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
 using CGamePhysicsQueryInterface_TraceShape_t         = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);

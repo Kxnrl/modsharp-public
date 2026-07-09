@@ -28,6 +28,7 @@
 #include <cstdint>
 #include <functional>
 
+class CUtlString;
 enum
 {
     FCVAR_NONE                    = 0,
@@ -196,7 +197,7 @@ public:
     virtual void CallChangeCallback(ConVarHandle cvar, const CSplitScreenSlot nSlot, const CVValue_t* pNewValue, const CVValue_t* pOldValue, void* unk = nullptr) = 0;
     virtual void IterateConVarCallbacks(ConVarHandle cvar, FnCvarCallbacksReader_t cb)                                                                            = 0;
 
-    virtual void Metohd_16() = 0;
+    virtual bool CallFilterCallback(ConVarHandle cvar, const CSplitScreenSlot nSlot, const CVValue_t* pNewValue, const CVValue_t* pOldValue, void* __unk01 = nullptr) = 0;
 
     virtual ConCommandHandle FindCommand(const char* name)                                   = 0;
     virtual ConCommandHandle FindFirstCommand()                                              = 0;
@@ -212,12 +213,9 @@ public:
     virtual void ResetConVarsToDefaultValuesByFlag(int32_t nFlag) = 0;
 
     virtual void    SetMaxSplitScreenSlots(int32_t nSlots) = 0;
-    virtual int32_t GetMaxSplitScreenSlots() const         = 0;
 
     virtual void RegisterCreationListeners(void* callbacks) = 0;
     virtual void RemoveCreationListeners(void* callbacks)   = 0;
-
-    virtual void Method_29() = 0;
 
     virtual void ResetConVarsToDefaultValues(const char* pszPrefix) = 0;
 
@@ -233,7 +231,7 @@ public:
     virtual int32_t GetTotalUserInfoCvarsByteSize()                                                           = 0;
     virtual void    CopyUserInfoCvarDefaults(uint8_t* buffer, int32_t from, int32_t to, bool copy_or_cleanup) = 0;
 
-    virtual void Method_39() = 0;
+    virtual void GetCompletionResults(const CCommand& command, CUtlVector<CUtlString>& completions, bool* successful = nullptr) = 0;
 
     // Register, unregister vars
     virtual void             RegisterConVar(const ConVarCreation_t& setup, int64_t nAdditionalFlags, ConVarHandle* pCvarRef, CConVarBaseData** pCvar) = 0;

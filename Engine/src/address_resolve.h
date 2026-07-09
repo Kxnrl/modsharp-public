@@ -27,8 +27,90 @@
 
 #include <Zydis.h>
 
+#include <format>
+#include <string>
+#include <utility>
+#include <vector>
+
 #define RESOLVE_GAMEDATA_ADDRESS(name, variable) \
     (variable) = g_pGameData->GetAddress<decltype(variable)>(name)
+
+// Confidence-gated result of a scan.
+//
+// A resolver may derive the same answer several independent ways - once per inlined copy of the
+// anchor function - and may know whether its structural predicate matched exactly once inside a
+// scan rather than being the first of many plausible hits.
+//
+// Only a corroborated value may overwrite hand-verified gamedata. A lone "first thing that looked
+// right" match is treated as a cross-check: it can confirm gamedata, never replace it. Every
+// auto-resolve bug we have hit (m_vecLoadedSpawnGroups=2888, m_NetChannel=272) was an
+// uncorroborated positional guess silently installed over a correct value.
+class ResolveVote
+{
+public:
+    // Record one independent derivation. `unique` means the predicate matched exactly once in
+    // its scan, so this is not a first-match-wins guess.
+    void Add(int32_t value, bool unique = false)
+    {
+        if (value == -1)
+            return;
+
+        _unique |= unique;
+
+        for (auto& [v, n] : _values)
+        {
+            if (v == value)
+            {
+                ++n;
+                return;
+            }
+        }
+
+        _values.emplace_back(value, 1);
+    }
+
+    [[nodiscard]] bool    Empty() const { return _values.empty(); }
+    [[nodiscard]] bool    Ambiguous() const { return _values.size() > 1; }
+    [[nodiscard]] int32_t Value() const { return _values.size() == 1 ? _values[0].first : -1; }
+
+    // Trustworthy enough to overwrite gamedata: a single value, and either the predicate was
+    // unique within its scan or two independent derivations agreed on it.
+    [[nodiscard]] bool Corroborated() const
+    {
+        return _values.size() == 1 && (_unique || _values[0].second >= 2);
+    }
+
+    [[nodiscard]] std::string Describe() const
+    {
+        std::string desc;
+        for (const auto& [v, n] : _values)
+        {
+            if (!desc.empty())
+                desc += ", ";
+            desc += std::format("{}(x{})", v, n);
+        }
+        return desc;
+    }
+
+private:
+    std::vector<std::pair<int32_t, int>> _values{};
+    bool                                 _unique{false};
+};
+
+// Feed a set of candidate offsets into a vote. Exactly one distinct candidate is unambiguous within
+// its scan and marked unique; several distinct ones mean the predicate no longer pins the field.
+inline void VoteCandidates(ResolveVote& vote, const std::vector<int32_t>& candidates)
+{
+    if (candidates.size() == 1)
+    {
+        vote.Add(candidates.front(), /*unique*/ true);
+    }
+    else
+    {
+        for (auto value : candidates)
+            vote.Add(value);
+    }
+}
 
 inline void try_overwrite_vfunc(const char* name, int32_t resolved)
 {
@@ -73,6 +155,70 @@ inline void try_overwrite_address(const char* name, uintptr_t resolved)
     }
 
     g_pGameData->OverwriteAddress(name, resolved);
+}
+
+// Confidence-gated overload. Refuses to install a value derived from conflicting evidence, and
+// lets an uncorroborated scan confirm gamedata without being able to overwrite it.
+inline void try_overwrite_offset(const char* name, const ResolveVote& vote)
+{
+    if (vote.Empty())
+    {
+        WARN("GameData auto-resolve: failed to resolve %s.", name);
+        return;
+    }
+
+    if (vote.Ambiguous())
+    {
+        WARN("GameData auto-resolve: %s is ambiguous [%s], keeping gamedata.", name, vote.Describe().c_str());
+        return;
+    }
+
+    const auto resolved = vote.Value();
+
+    int32_t current = 0;
+    if (g_pGameData->GetOffset(name, &current) && current != resolved)
+    {
+        if (!vote.Corroborated())
+        {
+            WARN("GameData auto-resolve: %s resolved=%d, gamedata=%d (uncorroborated, keeping gamedata).", name, resolved, current);
+            return;
+        }
+
+        WARN("GameData auto-resolve: %s resolved=%d, gamedata=%d (mismatch!).", name, resolved, current);
+    }
+
+    g_pGameData->OverwriteOffset(name, resolved);
+}
+
+inline void try_overwrite_vfunc(const char* name, const ResolveVote& vote)
+{
+    if (vote.Empty())
+    {
+        WARN("GameData auto-resolve: failed to resolve %s.", name);
+        return;
+    }
+
+    if (vote.Ambiguous())
+    {
+        WARN("GameData auto-resolve: %s is ambiguous [%s], keeping gamedata.", name, vote.Describe().c_str());
+        return;
+    }
+
+    const auto resolved = vote.Value();
+
+    int current = 0;
+    if (g_pGameData->GetVFunctionIndex(name, &current) && current != resolved)
+    {
+        if (!vote.Corroborated())
+        {
+            WARN("GameData auto-resolve: %s resolved=%d, gamedata=%d (uncorroborated, keeping gamedata).", name, resolved, current);
+            return;
+        }
+
+        WARN("GameData auto-resolve: %s resolved=%d, gamedata=%d (mismatch!).", name, resolved, current);
+    }
+
+    g_pGameData->OverwriteVFuncIndex(name, resolved);
 }
 
 template <typename T>
@@ -134,6 +280,7 @@ void ResolveCBaseEntityTeleport();
 void ResolveCBaseEntity_GetEyeAngles();
 void ResolveCBaseEntity_GetEyePosition();
 void ResolveCBaseEntity_ChangeTeam();
+void ResolveCGameSceneNodeGetters();
 void ResolveCBaseEntity_AbsOrigin();
 void ResolveCBaseEntity_EventKill();
 void ResolveCBaseEntity_GetCenter();

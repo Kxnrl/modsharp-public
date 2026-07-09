@@ -23,6 +23,7 @@
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/component/CGameSceneNode.h"
 #include "cstrike/entity/CBaseModelEntity.h"
+#include "cstrike/type/CTransform.h"
 
 void CBaseModelEntity::SetBodyGroupByName(const char* name, int32_t value)
 {
@@ -67,12 +68,43 @@ int32_t CBaseModelEntity::LookupBone(const char* pBoneName)
     return address::server::CBaseModelEntity_LookupBone(this, pBoneName);
 }
 
+// Columns 0..2 are the rotated basis axes, column 3 is the origin - the same convention
+// CGameSceneNode::EntityToWorldTransform builds via AngleMatrix.
+static void TransformToMatrix(const CTransform& in, matrix3x4_t* out)
+{
+    const Quaternion& q = in.m_orientation;
+
+    (*out)[0][0] = 1.0f - 2.0f * q.y * q.y - 2.0f * q.z * q.z;
+    (*out)[1][0] = 2.0f * q.x * q.y + 2.0f * q.w * q.z;
+    (*out)[2][0] = 2.0f * q.x * q.z - 2.0f * q.w * q.y;
+
+    (*out)[0][1] = 2.0f * q.x * q.y - 2.0f * q.w * q.z;
+    (*out)[1][1] = 1.0f - 2.0f * q.x * q.x - 2.0f * q.z * q.z;
+    (*out)[2][1] = 2.0f * q.y * q.z + 2.0f * q.w * q.x;
+
+    (*out)[0][2] = 2.0f * q.x * q.z + 2.0f * q.w * q.y;
+    (*out)[1][2] = 2.0f * q.y * q.z - 2.0f * q.w * q.x;
+    (*out)[2][2] = 1.0f - 2.0f * q.x * q.x - 2.0f * q.y * q.y;
+
+    (*out)[0][3] = in.m_vPosition.x;
+    (*out)[1][3] = in.m_vPosition.y;
+    (*out)[2][3] = in.m_vPosition.z;
+}
+
 void CBaseModelEntity::GetBoneTransform(int32_t iBone, matrix3x4_t* transform)
 {
     if (iBone < 0)
         return;
 
-    address::server::CBaseModelEntity_GetBoneTransform(this, iBone, transform);
+    CTransform bone;
+
+#ifdef PLATFORM_WINDOWS
+    address::server::CBaseModelEntity_GetBoneTransform(this, &bone, iBone);
+#else
+    address::server::CBaseModelEntity_GetBoneTransform(&bone, this, iBone);
+#endif
+
+    TransformToMatrix(bone, transform);
 }
 
 void CBaseModelEntity::SetModelScale(float scale)

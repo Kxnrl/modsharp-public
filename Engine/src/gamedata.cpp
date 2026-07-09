@@ -31,10 +31,12 @@
 #include <json.hpp>
 #include <safetyhook.hpp>
 
+#include <algorithm>
 #include <charconv>
 #include <deque>
 #include <fstream>
 #include <map>
+#include <ranges>
 
 // #define DEBUG
 
@@ -116,10 +118,11 @@ enum class RefResult : uint8_t
 {
     NoReferences,
     Failed,
+    Ambiguous, // multiple functions matched; out_matches holds the candidates for the caller to disambiguate
     Success
 };
 
-static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, std::string_view key, std::uintptr_t& out_address)
+static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, std::string_view key, std::uintptr_t& out_address, std::vector<std::uintptr_t>& out_matches)
 {
     out_address = 0;
 
@@ -392,8 +395,9 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
     {
         if (matches.size() > 1)
         {
-            FERROR("Ambiguous: %zu functions matched for %s.", matches.size(), key.data());
-            return RefResult::Failed;
+            // Defer: a signature, if present, can pick the right one of these candidates.
+            out_matches = std::move(matches);
+            return RefResult::Ambiguous;
         }
     }
     else
@@ -423,8 +427,8 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
 
         if (matches.size() > 1)
         {
-            FERROR("Ambiguous: %zu functions matched within VTable %s for %s.", matches.size(), vtable_name.data(), key.data());
-            return RefResult::Failed;
+            out_matches = std::move(matches);
+            return RefResult::Ambiguous;
         }
     }
 
@@ -683,6 +687,114 @@ static CAddress GetVScriptFunction(const std::string& name)
     return final_address;
 }
 
+int32_t GetVScriptVirtualFunctionIndex(const std::string& name)
+{
+    auto server = modules::server;
+    if (server == nullptr)
+        return -1;
+
+    ZydisDecoder decoder;
+    if (!ZYAN_SUCCESS(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
+        return -1;
+
+    auto decode_at = [&](uintptr_t ip, ZydisDecodedInstruction& instr, ZydisDecodedOperand* ops) -> bool {
+        return ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops));
+    };
+
+    // MSVC virtual-PMF thunk: `mov rax, [rcx]` ; `jmp qword ptr [rax + offset]`. Returns index or -1.
+    auto thunk_index = [&](uintptr_t fn) -> int32_t {
+        ZydisDecodedInstruction i0{};
+        ZydisDecodedOperand     o0[ZYDIS_MAX_OPERAND_COUNT]{};
+        if (!decode_at(fn, i0, o0)
+            || i0.mnemonic != ZYDIS_MNEMONIC_MOV
+            || o0[0].type != ZYDIS_OPERAND_TYPE_REGISTER
+            || o0[0].reg.value != ZYDIS_REGISTER_RAX
+            || o0[1].type != ZYDIS_OPERAND_TYPE_MEMORY
+            || ZydisRegisterGetLargestEnclosing(ZYDIS_MACHINE_MODE_LONG_64, o0[1].mem.base) != ZYDIS_REGISTER_RCX
+            || o0[1].mem.disp.value != 0)
+            return -1;
+
+        ZydisDecodedInstruction i1{};
+        ZydisDecodedOperand     o1[ZYDIS_MAX_OPERAND_COUNT]{};
+        if (!decode_at(fn + i0.length, i1, o1)
+            || i1.mnemonic != ZYDIS_MNEMONIC_JMP
+            || o1[0].type != ZYDIS_OPERAND_TYPE_MEMORY
+            || !o1[0].mem.disp.has_displacement
+            || o1[0].mem.disp.value <= 0)
+            return -1;
+
+        return static_cast<int32_t>(o1[0].mem.disp.value / sizeof(void*));
+    };
+
+    // Scan the binding registration forward from the method-name reference for the encoded PMF.
+    auto scan_ref = [&](uintptr_t start_ip) -> int32_t {
+        // Byte window: on Linux the +0x40 write trails the name ref past a type-signature parse loop.
+        const uintptr_t end_ip = start_ip + 0x200;
+
+        for (uintptr_t ip = start_ip; ip < end_ip;)
+        {
+            ZydisDecodedInstruction instr{};
+            ZydisDecodedOperand     ops[ZYDIS_MAX_OPERAND_COUNT]{};
+            if (!decode_at(ip, instr, ops))
+                break;
+
+            // Linux (Itanium) immediate PMF: mov qword [desc+0x40], (vtable_offset + 1)
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                && ops[0].type == ZYDIS_OPERAND_TYPE_MEMORY
+                && ops[0].size == 64
+                && ops[0].mem.disp.value == 0x40
+                && ops[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+            {
+                const auto pmf = ops[1].imm.value.u;
+                if ((pmf & 1) != 0 && pmf < 0x10000)
+                    return static_cast<int32_t>((pmf - 1) / sizeof(void*));
+            }
+
+            // Windows (MSVC): the PMF is a small thunk, referenced by `lea reg, <thunk>`.
+            if (instr.mnemonic == ZYDIS_MNEMONIC_LEA && ops[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+            {
+                uintptr_t target = 0;
+                if (ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(&instr, &ops[1], ip, &target)) && target != 0)
+                {
+                    if (auto idx = thunk_index(target); idx > 0)
+                        return idx;
+                }
+            }
+
+            ip += instr.length;
+        }
+        return -1;
+    };
+
+    auto try_refs = [&](const CAddress& ref_target) -> int32_t {
+        if (!ref_target.IsValid())
+            return -1;
+
+        for (const auto& ref : server->GetReferenceRange(ref_target))
+        {
+            if (auto idx = scan_ref(ref.source_ip); idx != -1)
+                return idx;
+        }
+        return -1;
+    };
+
+    auto str = server->FindString(name, false, true);
+    if (auto idx = try_refs(str); idx != -1)
+        return idx;
+
+    // The name may only be reachable through a pointer table (mirrors GetVScriptFunction).
+    if (str.IsValid())
+    {
+        for (const auto& ptr : server->FindPtrs(str))
+        {
+            if (auto idx = try_refs(ptr); idx != -1)
+                return idx;
+        }
+    }
+
+    return -1;
+}
+
 static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringHash, std::equal_to<>>& addresses, std::string_view name, std::uintptr_t& pAddress)
 {
     auto it = addresses.find(name);
@@ -714,6 +826,8 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringH
         bool           has_signature = !item.m_Signature.empty();
         auto           ref_result    = RefResult::Failed;
 
+        std::vector<std::uintptr_t> ref_candidates;
+
         if (!item.m_VScriptFunction.empty())
         {
             address = GetVScriptFunction(item.m_VScriptFunction);
@@ -725,12 +839,30 @@ static bool FindAddress(std::unordered_map<std::string, GameDataAddress, StringH
 
         if (address == 0)
         {
-            ref_result = FindFunctionFromReferences(item, name, address);
+            ref_result = FindFunctionFromReferences(item, name, address, ref_candidates);
         }
 
         if (has_signature && (address == 0 || IsDebugMode()))
         {
             sig_found = FindPattern(item.m_Module, item.m_Signature, sig_addr);
+        }
+
+        // References narrowed the target to several candidates; the signature, which is unique,
+        // picks the right one. Valve regularly grows a second near-identical function that shares
+        // the same string/cvar/vtable references (e.g. StopSoundEventFilter, FireBullets_CS2), so
+        // refs alone become ambiguous while the signature still resolves precisely.
+        if (address == 0 && ref_result == RefResult::Ambiguous)
+        {
+            if (sig_found && std::ranges::find(ref_candidates, sig_addr) != ref_candidates.end())
+            {
+                address = sig_addr;
+            }
+            else
+            {
+                FERROR("Ambiguous: %zu functions matched for %s, and signature %s.",
+                       ref_candidates.size(), name.data(),
+                       !has_signature ? "is absent" : (sig_found ? "matched none of them" : "did not resolve"));
+            }
         }
 
         if (address == 0 && sig_found)

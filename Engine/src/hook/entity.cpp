@@ -274,10 +274,12 @@ BeginMemberHookScope(CEntityIOOutput)
 // 实现劫持AcceptInput
 BeginMemberHookScope(CEntityIdentity)
 {
-    DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, int nOutputId, void* a7, void* a8))
+    // As of game build 24116939 the trailing void* was dropped: CEntityIdentity::AcceptInput went
+    // from 8 params to 7. a7 is kept only to forward it untouched to the original.
+    DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, int nOutputId, void* a7))
     {
         if (!pInstance || !pInput)
-            return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, nOutputId, a7, a8);
+            return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, nOutputId, a7);
 
         if (natives::entity::OnEntityAcceptInput(pInstance, pInput->Get(), pActivator, pCaller, pValue, nOutputId) == EHookAction::SkipCallReturnOverride)
             return false;
@@ -316,7 +318,7 @@ BeginMemberHookScope(CEntityIdentity)
             // g_pScriptVM->SetValueVariant(pScope, "caller", &caller);
         }
 
-        return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, nOutputId, a7, a8);
+        return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, nOutputId, a7);
     }
 }
 

@@ -98,6 +98,13 @@ struct StringHash
     size_t operator()(std::string_view txt) const noexcept { return std::hash<std::string_view>{}(txt); }
 };
 
+// Resolve the vtable index of a virtual method exposed to VScript by decoding its binding
+// registration in the server module. The binding records the method's pointer-to-member-function,
+// from which the vtable byte offset is directly recoverable on both ABIs (odd immediate PMF on the
+// Itanium/Linux side, a `mov rax,[rcx]; jmp [rax+off]` thunk on MSVC/Windows). Returns -1 if not
+// found. Companion to the address-returning vscript decode used by the "vscript" gamedata field.
+int32_t GetVScriptVirtualFunctionIndex(const std::string& name);
+
 class GameData : public IGameData
 {
 public:

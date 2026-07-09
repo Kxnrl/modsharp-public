@@ -21,12 +21,6 @@
           "WARNING: Lua unable to create VM\n"
         ]
       }
-    },
-    // 搜 "No DATA block for resource\n", 上面的 if 判断里调用的函数就是LoadCompiledResource
-    "Resource_FindBlockInfo": {
-      "library": "resourcesystem",
-      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 66 0F EF C0 48 89 E5 41 57 41 56 41 55 41 54 53",
-      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 45 33 C9"
     }
   },
   "VFuncs": {

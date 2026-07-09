@@ -19,6 +19,7 @@
 
 #include "address.h"
 #include "address_resolve.h"
+#include "address_scan.h"
 #include "logging.h"
 #include "memory/zydis_utility.h"
 #include "module.h"
@@ -538,9 +539,16 @@ void ResolveCCSPlayerPawnStateActive()
 
         // Helper: verify a call target is CCollisionProperty::Update by checking
         // for a RIP-relative LEA to VPhysicsCollisionAttribute_t vtable in its prologue.
+        //
+        // GetVirtualTableByName returns the address objects store, which on the Itanium ABI is
+        // the vtable symbol + 0x10 (past offset-to-top and typeinfo). Older builds LEA'd that
+        // address directly; newer ones LEA the vtable symbol and then `add rax, 10h`. Accept both.
         auto verify_collision_update = [&](uintptr_t call_dest) -> bool {
             if (!vphys_vtable.IsValid())
                 return true; // can't verify, assume correct
+
+            const uintptr_t vtable_ptr  = vphys_vtable.GetPtr();
+            const uintptr_t vtable_base = vtable_ptr - 2 * sizeof(void*);
 
             auto      target_range = svr_mod->GetFunctionRange(call_dest);
             uintptr_t target_end   = target_range ? target_range->end : (call_dest + 64);
@@ -549,7 +557,8 @@ void ResolveCCSPlayerPawnStateActive()
             ZydisUtility::ScanInstructions(call_dest, target_end, [&](uintptr_t ip2, const ZydisDecodedInstruction& instr2, const ZydisDecodedOperand* ops2) -> bool {
                 if (instr2.mnemonic == ZYDIS_MNEMONIC_LEA && (instr2.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
                 {
-                    if (ZydisUtility::GetAbsoluteAddress(instr2, ops2[1], ip2) == vphys_vtable.GetPtr())
+                    auto target = ZydisUtility::GetAbsoluteAddress(instr2, ops2[1], ip2);
+                    if (target == vtable_ptr || target == vtable_base)
                     {
                         found_lea = true;
                         return true;
@@ -850,65 +859,86 @@ void ResolveCBaseEntity_GetEyePosition()
 
 void ResolveCBaseEntity_ChangeTeam()
 {
+    // "Entity.ChangeTeam" is exposed to VScript, and its binding descriptor records the method's
+    // pointer-to-member-function - from which the vtable index falls out directly. This is far more
+    // stable than the old anchor (a per-method dispatch wrapper referencing "ChangeTeam" + two
+    // generic format strings): build 24116939 genericized those wrappers so the method name now
+    // lives only in the registration table, and the three-string intersection went empty.
+    ResolveVote vote{};
+    vote.Add(GetVScriptVirtualFunctionIndex("ChangeTeam"), /*unique*/ true);
+    try_overwrite_vfunc("CBaseEntity::ChangeTeam", vote);
+}
+
+void ResolveCGameSceneNodeGetters()
+{
+    // CGameSceneNode::GetStudioModel (N) and GetSkeletonInstance (N+1) are adjacent vtable getters.
+    // On the base CGameSceneNode both are `xor eax,eax ; ret` stubs; CSkeletonInstance overrides both
+    // to `mov rax, this ; ret`. That adjacent (base-returns-0, override-returns-this) pair is unique
+    // in the vtable across every build checked, which pins the indices structurally rather than by
+    // absolute position.
     auto svr_mod = modules::server;
 
-    const auto point_script_change_team = svr_mod->FindFunctionFromStringRefs({"Method %s.%s invoked with incorrect 'this' value.",
-                                                                               "ChangeTeam",
-                                                                               "Calling %s.%s\n"});
+    const auto scene = svr_mod->GetVFunctionsFromVTable("CGameSceneNode");
+    const auto skel  = svr_mod->GetVFunctionsFromVTable("CSkeletonInstance");
 
-    if (!point_script_change_team.IsValid())
+    // First instruction of `fn` matches (mnemonic, op0 reg, op1 reg-or-none); second is a return.
+    auto is_getter = [](uintptr_t fn, ZydisMnemonic mnem, ZydisRegister op0_reg, ZydisRegister op1_reg) -> bool {
+        ZydisDecodedInstruction instr{};
+        ZydisDecodedOperand     ops[ZYDIS_MAX_OPERAND_COUNT]{};
+
+        // Skip a CET endbr64 if the compiler emitted one.
+        auto ip = fn;
+        if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops))
+            && instr.mnemonic == ZYDIS_MNEMONIC_ENDBR64)
+            ip += instr.length;
+
+        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops)))
+            return false;
+
+        if (instr.mnemonic != mnem
+            || ops[0].type != ZYDIS_OPERAND_TYPE_REGISTER
+            || ZydisUtility::GetBaseRegister(ops[0].reg.value) != op0_reg)
+            return false;
+
+        if (op1_reg != ZYDIS_REGISTER_NONE
+            && (ops[1].type != ZYDIS_OPERAND_TYPE_REGISTER || ZydisUtility::GetBaseRegister(ops[1].reg.value) != op1_reg))
+            return false;
+
+        ip += instr.length;
+        if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, ops)))
+            return false;
+
+        return instr.mnemonic == ZYDIS_MNEMONIC_RET;
+    };
+
+    // base: xor eax, eax ; ret  (return 0)
+    auto returns_zero = [&](uintptr_t fn) { return is_getter(fn, ZYDIS_MNEMONIC_XOR, ZYDIS_REGISTER_RAX, ZYDIS_REGISTER_RAX); };
+    // override: mov rax, this ; ret  (return this)
+    auto returns_this = [&](uintptr_t fn) { return is_getter(fn, ZYDIS_MNEMONIC_MOV, ZYDIS_REGISTER_RAX, address_scan::kThisReg); };
+
+    int32_t studio_model_idx = -1;
+
+    const auto count = std::min(scene.size(), skel.size());
+    for (size_t i = 0; i + 1 < count; ++i)
     {
-        WARN("Failed to find CPointScript::ChangeTeam.");
-        return;
+        if (returns_zero(scene[i]) && returns_this(skel[i])
+            && returns_zero(scene[i + 1]) && returns_this(skel[i + 1]))
+        {
+            studio_model_idx = static_cast<int32_t>(i);
+            break;
+        }
     }
 
-    const auto range = svr_mod->GetFunctionRange(point_script_change_team);
-    if (!range)
+    ResolveVote studio{};
+    ResolveVote skeleton{};
+    if (studio_model_idx != -1)
     {
-        WARN("Failed to get function range for CPointScript::ChangeTeam.");
-        return;
+        studio.Add(studio_model_idx, /*unique*/ true);
+        skeleton.Add(studio_model_idx + 1, /*unique*/ true);
     }
 
-    // CPointScript::ChangeTeam resolves an entity handle then calls ChangeTeam vtable.
-    // Anchor: invalid handle check `cmp reg32, 0xFFFFFFFF` (INVALID_EHANDLE_INDEX).
-    // After this check and entity resolution, the LAST vtable call in the function is ChangeTeam.
-    // Note: there may be intermediate import calls (LoggingSystem_Log etc.) between the anchor and target.
-    int32_t vcall_off          = -1;
-    bool    seen_invalid_check = false;
-
-    ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-        if (!seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CMP
-            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-            && operands[0].size == 32
-            && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-            && static_cast<uint32_t>(operands[1].imm.value.u) == 0xFFFFFFFF)
-        {
-            seen_invalid_check = true;
-        }
-
-        // Track the last vtable indirect call after the handle check — that's the ChangeTeam dispatch
-        if (seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CALL
-            && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
-            && operands[0].mem.disp.has_displacement
-            && operands[0].mem.disp.value > 0
-            && operands[0].mem.index == ZYDIS_REGISTER_NONE
-            && !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
-        {
-            auto base = ZydisUtility::GetBaseRegister(operands[0].mem.base);
-            if (base != ZYDIS_REGISTER_RIP
-                && base != ZYDIS_REGISTER_RSP
-                && base != ZYDIS_REGISTER_RBP)
-            {
-                vcall_off = static_cast<int32_t>(operands[0].mem.disp.value);
-            }
-        }
-        return false; // scan entire function, take the last match
-    });
-
-    auto vfunc_index = vcall_off != -1 ? vcall_off / static_cast<int32_t>(sizeof(void*)) : -1;
-    try_overwrite_vfunc("CBaseEntity::ChangeTeam", vfunc_index);
+    try_overwrite_vfunc("CGameSceneNode::GetStudioModel", studio);
+    try_overwrite_vfunc("CGameSceneNode::GetSkeletonInstance", skeleton);
 }
 
 void ResolveCBaseEntity_GetEyeAngles()

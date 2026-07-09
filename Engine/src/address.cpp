@@ -112,6 +112,7 @@ bool address::Initialize()
     ResolveCBaseEntity_GetEyeAngles();
     ResolveCBaseEntity_GetEyePosition();
     ResolveCBaseEntity_ChangeTeam();
+    ResolveCGameSceneNodeGetters();
     ResolveServerSideClientOffsets();
     ResolveNetworkGameServerOffsets();
     ResolveCBaseEntity_EventKill();

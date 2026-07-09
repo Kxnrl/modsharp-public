@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\address_resolve.h" />
+    <ClInclude Include="src\address_scan.h" />
     <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
     <ClInclude Include="src\bridge\natives\NetNatives.h" />
     <ClInclude Include="src\bridge\natives\SoundNatives.h" />
