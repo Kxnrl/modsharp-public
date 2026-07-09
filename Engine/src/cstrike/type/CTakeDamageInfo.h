@@ -77,6 +77,82 @@ enum class DamageTypes_t : int32_t
     DMG_HEADSHOT      = 1 << 19  // 0x80000
 };
 
+// Both DestructiblePartDamageRequest_t and CTakeDamageResult end in an owning handle into a
+// generation-checked pool. Only ~0u means "empty"; releasing any other value hands a slot back.
+// The game's copy constructor deliberately leaves the destination's handle untouched so that a
+// copy never co-owns the source's slot -- ours must do the same.
+inline constexpr uint32_t kInvalidPooledHandle = 0xFFFFFFFFu;
+
+enum EDestructibleParts_DestroyParameterFlags : uint32_t
+{
+    EDestructibleParts_DestroyParameterFlags_None                          = 0,
+    EDestructibleParts_DestroyParameterFlags_GenerateBreakpieces           = 1,
+    EDestructibleParts_DestroyParameterFlags_SetBodyGroupAndCollisionState = 2,
+    EDestructibleParts_DestroyParameterFlags_EnableFlinches                = 4,
+    EDestructibleParts_DestroyParameterFlags_ForceDamageApply              = 8,
+    EDestructibleParts_DestroyParameterFlags_IgnoreKillEntityFlag          = 16,
+    EDestructibleParts_DestroyParameterFlags_IgnoreHealthCheck             = 32,
+    EDestructibleParts_DestroyParameterFlags_Default                       = 7,
+};
+
+struct DestructiblePartDamageRequest_t
+{
+    HitGroup_t m_nHitGroup;      // 0x0
+    int32_t    m_nDamageLevel;   // 0x4
+    uint16_t   m_nDesiredHealth; // 0x8
+private:
+    [[maybe_unused]] uint8_t pad_a[0x2];
+
+public:
+    EDestructibleParts_DestroyParameterFlags m_nDestroyFlags;       // 0xc
+    DamageTypes_t                            m_nDamageType;         // 0x10
+    float                                    m_flBreakDamage;       // 0x14
+    float                                    m_flBreakDamageRadius; // 0x18
+private:
+    [[maybe_unused]] uint8_t pad_1c[0x4];
+
+public:
+    Vector m_vWsBreakDamageOrigin; // 0x20
+    Vector m_vWsBreakDamageForce;  // 0x2c
+
+private:
+    uint32_t m_nOwnedHandle{kInvalidPooledHandle}; // 0x38
+
+public:
+    DestructiblePartDamageRequest_t() = default;
+
+    DestructiblePartDamageRequest_t(const DestructiblePartDamageRequest_t& other)
+    {
+        CopyDataFrom(other);
+    }
+
+    DestructiblePartDamageRequest_t& operator=(const DestructiblePartDamageRequest_t& other)
+    {
+        if (this != &other)
+            CopyDataFrom(other);
+
+        return *this;
+    }
+
+private:
+    void CopyDataFrom(const DestructiblePartDamageRequest_t& other)
+    {
+        m_nHitGroup            = other.m_nHitGroup;
+        m_nDamageLevel         = other.m_nDamageLevel;
+        m_nDesiredHealth       = other.m_nDesiredHealth;
+        m_nDestroyFlags        = other.m_nDestroyFlags;
+        m_nDamageType          = other.m_nDamageType;
+        m_flBreakDamage        = other.m_flBreakDamage;
+        m_flBreakDamageRadius  = other.m_flBreakDamageRadius;
+        m_vWsBreakDamageOrigin = other.m_vWsBreakDamageOrigin;
+        m_vWsBreakDamageForce  = other.m_vWsBreakDamageForce;
+        m_nOwnedHandle         = kInvalidPooledHandle;
+    }
+}; // Size: 0x3c
+static_assert(sizeof(DestructiblePartDamageRequest_t) == 0x3c);
+static_assert(offsetof(DestructiblePartDamageRequest_t, m_vWsBreakDamageOrigin) == 0x20);
+static_assert(offsetof(DestructiblePartDamageRequest_t, m_vWsBreakDamageForce) == 0x2c);
+
 struct AttackerInfo_t
 {
     bool        m_bNeedInit;
@@ -141,17 +217,20 @@ private:
     [[maybe_unused]] uint8_t m_nUnknown1[0x2]{}; // 102
 
 public:
-    CGameTrace*              m_pTrace;                               // 104
-    TakeDamageFlags_t        m_nDamageFlags;                         // 112
-    HitGroup_t               m_iHitGroupId;                          // 120
-    int32_t                  m_nNumObjectsPenetrated;                // 124
-    float                    m_flFriendlyFireDamageReductionRatio;   // 128
-    bool                     m_bStoppedBullet;                       // 132
-    ShootInfo_t              m_ShootInfo;                            // 136
-    void*                    m_hScriptInstance;                      // 224
-    AttackerInfo_t           m_AttackerInfo;                         // 232
-    CUtlLeanVector<uint32_t> m_nDestructibleHitGroupsToForceDestroy; // 256
-    bool                     m_bInTakeDamageFlow;                    // 272
+    CGameTrace*       m_pTrace;                             // 104
+    TakeDamageFlags_t m_nDamageFlags;                       // 112
+    HitGroup_t        m_iHitGroupId;                        // 120
+    int32_t           m_nNumObjectsPenetrated;              // 124
+    float             m_flFriendlyFireDamageReductionRatio; // 128
+    bool              m_bStoppedBullet;                     // 132
+    ShootInfo_t       m_ShootInfo;                          // 136
+    void*             m_hScriptInstance;                    // 224
+    AttackerInfo_t    m_AttackerInfo;                       // 232
+
+    // Element stride is 0x3c, not 4 -- CTakeDamageResult::CopyFrom appends straight from here.
+    CUtlLeanVector<DestructiblePartDamageRequest_t> m_DestructibleHitGroupsToForceDestroy; // 256
+
+    bool m_bInTakeDamageFlow; // 272
 
 private:
     [[maybe_unused]] uint8_t m_nUnknown2[0x4]{}; // 284
