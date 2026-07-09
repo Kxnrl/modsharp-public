@@ -201,16 +201,22 @@ jobs:
     env:
       CC: clang-21
       CXX: clang++-21
+      # apt.llvm.org times out intermittently from GitHub runners. This mirror carries the
+      # same suite with identical, still upstream-signed metadata.
+      LLVM_APT_MIRROR: https://mirrors.cqupt.edu.cn/llvm-apt
     steps:
       - name: Install Clang 21
         run: |
-          apt update
-          apt install -y wget gnupg
-          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
-          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
-          apt update
-          apt install -y clang-21
+          set -euo pipefail
+          echo 'Acquire::Retries "5";' > /etc/apt/apt.conf.d/80-retries
+          apt-get update
+          apt-get install -y --no-install-recommends wget gnupg ca-certificates
+          install -d -m 0755 /etc/apt/keyrings
+          wget -qO- --tries=5 --retry-connrefused --timeout=20 https://apt.llvm.org/llvm-snapshot.gpg.key \
+            | gpg --dearmor --yes -o /etc/apt/keyrings/llvm.gpg
+          echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] ${LLVM_APT_MIRROR}/bullseye/ llvm-toolchain-bullseye-21 main" > /etc/apt/sources.list.d/llvm.list
+          apt-get update
+          apt-get install -y clang-21
           echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
           echo "LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
