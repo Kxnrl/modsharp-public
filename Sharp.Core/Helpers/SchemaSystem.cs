@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Unicode;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -88,6 +90,14 @@ public static class SchemaSystem
 
     public static byte GetSchemaClassAlignOf(string classname)
         => GetSchemaClass(classname).AlignOf;
+
+    public static (SchemaClass, SchemaClassField) ResolveField(string classname, string field)
+    {
+        var schemaClass = GetSchemaClass(classname);
+        var schemaField = GetSchemaClassField(schemaClass, field);
+
+        return (schemaClass, schemaField);
+    }
 
     public static int GetNetVarOffset(string classname, string field)
         => GetSchemaClassField(GetSchemaClass(classname), field).Offset;
@@ -184,12 +194,8 @@ public static class SchemaSystem
         bool                              isStruct    = false,
         ushort                            extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteByte(schemaField.Offset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarByte(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarInt16(nint ptr,
@@ -199,12 +205,8 @@ public static class SchemaSystem
         bool                               isStruct    = false,
         ushort                             extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteInt16(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarInt16(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarUInt16(nint ptr,
@@ -214,12 +216,8 @@ public static class SchemaSystem
         bool                                isStruct    = false,
         ushort                              extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteUInt16(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarUInt16(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarInt32(nint ptr,
@@ -229,12 +227,8 @@ public static class SchemaSystem
         bool                               isStruct    = false,
         ushort                             extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteInt32(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarInt32(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarUInt32(nint ptr,
@@ -244,12 +238,8 @@ public static class SchemaSystem
         bool                                isStruct    = false,
         ushort                              extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteUInt32(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarUInt32(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarInt64(nint ptr,
@@ -259,12 +249,8 @@ public static class SchemaSystem
         bool                               isStruct    = false,
         ushort                             extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteInt64(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarInt64(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarUInt64(nint ptr,
@@ -274,12 +260,8 @@ public static class SchemaSystem
         bool                                isStruct    = false,
         ushort                              extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteUInt64(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarUInt64(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void SetNetVarFloat(nint ptr,
@@ -289,25 +271,62 @@ public static class SchemaSystem
         bool                               isStruct    = false,
         ushort                             extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteFloat(schemaField.Offset + extraOffset, value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarFloat(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
-    public static void SetNetVarString(nint ptr,
-        string                              classname,
-        string                              field,
-        string                              value,
-        int                                 length,
-        bool                                isStruct    = false,
-        ushort                              extraOffset = 0)
+    public static unsafe void SetNetVarString(nint ptr,
+        string                                     classname,
+        string                                     field,
+        string                                     value,
+        int                                        length,
+        bool                                       isStruct    = false,
+        ushort                                     extraOffset = 0)
     {
         var schemaClass = GetSchemaClass(classname);
         var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteStringUtf8(schemaField.Offset + extraOffset, value, length);
+
+        SetNetVarString(ptr, schemaClass, schemaField, value, length, isStruct, extraOffset);
+    }
+
+    public static unsafe void SetNetVarString(nint ptr,
+        SchemaClass                                schemaClass,
+        SchemaClassField                           schemaField,
+        string                                     value,
+        int                                        length,
+        bool                                       isStruct    = false,
+        ushort                                     extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+        var dest   = (byte*) (ptr + offset);
+        var maxLen = length - 1;
+        var newLen = Encoding.UTF8.GetByteCount(value);
+
+        if (newLen > maxLen)
+        {
+            newLen = maxLen;
+        }
+
+        // check current string length first
+        var currentLen = 0;
+
+        while (currentLen < length && dest[currentLen] != 0)
+        {
+            currentLen++;
+        }
+
+        if (currentLen == newLen && newLen > 0)
+        {
+            Span<byte> newBytes = stackalloc byte[newLen];
+            Utf8.FromUtf16(value, newBytes, out _, out _);
+
+            if (new ReadOnlySpan<byte>(dest, currentLen).SequenceEqual(newBytes))
+            {
+                return;
+            }
+        }
+
+        ptr.WriteStringUtf8(offset, value, length);
 
         // state changed
         NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
@@ -320,16 +339,8 @@ public static class SchemaSystem
         bool                                               isStruct    = false,
         ushort                                             extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        var offset      = schemaField.Offset;
-        var thisPtr     = ptr.ToPointer();
-        var pointer     = (CUtlSymbolLarge*) ((byte*) thisPtr + offset + extraOffset);
-        var alloc       = new CUtlSymbolLarge(Entity.AllocPooledString(value));
-        *pointer = alloc;
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, isStruct: isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarUtlSymbolLarge(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static unsafe void SetNetVarUtlString(nint ptr,
@@ -339,30 +350,19 @@ public static class SchemaSystem
         bool                                          isStruct    = false,
         ushort                                        extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        var pointer     = (CUtlString*) (ptr + schemaField.Offset + extraOffset);
-        pointer->SetString(value);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, isStruct: isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarUtlString(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
-    public static void SetNetVarVector(nint ptr,
-        string                              classname,
-        string                              field,
-        Vector                              value,
-        bool                                isStruct    = false,
-        ushort                              extraOffset = 0)
+    public static unsafe void SetNetVarVector(nint ptr,
+        string                                     classname,
+        string                                     field,
+        Vector                                     value,
+        bool                                       isStruct    = false,
+        ushort                                     extraOffset = 0)
     {
-        var schemaClass = GetSchemaClass(classname);
-        var schemaField = GetSchemaClassField(schemaClass, field);
-        ptr.WriteFloat(schemaField.Offset + extraOffset + 0, value.X);
-        ptr.WriteFloat(schemaField.Offset + extraOffset + 4, value.Y);
-        ptr.WriteFloat(schemaField.Offset + extraOffset + 8, value.Z);
-
-        // state changed
-        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+        var (schemaClass, schemaField) = ResolveField(classname, field);
+        SetNetVarVector(ptr, schemaClass, schemaField, value, isStruct, extraOffset);
     }
 
     public static void NetVarStateChanged(nint ptr,
@@ -457,4 +457,226 @@ public static class SchemaSystem
         // state changed
         NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
     }
+
+#region Fast-path overloads (pre-resolved SchemaClass + SchemaClassField)
+
+    public static void SetNetVarByte(nint ptr,
+        SchemaClass                       schemaClass,
+        SchemaClassField                  schemaField,
+        byte                              value,
+        bool                              isStruct    = false,
+        ushort                            extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetByte(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteByte(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarBool(nint ptr,
+        SchemaClass                       schemaClass,
+        SchemaClassField                  schemaField,
+        bool                              value,
+        bool                              isStruct    = false,
+        ushort                            extraOffset = 0)
+        => SetNetVarByte(ptr, schemaClass, schemaField, (byte) (value ? 1 : 0), isStruct, extraOffset);
+
+    public static void SetNetVarInt16(nint ptr,
+        SchemaClass                        schemaClass,
+        SchemaClassField                   schemaField,
+        short                              value,
+        bool                               isStruct    = false,
+        ushort                             extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetInt16(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteInt16(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarUInt16(nint ptr,
+        SchemaClass                         schemaClass,
+        SchemaClassField                    schemaField,
+        ushort                              value,
+        bool                                isStruct    = false,
+        ushort                              extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetUInt16(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteUInt16(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarInt32(nint ptr,
+        SchemaClass                        schemaClass,
+        SchemaClassField                   schemaField,
+        int                                value,
+        bool                               isStruct    = false,
+        ushort                             extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetInt32(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteInt32(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarUInt32(nint ptr,
+        SchemaClass                         schemaClass,
+        SchemaClassField                    schemaField,
+        uint                                value,
+        bool                                isStruct    = false,
+        ushort                              extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetUInt32(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteUInt32(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarInt64(nint ptr,
+        SchemaClass                        schemaClass,
+        SchemaClassField                   schemaField,
+        long                               value,
+        bool                               isStruct    = false,
+        ushort                             extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetInt64(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteInt64(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarUInt64(nint ptr,
+        SchemaClass                         schemaClass,
+        SchemaClassField                    schemaField,
+        ulong                               value,
+        bool                                isStruct    = false,
+        ushort                              extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        if (ptr.GetUInt64(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteUInt64(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static void SetNetVarFloat(nint ptr,
+        SchemaClass                        schemaClass,
+        SchemaClassField                   schemaField,
+        float                              value,
+        bool                               isStruct    = false,
+        ushort                             extraOffset = 0)
+    {
+        var offset = schemaField.Offset + extraOffset;
+
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        if (ptr.GetFloat(offset) == value)
+        {
+            return;
+        }
+
+        ptr.WriteFloat(offset, value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static unsafe void SetNetVarVector(nint ptr,
+        SchemaClass                                schemaClass,
+        SchemaClassField                           schemaField,
+        Vector                                     value,
+        bool                                       isStruct    = false,
+        ushort                                     extraOffset = 0)
+    {
+        var offset  = schemaField.Offset + extraOffset;
+        var current = *(Vector*) (ptr + offset);
+
+        if (current.X == value.X && current.Y == value.Y && current.Z == value.Z)
+        {
+            return;
+        }
+
+        *(Vector*) (ptr + offset) = value;
+        NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
+    }
+
+    public static unsafe void SetNetVarUtlSymbolLarge(nint ptr,
+        SchemaClass                                        schemaClass,
+        SchemaClassField                                   schemaField,
+        string                                             value,
+        bool                                               isStruct    = false,
+        ushort                                             extraOffset = 0)
+    {
+        var pointer = (CUtlSymbolLarge*) ((byte*) ptr.ToPointer() + schemaField.Offset + extraOffset);
+        var alloc   = new CUtlSymbolLarge(Entity.AllocPooledString(value));
+
+        if (*pointer == alloc)
+        {
+            return;
+        }
+
+        *pointer = alloc;
+        NetVarStateChanged(ptr, schemaClass, schemaField, isStruct: isStruct);
+    }
+
+    public static unsafe void SetNetVarUtlString(nint ptr,
+        SchemaClass                                   schemaClass,
+        SchemaClassField                              schemaField,
+        string                                        value,
+        bool                                          isStruct    = false,
+        ushort                                        extraOffset = 0)
+    {
+        var pointer    = (CUtlString*) (ptr + schemaField.Offset + extraOffset);
+        var newLen     = Encoding.UTF8.GetByteCount(value);
+        var currentLen = pointer->Length();
+
+        if (newLen == currentLen && currentLen > 0)
+        {
+            var        currentSpan = pointer->AsReadOnlySpan();
+            Span<byte> newBytes    = stackalloc byte[newLen];
+            Utf8.FromUtf16(value, newBytes, out _, out _);
+
+            if (currentSpan.SequenceEqual(newBytes))
+            {
+                return;
+            }
+        }
+
+        pointer->SetString(value);
+        NetVarStateChanged(ptr, schemaClass, schemaField, isStruct: isStruct);
+    }
+
+#endregion
 }

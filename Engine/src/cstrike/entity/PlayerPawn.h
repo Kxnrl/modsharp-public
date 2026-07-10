@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -101,6 +101,7 @@ public:
     SCHEMA_FIELD(float, m_flVelocityModifier)
     SCHEMA_FIELD(int32_t, m_ArmorValue)
 
+    void SetDefaultGloves(bool draw);
     void GiveGloves(int32_t itemDefIndex, int32_t prefab, float wear, int32_t seed);
 };
 

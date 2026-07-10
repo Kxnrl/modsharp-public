@@ -142,6 +142,19 @@ public:
 
     void Set(void* instance, T value)
     {
+        auto& current = *reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(instance) + m_nOffset);
+
+        if constexpr (requires { current == value; })
+        {
+            if (current == value)
+                return;
+        }
+        else if constexpr (std::is_trivially_copyable_v<T>)
+        {
+            if (std::memcmp(&current, &value, sizeof(T)) == 0)
+                return;
+        }
+
         if (m_Data.key.networked)
         {
             if (m_Data.offset != 0)
@@ -153,7 +166,8 @@ public:
                 ::SetStateChanged(static_cast<CBaseEntity*>(instance), m_nOffset);
             }
         }
-        *reinterpret_cast<T*>(reinterpret_cast<uintptr_t>(instance) + m_nOffset) = value;
+
+        current = value;
     }
 
 private:

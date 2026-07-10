@@ -60,7 +60,7 @@ internal class SilenceService : ICommandCategory, ISilenceService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target))
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
@@ -72,12 +72,12 @@ internal class SilenceService : ICommandCategory, ISilenceService
 
         var reason = ctx.GetReason(3);
 
-        _ = ExecuteSilenceAsync(ctx, target, duration, reason, issuer)
+        _ = ExecuteSilenceAsync(ctx, targets, targetLabel, duration, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process silence for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process silence batch");
                                   ctx.Reply("Failed to process silence. Check server logs.");
                               }
                           },
@@ -85,25 +85,36 @@ internal class SilenceService : ICommandCategory, ISilenceService
     }
 
     private async Task ExecuteSilenceAsync(CommandContext ctx,
-        IGameClient                                       target,
+        IReadOnlyList<IGameClient>                        targets,
+        string                                            targetLabel,
         TimeSpan?                                         duration,
         string                                            reason,
         IGameClient?                                      issuer)
     {
-        var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
-        var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+        var count = 0;
 
-        if (isMuted && isGag)
+        foreach (var target in targets)
         {
-            ctx.ReplyKey("Admin.AlreadySilenced", "{0} is already silenced.", target.Name);
+            var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
+            var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
 
-            return;
+            if (isMuted && isGag)
+            {
+                _logger.LogDebug("Skip silence for {Target} ({SteamId}): already fully silenced", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason, true);
+            _engine.ApplyOnline(issuer, target, AdminOperationType.Gag,  duration, reason, true);
+            _engine.NotifySilenceApplied(issuer, target, duration, reason);
+            count++;
         }
 
-        _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason, true);
-        _engine.ApplyOnline(issuer, target, AdminOperationType.Gag,  duration, reason, true);
-
-        _engine.NotifySilenceApplied(issuer, target, duration, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Silenced", "{0} Silenced {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     private void OnCommandUnSilence(IGameClient? issuer, StringCommand command)
@@ -115,41 +126,55 @@ internal class SilenceService : ICommandCategory, ISilenceService
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target))
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
 
         var reason = ctx.GetReason(2);
 
-        _ = ExecuteUnsilenceAsync(ctx, target, reason, issuer)
+        _ = ExecuteUnsilenceAsync(ctx, targets, targetLabel, reason, issuer)
             .ContinueWith(t =>
                           {
                               if (t.Exception?.InnerException is { } ex)
                               {
-                                  _logger.LogError(ex, "Failed to process unsilence for {SteamId}", target.SteamId);
+                                  _logger.LogError(ex, "Failed to process unsilence batch");
                                   ctx.Reply("Failed to process unsilence. Check server logs.");
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
     }
 
-    private async Task ExecuteUnsilenceAsync(CommandContext ctx, IGameClient target, string reason, IGameClient? issuer)
+    private async Task ExecuteUnsilenceAsync(CommandContext ctx,
+        IReadOnlyList<IGameClient>                          targets,
+        string                                              targetLabel,
+        string                                              reason,
+        IGameClient?                                        issuer)
     {
-        var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
-        var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
+        var count = 0;
 
-        if (!isMuted && !isGag)
+        foreach (var target in targets)
         {
-            ctx.ReplyKey("Admin.NotSilenced", "{0} is not silenced.", target.Name);
+            var isMuted = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false);
+            var isGag   = await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false);
 
-            return;
+            if (!isMuted && !isGag)
+            {
+                _logger.LogDebug("Skip unsilence for {Target} ({SteamId}): not silenced", target.Name, target.SteamId);
+
+                continue;
+            }
+
+            _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason, true);
+            _engine.RemoveOnline(issuer, target, AdminOperationType.Gag,  reason, true);
+            _engine.NotifySilenceRemoved(issuer, target, reason);
+            count++;
         }
 
-        _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason, true);
-        _engine.RemoveOnline(issuer, target, AdminOperationType.Gag,  reason, true);
-
-        _engine.NotifySilenceRemoved(issuer, target, reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Unsilenced", "{0} Unsilenced {1}.", ctx.IssuerName, targetLabel);
+        }
     }
 
     public void Silence(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

@@ -20,12 +20,12 @@
 #include "gamedata.h"
 #include "address.h"
 #include "logging.h"
+#include "memory/zydis_utility.h"
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
 
 #include "cstrike/interface/ICvar.h"
-#include "memory/zydis_utility.h"
 
 #include <Zydis.h>
 #include <json.hpp>
@@ -176,7 +176,7 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
         if (raw_str.find("[ptr]") == std::string::npos)
         {
             if (!collect_refs(raw_str, "String", [&]() -> CAddress {
-                return module_ptr->FindString(raw_str, false, true);
+                    return module_ptr->FindString(raw_str, false, true);
                 }))
                 return RefResult::Failed;
 
@@ -683,7 +683,7 @@ bool GameData::InitPatch(const std::string& name, GameDataPatch* item)
 {
     const auto address = GetAddress<uint8_t*>(item->m_AddressKey.c_str());
     item->m_Address    = address;
-    
+
     // validate
     if (!item->m_ValidateBytes.empty())
     {

@@ -207,7 +207,7 @@ public struct Vector : IComparable, IComparable<Vector>, IEquatable<Vector>
         var dy = Y - other.Y;
         var dz = Z - other.Z;
 
-        return dx * dx + dy * dy + dz * dz;
+        return (dx * dx) + (dy * dy) + (dz * dz);
     }
 
     public float DistTo(Vector other)

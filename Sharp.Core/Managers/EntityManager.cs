@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -157,7 +158,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityFollowed");
 
             return;
         }
@@ -186,7 +187,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityFireOutput");
 
             return EHookAction.Ignored;
         }
@@ -228,7 +229,7 @@ internal class EntityManager : ICoreEntityManager
 
         if (entity is null)
         {
-            _logger.LogError("Entity is nullptr in OnEntitySpawned");
+            _logger.LogError("Entity is nullptr in OnEntityAcceptInput");
 
             return EHookAction.Ignored;
         }
@@ -286,6 +287,148 @@ internal class EntityManager : ICoreEntityManager
         if (!_listeners.Remove(listener))
         {
             _logger.LogError("You have not install listener yet!\n{stackTrace}", Environment.StackTrace);
+        }
+    }
+
+    [SkipLocalsInit]
+    public unsafe IBaseEntity[] GetAllEntitiesByClassname(string classname)
+    {
+        const int stackCap = 256;
+        var       stack    = stackalloc nint[stackCap];
+
+        var total = Native.EnumerateByClassname(classname, stack, stackCap);
+
+        if (total == 0)
+        {
+            return [];
+        }
+
+        if (total <= stackCap)
+        {
+            var result  = new IBaseEntity[total];
+            var written = 0;
+
+            for (var i = 0; i < total; i++)
+            {
+                if (BaseEntity.Create(stack[i]) is { } e)
+                {
+                    result[written++] = e;
+                }
+            }
+
+            if (written != total)
+            {
+                Array.Resize(ref result, written);
+            }
+
+            return result;
+        }
+
+        // Overflow: rent exact size and re-enumerate (rare path)
+        var rented = ArrayPool<nint>.Shared.Rent(total);
+
+        try
+        {
+            int actual;
+
+            fixed (nint* p = rented)
+            {
+                actual = Native.EnumerateByClassname(classname, p, rented.Length);
+            }
+
+            var count   = Math.Min(actual, rented.Length);
+            var result  = new IBaseEntity[count];
+            var written = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (BaseEntity.Create(rented[i]) is { } e)
+                {
+                    result[written++] = e;
+                }
+            }
+
+            if (written != count)
+            {
+                Array.Resize(ref result, written);
+            }
+
+            return result;
+        }
+        finally
+        {
+            ArrayPool<nint>.Shared.Return(rented);
+        }
+    }
+
+    [SkipLocalsInit]
+    public unsafe T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
+    {
+        const int stackCap = 256;
+        var       stack    = stackalloc nint[stackCap];
+
+        var total = Native.EnumerateByClassname(classname, stack, stackCap);
+
+        if (total == 0)
+        {
+            return [];
+        }
+
+        if (total <= stackCap)
+        {
+            var result  = new T[total];
+            var written = 0;
+
+            for (var i = 0; i < total; i++)
+            {
+                if (BaseEntity.Create(stack[i])?.As<T>() is { } e)
+                {
+                    result[written++] = e;
+                }
+            }
+
+            if (written != total)
+            {
+                Array.Resize(ref result, written);
+            }
+
+            return result;
+        }
+
+        // Overflow: rent exact size and re-enumerate (rare path)
+        var rented = ArrayPool<nint>.Shared.Rent(total);
+
+        try
+        {
+            int actual;
+
+            fixed (nint* p = rented)
+            {
+                actual = Native.EnumerateByClassname(classname, p, rented.Length);
+            }
+
+            var count   = Math.Min(actual, rented.Length);
+            var result  = new T[count];
+            var written = 0;
+
+            for (var i = 0; i < count; i++)
+            {
+                if (BaseEntity.Create(rented[i])?.As<T>() is { } e)
+                {
+                    result[written++] = e;
+                }
+            }
+
+            if (written != count)
+            {
+                Array.Resize(ref result, written);
+            }
+
+            return result;
+        }
+        finally
+        {
+            ArrayPool<nint>.Shared.Return(rented);
         }
     }
 

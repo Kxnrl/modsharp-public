@@ -18,10 +18,14 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Sharp.Core.Helpers;
+using Sharp.Shared;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
+using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.CStrike;
 
@@ -29,75 +33,217 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
 {
     protected string? SchemaClassname;
 
+    private static readonly Dictionary<string, Dictionary<string, (SchemaClass, SchemaClassField)>> ClassFieldCache
+        = new (StringComparer.OrdinalIgnoreCase);
+
+    private static readonly Dictionary<string, Dictionary<string, SchemaField>> SchemaFieldCache
+        = new (StringComparer.OrdinalIgnoreCase);
+
+    private Dictionary<string, (SchemaClass, SchemaClassField)>? _resolveMap;
+    private Dictionary<string, SchemaField>?                     _fieldMap;
+
     protected SchemaObject(nint ptr) : base(ptr)
     {
     }
 
     public abstract string GetSchemaClassname();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Dictionary<string, (SchemaClass, SchemaClassField)> GetResolveMap()
+    {
+        if (_resolveMap is not null)
+        {
+            return _resolveMap;
+        }
+
+        var className = GetSchemaClassname();
+
+        if (!ClassFieldCache.TryGetValue(className, out _resolveMap))
+        {
+            _resolveMap = new Dictionary<string, (SchemaClass, SchemaClassField)>(StringComparer.OrdinalIgnoreCase);
+            ClassFieldCache[className] = _resolveMap;
+        }
+
+        return _resolveMap;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Dictionary<string, SchemaField> GetSchemaFieldMap()
+    {
+        if (_fieldMap is not null)
+        {
+            return _fieldMap;
+        }
+
+        var className = GetSchemaClassname();
+
+        if (!SchemaFieldCache.TryGetValue(className, out _fieldMap))
+        {
+            _fieldMap                   = new Dictionary<string, SchemaField>(StringComparer.OrdinalIgnoreCase);
+            SchemaFieldCache[className] = _fieldMap;
+        }
+
+        return _fieldMap;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private (SchemaClass schemaClass, SchemaClassField schemaField) CachedResolve(string field)
+    {
+        var map = GetResolveMap();
+
+        if (!map.TryGetValue(field, out var cached))
+        {
+            cached     = SchemaSystem.ResolveField(GetSchemaClassname(), field);
+            map[field] = cached;
+        }
+
+        return cached;
+    }
+
     public bool GetNetVar<T>(string fieldName, ushort extraOffset = 0, bool? _ = null)
         where T : IComparable<bool>
-        => SchemaSystem.GetNetVarBool(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetByte(sf.Offset + extraOffset) != 0;
+    }
 
     public byte GetNetVar<T>(string fieldName, ushort extraOffset = 0, byte? _ = null)
         where T : IComparable<byte>
-        => SchemaSystem.GetNetVarByte(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetByte(sf.Offset + extraOffset);
+    }
 
     public short GetNetVar<T>(string fieldName, ushort extraOffset = 0, short? _ = null)
         where T : IComparable<short>
-        => SchemaSystem.GetNetVarInt16(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetInt16(sf.Offset + extraOffset);
+    }
 
     public ushort GetNetVar<T>(string fieldName, ushort extraOffset = 0, ushort? _ = null)
         where T : IComparable<ushort>
-        => SchemaSystem.GetNetVarUInt16(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetUInt16(sf.Offset + extraOffset);
+    }
 
     public int GetNetVar<T>(string fieldName, ushort extraOffset = 0, int? _ = null)
         where T : IComparable<int>
-        => SchemaSystem.GetNetVarInt32(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetInt32(sf.Offset + extraOffset);
+    }
 
     public uint GetNetVar<T>(string fieldName, ushort extraOffset = 0, uint? _ = null)
         where T : IComparable<uint>
-        => SchemaSystem.GetNetVarUInt32(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetUInt32(sf.Offset + extraOffset);
+    }
 
     public long GetNetVar<T>(string fieldName, ushort extraOffset = 0, long? _ = null)
         where T : IComparable<long>
-        => SchemaSystem.GetNetVarInt64(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetInt64(sf.Offset + extraOffset);
+    }
 
     public ulong GetNetVar<T>(string fieldName, ushort extraOffset = 0, ulong? _ = null)
         where T : IComparable<ulong>
-        => SchemaSystem.GetNetVarUInt64(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetUInt64(sf.Offset + extraOffset);
+    }
 
     public float GetNetVar<T>(string fieldName, ushort extraOffset = 0, float? _ = null)
         where T : IComparable<float>
-        => SchemaSystem.GetNetVarFloat(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetFloat(sf.Offset + extraOffset);
+    }
 
     public nint GetNetVar<T>(string fieldName, ushort extraOffset = 0, nint? _ = null)
         where T : IComparable<nint>
-        => SchemaSystem.GetNetVarPointer(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
+
+        return _this.GetObjectPtr(sf.Offset + extraOffset);
+    }
 
     public string GetNetVar<T>(string fieldName, ushort extraOffset = 0, string? _ = null)
         where T : IComparable<string>
-        => SchemaSystem.GetNetVarString(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
 
-    public Vector GetNetVar<T>(string fieldName, ushort extraOffset = 0, Vector? _ = null)
+        return _this.ReadStringUtf8(sf.Offset + extraOffset);
+    }
+
+    public unsafe Vector GetNetVar<T>(string fieldName, ushort extraOffset = 0, Vector? _ = null)
         where T : IComparable<Vector>
-        => SchemaSystem.GetNetVarVector(_this, GetSchemaClassname(), fieldName, extraOffset);
+    {
+        var (_, sf) = CachedResolve(fieldName);
 
-    public string GetNetVarUtlSymbolLarge(string fieldName, ushort extraOffset = 0)
-        => SchemaSystem.GetNetVarUtlSymbolLarge(_this, GetSchemaClassname(), fieldName, extraOffset);
+        return *(Vector*) (_this + sf.Offset + extraOffset);
+    }
 
-    public ref CUtlSymbolLarge GetNetVarUtlSymbolLargeRef(string fieldName, ushort extraOffset = 0)
-        => ref SchemaSystem.GetNetVarUtlSymbolLargeRef(_this, GetSchemaClassname(), fieldName, extraOffset);
+    public unsafe string GetNetVarUtlSymbolLarge(string fieldName, ushort extraOffset = 0)
+    {
+        var (_, sf) = CachedResolve(fieldName);
+        var pointer = (CUtlSymbolLarge*) (_this + sf.Offset + extraOffset);
 
-    public string GetNetVarUtlString(string fieldName, ushort extraOffset = 0)
-        => SchemaSystem.GetNetVarUtlString(_this, GetSchemaClassname(), fieldName, extraOffset);
+        return pointer->Get();
+    }
 
-    public ref CUtlString GetNetVarUtlStringRef(string fieldName, ushort extraOffset = 0)
-        => ref SchemaSystem.GetNetVarUtlStringRef(_this, GetSchemaClassname(), fieldName, extraOffset);
+    public unsafe ref CUtlSymbolLarge GetNetVarUtlSymbolLargeRef(string fieldName, ushort extraOffset = 0)
+    {
+        var (_, sf) = CachedResolve(fieldName);
+        var pointer = (CUtlSymbolLarge*) (_this + sf.Offset + extraOffset);
+
+        return ref Unsafe.AsRef<CUtlSymbolLarge>(pointer);
+    }
+
+    public unsafe string GetNetVarUtlString(string fieldName, ushort extraOffset = 0)
+    {
+        var (_, sf) = CachedResolve(fieldName);
+        var pointer = (CUtlString*) (_this + sf.Offset + extraOffset);
+
+        return pointer->Get();
+    }
+
+    public unsafe ref CUtlString GetNetVarUtlStringRef(string fieldName, ushort extraOffset = 0)
+    {
+        var (_, sf) = CachedResolve(fieldName);
+        var pointer = (CUtlString*) (_this + sf.Offset + extraOffset);
+
+        return ref Unsafe.AsRef<CUtlString>(pointer);
+    }
+
+    private SchemaField CachedGetSchemaField(string fieldName)
+    {
+        var map = GetSchemaFieldMap();
+
+        if (!map.TryGetValue(fieldName, out var cached))
+        {
+            cached         = SchemaSystem.GetSchemaField(GetSchemaClassname(), fieldName);
+            map[fieldName] = cached;
+        }
+
+        return cached;
+    }
 
     public ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0) where T : unmanaged
     {
-        var field   = SchemaSystem.GetSchemaField(GetSchemaClassname(), fieldName);
+        var field   = CachedGetSchemaField(fieldName);
         var pointer = nint.Add(_this, field.Offset + extraOffset);
 
         return SchemaFixedArray<T>.Create(pointer, field, _this) ?? throw new ArgumentNullException(nameof(pointer));
@@ -105,7 +251,7 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
 
     public ISchemaList<T> GetSchemaList<T>(string fieldName, bool isStruct = false, ushort extraOffset = 0) where T : unmanaged
     {
-        var field   = SchemaSystem.GetSchemaField(GetSchemaClassname(), fieldName);
+        var field   = CachedGetSchemaField(fieldName);
         var pointer = nint.Add(_this, field.Offset + extraOffset);
 
         return SchemaUnmanagedVector<T>.Create(pointer, field, _this, isStruct)
@@ -113,43 +259,82 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
     }
 
     public void SetNetVar(string field, bool value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarBool(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarBool(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, byte value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarByte(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarByte(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, short value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarInt16(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarInt16(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, ushort value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarUInt16(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarUInt16(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, int value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarInt32(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarInt32(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, uint value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarUInt32(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarUInt32(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, long value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarInt64(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarInt64(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, ulong value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarUInt64(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarUInt64(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, float value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarFloat(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarFloat(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, string value, int maxLen, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarString(_this, GetSchemaClassname(), field, value, maxLen, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarString(_this, sc, sf, value, maxLen, isStruct, extraOffset);
+    }
 
     public void SetNetVar(string field, Vector value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarVector(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarVector(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVarUtlSymbolLarge(string field, string value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarUtlSymbolLarge(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarUtlSymbolLarge(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public void SetNetVarUtlString(string field, string value, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.SetNetVarUtlString(_this, GetSchemaClassname(), field, value, isStruct, extraOffset);
+    {
+        var (sc, sf) = CachedResolve(field);
+        SchemaSystem.SetNetVarUtlString(_this, sc, sf, value, isStruct, extraOffset);
+    }
 
     public bool FindNetVar(string field)
         => SchemaSystem.FindNetVar(GetSchemaClassname(), field);

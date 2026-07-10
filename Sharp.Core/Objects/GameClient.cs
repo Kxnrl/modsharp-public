@@ -190,6 +190,18 @@ internal partial class GameClient : NativeObject, IGameClient
         NetMessageHelper.PrintChannelFilter(new RecipientFilter(this), channel, message, param1, param2, param3, param4);
     }
 
+    public void PrintCenterHtml(string message, int duration = 1)
+    {
+        CheckDisposed();
+
+        if (IsFakeClient)
+        {
+            return;
+        }
+
+        CenterHtmlHelper.PrintCenterHtmlToClient(this, message, duration);
+    }
+
     // identity
     private readonly ushort _defaultUserId;
     private readonly byte   _defaultSlot;

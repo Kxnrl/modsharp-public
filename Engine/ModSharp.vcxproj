@@ -151,6 +151,7 @@
     <ClInclude Include="src\cstrike\type\CCSHitboxSystem.h" />
     <ClInclude Include="src\cstrike\interface\CDedicatedServerWorkshopManager.h" />
     <ClInclude Include="src\cstrike\type\CEconItemDefinition.h" />
+    <ClInclude Include="src\cstrike\type\CEntityClass.h" />
     <ClInclude Include="src\cstrike\type\CEntityPrecacheContext.h" />
     <ClInclude Include="src\cstrike\type\CGameTrace.h" />
     <ClInclude Include="src\cstrike\type\CMemAllocAllocator.h" />

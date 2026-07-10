@@ -511,7 +511,7 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
             FatalError("Offset of '%s' in class '%s' is negative!", field.m_pszName, current_class_info->GetName());
         }
 
-        const auto is_field_networked = IsFieldNetworked(derived_schema_class->name.Get(), field.m_pszName);
+        const auto is_field_networked = IsFieldNetworked(current_class_info->GetName(), field.m_pszName);
 
         auto new_field = derived_schema_class->fields.AddToTailGetPtr();
 

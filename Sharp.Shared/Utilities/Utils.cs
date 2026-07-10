@@ -69,14 +69,8 @@ public static class Utils
 
         fixed (byte* sourcePtr = chars)
         {
-            var destPtr = (byte*) ptr;
-
-            for (var i = 0; i < lengthToCopy; i++)
-            {
-                destPtr[i] = sourcePtr[i];
-            }
-
-            destPtr[lengthToCopy] = 0;
+            Buffer.MemoryCopy(sourcePtr, (byte*) ptr, size, lengthToCopy);
+            ((byte*) ptr)[lengthToCopy] = 0;
         }
 #endif
     }

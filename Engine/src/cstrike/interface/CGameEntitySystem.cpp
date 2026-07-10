@@ -27,6 +27,7 @@
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/IGameResourceServiceServer.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CEntityKeyValues.h"
 #include "cstrike/type/CUtlSymbolLarge.h"
 #include "cstrike/type/CUtlVector.h"
@@ -159,6 +160,33 @@ CBaseEntity* CGameEntitySystem::CreateEntityByName(const char* classname) const
 void CGameEntitySystem::AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID)
 {
     return address::server::CGameEntitySystem_AddEntityIOEvent(this, pEntity, pInputName, pActivator, pCaller, pValue, flDelay, outputID, nullptr, nullptr);
+}
+
+CEntityClass* CGameEntitySystem::FindEntityClassByName(const char* classname) const
+{
+    using fn         = CEntityClass*(*)(const CGameEntitySystem*, const char*, const char*/*CUtlString*/);
+    static auto func = g_pGameData->GetAddress<fn>("CGameEntitySystem::FindEntityClassByClassname");
+
+    return func(this, classname, nullptr);
+}
+
+int32_t CGameEntitySystem::EnumerateByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity) const
+{
+    auto* klass = FindEntityClassByName(classname);
+    if (!klass) return 0;
+
+    int32_t written = 0;
+    int32_t total   = 0;
+    for (auto* id = klass->GetEntityListHead(); id; id = id->m_pNextByClass())
+    {
+        if (id->IsMarkedForDeletion()) continue;
+        if (auto* e = id->GetBaseEntity())
+        {
+            if (written < capacity) buffer[written++] = e;
+            ++total;
+        }
+    }
+    return total;
 }
 
 void CGameEntitySystem::AddListenerEntity(IEntityListener* pListener)

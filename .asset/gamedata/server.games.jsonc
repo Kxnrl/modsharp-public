@@ -251,11 +251,7 @@
       "windows": "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 55 41 56 41 57 48 8B EC",
       "refs": {
         "cvars": [
-          "mp_max_armor [handle]",
-          "mp_weapons_allow_zeus [handle]",
-          "mp_warmup_items_nocount_policy [handle]",
-          "mp_weapons_allow_typecount [handle]",
-          "mp_weapons_max_gun_purchases_per_weapon_per_match [handle]"
+          "mp_warmup_items_nocount_policy [handle]"
         ],
         "vtables": [
           "CCSWeaponBase [typeinfo]"
@@ -409,6 +405,12 @@
         ]
       }
     },
+    "CCSPlayerPawn::SetDefaultGloves": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "48 85 FF 0F 84 ? ? ? ? 55 48 89 E5 41 56 41 55 41 54 41 89 F4",
+      "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 56 48 83 EC ? 0F B6 F2"
+    },
     "CEntityIdentity::AcceptInput": {
       "library": "server",
       "linux": "55 49 89 D3 48 89 E5 41 57 45 89 CF",
@@ -503,6 +505,11 @@
       "library": "server",
       "linux": "55 45 31 C0 31 C9 48 89 E5 53 48 8D 5D ? 48 83 EC ? 48 89 DF",
       "windows": "48 83 EC 68 45 33 C9"
+    },
+    "CGameEntitySystem::FindEntityClassByClassname": {
+      "library": "server",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC ? 48 89 75 ? 48 85 F6 0F 84 ? ? ? ? 80 3E",
+      "windows": "4C 8B DC 49 89 5B ? 49 89 73 ? 49 89 53 ? 57 48 83 EC"
     },
     "CGameEntitySystem::FindByName": {
       "library": "server",

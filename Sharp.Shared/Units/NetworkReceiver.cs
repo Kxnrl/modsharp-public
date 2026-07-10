@@ -19,8 +19,8 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using UnitGenerator;
 
 namespace Sharp.Shared.Units;
@@ -31,45 +31,83 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
     private const ulong BaseMagic = 1UL;
 
     public NetworkReceiver(IEnumerable<PlayerSlot> players)
-        => value = players.Aggregate<PlayerSlot, ulong>(0, (current, player) => current | (BaseMagic << player.AsPrimitive()));
+    {
+        var v = 0UL;
+
+        foreach (var player in players)
+        {
+            v |= BaseMagic << player.AsPrimitive();
+        }
+
+        value = v;
+    }
 
     public NetworkReceiver(IReadOnlyCollection<PlayerSlot> players)
-        => value = players.Aggregate<PlayerSlot, ulong>(0, (current, player) => current | (BaseMagic << player.AsPrimitive()));
+    {
+        var v = 0UL;
 
+        foreach (var player in players)
+        {
+            v |= BaseMagic << player.AsPrimitive();
+        }
+
+        value = v;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsEmpty()
         => value == 0;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsFull()
         => value == ulong.MaxValue;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Count()
         => BitOperations.PopCount(value);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasClient(PlayerSlot slot)
         => (value & (BaseMagic << slot.AsPrimitive())) != 0;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NetworkReceiver Append(PlayerSlot slot)
         => new (value | (BaseMagic << slot.AsPrimitive()));
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NetworkReceiver Remove(PlayerSlot slot)
         => new (value & ~(BaseMagic << slot.AsPrimitive()));
 
     public IEnumerable<PlayerSlot> GetClients()
     {
-        for (PlayerSlot i = 0; i <= PlayerSlot.MaxPlayerSlot; i++)
+        var remaining = value;
+
+        while (remaining != 0)
         {
-            if (HasClient(i))
-            {
-                yield return new PlayerSlot(i);
-            }
+            var bit = BitOperations.TrailingZeroCount(remaining);
+
+            yield return new PlayerSlot((byte) bit);
+
+            remaining &= remaining - 1; // clear lowest set bit
         }
     }
 
     public PlayerSlot[] GetClientsArray()
-        => Enumerable.Range(0, PlayerSlot.MaxPlayerCount.AsPrimitive())
-                     .Select(i => new PlayerSlot((byte) i))
-                     .Where(HasClient)
-                     .ToArray();
+    {
+        var count     = BitOperations.PopCount(value);
+        var result    = new PlayerSlot[count];
+        var remaining = value;
+        var idx       = 0;
+
+        while (remaining != 0)
+        {
+            var bit = BitOperations.TrailingZeroCount(remaining);
+            result[idx++] =  new PlayerSlot((byte) bit);
+            remaining     &= remaining - 1;
+        }
+
+        return result;
+    }
 
     public string DestructureTransform()
         => $"{{ \"Value\": {value}, \"Receivers\": [{string.Join(',', GetClients())}] }}";
@@ -83,45 +121,38 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
     IEnumerator IEnumerable.GetEnumerator()
         => new Enumerator(value);
 
-    public struct Enumerator : IEnumerator<PlayerSlot>, IEnumerator
+    public struct Enumerator : IEnumerator<PlayerSlot>
     {
-        private readonly ulong      _value;
-        private          int        _currentIndex;
-        private          PlayerSlot _current;
+        private ulong      _remaining;
+        private PlayerSlot _current;
 
         public Enumerator(ulong value)
         {
-            _value        = value;
-            _currentIndex = -1;
-            _current      = default;
+            _remaining = value;
+            _current   = default;
         }
 
         public PlayerSlot  Current => _current;
         object IEnumerator.Current => _current;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool MoveNext()
         {
-            var max = PlayerSlot.MaxPlayerSlot.AsPrimitive();
-
-            while (++_currentIndex <= max)
+            if (_remaining == 0)
             {
-                var slot = new PlayerSlot((byte) _currentIndex);
-
-                if ((_value & (BaseMagic << slot.AsPrimitive())) != 0)
-                {
-                    _current = slot;
-
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var bit = BitOperations.TrailingZeroCount(_remaining);
+            _current   =  new PlayerSlot((byte) bit);
+            _remaining &= _remaining - 1;
+
+            return true;
         }
 
         public void Reset()
         {
-            _currentIndex = -1;
-            _current      = default;
+            throw new System.NotSupportedException();
         }
 
         public void Dispose()

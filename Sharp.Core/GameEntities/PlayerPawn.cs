@@ -80,6 +80,9 @@ internal partial class PlayerPawn : BasePlayerPawn, IPlayerPawn
     public void SwitchWeapon(IBaseWeapon? weapon)
         => Player.PawnSwitchWeapon(_this, weapon?.GetAbsPtr() ?? nint.Zero);
 
+    public void SetDefaultGloves(bool hide)
+        => Player.PawnSetDefaultGloves(_this, hide);
+
     public void GiveGloves(int itemDefIndex, int prefab, float wear, int seed)
         => Player.PawnGiveGloves(_this, itemDefIndex, prefab, wear, seed);
 

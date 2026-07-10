@@ -144,6 +144,8 @@ internal partial class SharpCore : ISharpCore
         Bridges.Forwards.Steam.OnSteamServersConnectFailure += OnSteamServersConnectFailure;
         Bridges.Forwards.Steam.OnDownloadItemResult         += OnDownloadItemResult;
         Bridges.Forwards.Steam.OnItemInstalled              += OnItemInstalled;
+
+        CenterHtmlHelper.InitDelegates();
     }
 
 #region Game Hook and Forward

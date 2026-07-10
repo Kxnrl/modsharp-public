@@ -150,11 +150,11 @@ public:
     virtual void FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info) = 0;
     virtual bool IsPointerDerivedFromEx(void* ptr, const char* name)                          = 0;
 
-    [[nodiscard]] virtual bool GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results)                                      = 0;
-    [[nodiscard]] virtual bool FindAllFunctionsFromStringsRefsEx(CUtlLeanVector<CUtlString>* strs, CUtlLeanVector<std::uintptr_t>* results)      = 0;
-    [[nodiscard]] virtual bool FindAllFunctionsFromPointersRefsEx(CUtlLeanVector<std::uintptr_t>* ptrs, CUtlLeanVector<std::uintptr_t>* results) = 0;
-    virtual bool               GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end)                             = 0;
-    [[nodiscard]] virtual void* FindStringExactEx(const char* str)                                                                               = 0;
+    [[nodiscard]] virtual bool  GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results)                                      = 0;
+    [[nodiscard]] virtual bool  FindAllFunctionsFromStringsRefsEx(CUtlLeanVector<CUtlString>* strs, CUtlLeanVector<std::uintptr_t>* results)      = 0;
+    [[nodiscard]] virtual bool  FindAllFunctionsFromPointersRefsEx(CUtlLeanVector<std::uintptr_t>* ptrs, CUtlLeanVector<std::uintptr_t>* results) = 0;
+    virtual bool                GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end)                             = 0;
+    [[nodiscard]] virtual void* FindStringExactEx(const char* str)                                                                                = 0;
 };
 
 enum SegmentFlags : uint8_t
@@ -241,6 +241,11 @@ private:
 #ifndef PLATFORM_WINDOWS
     std::unordered_map<std::string, uintptr_t> _exports{};
     void                                       DumpExports(void* module_base);
+
+    std::uintptr_t                                     _eh_frame_hdr_addr{};
+    std::vector<std::uintptr_t>                        _eh_fde_starts{};
+    std::unordered_map<std::uintptr_t, std::uintptr_t> _eh_fde_ends{};
+    void                                               ParseEhFrameHeader();
 #endif
 
     std::uintptr_t GetFunctionEntry(std::uintptr_t middle);

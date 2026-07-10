@@ -53,25 +53,31 @@ internal sealed class KickCommands : ICommandCategory
             return;
         }
 
-        if (!ctx.TryGetSingleTarget(1, out var target))
+        if (!ctx.TryGetTargets(1, out var targets, out var targetLabel))
         {
             return;
         }
 
-        var reason = ctx.GetReason(2);
+        var reason    = ctx.GetReason(2);
+        var adminName = ctx.IssuerName;
 
-        var adminName     = issuer?.Name ?? "Console";
-        var targetName    = target.Name;
-        var targetSteamId = target.SteamId;
+        var count = 0;
 
-        _bridge.ClientManager.KickClient(target, reason, NetworkDisconnectionReason.Kicked);
+        foreach (var target in targets)
+        {
+            _bridge.ClientManager.KickClient(target, reason, NetworkDisconnectionReason.Kicked);
+            count++;
 
-        ctx.ReplySuccessKey("Admin.Kicked", "{0} Kicked {1}.", adminName, targetName);
+            _logger.LogInformation("Kick issued by {Admin}: {Target} ({SteamId}). Reason: {Reason}",
+                                   adminName,
+                                   target.Name,
+                                   target.SteamId,
+                                   reason);
+        }
 
-        _logger.LogInformation("Kick issued by {Admin}: {Target} ({SteamId}). Reason: {Reason}",
-                               adminName,
-                               targetName,
-                               targetSteamId,
-                               reason);
+        if (count > 0)
+        {
+            ctx.ReplySuccessKey("Admin.Kicked", "{0} Kicked {1}.", adminName, targetLabel);
+        }
     }
 }
