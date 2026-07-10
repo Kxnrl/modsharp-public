@@ -76,7 +76,7 @@ private:
 #pragma pack(pop)
 static_assert(sizeof(CGcBanInformation_t) == 0x24);
 
-static CUtlMap<uint32_t, CGcBanInformation_t, int>* sm_mapGcBanInformation;
+static CUtlOrderedMap<uint32_t, CGcBanInformation_t, int>* sm_mapGcBanInformation;
 
 BeginMemberHookScope(CCSGameRules)
 {
@@ -301,7 +301,7 @@ void InstallGameRulesHooks()
 
     SHOOK(HandleGCBanInfo);
 
-    sm_mapGcBanInformation = g_pGameData->GetAddress<CUtlMap<uint32_t, CGcBanInformation_t, int>*>("CCSGameRules::sm_mapGcBanInformation");
+    sm_mapGcBanInformation = g_pGameData->GetAddress<CUtlOrderedMap<uint32_t, CGcBanInformation_t, int>*>("CCSGameRules::sm_mapGcBanInformation");
 
     sv_kick_players_with_cooldown = icvar->FindConVarIterator("sv_kick_players_with_cooldown");
 
