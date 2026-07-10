@@ -221,10 +221,6 @@
     }
   },
   "VFuncs": {
-    "CNetworkGameServer::ActiveServer": {
-      "linux": 29,
-      "windows": 29
-    },
     "CNetworkGameServer::DisconnectClient": {
       "linux": 78,
       "windows": 73

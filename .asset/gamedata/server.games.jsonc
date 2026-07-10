@@ -1120,19 +1120,6 @@
       "linux": 9,
       "windows": 8
     },
-    "CCSPlayerPawn::PlayerPostThink": {
-      "linux": 369,
-      "windows": 368 // 48 8B C4 55 53 56 57 41 54 48 8D 68 C8
-    },
-    "CCSPlayerPawn::PlayerPreThink": {
-      "linux": 368,
-      "windows": 367 // 40 57 48 81 EC ? ? ? ? 83 B9 ? ? ? ? ? 48 8B F9
-    },
-    // str 'Invalid Steam Logon Delayed: Kicking client [U:1:%d] %s\n'
-    "CCSPlayerPawn::PlayerSpawn": {
-      "linux": 365,
-      "windows": 364
-    },
     "CCSPlayerPawnBase::IsPlayer": {
       "linux": 403,
       "windows": 402
@@ -1202,49 +1189,9 @@
       "linux": 12,
       "windows": 12
     },
-    "CSource2GameClients::Command": {
-      "linux": 17,
-      "windows": 17
-    },
-    "CSource2GameClients::Connected": {
-      "linux": 11,
-      "windows": 11
-    },
-    "CSource2GameClients::Disconnect": {
-      "linux": 16,
-      "windows": 16
-    },
-    "CSource2GameClients::FullyConnected": {
-      "linux": 15,
-      "windows": 15
-    },
-    "CSource2GameClients::PutInServer": {
-      "linux": 13,
-      "windows": 13
-    },
     "CSource2GameClients::SettingsChanged": {
       "linux": 19,
       "windows": 19
-    },
-    "CSource2Server::GameFrame": {
-      "linux": 19,
-      "windows": 19
-    },
-    "CSource2Server::GameServerSteamAPIActivated": {
-      "linux": 41,
-      "windows": 41
-    },
-    "CSource2Server::GameServerSteamAPIDeactivated": {
-      "linux": 42,
-      "windows": 42
-    },
-    "CSource2Server::GetGameEventManager": {
-      "linux": 80,
-      "windows": 80
-    },
-    "ISource2GameEntities::CheckTransmit": {
-      "linux": 13,
-      "windows": 12
     }
   }
 }

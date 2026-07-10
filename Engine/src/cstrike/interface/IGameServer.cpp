@@ -16,16 +16,3 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
-
-#include "gamedata.h"
-#include "global.h"
-#include "vhook/call.h"
-
-#include "cstrike/interface/IGameServer.h"
-
-IGameEventManager2* CSource2Server::GetGameEventManager()
-{
-    DeclareVFuncIndex(CSource2Server, GetGameEventManager, offset);
-    const auto pUnknown = VCall_Manual(offset, void*, this);
-    return reinterpret_cast<IGameEventManager2*>(static_cast<char*>(pUnknown) - 8);
-}
