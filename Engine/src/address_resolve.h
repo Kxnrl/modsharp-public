@@ -297,6 +297,7 @@ void ResolveCCSPlayerPawn_SetDefaultGloves();
 void ResolveCEntityClassEntityListOffset();
 void ResolveCBasePlayerPawn_SnapViewAngles();
 void ResolveCreateTriggerInternal();
+void ResolveCBaseTrigger_PassesTriggerFilters();
 
 // address_engine.cpp
 void ResolveServerSideClientOffsets();

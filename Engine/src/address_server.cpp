@@ -2406,3 +2406,118 @@ void ResolveCreateTriggerInternal()
 
     AssignOrFallback(svr_mod, address::server::CreateTriggerInternal, target_call_addr, "CreateTriggerInternal");
 }
+
+// CBaseTrigger::PassesTriggerFilters is the first virtual CBaseTrigger declares, so its index is
+// exactly the length of its base's vtable. CBaseTrigger appends 8 slots and nothing else in that
+// block touches m_spawnflags - four are nullsubs, two are small helpers. Both facts held on server
+// builds 19747060, 21411853, 23333587, 23669931 and 24116939 on Windows and Linux; the 24116939
+// index shift (win 273 -> 269) came entirely from CBaseModelEntity shedding four vfuncs.
+//
+// The scan must stay inside the trigger block. On Linux a base-class vfunc (the trigger's Spawn,
+// which ORs bit 1 into m_spawnflags) reads the field too, so a whole-vtable scan is unique on
+// Windows only.
+void ResolveCBaseTrigger_PassesTriggerFilters()
+{
+    static_assert(ZYDIS_REGISTER_R15 - ZYDIS_REGISTER_RAX == 15, "Zydis GPR64 enum is no longer contiguous");
+
+    const auto svr_mod = modules::server;
+
+    const auto trigger = svr_mod->GetVFunctionsFromVTable("CBaseTrigger");
+    if (trigger.empty())
+    {
+        WARN("Failed to get CBaseTrigger vtable.");
+        return;
+    }
+
+    // CBaseToggle declares no virtuals of its own, so CBaseModelEntity yields the same bound and
+    // stands in if CBaseToggle's RTTI ever disappears.
+    auto base_size = svr_mod->GetVFunctionsFromVTable("CBaseToggle").size();
+    if (base_size == 0)
+        base_size = svr_mod->GetVFunctionsFromVTable("CBaseModelEntity").size();
+
+    if (base_size == 0 || base_size >= trigger.size())
+    {
+        WARN("CBaseTrigger vtable (%zu) does not extend its base (%zu).", trigger.size(), base_size);
+        return;
+    }
+
+    const auto spawnflags_offset = schemas::GetOffset("CBaseEntity", "m_spawnflags").offset;
+    if (spawnflags_offset <= 0)
+    {
+        WARN("Failed to get schema offset for CBaseEntity::m_spawnflags.");
+        return;
+    }
+
+    const auto reg_bit = [](ZydisRegister reg) -> uint16_t {
+        const auto base = ZydisUtility::GetBaseRegister(reg);
+        if (base < ZYDIS_REGISTER_RAX || base > ZYDIS_REGISTER_R15)
+            return 0;
+        return static_cast<uint16_t>(1u << (base - ZYDIS_REGISTER_RAX));
+    };
+
+    // `this` is copied out of the argument register on entry (rsi on Windows, r12 on Linux) and only
+    // the first of the four reads goes through kThisReg, so the copies have to be followed.
+    const auto reads_spawnflags = [&](const uintptr_t vfunc) {
+        const auto* range = svr_mod->GetFunctionRange(vfunc);
+        if (range == nullptr)
+            return false;
+
+        uint16_t this_regs = reg_bit(address_scan::kThisReg);
+        bool     found     = false;
+
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+            for (uint8_t i = 0; i < instr.operand_count_visible; i++)
+            {
+                const auto& op = operands[i];
+
+                if (op.type == ZYDIS_OPERAND_TYPE_MEMORY
+                    && op.mem.index == ZYDIS_REGISTER_NONE
+                    && op.mem.disp.has_displacement
+                    && static_cast<int32_t>(op.mem.disp.value) == spawnflags_offset
+                    && (this_regs & reg_bit(op.mem.base)) != 0)
+                {
+                    found = true;
+                    return true;
+                }
+            }
+
+            // Propagate `this` through register-to-register moves, drop it on any other write.
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && operands[1].size == 64
+                && (this_regs & reg_bit(operands[1].reg.value)) != 0)
+            {
+                this_regs |= reg_bit(operands[0].reg.value);
+                return false;
+            }
+
+            for (uint8_t i = 0; i < instr.operand_count_visible; i++)
+            {
+                const auto& op = operands[i];
+
+                if (op.type == ZYDIS_OPERAND_TYPE_REGISTER && (op.actions & ZYDIS_OPERAND_ACTION_MASK_WRITE) != 0)
+                    this_regs &= static_cast<uint16_t>(~reg_bit(op.reg.value));
+            }
+
+            return false;
+        });
+
+        return found;
+    };
+
+    std::vector<int32_t> candidates{};
+    for (auto i = base_size; i < trigger.size(); i++)
+    {
+        if (reads_spawnflags(trigger[i]))
+            candidates.emplace_back(static_cast<int32_t>(i));
+    }
+
+    // Two independent derivations: the lone m_spawnflags reader in the trigger block, and the first
+    // slot past the base vtable. Agreement makes the vote corroborated and lets it beat gamedata.
+    ResolveVote vote{};
+    VoteCandidates(vote, candidates);
+    vote.Add(static_cast<int32_t>(base_size));
+
+    try_overwrite_vfunc("CBaseTrigger::PassesTriggerFilters", vote);
+}

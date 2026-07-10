@@ -255,4 +255,5 @@ void address::PostSchemaInit()
     ResolveCCSPlayerController_RoundRespawn();
     ResolveCBasePlayerPawn_CommitSuicide();
     ResolveCBasePlayerPawn_SnapViewAngles();
+    ResolveCBaseTrigger_PassesTriggerFilters();
 }
