@@ -40,8 +40,8 @@
     // IGameTypes
     // in CreateEndMapVote with g_pGameTypes
     "IGameTypes::GetMapGroupMapList": {
-      "linux": 62,
-      "windows": 61
+      "linux": 64,
+      "windows": 63
     },
     "INetworkServerService::StartupServer": {
       "linux": 27,
