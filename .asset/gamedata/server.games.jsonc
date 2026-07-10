@@ -1200,6 +1200,6 @@
     "CSource2Server::GameServerSteamAPIDeactivated": {
       "linux": 42,
       "windows": 42
-    },
+    }
   }
 }
