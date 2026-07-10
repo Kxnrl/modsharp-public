@@ -1192,6 +1192,14 @@
     "CSource2GameClients::SettingsChanged": {
       "linux": 19,
       "windows": 19
-    }
+    },
+    "CSource2Server::GameServerSteamAPIActivated": {
+      "linux": 41,
+      "windows": 41
+    },
+    "CSource2Server::GameServerSteamAPIDeactivated": {
+      "linux": 42,
+      "windows": 42
+    },
   }
 }
