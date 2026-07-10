@@ -1076,8 +1076,8 @@
       "windows": 384 // 40 53 55 57 48 81 EC ? ? ? ? 48 8B 01
     },
     "CBaseTrigger::PassesTriggerFilters": {
-      "linux": 274,
-      "windows": 273 // 48 89 5C 24 10 56 48 83 EC ? 48 8B DA 48 8B F1 8B 91 60 03 00 00
+      "linux": 270,
+      "windows": 269 // 48 89 5C 24 10 56 48 83 EC ? 48 8B DA 48 8B F1 8B 91 60 03 00 00
     },
     "CBaseWeapon::Deploy": {
       "linux": 328,
