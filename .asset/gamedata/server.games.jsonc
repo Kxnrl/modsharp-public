@@ -1021,8 +1021,8 @@
       "windows": 170
     },
     "CBaseEntity::IsPlayerPawn": {
-      "linux": 170,
-      "windows": 171
+      "linux": 168,
+      "windows": 169
     },
     // 搜字符串 "item_pickup_failed", 往上有一个 != 0x8000 的判断，后面的vfunc call就是
     "CBaseEntity::IsWeapon": {
