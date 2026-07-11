@@ -154,21 +154,21 @@ internal class SchemaManager : ICoreSchemaManager
 
     public ISchemaArray<T> GetSchemaFixedArray<T>(nint pointer, string classname, string field, ISchemaObject chain)
         where T : unmanaged
-        => SchemaFixedArray<T>.Create(pointer, GetSchemaField(classname, field), chain.GetAbsPtr())
+        => SchemaFixedArray<T>.Create(pointer, GetSchemaField(classname, field), (SchemaObject) chain)
            ?? throw new ArgumentNullException(nameof(pointer));
 
     public ISchemaArray<T> GetSchemaFixedArray<T>(IntPtr pointer, SchemaField field, ISchemaObject chain) where T : unmanaged
-        => SchemaFixedArray<T>.Create(pointer, field, chain.GetAbsPtr())
+        => SchemaFixedArray<T>.Create(pointer, field, (SchemaObject) chain)
            ?? throw new ArgumentNullException(nameof(pointer));
 
     public ISchemaList<T> GetSchemaList<T>(IntPtr pointer, string classname, string field, ISchemaObject chain, bool isStruct)
         where T : unmanaged
-        => SchemaUnmanagedVector<T>.Create(pointer, GetSchemaField(classname, field), chain.GetAbsPtr(), isStruct)
+        => SchemaUnmanagedVector<T>.Create(pointer, GetSchemaField(classname, field), (SchemaObject) chain, isStruct)
            ?? throw new ArgumentNullException(nameof(pointer));
 
     public ISchemaList<T> GetSchemaList<T>(IntPtr pointer, SchemaField field, ISchemaObject chain, bool isStruct)
         where T : unmanaged
-        => SchemaUnmanagedVector<T>.Create(pointer, field, chain.GetAbsPtr(), isStruct)
+        => SchemaUnmanagedVector<T>.Create(pointer, field, (SchemaObject) chain, isStruct)
            ?? throw new ArgumentNullException(nameof(pointer));
 
     public void SetNetVar(INativeObject nativeObject,

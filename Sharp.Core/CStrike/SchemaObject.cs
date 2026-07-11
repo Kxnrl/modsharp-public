@@ -48,6 +48,86 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
 
     public abstract string GetSchemaClassname();
 
+#region NetworkStateChanged
+
+    private SchemaObject? _networkParent;
+    private int           _networkOffsetInParent;
+    private int?          _chainEntityOffset;
+
+    protected virtual bool IsNetworkRoot => false;
+
+    private int ChainEntityOffset => _chainEntityOffset ??= SchemaSystem.GetChainOffset(GetSchemaClassname());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void BindNetworkParent(SchemaObject parent, int offsetInParent)
+    {
+        _networkParent         = parent;
+        _networkOffsetInParent = offsetInParent;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal void BindEmbeddedPointer(SchemaObject? child)
+    {
+        if (child is null)
+        {
+            return;
+        }
+
+        var delta = child.GetAbsPtr() - _this;
+
+        if (delta > 0)
+        {
+            child.BindNetworkParent(this, (int) delta);
+        }
+    }
+
+    internal void SchemaStateChanged(SchemaField field, bool isStruct, int extraOffset = 0)
+    {
+        if (!field.Networked)
+        {
+            return;
+        }
+
+        SchemaStateChanged(field.Offset + extraOffset, field.ChainOffset, isStruct);
+    }
+
+    internal void SchemaStateChanged(int offset, int chainOffset, bool isStruct)
+    {
+        if (chainOffset > 0)
+        {
+            Bridges.Natives.Entity.NetworkStateChanged(_this.Add(chainOffset), (ushort) offset);
+
+            return;
+        }
+
+        if (!isStruct)
+        {
+            Bridges.Natives.Entity.SetStateChanged(_this, (ushort) offset);
+
+            return;
+        }
+
+        var node = this;
+
+        while (node._networkParent is { } parent)
+        {
+            offset += node._networkOffsetInParent;
+            node   =  parent;
+
+            if (node.ChainEntityOffset > 0 || node.IsNetworkRoot)
+            {
+                Bridges.Natives.Entity.SetStructStateChanged(node.GetAbsPtr(),
+                                                             node.ChainEntityOffset,
+                                                             node.IsNetworkRoot,
+                                                             (uint) offset);
+
+                return;
+            }
+        }
+    }
+
+#endregion
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Dictionary<string, (SchemaClass, SchemaClassField)> GetResolveMap()
     {
@@ -241,12 +321,14 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
         return cached;
     }
 
-    public ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0) where T : unmanaged
+    public ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0, bool isStruct = false)
+        where T : unmanaged
     {
         var field   = CachedGetSchemaField(fieldName);
         var pointer = nint.Add(_this, field.Offset + extraOffset);
 
-        return SchemaFixedArray<T>.Create(pointer, field, _this) ?? throw new ArgumentNullException(nameof(pointer));
+        return SchemaFixedArray<T>.Create(pointer, field, this, isStruct)
+               ?? throw new ArgumentNullException(nameof(pointer));
     }
 
     public ISchemaList<T> GetSchemaList<T>(string fieldName, bool isStruct = false, ushort extraOffset = 0) where T : unmanaged
@@ -254,86 +336,86 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
         var field   = CachedGetSchemaField(fieldName);
         var pointer = nint.Add(_this, field.Offset + extraOffset);
 
-        return SchemaUnmanagedVector<T>.Create(pointer, field, _this, isStruct)
+        return SchemaUnmanagedVector<T>.Create(pointer, field, this, isStruct)
                ?? throw new ArgumentNullException(nameof(pointer));
     }
 
     public void SetNetVar(string field, bool value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarBool(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarBool(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, byte value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarByte(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarByte(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, short value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarInt16(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarInt16(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, ushort value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarUInt16(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarUInt16(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, int value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarInt32(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarInt32(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, uint value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarUInt32(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarUInt32(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, long value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarInt64(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarInt64(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, ulong value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarUInt64(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarUInt64(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, float value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarFloat(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarFloat(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, string value, int maxLen, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarString(_this, sc, sf, value, maxLen, isStruct, extraOffset);
+        SchemaSystem.SetNetVarString(_this, sc, sf, value, maxLen, isStruct, extraOffset, this);
     }
 
     public void SetNetVar(string field, Vector value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarVector(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarVector(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVarUtlSymbolLarge(string field, string value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarUtlSymbolLarge(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarUtlSymbolLarge(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public void SetNetVarUtlString(string field, string value, bool isStruct = false, ushort extraOffset = 0)
     {
         var (sc, sf) = CachedResolve(field);
-        SchemaSystem.SetNetVarUtlString(_this, sc, sf, value, isStruct, extraOffset);
+        SchemaSystem.SetNetVarUtlString(_this, sc, sf, value, isStruct, extraOffset, this);
     }
 
     public bool FindNetVar(string field)
@@ -343,5 +425,5 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
         => SchemaSystem.GetNetVarOffset(GetSchemaClassname(), field);
 
     public void NetworkStateChanged(string field, bool isStruct = false, ushort extraOffset = 0)
-        => SchemaSystem.NetworkStateChanged(_this, GetSchemaClassname(), field, isStruct, extraOffset);
+        => SchemaSystem.NetworkStateChanged(_this, GetSchemaClassname(), field, isStruct, extraOffset, this);
 }

@@ -404,10 +404,20 @@ void SetStateChanged(CBaseEntity* pEntity, uint32_t offset, uint32_t nArrayIndex
     pEntity->m_isSteadyState(0);*/
 }
 
-void SetStructStateChanged(void* pEntity, uint32_t offset)
+void SetStructStateChanged(void* pOwner, int32_t nChainOffset, bool bOwnerIsEntity, uint32_t nOffset)
 {
-    CNetworkStateChangedInfo info(offset, 0xFFFFFFFF, 0xFFFFFFFF);
-    CALL_VIRTUAL(void, 1, pEntity, &info);
+    if (pOwner == nullptr)
+        return;
+
+    if (nChainOffset > 0)
+    {
+        NetworkStateChanged(reinterpret_cast<uintptr_t>(pOwner) + nChainOffset, nOffset);
+
+        return;
+    }
+
+    if (bOwnerIsEntity)
+        SetStateChanged(static_cast<CBaseEntity*>(pOwner), nOffset);
 }
 
 static void ProcessDataMapFields(SchemaClass_t*                        derived_schema_class,
@@ -469,7 +479,6 @@ static void ProcessDataMapFields(SchemaClass_t*                        derived_s
 // there -- every other CBaseEntity field kept its offset across the update -- but they no longer have
 // a schema or a datamap entry, so nothing can look them up by name:
 //
-//   m_flSpeed          win 0x354 / linux 0x634   (was a schema field up to build 23669931)
 //   m_pSubclassVData   win 0x320 / linux 0x600   (never a schema field; was a datamap field)
 //
 // Each one sits in the hole between two neighbours that are still reflected, so recover the offset
@@ -488,7 +497,6 @@ struct UnreflectedField_t
 };
 
 static constexpr UnreflectedField_t unreflected_base_entity_fields[] = {
-    {"m_flSpeed", "float32", SCHEMA_TYPE_BUILTIN, "m_iSentToClients", "m_sUniqueHammerID", 4, 8},
     {"m_pSubclassVData", "CEntitySubclassVDataBase*", SCHEMA_TYPE_POINTER, "m_nSubclassID", "m_flAnimTime", 4, 12},
 };
 

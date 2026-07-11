@@ -38,7 +38,7 @@ internal partial class BodyComponent : EntityComponent, IBodyComponent
 
 #region Schemas
 
-    [NativeSchemaField("CBodyComponent", "m_pSceneNode", typeof(GameSceneNode))]
+    [NativeSchemaField("CBodyComponent", "m_pSceneNode", typeof(GameSceneNode), Embedded = true)]
     private partial SchemaField GetSceneNodeField();
 
 #endregion

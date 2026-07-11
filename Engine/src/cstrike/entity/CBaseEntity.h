@@ -65,7 +65,6 @@ public:
     SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)
     SCHEMA_FIELD(Vector, m_vecBaseVelocity)
     SCHEMA_FIELD(char*, m_target)
-    SCHEMA_FIELD(float, m_flSpeed)
     SCHEMA_POINTER_FIELD(CNetworkVelocityVector, m_vecVelocity)
     SCHEMA_FIELD(CBaseHandle, m_hGroundEntity)
 

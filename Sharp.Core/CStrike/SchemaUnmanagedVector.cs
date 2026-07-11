@@ -29,7 +29,7 @@ internal unsafe class SchemaUnmanagedVector<T> : NativeObject, ISchemaList<T>
     where T : unmanaged
 {
     private readonly SchemaField    _schemaField;
-    private readonly nint           _chainEntity;
+    private readonly SchemaObject   _owner;
     private readonly bool           _isStruct;
     private readonly CUtlVector<T>* _utlVector;
 
@@ -43,16 +43,16 @@ internal unsafe class SchemaUnmanagedVector<T> : NativeObject, ISchemaList<T>
         }
     }
 
-    private SchemaUnmanagedVector(nint @this, SchemaField field, nint chainEntity, bool isStruct) : base(@this)
+    private SchemaUnmanagedVector(nint @this, SchemaField field, SchemaObject owner, bool isStruct) : base(@this)
     {
         _schemaField = field;
-        _chainEntity = chainEntity;
+        _owner       = owner;
         _isStruct    = isStruct;
         _utlVector   = (CUtlVector<T>*) @this;
     }
 
-    public static SchemaUnmanagedVector<T>? Create(nint ptr, SchemaField field, nint objectPtr, bool isStruct)
-        => ptr == nint.Zero ? null : new SchemaUnmanagedVector<T>(ptr, field, objectPtr, isStruct);
+    public static SchemaUnmanagedVector<T>? Create(nint ptr, SchemaField field, SchemaObject owner, bool isStruct)
+        => ptr == nint.Zero ? null : new SchemaUnmanagedVector<T>(ptr, field, owner, isStruct);
 
     public CUtlVector<T>* GetUtlVector()
     {
@@ -119,24 +119,6 @@ internal unsafe class SchemaUnmanagedVector<T> : NativeObject, ISchemaList<T>
     {
         CheckDisposed();
 
-        if (!_schemaField.Networked)
-        {
-            return;
-        }
-
-        if (_schemaField.ChainOffset > 0)
-        {
-            Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_chainEntity, _schemaField.ChainOffset),
-                                                       (ushort) _schemaField.Offset);
-        }
-        else if (_isStruct)
-        {
-            Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, _schemaField.ChainOffset),
-                                                         (ushort) _schemaField.Offset);
-        }
-        else
-        {
-            Bridges.Natives.Entity.SetStateChanged(_chainEntity, (ushort) _schemaField.Offset);
-        }
+        _owner.SchemaStateChanged(_schemaField, _isStruct);
     }
 }

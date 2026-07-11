@@ -106,7 +106,7 @@ void*     FindDataMapInputFunc(const char* className, const char* fieldName);
 class CBaseEntity;
 void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex = -1, uint32_t nPathIndex = -1);
 void SetStateChanged(CBaseEntity* pEntity, uint32_t offset, uint32_t nArrayIndex = -1, uint32_t nPathIndex = -1);
-void SetStructStateChanged(void* pEntity, uint32_t offset);
+void SetStructStateChanged(void* pOwner, int32_t nChainOffset, bool bOwnerIsEntity, uint32_t nOffset);
 
 // for coreclr
 void InitSchemaSystem();

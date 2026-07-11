@@ -27,19 +27,21 @@ namespace Sharp.Core.CStrike;
 internal class SchemaFixedArray<T> : NativeObject, ISchemaArray<T>
     where T : unmanaged
 {
-    private readonly SchemaField _schemaField;
-    private readonly nint        _objectPtr;
+    private readonly SchemaField  _schemaField;
+    private readonly SchemaObject _owner;
+    private readonly bool         _isStruct;
 
     public int Size => _schemaField.ArraySize;
 
-    private SchemaFixedArray(nint @this, SchemaField field, nint objectPtr) : base(@this)
+    private SchemaFixedArray(nint @this, SchemaField field, SchemaObject owner, bool isStruct) : base(@this)
     {
         _schemaField = field;
-        _objectPtr   = objectPtr;
+        _owner       = owner;
+        _isStruct    = isStruct;
     }
 
-    public static SchemaFixedArray<T>? Create(nint ptr, SchemaField field, nint objectPtr)
-        => ptr == nint.Zero ? null : new SchemaFixedArray<T>(ptr, field, objectPtr);
+    public static SchemaFixedArray<T>? Create(nint ptr, SchemaField field, SchemaObject owner, bool isStruct = false)
+        => ptr == nint.Zero ? null : new SchemaFixedArray<T>(ptr, field, owner, isStruct);
 
     public IEnumerator<T> AsEnumerable()
     {
@@ -76,20 +78,7 @@ internal class SchemaFixedArray<T> : NativeObject, ISchemaArray<T>
 
             *((T*) _this + index) = value;
 
-            if (!_schemaField.Networked)
-            {
-                return;
-            }
-
-            if (_schemaField.ChainOffset > 0)
-            {
-                Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_objectPtr, _schemaField.ChainOffset),
-                                                           (ushort) _schemaField.Offset);
-            }
-            else
-            {
-                Bridges.Natives.Entity.SetStateChanged(_objectPtr, (ushort) _schemaField.Offset);
-            }
+            _owner.SchemaStateChanged(_schemaField, _isStruct);
         }
     }
 

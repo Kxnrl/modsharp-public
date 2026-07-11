@@ -27,7 +27,6 @@
 
 #include <Zydis.h>
 
-#include <format>
 #include <string>
 #include <utility>
 #include <vector>

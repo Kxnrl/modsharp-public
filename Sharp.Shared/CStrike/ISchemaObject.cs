@@ -125,7 +125,7 @@ public interface ISchemaObject : INativeObject
     /// <summary>
     ///     Gets the value of a Schema member variable
     /// </summary>
-    ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0)
+    ISchemaArray<T> GetSchemaFixedArray<T>(string fieldName, ushort extraOffset = 0, bool isStruct = false)
         where T : unmanaged;
 
     /// <summary>
