@@ -281,6 +281,8 @@ BeginMemberHookScope(CEntityIdentity)
         if (!pInstance || !pInput)
             return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, a6, a7);
 
+        int nOutputId = 0; // todo: remove
+
         if (natives::entity::OnEntityAcceptInput(pInstance, pInput->Get(), pActivator, pCaller, pValue, nOutputId) == EHookAction::SkipCallReturnOverride)
             return false;
 
