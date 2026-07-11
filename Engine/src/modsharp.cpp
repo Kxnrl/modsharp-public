@@ -62,12 +62,11 @@ IGameSpawnGroupMgr*              g_pSpawnGroupMgr;
 
 unsigned int g_nMainThreadId;
 
-#    include <format>
-
 #ifdef PLATFORM_WINDOWS
 #    include <windows.h>
 
 #    include <filesystem>
+#    include <format>
 #    include <fstream>
 
 static void DumpVTableCount()
@@ -215,8 +214,6 @@ static void DumpVTableCount()
 
 bool ModSharp_Init()
 {
-    printf("%s", std::format("Initializing {}\n", "interfaces").c_str());
-
     extern void* FindGameSystemByName(const char* name);
     extern void  InitGameEntitySystem();
     extern void  InitHookManager();
