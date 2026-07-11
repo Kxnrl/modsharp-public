@@ -187,9 +187,11 @@ jobs:
           echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
           apt update
           apt install -y clang-21
-          echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
-          echo "LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
+          GCC14=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14
+          test -f "$GCC14/libstdc++.a"
+          install -d /opt/gcc14-libstdcxx
+          ln -sf "$GCC14/libstdc++.a" "$GCC14/libsupc++.a" /opt/gcc14-libstdcxx/
+          echo "LDFLAGS=-L/opt/gcc14-libstdcxx" >> $GITHUB_ENV
 
       # TimeZone
       - name: Set Timezone
