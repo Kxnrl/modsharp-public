@@ -36,7 +36,7 @@ public static unsafe partial class Entity
 
     public static partial void SetStateChanged(IntPtr entity, ushort offset);
 
-    public static partial void SetStructStateChanged(IntPtr owner, int chainOffset, bool ownerIsEntity, uint offset);
+    public static partial void SetStructStateChanged(IntPtr structObject, ushort offset, int vfuncIndex);
 
     public static partial void CollisionRulesChanged(IntPtr entity);
 

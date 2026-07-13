@@ -49,7 +49,6 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                                          public System.Type ReturnType   { get; set; }
                                                          public bool        IsStruct     { get; set; }
                                                          public bool        InlineObject { get; set; }
-                                                         public bool        Embedded     { get; set; }
                                                          public bool        Nullable     { get; set; }
                                                          public bool        Validate     { get; set; }
 
@@ -108,8 +107,6 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
 
             var className = classDeclarationSyntax.Identifier.Text;
 
-            var isOwnerSchemaObject = classSymbol.IsAssignableFrom("ISchemaObject");
-
             var builder = new CodeWriter();
 
             builder.AppendLine($"""
@@ -147,14 +144,12 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                     var valueTypeStr        = "";
                     var isEnum              = false;
                     var isValueNativeObject = false;
-                    var isValueSchemaObject = false;
                     var isValueSizableList  = false;
                     var isValueInlineArray  = false;
 
                     var castType     = "";
                     var returnType   = "";
                     var inlineObject = false;
-                    var embedded     = false;
                     var isStruct     = false;
                     var isNullable   = false;
                     var validate     = false;
@@ -219,10 +214,6 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                         {
                             inlineObject = (bool) attributeArg.Value.Value!;
                         }
-                        else if (attributeArg is { Key: "Embedded" })
-                        {
-                            embedded = (bool) attributeArg.Value.Value!;
-                        }
                         else if (attributeArg is { Key: "IsStruct" })
                         {
                             isStruct = (bool) attributeArg.Value.Value!;
@@ -257,11 +248,6 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                     if (type.IsAssignableFrom("INativeObject"))
                                     {
                                         isValueNativeObject = true;
-                                    }
-
-                                    if (type.IsAssignableFrom("ISchemaObject"))
-                                    {
-                                        isValueSchemaObject = true;
                                     }
 
                                     if (type.IsAssignableFrom("ISchemaList"))
@@ -344,7 +330,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                     var structString      = isStruct ? "true" : "false";
 
                                     builder.AppendLine(
-                                        $"return {valueTypeStr}.Create({dereferenceString}IntPtr.Add(_this, __{propertyName}SchemaField.Offset), __{propertyName}SchemaField, this, {structString})!;");
+                                        $"return {valueTypeStr}.Create({dereferenceString}IntPtr.Add(_this, __{propertyName}SchemaField.Offset), __{propertyName}SchemaField, _this, {structString})!;");
                                 }
                             }
                             else
@@ -360,22 +346,8 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
 
                                     var dereferenceString = !inlineObject ? "*(nint*) " : "";
 
-                                    if (isValueSchemaObject && isOwnerSchemaObject && (inlineObject || embedded))
-                                    {
-                                        builder.AppendLine(
-                                            $"var __{propertyName}Embedded = {valueTypeStr}.Create({dereferenceString}IntPtr.Add(_this, __{propertyName}SchemaField.Offset));");
-
-                                        builder.AppendLine(inlineObject
-                                                               ? $"__{propertyName}Embedded?.BindNetworkParent(this, __{propertyName}SchemaField.Offset);"
-                                                               : $"BindEmbeddedPointer(__{propertyName}Embedded);");
-
-                                        builder.AppendLine($"return __{propertyName}Embedded{nullableString};");
-                                    }
-                                    else
-                                    {
-                                        builder.AppendLine(
-                                            $"return {valueTypeStr}.Create({dereferenceString}IntPtr.Add(_this, __{propertyName}SchemaField.Offset)){nullableString};");
-                                    }
+                                    builder.AppendLine(
+                                        $"return {valueTypeStr}.Create({dereferenceString}IntPtr.Add(_this, __{propertyName}SchemaField.Offset)){nullableString};");
                                 }
                             }
                         }
@@ -436,7 +408,31 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                         builder.AppendLine(
                                             $"bytes[bytesWritten >= __{propertyName}SchemaField.ArraySize ? bytesWritten - 1 : bytesWritten] = 0;");
 
-                                        BuildStateChanged(builder, propertyName, isStruct, isOwnerSchemaObject);
+                                        using (builder.BeginScope($"if (__{propertyName}SchemaField.Networked)"))
+                                        {
+                                            using (builder.BeginScope($"if (__{propertyName}SchemaField.ChainOffset > 0)"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                            }
+
+                                            if (isStruct)
+                                            {
+                                                using (builder.BeginScope("else"))
+                                                {
+                                                    builder.AppendLine(
+                                                        $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (builder.BeginScope("else"))
+                                                {
+                                                    builder.AppendLine(
+                                                        $"Bridges.Natives.Entity.SetStateChanged(_this, (ushort) (__{propertyName}SchemaField.Offset));");
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -455,7 +451,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                         $"__{propertyName}SchemaField ??= Sharp.Core.Helpers.SchemaSystem.GetSchemaField(\"{schemaClassName}\", \"{schemaFieldName}\");");
 
                                     builder.AppendLine(
-                                        $"return Sharp.Core.CStrike.SchemaFixedArray<{valueTypeStr}>.Create(IntPtr.Add(_this, __{propertyName}SchemaField.Offset), __{propertyName}SchemaField, this, {(isStruct ? "true" : "false")})!;");
+                                        $"return Sharp.Core.CStrike.SchemaFixedArray<{valueTypeStr}>.Create(IntPtr.Add(_this, __{propertyName}SchemaField.Offset), __{propertyName}SchemaField, _this)!;");
                                 }
                             }
                         }
@@ -490,7 +486,31 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                     builder.AppendLine(
                                         $"((Sharp.Shared.Types.Tier.CUtlString*) IntPtr.Add(_this, __{propertyName}SchemaField.Offset))->SetString(value);");
 
-                                    BuildStateChanged(builder, propertyName, isStruct, isOwnerSchemaObject);
+                                    using (builder.BeginScope($"if (__{propertyName}SchemaField.Networked)"))
+                                    {
+                                        using (builder.BeginScope($"if (__{propertyName}SchemaField.ChainOffset > 0)"))
+                                        {
+                                            builder.AppendLine(
+                                                $"Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                        }
+
+                                        if (isStruct)
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStateChanged(_this, (ushort) (__{propertyName}SchemaField.Offset));");
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -530,7 +550,31 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
 
                                     builder.AppendLine("*pointer = alloc;");
 
-                                    BuildStateChanged(builder, propertyName, isStruct, isOwnerSchemaObject);
+                                    using (builder.BeginScope($"if (__{propertyName}SchemaField.Networked)"))
+                                    {
+                                        using (builder.BeginScope($"if (__{propertyName}SchemaField.ChainOffset > 0)"))
+                                        {
+                                            builder.AppendLine(
+                                                $"Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                        }
+
+                                        if (isStruct)
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStateChanged(_this, (ushort) (__{propertyName}SchemaField.Offset));");
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -595,7 +639,31 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                                 castType,
                                                 validate);
 
-                                    BuildStateChanged(builder, propertyName, isStruct, isOwnerSchemaObject);
+                                    using (builder.BeginScope($"if (__{propertyName}SchemaField.Networked)"))
+                                    {
+                                        using (builder.BeginScope($"if (__{propertyName}SchemaField.ChainOffset > 0)"))
+                                        {
+                                            builder.AppendLine(
+                                                $"Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                        }
+
+                                        if (isStruct)
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            using (builder.BeginScope("else"))
+                                            {
+                                                builder.AppendLine(
+                                                    $"Bridges.Natives.Entity.SetStateChanged(_this, (ushort) (__{propertyName}SchemaField.Offset));");
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -727,37 +795,6 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
             }
 
             context.AddSource("SchemaValidate.cs", builder.ToString());
-        }
-    }
-
-    private static void BuildStateChanged(CodeWriter builder,
-        string                                       propertyName,
-        bool                                         isStruct,
-        bool                                         isOwnerSchemaObject)
-    {
-        if (isOwnerSchemaObject)
-        {
-            builder.AppendLine($"SchemaStateChanged(__{propertyName}SchemaField, {(isStruct ? "true" : "false")});");
-
-            return;
-        }
-
-        using (builder.BeginScope($"if (__{propertyName}SchemaField.Networked)"))
-        {
-            using (builder.BeginScope($"if (__{propertyName}SchemaField.ChainOffset > 0)"))
-            {
-                builder.AppendLine(
-                    $"Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
-            }
-
-            if (!isStruct)
-            {
-                using (builder.BeginScope("else"))
-                {
-                    builder.AppendLine(
-                        $"Bridges.Natives.Entity.SetStateChanged(_this, (ushort) (__{propertyName}SchemaField.Offset));");
-                }
-            }
         }
     }
 

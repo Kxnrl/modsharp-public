@@ -404,20 +404,13 @@ void SetStateChanged(CBaseEntity* pEntity, uint32_t offset, uint32_t nArrayIndex
     pEntity->m_isSteadyState(0);*/
 }
 
-void SetStructStateChanged(void* pOwner, int32_t nChainOffset, bool bOwnerIsEntity, uint32_t nOffset)
+void SetStructStateChanged(void* pStructObject, uint32_t nOffset, int32_t nVFuncIndex)
 {
-    if (pOwner == nullptr)
+    if (pStructObject == nullptr)
         return;
 
-    if (nChainOffset > 0)
-    {
-        NetworkStateChanged(reinterpret_cast<uintptr_t>(pOwner) + nChainOffset, nOffset);
-
-        return;
-    }
-
-    if (bOwnerIsEntity)
-        SetStateChanged(static_cast<CBaseEntity*>(pOwner), nOffset);
+    CNetworkStateChangedInfo info(nOffset, 0xFFFFFFFF, 0xFFFFFFFF);
+    CALL_VIRTUAL(void, nVFuncIndex, pStructObject, &info);
 }
 
 static void ProcessDataMapFields(SchemaClass_t*                        derived_schema_class,

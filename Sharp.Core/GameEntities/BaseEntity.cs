@@ -49,8 +49,6 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
     protected BaseEntity(nint ptr) : base(ptr)
         => Handle = GetHandle(_this);
 
-    protected override bool IsNetworkRoot => true;
-
     public CEntityHandle<IBaseEntity> Handle { get; }
 
     public unsafe CEntityHandle<IBaseEntity> RefHandle
@@ -408,7 +406,7 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
     [NativeSchemaField("CBaseEntity", "m_hGroundEntity", typeof(CEntityHandle<IBaseEntity>))]
     private partial SchemaField GetGroundEntityHandleField();
 
-    [NativeSchemaField("CBaseEntity", "m_pCollision", typeof(CollisionProperty), Nullable = true, Embedded = true)]
+    [NativeSchemaField("CBaseEntity", "m_pCollision", typeof(CollisionProperty), Nullable = true)]
     private partial SchemaField GetCollisionPropertyField();
 
     [NativeSchemaField("CBaseEntity", "m_hEffectEntity", typeof(CEntityHandle<IBaseEntity>))]

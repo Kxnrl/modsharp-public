@@ -185,9 +185,9 @@ static void EntitySetStateChanged(CBaseEntity* pEntity, uint16_t offset)
     SetStateChanged(pEntity, offset);
 }
 
-static void EntitySetStructStateChanged(void* pOwner, int32_t chainOffset, bool ownerIsEntity, uint32_t offset)
+static void EntitySetStructStateChanged(void* pStructObject, uint16_t offset, int32_t vfuncIndex)
 {
-    SetStructStateChanged(pOwner, chainOffset, ownerIsEntity, offset);
+    SetStructStateChanged(pStructObject, offset, vfuncIndex);
 }
 
 static bool EntityAcceptInput(CBaseEntity* pEntity, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const char* pValue, int outputId)
