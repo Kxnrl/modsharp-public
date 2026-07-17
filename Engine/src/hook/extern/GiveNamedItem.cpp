@@ -47,9 +47,7 @@
 #include <ranges>
 #include <unordered_map>
 
-#ifdef PLATFORM_WINDOWS
-#    define FIX_PLAYER_EQUIP_MANUALLY
-#endif
+#define FIX_PLAYER_EQUIP_MANUALLY
 
 // #define HOOK_EXTERN_GIVENAMEDITEM_ASSERT
 
