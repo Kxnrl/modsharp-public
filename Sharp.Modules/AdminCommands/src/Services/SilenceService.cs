@@ -81,7 +81,9 @@ internal class SilenceService : ICommandCategory, ISilenceService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process silence batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process silence. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process silence. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -173,7 +175,9 @@ internal class SilenceService : ICommandCategory, ISilenceService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unsilence batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unsilence. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process unsilence. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);

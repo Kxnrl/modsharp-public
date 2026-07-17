@@ -155,18 +155,19 @@ internal class AdminOperationEngine : IClientListener
         _bridge.ClientManager.RemoveClientListener(this);
     }
 
-    public void ApplyOnline(IGameClient?       admin,
-                            IGameClient        target,
-                            AdminOperationType type,
-                            TimeSpan?          duration,
-                            string             reason,
-                            bool               silent   = false,
-                            string?            metadata = null)
+    public void ApplyOnline(IGameClient? admin,
+        IGameClient                      target,
+        AdminOperationType               type,
+        TimeSpan?                        duration,
+        string                           reason,
+        bool                             silent   = false,
+        string?                          metadata = null)
     {
         var targetId   = target.SteamId;
         var targetName = target.Name;
 
-        _bridge.ModSharp.InvokeAction(() =>
+        // 如果涉及踢出, 最稳妥期间就是FrameAction
+        _bridge.ModSharp.InvokeFrameAction(() =>
         {
             if (target.IsValid)
             {
@@ -197,14 +198,14 @@ internal class AdminOperationEngine : IClientListener
         });
     }
 
-    public void ApplyOffline(IGameClient?       admin,
-                             SteamID            steamId,
-                             string             targetName,
-                             AdminOperationType type,
-                             TimeSpan?          duration,
-                             string             reason,
-                             string?            metadata = null)
-        => _bridge.ModSharp.InvokeAction(() =>
+    public void ApplyOffline(IGameClient? admin,
+        SteamID                           steamId,
+        string                            targetName,
+        AdminOperationType                type,
+        TimeSpan?                         duration,
+        string                            reason,
+        string?                           metadata = null)
+        => _bridge.ModSharp.InvokeFrameAction(() =>
         {
             ApplyCore(admin is { IsValid: true } ? admin : null,
                       null,
@@ -218,16 +219,17 @@ internal class AdminOperationEngine : IClientListener
                       true);
         });
 
-    public void RemoveOnline(IGameClient?       admin,
-                             IGameClient        target,
-                             AdminOperationType type,
-                             string             reason,
-                             bool               silent = false)
+    public void RemoveOnline(IGameClient? admin,
+        IGameClient                       target,
+        AdminOperationType                type,
+        string                            reason,
+        bool                              silent = false)
     {
         var targetId   = target.SteamId;
         var targetName = target.Name;
 
-        _bridge.ModSharp.InvokeAction(() =>
+        // 如果涉及踢出, 最稳妥期间就是FrameAction
+        _bridge.ModSharp.InvokeFrameAction(() =>
         {
             if (target.IsValid)
             {
@@ -254,12 +256,12 @@ internal class AdminOperationEngine : IClientListener
         });
     }
 
-    public void RemoveOffline(IGameClient?       admin,
-                              SteamID            steamId,
-                              string             targetName,
-                              AdminOperationType type,
-                              string             reason)
-        => _bridge.ModSharp.InvokeAction(() =>
+    public void RemoveOffline(IGameClient? admin,
+        SteamID                            steamId,
+        string                             targetName,
+        AdminOperationType                 type,
+        string                             reason)
+        => _bridge.ModSharp.InvokeFrameAction(() =>
         {
             RemoveCore(admin is { IsValid: true } ? admin : null,
                        null,

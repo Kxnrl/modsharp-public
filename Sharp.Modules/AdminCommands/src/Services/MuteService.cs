@@ -35,11 +35,11 @@ internal class MuteService : ICommandCategory, IMuteService
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
 
-    public MuteService(ILogger<MuteService>  logger,
-                       InterfaceBridge       bridge,
-                       AdminOperationService operations,
-                       AdminOperationEngine  engine,
-                       CommandContextFactory contextFactory)
+    public MuteService(ILogger<MuteService> logger,
+        InterfaceBridge                     bridge,
+        AdminOperationService               operations,
+        AdminOperationEngine                engine,
+        CommandContextFactory               contextFactory)
     {
         _logger         = logger;
         _bridge         = bridge;
@@ -81,7 +81,9 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process mute batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process mute. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process mute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -167,7 +169,9 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unmute batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unmute. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process unmute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);

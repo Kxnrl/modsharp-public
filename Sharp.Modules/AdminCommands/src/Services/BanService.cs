@@ -115,7 +115,9 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ban for {SteamId}", targetSteamId);
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ban. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -157,7 +159,9 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process banip for {SteamId}", targetSteamId);
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process banip. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process banip. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -199,7 +203,9 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process bansubnet for {SteamId}", targetSteamId);
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process subnet ban. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process subnet ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -234,7 +240,9 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ban for {SteamId}", steamId);
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ban. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process ban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -264,7 +272,9 @@ internal class BanService : ICommandCategory, IBanService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unban for {SteamId}", steamId);
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process unban. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process unban. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);

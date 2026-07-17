@@ -35,11 +35,11 @@ internal class GagService : ICommandCategory, IGagService
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
 
-    public GagService(ILogger<GagService>   logger,
-                      InterfaceBridge       bridge,
-                      AdminOperationService operations,
-                      AdminOperationEngine  engine,
-                      CommandContextFactory contextFactory)
+    public GagService(ILogger<GagService> logger,
+        InterfaceBridge                   bridge,
+        AdminOperationService             operations,
+        AdminOperationEngine              engine,
+        CommandContextFactory             contextFactory)
     {
         _logger         = logger;
         _bridge         = bridge;
@@ -81,7 +81,9 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process gag batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process gag. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process gag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -167,7 +169,9 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ungag batch");
-                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply("Failed to process ungag. Check server logs."));
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process ungag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
