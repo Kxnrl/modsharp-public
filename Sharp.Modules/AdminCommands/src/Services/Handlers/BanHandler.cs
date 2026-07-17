@@ -59,7 +59,16 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
 
         if (targetClient is not null)
         {
-            _bridge.ClientManager.KickClient(targetClient, record.Reason, NetworkDisconnectionReason.SteamBanned);
+            // Defer the kick a frame — disconnecting mid-callback races the engine snapshot send (SIGSEGV).
+            _bridge.ModSharp.InvokeFrameAction(() =>
+            {
+                if (targetClient.IsValid)
+                {
+                    _bridge.ClientManager.KickClient(targetClient,
+                                                     record.Reason,
+                                                     NetworkDisconnectionReason.SteamBanned);
+                }
+            });
         }
     }
 

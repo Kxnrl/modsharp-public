@@ -48,6 +48,12 @@ internal sealed class CommandContext
         _issuer        = issuer;
         _command       = command;
         _logger        = logger;
+
+        IssuerName = issuer is null
+            ? "Console"
+            : string.IsNullOrWhiteSpace(issuer.Name)
+                ? "Unknown"
+                : issuer.Name;
     }
 
     /// <summary>
@@ -279,7 +285,7 @@ internal sealed class CommandContext
     public void ReplySuccess(string message)
         => ReplyInternal(message, true);
 
-    public string IssuerName => _issuer is null ? "Console" : _issuer.Name;
+    public string IssuerName { get; }
 
     private bool ShouldBroadcast
     {
@@ -331,7 +337,9 @@ internal sealed class CommandContext
             return;
         }
 
-        if (_issuer is null)
+        // The reply can run a frame late (deferred/faulted continuation), by which point the issuer may have
+        // disconnected — fall back to the log rather than touching an invalid wrapper.
+        if (_issuer is not { IsValid: true })
         {
             _logger.LogInformation(message);
 
