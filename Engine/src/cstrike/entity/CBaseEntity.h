@@ -117,7 +117,7 @@ public:
 
     [[nodiscard]] const Vector& GetCenter();
 
-    bool AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value, int outputID);
+    bool AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value);
 
     [[nodiscard]] bool IsMarkedForDeletion() const { return m_pEntity->IsMarkedForDeletion(); }
 

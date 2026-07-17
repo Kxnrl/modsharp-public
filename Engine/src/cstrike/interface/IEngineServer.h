@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -90,7 +90,7 @@ public:
     virtual void ClientCommand(PlayerSlot_t slot, const char* command) = 0; // 46
     // NOTE: LightStyle (was // 47) was removed from the engine in build 24116939, shifting every
     // vfunc after it down by one. All indices below reflect the post-removal numbering.
-    virtual void ClientPrint(PlayerSlot_t slot, const char* message)   = 0; // 47
+    virtual void ClientPrint(PlayerSlot_t slot, const char* message) = 0; // 47
 
 private:
     virtual void Unknown49() = 0; // 48
@@ -181,13 +181,13 @@ private:
     virtual void SetClientProximity()  = 0; // 92
     virtual void Unknown94()           = 0; // 93
     virtual void Unknown95()           = 0; // 94
-    virtual void Unknown96() = 0;           // 95
+    virtual void Unknown96()           = 0; // 95
 
 public:
     // Server 跟 disconnect时的提示有关系, 我也不知道取值
     virtual void  KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason) = 0; // 96
-    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick) = 0;      // 97
-    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick) = 0;              // 98
+    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick)      = 0; // 97
+    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick)              = 0; // 98
 
     virtual bool  StartHltvReplay(PlayerSlot_t slot, int64_t unknown2); // 99
     virtual void* StopHltvReplay(PlayerSlot_t slot);                    // 100
@@ -203,9 +203,9 @@ private:
     virtual void Unknown107() = 0; // 106
 
     // Find client exists by offset 3120
-    virtual bool CheckClientUnknown() = 0;                               // 107
+    virtual bool CheckClientUnknown()                               = 0; // 107
     virtual void SetClientUpdateRate(PlayerSlot_t slot, float rate) = 0; // 108
-    virtual void UpdateClientRate(PlayerSlot_t nSlot) = 0;               // 109
+    virtual void UpdateClientRate(PlayerSlot_t nSlot)               = 0; // 109
 
     virtual void Unknown111() = 0; // 110
     virtual void Unknown112() = 0; // 111

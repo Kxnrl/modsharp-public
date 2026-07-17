@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -21,6 +21,7 @@
 #define CSTRIKE_INTERFACE_RESOURCESYSTEM_H
 
 #include "murmurhash.h"
+
 #include "cstrike/type/CBufferString.h"
 
 #include <cstdint>
@@ -35,7 +36,6 @@ enum ResourceStatus_t
 
 using ResourceId_t   = uint64_t;
 using ResourceType_t = uint64_t;
-
 
 struct CResourceNameTyped
 {

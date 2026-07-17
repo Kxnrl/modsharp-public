@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -135,9 +135,11 @@ constexpr uint32_t MurmurHash2(std::string_view key, uint32_t seed)
 
     switch (len)
     {
-    case 3: h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 2])) << 16;
+    case 3:
+        h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 2])) << 16;
         [[fallthrough]];
-    case 2: h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 1])) << 8;
+    case 2:
+        h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i + 1])) << 8;
         [[fallthrough]];
     case 1:
         h ^= static_cast<uint32_t>(static_cast<unsigned char>(data[i]));
@@ -198,9 +200,11 @@ constexpr uint32_t MurmurHash2Lowercase(std::string_view key, uint32_t seed)
 
     switch (len)
     {
-    case 3: h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 2]))) << 16;
+    case 3:
+        h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 2]))) << 16;
         [[fallthrough]];
-    case 2: h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 1]))) << 8;
+    case 2:
+        h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i + 1]))) << 8;
         [[fallthrough]];
     case 1:
         h ^= static_cast<uint32_t>(static_cast<unsigned char>(to_lower(data[i])));
@@ -219,15 +223,15 @@ constexpr uint32_t MurmurHash2Lowercase(std::string_view key, uint32_t seed)
 
 inline uint32_t MurmurHash2ConcatLowercase(std::string_view str1, std::string_view str2, uint32_t seed)
 {
-    auto len1 = str1.size();
-    auto len2 = str2.size();
+    auto len1      = str1.size();
+    auto len2      = str2.size();
     auto total_len = len1 + 1 + len2;
 
     constexpr std::size_t MAX_STACK_BUFFER_SIZE = 128;
 
     if (total_len <= MAX_STACK_BUFFER_SIZE)
     {
-        char buffer[MAX_STACK_BUFFER_SIZE];
+        char  buffer[MAX_STACK_BUFFER_SIZE];
         char* p = buffer;
 
         memcpy(p, str1.data(), len1);

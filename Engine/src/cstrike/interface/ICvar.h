@@ -212,7 +212,7 @@ public:
     // Reverts cvars which contain a specific flag
     virtual void ResetConVarsToDefaultValuesByFlag(int32_t nFlag) = 0;
 
-    virtual void    SetMaxSplitScreenSlots(int32_t nSlots) = 0;
+    virtual void SetMaxSplitScreenSlots(int32_t nSlots) = 0;
 
     virtual void RegisterCreationListeners(void* callbacks) = 0;
     virtual void RemoveCreationListeners(void* callbacks)   = 0;

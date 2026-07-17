@@ -70,7 +70,6 @@
     <ClCompile Include="src\cstrike\type\CNetworkGameServer.cpp" />
     <ClCompile Include="src\cstrike\type\CServerSideClient.cpp" />
     <ClCompile Include="src\cstrike\Interface\CGameEntitySystem.cpp" />
-    <ClCompile Include="src\cstrike\Interface\IGameServer.cpp" />
     <ClCompile Include="src\cstrike\Interface\IGameSystem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseEntity.cpp" />
     <ClCompile Include="src\cstrike\type\CEntityInstance.cpp" />

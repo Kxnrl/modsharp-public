@@ -31,11 +31,11 @@
 #include "cstrike/interface/ISchemaSystem.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CNetworkStateChangedFieldInfo.h"
+#include "cstrike/type/CUtlMap.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlTSHash.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Variant.h"
-#include "cstrike/type/CUtlMap.h"
 
 #include <cstdint>
 #include <unordered_map>
@@ -181,7 +181,7 @@ public:
     CUtlString m_pszCodeGenType; // 0x110 class name for codegen (set by InitCodeGenTypes)
 private:
     char pad_118[0x40]; // 0x118
-};                      // Size: 0x158
+}; // Size: 0x158
 static_assert(sizeof(CNetworkSerializerFieldInfo) == 0x158);
 
 struct CNetworkSerializerClassInfo
@@ -196,7 +196,7 @@ public:
     int32_t                                   m_nClassSize; // 0x1A8
 private:
     char pad_1AC[0x1C]; // 0x1AC
-};                      // Size: 0x1C8
+}; // Size: 0x1C8
 static_assert(sizeof(CNetworkSerializerClassInfo) == 0x1C8);
 
 struct CNetworkSerializerCodeGenDatabase
@@ -218,7 +218,7 @@ private:
     char pad_81[0x27]; // 0x81
 public:
     int32_t m_nDuplicateCount; // 0xA8
-};                             // Size: 0xB0
+}; // Size: 0xB0
 static_assert(sizeof(CNetworkSerializerCodeGenDatabase) == 0xB0);
 
 // Map: class_name -> set of networked field names
@@ -260,8 +260,10 @@ static void BuildNetworkedFieldMap()
             {
                 isSimpleGetter = true;
             }
-            else if (instr.mnemonic == ZYDIS_MNEMONIC_RET || instr.mnemonic == ZYDIS_MNEMONIC_INT3) return true;
-            else isSimpleGetter = false; // not a simple "lea/mov; ret" pattern
+            else if (instr.mnemonic == ZYDIS_MNEMONIC_RET || instr.mnemonic == ZYDIS_MNEMONIC_INT3)
+                return true;
+            else
+                isSimpleGetter = false; // not a simple "lea/mov; ret" pattern
             return false;
         });
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *

@@ -266,7 +266,7 @@ void FindCCSPlayerWeaponServices_DestroyWeapon()
     auto svr_mod = modules::server;
 
     uintptr_t target_call_addr = 0;
-    bool found = false;
+    bool      found            = false;
 
     auto functions            = svr_mod->FindAllFunctionsFromStringRefs({"DestroyWeapon", "Method %s.%s invoked with unrecognized 'this' value."});
     auto range                = functions.size() == 1 ? svr_mod->GetFunctionRange(functions.front()) : nullptr;
@@ -374,7 +374,7 @@ void FindSetModel()
     auto svr_mod = modules::server;
 
     uintptr_t target_call_addr = 0;
-    bool found = false;
+    bool      found            = false;
 
     auto functions = svr_mod->FindAllFunctionsFromStringRefs({"weapons/models/defuser/defuser.vmdl", "defuser_dropped"});
     auto range     = functions.size() == 1 ? svr_mod->GetFunctionRange(functions.front()) : nullptr;
@@ -2167,9 +2167,9 @@ void ResolveCCSPlayerPawn_SetDefaultGloves()
             if (auto entry = svr_mod->GetFunctionRange(source_ip))
             {
                 if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder,
-                    reinterpret_cast<const void*>(source_ip),
-                    ZYDIS_MAX_INSTRUCTION_LENGTH,
-                    &instr, operands)))
+                                                         reinterpret_cast<const void*>(source_ip),
+                                                         ZYDIS_MAX_INSTRUCTION_LENGTH,
+                                                         &instr, operands)))
                 {
                     continue;
                 }
@@ -2188,14 +2188,17 @@ void ResolveCCSPlayerPawn_SetDefaultGloves()
                         switch (operand.actions)
                         {
                         case ZYDIS_OPERAND_ACTION_READ:
-                        case ZYDIS_OPERAND_ACTION_CONDREAD: is_read = true;
+                        case ZYDIS_OPERAND_ACTION_CONDREAD:
+                            is_read = true;
                             break;
                         case ZYDIS_OPERAND_ACTION_WRITE:
-                        case ZYDIS_OPERAND_ACTION_CONDWRITE: is_write = true;
+                        case ZYDIS_OPERAND_ACTION_CONDWRITE:
+                            is_write = true;
                             break;
                         case ZYDIS_OPERAND_ACTION_READWRITE:
                         case ZYDIS_OPERAND_ACTION_READ_CONDWRITE:
-                        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE: is_read = true;
+                        case ZYDIS_OPERAND_ACTION_CONDREAD_WRITE:
+                            is_read  = true;
                             is_write = true;
                             break;
                         default: break;

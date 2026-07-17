@@ -817,7 +817,6 @@ static void PatchEnableHammerUniqueId()
     }
 }
 
-
 static int GetGenerateIntersectionNotificationsIndex()
 {
     auto svr_mod = modules::server;

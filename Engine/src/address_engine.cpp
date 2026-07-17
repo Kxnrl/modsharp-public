@@ -134,7 +134,6 @@ void ResolveServerSideClientOffsets()
         return results;
     };
 
-
     // --- m_NetChannel, m_Name, m_UserId (from SetRate) ---
     //
     // m_NetChannel is the qword field on this that gets used as an object:

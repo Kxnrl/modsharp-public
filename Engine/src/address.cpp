@@ -23,6 +23,7 @@
 #include "gamedata.h"
 #include "global.h"
 #include "logging.h"
+#include "manager/HookManager.h"
 #include "memory/zydis_utility.h"
 #include "module.h"
 #include "murmurhash.h"
@@ -30,9 +31,7 @@
 #include "types.h"
 
 #include "cstrike/interface/IGameSystem.h"
-#include "memory/zydis_utility.h"
 #include "cstrike/type/CEntityClass.h"
-#include "manager/HookManager.h"
 
 #include <Zydis.h>
 

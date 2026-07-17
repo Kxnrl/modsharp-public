@@ -24,10 +24,10 @@
 
 #include "CoreCLR/Nullable.h"
 
+#include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseWeapon.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
-#include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/type/EmitSound.h"
 
 // extern for movement manager

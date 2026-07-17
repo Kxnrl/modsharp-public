@@ -159,12 +159,6 @@ public interface IBaseEntity : ISchemaObject
     int EFlags { get; set; }
 
     /// <summary>
-    ///     m_flSpeed
-    /// </summary>
-    [Obsolete("Removed by valve")]
-    float Speed { get; set; }
-
-    /// <summary>
     ///     m_hGroundEntity Handle
     /// </summary>
     CEntityHandle<IBaseEntity> GroundEntityHandle { get; }

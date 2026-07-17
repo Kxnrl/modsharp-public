@@ -159,9 +159,8 @@ CBaseEntity* CGameEntitySystem::CreateEntityByName(const char* classname) const
     return address::server::CreateEntityByName(classname, -1);
 }
 
-void CGameEntitySystem::AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID)
+void CGameEntitySystem::AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay)
 {
-    (void)outputID;
     return address::server::CGameEntitySystem_AddEntityIOEvent(this, pEntity, pInputName, pActivator, pCaller, pValue, flDelay, nullptr, nullptr);
 }
 
