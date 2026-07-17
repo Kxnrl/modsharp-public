@@ -251,7 +251,7 @@ static void EntityAddIOEventInt(CBaseEntity* pEntity, float flDelay, const char*
     Variant_t variant;
     variant.SetInt(pValue);
 
-    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay, outputId);
+    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay);
 }
 
 static void EntityAddIOEventFloat(CBaseEntity* pEntity, float flDelay, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, float pValue, int outputId)
@@ -264,7 +264,7 @@ static void EntityAddIOEventFloat(CBaseEntity* pEntity, float flDelay, const cha
     Variant_t variant;
     variant.SetFloat(pValue);
 
-    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay, outputId);
+    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay);
 }
 
 static void EntitySetName(CBaseEntity* pEntity, const char* pszName)
