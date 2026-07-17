@@ -66,7 +66,6 @@ set(modsharp_SOURCES
 	"src/cstrike/interface/CGameEntitySystem.cpp"
 	"src/cstrike/interface/ICvar.cpp"
 	"src/cstrike/interface/IGameRules.cpp"
-	"src/cstrike/interface/IGameServer.cpp"
 	"src/cstrike/interface/IGameSpawnGroupMgr.cpp"
 	"src/cstrike/interface/IGameSystem.cpp"
 	"src/cstrike/interface/IGameTypes.cpp"
