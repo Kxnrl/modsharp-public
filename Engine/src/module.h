@@ -442,6 +442,16 @@ public:
         return false;
     }
 
+    bool IsInModule(uintptr_t address) const
+    {
+        return address >= _base_address && address < (_base_address + _size);
+    }
+
+    bool IsKnownFunctionEntry(std::uintptr_t start)
+    {
+        return std::ranges::binary_search(_function_entries, start, {}, &FunctionEntry::start);
+    }
+
     [[nodiscard]] void* FindStringExactEx(const char* str) override
     {
         return FindString(str, false, true);

@@ -26,11 +26,12 @@ public struct KeyValuesVariantValueItem
 {
     public EntityKeyValuesVariantType Type;
 
-    private bool    _bValue  = false;
-    private int     _iValue  = 0;
-    private float   _flValue = 0;
-    private string? _szValue = null;
-    private nint    _pValue  = nint.Zero;
+    private bool    _bValue   = false;
+    private int     _iValue   = 0;
+    private float   _flValue  = 0;
+    private string? _szValue  = null;
+    private nint    _pValue   = nint.Zero;
+    private ulong   _u64Value = 0;
 
     public static implicit operator KeyValuesVariantValueItem(int value)
         => new (value);
@@ -45,6 +46,9 @@ public struct KeyValuesVariantValueItem
         => new (value);
 
     public static implicit operator KeyValuesVariantValueItem(nint value)
+        => new (value);
+
+    public static implicit operator KeyValuesVariantValueItem(ulong value)
         => new (value);
 
     public KeyValuesVariantValueItem(bool value)
@@ -77,6 +81,12 @@ public struct KeyValuesVariantValueItem
         _szValue = value;
     }
 
+    public KeyValuesVariantValueItem(ulong value)
+    {
+        Type      = EntityKeyValuesVariantType.UInt64;
+        _u64Value = value;
+    }
+
     public bool BoolValue => Type is EntityKeyValuesVariantType.Bool ? _bValue : throw new TypeAccessException("Wrong Type");
 
     public int IntValue => Type is EntityKeyValuesVariantType.Int32 ? _iValue : throw new TypeAccessException("Wrong Type");
@@ -89,4 +99,7 @@ public struct KeyValuesVariantValueItem
 
     public nint PointerValue
         => Type is EntityKeyValuesVariantType.Pointer ? _pValue : throw new TypeAccessException("Wrong Type");
+
+    public ulong UInt64Value
+        => Type is EntityKeyValuesVariantType.UInt64 ? _u64Value : throw new TypeAccessException("Wrong Type");
 }

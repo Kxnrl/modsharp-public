@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;
 using Sharp.Core.Utilities;
@@ -33,6 +34,9 @@ internal partial class WeaponService : PlayerPawnComponent, IWeaponService
 {
     public IBaseWeapon? ActiveWeapon => BaseWeapon.Create(ActiveWeaponHandle.GetEntityPtr());
     public IBaseWeapon? LastWeapon   => BaseWeapon.Create(LastWeaponHandle.GetEntityPtr());
+
+    public void EquipWeapon(IBaseWeapon weapon)
+        => Player.WeaponServicesEquipWeapon(GetAbsPtr(), weapon.GetAbsPtr());
 
 #region Schemas
 

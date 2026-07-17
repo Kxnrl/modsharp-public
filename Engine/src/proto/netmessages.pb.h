@@ -10039,7 +10039,8 @@ class CSVCMsg_VoiceData /*final*/ :
     kAudibleMaskFieldNumber = 5,
     kTickFieldNumber = 6,
     kPassthroughFieldNumber = 7,
-    kClientFieldNumber = 2,
+    kClientDeprecatedFieldNumber = 2,
+    kEntityFieldNumber = 8,
   };
   // optional .CMsgVoiceAudio audio = 1;
   bool has_audio() const;
@@ -10124,17 +10125,30 @@ class CSVCMsg_VoiceData /*final*/ :
   void _internal_set_passthrough(int32_t value);
   public:
 
-  // optional int32 client = 2 [default = -1];
-  bool has_client() const;
+  // optional int32 client_deprecated = 2 [default = -1];
+  bool has_client_deprecated() const;
   private:
-  bool _internal_has_client() const;
+  bool _internal_has_client_deprecated() const;
   public:
-  void clear_client();
-  int32_t client() const;
-  void set_client(int32_t value);
+  void clear_client_deprecated();
+  int32_t client_deprecated() const;
+  void set_client_deprecated(int32_t value);
   private:
-  int32_t _internal_client() const;
-  void _internal_set_client(int32_t value);
+  int32_t _internal_client_deprecated() const;
+  void _internal_set_client_deprecated(int32_t value);
+  public:
+
+  // optional int32 entity = 8 [default = -1];
+  bool has_entity() const;
+  private:
+  bool _internal_has_entity() const;
+  public:
+  void clear_entity();
+  int32_t entity() const;
+  void set_entity(int32_t value);
+  private:
+  int32_t _internal_entity() const;
+  void _internal_set_entity(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:CSVCMsg_VoiceData)
@@ -10153,7 +10167,8 @@ class CSVCMsg_VoiceData /*final*/ :
     int32_t audible_mask_;
     uint32_t tick_;
     int32_t passthrough_;
-    int32_t client_;
+    int32_t client_deprecated_;
+    int32_t entity_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
@@ -15947,6 +15962,7 @@ class CMsgServerUserCmd /*final*/ :
 
   enum : int {
     kDataFieldNumber = 1,
+    kDeltaDataFieldNumber = 6,
     kCmdNumberFieldNumber = 2,
     kServerTickExecutedFieldNumber = 4,
     kClientTickFieldNumber = 5,
@@ -15968,6 +15984,24 @@ class CMsgServerUserCmd /*final*/ :
   const std::string& _internal_data() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_data(const std::string& value);
   std::string* _internal_mutable_data();
+  public:
+
+  // optional bytes delta_data = 6;
+  bool has_delta_data() const;
+  private:
+  bool _internal_has_delta_data() const;
+  public:
+  void clear_delta_data();
+  const std::string& delta_data() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_delta_data(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_delta_data();
+  PROTOBUF_NODISCARD std::string* release_delta_data();
+  void set_allocated_delta_data(std::string* delta_data);
+  private:
+  const std::string& _internal_delta_data() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_delta_data(const std::string& value);
+  std::string* _internal_mutable_delta_data();
   public:
 
   // optional int32 cmd_number = 2;
@@ -16033,6 +16067,7 @@ class CMsgServerUserCmd /*final*/ :
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr data_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr delta_data_;
     int32_t cmd_number_;
     int32_t server_tick_executed_;
     int32_t client_tick_;
@@ -23577,32 +23612,32 @@ inline void CSVCMsg_VoiceData::set_allocated_audio(::CMsgVoiceAudio* audio) {
   // @@protoc_insertion_point(field_set_allocated:CSVCMsg_VoiceData.audio)
 }
 
-// optional int32 client = 2 [default = -1];
-inline bool CSVCMsg_VoiceData::_internal_has_client() const {
+// optional int32 client_deprecated = 2 [default = -1];
+inline bool CSVCMsg_VoiceData::_internal_has_client_deprecated() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
-inline bool CSVCMsg_VoiceData::has_client() const {
-  return _internal_has_client();
+inline bool CSVCMsg_VoiceData::has_client_deprecated() const {
+  return _internal_has_client_deprecated();
 }
-inline void CSVCMsg_VoiceData::clear_client() {
-  _impl_.client_ = -1;
+inline void CSVCMsg_VoiceData::clear_client_deprecated() {
+  _impl_.client_deprecated_ = -1;
   _impl_._has_bits_[0] &= ~0x00000040u;
 }
-inline int32_t CSVCMsg_VoiceData::_internal_client() const {
-  return _impl_.client_;
+inline int32_t CSVCMsg_VoiceData::_internal_client_deprecated() const {
+  return _impl_.client_deprecated_;
 }
-inline int32_t CSVCMsg_VoiceData::client() const {
-  // @@protoc_insertion_point(field_get:CSVCMsg_VoiceData.client)
-  return _internal_client();
+inline int32_t CSVCMsg_VoiceData::client_deprecated() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_VoiceData.client_deprecated)
+  return _internal_client_deprecated();
 }
-inline void CSVCMsg_VoiceData::_internal_set_client(int32_t value) {
+inline void CSVCMsg_VoiceData::_internal_set_client_deprecated(int32_t value) {
   _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.client_ = value;
+  _impl_.client_deprecated_ = value;
 }
-inline void CSVCMsg_VoiceData::set_client(int32_t value) {
-  _internal_set_client(value);
-  // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.client)
+inline void CSVCMsg_VoiceData::set_client_deprecated(int32_t value) {
+  _internal_set_client_deprecated(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.client_deprecated)
 }
 
 // optional bool proximity = 3;
@@ -23743,6 +23778,34 @@ inline void CSVCMsg_VoiceData::_internal_set_passthrough(int32_t value) {
 inline void CSVCMsg_VoiceData::set_passthrough(int32_t value) {
   _internal_set_passthrough(value);
   // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.passthrough)
+}
+
+// optional int32 entity = 8 [default = -1];
+inline bool CSVCMsg_VoiceData::_internal_has_entity() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CSVCMsg_VoiceData::has_entity() const {
+  return _internal_has_entity();
+}
+inline void CSVCMsg_VoiceData::clear_entity() {
+  _impl_.entity_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline int32_t CSVCMsg_VoiceData::_internal_entity() const {
+  return _impl_.entity_;
+}
+inline int32_t CSVCMsg_VoiceData::entity() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_VoiceData.entity)
+  return _internal_entity();
+}
+inline void CSVCMsg_VoiceData::_internal_set_entity(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.entity_ = value;
+}
+inline void CSVCMsg_VoiceData::set_entity(int32_t value) {
+  _internal_set_entity(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.entity)
 }
 
 // -------------------------------------------------------------------
@@ -28000,7 +28063,7 @@ inline void CMsgServerUserCmd::set_allocated_data(std::string* data) {
 
 // optional int32 cmd_number = 2;
 inline bool CMsgServerUserCmd::_internal_has_cmd_number() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CMsgServerUserCmd::has_cmd_number() const {
@@ -28008,7 +28071,7 @@ inline bool CMsgServerUserCmd::has_cmd_number() const {
 }
 inline void CMsgServerUserCmd::clear_cmd_number() {
   _impl_.cmd_number_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline int32_t CMsgServerUserCmd::_internal_cmd_number() const {
   return _impl_.cmd_number_;
@@ -28018,7 +28081,7 @@ inline int32_t CMsgServerUserCmd::cmd_number() const {
   return _internal_cmd_number();
 }
 inline void CMsgServerUserCmd::_internal_set_cmd_number(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.cmd_number_ = value;
 }
 inline void CMsgServerUserCmd::set_cmd_number(int32_t value) {
@@ -28028,7 +28091,7 @@ inline void CMsgServerUserCmd::set_cmd_number(int32_t value) {
 
 // optional int32 player_slot = 3 [default = -1];
 inline bool CMsgServerUserCmd::_internal_has_player_slot() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CMsgServerUserCmd::has_player_slot() const {
@@ -28036,7 +28099,7 @@ inline bool CMsgServerUserCmd::has_player_slot() const {
 }
 inline void CMsgServerUserCmd::clear_player_slot() {
   _impl_.player_slot_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int32_t CMsgServerUserCmd::_internal_player_slot() const {
   return _impl_.player_slot_;
@@ -28046,7 +28109,7 @@ inline int32_t CMsgServerUserCmd::player_slot() const {
   return _internal_player_slot();
 }
 inline void CMsgServerUserCmd::_internal_set_player_slot(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.player_slot_ = value;
 }
 inline void CMsgServerUserCmd::set_player_slot(int32_t value) {
@@ -28056,7 +28119,7 @@ inline void CMsgServerUserCmd::set_player_slot(int32_t value) {
 
 // optional int32 server_tick_executed = 4;
 inline bool CMsgServerUserCmd::_internal_has_server_tick_executed() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CMsgServerUserCmd::has_server_tick_executed() const {
@@ -28064,7 +28127,7 @@ inline bool CMsgServerUserCmd::has_server_tick_executed() const {
 }
 inline void CMsgServerUserCmd::clear_server_tick_executed() {
   _impl_.server_tick_executed_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline int32_t CMsgServerUserCmd::_internal_server_tick_executed() const {
   return _impl_.server_tick_executed_;
@@ -28074,7 +28137,7 @@ inline int32_t CMsgServerUserCmd::server_tick_executed() const {
   return _internal_server_tick_executed();
 }
 inline void CMsgServerUserCmd::_internal_set_server_tick_executed(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.server_tick_executed_ = value;
 }
 inline void CMsgServerUserCmd::set_server_tick_executed(int32_t value) {
@@ -28084,7 +28147,7 @@ inline void CMsgServerUserCmd::set_server_tick_executed(int32_t value) {
 
 // optional int32 client_tick = 5;
 inline bool CMsgServerUserCmd::_internal_has_client_tick() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CMsgServerUserCmd::has_client_tick() const {
@@ -28092,7 +28155,7 @@ inline bool CMsgServerUserCmd::has_client_tick() const {
 }
 inline void CMsgServerUserCmd::clear_client_tick() {
   _impl_.client_tick_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline int32_t CMsgServerUserCmd::_internal_client_tick() const {
   return _impl_.client_tick_;
@@ -28102,12 +28165,80 @@ inline int32_t CMsgServerUserCmd::client_tick() const {
   return _internal_client_tick();
 }
 inline void CMsgServerUserCmd::_internal_set_client_tick(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.client_tick_ = value;
 }
 inline void CMsgServerUserCmd::set_client_tick(int32_t value) {
   _internal_set_client_tick(value);
   // @@protoc_insertion_point(field_set:CMsgServerUserCmd.client_tick)
+}
+
+// optional bytes delta_data = 6;
+inline bool CMsgServerUserCmd::_internal_has_delta_data() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgServerUserCmd::has_delta_data() const {
+  return _internal_has_delta_data();
+}
+inline void CMsgServerUserCmd::clear_delta_data() {
+  _impl_.delta_data_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CMsgServerUserCmd::delta_data() const {
+  // @@protoc_insertion_point(field_get:CMsgServerUserCmd.delta_data)
+  return _internal_delta_data();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgServerUserCmd::set_delta_data(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.delta_data_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgServerUserCmd.delta_data)
+}
+inline std::string* CMsgServerUserCmd::mutable_delta_data() {
+  std::string* _s = _internal_mutable_delta_data();
+  // @@protoc_insertion_point(field_mutable:CMsgServerUserCmd.delta_data)
+  return _s;
+}
+inline const std::string& CMsgServerUserCmd::_internal_delta_data() const {
+  return _impl_.delta_data_.Get();
+}
+inline void CMsgServerUserCmd::_internal_set_delta_data(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.delta_data_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgServerUserCmd::_internal_mutable_delta_data() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.delta_data_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgServerUserCmd::release_delta_data() {
+  // @@protoc_insertion_point(field_release:CMsgServerUserCmd.delta_data)
+  if (!_internal_has_delta_data()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.delta_data_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.delta_data_.IsDefault()) {
+    _impl_.delta_data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgServerUserCmd::set_allocated_delta_data(std::string* delta_data) {
+  if (delta_data != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.delta_data_.SetAllocated(delta_data, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.delta_data_.IsDefault()) {
+    _impl_.delta_data_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgServerUserCmd.delta_data)
 }
 
 // -------------------------------------------------------------------

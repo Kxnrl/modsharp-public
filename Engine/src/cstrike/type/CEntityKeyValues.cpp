@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -160,5 +160,13 @@ void CEntityKeyValues::SetPointer(const CHashKey& key, void* value, bool as_attr
     if (auto kv = FindOrCreateKeyValues(key))
     {
         kv->SetPointer(value);
+    }
+}
+
+void CEntityKeyValues::SetUInt64(const CHashKey& key, uint64_t value, bool as_attribute)
+{
+    if (auto kv = FindOrCreateKeyValues(key))
+    {
+        kv->SetUInt64(value);
     }
 }

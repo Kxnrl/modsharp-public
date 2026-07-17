@@ -501,13 +501,13 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
 
             if (pPrimaryWeapon)
             {
-                pPrimaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri, 0);
-                pPrimaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec, 0);
+                pPrimaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri);
+                pPrimaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec);
             }
             if (pSecondaryWeapon)
             {
-                pSecondaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri, 0);
-                pSecondaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec, 0);
+                pSecondaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri);
+                pSecondaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec);
             }
 
             continue;

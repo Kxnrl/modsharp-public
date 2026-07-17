@@ -1,12 +1,5 @@
 {
   "Addresses": {
-    // 搜 "Unsupported version %d for resource '%s' (Expected %d)\n" 
-    // 往上会有判断a2 (CBufferString) 为valid的条件里调用的函数就是 CResourceNameTyped::ResolveResourceName
-    "CResourceNameTyped::ResolveResourceName": {
-      "library": "resourcesystem",
-      "linux": "55 48 89 F2",
-      "windows": "48 89 5C 24 ? 57 48 83 EC ? 8B 41 ? 48 8D 79"
-    },
     // str "CNetChan::SendNetMessage: SerializeAbstract for message %s failed!\n"
     "INetChannel::SendNetMessage": {
       "library": "networksystem",
@@ -28,12 +21,6 @@
           "WARNING: Lua unable to create VM\n"
         ]
       }
-    },
-    // 搜 "No DATA block for resource\n", 上面的 if 判断里调用的函数就是LoadCompiledResource
-    "Resource_FindBlockInfo": {
-      "library": "resourcesystem",
-      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 66 0F EF C0 48 89 E5 41 57 41 56 41 55 41 54 53",
-      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 45 33 C9"
     }
   },
   "VFuncs": {
@@ -42,7 +29,7 @@
       "windows": 7
     },
     // server.dll -> xref 'sv_phys_stop_at_collision' 最上面的 __fastcall
-    "CVPhys2World::GetTouchingList": {
+    "CVPhys2World::GenerateIntersectionNotifications": {
       "linux": 121,
       "windows": 121
     },
@@ -53,8 +40,8 @@
     // IGameTypes
     // in CreateEndMapVote with g_pGameTypes
     "IGameTypes::GetMapGroupMapList": {
-      "linux": 62,
-      "windows": 61
+      "linux": 64,
+      "windows": 63
     },
     "INetworkServerService::StartupServer": {
       "linux": 27,

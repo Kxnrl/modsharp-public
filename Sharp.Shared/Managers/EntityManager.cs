@@ -182,6 +182,13 @@ public interface IEntityManager
     T? CreateEntityByName<T>(string classname) where T : class, IBaseEntity;
 
     /// <summary>
+    ///     Create a trigger_multiple entity
+    /// </summary>
+    /// <param name="origin">Origin coordinates</param>
+    /// <param name="mins">Collision mins</param>
+    /// <param name="maxs">Collision maxs</param>
+    IBaseEntity? CreateTrigger(Vector origin, Vector mins, Vector maxs);
+    /// <summary>
     ///     Create persistent CString in game
     /// </summary>
     CUtlSymbolLarge AllocPooledString(string content);

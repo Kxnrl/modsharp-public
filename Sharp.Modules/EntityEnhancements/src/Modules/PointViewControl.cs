@@ -57,7 +57,9 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
     private readonly ILogger<PointViewControl> _logger;
     private readonly IModSharp                 _modSharp;
+    private readonly ILibraryModule            _server;
     private readonly IEntityManager            _entityManager;
+    private readonly IGameData                 _gameData;
 
     private readonly Dictionary<IBaseEntity, ViewControlEntity> _viewControlEntities;
 
@@ -71,6 +73,8 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
         _logger        = sharedSystem.GetLoggerFactory().CreateLogger<PointViewControl>();
         _modSharp      = sharedSystem.GetModSharp();
         _entityManager = sharedSystem.GetEntityManager();
+        _server        = sharedSystem.GetLibraryModuleManager().Server;
+        _gameData      = _modSharp.GetGameData();
 
         _viewControlEntities = [];
 
@@ -94,20 +98,46 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
         _entityManager.HookEntityInput(Class, "EnableCameraAll");
         _entityManager.HookEntityInput(Class, "DisableCameraAll");
 
+        var CBasePlayerPawn_vtable = _server.GetVirtualTableByName("CBasePlayerPawn");
+
+        if (CBasePlayerPawn_vtable == nint.Zero)
+        {
+            _logger.LogError("Failed to find vtable CBasePlayerPawn");
+
+            return;
+        }
+
+        if (!_gameData.GetVFuncIndex("CBaseEntity::GetEyePosition", out var eyePositionOffset))
+        {
+            _logger.LogError("Failed to get vfunc index CBaseEntity::GetEyePosition");
+
+            return;
+        }
+
+        if (!_gameData.GetVFuncIndex("CBaseEntity::GetEyeAngles", out var eyeAnglesOffset))
+        {
+            _logger.LogError("Failed to get vfunc index CBaseEntity::GetEyeAngles");
+
+            return;
+        }
+
+        var getEyePositionAddress = *(nint*) (CBasePlayerPawn_vtable + sizeof(void*) * eyePositionOffset);
+        var getEyeAnglesAddress   = *(nint*) (CBasePlayerPawn_vtable + sizeof(void*) * eyeAnglesOffset);
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            _hookEyePosition.Prepare("CBasePlayerPawn::GetEyePosition",
+            _hookEyePosition.Prepare(getEyePositionAddress,
                                      (nint) (delegate* unmanaged<nint, Vector*, Vector*>) (&WindowsGetEyePosition));
 
-            _hookEyeAngles.Prepare("CBasePlayerPawn::GetEyeAngles",
+            _hookEyeAngles.Prepare(getEyeAnglesAddress,
                                    (nint) (delegate* unmanaged<nint, Vector*, Vector*>) (&WindowsGetEyeAngles));
         }
         else
         {
-            _hookEyePosition.Prepare("CBasePlayerPawn::GetEyePosition",
+            _hookEyePosition.Prepare(getEyePositionAddress,
                                      (nint) (delegate* unmanaged<nint, Vector>) (&LinuxGetEyePosition));
 
-            _hookEyeAngles.Prepare("CBasePlayerPawn::GetEyeAngles",
+            _hookEyeAngles.Prepare(getEyeAnglesAddress,
                                    (nint) (delegate* unmanaged<nint, Vector>) (&LinuxGetEyeAngles));
         }
 
@@ -536,11 +566,15 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEP;
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEA;
 
+    private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
+        => (pawn.IsAlive && _sInstance.IsViewControl(pawn))
+           || pawn.GetCameraService()?.ViewEntity?.GetAbsPtr() == pEntity;
+
     [UnmanagedCallersOnly]
     private static unsafe Vector* WindowsGetEyePosition(nint pEntity, Vector* pRet)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
-            && _sInstance.IsViewControl(pawn))
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+            && ShouldOverrideEye(pawn, pEntity))
         {
             var position = pawn.GetAbsOrigin() + pawn.ViewOffset;
             pRet->X = position.X;
@@ -556,8 +590,8 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector* WindowsGetEyeAngles(nint pEntity, Vector* pRet)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
-            && _sInstance.IsViewControl(pawn))
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+            && ShouldOverrideEye(pawn, pEntity))
         {
             var angles = pawn.GetNetVar<Vector>("v_angle");
             pRet->X = angles.X;
@@ -573,8 +607,8 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector LinuxGetEyePosition(nint pEntity)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
-            && _sInstance.IsViewControl(pawn))
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+            && ShouldOverrideEye(pawn, pEntity))
         {
             return pawn.GetAbsOrigin() + pawn.ViewOffset;
         }
@@ -585,8 +619,8 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector LinuxGetEyeAngles(nint pEntity)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { IsAlive: true } pawn
-            && _sInstance.IsViewControl(pawn))
+        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+            && ShouldOverrideEye(pawn, pEntity))
         {
             return pawn.GetNetVar<Vector>("v_angle");
         }

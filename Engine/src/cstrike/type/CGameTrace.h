@@ -367,25 +367,29 @@ static_assert(sizeof(RnCollisionAttr_t) == 40);
 class /*alignas(16)*/ CGameTrace
 {
 public:
-    CPhysSurfaceProp* m_pSurface;         //  0
-    CBaseEntity*      m_pHitEntity;       //  8
-    CHitBoxData*      m_pHitBoxData;      // 16
-    void*             m_pPhysicsBody;     // 24
-    void*             m_pPhysicsShape;    // 32
-    uint32_t          m_nContents;        // 40
-    CTransform        m_BodyTransform;    // 44
-    RnCollisionAttr_t m_ShapeAttributes;  // 80
-    Vector            m_vStartPos;        // 120
-    Vector            m_vEndPos;          // 132
-    Vector            m_vPlaneNormal;     // 144
-    Vector            m_vHitPoint;        // 156
-    float             m_flHitOffset;      // 168
-    float             m_flFraction;       // 172
-    int32_t           m_nTriangle;        // 176
-    int16_t           m_nHitBoxBoneIndex; // 180
-    RayType_t         m_eRayType;         // 182
-    bool              m_bStartInSolid;    // 184
-    bool              m_bExactHitPoint;   // 188
+    CPhysSurfaceProp* m_pSurface;        //  0
+    CBaseEntity*      m_pHitEntity;      //  8
+    CHitBoxData*      m_pHitBoxData;     // 16
+    void*             m_pPhysicsBody;    // 24
+    void*             m_pPhysicsShape;   // 32
+    uint32_t          m_nContents;       // 40
+    CTransform        m_BodyTransform;   // 44
+    RnCollisionAttr_t m_ShapeAttributes; // 80
+    Vector            m_vStartPos;       // 120
+    Vector            m_vEndPos;         // 132
+    Vector            m_vPlaneNormal;    // 144
+    Vector            m_vHitPoint;       // 156
+    float             m_flHitOffset;     // 168
+    float             m_flFraction;      // 172
+private:
+    int m_unk;
+
+public:
+    int32_t   m_nTriangle;        // 180
+    int16_t   m_nHitBoxBoneIndex; // 184
+    RayType_t m_eRayType;         // 186
+    bool      m_bStartInSolid;    // 187
+    bool      m_bExactHitPoint;   // 188
 
 public:
     [[nodiscard]] CBaseEntity*      GetHitEntity() const { return m_pHitEntity; }
@@ -425,6 +429,7 @@ public:
         m_flHitOffset      = 0.0f;
         m_flFraction       = 1.0f;
         m_nTriangle        = -1;
+        m_unk              = -1;
         m_nHitBoxBoneIndex = -1;
         m_eRayType         = RAY_TYPE_LINE;
         m_bStartInSolid    = false;
@@ -436,9 +441,9 @@ static_assert(sizeof(CGameTrace) == 192);
 static_assert(offsetof(CGameTrace, m_vStartPos) == 120);
 static_assert(offsetof(CGameTrace, m_vEndPos) == 132);
 static_assert(offsetof(CGameTrace, m_flFraction) == 172);
-static_assert(offsetof(CGameTrace, m_eRayType) == 182);
-static_assert(offsetof(CGameTrace, m_bStartInSolid) == 183);
-static_assert(offsetof(CGameTrace, m_bExactHitPoint) == 184);
+static_assert(offsetof(CGameTrace, m_eRayType) == 186);
+static_assert(offsetof(CGameTrace, m_bStartInSolid) == 187);
+static_assert(offsetof(CGameTrace, m_bExactHitPoint) == 188);
 #endif // PLATFORM_WINDOWS
 
 struct RnQueryShapeAttr_t

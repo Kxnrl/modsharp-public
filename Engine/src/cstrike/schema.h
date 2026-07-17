@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -106,7 +106,7 @@ void*     FindDataMapInputFunc(const char* className, const char* fieldName);
 class CBaseEntity;
 void NetworkStateChanged(uintptr_t chainEntity, uint32_t offset, uint32_t nArrayIndex = -1, uint32_t nPathIndex = -1);
 void SetStateChanged(CBaseEntity* pEntity, uint32_t offset, uint32_t nArrayIndex = -1, uint32_t nPathIndex = -1);
-void SetStructStateChanged(void* pEntity, uint32_t offset);
+void SetStructStateChanged(void* pStructObject, uint32_t offset, int32_t nVFuncIndex);
 
 // for coreclr
 void InitSchemaSystem();

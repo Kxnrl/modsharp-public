@@ -95,6 +95,9 @@ internal abstract partial class BasePlayerPawn : BaseCombatCharacter, IBasePlaye
     public unsafe Vector GetEyePosition()
         => *Entity.GetEyePosition(_this);
 
+    public unsafe void SnapViewAngles(Vector angles)
+        => Entity.SnapViewAngles(_this, &angles);
+
     public unsafe SoundOpEventGuid EmitSoundClient(string sound, float? volume = null)
         => Player.PawnEmitSoundClient(_this, sound, &volume);
 

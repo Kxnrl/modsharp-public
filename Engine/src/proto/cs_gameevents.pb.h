@@ -1301,6 +1301,7 @@ class CMsgPlayerBulletHit /*final*/ :
     kDamageFieldNumber = 5,
     kPenetrationCountFieldNumber = 6,
     kIsKillFieldNumber = 7,
+    kThroughSmokeFieldNumber = 8,
     kAttackerSlotFieldNumber = 1,
     kVictimSlotFieldNumber = 2,
   };
@@ -1374,6 +1375,19 @@ class CMsgPlayerBulletHit /*final*/ :
   void _internal_set_is_kill(bool value);
   public:
 
+  // optional bool through_smoke = 8;
+  bool has_through_smoke() const;
+  private:
+  bool _internal_has_through_smoke() const;
+  public:
+  void clear_through_smoke();
+  bool through_smoke() const;
+  void set_through_smoke(bool value);
+  private:
+  bool _internal_through_smoke() const;
+  void _internal_set_through_smoke(bool value);
+  public:
+
   // optional int32 attacker_slot = 1 [default = -1];
   bool has_attacker_slot() const;
   private:
@@ -1415,6 +1429,7 @@ class CMsgPlayerBulletHit /*final*/ :
     int32_t damage_;
     int32_t penetration_count_;
     bool is_kill_;
+    bool through_smoke_;
     int32_t attacker_slot_;
     int32_t victim_slot_;
   };
@@ -2616,7 +2631,7 @@ inline void CMsgTEFireBullets::set_allocated_extra(::CMsgTEFireBullets_Extra* ex
 
 // optional int32 attacker_slot = 1 [default = -1];
 inline bool CMsgPlayerBulletHit::_internal_has_attacker_slot() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CMsgPlayerBulletHit::has_attacker_slot() const {
@@ -2624,7 +2639,7 @@ inline bool CMsgPlayerBulletHit::has_attacker_slot() const {
 }
 inline void CMsgPlayerBulletHit::clear_attacker_slot() {
   _impl_.attacker_slot_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline int32_t CMsgPlayerBulletHit::_internal_attacker_slot() const {
   return _impl_.attacker_slot_;
@@ -2634,7 +2649,7 @@ inline int32_t CMsgPlayerBulletHit::attacker_slot() const {
   return _internal_attacker_slot();
 }
 inline void CMsgPlayerBulletHit::_internal_set_attacker_slot(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.attacker_slot_ = value;
 }
 inline void CMsgPlayerBulletHit::set_attacker_slot(int32_t value) {
@@ -2644,7 +2659,7 @@ inline void CMsgPlayerBulletHit::set_attacker_slot(int32_t value) {
 
 // optional int32 victim_slot = 2 [default = -1];
 inline bool CMsgPlayerBulletHit::_internal_has_victim_slot() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CMsgPlayerBulletHit::has_victim_slot() const {
@@ -2652,7 +2667,7 @@ inline bool CMsgPlayerBulletHit::has_victim_slot() const {
 }
 inline void CMsgPlayerBulletHit::clear_victim_slot() {
   _impl_.victim_slot_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline int32_t CMsgPlayerBulletHit::_internal_victim_slot() const {
   return _impl_.victim_slot_;
@@ -2662,7 +2677,7 @@ inline int32_t CMsgPlayerBulletHit::victim_slot() const {
   return _internal_victim_slot();
 }
 inline void CMsgPlayerBulletHit::_internal_set_victim_slot(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.victim_slot_ = value;
 }
 inline void CMsgPlayerBulletHit::set_victim_slot(int32_t value) {
@@ -2867,6 +2882,34 @@ inline void CMsgPlayerBulletHit::_internal_set_is_kill(bool value) {
 inline void CMsgPlayerBulletHit::set_is_kill(bool value) {
   _internal_set_is_kill(value);
   // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.is_kill)
+}
+
+// optional bool through_smoke = 8;
+inline bool CMsgPlayerBulletHit::_internal_has_through_smoke() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgPlayerBulletHit::has_through_smoke() const {
+  return _internal_has_through_smoke();
+}
+inline void CMsgPlayerBulletHit::clear_through_smoke() {
+  _impl_.through_smoke_ = false;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline bool CMsgPlayerBulletHit::_internal_through_smoke() const {
+  return _impl_.through_smoke_;
+}
+inline bool CMsgPlayerBulletHit::through_smoke() const {
+  // @@protoc_insertion_point(field_get:CMsgPlayerBulletHit.through_smoke)
+  return _internal_through_smoke();
+}
+inline void CMsgPlayerBulletHit::_internal_set_through_smoke(bool value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.through_smoke_ = value;
+}
+inline void CMsgPlayerBulletHit::set_through_smoke(bool value) {
+  _internal_set_through_smoke(value);
+  // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.through_smoke)
 }
 
 #ifdef __GNUC__

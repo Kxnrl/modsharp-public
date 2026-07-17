@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -185,9 +185,9 @@ static void EntitySetStateChanged(CBaseEntity* pEntity, uint16_t offset)
     SetStateChanged(pEntity, offset);
 }
 
-static void EntitySetStructStateChanged(void* pEntity, uint16_t offset)
+static void EntitySetStructStateChanged(void* pStructObject, uint16_t offset, int32_t vFuncIndex)
 {
-    SetStructStateChanged(pEntity, offset);
+    SetStructStateChanged(pStructObject, offset, vFuncIndex);
 }
 
 static bool EntityAcceptInput(CBaseEntity* pEntity, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const char* pValue, int outputId)
@@ -200,7 +200,7 @@ static bool EntityAcceptInput(CBaseEntity* pEntity, const char* pInput, CBaseEnt
     Variant_t variant;
     if (pValue != nullptr)
         variant.SetString(pValue);
-    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant, outputId);
+    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant);
 }
 
 static bool EntityAcceptInputInt(CBaseEntity* pEntity, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, int pValue, int outputId)
@@ -212,7 +212,7 @@ static bool EntityAcceptInputInt(CBaseEntity* pEntity, const char* pInput, CBase
 
     Variant_t variant;
     variant.SetInt(pValue);
-    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant, outputId);
+    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant);
 }
 
 static bool EntityAcceptInputFloat(CBaseEntity* pEntity, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, float pValue, int outputId)
@@ -224,7 +224,7 @@ static bool EntityAcceptInputFloat(CBaseEntity* pEntity, const char* pInput, CBa
 
     Variant_t variant;
     variant.SetFloat(pValue);
-    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant, outputId);
+    return pEntity->AcceptInput(pInput, pActivator, pCaller, variant);
 }
 
 static void EntityAddIOEvent(CBaseEntity* pEntity, float flDelay, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, const char* pValue, int outputId)
@@ -238,7 +238,7 @@ static void EntityAddIOEvent(CBaseEntity* pEntity, float flDelay, const char* pI
     if (pValue != nullptr)
         variant.SetString(pValue);
 
-    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay, outputId);
+    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay);
 }
 
 static void EntityAddIOEventInt(CBaseEntity* pEntity, float flDelay, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, int pValue, int outputId)
@@ -251,7 +251,7 @@ static void EntityAddIOEventInt(CBaseEntity* pEntity, float flDelay, const char*
     Variant_t variant;
     variant.SetInt(pValue);
 
-    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay, outputId);
+    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay);
 }
 
 static void EntityAddIOEventFloat(CBaseEntity* pEntity, float flDelay, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, float pValue, int outputId)
@@ -264,7 +264,7 @@ static void EntityAddIOEventFloat(CBaseEntity* pEntity, float flDelay, const cha
     Variant_t variant;
     variant.SetFloat(pValue);
 
-    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay, outputId);
+    g_pGameEntitySystem->AddEntityIOEvent(pEntity, pInput, pActivator, pCaller, &variant, flDelay);
 }
 
 static void EntitySetName(CBaseEntity* pEntity, const char* pszName)
@@ -330,6 +330,16 @@ static const QAngle& EntityGetEyeAngles(CBaseEntity* pEntity)
 static const Vector& EntityGetEyePosition(CBaseEntity* pEntity)
 {
     return pEntity->GetEyePosition();
+}
+
+static void EntitySnapViewAngles(CBasePlayerPawn* pEntity, QAngle* angles)
+{
+    address::server::CBasePlayerPawn_SnapViewAngles(pEntity, angles);
+}
+
+static CBaseEntity* EntityCreateTrigger(Vector* origin, Vector* mins, Vector* maxs)
+{
+    return static_cast<CBaseEntity*>(address::server::CreateTriggerInternal(origin, mins, maxs));
 }
 
 static const QAngle& EntityGetAbsAngles(CBaseEntity* pEntity)
@@ -477,6 +487,7 @@ void Init()
     bridge::CreateNative("Entity.SpawnEntitySync", reinterpret_cast<void*>(SpawnEntitySync));
     bridge::CreateNative("Entity.CreateByName", reinterpret_cast<void*>(CreateEntityByName));
     bridge::CreateNative("Entity.AllocPooledString", reinterpret_cast<void*>(AllocPooledString));
+    bridge::CreateNative("Entity.CreateTrigger", reinterpret_cast<void*>(EntityCreateTrigger));
     bridge::CreateNative("Entity.HookOutput", reinterpret_cast<void*>(HookEntityOutput));
     bridge::CreateNative("Entity.HookInput", reinterpret_cast<void*>(HookEntityInput));
 
@@ -513,6 +524,7 @@ void Init()
     bridge::CreateNative("Entity.GetCenter", reinterpret_cast<void*>(EntityGetCenter));
     bridge::CreateNative("Entity.GetEyeAngles", reinterpret_cast<void*>(EntityGetEyeAngles));
     bridge::CreateNative("Entity.GetEyePosition", reinterpret_cast<void*>(EntityGetEyePosition));
+    bridge::CreateNative("Entity.SnapViewAngles", reinterpret_cast<void*>(EntitySnapViewAngles));
     bridge::CreateNative("Entity.GetAbsAngles", reinterpret_cast<void*>(EntityGetAbsAngles));
     bridge::CreateNative("Entity.SetAbsAngles", reinterpret_cast<void*>(EntitySetAbsAngles));
     bridge::CreateNative("Entity.GetAbsOrigin", reinterpret_cast<void*>(EntityGetAbsOrigin));

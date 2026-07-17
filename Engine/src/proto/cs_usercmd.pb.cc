@@ -198,44 +198,47 @@ static const ::_pb::Message* const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_cs_5fusercmd_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\020cs_usercmd.proto\032\026networkbasetypes.pro"
-  "to\032\rusercmd.proto\"V\n\027CSGOInterpolationIn"
-  "foPB\022\024\n\010src_tick\030\001 \001(\005:\002-1\022\024\n\010dst_tick\030\002"
-  " \001(\005:\002-1\022\017\n\004frac\030\003 \001(\002:\0010\"-\n\032CSGOInterpo"
-  "lationInfoPB_CL\022\017\n\004frac\030\003 \001(\002:\0010\"\305\004\n\027CSG"
-  "OInputHistoryEntryPB\022 \n\013view_angles\030\002 \001("
-  "\0132\013.CMsgQAngle\022\031\n\021render_tick_count\030\004 \001("
-  "\005\022\034\n\024render_tick_fraction\030\005 \001(\002\022\031\n\021playe"
-  "r_tick_count\030\006 \001(\005\022\034\n\024player_tick_fracti"
-  "on\030\007 \001(\002\022.\n\tcl_interp\030\014 \001(\0132\033.CSGOInterp"
-  "olationInfoPB_CL\022,\n\nsv_interp0\030\r \001(\0132\030.C"
-  "SGOInterpolationInfoPB\022,\n\nsv_interp1\030\016 \001"
-  "(\0132\030.CSGOInterpolationInfoPB\022/\n\rplayer_i"
-  "nterp\030\017 \001(\0132\030.CSGOInterpolationInfoPB\022\024\n"
-  "\014frame_number\030@ \001(\005\022\034\n\020target_ent_index\030"
-  "A \001(\005:\002-1\022#\n\016shoot_position\030B \001(\0132\013.CMsg"
-  "Vector\022*\n\025target_head_pos_check\030C \001(\0132\013."
-  "CMsgVector\022)\n\024target_abs_pos_check\030D \001(\013"
-  "2\013.CMsgVector\022)\n\024target_abs_ang_check\030E "
-  "\001(\0132\013.CMsgQAngle\"\325\002\n\rCSGOUserCmdPB\022\035\n\004ba"
-  "se\030\001 \001(\0132\017.CBaseUserCmdPB\022/\n\rinput_histo"
-  "ry\030\002 \003(\0132\030.CSGOInputHistoryEntryPB\022\'\n\033at"
-  "tack1_start_history_index\030\006 \001(\005:\002-1\022\'\n\033a"
-  "ttack2_start_history_index\030\007 \001(\005:\002-1\022 \n\021"
-  "left_hand_desired\030\t \001(\010:\005false\022)\n\032is_pre"
-  "dicting_body_shot_fx\030\013 \001(\010:\005false\022)\n\032is_"
-  "predicting_head_shot_fx\030\014 \001(\010:\005false\022*\n\033"
-  "is_predicting_kill_ragdolls\030\r \001(\010:\005false"
+  "\n\020cs_usercmd.proto\032\025valveextensions.prot"
+  "o\032\026networkbasetypes.proto\032\rusercmd.proto"
+  "\"\\\n\027CSGOInterpolationInfoPB\022\024\n\010src_tick\030"
+  "\001 \001(\005:\002-1\022\024\n\010dst_tick\030\002 \001(\005:\002-1\022\017\n\004frac\030"
+  "\003 \001(\002:\0010:\004\300\344\035\001\"3\n\032CSGOInterpolationInfoP"
+  "B_CL\022\017\n\004frac\030\003 \001(\002:\0010:\004\300\344\035\001\"\313\004\n\027CSGOInpu"
+  "tHistoryEntryPB\022 \n\013view_angles\030\002 \001(\0132\013.C"
+  "MsgQAngle\022\031\n\021render_tick_count\030\004 \001(\005\022\034\n\024"
+  "render_tick_fraction\030\005 \001(\002\022\031\n\021player_tic"
+  "k_count\030\006 \001(\005\022\034\n\024player_tick_fraction\030\007 "
+  "\001(\002\022.\n\tcl_interp\030\014 \001(\0132\033.CSGOInterpolati"
+  "onInfoPB_CL\022,\n\nsv_interp0\030\r \001(\0132\030.CSGOIn"
+  "terpolationInfoPB\022,\n\nsv_interp1\030\016 \001(\0132\030."
+  "CSGOInterpolationInfoPB\022/\n\rplayer_interp"
+  "\030\017 \001(\0132\030.CSGOInterpolationInfoPB\022\024\n\014fram"
+  "e_number\030@ \001(\005\022\034\n\020target_ent_index\030A \001(\005"
+  ":\002-1\022#\n\016shoot_position\030B \001(\0132\013.CMsgVecto"
+  "r\022*\n\025target_head_pos_check\030C \001(\0132\013.CMsgV"
+  "ector\022)\n\024target_abs_pos_check\030D \001(\0132\013.CM"
+  "sgVector\022)\n\024target_abs_ang_check\030E \001(\0132\013"
+  ".CMsgQAngle:\004\300\344\035\001\"\333\002\n\rCSGOUserCmdPB\022\035\n\004b"
+  "ase\030\001 \001(\0132\017.CBaseUserCmdPB\022/\n\rinput_hist"
+  "ory\030\002 \003(\0132\030.CSGOInputHistoryEntryPB\022\'\n\033a"
+  "ttack1_start_history_index\030\006 \001(\005:\002-1\022\'\n\033"
+  "attack2_start_history_index\030\007 \001(\005:\002-1\022 \n"
+  "\021left_hand_desired\030\t \001(\010:\005false\022)\n\032is_pr"
+  "edicting_body_shot_fx\030\013 \001(\010:\005false\022)\n\032is"
+  "_predicting_head_shot_fx\030\014 \001(\010:\005false\022*\n"
+  "\033is_predicting_kill_ragdolls\030\r \001(\010:\005fals"
+  "e:\004\300\344\035\001"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eproto_deps[2] = {
+static const ::_pbi::DescriptorTable* const descriptor_table_cs_5fusercmd_2eproto_deps[3] = {
   &::descriptor_table_networkbasetypes_2eproto,
   &::descriptor_table_usercmd_2eproto,
+  &::descriptor_table_valveextensions_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_cs_5fusercmd_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cs_5fusercmd_2eproto = {
-    false, false, 1120, descriptor_table_protodef_cs_5fusercmd_2eproto,
+    false, false, 1167, descriptor_table_protodef_cs_5fusercmd_2eproto,
     "cs_usercmd.proto",
-    &descriptor_table_cs_5fusercmd_2eproto_once, descriptor_table_cs_5fusercmd_2eproto_deps, 2, 4,
+    &descriptor_table_cs_5fusercmd_2eproto_once, descriptor_table_cs_5fusercmd_2eproto_deps, 3, 4,
     schemas, file_default_instances, TableStruct_cs_5fusercmd_2eproto::offsets,
     file_level_metadata_cs_5fusercmd_2eproto, file_level_enum_descriptors_cs_5fusercmd_2eproto,
     file_level_service_descriptors_cs_5fusercmd_2eproto,

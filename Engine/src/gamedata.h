@@ -44,6 +44,7 @@ inline constexpr int FindTypeScopeForModule = 13;
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class IGameData
@@ -69,6 +70,7 @@ struct GameDataAddress
 {
     std::string              m_Module;
     std::string              m_Signature;
+    std::string              m_VScriptFunction{};
     std::string              m_Base;
     std::string              m_Factory;
     std::vector<std::string> m_StringRefs{};
@@ -96,6 +98,13 @@ struct StringHash
     size_t operator()(std::string_view txt) const noexcept { return std::hash<std::string_view>{}(txt); }
 };
 
+// Resolve the vtable index of a virtual method exposed to VScript by decoding its binding
+// registration in the server module. The binding records the method's pointer-to-member-function,
+// from which the vtable byte offset is directly recoverable on both ABIs (odd immediate PMF on the
+// Itanium/Linux side, a `mov rax,[rcx]; jmp [rax+off]` thunk on MSVC/Windows). Returns -1 if not
+// found. Companion to the address-returning vscript decode used by the "vscript" gamedata field.
+int32_t GetVScriptVirtualFunctionIndex(const std::string& name);
+
 class GameData : public IGameData
 {
 public:
@@ -109,6 +118,10 @@ public:
     void Unregister(const char* name);
     int  GetOffset(const char* name);
     int  GetVFunctionIndex(const char* name);
+
+    bool OverwriteOffset(const char* name, int32_t value);
+    bool OverwriteVFuncIndex(const char* name, int32_t value);
+    bool OverwriteAddress(const char* name, std::uintptr_t value);
 
     template <typename T>
     T GetAddress(const char* name)

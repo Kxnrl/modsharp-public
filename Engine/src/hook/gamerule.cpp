@@ -42,6 +42,9 @@ static CConVarBaseData* ms_override_team_limit        = nullptr;
 static CConVarBaseData* ms_fix_kick_cooldown          = nullptr;
 static CConVarBaseData* sv_kick_players_with_cooldown = nullptr;
 
+// Offsets here are shifted 4 bytes from the game's struct (sizeof 0x20, align 8): m_padding0 is
+// really the alignment hole between Node_t::key and Node_t::elem, which pack(1) forces us to spell
+// out. The shift keeps sizeof(Node_t) == 0x28 and the CUtlRBTree node stride == 0x38 either way.
 #pragma pack(push, 1)
 struct CGcBanInformation_t
 {
@@ -49,27 +52,31 @@ private:
     [[maybe_unused]] uint8_t m_padding0[4];
 
 public:
-    uint32_t m_uiReason;
+    uint32_t m_uiReason; // 0x04
 
 private:
     [[maybe_unused]] uint8_t m_padding8[4];
 
 public:
-    double m_dblExpiration;
+    double m_dblExpiration; // 0x0c
 
-private:
-    [[maybe_unused]] uint8_t m_padding14[8];
+    // Matchmaking cooldown, written by CCSPlayerController::UpdatePenaltyState.
+    // Expires independently of m_uiReason and kicks on its own.
+    double m_dblCooldownExpiration; // 0x14
 
-public:
     bool m_bHasCommunicationCooldown; // 0x1c
 
+    // CMsgGCCStrike15_v2_ServerNotificationForUserPenalty::cheating_penalty_level, truncated to a
+    // byte. Added in build 24116939; reads back as 0 on older builds.
+    uint8_t m_nCheatingPenaltyLevel; // 0x1d
+
 private:
-    [[maybe_unused]] uint8_t m_padding1d[7];
+    [[maybe_unused]] uint8_t m_padding1e[6];
 };
 #pragma pack(pop)
 static_assert(sizeof(CGcBanInformation_t) == 0x24);
 
-static CUtlMap<uint32_t, CGcBanInformation_t, int>* sm_mapGcBanInformation;
+static CUtlOrderedMap<uint32_t, CGcBanInformation_t, int>* sm_mapGcBanInformation;
 
 BeginMemberHookScope(CCSGameRules)
 {
@@ -202,6 +209,7 @@ BeginStaticHookScope(HandleGCBanInfo)
     {
         switch (reason)
         {
+        case 1: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_REJECT_BANNED;
         case 8:
         case 14: return IServerGameClient::ENetworkDisconnectionReason::NETWORK_DISCONNECT_KICKED_UNTRUSTEDACCOUNT;
         case 10:
@@ -212,6 +220,15 @@ BeginStaticHookScope(HandleGCBanInfo)
         }
     }
 
+    static void KickClient(const CServerSideClient* pClient, const uint32_t reason)
+    {
+        FLOG("Kick %s<%llu> due to GC<%u>", pClient->GetName(), pClient->GetSteamId(), reason);
+        engine->KickClient(pClient->GetSlot(), "sv_kick_players_with_cooldown", GetKickReason(reason));
+    }
+
+    // Mirrors the ordering of the CCSGameRules function this hook replaces. Entries are never
+    // erased: the game keeps them, and m_bHasCommunicationCooldown is still read out of the map by
+    // CCSPlayerController for sv_mute_players_with_social_penalties.
     static void CheckClient(const CServerSideClient* pClient, const int32_t kickMode, const double flTime)
     {
         const auto it = sm_mapGcBanInformation->Find(pClient->GetAccountId());
@@ -219,26 +236,32 @@ BeginStaticHookScope(HandleGCBanInfo)
         if (it == sm_mapGcBanInformation->InvalidIndex())
             return;
 
-        auto& value = sm_mapGcBanInformation->Element(it);
+        const auto& value = sm_mapGcBanInformation->Element(it);
 
-        const auto reason     = value.m_uiReason;
-        const auto expireTime = value.m_dblExpiration;
+        // A live matchmaking cooldown kicks on its own, before m_uiReason is consulted and
+        // regardless of kickMode.
+        if (value.m_dblCooldownExpiration > 0.0 && value.m_dblCooldownExpiration > flTime)
+        {
+            KickClient(pClient, 1);
+            return;
+        }
+
+        const auto reason = value.m_uiReason;
+
+        if (reason == 0)
+            return;
+
+        if (value.m_dblExpiration <= flTime)
+            return;
 
         // Ignored ban reasons
         if (reason == 12 || reason == 13 || reason == 18)
             return;
 
-        if (flTime > expireTime)
-        {
-            sm_mapGcBanInformation->RemoveAt(it);
-            return;
-        }
-
         if (!ShouldKickForReason(kickMode, reason))
             return;
 
-        FLOG("Kick %s<%llu> due to GC<%u>", pClient->GetName(), pClient->GetSteamId(), reason);
-        engine->KickClient(pClient->GetSlot(), "sv_kick_players_with_cooldown", GetKickReason(reason));
+        KickClient(pClient, reason);
     }
 
     DeclareStaticDetourHook(HandleGCBanInfo, void, ())
@@ -278,7 +301,7 @@ void InstallGameRulesHooks()
 
     SHOOK(HandleGCBanInfo);
 
-    sm_mapGcBanInformation = g_pGameData->GetAddress<CUtlMap<uint32_t, CGcBanInformation_t, int>*>("CCSGameRules::sm_mapGcBanInformation");
+    sm_mapGcBanInformation = g_pGameData->GetAddress<CUtlOrderedMap<uint32_t, CGcBanInformation_t, int>*>("CCSGameRules::sm_mapGcBanInformation");
 
     sv_kick_players_with_cooldown = icvar->FindConVarIterator("sv_kick_players_with_cooldown");
 

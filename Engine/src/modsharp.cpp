@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -246,6 +246,7 @@ bool ModSharp_Init()
 #endif
 
     InitSchemaSystem();
+    address::PostSchemaInit();
     InitGameEntitySystem();
     InitHookManager();
     InitEconItemSchema();
