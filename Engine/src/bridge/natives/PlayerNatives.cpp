@@ -24,6 +24,7 @@
 
 #include "CoreCLR/Nullable.h"
 
+#include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/CBaseWeapon.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
@@ -123,6 +124,16 @@ static void PawnSlay(CCSPlayerPawn* pPawn, bool explode)
 static CBaseWeapon* PawnGiveNamedItem(CCSPlayerPawn* pPawn, const char* name)
 {
     return pPawn->GiveNamedItem(name);
+}
+
+static CBaseWeapon* ItemServicesGiveNamedItem(CCSPlayer_ItemServices* pItemServices, const char* name, CEconItemView* pView, bool bForce)
+{
+    return pItemServices->GiveNamedItem(name, 0, pView, bForce, nullptr);
+}
+
+static void WeaponServicesEquipWeapon(CCSPlayer_WeaponServices* pWeaponServices, CBaseWeapon* pWeapon)
+{
+    pWeaponServices->EquipWeapon(pWeapon);
 }
 
 static CBasePlayerPawn* PawnFindBySlot(PlayerSlot_t slot)
@@ -234,5 +245,9 @@ void Init()
     bridge::CreateNative("Player.PawnGiveGloves", reinterpret_cast<void*>(PawnGiveGloves));
     bridge::CreateNative("Player.PawnEmitSoundClient", reinterpret_cast<void*>(PawnEmitSoundClient));
     bridge::CreateNative("Player.PawnIsPlayer", reinterpret_cast<void*>(PawnIsPlayer));
+
+    // Services
+    bridge::CreateNative("Player.ItemServicesGiveNamedItem", reinterpret_cast<void*>(ItemServicesGiveNamedItem));
+    bridge::CreateNative("Player.WeaponServicesEquipWeapon", reinterpret_cast<void*>(WeaponServicesEquipWeapon));
 }
 } // namespace natives::player

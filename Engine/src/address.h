@@ -33,7 +33,6 @@ class CModule;
 
 namespace modules
 {
-
 inline CModule* engine;
 inline CModule* tier0;
 inline CModule* server;
@@ -49,7 +48,6 @@ inline CModule* filesystem;
 inline CModule* steamsockets;
 inline CModule* materialsystem2;
 inline CModule* animationsystem;
-
 } // namespace modules
 
 class CBaseEntity;
@@ -90,6 +88,7 @@ class CTakeDamageInfo;
 struct SoundEventGuid_t;
 struct SndOpEventGuid_t;
 struct matrix3x4_t;
+class CTransform;
 class CEntityKeyValues;
 class HSCRIPT;
 class CEffectData;
@@ -105,8 +104,8 @@ class CUtlSymbolLarge;
 
 namespace address
 {
-
 bool Initialize();
+void PostSchemaInit();
 
 namespace engine
 {
@@ -115,7 +114,6 @@ inline void* Source2_Init;
 
 namespace server
 {
-
 // 一般来说，最好是函数先定义好类型然后再声明
 // 不然的话东西多起来就是噩梦
 using NetworkStateChanged_t                         = void (*)(void* chainEntity, CNetworkStateChangedInfo& info);
@@ -137,8 +135,10 @@ using CBaseEntity_AbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
 using CBaseEntity_AbsVelocity_t   = Vector (*)(CBaseEntity*);
 using CBaseEntity_LocalVelocity_t = Vector (*)(CBaseEntity*);
 #endif
-using CBaseEntity_SetAbsVelocity_t                        = void (*)(CBaseEntity*, Vector*);
-using CBaseEntity_AcceptInput_t                           = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&, int, void*);
+using CBaseEntity_SetAbsVelocity_t = void (*)(CBaseEntity*, Vector*);
+// build 24116939 dropped the trailing (int outputID, void*): this wrapper now takes 5 params and
+// hardcodes both to 0 when calling the inner handler, so passing an outputID has no effect.
+using CBaseEntity_AcceptInput_t                           = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&);
 using CBaseEntity_DispatchSpawn_t                         = void (*)(CBaseEntity*, CEntityKeyValues*);
 using CBaseEntity_SetGroundEntity_t                       = void (*)(CBaseEntity*, CBaseEntity*, void*);
 using CBaseEntity_EmitSoundFilter_t                       = void (*)(CBaseEntity*, SndOpEventGuid_t*, IRecipientFilter* filter, const char*, float, Vector*);
@@ -185,7 +185,7 @@ using CGameEntitySystem_FindByName_t                = CBaseEntity* (*)(CGameEnti
 using CGameEntitySystem_FindInSphere_t              = CBaseEntity* (*)(CGameEntitySystem*, CBaseEntity* startEntity, Vector* vector, float radius);
 using CGameEntitySystem_AddListenerEntity_t         = void (*)(CGameEntitySystem*, IEntityListener* listener);
 using CGameEntitySystem_RemoveListenerEntity_t      = void (*)(CGameEntitySystem*, IEntityListener* listener);
-using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, int, void*, void*);
+using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, void*, void*);
 using ScriptRegisterConVar_t                        = void* (*)(void*, const char*, const char*, const char*, int);
 using ScriptRegisterConCommand_t                    = void (*)(void*, const char*, void*, const char*, int);
 using ScriptSetConVarString_t                       = void (*)(BaseConVar* convar, int64_t, const char*);
@@ -204,10 +204,16 @@ using GetEconItemSchema_t                             = void* (*)();
 using CBaseModelEntity_SetBodyGroupByName_t           = void (*)(CBaseModelEntity*, const char*, int32_t);
 using CBaseModelEntity_SetMaterialGroupMask_t         = void (*)(CBaseModelEntity*, uint64_t);
 using CBaseModelEntity_LookupBone_t                   = int32_t (*)(CBaseModelEntity*, const char*);
-using CBaseModelEntity_GetBoneTransform_t             = void (*)(CBaseModelEntity*, int32_t, matrix3x4_t*);
-using CBaseModelEntity_SetModelScale_t                = void (*)(CBaseModelEntity*, float);
-using CBaseModelEntity_SetCollisionBounds_t           = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
-using CGamePhysicsQueryInterface_TraceShape_t         = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
+// CTransform CBaseModelEntity::GetBoneTransform(int nBone) - returns a 32-byte struct by value, so
+// both ABIs pass a hidden sret pointer, but in different slots: SysV puts it first, MSVC after `this`.
+#ifdef PLATFORM_WINDOWS
+using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CBaseModelEntity*, CTransform* ret, int32_t bone);
+#else
+using CBaseModelEntity_GetBoneTransform_t = CTransform* (*)(CTransform * ret, CBaseModelEntity*, int32_t bone);
+#endif
+using CBaseModelEntity_SetModelScale_t        = void (*)(CBaseModelEntity*, float);
+using CBaseModelEntity_SetCollisionBounds_t   = void (*)(CBaseModelEntity*, const Vector*, const Vector*);
+using CGamePhysicsQueryInterface_TraceShape_t = bool (*)(CGamePhysicsQueryInterface*, void* ray, Vector* start, Vector* end, CTraceFilter* filter, CGameTrace* trace);
 #ifdef PLATFORM_WINDOWS
 using StudioModel_LookupAttachment_t = int32_t (*)(void*, int32_t*, const char*);
 #else
@@ -229,6 +235,8 @@ using FindWeaponVDataByName_t                      = CCSWeaponBaseVData* (*)(int
 using GetLegacyGameEventListener_t                 = IGameEventListener2* (*)(int32_t);
 using CGameEntitySystem_GetSpawnOriginOffset_t     = matrix3x4_t& (*)(const CGameEntitySystem*);
 using CCSPlayerPawn_SetDefaultGloves_t             = void (*)(CCSPlayerPawn* pawn, bool hide);
+using CBasePlayerPawn_SnapViewAngles_t             = void (*)(CBasePlayerPawn*, QAngle*);
+using CreateTriggerInternal_t                      = void* (*)(Vector*, Vector*, Vector*);
 
 inline NetworkStateChanged_t                               NetworkStateChanged;
 inline StateChanged_t                                      StateChanged;
@@ -304,17 +312,11 @@ inline CCSPlayer_MovementServices_TracePlayerBBox_t        CCSPlayer_MovementSer
 inline CTraceFilterPlayerMovementCS_ctor_t                 CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                             FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                        GetLegacyGameEventListener;
+inline CBasePlayerPawn_SnapViewAngles_t                    CBasePlayerPawn_SnapViewAngles;
+inline CreateTriggerInternal_t                             CreateTriggerInternal;
 inline CGameEntitySystem_GetSpawnOriginOffset_t            CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                    CCSPlayerPawn_SetDefaultGloves;
-
 } // namespace server
-
-namespace resource
-{
-using CResourceNameTyped_ResolveResourceName_t = bool (*)(CResourceNameTyped& info, const char* fileName);
-inline CResourceNameTyped_ResolveResourceName_t CResourceNameTyped_ResolveResourceName;
-} // namespace resource
-
 } // namespace address
 
 #endif

@@ -132,7 +132,8 @@ internal unsafe class SchemaUnmanagedVector<T> : NativeObject, ISchemaList<T>
         else if (_isStruct)
         {
             Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, _schemaField.ChainOffset),
-                                                         (ushort) _schemaField.Offset);
+                                                         (ushort) _schemaField.Offset,
+                                                         1);
         }
         else
         {

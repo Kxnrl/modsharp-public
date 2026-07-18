@@ -421,7 +421,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                                 using (builder.BeginScope("else"))
                                                 {
                                                     builder.AppendLine(
-                                                        $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                                        $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
                                                 }
                                             }
                                             else
@@ -499,7 +499,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                             using (builder.BeginScope("else"))
                                             {
                                                 builder.AppendLine(
-                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
                                             }
                                         }
                                         else
@@ -563,7 +563,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                             using (builder.BeginScope("else"))
                                             {
                                                 builder.AppendLine(
-                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
                                             }
                                         }
                                         else
@@ -652,7 +652,7 @@ public class NativeSchemaFieldGenerator : IIncrementalGenerator
                                             using (builder.BeginScope("else"))
                                             {
                                                 builder.AppendLine(
-                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset));");
+                                                    $"Bridges.Natives.Entity.SetStructStateChanged(IntPtr.Add(_this, __{propertyName}SchemaField.ChainOffset), (ushort) (__{propertyName}SchemaField.Offset), StructNscIndex);");
                                             }
                                         }
                                         else

@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -104,9 +104,6 @@ private:
 
 private:
     virtual void ConVarChanged(const char* name, const char* value) = 0; // 60
-
-public:
-    class IGameEventManager2* GetGameEventManager();
 };
 
 using IServerGameDLL = CSource2Server;

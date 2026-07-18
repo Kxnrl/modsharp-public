@@ -501,6 +501,9 @@ internal class EntityManager : ICoreEntityManager
         return e?.As<T>();
     }
 
+    public unsafe IBaseEntity? CreateTrigger(Vector origin, Vector mins, Vector maxs)
+        => BaseEntity.Create(Native.CreateTrigger(&origin, &mins, &maxs));
+
     public CUtlSymbolLarge AllocPooledString(string content)
         => new (Native.AllocPooledString(content));
 

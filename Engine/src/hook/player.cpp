@@ -190,18 +190,19 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 #endif
     }
 
-    DeclareMemberDetourHook(EquipWeapon, int64_t, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon))
+    DeclareMemberDetourHook(EquipWeapon, void, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon))
     {
-        const auto ret   = EquipWeapon(pService, pWeapon);
+        if (!pWeapon)
+            return;
+
+        EquipWeapon(pService, pWeapon);
         const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
         if (const auto pController = pPawn->GetController<CCSPlayerController*>())
-            forwards::OnPlayerEquipWeapon->Invoke(sv->GetClient(pController->GetPlayerSlot()), pController, pPawn, pService, pWeapon, ret);
+            forwards::OnPlayerEquipWeapon->Invoke(sv->GetClient(pController->GetPlayerSlot()), pController, pPawn, pService, pWeapon, 0);
 
 #ifdef WEAPON_EVENT_ASSERT
         LOG("CCSPlayer_WeaponServices::EquipWeapon %p", pWeapon);
 #endif
-
-        return ret;
     }
 
     DeclareVirtualHook(DropWeapon, void, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon, Vector * pVecTarget, Vector * pVelocity))
@@ -318,6 +319,19 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
         }
 
         return CanEquip(pService, pWeapon);
+    }
+}
+
+void CCSPlayer_WeaponServices::EquipWeapon(CBaseWeapon* weapon)
+{
+    if (!weapon)
+        return;
+
+    CCSPlayer_WeaponServices_Hooks::EquipWeapon(this, weapon);
+    // to work around an issue where EquipWeapon does not auto deploy weapon for bots
+    if (auto pawn = this->GetPawn<CCSPlayerPawn*>(); pawn && pawn->IsPlayer() && pawn->IsPlayerPawn() && (pawn->GetFlags() & EntityFlags_t::FL_BOT) != 0)
+    {
+        auto unused = this->SelectItem(weapon);
     }
 }
 

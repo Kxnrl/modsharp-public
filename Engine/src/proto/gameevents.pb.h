@@ -55,6 +55,12 @@ extern CMsgClearEntityDecalsEventDefaultTypeInternal _CMsgClearEntityDecalsEvent
 class CMsgClearWorldDecalsEvent;
 struct CMsgClearWorldDecalsEventDefaultTypeInternal;
 extern CMsgClearWorldDecalsEventDefaultTypeInternal _CMsgClearWorldDecalsEvent_default_instance_;
+class CMsgClothEffectAnimEvent;
+struct CMsgClothEffectAnimEventDefaultTypeInternal;
+extern CMsgClothEffectAnimEventDefaultTypeInternal _CMsgClothEffectAnimEvent_default_instance_;
+class CMsgClothStiffenAnimEvent;
+struct CMsgClothStiffenAnimEventDefaultTypeInternal;
+extern CMsgClothStiffenAnimEventDefaultTypeInternal _CMsgClothStiffenAnimEvent_default_instance_;
 class CMsgPlaceDecalEvent;
 struct CMsgPlaceDecalEventDefaultTypeInternal;
 extern CMsgPlaceDecalEventDefaultTypeInternal _CMsgPlaceDecalEvent_default_instance_;
@@ -98,6 +104,8 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::CMsgClearDecalsForEntityEvent* Arena::CreateMaybeMessage<::CMsgClearDecalsForEntityEvent>(Arena*);
 template<> ::CMsgClearEntityDecalsEvent* Arena::CreateMaybeMessage<::CMsgClearEntityDecalsEvent>(Arena*);
 template<> ::CMsgClearWorldDecalsEvent* Arena::CreateMaybeMessage<::CMsgClearWorldDecalsEvent>(Arena*);
+template<> ::CMsgClothEffectAnimEvent* Arena::CreateMaybeMessage<::CMsgClothEffectAnimEvent>(Arena*);
+template<> ::CMsgClothStiffenAnimEvent* Arena::CreateMaybeMessage<::CMsgClothStiffenAnimEvent>(Arena*);
 template<> ::CMsgPlaceDecalEvent* Arena::CreateMaybeMessage<::CMsgPlaceDecalEvent>(Arena*);
 template<> ::CMsgSosSetLibraryStackFields* Arena::CreateMaybeMessage<::CMsgSosSetLibraryStackFields>(Arena*);
 template<> ::CMsgSosSetSoundEventParams* Arena::CreateMaybeMessage<::CMsgSosSetSoundEventParams>(Arena*);
@@ -126,11 +134,13 @@ enum EBaseGameEvents : int {
   GE_SosStopSoundEvent = 209,
   GE_SosSetSoundEventParams = 210,
   GE_SosSetLibraryStackFields = 211,
-  GE_SosStopSoundEventHash = 212
+  GE_SosStopSoundEventHash = 212,
+  GE_ClothStiffenAnimEvent = 213,
+  GE_ClothEffectAnimEvent = 214
 };
 bool EBaseGameEvents_IsValid(int value);
 constexpr EBaseGameEvents EBaseGameEvents_MIN = GE_VDebugGameSessionIDEvent;
-constexpr EBaseGameEvents EBaseGameEvents_MAX = GE_SosStopSoundEventHash;
+constexpr EBaseGameEvents EBaseGameEvents_MAX = GE_ClothEffectAnimEvent;
 constexpr int EBaseGameEvents_ARRAYSIZE = EBaseGameEvents_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EBaseGameEvents_descriptor();
@@ -461,6 +471,7 @@ class CMsgPlaceDecalEvent /*final*/ :
     kNormalFieldNumber = 2,
     kSaxisFieldNumber = 3,
     kPositionObjectspaceFieldNumber = 14,
+    kNormalObjectspaceFieldNumber = 15,
     kBoneindexFieldNumber = 4,
     kFlagsFieldNumber = 5,
     kColorFieldNumber = 6,
@@ -543,6 +554,24 @@ class CMsgPlaceDecalEvent /*final*/ :
   void unsafe_arena_set_allocated_position_objectspace(
       ::CMsgVector* position_objectspace);
   ::CMsgVector* unsafe_arena_release_position_objectspace();
+
+  // optional .CMsgVector normal_objectspace = 15;
+  bool has_normal_objectspace() const;
+  private:
+  bool _internal_has_normal_objectspace() const;
+  public:
+  void clear_normal_objectspace();
+  const ::CMsgVector& normal_objectspace() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_normal_objectspace();
+  ::CMsgVector* mutable_normal_objectspace();
+  void set_allocated_normal_objectspace(::CMsgVector* normal_objectspace);
+  private:
+  const ::CMsgVector& _internal_normal_objectspace() const;
+  ::CMsgVector* _internal_mutable_normal_objectspace();
+  public:
+  void unsafe_arena_set_allocated_normal_objectspace(
+      ::CMsgVector* normal_objectspace);
+  ::CMsgVector* unsafe_arena_release_normal_objectspace();
 
   // optional int32 boneindex = 4;
   bool has_boneindex() const;
@@ -688,6 +717,7 @@ class CMsgPlaceDecalEvent /*final*/ :
     ::CMsgVector* normal_;
     ::CMsgVector* saxis_;
     ::CMsgVector* position_objectspace_;
+    ::CMsgVector* normal_objectspace_;
     int32_t boneindex_;
     uint32_t flags_;
     uint32_t color_;
@@ -3365,6 +3395,486 @@ class CMsgSosSetLibraryStackFields /*final*/ :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_gameevents_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CMsgClothStiffenAnimEvent /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgClothStiffenAnimEvent) */ {
+ public:
+  inline CMsgClothStiffenAnimEvent() : CMsgClothStiffenAnimEvent(nullptr) {}
+  ~CMsgClothStiffenAnimEvent() override;
+  explicit PROTOBUF_CONSTEXPR CMsgClothStiffenAnimEvent(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgClothStiffenAnimEvent(const CMsgClothStiffenAnimEvent& from);
+  CMsgClothStiffenAnimEvent(CMsgClothStiffenAnimEvent&& from) noexcept
+    : CMsgClothStiffenAnimEvent() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgClothStiffenAnimEvent& operator=(const CMsgClothStiffenAnimEvent& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgClothStiffenAnimEvent& operator=(CMsgClothStiffenAnimEvent&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgClothStiffenAnimEvent& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgClothStiffenAnimEvent* internal_default_instance() {
+    return reinterpret_cast<const CMsgClothStiffenAnimEvent*>(
+               &_CMsgClothStiffenAnimEvent_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    16;
+
+  friend void swap(CMsgClothStiffenAnimEvent& a, CMsgClothStiffenAnimEvent& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgClothStiffenAnimEvent* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgClothStiffenAnimEvent* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgClothStiffenAnimEvent* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgClothStiffenAnimEvent>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgClothStiffenAnimEvent& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgClothStiffenAnimEvent& from) {
+    CMsgClothStiffenAnimEvent::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgClothStiffenAnimEvent* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgClothStiffenAnimEvent";
+  }
+  protected:
+  explicit CMsgClothStiffenAnimEvent(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVertexSetHashFieldNumber = 2,
+    kIntensityFieldNumber = 3,
+    kLengthFieldNumber = 4,
+    kSpeedInFieldNumber = 5,
+    kSpeedOutFieldNumber = 6,
+    kSourceEntityIndexFieldNumber = 1,
+  };
+  // optional int32 vertex_set_hash = 2;
+  bool has_vertex_set_hash() const;
+  private:
+  bool _internal_has_vertex_set_hash() const;
+  public:
+  void clear_vertex_set_hash();
+  int32_t vertex_set_hash() const;
+  void set_vertex_set_hash(int32_t value);
+  private:
+  int32_t _internal_vertex_set_hash() const;
+  void _internal_set_vertex_set_hash(int32_t value);
+  public:
+
+  // optional float intensity = 3;
+  bool has_intensity() const;
+  private:
+  bool _internal_has_intensity() const;
+  public:
+  void clear_intensity();
+  float intensity() const;
+  void set_intensity(float value);
+  private:
+  float _internal_intensity() const;
+  void _internal_set_intensity(float value);
+  public:
+
+  // optional float length = 4;
+  bool has_length() const;
+  private:
+  bool _internal_has_length() const;
+  public:
+  void clear_length();
+  float length() const;
+  void set_length(float value);
+  private:
+  float _internal_length() const;
+  void _internal_set_length(float value);
+  public:
+
+  // optional float speed_in = 5;
+  bool has_speed_in() const;
+  private:
+  bool _internal_has_speed_in() const;
+  public:
+  void clear_speed_in();
+  float speed_in() const;
+  void set_speed_in(float value);
+  private:
+  float _internal_speed_in() const;
+  void _internal_set_speed_in(float value);
+  public:
+
+  // optional float speed_out = 6;
+  bool has_speed_out() const;
+  private:
+  bool _internal_has_speed_out() const;
+  public:
+  void clear_speed_out();
+  float speed_out() const;
+  void set_speed_out(float value);
+  private:
+  float _internal_speed_out() const;
+  void _internal_set_speed_out(float value);
+  public:
+
+  // optional int32 source_entity_index = 1 [default = -1];
+  bool has_source_entity_index() const;
+  private:
+  bool _internal_has_source_entity_index() const;
+  public:
+  void clear_source_entity_index();
+  int32_t source_entity_index() const;
+  void set_source_entity_index(int32_t value);
+  private:
+  int32_t _internal_source_entity_index() const;
+  void _internal_set_source_entity_index(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgClothStiffenAnimEvent)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    int32_t vertex_set_hash_;
+    float intensity_;
+    float length_;
+    float speed_in_;
+    float speed_out_;
+    int32_t source_entity_index_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_gameevents_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CMsgClothEffectAnimEvent /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CMsgClothEffectAnimEvent) */ {
+ public:
+  inline CMsgClothEffectAnimEvent() : CMsgClothEffectAnimEvent(nullptr) {}
+  ~CMsgClothEffectAnimEvent() override;
+  explicit PROTOBUF_CONSTEXPR CMsgClothEffectAnimEvent(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CMsgClothEffectAnimEvent(const CMsgClothEffectAnimEvent& from);
+  CMsgClothEffectAnimEvent(CMsgClothEffectAnimEvent&& from) noexcept
+    : CMsgClothEffectAnimEvent() {
+    *this = ::std::move(from);
+  }
+
+  inline CMsgClothEffectAnimEvent& operator=(const CMsgClothEffectAnimEvent& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CMsgClothEffectAnimEvent& operator=(CMsgClothEffectAnimEvent&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CMsgClothEffectAnimEvent& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CMsgClothEffectAnimEvent* internal_default_instance() {
+    return reinterpret_cast<const CMsgClothEffectAnimEvent*>(
+               &_CMsgClothEffectAnimEvent_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(CMsgClothEffectAnimEvent& a, CMsgClothEffectAnimEvent& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CMsgClothEffectAnimEvent* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CMsgClothEffectAnimEvent* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CMsgClothEffectAnimEvent* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CMsgClothEffectAnimEvent>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CMsgClothEffectAnimEvent& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CMsgClothEffectAnimEvent& from) {
+    CMsgClothEffectAnimEvent::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CMsgClothEffectAnimEvent* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CMsgClothEffectAnimEvent";
+  }
+  protected:
+  explicit CMsgClothEffectAnimEvent(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kTagsFieldNumber = 5,
+    kPteFieldNumber = 6,
+    kEffectNameHashFieldNumber = 2,
+    kOperationFieldNumber = 3,
+    kFlagsFieldNumber = 4,
+    kSourceEntityIndexFieldNumber = 1,
+  };
+  // optional string tags = 5;
+  bool has_tags() const;
+  private:
+  bool _internal_has_tags() const;
+  public:
+  void clear_tags();
+  const std::string& tags() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_tags(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_tags();
+  PROTOBUF_NODISCARD std::string* release_tags();
+  void set_allocated_tags(std::string* tags);
+  private:
+  const std::string& _internal_tags() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_tags(const std::string& value);
+  std::string* _internal_mutable_tags();
+  public:
+
+  // optional .CMsgVector pte = 6;
+  bool has_pte() const;
+  private:
+  bool _internal_has_pte() const;
+  public:
+  void clear_pte();
+  const ::CMsgVector& pte() const;
+  PROTOBUF_NODISCARD ::CMsgVector* release_pte();
+  ::CMsgVector* mutable_pte();
+  void set_allocated_pte(::CMsgVector* pte);
+  private:
+  const ::CMsgVector& _internal_pte() const;
+  ::CMsgVector* _internal_mutable_pte();
+  public:
+  void unsafe_arena_set_allocated_pte(
+      ::CMsgVector* pte);
+  ::CMsgVector* unsafe_arena_release_pte();
+
+  // optional int32 effect_name_hash = 2;
+  bool has_effect_name_hash() const;
+  private:
+  bool _internal_has_effect_name_hash() const;
+  public:
+  void clear_effect_name_hash();
+  int32_t effect_name_hash() const;
+  void set_effect_name_hash(int32_t value);
+  private:
+  int32_t _internal_effect_name_hash() const;
+  void _internal_set_effect_name_hash(int32_t value);
+  public:
+
+  // optional int32 operation = 3;
+  bool has_operation() const;
+  private:
+  bool _internal_has_operation() const;
+  public:
+  void clear_operation();
+  int32_t operation() const;
+  void set_operation(int32_t value);
+  private:
+  int32_t _internal_operation() const;
+  void _internal_set_operation(int32_t value);
+  public:
+
+  // optional int32 flags = 4;
+  bool has_flags() const;
+  private:
+  bool _internal_has_flags() const;
+  public:
+  void clear_flags();
+  int32_t flags() const;
+  void set_flags(int32_t value);
+  private:
+  int32_t _internal_flags() const;
+  void _internal_set_flags(int32_t value);
+  public:
+
+  // optional int32 source_entity_index = 1 [default = -1];
+  bool has_source_entity_index() const;
+  private:
+  bool _internal_has_source_entity_index() const;
+  public:
+  void clear_source_entity_index();
+  int32_t source_entity_index() const;
+  void set_source_entity_index(int32_t value);
+  private:
+  int32_t _internal_source_entity_index() const;
+  void _internal_set_source_entity_index(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CMsgClothEffectAnimEvent)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr tags_;
+    ::CMsgVector* pte_;
+    int32_t effect_name_hash_;
+    int32_t operation_;
+    int32_t flags_;
+    int32_t source_entity_index_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_gameevents_2eproto;
+};
 // ===================================================================
 
 
@@ -3739,7 +4249,7 @@ inline void CMsgPlaceDecalEvent::set_allocated_saxis(::CMsgVector* saxis) {
 
 // optional int32 boneindex = 4;
 inline bool CMsgPlaceDecalEvent::_internal_has_boneindex() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_boneindex() const {
@@ -3747,7 +4257,7 @@ inline bool CMsgPlaceDecalEvent::has_boneindex() const {
 }
 inline void CMsgPlaceDecalEvent::clear_boneindex() {
   _impl_.boneindex_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline int32_t CMsgPlaceDecalEvent::_internal_boneindex() const {
   return _impl_.boneindex_;
@@ -3757,7 +4267,7 @@ inline int32_t CMsgPlaceDecalEvent::boneindex() const {
   return _internal_boneindex();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_boneindex(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.boneindex_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_boneindex(int32_t value) {
@@ -3767,7 +4277,7 @@ inline void CMsgPlaceDecalEvent::set_boneindex(int32_t value) {
 
 // optional int32 triangleindex = 13;
 inline bool CMsgPlaceDecalEvent::_internal_has_triangleindex() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_triangleindex() const {
@@ -3775,7 +4285,7 @@ inline bool CMsgPlaceDecalEvent::has_triangleindex() const {
 }
 inline void CMsgPlaceDecalEvent::clear_triangleindex() {
   _impl_.triangleindex_ = 0;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
 }
 inline int32_t CMsgPlaceDecalEvent::_internal_triangleindex() const {
   return _impl_.triangleindex_;
@@ -3785,7 +4295,7 @@ inline int32_t CMsgPlaceDecalEvent::triangleindex() const {
   return _internal_triangleindex();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_triangleindex(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00002000u;
   _impl_.triangleindex_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_triangleindex(int32_t value) {
@@ -3795,7 +4305,7 @@ inline void CMsgPlaceDecalEvent::set_triangleindex(int32_t value) {
 
 // optional uint32 flags = 5;
 inline bool CMsgPlaceDecalEvent::_internal_has_flags() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_flags() const {
@@ -3803,7 +4313,7 @@ inline bool CMsgPlaceDecalEvent::has_flags() const {
 }
 inline void CMsgPlaceDecalEvent::clear_flags() {
   _impl_.flags_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_flags() const {
   return _impl_.flags_;
@@ -3813,7 +4323,7 @@ inline uint32_t CMsgPlaceDecalEvent::flags() const {
   return _internal_flags();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_flags(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.flags_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_flags(uint32_t value) {
@@ -3823,7 +4333,7 @@ inline void CMsgPlaceDecalEvent::set_flags(uint32_t value) {
 
 // optional fixed32 color = 6;
 inline bool CMsgPlaceDecalEvent::_internal_has_color() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_color() const {
@@ -3831,7 +4341,7 @@ inline bool CMsgPlaceDecalEvent::has_color() const {
 }
 inline void CMsgPlaceDecalEvent::clear_color() {
   _impl_.color_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_color() const {
   return _impl_.color_;
@@ -3841,7 +4351,7 @@ inline uint32_t CMsgPlaceDecalEvent::color() const {
   return _internal_color();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_color(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.color_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_color(uint32_t value) {
@@ -3851,7 +4361,7 @@ inline void CMsgPlaceDecalEvent::set_color(uint32_t value) {
 
 // optional int32 random_seed = 7;
 inline bool CMsgPlaceDecalEvent::_internal_has_random_seed() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_random_seed() const {
@@ -3859,7 +4369,7 @@ inline bool CMsgPlaceDecalEvent::has_random_seed() const {
 }
 inline void CMsgPlaceDecalEvent::clear_random_seed() {
   _impl_.random_seed_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline int32_t CMsgPlaceDecalEvent::_internal_random_seed() const {
   return _impl_.random_seed_;
@@ -3869,7 +4379,7 @@ inline int32_t CMsgPlaceDecalEvent::random_seed() const {
   return _internal_random_seed();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_random_seed(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.random_seed_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_random_seed(int32_t value) {
@@ -3879,7 +4389,7 @@ inline void CMsgPlaceDecalEvent::set_random_seed(int32_t value) {
 
 // optional uint32 decal_group_name = 8;
 inline bool CMsgPlaceDecalEvent::_internal_has_decal_group_name() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_decal_group_name() const {
@@ -3887,7 +4397,7 @@ inline bool CMsgPlaceDecalEvent::has_decal_group_name() const {
 }
 inline void CMsgPlaceDecalEvent::clear_decal_group_name() {
   _impl_.decal_group_name_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_decal_group_name() const {
   return _impl_.decal_group_name_;
@@ -3897,7 +4407,7 @@ inline uint32_t CMsgPlaceDecalEvent::decal_group_name() const {
   return _internal_decal_group_name();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_decal_group_name(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00000200u;
   _impl_.decal_group_name_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_decal_group_name(uint32_t value) {
@@ -3907,7 +4417,7 @@ inline void CMsgPlaceDecalEvent::set_decal_group_name(uint32_t value) {
 
 // optional float size_override = 9;
 inline bool CMsgPlaceDecalEvent::_internal_has_size_override() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_size_override() const {
@@ -3915,7 +4425,7 @@ inline bool CMsgPlaceDecalEvent::has_size_override() const {
 }
 inline void CMsgPlaceDecalEvent::clear_size_override() {
   _impl_.size_override_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
 }
 inline float CMsgPlaceDecalEvent::_internal_size_override() const {
   return _impl_.size_override_;
@@ -3925,7 +4435,7 @@ inline float CMsgPlaceDecalEvent::size_override() const {
   return _internal_size_override();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_size_override(float value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00000400u;
   _impl_.size_override_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_size_override(float value) {
@@ -3935,7 +4445,7 @@ inline void CMsgPlaceDecalEvent::set_size_override(float value) {
 
 // optional uint32 entityhandle = 10 [default = 16777215];
 inline bool CMsgPlaceDecalEvent::_internal_has_entityhandle() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_entityhandle() const {
@@ -3943,7 +4453,7 @@ inline bool CMsgPlaceDecalEvent::has_entityhandle() const {
 }
 inline void CMsgPlaceDecalEvent::clear_entityhandle() {
   _impl_.entityhandle_ = 16777215u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_entityhandle() const {
   return _impl_.entityhandle_;
@@ -3953,7 +4463,7 @@ inline uint32_t CMsgPlaceDecalEvent::entityhandle() const {
   return _internal_entityhandle();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_entityhandle(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.entityhandle_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_entityhandle(uint32_t value) {
@@ -3963,7 +4473,7 @@ inline void CMsgPlaceDecalEvent::set_entityhandle(uint32_t value) {
 
 // optional uint64 material_id = 11;
 inline bool CMsgPlaceDecalEvent::_internal_has_material_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_material_id() const {
@@ -3971,7 +4481,7 @@ inline bool CMsgPlaceDecalEvent::has_material_id() const {
 }
 inline void CMsgPlaceDecalEvent::clear_material_id() {
   _impl_.material_id_ = uint64_t{0u};
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
 }
 inline uint64_t CMsgPlaceDecalEvent::_internal_material_id() const {
   return _impl_.material_id_;
@@ -3981,7 +4491,7 @@ inline uint64_t CMsgPlaceDecalEvent::material_id() const {
   return _internal_material_id();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_material_id(uint64_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00000800u;
   _impl_.material_id_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_material_id(uint64_t value) {
@@ -3991,7 +4501,7 @@ inline void CMsgPlaceDecalEvent::set_material_id(uint64_t value) {
 
 // optional uint32 sequence_name = 12;
 inline bool CMsgPlaceDecalEvent::_internal_has_sequence_name() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
   return value;
 }
 inline bool CMsgPlaceDecalEvent::has_sequence_name() const {
@@ -3999,7 +4509,7 @@ inline bool CMsgPlaceDecalEvent::has_sequence_name() const {
 }
 inline void CMsgPlaceDecalEvent::clear_sequence_name() {
   _impl_.sequence_name_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
 }
 inline uint32_t CMsgPlaceDecalEvent::_internal_sequence_name() const {
   return _impl_.sequence_name_;
@@ -4009,7 +4519,7 @@ inline uint32_t CMsgPlaceDecalEvent::sequence_name() const {
   return _internal_sequence_name();
 }
 inline void CMsgPlaceDecalEvent::_internal_set_sequence_name(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00001000u;
   _impl_.sequence_name_ = value;
 }
 inline void CMsgPlaceDecalEvent::set_sequence_name(uint32_t value) {
@@ -4102,6 +4612,93 @@ inline void CMsgPlaceDecalEvent::set_allocated_position_objectspace(::CMsgVector
   }
   _impl_.position_objectspace_ = position_objectspace;
   // @@protoc_insertion_point(field_set_allocated:CMsgPlaceDecalEvent.position_objectspace)
+}
+
+// optional .CMsgVector normal_objectspace = 15;
+inline bool CMsgPlaceDecalEvent::_internal_has_normal_objectspace() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.normal_objectspace_ != nullptr);
+  return value;
+}
+inline bool CMsgPlaceDecalEvent::has_normal_objectspace() const {
+  return _internal_has_normal_objectspace();
+}
+inline const ::CMsgVector& CMsgPlaceDecalEvent::_internal_normal_objectspace() const {
+  const ::CMsgVector* p = _impl_.normal_objectspace_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CMsgPlaceDecalEvent::normal_objectspace() const {
+  // @@protoc_insertion_point(field_get:CMsgPlaceDecalEvent.normal_objectspace)
+  return _internal_normal_objectspace();
+}
+inline void CMsgPlaceDecalEvent::unsafe_arena_set_allocated_normal_objectspace(
+    ::CMsgVector* normal_objectspace) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.normal_objectspace_);
+  }
+  _impl_.normal_objectspace_ = normal_objectspace;
+  if (normal_objectspace) {
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgPlaceDecalEvent.normal_objectspace)
+}
+inline ::CMsgVector* CMsgPlaceDecalEvent::release_normal_objectspace() {
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.normal_objectspace_;
+  _impl_.normal_objectspace_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CMsgPlaceDecalEvent::unsafe_arena_release_normal_objectspace() {
+  // @@protoc_insertion_point(field_release:CMsgPlaceDecalEvent.normal_objectspace)
+  _impl_._has_bits_[0] &= ~0x00000010u;
+  ::CMsgVector* temp = _impl_.normal_objectspace_;
+  _impl_.normal_objectspace_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CMsgPlaceDecalEvent::_internal_mutable_normal_objectspace() {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  if (_impl_.normal_objectspace_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.normal_objectspace_ = p;
+  }
+  return _impl_.normal_objectspace_;
+}
+inline ::CMsgVector* CMsgPlaceDecalEvent::mutable_normal_objectspace() {
+  ::CMsgVector* _msg = _internal_mutable_normal_objectspace();
+  // @@protoc_insertion_point(field_mutable:CMsgPlaceDecalEvent.normal_objectspace)
+  return _msg;
+}
+inline void CMsgPlaceDecalEvent::set_allocated_normal_objectspace(::CMsgVector* normal_objectspace) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.normal_objectspace_);
+  }
+  if (normal_objectspace) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(normal_objectspace));
+    if (message_arena != submessage_arena) {
+      normal_objectspace = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, normal_objectspace, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000010u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000010u;
+  }
+  _impl_.normal_objectspace_ = normal_objectspace;
+  // @@protoc_insertion_point(field_set_allocated:CMsgPlaceDecalEvent.normal_objectspace)
 }
 
 // -------------------------------------------------------------------
@@ -5559,9 +6156,456 @@ inline void CMsgSosSetLibraryStackFields::set_allocated_packed_fields(std::strin
   // @@protoc_insertion_point(field_set_allocated:CMsgSosSetLibraryStackFields.packed_fields)
 }
 
+// -------------------------------------------------------------------
+
+// CMsgClothStiffenAnimEvent
+
+// optional int32 source_entity_index = 1 [default = -1];
+inline bool CMsgClothStiffenAnimEvent::_internal_has_source_entity_index() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_source_entity_index() const {
+  return _internal_has_source_entity_index();
+}
+inline void CMsgClothStiffenAnimEvent::clear_source_entity_index() {
+  _impl_.source_entity_index_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline int32_t CMsgClothStiffenAnimEvent::_internal_source_entity_index() const {
+  return _impl_.source_entity_index_;
+}
+inline int32_t CMsgClothStiffenAnimEvent::source_entity_index() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.source_entity_index)
+  return _internal_source_entity_index();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_source_entity_index(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.source_entity_index_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_source_entity_index(int32_t value) {
+  _internal_set_source_entity_index(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.source_entity_index)
+}
+
+// optional int32 vertex_set_hash = 2;
+inline bool CMsgClothStiffenAnimEvent::_internal_has_vertex_set_hash() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_vertex_set_hash() const {
+  return _internal_has_vertex_set_hash();
+}
+inline void CMsgClothStiffenAnimEvent::clear_vertex_set_hash() {
+  _impl_.vertex_set_hash_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline int32_t CMsgClothStiffenAnimEvent::_internal_vertex_set_hash() const {
+  return _impl_.vertex_set_hash_;
+}
+inline int32_t CMsgClothStiffenAnimEvent::vertex_set_hash() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.vertex_set_hash)
+  return _internal_vertex_set_hash();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_vertex_set_hash(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.vertex_set_hash_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_vertex_set_hash(int32_t value) {
+  _internal_set_vertex_set_hash(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.vertex_set_hash)
+}
+
+// optional float intensity = 3;
+inline bool CMsgClothStiffenAnimEvent::_internal_has_intensity() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_intensity() const {
+  return _internal_has_intensity();
+}
+inline void CMsgClothStiffenAnimEvent::clear_intensity() {
+  _impl_.intensity_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline float CMsgClothStiffenAnimEvent::_internal_intensity() const {
+  return _impl_.intensity_;
+}
+inline float CMsgClothStiffenAnimEvent::intensity() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.intensity)
+  return _internal_intensity();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_intensity(float value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.intensity_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_intensity(float value) {
+  _internal_set_intensity(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.intensity)
+}
+
+// optional float length = 4;
+inline bool CMsgClothStiffenAnimEvent::_internal_has_length() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_length() const {
+  return _internal_has_length();
+}
+inline void CMsgClothStiffenAnimEvent::clear_length() {
+  _impl_.length_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline float CMsgClothStiffenAnimEvent::_internal_length() const {
+  return _impl_.length_;
+}
+inline float CMsgClothStiffenAnimEvent::length() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.length)
+  return _internal_length();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_length(float value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.length_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_length(float value) {
+  _internal_set_length(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.length)
+}
+
+// optional float speed_in = 5;
+inline bool CMsgClothStiffenAnimEvent::_internal_has_speed_in() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_speed_in() const {
+  return _internal_has_speed_in();
+}
+inline void CMsgClothStiffenAnimEvent::clear_speed_in() {
+  _impl_.speed_in_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline float CMsgClothStiffenAnimEvent::_internal_speed_in() const {
+  return _impl_.speed_in_;
+}
+inline float CMsgClothStiffenAnimEvent::speed_in() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.speed_in)
+  return _internal_speed_in();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_speed_in(float value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.speed_in_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_speed_in(float value) {
+  _internal_set_speed_in(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.speed_in)
+}
+
+// optional float speed_out = 6;
+inline bool CMsgClothStiffenAnimEvent::_internal_has_speed_out() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgClothStiffenAnimEvent::has_speed_out() const {
+  return _internal_has_speed_out();
+}
+inline void CMsgClothStiffenAnimEvent::clear_speed_out() {
+  _impl_.speed_out_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline float CMsgClothStiffenAnimEvent::_internal_speed_out() const {
+  return _impl_.speed_out_;
+}
+inline float CMsgClothStiffenAnimEvent::speed_out() const {
+  // @@protoc_insertion_point(field_get:CMsgClothStiffenAnimEvent.speed_out)
+  return _internal_speed_out();
+}
+inline void CMsgClothStiffenAnimEvent::_internal_set_speed_out(float value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.speed_out_ = value;
+}
+inline void CMsgClothStiffenAnimEvent::set_speed_out(float value) {
+  _internal_set_speed_out(value);
+  // @@protoc_insertion_point(field_set:CMsgClothStiffenAnimEvent.speed_out)
+}
+
+// -------------------------------------------------------------------
+
+// CMsgClothEffectAnimEvent
+
+// optional int32 source_entity_index = 1 [default = -1];
+inline bool CMsgClothEffectAnimEvent::_internal_has_source_entity_index() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_source_entity_index() const {
+  return _internal_has_source_entity_index();
+}
+inline void CMsgClothEffectAnimEvent::clear_source_entity_index() {
+  _impl_.source_entity_index_ = -1;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline int32_t CMsgClothEffectAnimEvent::_internal_source_entity_index() const {
+  return _impl_.source_entity_index_;
+}
+inline int32_t CMsgClothEffectAnimEvent::source_entity_index() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.source_entity_index)
+  return _internal_source_entity_index();
+}
+inline void CMsgClothEffectAnimEvent::_internal_set_source_entity_index(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.source_entity_index_ = value;
+}
+inline void CMsgClothEffectAnimEvent::set_source_entity_index(int32_t value) {
+  _internal_set_source_entity_index(value);
+  // @@protoc_insertion_point(field_set:CMsgClothEffectAnimEvent.source_entity_index)
+}
+
+// optional int32 effect_name_hash = 2;
+inline bool CMsgClothEffectAnimEvent::_internal_has_effect_name_hash() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_effect_name_hash() const {
+  return _internal_has_effect_name_hash();
+}
+inline void CMsgClothEffectAnimEvent::clear_effect_name_hash() {
+  _impl_.effect_name_hash_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline int32_t CMsgClothEffectAnimEvent::_internal_effect_name_hash() const {
+  return _impl_.effect_name_hash_;
+}
+inline int32_t CMsgClothEffectAnimEvent::effect_name_hash() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.effect_name_hash)
+  return _internal_effect_name_hash();
+}
+inline void CMsgClothEffectAnimEvent::_internal_set_effect_name_hash(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.effect_name_hash_ = value;
+}
+inline void CMsgClothEffectAnimEvent::set_effect_name_hash(int32_t value) {
+  _internal_set_effect_name_hash(value);
+  // @@protoc_insertion_point(field_set:CMsgClothEffectAnimEvent.effect_name_hash)
+}
+
+// optional int32 operation = 3;
+inline bool CMsgClothEffectAnimEvent::_internal_has_operation() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_operation() const {
+  return _internal_has_operation();
+}
+inline void CMsgClothEffectAnimEvent::clear_operation() {
+  _impl_.operation_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline int32_t CMsgClothEffectAnimEvent::_internal_operation() const {
+  return _impl_.operation_;
+}
+inline int32_t CMsgClothEffectAnimEvent::operation() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.operation)
+  return _internal_operation();
+}
+inline void CMsgClothEffectAnimEvent::_internal_set_operation(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_.operation_ = value;
+}
+inline void CMsgClothEffectAnimEvent::set_operation(int32_t value) {
+  _internal_set_operation(value);
+  // @@protoc_insertion_point(field_set:CMsgClothEffectAnimEvent.operation)
+}
+
+// optional int32 flags = 4;
+inline bool CMsgClothEffectAnimEvent::_internal_has_flags() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_flags() const {
+  return _internal_has_flags();
+}
+inline void CMsgClothEffectAnimEvent::clear_flags() {
+  _impl_.flags_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline int32_t CMsgClothEffectAnimEvent::_internal_flags() const {
+  return _impl_.flags_;
+}
+inline int32_t CMsgClothEffectAnimEvent::flags() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.flags)
+  return _internal_flags();
+}
+inline void CMsgClothEffectAnimEvent::_internal_set_flags(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.flags_ = value;
+}
+inline void CMsgClothEffectAnimEvent::set_flags(int32_t value) {
+  _internal_set_flags(value);
+  // @@protoc_insertion_point(field_set:CMsgClothEffectAnimEvent.flags)
+}
+
+// optional string tags = 5;
+inline bool CMsgClothEffectAnimEvent::_internal_has_tags() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_tags() const {
+  return _internal_has_tags();
+}
+inline void CMsgClothEffectAnimEvent::clear_tags() {
+  _impl_.tags_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CMsgClothEffectAnimEvent::tags() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.tags)
+  return _internal_tags();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CMsgClothEffectAnimEvent::set_tags(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.tags_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CMsgClothEffectAnimEvent.tags)
+}
+inline std::string* CMsgClothEffectAnimEvent::mutable_tags() {
+  std::string* _s = _internal_mutable_tags();
+  // @@protoc_insertion_point(field_mutable:CMsgClothEffectAnimEvent.tags)
+  return _s;
+}
+inline const std::string& CMsgClothEffectAnimEvent::_internal_tags() const {
+  return _impl_.tags_.Get();
+}
+inline void CMsgClothEffectAnimEvent::_internal_set_tags(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.tags_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CMsgClothEffectAnimEvent::_internal_mutable_tags() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.tags_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CMsgClothEffectAnimEvent::release_tags() {
+  // @@protoc_insertion_point(field_release:CMsgClothEffectAnimEvent.tags)
+  if (!_internal_has_tags()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.tags_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.tags_.IsDefault()) {
+    _impl_.tags_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CMsgClothEffectAnimEvent::set_allocated_tags(std::string* tags) {
+  if (tags != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.tags_.SetAllocated(tags, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.tags_.IsDefault()) {
+    _impl_.tags_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CMsgClothEffectAnimEvent.tags)
+}
+
+// optional .CMsgVector pte = 6;
+inline bool CMsgClothEffectAnimEvent::_internal_has_pte() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.pte_ != nullptr);
+  return value;
+}
+inline bool CMsgClothEffectAnimEvent::has_pte() const {
+  return _internal_has_pte();
+}
+inline const ::CMsgVector& CMsgClothEffectAnimEvent::_internal_pte() const {
+  const ::CMsgVector* p = _impl_.pte_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgVector&>(
+      ::_CMsgVector_default_instance_);
+}
+inline const ::CMsgVector& CMsgClothEffectAnimEvent::pte() const {
+  // @@protoc_insertion_point(field_get:CMsgClothEffectAnimEvent.pte)
+  return _internal_pte();
+}
+inline void CMsgClothEffectAnimEvent::unsafe_arena_set_allocated_pte(
+    ::CMsgVector* pte) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pte_);
+  }
+  _impl_.pte_ = pte;
+  if (pte) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CMsgClothEffectAnimEvent.pte)
+}
+inline ::CMsgVector* CMsgClothEffectAnimEvent::release_pte() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.pte_;
+  _impl_.pte_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgVector* CMsgClothEffectAnimEvent::unsafe_arena_release_pte() {
+  // @@protoc_insertion_point(field_release:CMsgClothEffectAnimEvent.pte)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::CMsgVector* temp = _impl_.pte_;
+  _impl_.pte_ = nullptr;
+  return temp;
+}
+inline ::CMsgVector* CMsgClothEffectAnimEvent::_internal_mutable_pte() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.pte_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgVector>(GetArenaForAllocation());
+    _impl_.pte_ = p;
+  }
+  return _impl_.pte_;
+}
+inline ::CMsgVector* CMsgClothEffectAnimEvent::mutable_pte() {
+  ::CMsgVector* _msg = _internal_mutable_pte();
+  // @@protoc_insertion_point(field_mutable:CMsgClothEffectAnimEvent.pte)
+  return _msg;
+}
+inline void CMsgClothEffectAnimEvent::set_allocated_pte(::CMsgVector* pte) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.pte_);
+  }
+  if (pte) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(pte));
+    if (message_arena != submessage_arena) {
+      pte = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, pte, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.pte_ = pte;
+  // @@protoc_insertion_point(field_set_allocated:CMsgClothEffectAnimEvent.pte)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

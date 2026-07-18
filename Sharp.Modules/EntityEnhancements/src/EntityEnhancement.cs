@@ -56,11 +56,7 @@ public sealed class EntityEnhancement : IModSharpModule
     }
 
     public bool Init()
-    {
-        _modSharp.GetGameData().Register("EntityEnhancement.games");
-
-        return true;
-    }
+        => true;
 
     public void PostInit()
     {
@@ -90,7 +86,5 @@ public sealed class EntityEnhancement : IModSharpModule
                 _logger.LogError(e, "Failed to shutdown enhancement module {Module}", module.GetType().Name);
             }
         }
-
-        _modSharp.GetGameData().Unregister("EntityEnhancement.games");
     }
 }

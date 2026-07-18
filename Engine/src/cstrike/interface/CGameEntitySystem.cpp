@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -112,25 +112,27 @@ CBaseEntity* CGameEntitySystem::SpawnEntityFromKeyValuesSync(const char* classna
 
         switch (item.Value.type)
         {
-            case KeyValuesVariantValueItemType_Bool:
-                pKeyValues->SetBool(item.Key, item.Value.bValue);
-                break;
-            case KeyValuesVariantValueItemType_Int32:
-                pKeyValues->SetInt(item.Key, item.Value.i32Value);
-                break;
-            case KeyValuesVariantValueItemType_Float:
-                pKeyValues->SetFloat(item.Key, item.Value.flValue);
-                break;
-            case KeyValuesVariantValueItemType_String:
-                pKeyValues->SetString(item.Key, item.Value.szValue);
-                break;
-            case KeyValuesVariantValueItemType_Pointer:
-                pKeyValues->SetPointer(item.Key, item.Value.pValue);
-                break;
-            default: 
-                FatalError("Not supported KeyValuesVariantValueItemType");
-                break;
-            
+        case KeyValuesVariantValueItemType_Bool:
+            pKeyValues->SetBool(item.Key, item.Value.bValue);
+            break;
+        case KeyValuesVariantValueItemType_Int32:
+            pKeyValues->SetInt(item.Key, item.Value.i32Value);
+            break;
+        case KeyValuesVariantValueItemType_Float:
+            pKeyValues->SetFloat(item.Key, item.Value.flValue);
+            break;
+        case KeyValuesVariantValueItemType_String:
+            pKeyValues->SetString(item.Key, item.Value.szValue);
+            break;
+        case KeyValuesVariantValueItemType_Pointer:
+            pKeyValues->SetPointer(item.Key, item.Value.pValue);
+            break;
+        case KeyValuesVariantValueItemType_UInt64:
+            pKeyValues->SetUInt64(item.Key, item.Value.u64Value);
+            break;
+        default:
+            FatalError("Not supported KeyValuesVariantValueItemType");
+            break;
         }
     }
 
@@ -157,14 +159,14 @@ CBaseEntity* CGameEntitySystem::CreateEntityByName(const char* classname) const
     return address::server::CreateEntityByName(classname, -1);
 }
 
-void CGameEntitySystem::AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID)
+void CGameEntitySystem::AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay)
 {
-    return address::server::CGameEntitySystem_AddEntityIOEvent(this, pEntity, pInputName, pActivator, pCaller, pValue, flDelay, outputID, nullptr, nullptr);
+    return address::server::CGameEntitySystem_AddEntityIOEvent(this, pEntity, pInputName, pActivator, pCaller, pValue, flDelay, nullptr, nullptr);
 }
 
 CEntityClass* CGameEntitySystem::FindEntityClassByName(const char* classname) const
 {
-    using fn         = CEntityClass*(*)(const CGameEntitySystem*, const char*, const char*/*CUtlString*/);
+    using fn         = CEntityClass* (*)(const CGameEntitySystem*, const char*, const char* /*CUtlString*/);
     static auto func = g_pGameData->GetAddress<fn>("CGameEntitySystem::FindEntityClassByClassname");
 
     return func(this, classname, nullptr);

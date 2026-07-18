@@ -9,30 +9,16 @@
 
 
 //
-// Header: safetyhook/os.hpp
+// Header: safetyhook/easy.hpp
 //
 // Include stack:
 //   - safetyhook.hpp
 //
 
-// This is the OS abstraction layer.
+/// @file safetyhook/easy.hpp
+/// @brief Easy to use API for creating hooks.
+
 #pragma once
-
-#ifndef SAFETYHOOK_USE_CXXMODULES
-#include <cstdint>
-
-#if __has_include("tl/expected.hpp")
-    #include "tl/expected.hpp"
-#elif __has_include("expected.hpp")
-    #include "expected.hpp"
-#else
-    #error "No <expected> polyfill found"
-#endif
-
-#include <functional>
-#else
-import std.compat;
-#endif
 
 
 //
@@ -40,7 +26,7 @@ import std.compat;
 //
 // Include stack:
 //   - safetyhook.hpp
-//   - safetyhook/os.hpp
+//   - safetyhook/easy.hpp
 //
 
 #pragma once
@@ -49,16 +35,24 @@ import std.compat;
 #define SAFETYHOOK_COMPILER_MSVC 1
 #define SAFETYHOOK_COMPILER_GCC 0
 #define SAFETYHOOK_COMPILER_CLANG 0
-#elif defined(__GNUC__)
-#define SAFETYHOOK_COMPILER_MSVC 0
-#define SAFETYHOOK_COMPILER_GCC 1
-#define SAFETYHOOK_COMPILER_CLANG 0
 #elif defined(__clang__)
 #define SAFETYHOOK_COMPILER_MSVC 0
 #define SAFETYHOOK_COMPILER_GCC 0
 #define SAFETYHOOK_COMPILER_CLANG 1
+#elif defined(__GNUC__)
+#define SAFETYHOOK_COMPILER_MSVC 0
+#define SAFETYHOOK_COMPILER_GCC 1
+#define SAFETYHOOK_COMPILER_CLANG 0
 #else
 #error "Unsupported compiler"
+#endif
+
+#if defined(_MSC_VER)
+#define SAFETYHOOK_ABI_MSVC 1
+#define SAFETYHOOK_ABI_ITANIUM 0
+#else
+#define SAFETYHOOK_ABI_MSVC 0
+#define SAFETYHOOK_ABI_ITANIUM 1
 #endif
 
 #if SAFETYHOOK_COMPILER_MSVC
@@ -114,7 +108,9 @@ import std.compat;
 
 #if SAFETYHOOK_COMPILER_MSVC
 #define SAFETYHOOK_NOINLINE __declspec(noinline)
-#elif SAFETYHOOK_COMPILER_GCC || SAFETYHOOK_COMPILER_CLANG
+#elif SAFETYHOOK_COMPILER_GCC
+#define SAFETYHOOK_NOINLINE __attribute__((noinline))
+#elif SAFETYHOOK_COMPILER_CLANG
 #define SAFETYHOOK_NOINLINE __attribute__((noinline))
 #endif
 
@@ -134,85 +130,6 @@ import std.compat;
 #define SAFETYHOOK_API
 #endif
 
-namespace safetyhook {
-
-enum class OsError {
-    FAILED_TO_ALLOCATE,
-    FAILED_TO_PROTECT,
-    FAILED_TO_QUERY,
-    FAILED_TO_GET_NEXT_THREAD,
-    FAILED_TO_GET_THREAD_CONTEXT,
-    FAILED_TO_SET_THREAD_CONTEXT,
-    FAILED_TO_FREEZE_THREAD,
-    FAILED_TO_UNFREEZE_THREAD,
-    FAILED_TO_GET_THREAD_ID,
-};
-
-struct VmAccess {
-    bool read : 1;
-    bool write : 1;
-    bool execute : 1;
-
-    constexpr bool operator==(const VmAccess& other) const {
-        return read == other.read && write == other.write && execute == other.execute;
-    }
-};
-
-constexpr VmAccess VM_ACCESS_R{true, false, false};
-constexpr VmAccess VM_ACCESS_RW{true, true, false};
-constexpr VmAccess VM_ACCESS_RX{true, false, true};
-constexpr VmAccess VM_ACCESS_RWX{true, true, true};
-
-struct VmBasicInfo {
-    uint8_t* address;
-    size_t size;
-    VmAccess access;
-    bool is_free;
-};
-
-tl::expected<uint8_t*, OsError> SAFETYHOOK_API vm_allocate(uint8_t* address, size_t size, VmAccess access);
-void SAFETYHOOK_API vm_free(uint8_t* address);
-tl::expected<uint32_t, OsError> SAFETYHOOK_API vm_protect(uint8_t* address, size_t size, VmAccess access);
-tl::expected<uint32_t, OsError> SAFETYHOOK_API vm_protect(uint8_t* address, size_t size, uint32_t access);
-tl::expected<VmBasicInfo, OsError> SAFETYHOOK_API vm_query(uint8_t* address);
-bool SAFETYHOOK_API vm_is_readable(uint8_t* address, size_t size);
-bool SAFETYHOOK_API vm_is_writable(uint8_t* address, size_t size);
-bool SAFETYHOOK_API vm_is_executable(uint8_t* address);
-
-struct SystemInfo {
-    uint32_t page_size;
-    uint32_t allocation_granularity;
-    uint8_t* min_address;
-    uint8_t* max_address;
-};
-
-SystemInfo SAFETYHOOK_API system_info();
-
-using ThreadContext = void*;
-
-void SAFETYHOOK_API trap_threads(uint8_t* from, uint8_t* to, size_t len, const std::function<void()>& run_fn);
-
-/// @brief Will modify the context of a thread's IP to point to a new address if its IP is at the old address.
-/// @param ctx The thread context to modify.
-/// @param old_ip The old IP address.
-/// @param new_ip The new IP address.
-void SAFETYHOOK_API fix_ip(ThreadContext ctx, uint8_t* old_ip, uint8_t* new_ip);
-
-} // namespace safetyhook
-
-//
-// Header: safetyhook/easy.hpp
-//
-// Include stack:
-//   - safetyhook.hpp
-//
-
-/// @file safetyhook/easy.hpp
-/// @brief Easy to use API for creating hooks.
-
-#pragma once
-
-
 //
 // Header: safetyhook/inline_hook.hpp
 //
@@ -228,15 +145,13 @@ void SAFETYHOOK_API fix_ip(ThreadContext ctx, uint8_t* old_ip, uint8_t* new_ip);
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
-
 #if __has_include("tl/expected.hpp")
-    #include "tl/expected.hpp"
+#    include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-    #include "expected.hpp"
+#    include "expected.hpp"
 #else
-    #error "No <expected> polyfill found"
+#    error "No <expected> polyfill found"
 #endif
-
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -262,15 +177,13 @@ import std.compat;
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
-
 #if __has_include("tl/expected.hpp")
-    #include "tl/expected.hpp"
+#    include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-    #include "expected.hpp"
+#    include "expected.hpp"
 #else
-    #error "No <expected> polyfill found"
+#    error "No <expected> polyfill found"
 #endif
-
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -685,10 +598,17 @@ public:
     /// @param ...args The arguments to pass to the function.
     /// @return The result of calling the original function.
     /// @note This function will use the __thiscall calling convention.
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
     template <typename RetT = void, typename... Args> RetT thiscall(Args... args) {
         std::scoped_lock lock{m_mutex};
         return m_trampoline ? original<RetT(SAFETYHOOK_THISCALL*)(Args...)>()(args...) : RetT();
     }
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
     /// @brief Calls the original function.
     /// @tparam RetT The return type of the function.
@@ -744,9 +664,16 @@ public:
     /// @note This function will use the __thiscall calling convention.
     /// @note This function is unsafe because it doesn't lock the mutex. Only use this if you don't care about unhook
     /// safety or are worried about the performance cost of locking the mutex.
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
     template <typename RetT = void, typename... Args> RetT unsafe_thiscall(Args... args) {
         return original<RetT(SAFETYHOOK_THISCALL*)(Args...)>()(args...);
     }
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
     /// @brief Calls the original function.
     /// @tparam RetT The return type of the function.
@@ -1061,15 +988,13 @@ private:
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
-
 #if __has_include("tl/expected.hpp")
-    #include "tl/expected.hpp"
+#    include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-    #include "expected.hpp"
+#    include "expected.hpp"
 #else
-    #error "No <expected> polyfill found"
+#    error "No <expected> polyfill found"
 #endif
-
 #include <unordered_map>
 #else
 import std.compat;
@@ -1077,6 +1002,16 @@ import std.compat;
 
 
 namespace safetyhook {
+/// @brief Number of ABI-specific non-function entries preceding the first virtual function pointer
+/// in the vtable layout for the current compiler/ABI.
+#if SAFETYHOOK_ABI_MSVC
+constexpr size_t VMT_HEADER = 1; // RTTICompleteObjectLocator*
+#elif SAFETYHOOK_ABI_ITANIUM
+constexpr size_t VMT_HEADER = 2; // offset-to-top + RTTI ptr
+#else
+constexpr size_t VMT_HEADER = 0;
+#endif
+
 /// @brief A hook class that allows for hooking a single method in a VMT.
 class SAFETYHOOK_API VmHook final {
 public:
@@ -1117,9 +1052,16 @@ public:
     /// @tparam Args The argument types of the method.
     /// @param args The arguments to pass to the method.
     /// @return The return value of the method.
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#endif
     template <typename RetT = void, typename... Args> RetT thiscall(Args... args) {
         return original<RetT(SAFETYHOOK_THISCALL*)(Args...)>()(args...);
     }
+#if SAFETYHOOK_COMPILER_GCC
+#pragma GCC diagnostic pop
+#endif
 
     /// @brief Calls the original method with the __stdcall calling convention.
     /// @tparam RetT The return type of the method.
@@ -1208,7 +1150,7 @@ public:
     template <typename T> [[nodiscard]] tl::expected<VmHook, Error> hook_method(size_t index, T new_function) {
         VmHook hook{};
 
-        ++index; // Skip RTTI pointer.
+        index += VMT_HEADER; // Skip RTTI header.
         hook.m_original_vm = m_new_vmt[index];
         store(reinterpret_cast<uint8_t*>(&hook.m_new_vm), new_function);
         hook.m_vmt_entry = &m_new_vmt[index];
@@ -1284,6 +1226,97 @@ template <typename T> [[nodiscard]] VmHook create_vm(VmtHook& vmt, size_t index,
         return {};
     }
 }
+
+} // namespace safetyhook
+
+//
+// Header: safetyhook/os.hpp
+//
+// Include stack:
+//   - safetyhook.hpp
+//
+
+// This is the OS abstraction layer.
+#pragma once
+
+#ifndef SAFETYHOOK_USE_CXXMODULES
+#include <cstdint>
+#if __has_include("tl/expected.hpp")
+#    include "tl/expected.hpp"
+#elif __has_include("expected.hpp")
+#    include "expected.hpp"
+#else
+#    error "No <expected> polyfill found"
+#endif
+#include <functional>
+#else
+import std.compat;
+#endif
+
+
+namespace safetyhook {
+
+enum class OsError {
+    FAILED_TO_ALLOCATE,
+    FAILED_TO_PROTECT,
+    FAILED_TO_QUERY,
+    FAILED_TO_GET_NEXT_THREAD,
+    FAILED_TO_GET_THREAD_CONTEXT,
+    FAILED_TO_SET_THREAD_CONTEXT,
+    FAILED_TO_FREEZE_THREAD,
+    FAILED_TO_UNFREEZE_THREAD,
+    FAILED_TO_GET_THREAD_ID,
+};
+
+struct VmAccess {
+    bool read : 1;
+    bool write : 1;
+    bool execute : 1;
+
+    constexpr bool operator==(const VmAccess& other) const {
+        return read == other.read && write == other.write && execute == other.execute;
+    }
+};
+
+inline constexpr VmAccess VM_ACCESS_R{true, false, false};
+inline constexpr VmAccess VM_ACCESS_RW{true, true, false};
+inline constexpr VmAccess VM_ACCESS_RX{true, false, true};
+inline constexpr VmAccess VM_ACCESS_RWX{true, true, true};
+
+struct VmBasicInfo {
+    uint8_t* address;
+    size_t size;
+    VmAccess access;
+    bool is_free;
+};
+
+tl::expected<uint8_t*, OsError> SAFETYHOOK_API vm_allocate(uint8_t* address, size_t size, VmAccess access);
+void SAFETYHOOK_API vm_free(uint8_t* address);
+tl::expected<uint32_t, OsError> SAFETYHOOK_API vm_protect(uint8_t* address, size_t size, VmAccess access);
+tl::expected<uint32_t, OsError> SAFETYHOOK_API vm_protect(uint8_t* address, size_t size, uint32_t access);
+tl::expected<VmBasicInfo, OsError> SAFETYHOOK_API vm_query(uint8_t* address);
+bool SAFETYHOOK_API vm_is_readable(uint8_t* address, size_t size);
+bool SAFETYHOOK_API vm_is_writable(uint8_t* address, size_t size);
+bool SAFETYHOOK_API vm_is_executable(uint8_t* address);
+
+struct SystemInfo {
+    uint32_t page_size;
+    uint32_t allocation_granularity;
+    uint8_t* min_address;
+    uint8_t* max_address;
+};
+
+SystemInfo SAFETYHOOK_API system_info();
+
+using ThreadContext = void*;
+
+void SAFETYHOOK_API trap_threads(uint8_t* from, uint8_t* to, size_t len, const std::function<void()>& run_fn);
+
+/// @brief Will modify the context of a thread's IP to point to a new address if its IP is at the old address.
+/// @param ctx The thread context to modify.
+/// @param old_ip The old IP address.
+/// @param new_ip The new IP address.
+void SAFETYHOOK_API fix_ip(ThreadContext ctx, uint8_t* old_ip, uint8_t* new_ip);
 
 } // namespace safetyhook
 

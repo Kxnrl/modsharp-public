@@ -104,21 +104,21 @@ public readonly unsafe ref struct GameTrace
     [FieldOffset(172)]
     public readonly float Fraction;
 
-    [FieldOffset(176)]
+    [FieldOffset(180)]
     public readonly float Triangle;
 
-    [FieldOffset(180)]
+    [FieldOffset(184)]
     public readonly short HitBoxBoneIndex;
 
-    [FieldOffset(182)]
+    [FieldOffset(186)]
     public readonly TraceRayType RayType;
 
-    [FieldOffset(183)]
+    [FieldOffset(187)]
     public readonly bool StartInSolid;
 
-    [FieldOffset(184)]
+    [FieldOffset(188)]
     public readonly bool ExactHitPoint;
-
+    
     public bool DidHit()
         => Fraction < 1.0f || StartInSolid;
 }

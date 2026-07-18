@@ -31,10 +31,10 @@ struct FixedString
 {
     std::array<char, N> data;
 
-    constexpr FixedString(std::string_view view) :
+    constexpr explicit FixedString(const char (&str)[N]) :
         data{}
     {
-        for (size_t i = 0; i < view.size(); ++i) data[i] = view[i];
+        for (size_t i = 0; i < N; ++i) data[i] = str[i];
     }
 
     constexpr const char* c_str() const { return data.data(); }
@@ -57,8 +57,11 @@ constexpr auto concat(const char (&a)[N], const char (&b)[M])
     {
         combined[(N - 1) + i] = b[i];
     }
-    return FixedString<new_length>(combined);
+    return FixedString(combined);
 }
+
+static_assert(concat("ab", "cd").size() == 4);
+static_assert(concat("ab", "cd").c_str()[4] == '\0');
 
 std::vector<std::string> StringSplit(const char* str, const char* delimiter);
 std::vector<std::string> DeduplicateStringListCaseInSensitivity(const std::vector<std::string>& input);

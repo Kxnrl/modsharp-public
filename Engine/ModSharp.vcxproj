@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\address_engine.cpp" />
+    <ClCompile Include="src\address_server.cpp" />
     <ClCompile Include="src\bridge\hookbridge.cpp" />
     <ClCompile Include="src\bridge\natives\NetNatives.cpp" />
     <ClCompile Include="src\bridge\natives\SoundNatives.cpp" />
@@ -51,6 +53,7 @@
     <ClCompile Include="src\proto\cs_usercmd.pb.cc" />
     <ClCompile Include="src\proto\source2_steam_stats.pb.cc" />
     <ClCompile Include="src\proto\usercmd.pb.cc" />
+    <ClCompile Include="src\proto\valveextensions.pb.cc" />
     <ClCompile Include="src\sdkproxy.cpp" />
     <ClCompile Include="src\address.cpp" />
     <ClCompile Include="src\bridge\adapter.cpp" />
@@ -70,7 +73,6 @@
     <ClCompile Include="src\cstrike\type\CNetworkGameServer.cpp" />
     <ClCompile Include="src\cstrike\type\CServerSideClient.cpp" />
     <ClCompile Include="src\cstrike\Interface\CGameEntitySystem.cpp" />
-    <ClCompile Include="src\cstrike\Interface\IGameServer.cpp" />
     <ClCompile Include="src\cstrike\Interface\IGameSystem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseEntity.cpp" />
     <ClCompile Include="src\cstrike\type\CEntityInstance.cpp" />
@@ -118,6 +120,8 @@
     <ClCompile Include="vendors\zydis\Zydis.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\address_resolve.h" />
+    <ClInclude Include="src\address_scan.h" />
     <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
     <ClInclude Include="src\bridge\natives\NetNatives.h" />
     <ClInclude Include="src\bridge\natives\SoundNatives.h" />
@@ -280,6 +284,7 @@
     <ClInclude Include="src\module.h" />
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\protobufproxy.h" />
+    <ClInclude Include="src\proto\valveextensions.pb.h" />
     <ClInclude Include="src\scopetimer.h" />
     <ClInclude Include="src\sdkproxy.h" />
     <ClInclude Include="src\steamproxy.h" />
@@ -309,14 +314,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>

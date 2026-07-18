@@ -24,7 +24,7 @@ public static partial class GameeventsReflection {
         string.Concat(
           "ChBnYW1lZXZlbnRzLnByb3RvGhZuZXR3b3JrYmFzZXR5cGVzLnByb3RvIkcK",
           "HENNc2dWRGVidWdHYW1lU2Vzc2lvbklERXZlbnQSEAoIY2xpZW50aWQYASAB",
-          "KAUSFQoNZ2FtZXNlc3Npb25pZBgCIAEoCSLyAgoTQ01zZ1BsYWNlRGVjYWxF",
+          "KAUSFQoNZ2FtZXNlc3Npb25pZBgCIAEoCSKbAwoTQ01zZ1BsYWNlRGVjYWxF",
           "dmVudBIdCghwb3NpdGlvbhgBIAEoCzILLkNNc2dWZWN0b3ISGwoGbm9ybWFs",
           "GAIgASgLMgsuQ01zZ1ZlY3RvchIaCgVzYXhpcxgDIAEoCzILLkNNc2dWZWN0",
           "b3ISEQoJYm9uZWluZGV4GAQgASgFEhUKDXRyaWFuZ2xlaW5kZXgYDSABKAUS",
@@ -32,51 +32,60 @@ public static partial class GameeventsReflection {
           "ByABKAUSGAoQZGVjYWxfZ3JvdXBfbmFtZRgIIAEoDRIVCg1zaXplX292ZXJy",
           "aWRlGAkgASgCEh4KDGVudGl0eWhhbmRsZRgKIAEoDToIMTY3NzcyMTUSEwoL",
           "bWF0ZXJpYWxfaWQYCyABKAQSFQoNc2VxdWVuY2VfbmFtZRgMIAEoDRIpChRw",
-          "b3NpdGlvbl9vYmplY3RzcGFjZRgOIAEoCzILLkNNc2dWZWN0b3IiMQoZQ01z",
-          "Z0NsZWFyV29ybGREZWNhbHNFdmVudBIUCgxmbGFnc3RvY2xlYXIYASABKA0i",
-          "MgoaQ01zZ0NsZWFyRW50aXR5RGVjYWxzRXZlbnQSFAoMZmxhZ3N0b2NsZWFy",
-          "GAEgASgNIlUKHUNNc2dDbGVhckRlY2Fsc0ZvckVudGl0eUV2ZW50EhQKDGZs",
-          "YWdzdG9jbGVhchgBIAEoDRIeCgxlbnRpdHloYW5kbGUYAiABKA06CDE2Nzc3",
-          "MjE1IvQBCh5DTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudExpc3QSQQoLZGVz",
-          "Y3JpcHRvcnMYASADKAsyLC5DTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudExp",
-          "c3QuZGVzY3JpcHRvcl90GiMKBWtleV90EgwKBHR5cGUYASABKAUSDAoEbmFt",
-          "ZRgCIAEoCRpiCgxkZXNjcmlwdG9yX3QSDwoHZXZlbnRpZBgBIAEoBRIMCgRu",
-          "YW1lGAIgASgJEjMKBGtleXMYAyADKAsyJS5DTXNnU291cmNlMUxlZ2FjeUdh",
-          "bWVFdmVudExpc3Qua2V5X3Q6BoC1GICAAiJLCh1DTXNnU291cmNlMUxlZ2Fj",
-          "eUxpc3RlbkV2ZW50cxISCgpwbGF5ZXJzbG90GAEgASgFEhYKDmV2ZW50YXJy",
-          "YXliaXRzGAIgAygNIrgCChpDTXNnU291cmNlMUxlZ2FjeUdhbWVFdmVudBIS",
-          "CgpldmVudF9uYW1lGAEgASgJEg8KB2V2ZW50aWQYAiABKAUSLwoEa2V5cxgD",
-          "IAMoCzIhLkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50LmtleV90EhMKC3Nl",
-          "cnZlcl90aWNrGAQgASgFEhMKC3Bhc3N0aHJvdWdoGAUgASgFGpkBCgVrZXlf",
-          "dBIMCgR0eXBlGAEgASgFEhIKCnZhbF9zdHJpbmcYAiABKAkSEQoJdmFsX2Zs",
-          "b2F0GAMgASgCEhAKCHZhbF9sb25nGAQgASgFEhEKCXZhbF9zaG9ydBgFIAEo",
-          "BRIQCgh2YWxfYnl0ZRgGIAEoBRIQCgh2YWxfYm9vbBgHIAEoCBISCgp2YWxf",
-          "dWludDY0GAggASgEIqQBChZDTXNnU29zU3RhcnRTb3VuZEV2ZW50EhcKD3Nv",
-          "dW5kZXZlbnRfZ3VpZBgBIAEoBRIXCg9zb3VuZGV2ZW50X2hhc2gYAiABKAcS",
-          "HwoTc291cmNlX2VudGl0eV9pbmRleBgDIAEoBToCLTESDAoEc2VlZBgEIAEo",
-          "BRIVCg1wYWNrZWRfcGFyYW1zGAUgASgMEhIKCnN0YXJ0X3RpbWUYBiABKAIi",
-          "MAoVQ01zZ1Nvc1N0b3BTb3VuZEV2ZW50EhcKD3NvdW5kZXZlbnRfZ3VpZBgB",
-          "IAEoBSJVChlDTXNnU29zU3RvcFNvdW5kRXZlbnRIYXNoEhcKD3NvdW5kZXZl",
-          "bnRfaGFzaBgBIAEoBxIfChNzb3VyY2VfZW50aXR5X2luZGV4GAIgASgFOgIt",
-          "MSJMChpDTXNnU29zU2V0U291bmRFdmVudFBhcmFtcxIXCg9zb3VuZGV2ZW50",
-          "X2d1aWQYASABKAUSFQoNcGFja2VkX3BhcmFtcxgFIAEoDCJJChxDTXNnU29z",
-          "U2V0TGlicmFyeVN0YWNrRmllbGRzEhIKCnN0YWNrX2hhc2gYASABKAcSFQoN",
-          "cGFja2VkX2ZpZWxkcxgFIAEoDCqtAwoPRUJhc2VHYW1lRXZlbnRzEiAKG0dF",
-          "X1ZEZWJ1Z0dhbWVTZXNzaW9uSURFdmVudBDIARIXChJHRV9QbGFjZURlY2Fs",
-          "RXZlbnQQyQESHQoYR0VfQ2xlYXJXb3JsZERlY2Fsc0V2ZW50EMoBEh4KGUdF",
-          "X0NsZWFyRW50aXR5RGVjYWxzRXZlbnQQywESIQocR0VfQ2xlYXJEZWNhbHNG",
-          "b3JFbnRpdHlFdmVudBDMARIiCh1HRV9Tb3VyY2UxTGVnYWN5R2FtZUV2ZW50",
-          "TGlzdBDNARIhChxHRV9Tb3VyY2UxTGVnYWN5TGlzdGVuRXZlbnRzEM4BEh4K",
-          "GUdFX1NvdXJjZTFMZWdhY3lHYW1lRXZlbnQQzwESGgoVR0VfU29zU3RhcnRT",
-          "b3VuZEV2ZW50ENABEhkKFEdFX1Nvc1N0b3BTb3VuZEV2ZW50ENEBEh4KGUdF",
-          "X1Nvc1NldFNvdW5kRXZlbnRQYXJhbXMQ0gESIAobR0VfU29zU2V0TGlicmFy",
-          "eVN0YWNrRmllbGRzENMBEh0KGEdFX1Nvc1N0b3BTb3VuZEV2ZW50SGFzaBDU",
-          "AQ=="));
+          "b3NpdGlvbl9vYmplY3RzcGFjZRgOIAEoCzILLkNNc2dWZWN0b3ISJwoSbm9y",
+          "bWFsX29iamVjdHNwYWNlGA8gASgLMgsuQ01zZ1ZlY3RvciIxChlDTXNnQ2xl",
+          "YXJXb3JsZERlY2Fsc0V2ZW50EhQKDGZsYWdzdG9jbGVhchgBIAEoDSIyChpD",
+          "TXNnQ2xlYXJFbnRpdHlEZWNhbHNFdmVudBIUCgxmbGFnc3RvY2xlYXIYASAB",
+          "KA0iVQodQ01zZ0NsZWFyRGVjYWxzRm9yRW50aXR5RXZlbnQSFAoMZmxhZ3N0",
+          "b2NsZWFyGAEgASgNEh4KDGVudGl0eWhhbmRsZRgCIAEoDToIMTY3NzcyMTUi",
+          "9AEKHkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50TGlzdBJBCgtkZXNjcmlw",
+          "dG9ycxgBIAMoCzIsLkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50TGlzdC5k",
+          "ZXNjcmlwdG9yX3QaIwoFa2V5X3QSDAoEdHlwZRgBIAEoBRIMCgRuYW1lGAIg",
+          "ASgJGmIKDGRlc2NyaXB0b3JfdBIPCgdldmVudGlkGAEgASgFEgwKBG5hbWUY",
+          "AiABKAkSMwoEa2V5cxgDIAMoCzIlLkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2",
+          "ZW50TGlzdC5rZXlfdDoGgLUYgIACIksKHUNNc2dTb3VyY2UxTGVnYWN5TGlz",
+          "dGVuRXZlbnRzEhIKCnBsYXllcnNsb3QYASABKAUSFgoOZXZlbnRhcnJheWJp",
+          "dHMYAiADKA0iuAIKGkNNc2dTb3VyY2UxTGVnYWN5R2FtZUV2ZW50EhIKCmV2",
+          "ZW50X25hbWUYASABKAkSDwoHZXZlbnRpZBgCIAEoBRIvCgRrZXlzGAMgAygL",
+          "MiEuQ01zZ1NvdXJjZTFMZWdhY3lHYW1lRXZlbnQua2V5X3QSEwoLc2VydmVy",
+          "X3RpY2sYBCABKAUSEwoLcGFzc3Rocm91Z2gYBSABKAUamQEKBWtleV90EgwK",
+          "BHR5cGUYASABKAUSEgoKdmFsX3N0cmluZxgCIAEoCRIRCgl2YWxfZmxvYXQY",
+          "AyABKAISEAoIdmFsX2xvbmcYBCABKAUSEQoJdmFsX3Nob3J0GAUgASgFEhAK",
+          "CHZhbF9ieXRlGAYgASgFEhAKCHZhbF9ib29sGAcgASgIEhIKCnZhbF91aW50",
+          "NjQYCCABKAQipAEKFkNNc2dTb3NTdGFydFNvdW5kRXZlbnQSFwoPc291bmRl",
+          "dmVudF9ndWlkGAEgASgFEhcKD3NvdW5kZXZlbnRfaGFzaBgCIAEoBxIfChNz",
+          "b3VyY2VfZW50aXR5X2luZGV4GAMgASgFOgItMRIMCgRzZWVkGAQgASgFEhUK",
+          "DXBhY2tlZF9wYXJhbXMYBSABKAwSEgoKc3RhcnRfdGltZRgGIAEoAiIwChVD",
+          "TXNnU29zU3RvcFNvdW5kRXZlbnQSFwoPc291bmRldmVudF9ndWlkGAEgASgF",
+          "IlUKGUNNc2dTb3NTdG9wU291bmRFdmVudEhhc2gSFwoPc291bmRldmVudF9o",
+          "YXNoGAEgASgHEh8KE3NvdXJjZV9lbnRpdHlfaW5kZXgYAiABKAU6Ai0xIkwK",
+          "GkNNc2dTb3NTZXRTb3VuZEV2ZW50UGFyYW1zEhcKD3NvdW5kZXZlbnRfZ3Vp",
+          "ZBgBIAEoBRIVCg1wYWNrZWRfcGFyYW1zGAUgASgMIkkKHENNc2dTb3NTZXRM",
+          "aWJyYXJ5U3RhY2tGaWVsZHMSEgoKc3RhY2tfaGFzaBgBIAEoBxIVCg1wYWNr",
+          "ZWRfZmllbGRzGAUgASgMIp0BChlDTXNnQ2xvdGhTdGlmZmVuQW5pbUV2ZW50",
+          "Eh8KE3NvdXJjZV9lbnRpdHlfaW5kZXgYASABKAU6Ai0xEhcKD3ZlcnRleF9z",
+          "ZXRfaGFzaBgCIAEoBRIRCglpbnRlbnNpdHkYAyABKAISDgoGbGVuZ3RoGAQg",
+          "ASgCEhAKCHNwZWVkX2luGAUgASgCEhEKCXNwZWVkX291dBgGIAEoAiKfAQoY",
+          "Q01zZ0Nsb3RoRWZmZWN0QW5pbUV2ZW50Eh8KE3NvdXJjZV9lbnRpdHlfaW5k",
+          "ZXgYASABKAU6Ai0xEhgKEGVmZmVjdF9uYW1lX2hhc2gYAiABKAUSEQoJb3Bl",
+          "cmF0aW9uGAMgASgFEg0KBWZsYWdzGAQgASgFEgwKBHRhZ3MYBSABKAkSGAoD",
+          "cHRlGAYgASgLMgsuQ01zZ1ZlY3RvcirqAwoPRUJhc2VHYW1lRXZlbnRzEiAK",
+          "G0dFX1ZEZWJ1Z0dhbWVTZXNzaW9uSURFdmVudBDIARIXChJHRV9QbGFjZURl",
+          "Y2FsRXZlbnQQyQESHQoYR0VfQ2xlYXJXb3JsZERlY2Fsc0V2ZW50EMoBEh4K",
+          "GUdFX0NsZWFyRW50aXR5RGVjYWxzRXZlbnQQywESIQocR0VfQ2xlYXJEZWNh",
+          "bHNGb3JFbnRpdHlFdmVudBDMARIiCh1HRV9Tb3VyY2UxTGVnYWN5R2FtZUV2",
+          "ZW50TGlzdBDNARIhChxHRV9Tb3VyY2UxTGVnYWN5TGlzdGVuRXZlbnRzEM4B",
+          "Eh4KGUdFX1NvdXJjZTFMZWdhY3lHYW1lRXZlbnQQzwESGgoVR0VfU29zU3Rh",
+          "cnRTb3VuZEV2ZW50ENABEhkKFEdFX1Nvc1N0b3BTb3VuZEV2ZW50ENEBEh4K",
+          "GUdFX1Nvc1NldFNvdW5kRXZlbnRQYXJhbXMQ0gESIAobR0VfU29zU2V0TGli",
+          "cmFyeVN0YWNrRmllbGRzENMBEh0KGEdFX1Nvc1N0b3BTb3VuZEV2ZW50SGFz",
+          "aBDUARIdChhHRV9DbG90aFN0aWZmZW5BbmltRXZlbnQQ1QESHAoXR0VfQ2xv",
+          "dGhFZmZlY3RBbmltRXZlbnQQ1gE="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::EBaseGameEvents), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgVDebugGameSessionIDEvent), global::CMsgVDebugGameSessionIDEvent.Parser, new[]{ "Clientid", "Gamesessionid" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlaceDecalEvent), global::CMsgPlaceDecalEvent.Parser, new[]{ "Position", "Normal", "Saxis", "Boneindex", "Triangleindex", "Flags", "Color", "RandomSeed", "DecalGroupName", "SizeOverride", "Entityhandle", "MaterialId", "SequenceName", "PositionObjectspace" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlaceDecalEvent), global::CMsgPlaceDecalEvent.Parser, new[]{ "Position", "Normal", "Saxis", "Boneindex", "Triangleindex", "Flags", "Color", "RandomSeed", "DecalGroupName", "SizeOverride", "Entityhandle", "MaterialId", "SequenceName", "PositionObjectspace", "NormalObjectspace" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearWorldDecalsEvent), global::CMsgClearWorldDecalsEvent.Parser, new[]{ "Flagstoclear" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearEntityDecalsEvent), global::CMsgClearEntityDecalsEvent.Parser, new[]{ "Flagstoclear" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClearDecalsForEntityEvent), global::CMsgClearDecalsForEntityEvent.Parser, new[]{ "Flagstoclear", "Entityhandle" }, null, null, null, null),
@@ -88,7 +97,9 @@ public static partial class GameeventsReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSosStopSoundEvent), global::CMsgSosStopSoundEvent.Parser, new[]{ "SoundeventGuid" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSosStopSoundEventHash), global::CMsgSosStopSoundEventHash.Parser, new[]{ "SoundeventHash", "SourceEntityIndex" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSosSetSoundEventParams), global::CMsgSosSetSoundEventParams.Parser, new[]{ "SoundeventGuid", "PackedParams" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSosSetLibraryStackFields), global::CMsgSosSetLibraryStackFields.Parser, new[]{ "StackHash", "PackedFields" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSosSetLibraryStackFields), global::CMsgSosSetLibraryStackFields.Parser, new[]{ "StackHash", "PackedFields" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClothStiffenAnimEvent), global::CMsgClothStiffenAnimEvent.Parser, new[]{ "SourceEntityIndex", "VertexSetHash", "Intensity", "Length", "SpeedIn", "SpeedOut" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgClothEffectAnimEvent), global::CMsgClothEffectAnimEvent.Parser, new[]{ "SourceEntityIndex", "EffectNameHash", "Operation", "Flags", "Tags", "Pte" }, null, null, null, null)
         }));
   }
   #endregion
@@ -109,6 +120,8 @@ public enum EBaseGameEvents {
   [pbr::OriginalName("GE_SosSetSoundEventParams")] GeSosSetSoundEventParams = 210,
   [pbr::OriginalName("GE_SosSetLibraryStackFields")] GeSosSetLibraryStackFields = 211,
   [pbr::OriginalName("GE_SosStopSoundEventHash")] GeSosStopSoundEventHash = 212,
+  [pbr::OriginalName("GE_ClothStiffenAnimEvent")] GeClothStiffenAnimEvent = 213,
+  [pbr::OriginalName("GE_ClothEffectAnimEvent")] GeClothEffectAnimEvent = 214,
 }
 
 #endregion
@@ -421,6 +434,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     materialId_ = other.materialId_;
     sequenceName_ = other.sequenceName_;
     positionObjectspace_ = other.positionObjectspace_ != null ? other.positionObjectspace_.Clone() : null;
+    normalObjectspace_ = other.normalObjectspace_ != null ? other.normalObjectspace_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -748,6 +762,18 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     }
   }
 
+  /// <summary>Field number for the "normal_objectspace" field.</summary>
+  public const int NormalObjectspaceFieldNumber = 15;
+  private global::CMsgVector normalObjectspace_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CMsgVector NormalObjectspace {
+    get { return normalObjectspace_; }
+    set {
+      normalObjectspace_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -777,6 +803,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     if (MaterialId != other.MaterialId) return false;
     if (SequenceName != other.SequenceName) return false;
     if (!object.Equals(PositionObjectspace, other.PositionObjectspace)) return false;
+    if (!object.Equals(NormalObjectspace, other.NormalObjectspace)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -798,6 +825,7 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     if (HasMaterialId) hash ^= MaterialId.GetHashCode();
     if (HasSequenceName) hash ^= SequenceName.GetHashCode();
     if (positionObjectspace_ != null) hash ^= PositionObjectspace.GetHashCode();
+    if (normalObjectspace_ != null) hash ^= NormalObjectspace.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -872,6 +900,10 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
       output.WriteRawTag(114);
       output.WriteMessage(PositionObjectspace);
     }
+    if (normalObjectspace_ != null) {
+      output.WriteRawTag(122);
+      output.WriteMessage(NormalObjectspace);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -938,6 +970,10 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
       output.WriteRawTag(114);
       output.WriteMessage(PositionObjectspace);
     }
+    if (normalObjectspace_ != null) {
+      output.WriteRawTag(122);
+      output.WriteMessage(NormalObjectspace);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -989,6 +1025,9 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
     }
     if (positionObjectspace_ != null) {
       size += 1 + pb::CodedOutputStream.ComputeMessageSize(PositionObjectspace);
+    }
+    if (normalObjectspace_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(NormalObjectspace);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -1055,6 +1094,12 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
         PositionObjectspace = new global::CMsgVector();
       }
       PositionObjectspace.MergeFrom(other.PositionObjectspace);
+    }
+    if (other.normalObjectspace_ != null) {
+      if (normalObjectspace_ == null) {
+        NormalObjectspace = new global::CMsgVector();
+      }
+      NormalObjectspace.MergeFrom(other.NormalObjectspace);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -1139,6 +1184,13 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
           input.ReadMessage(PositionObjectspace);
           break;
         }
+        case 122: {
+          if (normalObjectspace_ == null) {
+            NormalObjectspace = new global::CMsgVector();
+          }
+          input.ReadMessage(NormalObjectspace);
+          break;
+        }
       }
     }
   #endif
@@ -1220,6 +1272,13 @@ public sealed partial class CMsgPlaceDecalEvent : pb::IMessage<CMsgPlaceDecalEve
             PositionObjectspace = new global::CMsgVector();
           }
           input.ReadMessage(PositionObjectspace);
+          break;
+        }
+        case 122: {
+          if (normalObjectspace_ == null) {
+            NormalObjectspace = new global::CMsgVector();
+          }
+          input.ReadMessage(NormalObjectspace);
           break;
         }
       }
@@ -5257,6 +5316,931 @@ public sealed partial class CMsgSosSetLibraryStackFields : pb::IMessage<CMsgSosS
         }
         case 42: {
           PackedFields = input.ReadBytes();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
+public sealed partial class CMsgClothStiffenAnimEvent : pb::IMessage<CMsgClothStiffenAnimEvent>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CMsgClothStiffenAnimEvent> _parser = new pb::MessageParser<CMsgClothStiffenAnimEvent>(() => new CMsgClothStiffenAnimEvent());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CMsgClothStiffenAnimEvent> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::GameeventsReflection.Descriptor.MessageTypes[13]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothStiffenAnimEvent() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothStiffenAnimEvent(CMsgClothStiffenAnimEvent other) : this() {
+    _hasBits0 = other._hasBits0;
+    sourceEntityIndex_ = other.sourceEntityIndex_;
+    vertexSetHash_ = other.vertexSetHash_;
+    intensity_ = other.intensity_;
+    length_ = other.length_;
+    speedIn_ = other.speedIn_;
+    speedOut_ = other.speedOut_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothStiffenAnimEvent Clone() {
+    return new CMsgClothStiffenAnimEvent(this);
+  }
+
+  /// <summary>Field number for the "source_entity_index" field.</summary>
+  public const int SourceEntityIndexFieldNumber = 1;
+  private readonly static int SourceEntityIndexDefaultValue = -1;
+
+  private int sourceEntityIndex_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int SourceEntityIndex {
+    get { if ((_hasBits0 & 1) != 0) { return sourceEntityIndex_; } else { return SourceEntityIndexDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      sourceEntityIndex_ = value;
+    }
+  }
+  /// <summary>Gets whether the "source_entity_index" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasSourceEntityIndex {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "source_entity_index" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearSourceEntityIndex() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "vertex_set_hash" field.</summary>
+  public const int VertexSetHashFieldNumber = 2;
+  private readonly static int VertexSetHashDefaultValue = 0;
+
+  private int vertexSetHash_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int VertexSetHash {
+    get { if ((_hasBits0 & 2) != 0) { return vertexSetHash_; } else { return VertexSetHashDefaultValue; } }
+    set {
+      _hasBits0 |= 2;
+      vertexSetHash_ = value;
+    }
+  }
+  /// <summary>Gets whether the "vertex_set_hash" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasVertexSetHash {
+    get { return (_hasBits0 & 2) != 0; }
+  }
+  /// <summary>Clears the value of the "vertex_set_hash" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearVertexSetHash() {
+    _hasBits0 &= ~2;
+  }
+
+  /// <summary>Field number for the "intensity" field.</summary>
+  public const int IntensityFieldNumber = 3;
+  private readonly static float IntensityDefaultValue = 0F;
+
+  private float intensity_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float Intensity {
+    get { if ((_hasBits0 & 4) != 0) { return intensity_; } else { return IntensityDefaultValue; } }
+    set {
+      _hasBits0 |= 4;
+      intensity_ = value;
+    }
+  }
+  /// <summary>Gets whether the "intensity" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasIntensity {
+    get { return (_hasBits0 & 4) != 0; }
+  }
+  /// <summary>Clears the value of the "intensity" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearIntensity() {
+    _hasBits0 &= ~4;
+  }
+
+  /// <summary>Field number for the "length" field.</summary>
+  public const int LengthFieldNumber = 4;
+  private readonly static float LengthDefaultValue = 0F;
+
+  private float length_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float Length {
+    get { if ((_hasBits0 & 8) != 0) { return length_; } else { return LengthDefaultValue; } }
+    set {
+      _hasBits0 |= 8;
+      length_ = value;
+    }
+  }
+  /// <summary>Gets whether the "length" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasLength {
+    get { return (_hasBits0 & 8) != 0; }
+  }
+  /// <summary>Clears the value of the "length" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearLength() {
+    _hasBits0 &= ~8;
+  }
+
+  /// <summary>Field number for the "speed_in" field.</summary>
+  public const int SpeedInFieldNumber = 5;
+  private readonly static float SpeedInDefaultValue = 0F;
+
+  private float speedIn_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float SpeedIn {
+    get { if ((_hasBits0 & 16) != 0) { return speedIn_; } else { return SpeedInDefaultValue; } }
+    set {
+      _hasBits0 |= 16;
+      speedIn_ = value;
+    }
+  }
+  /// <summary>Gets whether the "speed_in" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasSpeedIn {
+    get { return (_hasBits0 & 16) != 0; }
+  }
+  /// <summary>Clears the value of the "speed_in" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearSpeedIn() {
+    _hasBits0 &= ~16;
+  }
+
+  /// <summary>Field number for the "speed_out" field.</summary>
+  public const int SpeedOutFieldNumber = 6;
+  private readonly static float SpeedOutDefaultValue = 0F;
+
+  private float speedOut_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float SpeedOut {
+    get { if ((_hasBits0 & 32) != 0) { return speedOut_; } else { return SpeedOutDefaultValue; } }
+    set {
+      _hasBits0 |= 32;
+      speedOut_ = value;
+    }
+  }
+  /// <summary>Gets whether the "speed_out" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasSpeedOut {
+    get { return (_hasBits0 & 32) != 0; }
+  }
+  /// <summary>Clears the value of the "speed_out" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearSpeedOut() {
+    _hasBits0 &= ~32;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CMsgClothStiffenAnimEvent);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CMsgClothStiffenAnimEvent other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (SourceEntityIndex != other.SourceEntityIndex) return false;
+    if (VertexSetHash != other.VertexSetHash) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Intensity, other.Intensity)) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Length, other.Length)) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SpeedIn, other.SpeedIn)) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SpeedOut, other.SpeedOut)) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasSourceEntityIndex) hash ^= SourceEntityIndex.GetHashCode();
+    if (HasVertexSetHash) hash ^= VertexSetHash.GetHashCode();
+    if (HasIntensity) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Intensity);
+    if (HasLength) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Length);
+    if (HasSpeedIn) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SpeedIn);
+    if (HasSpeedOut) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SpeedOut);
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasSourceEntityIndex) {
+      output.WriteRawTag(8);
+      output.WriteInt32(SourceEntityIndex);
+    }
+    if (HasVertexSetHash) {
+      output.WriteRawTag(16);
+      output.WriteInt32(VertexSetHash);
+    }
+    if (HasIntensity) {
+      output.WriteRawTag(29);
+      output.WriteFloat(Intensity);
+    }
+    if (HasLength) {
+      output.WriteRawTag(37);
+      output.WriteFloat(Length);
+    }
+    if (HasSpeedIn) {
+      output.WriteRawTag(45);
+      output.WriteFloat(SpeedIn);
+    }
+    if (HasSpeedOut) {
+      output.WriteRawTag(53);
+      output.WriteFloat(SpeedOut);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasSourceEntityIndex) {
+      output.WriteRawTag(8);
+      output.WriteInt32(SourceEntityIndex);
+    }
+    if (HasVertexSetHash) {
+      output.WriteRawTag(16);
+      output.WriteInt32(VertexSetHash);
+    }
+    if (HasIntensity) {
+      output.WriteRawTag(29);
+      output.WriteFloat(Intensity);
+    }
+    if (HasLength) {
+      output.WriteRawTag(37);
+      output.WriteFloat(Length);
+    }
+    if (HasSpeedIn) {
+      output.WriteRawTag(45);
+      output.WriteFloat(SpeedIn);
+    }
+    if (HasSpeedOut) {
+      output.WriteRawTag(53);
+      output.WriteFloat(SpeedOut);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasSourceEntityIndex) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(SourceEntityIndex);
+    }
+    if (HasVertexSetHash) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(VertexSetHash);
+    }
+    if (HasIntensity) {
+      size += 1 + 4;
+    }
+    if (HasLength) {
+      size += 1 + 4;
+    }
+    if (HasSpeedIn) {
+      size += 1 + 4;
+    }
+    if (HasSpeedOut) {
+      size += 1 + 4;
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CMsgClothStiffenAnimEvent other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasSourceEntityIndex) {
+      SourceEntityIndex = other.SourceEntityIndex;
+    }
+    if (other.HasVertexSetHash) {
+      VertexSetHash = other.VertexSetHash;
+    }
+    if (other.HasIntensity) {
+      Intensity = other.Intensity;
+    }
+    if (other.HasLength) {
+      Length = other.Length;
+    }
+    if (other.HasSpeedIn) {
+      SpeedIn = other.SpeedIn;
+    }
+    if (other.HasSpeedOut) {
+      SpeedOut = other.SpeedOut;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          SourceEntityIndex = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          VertexSetHash = input.ReadInt32();
+          break;
+        }
+        case 29: {
+          Intensity = input.ReadFloat();
+          break;
+        }
+        case 37: {
+          Length = input.ReadFloat();
+          break;
+        }
+        case 45: {
+          SpeedIn = input.ReadFloat();
+          break;
+        }
+        case 53: {
+          SpeedOut = input.ReadFloat();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          SourceEntityIndex = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          VertexSetHash = input.ReadInt32();
+          break;
+        }
+        case 29: {
+          Intensity = input.ReadFloat();
+          break;
+        }
+        case 37: {
+          Length = input.ReadFloat();
+          break;
+        }
+        case 45: {
+          SpeedIn = input.ReadFloat();
+          break;
+        }
+        case 53: {
+          SpeedOut = input.ReadFloat();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
+public sealed partial class CMsgClothEffectAnimEvent : pb::IMessage<CMsgClothEffectAnimEvent>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CMsgClothEffectAnimEvent> _parser = new pb::MessageParser<CMsgClothEffectAnimEvent>(() => new CMsgClothEffectAnimEvent());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CMsgClothEffectAnimEvent> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::GameeventsReflection.Descriptor.MessageTypes[14]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothEffectAnimEvent() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothEffectAnimEvent(CMsgClothEffectAnimEvent other) : this() {
+    _hasBits0 = other._hasBits0;
+    sourceEntityIndex_ = other.sourceEntityIndex_;
+    effectNameHash_ = other.effectNameHash_;
+    operation_ = other.operation_;
+    flags_ = other.flags_;
+    tags_ = other.tags_;
+    pte_ = other.pte_ != null ? other.pte_.Clone() : null;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CMsgClothEffectAnimEvent Clone() {
+    return new CMsgClothEffectAnimEvent(this);
+  }
+
+  /// <summary>Field number for the "source_entity_index" field.</summary>
+  public const int SourceEntityIndexFieldNumber = 1;
+  private readonly static int SourceEntityIndexDefaultValue = -1;
+
+  private int sourceEntityIndex_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int SourceEntityIndex {
+    get { if ((_hasBits0 & 1) != 0) { return sourceEntityIndex_; } else { return SourceEntityIndexDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      sourceEntityIndex_ = value;
+    }
+  }
+  /// <summary>Gets whether the "source_entity_index" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasSourceEntityIndex {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "source_entity_index" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearSourceEntityIndex() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "effect_name_hash" field.</summary>
+  public const int EffectNameHashFieldNumber = 2;
+  private readonly static int EffectNameHashDefaultValue = 0;
+
+  private int effectNameHash_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int EffectNameHash {
+    get { if ((_hasBits0 & 2) != 0) { return effectNameHash_; } else { return EffectNameHashDefaultValue; } }
+    set {
+      _hasBits0 |= 2;
+      effectNameHash_ = value;
+    }
+  }
+  /// <summary>Gets whether the "effect_name_hash" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasEffectNameHash {
+    get { return (_hasBits0 & 2) != 0; }
+  }
+  /// <summary>Clears the value of the "effect_name_hash" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearEffectNameHash() {
+    _hasBits0 &= ~2;
+  }
+
+  /// <summary>Field number for the "operation" field.</summary>
+  public const int OperationFieldNumber = 3;
+  private readonly static int OperationDefaultValue = 0;
+
+  private int operation_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Operation {
+    get { if ((_hasBits0 & 4) != 0) { return operation_; } else { return OperationDefaultValue; } }
+    set {
+      _hasBits0 |= 4;
+      operation_ = value;
+    }
+  }
+  /// <summary>Gets whether the "operation" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasOperation {
+    get { return (_hasBits0 & 4) != 0; }
+  }
+  /// <summary>Clears the value of the "operation" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearOperation() {
+    _hasBits0 &= ~4;
+  }
+
+  /// <summary>Field number for the "flags" field.</summary>
+  public const int FlagsFieldNumber = 4;
+  private readonly static int FlagsDefaultValue = 0;
+
+  private int flags_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int Flags {
+    get { if ((_hasBits0 & 8) != 0) { return flags_; } else { return FlagsDefaultValue; } }
+    set {
+      _hasBits0 |= 8;
+      flags_ = value;
+    }
+  }
+  /// <summary>Gets whether the "flags" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasFlags {
+    get { return (_hasBits0 & 8) != 0; }
+  }
+  /// <summary>Clears the value of the "flags" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearFlags() {
+    _hasBits0 &= ~8;
+  }
+
+  /// <summary>Field number for the "tags" field.</summary>
+  public const int TagsFieldNumber = 5;
+  private readonly static string TagsDefaultValue = "";
+
+  private string tags_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Tags {
+    get { return tags_ ?? TagsDefaultValue; }
+    set {
+      tags_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "tags" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasTags {
+    get { return tags_ != null; }
+  }
+  /// <summary>Clears the value of the "tags" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearTags() {
+    tags_ = null;
+  }
+
+  /// <summary>Field number for the "pte" field.</summary>
+  public const int PteFieldNumber = 6;
+  private global::CMsgVector pte_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CMsgVector Pte {
+    get { return pte_; }
+    set {
+      pte_ = value;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CMsgClothEffectAnimEvent);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CMsgClothEffectAnimEvent other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (SourceEntityIndex != other.SourceEntityIndex) return false;
+    if (EffectNameHash != other.EffectNameHash) return false;
+    if (Operation != other.Operation) return false;
+    if (Flags != other.Flags) return false;
+    if (Tags != other.Tags) return false;
+    if (!object.Equals(Pte, other.Pte)) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasSourceEntityIndex) hash ^= SourceEntityIndex.GetHashCode();
+    if (HasEffectNameHash) hash ^= EffectNameHash.GetHashCode();
+    if (HasOperation) hash ^= Operation.GetHashCode();
+    if (HasFlags) hash ^= Flags.GetHashCode();
+    if (HasTags) hash ^= Tags.GetHashCode();
+    if (pte_ != null) hash ^= Pte.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasSourceEntityIndex) {
+      output.WriteRawTag(8);
+      output.WriteInt32(SourceEntityIndex);
+    }
+    if (HasEffectNameHash) {
+      output.WriteRawTag(16);
+      output.WriteInt32(EffectNameHash);
+    }
+    if (HasOperation) {
+      output.WriteRawTag(24);
+      output.WriteInt32(Operation);
+    }
+    if (HasFlags) {
+      output.WriteRawTag(32);
+      output.WriteInt32(Flags);
+    }
+    if (HasTags) {
+      output.WriteRawTag(42);
+      output.WriteString(Tags);
+    }
+    if (pte_ != null) {
+      output.WriteRawTag(50);
+      output.WriteMessage(Pte);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasSourceEntityIndex) {
+      output.WriteRawTag(8);
+      output.WriteInt32(SourceEntityIndex);
+    }
+    if (HasEffectNameHash) {
+      output.WriteRawTag(16);
+      output.WriteInt32(EffectNameHash);
+    }
+    if (HasOperation) {
+      output.WriteRawTag(24);
+      output.WriteInt32(Operation);
+    }
+    if (HasFlags) {
+      output.WriteRawTag(32);
+      output.WriteInt32(Flags);
+    }
+    if (HasTags) {
+      output.WriteRawTag(42);
+      output.WriteString(Tags);
+    }
+    if (pte_ != null) {
+      output.WriteRawTag(50);
+      output.WriteMessage(Pte);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasSourceEntityIndex) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(SourceEntityIndex);
+    }
+    if (HasEffectNameHash) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(EffectNameHash);
+    }
+    if (HasOperation) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Operation);
+    }
+    if (HasFlags) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(Flags);
+    }
+    if (HasTags) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Tags);
+    }
+    if (pte_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pte);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CMsgClothEffectAnimEvent other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasSourceEntityIndex) {
+      SourceEntityIndex = other.SourceEntityIndex;
+    }
+    if (other.HasEffectNameHash) {
+      EffectNameHash = other.EffectNameHash;
+    }
+    if (other.HasOperation) {
+      Operation = other.Operation;
+    }
+    if (other.HasFlags) {
+      Flags = other.Flags;
+    }
+    if (other.HasTags) {
+      Tags = other.Tags;
+    }
+    if (other.pte_ != null) {
+      if (pte_ == null) {
+        Pte = new global::CMsgVector();
+      }
+      Pte.MergeFrom(other.Pte);
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          SourceEntityIndex = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          EffectNameHash = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          Operation = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          Flags = input.ReadInt32();
+          break;
+        }
+        case 42: {
+          Tags = input.ReadString();
+          break;
+        }
+        case 50: {
+          if (pte_ == null) {
+            Pte = new global::CMsgVector();
+          }
+          input.ReadMessage(Pte);
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          SourceEntityIndex = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          EffectNameHash = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          Operation = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          Flags = input.ReadInt32();
+          break;
+        }
+        case 42: {
+          Tags = input.ReadString();
+          break;
+        }
+        case 50: {
+          if (pte_ == null) {
+            Pte = new global::CMsgVector();
+          }
+          input.ReadMessage(Pte);
           break;
         }
       }

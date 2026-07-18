@@ -65,7 +65,6 @@ public:
     SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)
     SCHEMA_FIELD(Vector, m_vecBaseVelocity)
     SCHEMA_FIELD(char*, m_target)
-    SCHEMA_FIELD(float, m_flSpeed)
     SCHEMA_POINTER_FIELD(CNetworkVelocityVector, m_vecVelocity)
     SCHEMA_FIELD(CBaseHandle, m_hGroundEntity)
 
@@ -118,7 +117,7 @@ public:
 
     [[nodiscard]] const Vector& GetCenter();
 
-    bool AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value, int outputID);
+    bool AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value);
 
     [[nodiscard]] bool IsMarkedForDeletion() const { return m_pEntity->IsMarkedForDeletion(); }
 

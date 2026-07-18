@@ -18,6 +18,7 @@
  */
 
 using System;
+using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
 using Sharp.Core.VirtualCalls;
 using Sharp.Generator;
@@ -34,14 +35,18 @@ internal partial class ItemService : PlayerPawnComponent, IItemService
         => BaseWeapon.Create(ItemServiceVirtualCall.Instance.GiveNamedItem(this, classname));
 
     public IBaseWeapon? GiveNamedItem(EconItemId id)
-    {
-        if (!Enum.IsDefined(id) || !SharedGameObject.EconItemDefinitionsById.TryGetValue((ushort) id, out var value))
-        {
-            throw new InvalidOperationException($"Invalid ItemId {id}");
-        }
+        => GiveNamedItem(GetClassname(id));
 
-        return GiveNamedItem(value.DefinitionName);
-    }
+    public IBaseWeapon? GiveNamedItem(string classname, IEconItemView view, bool force = true)
+        => BaseWeapon.Create(Player.ItemServicesGiveNamedItem(GetAbsPtr(), classname, view.GetAbsPtr(), force));
+
+    public IBaseWeapon? GiveNamedItem(EconItemId id, IEconItemView view, bool force = true)
+        => GiveNamedItem(GetClassname(id), view, force);
+
+    private static string GetClassname(EconItemId id)
+        => Enum.IsDefined(id) && SharedGameObject.EconItemDefinitionsById.TryGetValue((ushort) id, out var value)
+            ? value.DefinitionName
+            : throw new InvalidOperationException($"Invalid ItemId {id}");
 
     public void RemoveAllItems(bool removeSuit)
         => ItemServiceVirtualCall.Instance.RemoveAllItems(this, removeSuit);

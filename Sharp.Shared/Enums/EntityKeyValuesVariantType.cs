@@ -26,4 +26,5 @@ public enum EntityKeyValuesVariantType : uint
     Float,
     String,
     Pointer,
+    UInt64,
 }

@@ -30,16 +30,19 @@ namespace Sharp.Modules.AdminCommands.Services;
 internal class MuteService : ICommandCategory, IMuteService
 {
     private readonly ILogger<MuteService>  _logger;
+    private readonly InterfaceBridge       _bridge;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
 
     public MuteService(ILogger<MuteService> logger,
+        InterfaceBridge                     bridge,
         AdminOperationService               operations,
         AdminOperationEngine                engine,
         CommandContextFactory               contextFactory)
     {
         _logger         = logger;
+        _bridge         = bridge;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
@@ -78,7 +81,9 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process mute batch");
-                                  ctx.Reply("Failed to process mute. Check server logs.");
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process mute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -91,30 +96,55 @@ internal class MuteService : ICommandCategory, IMuteService
         string                                         reason,
         IGameClient?                                   issuer)
     {
-        var count = 0;
+        var candidates = targets.Where(t => !t.IsFakeClient)
+                                .Select(t => (Client: t, t.SteamId, t.Name))
+                                .ToList();
 
-        foreach (var target in targets)
+        var targetToApply = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            if (target.IsFakeClient)
+            if (await _operations.HasActiveAsync(steamId, AdminOperationType.Mute).ConfigureAwait(false))
             {
+                _logger.LogDebug("Skip mute for {SteamId}: already muted", steamId);
+
                 continue;
             }
 
-            if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
-            {
-                _logger.LogDebug("Skip mute for {Target} ({SteamId}): already muted", target.Name, target.SteamId);
+            targetToApply.Add((client, steamId, name));
+        }
 
-                continue;
+        if (targetToApply.Count == 0)
+        {
+            return;
+        }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToApply)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still persist so it re-applies on reconnect.
+                    _engine.ApplyOffline(issuer, steamId, name, AdminOperationType.Mute, duration, reason);
+                }
+
+                count++;
             }
 
-            _engine.ApplyOnline(issuer, target, AdminOperationType.Mute, duration, reason);
-            count++;
-        }
-
-        if (count > 0)
-        {
-            ctx.ReplySuccessKey("Admin.Muted", "{0} Muted {1}.", ctx.IssuerName, targetLabel);
-        }
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Muted", "{0} Muted {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     private void OnCommandUnmute(IGameClient? issuer, StringCommand command)
@@ -139,7 +169,9 @@ internal class MuteService : ICommandCategory, IMuteService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process unmute batch");
-                                  ctx.Reply("Failed to process unmute. Check server logs.");
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process unmute. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -151,25 +183,53 @@ internal class MuteService : ICommandCategory, IMuteService
         string                                           reason,
         IGameClient?                                     issuer)
     {
-        var count = 0;
+        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
 
-        foreach (var target in targets)
+        var targetToRemove = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Mute).ConfigureAwait(false))
+            if (!await _operations.HasActiveAsync(steamId, AdminOperationType.Mute).ConfigureAwait(false))
             {
-                _logger.LogDebug("Skip unmute for {Target} ({SteamId}): not muted", target.Name, target.SteamId);
+                _logger.LogDebug("Skip unmute for {SteamId}: not muted", steamId);
 
                 continue;
             }
 
-            _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason);
-            count++;
+            targetToRemove.Add((client, steamId, name));
         }
 
-        if (count > 0)
+        if (targetToRemove.Count == 0)
         {
-            ctx.ReplySuccessKey("Admin.Unmuted", "{0} Unmuted {1}.", ctx.IssuerName, targetLabel);
+            return;
         }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToRemove)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.RemoveOnline(issuer, target, AdminOperationType.Mute, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still remove the stored record.
+                    _engine.RemoveOffline(issuer, steamId, name, AdminOperationType.Mute, reason);
+                }
+
+                count++;
+            }
+
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Unmuted", "{0} Unmuted {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     public void Mute(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

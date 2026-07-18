@@ -162,7 +162,41 @@ internal class AdminOperationEngine : IClientListener
         string                           reason,
         bool                             silent   = false,
         string?                          metadata = null)
-        => ApplyCore(admin, target, target.SteamId, target.Name, target.Slot, type, duration, reason, metadata, silent);
+    {
+        var targetId   = target.SteamId;
+        var targetName = target.Name;
+
+        // 如果涉及踢出, 最稳妥期间就是FrameAction
+        _bridge.ModSharp.InvokeFrameAction(() =>
+        {
+            if (target.IsValid)
+            {
+                ApplyCore(admin is { IsValid: true } ? admin : null,
+                          target,
+                          target.SteamId,
+                          target.Name,
+                          target.Slot,
+                          type,
+                          duration,
+                          reason,
+                          metadata,
+                          silent);
+
+                return;
+            }
+
+            ApplyCore(admin is { IsValid: true } ? admin : null,
+                      null,
+                      targetId,
+                      targetName,
+                      null,
+                      type,
+                      duration,
+                      reason,
+                      metadata,
+                      true);
+        });
+    }
 
     public void ApplyOffline(IGameClient? admin,
         SteamID                           steamId,
@@ -171,21 +205,73 @@ internal class AdminOperationEngine : IClientListener
         TimeSpan?                         duration,
         string                            reason,
         string?                           metadata = null)
-        => ApplyCore(admin, null, steamId, targetName, null, type, duration, reason, metadata, true);
+        => _bridge.ModSharp.InvokeFrameAction(() =>
+        {
+            ApplyCore(admin is { IsValid: true } ? admin : null,
+                      null,
+                      steamId,
+                      targetName,
+                      null,
+                      type,
+                      duration,
+                      reason,
+                      metadata,
+                      true);
+        });
 
     public void RemoveOnline(IGameClient? admin,
         IGameClient                       target,
         AdminOperationType                type,
         string                            reason,
         bool                              silent = false)
-        => RemoveCore(admin, target, target.SteamId, target.Name, target.Slot, type, reason, silent);
+    {
+        var targetId   = target.SteamId;
+        var targetName = target.Name;
+
+        // 如果涉及踢出, 最稳妥期间就是FrameAction
+        _bridge.ModSharp.InvokeFrameAction(() =>
+        {
+            if (target.IsValid)
+            {
+                RemoveCore(admin is { IsValid: true } ? admin : null,
+                           target,
+                           target.SteamId,
+                           target.Name,
+                           target.Slot,
+                           type,
+                           reason,
+                           silent);
+
+                return;
+            }
+
+            RemoveCore(admin is { IsValid: true } ? admin : null,
+                       null,
+                       targetId,
+                       targetName,
+                       null,
+                       type,
+                       reason,
+                       true);
+        });
+    }
 
     public void RemoveOffline(IGameClient? admin,
         SteamID                            steamId,
         string                             targetName,
         AdminOperationType                 type,
         string                             reason)
-        => RemoveCore(admin, null, steamId, targetName, null, type, reason, true);
+        => _bridge.ModSharp.InvokeFrameAction(() =>
+        {
+            RemoveCore(admin is { IsValid: true } ? admin : null,
+                       null,
+                       steamId,
+                       targetName,
+                       null,
+                       type,
+                       reason,
+                       true);
+        });
 
     public void NotifySilenceApplied(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)
     {
@@ -305,12 +391,14 @@ internal class AdminOperationEngine : IClientListener
         LocalizedDuration      duration,
         string                 reason)
     {
+        var targetName = target?.Name;
+
         _bridge.ModSharp.InvokeFrameAction(() =>
         {
-            if (target is not null && _moduleContext.LocalizerManager is { } localizer)
+            if (targetName is not null && _moduleContext.LocalizerManager is { } localizer)
             {
                 var locale = localizer.ForMany(_bridge.ClientManager.GetGameClients(true));
-                locale.Localized(locKey, adminName, target.Name, duration, reason).Print();
+                locale.Localized(locKey, adminName, targetName, duration, reason).Print();
             }
             else
             {

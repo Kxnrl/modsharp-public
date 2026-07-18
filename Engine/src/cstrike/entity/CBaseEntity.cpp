@@ -198,9 +198,9 @@ const Vector& CBaseEntity::GetCenter()
     return vector;
 }
 
-bool CBaseEntity::AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value, int outputID)
+bool CBaseEntity::AcceptInput(const char* pszInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t& Value)
 {
-    return address::server::CBaseEntity_AcceptInput(this, pszInputName, pActivator, pCaller, Value, outputID, nullptr);
+    return address::server::CBaseEntity_AcceptInput(this, pszInputName, pActivator, pCaller, Value);
 }
 
 void CBaseEntity::CollisionRulesChanged()

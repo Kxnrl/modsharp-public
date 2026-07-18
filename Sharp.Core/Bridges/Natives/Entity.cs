@@ -36,7 +36,7 @@ public static unsafe partial class Entity
 
     public static partial void SetStateChanged(IntPtr entity, ushort offset);
 
-    public static partial void SetStructStateChanged(IntPtr entity, ushort offset);
+    public static partial void SetStructStateChanged(IntPtr structObject, ushort offset, int vfuncIndex);
 
     public static partial void CollisionRulesChanged(IntPtr entity);
 
@@ -61,6 +61,8 @@ public static unsafe partial class Entity
         int                                             count);
 
     public static partial IntPtr CreateByName(string classname);
+
+    public static partial IntPtr CreateTrigger(Vector* origin, Vector* mins, Vector* maxs);
 
     public static partial IntPtr AllocPooledString(string content);
 
@@ -138,6 +140,8 @@ public static unsafe partial class Entity
     public static partial Vector* GetEyeAngles(IntPtr entity);
 
     public static partial Vector* GetEyePosition(IntPtr entity);
+
+    public static partial void SnapViewAngles(IntPtr entity, Vector* angles);
 
     public static partial Vector* GetAbsAngles(IntPtr entity);
 

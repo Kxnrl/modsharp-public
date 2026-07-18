@@ -47,9 +47,7 @@
 #include <ranges>
 #include <unordered_map>
 
-#ifdef PLATFORM_WINDOWS
-#    define FIX_PLAYER_EQUIP_MANUALLY
-#endif
+#define FIX_PLAYER_EQUIP_MANUALLY
 
 // #define HOOK_EXTERN_GIVENAMEDITEM_ASSERT
 
@@ -503,13 +501,13 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
 
             if (pPrimaryWeapon)
             {
-                pPrimaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri, 0);
-                pPrimaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec, 0);
+                pPrimaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri);
+                pPrimaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec);
             }
             if (pSecondaryWeapon)
             {
-                pSecondaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri, 0);
-                pSecondaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec, 0);
+                pSecondaryWeapon->AcceptInput("SetAmmoAmount", nullptr, nullptr, pri);
+                pSecondaryWeapon->AcceptInput("SetReserveAmmoAmount", nullptr, nullptr, sec);
             }
 
             continue;

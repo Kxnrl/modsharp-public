@@ -43,5 +43,16 @@ public interface IItemService : IPlayerPawnComponent
 
     IBaseWeapon? GiveNamedItem(EconItemId id);
 
+    /// <summary>
+    ///     Give a named item carrying the supplied <see cref="IEconItemView" /> (paint kit / wear / seed / stickers).
+    /// </summary>
+    /// <param name="classname">Weapon classname (e.g. the item definition's DefinitionName).</param>
+    /// <param name="view">The econ item view to spawn the weapon with.</param>
+    /// <param name="force">Bypass acquisition checks.</param>
+    IBaseWeapon? GiveNamedItem(string classname, IEconItemView view, bool force = true);
+
+    /// <inheritdoc cref="GiveNamedItem(string, IEconItemView, bool)" />
+    IBaseWeapon? GiveNamedItem(EconItemId id, IEconItemView view, bool force = true);
+
     void RemoveAllItems(bool removeSuit);
 }

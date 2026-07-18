@@ -80,7 +80,7 @@ public:
     
     CBaseEntity* CreateEntityByName(const char* classname) const;
 
-    void AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay, int outputID);
+    void AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay);
 
     CEntityClass* FindEntityClassByName(const char* classname) const;
     int32_t       EnumerateByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity) const; 

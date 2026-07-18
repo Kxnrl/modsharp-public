@@ -81,6 +81,7 @@ public:
     [[nodiscard]] bool         DetachWeapon(CBaseWeapon* weapon);
     [[nodiscard]] bool         SelectItem(CBaseWeapon* weapon);
     void                       SwitchWeapon(CBaseWeapon* weapon);
+    void                       EquipWeapon(CBaseWeapon* weapon);
 };
 
 class CPlayer_MovementServices : public PlayerPawnComponent

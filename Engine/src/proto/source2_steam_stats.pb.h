@@ -90,6 +90,9 @@ extern CSource2Metrics_MatchPerfSummary_Notification_ClientDefaultTypeInternal _
 class CSource2Metrics_RecordPlayStats_Notification;
 struct CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal;
 extern CSource2Metrics_RecordPlayStats_NotificationDefaultTypeInternal _CSource2Metrics_RecordPlayStats_Notification_default_instance_;
+class CUserMessage_UserSentBugBug;
+struct CUserMessage_UserSentBugBugDefaultTypeInternal;
+extern CUserMessage_UserSentBugBugDefaultTypeInternal _CUserMessage_UserSentBugBug_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::CMsgSource2NetworkFlowQuality* Arena::CreateMaybeMessage<::CMsgSource2NetworkFlowQuality>(Arena*);
 template<> ::CMsgSource2PerfIntervalSample* Arena::CreateMaybeMessage<::CMsgSource2PerfIntervalSample>(Arena*);
@@ -106,6 +109,7 @@ template<> ::CSource2Metrics_FetchMapData_Response_MapData* Arena::CreateMaybeMe
 template<> ::CSource2Metrics_MatchPerfSummary_Notification* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification>(Arena*);
 template<> ::CSource2Metrics_MatchPerfSummary_Notification_Client* Arena::CreateMaybeMessage<::CSource2Metrics_MatchPerfSummary_Notification_Client>(Arena*);
 template<> ::CSource2Metrics_RecordPlayStats_Notification* Arena::CreateMaybeMessage<::CSource2Metrics_RecordPlayStats_Notification>(Arena*);
+template<> ::CUserMessage_UserSentBugBug* Arena::CreateMaybeMessage<::CUserMessage_UserSentBugBug>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 enum ESource2PlayStatsFieldType : int {
@@ -125,11 +129,12 @@ enum ESource2PlayStatsFieldType : int {
   Source2PlayStats_LowCardinalityString = 13,
   Source2PlayStats_UTCDateTime = 14,
   Source2PlayStats_SteamIDTrustBucket = 15,
-  Source2PlayStats_SteamIDTrustBucketMin = 16
+  Source2PlayStats_SteamIDTrustBucketMin = 16,
+  Source2PlayStats_SteamID = 17
 };
 bool ESource2PlayStatsFieldType_IsValid(int value);
 constexpr ESource2PlayStatsFieldType ESource2PlayStatsFieldType_MIN = Source2PlayStats_Invalid;
-constexpr ESource2PlayStatsFieldType ESource2PlayStatsFieldType_MAX = Source2PlayStats_SteamIDTrustBucketMin;
+constexpr ESource2PlayStatsFieldType ESource2PlayStatsFieldType_MAX = Source2PlayStats_SteamID;
 constexpr int ESource2PlayStatsFieldType_ARRAYSIZE = ESource2PlayStatsFieldType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ESource2PlayStatsFieldType_descriptor();
@@ -3413,6 +3418,7 @@ class CMsgSource2PlayStatsPackedRecordList /*final*/ :
     kUtcdatetimeValsFieldNumber = 17,
     kSteamidtrustbucketValsFieldNumber = 18,
     kTrustbucketValsFieldNumber = 19,
+    kSteamidValsFieldNumber = 20,
     kRecordNameFieldNumber = 1,
     kRecordCountFieldNumber = 3,
   };
@@ -3786,6 +3792,28 @@ class CMsgSource2PlayStatsPackedRecordList /*final*/ :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList >&
       trustbucket_vals() const;
 
+  // repeated uint64 steamid_vals = 20 [packed = true];
+  int steamid_vals_size() const;
+  private:
+  int _internal_steamid_vals_size() const;
+  public:
+  void clear_steamid_vals();
+  private:
+  uint64_t _internal_steamid_vals(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_steamid_vals() const;
+  void _internal_add_steamid_vals(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_steamid_vals();
+  public:
+  uint64_t steamid_vals(int index) const;
+  void set_steamid_vals(int index, uint64_t value);
+  void add_steamid_vals(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      steamid_vals() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_steamid_vals();
+
   // optional string record_name = 1;
   bool has_record_name() const;
   private:
@@ -3852,6 +3880,8 @@ class CMsgSource2PlayStatsPackedRecordList /*final*/ :
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > utcdatetime_vals_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > steamidtrustbucket_vals_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CMsgSource2PlayStatsPackedRecordList_SteamIDList > trustbucket_vals_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > steamid_vals_;
+    mutable std::atomic<int> _steamid_vals_cached_byte_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr record_name_;
     uint32_t record_count_;
   };
@@ -4650,6 +4680,276 @@ class CSource2Metrics_FetchMapData_Response /*final*/ :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CSource2Metrics_FetchMapData_Response_MapData > results_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CUserMessage_UserSentBugBug /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_UserSentBugBug) */ {
+ public:
+  inline CUserMessage_UserSentBugBug() : CUserMessage_UserSentBugBug(nullptr) {}
+  ~CUserMessage_UserSentBugBug() override;
+  explicit PROTOBUF_CONSTEXPR CUserMessage_UserSentBugBug(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMessage_UserSentBugBug(const CUserMessage_UserSentBugBug& from);
+  CUserMessage_UserSentBugBug(CUserMessage_UserSentBugBug&& from) noexcept
+    : CUserMessage_UserSentBugBug() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMessage_UserSentBugBug& operator=(const CUserMessage_UserSentBugBug& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMessage_UserSentBugBug& operator=(CUserMessage_UserSentBugBug&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMessage_UserSentBugBug& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMessage_UserSentBugBug* internal_default_instance() {
+    return reinterpret_cast<const CUserMessage_UserSentBugBug*>(
+               &_CUserMessage_UserSentBugBug_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(CUserMessage_UserSentBugBug& a, CUserMessage_UserSentBugBug& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMessage_UserSentBugBug* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMessage_UserSentBugBug* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMessage_UserSentBugBug* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMessage_UserSentBugBug>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMessage_UserSentBugBug& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMessage_UserSentBugBug& from) {
+    CUserMessage_UserSentBugBug::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMessage_UserSentBugBug* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMessage_UserSentBugBug";
+  }
+  protected:
+  explicit CUserMessage_UserSentBugBug(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCommandLineFieldNumber = 1,
+    kAutoexecCfgFieldNumber = 2,
+    kCommandLogsFieldNumber = 6,
+    kSystemSpecsFieldNumber = 3,
+    kBuildIdFieldNumber = 4,
+    kOsversionFieldNumber = 5,
+    kBugbugNoFieldNumber = 7,
+  };
+  // optional string command_line = 1;
+  bool has_command_line() const;
+  private:
+  bool _internal_has_command_line() const;
+  public:
+  void clear_command_line();
+  const std::string& command_line() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_command_line(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_command_line();
+  PROTOBUF_NODISCARD std::string* release_command_line();
+  void set_allocated_command_line(std::string* command_line);
+  private:
+  const std::string& _internal_command_line() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_command_line(const std::string& value);
+  std::string* _internal_mutable_command_line();
+  public:
+
+  // optional string autoexec_cfg = 2;
+  bool has_autoexec_cfg() const;
+  private:
+  bool _internal_has_autoexec_cfg() const;
+  public:
+  void clear_autoexec_cfg();
+  const std::string& autoexec_cfg() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_autoexec_cfg(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_autoexec_cfg();
+  PROTOBUF_NODISCARD std::string* release_autoexec_cfg();
+  void set_allocated_autoexec_cfg(std::string* autoexec_cfg);
+  private:
+  const std::string& _internal_autoexec_cfg() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_autoexec_cfg(const std::string& value);
+  std::string* _internal_mutable_autoexec_cfg();
+  public:
+
+  // optional string command_logs = 6;
+  bool has_command_logs() const;
+  private:
+  bool _internal_has_command_logs() const;
+  public:
+  void clear_command_logs();
+  const std::string& command_logs() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_command_logs(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_command_logs();
+  PROTOBUF_NODISCARD std::string* release_command_logs();
+  void set_allocated_command_logs(std::string* command_logs);
+  private:
+  const std::string& _internal_command_logs() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_command_logs(const std::string& value);
+  std::string* _internal_mutable_command_logs();
+  public:
+
+  // optional .CMsgSource2SystemSpecs system_specs = 3;
+  bool has_system_specs() const;
+  private:
+  bool _internal_has_system_specs() const;
+  public:
+  void clear_system_specs();
+  const ::CMsgSource2SystemSpecs& system_specs() const;
+  PROTOBUF_NODISCARD ::CMsgSource2SystemSpecs* release_system_specs();
+  ::CMsgSource2SystemSpecs* mutable_system_specs();
+  void set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs);
+  private:
+  const ::CMsgSource2SystemSpecs& _internal_system_specs() const;
+  ::CMsgSource2SystemSpecs* _internal_mutable_system_specs();
+  public:
+  void unsafe_arena_set_allocated_system_specs(
+      ::CMsgSource2SystemSpecs* system_specs);
+  ::CMsgSource2SystemSpecs* unsafe_arena_release_system_specs();
+
+  // optional uint32 build_id = 4;
+  bool has_build_id() const;
+  private:
+  bool _internal_has_build_id() const;
+  public:
+  void clear_build_id();
+  uint32_t build_id() const;
+  void set_build_id(uint32_t value);
+  private:
+  uint32_t _internal_build_id() const;
+  void _internal_set_build_id(uint32_t value);
+  public:
+
+  // optional int32 osversion = 5;
+  bool has_osversion() const;
+  private:
+  bool _internal_has_osversion() const;
+  public:
+  void clear_osversion();
+  int32_t osversion() const;
+  void set_osversion(int32_t value);
+  private:
+  int32_t _internal_osversion() const;
+  void _internal_set_osversion(int32_t value);
+  public:
+
+  // optional int32 bugbug_no = 7;
+  bool has_bugbug_no() const;
+  private:
+  bool _internal_has_bugbug_no() const;
+  public:
+  void clear_bugbug_no();
+  int32_t bugbug_no() const;
+  void set_bugbug_no(int32_t value);
+  private:
+  int32_t _internal_bugbug_no() const;
+  void _internal_set_bugbug_no(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMessage_UserSentBugBug)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr command_line_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr autoexec_cfg_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr command_logs_;
+    ::CMsgSource2SystemSpecs* system_specs_;
+    uint32_t build_id_;
+    int32_t osversion_;
+    int32_t bugbug_no_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
@@ -9354,6 +9654,53 @@ CMsgSource2PlayStatsPackedRecordList::trustbucket_vals() const {
   return _impl_.trustbucket_vals_;
 }
 
+// repeated uint64 steamid_vals = 20 [packed = true];
+inline int CMsgSource2PlayStatsPackedRecordList::_internal_steamid_vals_size() const {
+  return _impl_.steamid_vals_.size();
+}
+inline int CMsgSource2PlayStatsPackedRecordList::steamid_vals_size() const {
+  return _internal_steamid_vals_size();
+}
+inline void CMsgSource2PlayStatsPackedRecordList::clear_steamid_vals() {
+  _impl_.steamid_vals_.Clear();
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::_internal_steamid_vals(int index) const {
+  return _impl_.steamid_vals_.Get(index);
+}
+inline uint64_t CMsgSource2PlayStatsPackedRecordList::steamid_vals(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgSource2PlayStatsPackedRecordList.steamid_vals)
+  return _internal_steamid_vals(index);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::set_steamid_vals(int index, uint64_t value) {
+  _impl_.steamid_vals_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CMsgSource2PlayStatsPackedRecordList.steamid_vals)
+}
+inline void CMsgSource2PlayStatsPackedRecordList::_internal_add_steamid_vals(uint64_t value) {
+  _impl_.steamid_vals_.Add(value);
+}
+inline void CMsgSource2PlayStatsPackedRecordList::add_steamid_vals(uint64_t value) {
+  _internal_add_steamid_vals(value);
+  // @@protoc_insertion_point(field_add:CMsgSource2PlayStatsPackedRecordList.steamid_vals)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::_internal_steamid_vals() const {
+  return _impl_.steamid_vals_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+CMsgSource2PlayStatsPackedRecordList::steamid_vals() const {
+  // @@protoc_insertion_point(field_list:CMsgSource2PlayStatsPackedRecordList.steamid_vals)
+  return _internal_steamid_vals();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::_internal_mutable_steamid_vals() {
+  return &_impl_.steamid_vals_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+CMsgSource2PlayStatsPackedRecordList::mutable_steamid_vals() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgSource2PlayStatsPackedRecordList.steamid_vals)
+  return _internal_mutable_steamid_vals();
+}
+
 // -------------------------------------------------------------------
 
 // CSource2Metrics_RecordPlayStats_Notification
@@ -9930,9 +10277,393 @@ CSource2Metrics_FetchMapData_Response::results() const {
   return _impl_.results_;
 }
 
+// -------------------------------------------------------------------
+
+// CUserMessage_UserSentBugBug
+
+// optional string command_line = 1;
+inline bool CUserMessage_UserSentBugBug::_internal_has_command_line() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_command_line() const {
+  return _internal_has_command_line();
+}
+inline void CUserMessage_UserSentBugBug::clear_command_line() {
+  _impl_.command_line_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMessage_UserSentBugBug::command_line() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.command_line)
+  return _internal_command_line();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_UserSentBugBug::set_command_line(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.command_line_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.command_line)
+}
+inline std::string* CUserMessage_UserSentBugBug::mutable_command_line() {
+  std::string* _s = _internal_mutable_command_line();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_UserSentBugBug.command_line)
+  return _s;
+}
+inline const std::string& CUserMessage_UserSentBugBug::_internal_command_line() const {
+  return _impl_.command_line_.Get();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_command_line(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.command_line_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::_internal_mutable_command_line() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.command_line_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::release_command_line() {
+  // @@protoc_insertion_point(field_release:CUserMessage_UserSentBugBug.command_line)
+  if (!_internal_has_command_line()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.command_line_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.command_line_.IsDefault()) {
+    _impl_.command_line_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_UserSentBugBug::set_allocated_command_line(std::string* command_line) {
+  if (command_line != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.command_line_.SetAllocated(command_line, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.command_line_.IsDefault()) {
+    _impl_.command_line_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_UserSentBugBug.command_line)
+}
+
+// optional string autoexec_cfg = 2;
+inline bool CUserMessage_UserSentBugBug::_internal_has_autoexec_cfg() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_autoexec_cfg() const {
+  return _internal_has_autoexec_cfg();
+}
+inline void CUserMessage_UserSentBugBug::clear_autoexec_cfg() {
+  _impl_.autoexec_cfg_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CUserMessage_UserSentBugBug::autoexec_cfg() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.autoexec_cfg)
+  return _internal_autoexec_cfg();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_UserSentBugBug::set_autoexec_cfg(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.autoexec_cfg_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.autoexec_cfg)
+}
+inline std::string* CUserMessage_UserSentBugBug::mutable_autoexec_cfg() {
+  std::string* _s = _internal_mutable_autoexec_cfg();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_UserSentBugBug.autoexec_cfg)
+  return _s;
+}
+inline const std::string& CUserMessage_UserSentBugBug::_internal_autoexec_cfg() const {
+  return _impl_.autoexec_cfg_.Get();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_autoexec_cfg(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.autoexec_cfg_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::_internal_mutable_autoexec_cfg() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.autoexec_cfg_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::release_autoexec_cfg() {
+  // @@protoc_insertion_point(field_release:CUserMessage_UserSentBugBug.autoexec_cfg)
+  if (!_internal_has_autoexec_cfg()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.autoexec_cfg_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.autoexec_cfg_.IsDefault()) {
+    _impl_.autoexec_cfg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_UserSentBugBug::set_allocated_autoexec_cfg(std::string* autoexec_cfg) {
+  if (autoexec_cfg != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.autoexec_cfg_.SetAllocated(autoexec_cfg, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.autoexec_cfg_.IsDefault()) {
+    _impl_.autoexec_cfg_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_UserSentBugBug.autoexec_cfg)
+}
+
+// optional .CMsgSource2SystemSpecs system_specs = 3;
+inline bool CUserMessage_UserSentBugBug::_internal_has_system_specs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.system_specs_ != nullptr);
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_system_specs() const {
+  return _internal_has_system_specs();
+}
+inline void CUserMessage_UserSentBugBug::clear_system_specs() {
+  if (_impl_.system_specs_ != nullptr) _impl_.system_specs_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000008u;
+}
+inline const ::CMsgSource2SystemSpecs& CUserMessage_UserSentBugBug::_internal_system_specs() const {
+  const ::CMsgSource2SystemSpecs* p = _impl_.system_specs_;
+  return p != nullptr ? *p : reinterpret_cast<const ::CMsgSource2SystemSpecs&>(
+      ::_CMsgSource2SystemSpecs_default_instance_);
+}
+inline const ::CMsgSource2SystemSpecs& CUserMessage_UserSentBugBug::system_specs() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.system_specs)
+  return _internal_system_specs();
+}
+inline void CUserMessage_UserSentBugBug::unsafe_arena_set_allocated_system_specs(
+    ::CMsgSource2SystemSpecs* system_specs) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.system_specs_);
+  }
+  _impl_.system_specs_ = system_specs;
+  if (system_specs) {
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CUserMessage_UserSentBugBug.system_specs)
+}
+inline ::CMsgSource2SystemSpecs* CUserMessage_UserSentBugBug::release_system_specs() {
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CUserMessage_UserSentBugBug::unsafe_arena_release_system_specs() {
+  // @@protoc_insertion_point(field_release:CUserMessage_UserSentBugBug.system_specs)
+  _impl_._has_bits_[0] &= ~0x00000008u;
+  ::CMsgSource2SystemSpecs* temp = _impl_.system_specs_;
+  _impl_.system_specs_ = nullptr;
+  return temp;
+}
+inline ::CMsgSource2SystemSpecs* CUserMessage_UserSentBugBug::_internal_mutable_system_specs() {
+  _impl_._has_bits_[0] |= 0x00000008u;
+  if (_impl_.system_specs_ == nullptr) {
+    auto* p = CreateMaybeMessage<::CMsgSource2SystemSpecs>(GetArenaForAllocation());
+    _impl_.system_specs_ = p;
+  }
+  return _impl_.system_specs_;
+}
+inline ::CMsgSource2SystemSpecs* CUserMessage_UserSentBugBug::mutable_system_specs() {
+  ::CMsgSource2SystemSpecs* _msg = _internal_mutable_system_specs();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_UserSentBugBug.system_specs)
+  return _msg;
+}
+inline void CUserMessage_UserSentBugBug::set_allocated_system_specs(::CMsgSource2SystemSpecs* system_specs) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.system_specs_;
+  }
+  if (system_specs) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(system_specs);
+    if (message_arena != submessage_arena) {
+      system_specs = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, system_specs, submessage_arena);
+    }
+    _impl_._has_bits_[0] |= 0x00000008u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000008u;
+  }
+  _impl_.system_specs_ = system_specs;
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_UserSentBugBug.system_specs)
+}
+
+// optional uint32 build_id = 4;
+inline bool CUserMessage_UserSentBugBug::_internal_has_build_id() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_build_id() const {
+  return _internal_has_build_id();
+}
+inline void CUserMessage_UserSentBugBug::clear_build_id() {
+  _impl_.build_id_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
+}
+inline uint32_t CUserMessage_UserSentBugBug::_internal_build_id() const {
+  return _impl_.build_id_;
+}
+inline uint32_t CUserMessage_UserSentBugBug::build_id() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.build_id)
+  return _internal_build_id();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_build_id(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_.build_id_ = value;
+}
+inline void CUserMessage_UserSentBugBug::set_build_id(uint32_t value) {
+  _internal_set_build_id(value);
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.build_id)
+}
+
+// optional int32 osversion = 5;
+inline bool CUserMessage_UserSentBugBug::_internal_has_osversion() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_osversion() const {
+  return _internal_has_osversion();
+}
+inline void CUserMessage_UserSentBugBug::clear_osversion() {
+  _impl_.osversion_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline int32_t CUserMessage_UserSentBugBug::_internal_osversion() const {
+  return _impl_.osversion_;
+}
+inline int32_t CUserMessage_UserSentBugBug::osversion() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.osversion)
+  return _internal_osversion();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_osversion(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.osversion_ = value;
+}
+inline void CUserMessage_UserSentBugBug::set_osversion(int32_t value) {
+  _internal_set_osversion(value);
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.osversion)
+}
+
+// optional string command_logs = 6;
+inline bool CUserMessage_UserSentBugBug::_internal_has_command_logs() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_command_logs() const {
+  return _internal_has_command_logs();
+}
+inline void CUserMessage_UserSentBugBug::clear_command_logs() {
+  _impl_.command_logs_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline const std::string& CUserMessage_UserSentBugBug::command_logs() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.command_logs)
+  return _internal_command_logs();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_UserSentBugBug::set_command_logs(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000004u;
+ _impl_.command_logs_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.command_logs)
+}
+inline std::string* CUserMessage_UserSentBugBug::mutable_command_logs() {
+  std::string* _s = _internal_mutable_command_logs();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_UserSentBugBug.command_logs)
+  return _s;
+}
+inline const std::string& CUserMessage_UserSentBugBug::_internal_command_logs() const {
+  return _impl_.command_logs_.Get();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_command_logs(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.command_logs_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::_internal_mutable_command_logs() {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  return _impl_.command_logs_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_UserSentBugBug::release_command_logs() {
+  // @@protoc_insertion_point(field_release:CUserMessage_UserSentBugBug.command_logs)
+  if (!_internal_has_command_logs()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000004u;
+  auto* p = _impl_.command_logs_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.command_logs_.IsDefault()) {
+    _impl_.command_logs_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_UserSentBugBug::set_allocated_command_logs(std::string* command_logs) {
+  if (command_logs != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000004u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000004u;
+  }
+  _impl_.command_logs_.SetAllocated(command_logs, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.command_logs_.IsDefault()) {
+    _impl_.command_logs_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_UserSentBugBug.command_logs)
+}
+
+// optional int32 bugbug_no = 7;
+inline bool CUserMessage_UserSentBugBug::_internal_has_bugbug_no() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CUserMessage_UserSentBugBug::has_bugbug_no() const {
+  return _internal_has_bugbug_no();
+}
+inline void CUserMessage_UserSentBugBug::clear_bugbug_no() {
+  _impl_.bugbug_no_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline int32_t CUserMessage_UserSentBugBug::_internal_bugbug_no() const {
+  return _impl_.bugbug_no_;
+}
+inline int32_t CUserMessage_UserSentBugBug::bugbug_no() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_UserSentBugBug.bugbug_no)
+  return _internal_bugbug_no();
+}
+inline void CUserMessage_UserSentBugBug::_internal_set_bugbug_no(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.bugbug_no_ = value;
+}
+inline void CUserMessage_UserSentBugBug::set_bugbug_no(int32_t value) {
+  _internal_set_bugbug_no(value);
+  // @@protoc_insertion_point(field_set:CUserMessage_UserSentBugBug.bugbug_no)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

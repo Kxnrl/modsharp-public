@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -118,6 +118,7 @@ class Variant_t
         int         iVal;
         float       flVal;
         intptr_t    pVal;
+        uint64_t    u64Val;
     };
     FieldType_t fieldType;
     // this+10 不知道什么, 应该是Flags
@@ -152,6 +153,11 @@ public:
     {
         pVal      = reinterpret_cast<intptr_t>(val);
         fieldType = FieldType_t::FIELD_CLASSPTR;
+    }
+    void SetUInt64(uint64_t val)
+    {
+        u64Val    = val;
+        fieldType = FieldType_t::FIELD_UINT64;
     }
 
     [[nodiscard]] int         Int() const { return (fieldType == FieldType_t::FIELD_INT32) ? iVal : 0; }
@@ -240,17 +246,19 @@ enum KeyValuesVariantValueItemType : uint64_t
     KeyValuesVariantValueItemType_Float,
     KeyValuesVariantValueItemType_String,
     KeyValuesVariantValueItemType_Pointer,
+    KeyValuesVariantValueItemType_UInt64,
 };
 
 struct KeyValuesVariantValueItem
 {
     KeyValuesVariantValueItemType type;
     union {
-        bool    bValue;
-        int32_t i32Value;
-        float   flValue;
-        char*   szValue;
-        void*   pValue;
+        bool     bValue;
+        int32_t  i32Value;
+        float    flValue;
+        char*    szValue;
+        void*    pValue;
+        uint64_t u64Value;
     };
 
     // 如果是string确保 this alive
@@ -277,6 +285,10 @@ struct KeyValuesVariantValueItem
         else if (type == KeyValuesVariantValueItemType_Pointer)
         {
             val.SetPointer(pValue);
+        }
+        else if (type == KeyValuesVariantValueItemType_UInt64)
+        {
+            val.SetUInt64(u64Value);
         }
         return val;
     }

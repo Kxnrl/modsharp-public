@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -259,10 +259,11 @@ static NativeSpan<uint8_t> FindResourceDataBlockInfo(const char* filePath, const
 
 static ResourceStatus_t GetResourceStatus(const char* fileName)
 {
-    CResourceNameTyped resource{};
-    if (address::resource::CResourceNameTyped_ResolveResourceName(resource, fileName))
-        return g_pResourceSystem->GetResourceStatus(resource);
-    return RESOURCE_STATUS_UNKNOWN;
+    auto resource = CResourceNameTyped::Create(fileName);
+    if (resource.m_nResourceId == 0)
+        return RESOURCE_STATUS_UNKNOWN;
+
+    return g_pResourceSystem->GetResourceStatus(resource);
 }
 
 static const char* GetAddonName()

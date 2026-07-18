@@ -23,7 +23,7 @@ using Sharp.Shared.Enums;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Size = 0x50)]
+[StructLayout(LayoutKind.Explicit, Size = 0x60)]
 public unsafe struct TakeDamageResult
 {
     [FieldOffset(0x00)]
@@ -44,27 +44,30 @@ public unsafe struct TakeDamageResult
     public float PreModifiedDamage;
 
     [FieldOffset(0x28)]
-    public int TotalledHealthLost;
-
-    [FieldOffset(0x2C)]
-    public float TotalledDamageDealt;
-
-    [FieldOffset(0x30)]
-    public float TotalledPreModifiedDamage;
+    public Vector DamagePosition;
 
     [FieldOffset(0x34)]
-    public float NewDamageAccumulatorValue;
+    public int TotalledHealthLost;
 
     [FieldOffset(0x38)]
-    public ulong DamageFlags;
+    public float TotalledDamageDealt;
+
+    [FieldOffset(0x3C)]
+    public float TotalledPreModifiedDamage;
 
     [FieldOffset(0x40)]
+    public float NewDamageAccumulatorValue;
+
+    [FieldOffset(0x48)]
+    public ulong DamageFlags;
+
+    [FieldOffset(0x50)]
     public bool WasDamageSuppressed;
 
-    [FieldOffset(0x41)]
+    [FieldOffset(0x51)]
     public bool SuppressFlinch;
 
-    [FieldOffset(0x44)]
+    [FieldOffset(0x54)]
     private HitGroupType OverrideFlinchHitGroup;
 
     [Obsolete("Use TotalledPreModifiedDamage instead")]

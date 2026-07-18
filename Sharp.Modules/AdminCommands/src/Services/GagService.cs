@@ -30,16 +30,19 @@ namespace Sharp.Modules.AdminCommands.Services;
 internal class GagService : ICommandCategory, IGagService
 {
     private readonly ILogger<GagService>   _logger;
+    private readonly InterfaceBridge       _bridge;
     private readonly AdminOperationService _operations;
     private readonly AdminOperationEngine  _engine;
     private readonly CommandContextFactory _contextFactory;
 
     public GagService(ILogger<GagService> logger,
+        InterfaceBridge                   bridge,
         AdminOperationService             operations,
         AdminOperationEngine              engine,
         CommandContextFactory             contextFactory)
     {
         _logger         = logger;
+        _bridge         = bridge;
         _operations     = operations;
         _engine         = engine;
         _contextFactory = contextFactory;
@@ -78,7 +81,9 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process gag batch");
-                                  ctx.Reply("Failed to process gag. Check server logs.");
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process gag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -91,30 +96,55 @@ internal class GagService : ICommandCategory, IGagService
         string                                        reason,
         IGameClient?                                  issuer)
     {
-        var count = 0;
+        var candidates = targets.Where(t => !t.IsFakeClient)
+                                .Select(t => (Client: t, t.SteamId, t.Name))
+                                .ToList();
 
-        foreach (var target in targets)
+        var targetToApply = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            if (target.IsFakeClient)
+            if (await _operations.HasActiveAsync(steamId, AdminOperationType.Gag).ConfigureAwait(false))
             {
+                _logger.LogDebug("Skip gag for {SteamId}: already gagged", steamId);
+
                 continue;
             }
 
-            if (await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
-            {
-                _logger.LogDebug("Skip gag for {Target} ({SteamId}): already gagged", target.Name, target.SteamId);
+            targetToApply.Add((client, steamId, name));
+        }
 
-                continue;
+        if (targetToApply.Count == 0)
+        {
+            return;
+        }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToApply)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.ApplyOnline(issuer, target, AdminOperationType.Gag, duration, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still persist so it re-applies on reconnect.
+                    _engine.ApplyOffline(issuer, steamId, name, AdminOperationType.Gag, duration, reason);
+                }
+
+                count++;
             }
 
-            _engine.ApplyOnline(issuer, target, AdminOperationType.Gag, duration, reason);
-            count++;
-        }
-
-        if (count > 0)
-        {
-            ctx.ReplySuccessKey("Admin.Gagged", "{0} Gagged {1}.", ctx.IssuerName, targetLabel);
-        }
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Gagged", "{0} Gagged {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     private void OnCommandUngag(IGameClient? issuer, StringCommand command)
@@ -139,7 +169,9 @@ internal class GagService : ICommandCategory, IGagService
                               if (t.Exception?.InnerException is { } ex)
                               {
                                   _logger.LogError(ex, "Failed to process ungag batch");
-                                  ctx.Reply("Failed to process ungag. Check server logs.");
+
+                                  _bridge.ModSharp.InvokeFrameAction(() => ctx.Reply(
+                                                                         "Failed to process ungag. Check server logs."));
                               }
                           },
                           TaskContinuationOptions.OnlyOnFaulted);
@@ -151,25 +183,53 @@ internal class GagService : ICommandCategory, IGagService
         string                                          reason,
         IGameClient?                                    issuer)
     {
-        var count = 0;
+        var candidates = targets.Select(t => (Client: t, t.SteamId, t.Name)).ToList();
 
-        foreach (var target in targets)
+        var targetToRemove = new List<(IGameClient Client, SteamID SteamId, string Name)>();
+
+        foreach (var (client, steamId, name) in candidates)
         {
-            if (!await _operations.HasActiveAsync(target.SteamId, AdminOperationType.Gag).ConfigureAwait(false))
+            if (!await _operations.HasActiveAsync(steamId, AdminOperationType.Gag).ConfigureAwait(false))
             {
-                _logger.LogDebug("Skip ungag for {Target} ({SteamId}): not gagged", target.Name, target.SteamId);
+                _logger.LogDebug("Skip ungag for {SteamId}: not gagged", steamId);
 
                 continue;
             }
 
-            _engine.RemoveOnline(issuer, target, AdminOperationType.Gag, reason);
-            count++;
+            targetToRemove.Add((client, steamId, name));
         }
 
-        if (count > 0)
+        if (targetToRemove.Count == 0)
         {
-            ctx.ReplySuccessKey("Admin.Ungagged", "{0} Ungagged {1}.", ctx.IssuerName, targetLabel);
+            return;
         }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+        {
+            var count = 0;
+
+            foreach (var (client, steamId, name) in targetToRemove)
+            {
+                var target = client.IsValid ? client : _bridge.ClientManager.GetGameClient(steamId);
+
+                if (target is not null)
+                {
+                    _engine.RemoveOnline(issuer, target, AdminOperationType.Gag, reason);
+                }
+                else
+                {
+                    // Target disconnected mid-command: still remove the stored record.
+                    _engine.RemoveOffline(issuer, steamId, name, AdminOperationType.Gag, reason);
+                }
+
+                count++;
+            }
+
+            if (count > 0)
+            {
+                ctx.ReplySuccessKey("Admin.Ungagged", "{0} Ungagged {1}.", ctx.IssuerName, targetLabel);
+            }
+        });
     }
 
     public void Gag(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason)

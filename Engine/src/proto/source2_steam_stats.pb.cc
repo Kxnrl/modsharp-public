@@ -282,6 +282,8 @@ PROTOBUF_CONSTEXPR CMsgSource2PlayStatsPackedRecordList::CMsgSource2PlayStatsPac
   , /*decltype(_impl_.utcdatetime_vals_)*/{}
   , /*decltype(_impl_.steamidtrustbucket_vals_)*/{}
   , /*decltype(_impl_.trustbucket_vals_)*/{}
+  , /*decltype(_impl_.steamid_vals_)*/{}
+  , /*decltype(_impl_._steamid_vals_cached_byte_size_)*/{0}
   , /*decltype(_impl_.record_name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.record_count_)*/0u} {}
 struct CMsgSource2PlayStatsPackedRecordListDefaultTypeInternal {
@@ -356,7 +358,27 @@ struct CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CSource2Metrics_FetchMapData_ResponseDefaultTypeInternal _CSource2Metrics_FetchMapData_Response_default_instance_;
-static ::_pb::Metadata file_level_metadata_source2_5fsteam_5fstats_2eproto[15];
+PROTOBUF_CONSTEXPR CUserMessage_UserSentBugBug::CUserMessage_UserSentBugBug(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.command_line_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.autoexec_cfg_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.command_logs_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.system_specs_)*/nullptr
+  , /*decltype(_impl_.build_id_)*/0u
+  , /*decltype(_impl_.osversion_)*/0
+  , /*decltype(_impl_.bugbug_no_)*/0} {}
+struct CUserMessage_UserSentBugBugDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CUserMessage_UserSentBugBugDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CUserMessage_UserSentBugBugDefaultTypeInternal() {}
+  union {
+    CUserMessage_UserSentBugBug _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CUserMessage_UserSentBugBugDefaultTypeInternal _CUserMessage_UserSentBugBug_default_instance_;
+static ::_pb::Metadata file_level_metadata_source2_5fsteam_5fstats_2eproto[16];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto[1];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_source2_5fsteam_5fstats_2eproto = nullptr;
 
@@ -653,9 +675,11 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.utcdatetime_vals_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.steamidtrustbucket_vals_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.trustbucket_vals_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2PlayStatsPackedRecordList, _impl_.steamid_vals_),
   0,
   ~0u,
   1,
+  ~0u,
   ~0u,
   ~0u,
   ~0u,
@@ -719,6 +743,26 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CSource2Metrics_FetchMapData_Response, _impl_.results_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.command_line_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.autoexec_cfg_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.system_specs_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.build_id_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.osversion_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.command_logs_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_UserSentBugBug, _impl_.bugbug_no_),
+  0,
+  1,
+  3,
+  4,
+  5,
+  2,
+  6,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 20, -1, sizeof(::CMsgSource2SystemSpecs)},
@@ -731,11 +775,12 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 230, 243, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
   { 250, 258, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
   { 260, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
-  { 267, 292, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
-  { 311, 319, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
-  { 321, 333, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
-  { 339, 348, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
-  { 351, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
+  { 267, 293, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
+  { 313, 321, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
+  { 323, 335, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
+  { 341, 350, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
+  { 353, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
+  { 360, 373, -1, sizeof(::CUserMessage_UserSentBugBug)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -754,6 +799,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CSource2Metrics_FetchMapData_Request_default_instance_._instance,
   &::_CSource2Metrics_FetchMapData_Response_MapData_default_instance_._instance,
   &::_CSource2Metrics_FetchMapData_Response_default_instance_._instance,
+  &::_CUserMessage_UserSentBugBug_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -836,7 +882,7 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   ".CMsgSource2NetworkFlowQuality\0225\n\rupstre"
   "am_flow\030\005 \001(\0132\036.CMsgSource2NetworkFlowQu"
   "ality\022\017\n\007steamid\030\n \001(\006\0224\n\014perf_samples\030\013"
-  " \003(\0132\036.CMsgSource2PerfIntervalSample\"\373\005\n"
+  " \003(\0132\036.CMsgSource2PerfIntervalSample\"\225\006\n"
   "$CMsgSource2PlayStatsPackedRecordList\022\023\n"
   "\013record_name\030\001 \001(\t\022B\n\nfield_defs\030\002 \003(\0132."
   ".CMsgSource2PlayStatsPackedRecordList.Fi"
@@ -852,41 +898,48 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   "tcdatetime_vals\030\021 \003(\007B\002\020\001\022#\n\027steamidtrus"
   "tbucket_vals\030\022 \003(\006B\002\020\001\022K\n\020trustbucket_va"
   "ls\030\023 \003(\01321.CMsgSource2PlayStatsPackedRec"
-  "ordList.SteamIDList\032i\n\010FieldDef\022\022\n\nfield"
-  "_name\030\001 \001(\t\022I\n\nfield_type\030\002 \001(\0162\033.ESourc"
-  "e2PlayStatsFieldType:\030Source2PlayStats_I"
-  "nvalid\032\"\n\013SteamIDList\022\023\n\007steamid\030\001 \003(\006B\002"
-  "\020\001\"z\n,CSource2Metrics_RecordPlayStats_No"
-  "tification\022;\n\014record_types\030\001 \003(\0132%.CMsgS"
-  "ource2PlayStatsPackedRecordList\022\r\n\005appid"
-  "\030\002 \001(\r\"\217\001\n$CSource2Metrics_FetchMapData_"
-  "Request\022\r\n\005appid\030\001 \001(\r\022\020\n\010map_name\030\002 \001(\t"
-  "\022\021\n\tgame_type\030\003 \001(\r\022\021\n\tgame_mode\030\004 \001(\r\022\r"
-  "\n\005param\030\005 \001(\t\022\021\n\ttime_span\030\006 \001(\r\"\235\001\n%CSo"
-  "urce2Metrics_FetchMapData_Response\022\?\n\007re"
-  "sults\030\001 \003(\0132..CSource2Metrics_FetchMapDa"
-  "ta_Response.MapData\0323\n\007MapData\022\014\n\004name\030\001"
-  " \001(\t\022\014\n\004type\030\002 \001(\t\022\014\n\004data\030\003 \001(\t*\262\004\n\032ESo"
-  "urce2PlayStatsFieldType\022\034\n\030Source2PlaySt"
-  "ats_Invalid\020\000\022\033\n\027Source2PlayStats_UInt64"
-  "\020\001\022\033\n\027Source2PlayStats_UInt32\020\002\022\033\n\027Sourc"
-  "e2PlayStats_UInt16\020\003\022\032\n\026Source2PlayStats"
-  "_UInt8\020\004\022\032\n\026Source2PlayStats_Int64\020\005\022\032\n\026"
-  "Source2PlayStats_Int32\020\006\022\032\n\026Source2PlayS"
-  "tats_Int16\020\007\022\031\n\025Source2PlayStats_Int8\020\010\022"
-  "\034\n\030Source2PlayStats_Float64\020\t\022\034\n\030Source2"
-  "PlayStats_Float32\020\n\022\031\n\025Source2PlayStats_"
-  "Bool\020\013\022\033\n\027Source2PlayStats_String\020\014\022)\n%S"
-  "ource2PlayStats_LowCardinalityString\020\r\022 "
-  "\n\034Source2PlayStats_UTCDateTime\020\016\022\'\n#Sour"
-  "ce2PlayStats_SteamIDTrustBucket\020\017\022*\n&Sou"
-  "rce2PlayStats_SteamIDTrustBucketMin\020\020"
+  "ordList.SteamIDList\022\030\n\014steamid_vals\030\024 \003("
+  "\004B\002\020\001\032i\n\010FieldDef\022\022\n\nfield_name\030\001 \001(\t\022I\n"
+  "\nfield_type\030\002 \001(\0162\033.ESource2PlayStatsFie"
+  "ldType:\030Source2PlayStats_Invalid\032\"\n\013Stea"
+  "mIDList\022\023\n\007steamid\030\001 \003(\006B\002\020\001\"z\n,CSource2"
+  "Metrics_RecordPlayStats_Notification\022;\n\014"
+  "record_types\030\001 \003(\0132%.CMsgSource2PlayStat"
+  "sPackedRecordList\022\r\n\005appid\030\002 \001(\r\"\217\001\n$CSo"
+  "urce2Metrics_FetchMapData_Request\022\r\n\005app"
+  "id\030\001 \001(\r\022\020\n\010map_name\030\002 \001(\t\022\021\n\tgame_type\030"
+  "\003 \001(\r\022\021\n\tgame_mode\030\004 \001(\r\022\r\n\005param\030\005 \001(\t\022"
+  "\021\n\ttime_span\030\006 \001(\r\"\235\001\n%CSource2Metrics_F"
+  "etchMapData_Response\022\?\n\007results\030\001 \003(\0132.."
+  "CSource2Metrics_FetchMapData_Response.Ma"
+  "pData\0323\n\007MapData\022\014\n\004name\030\001 \001(\t\022\014\n\004type\030\002"
+  " \001(\t\022\014\n\004data\030\003 \001(\t\"\306\001\n\033CUserMessage_User"
+  "SentBugBug\022\024\n\014command_line\030\001 \001(\t\022\024\n\014auto"
+  "exec_cfg\030\002 \001(\t\022-\n\014system_specs\030\003 \001(\0132\027.C"
+  "MsgSource2SystemSpecs\022\020\n\010build_id\030\004 \001(\r\022"
+  "\021\n\tosversion\030\005 \001(\005\022\024\n\014command_logs\030\006 \001(\t"
+  "\022\021\n\tbugbug_no\030\007 \001(\005*\320\004\n\032ESource2PlayStat"
+  "sFieldType\022\034\n\030Source2PlayStats_Invalid\020\000"
+  "\022\033\n\027Source2PlayStats_UInt64\020\001\022\033\n\027Source2"
+  "PlayStats_UInt32\020\002\022\033\n\027Source2PlayStats_U"
+  "Int16\020\003\022\032\n\026Source2PlayStats_UInt8\020\004\022\032\n\026S"
+  "ource2PlayStats_Int64\020\005\022\032\n\026Source2PlaySt"
+  "ats_Int32\020\006\022\032\n\026Source2PlayStats_Int16\020\007\022"
+  "\031\n\025Source2PlayStats_Int8\020\010\022\034\n\030Source2Pla"
+  "yStats_Float64\020\t\022\034\n\030Source2PlayStats_Flo"
+  "at32\020\n\022\031\n\025Source2PlayStats_Bool\020\013\022\033\n\027Sou"
+  "rce2PlayStats_String\020\014\022)\n%Source2PlaySta"
+  "ts_LowCardinalityString\020\r\022 \n\034Source2Play"
+  "Stats_UTCDateTime\020\016\022\'\n#Source2PlayStats_"
+  "SteamIDTrustBucket\020\017\022*\n&Source2PlayStats"
+  "_SteamIDTrustBucketMin\020\020\022\034\n\030Source2PlayS"
+  "tats_SteamID\020\021"
   ;
 static ::_pbi::once_flag descriptor_table_source2_5fsteam_5fstats_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_source2_5fsteam_5fstats_2eproto = {
-    false, false, 4957, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
+    false, false, 5214, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
     "source2_steam_stats.proto",
-    &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 15,
+    &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 16,
     schemas, file_default_instances, TableStruct_source2_5fsteam_5fstats_2eproto::offsets,
     file_level_metadata_source2_5fsteam_5fstats_2eproto, file_level_enum_descriptors_source2_5fsteam_5fstats_2eproto,
     file_level_service_descriptors_source2_5fsteam_5fstats_2eproto,
@@ -920,6 +973,7 @@ bool ESource2PlayStatsFieldType_IsValid(int value) {
     case 14:
     case 15:
     case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -6246,6 +6300,8 @@ CMsgSource2PlayStatsPackedRecordList::CMsgSource2PlayStatsPackedRecordList(const
     , decltype(_impl_.utcdatetime_vals_){from._impl_.utcdatetime_vals_}
     , decltype(_impl_.steamidtrustbucket_vals_){from._impl_.steamidtrustbucket_vals_}
     , decltype(_impl_.trustbucket_vals_){from._impl_.trustbucket_vals_}
+    , decltype(_impl_.steamid_vals_){from._impl_.steamid_vals_}
+    , /*decltype(_impl_._steamid_vals_cached_byte_size_)*/{0}
     , decltype(_impl_.record_name_){}
     , decltype(_impl_.record_count_){}};
 
@@ -6294,6 +6350,8 @@ inline void CMsgSource2PlayStatsPackedRecordList::SharedCtor(
     , decltype(_impl_.utcdatetime_vals_){arena}
     , decltype(_impl_.steamidtrustbucket_vals_){arena}
     , decltype(_impl_.trustbucket_vals_){arena}
+    , decltype(_impl_.steamid_vals_){arena}
+    , /*decltype(_impl_._steamid_vals_cached_byte_size_)*/{0}
     , decltype(_impl_.record_name_){}
     , decltype(_impl_.record_count_){0u}
   };
@@ -6331,6 +6389,7 @@ inline void CMsgSource2PlayStatsPackedRecordList::SharedDtor() {
   _impl_.utcdatetime_vals_.~RepeatedField();
   _impl_.steamidtrustbucket_vals_.~RepeatedField();
   _impl_.trustbucket_vals_.~RepeatedPtrField();
+  _impl_.steamid_vals_.~RepeatedField();
   _impl_.record_name_.Destroy();
 }
 
@@ -6361,6 +6420,7 @@ void CMsgSource2PlayStatsPackedRecordList::Clear() {
   _impl_.utcdatetime_vals_.Clear();
   _impl_.steamidtrustbucket_vals_.Clear();
   _impl_.trustbucket_vals_.Clear();
+  _impl_.steamid_vals_.Clear();
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     _impl_.record_name_.ClearNonDefaultToEmpty();
@@ -6601,6 +6661,17 @@ const char* CMsgSource2PlayStatsPackedRecordList::_InternalParse(const char* ptr
         } else
           goto handle_unusual;
         continue;
+      // repeated uint64 steamid_vals = 20 [packed = true];
+      case 20:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 162)) {
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::PackedUInt64Parser(_internal_mutable_steamid_vals(), ptr, ctx);
+          CHK_(ptr);
+        } else if (static_cast<uint8_t>(tag) == 160) {
+          _internal_add_steamid_vals(::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr));
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -6779,6 +6850,15 @@ uint8_t* CMsgSource2PlayStatsPackedRecordList::_InternalSerialize(
     const auto& repfield = this->_internal_trustbucket_vals(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(19, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated uint64 steamid_vals = 20 [packed = true];
+  {
+    int byte_size = _impl_._steamid_vals_cached_byte_size_.load(std::memory_order_relaxed);
+    if (byte_size > 0) {
+      target = stream->WriteUInt64Packed(
+          20, _internal_steamid_vals(), byte_size, target);
+    }
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -6994,6 +7074,20 @@ size_t CMsgSource2PlayStatsPackedRecordList::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
+  // repeated uint64 steamid_vals = 20 [packed = true];
+  {
+    size_t data_size = ::_pbi::WireFormatLite::
+      UInt64Size(this->_impl_.steamid_vals_);
+    if (data_size > 0) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::Int32Size(static_cast<int32_t>(data_size));
+    }
+    int cached_size = ::_pbi::ToCachedSize(data_size);
+    _impl_._steamid_vals_cached_byte_size_.store(cached_size,
+                                    std::memory_order_relaxed);
+    total_size += data_size;
+  }
+
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
     // optional string record_name = 1;
@@ -7044,6 +7138,7 @@ void CMsgSource2PlayStatsPackedRecordList::MergeImpl(::PROTOBUF_NAMESPACE_ID::Me
   _this->_impl_.utcdatetime_vals_.MergeFrom(from._impl_.utcdatetime_vals_);
   _this->_impl_.steamidtrustbucket_vals_.MergeFrom(from._impl_.steamidtrustbucket_vals_);
   _this->_impl_.trustbucket_vals_.MergeFrom(from._impl_.trustbucket_vals_);
+  _this->_impl_.steamid_vals_.MergeFrom(from._impl_.steamid_vals_);
   cached_has_bits = from._impl_._has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
     if (cached_has_bits & 0x00000001u) {
@@ -7091,6 +7186,7 @@ void CMsgSource2PlayStatsPackedRecordList::InternalSwap(CMsgSource2PlayStatsPack
   _impl_.utcdatetime_vals_.InternalSwap(&other->_impl_.utcdatetime_vals_);
   _impl_.steamidtrustbucket_vals_.InternalSwap(&other->_impl_.steamidtrustbucket_vals_);
   _impl_.trustbucket_vals_.InternalSwap(&other->_impl_.trustbucket_vals_);
+  _impl_.steamid_vals_.InternalSwap(&other->_impl_.steamid_vals_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.record_name_, lhs_arena,
       &other->_impl_.record_name_, rhs_arena
@@ -8266,6 +8362,490 @@ void CSource2Metrics_FetchMapData_Response::InternalSwap(CSource2Metrics_FetchMa
       file_level_metadata_source2_5fsteam_5fstats_2eproto[14]);
 }
 
+// ===================================================================
+
+class CUserMessage_UserSentBugBug::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CUserMessage_UserSentBugBug>()._impl_._has_bits_);
+  static void set_has_command_line(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_autoexec_cfg(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static const ::CMsgSource2SystemSpecs& system_specs(const CUserMessage_UserSentBugBug* msg);
+  static void set_has_system_specs(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_build_id(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
+  static void set_has_osversion(HasBits* has_bits) {
+    (*has_bits)[0] |= 32u;
+  }
+  static void set_has_command_logs(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_bugbug_no(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+};
+
+const ::CMsgSource2SystemSpecs&
+CUserMessage_UserSentBugBug::_Internal::system_specs(const CUserMessage_UserSentBugBug* msg) {
+  return *msg->_impl_.system_specs_;
+}
+CUserMessage_UserSentBugBug::CUserMessage_UserSentBugBug(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CUserMessage_UserSentBugBug)
+}
+CUserMessage_UserSentBugBug::CUserMessage_UserSentBugBug(const CUserMessage_UserSentBugBug& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CUserMessage_UserSentBugBug* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.command_line_){}
+    , decltype(_impl_.autoexec_cfg_){}
+    , decltype(_impl_.command_logs_){}
+    , decltype(_impl_.system_specs_){nullptr}
+    , decltype(_impl_.build_id_){}
+    , decltype(_impl_.osversion_){}
+    , decltype(_impl_.bugbug_no_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.command_line_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.command_line_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_command_line()) {
+    _this->_impl_.command_line_.Set(from._internal_command_line(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.autoexec_cfg_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.autoexec_cfg_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_autoexec_cfg()) {
+    _this->_impl_.autoexec_cfg_.Set(from._internal_autoexec_cfg(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.command_logs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.command_logs_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_command_logs()) {
+    _this->_impl_.command_logs_.Set(from._internal_command_logs(), 
+      _this->GetArenaForAllocation());
+  }
+  if (from._internal_has_system_specs()) {
+    _this->_impl_.system_specs_ = new ::CMsgSource2SystemSpecs(*from._impl_.system_specs_);
+  }
+  ::memcpy(&_impl_.build_id_, &from._impl_.build_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.bugbug_no_) -
+    reinterpret_cast<char*>(&_impl_.build_id_)) + sizeof(_impl_.bugbug_no_));
+  // @@protoc_insertion_point(copy_constructor:CUserMessage_UserSentBugBug)
+}
+
+inline void CUserMessage_UserSentBugBug::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.command_line_){}
+    , decltype(_impl_.autoexec_cfg_){}
+    , decltype(_impl_.command_logs_){}
+    , decltype(_impl_.system_specs_){nullptr}
+    , decltype(_impl_.build_id_){0u}
+    , decltype(_impl_.osversion_){0}
+    , decltype(_impl_.bugbug_no_){0}
+  };
+  _impl_.command_line_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.command_line_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.autoexec_cfg_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.autoexec_cfg_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.command_logs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.command_logs_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CUserMessage_UserSentBugBug::~CUserMessage_UserSentBugBug() {
+  // @@protoc_insertion_point(destructor:CUserMessage_UserSentBugBug)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CUserMessage_UserSentBugBug::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.command_line_.Destroy();
+  _impl_.autoexec_cfg_.Destroy();
+  _impl_.command_logs_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.system_specs_;
+}
+
+void CUserMessage_UserSentBugBug::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CUserMessage_UserSentBugBug::Clear() {
+// @@protoc_insertion_point(message_clear_start:CUserMessage_UserSentBugBug)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000000fu) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.command_line_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.autoexec_cfg_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _impl_.command_logs_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000008u) {
+      GOOGLE_DCHECK(_impl_.system_specs_ != nullptr);
+      _impl_.system_specs_->Clear();
+    }
+  }
+  if (cached_has_bits & 0x00000070u) {
+    ::memset(&_impl_.build_id_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.bugbug_no_) -
+        reinterpret_cast<char*>(&_impl_.build_id_)) + sizeof(_impl_.bugbug_no_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CUserMessage_UserSentBugBug::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional string command_line = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_command_line();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessage_UserSentBugBug.command_line");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string autoexec_cfg = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_autoexec_cfg();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessage_UserSentBugBug.autoexec_cfg");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional .CMsgSource2SystemSpecs system_specs = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          ptr = ctx->ParseMessage(_internal_mutable_system_specs(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 build_id = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _Internal::set_has_build_id(&has_bits);
+          _impl_.build_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 osversion = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _Internal::set_has_osversion(&has_bits);
+          _impl_.osversion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string command_logs = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
+          auto str = _internal_mutable_command_logs();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessage_UserSentBugBug.command_logs");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 bugbug_no = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _Internal::set_has_bugbug_no(&has_bits);
+          _impl_.bugbug_no_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CUserMessage_UserSentBugBug::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CUserMessage_UserSentBugBug)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional string command_line = 1;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_command_line().data(), static_cast<int>(this->_internal_command_line().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessage_UserSentBugBug.command_line");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_command_line(), target);
+  }
+
+  // optional string autoexec_cfg = 2;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_autoexec_cfg().data(), static_cast<int>(this->_internal_autoexec_cfg().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessage_UserSentBugBug.autoexec_cfg");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_autoexec_cfg(), target);
+  }
+
+  // optional .CMsgSource2SystemSpecs system_specs = 3;
+  if (cached_has_bits & 0x00000008u) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(3, _Internal::system_specs(this),
+        _Internal::system_specs(this).GetCachedSize(), target, stream);
+  }
+
+  // optional uint32 build_id = 4;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_build_id(), target);
+  }
+
+  // optional int32 osversion = 5;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_osversion(), target);
+  }
+
+  // optional string command_logs = 6;
+  if (cached_has_bits & 0x00000004u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_command_logs().data(), static_cast<int>(this->_internal_command_logs().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessage_UserSentBugBug.command_logs");
+    target = stream->WriteStringMaybeAliased(
+        6, this->_internal_command_logs(), target);
+  }
+
+  // optional int32 bugbug_no = 7;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_bugbug_no(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CUserMessage_UserSentBugBug)
+  return target;
+}
+
+size_t CUserMessage_UserSentBugBug::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CUserMessage_UserSentBugBug)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000007fu) {
+    // optional string command_line = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_command_line());
+    }
+
+    // optional string autoexec_cfg = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_autoexec_cfg());
+    }
+
+    // optional string command_logs = 6;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_command_logs());
+    }
+
+    // optional .CMsgSource2SystemSpecs system_specs = 3;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+          *_impl_.system_specs_);
+    }
+
+    // optional uint32 build_id = 4;
+    if (cached_has_bits & 0x00000010u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_build_id());
+    }
+
+    // optional int32 osversion = 5;
+    if (cached_has_bits & 0x00000020u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_osversion());
+    }
+
+    // optional int32 bugbug_no = 7;
+    if (cached_has_bits & 0x00000040u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_bugbug_no());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CUserMessage_UserSentBugBug::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CUserMessage_UserSentBugBug::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CUserMessage_UserSentBugBug::GetClassData() const { return &_class_data_; }
+
+
+void CUserMessage_UserSentBugBug::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CUserMessage_UserSentBugBug*>(&to_msg);
+  auto& from = static_cast<const CUserMessage_UserSentBugBug&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CUserMessage_UserSentBugBug)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000007fu) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_command_line(from._internal_command_line());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_autoexec_cfg(from._internal_autoexec_cfg());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_internal_set_command_logs(from._internal_command_logs());
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_internal_mutable_system_specs()->::CMsgSource2SystemSpecs::MergeFrom(
+          from._internal_system_specs());
+    }
+    if (cached_has_bits & 0x00000010u) {
+      _this->_impl_.build_id_ = from._impl_.build_id_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      _this->_impl_.osversion_ = from._impl_.osversion_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.bugbug_no_ = from._impl_.bugbug_no_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CUserMessage_UserSentBugBug::CopyFrom(const CUserMessage_UserSentBugBug& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CUserMessage_UserSentBugBug)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CUserMessage_UserSentBugBug::IsInitialized() const {
+  return true;
+}
+
+void CUserMessage_UserSentBugBug::InternalSwap(CUserMessage_UserSentBugBug* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.command_line_, lhs_arena,
+      &other->_impl_.command_line_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.autoexec_cfg_, lhs_arena,
+      &other->_impl_.autoexec_cfg_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.command_logs_, lhs_arena,
+      &other->_impl_.command_logs_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(CUserMessage_UserSentBugBug, _impl_.bugbug_no_)
+      + sizeof(CUserMessage_UserSentBugBug::_impl_.bugbug_no_)
+      - PROTOBUF_FIELD_OFFSET(CUserMessage_UserSentBugBug, _impl_.system_specs_)>(
+          reinterpret_cast<char*>(&_impl_.system_specs_),
+          reinterpret_cast<char*>(&other->_impl_.system_specs_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CUserMessage_UserSentBugBug::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_source2_5fsteam_5fstats_2eproto_getter, &descriptor_table_source2_5fsteam_5fstats_2eproto_once,
+      file_level_metadata_source2_5fsteam_5fstats_2eproto[15]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CMsgSource2SystemSpecs*
@@ -8327,6 +8907,10 @@ Arena::CreateMaybeMessage< ::CSource2Metrics_FetchMapData_Response_MapData >(Are
 template<> PROTOBUF_NOINLINE ::CSource2Metrics_FetchMapData_Response*
 Arena::CreateMaybeMessage< ::CSource2Metrics_FetchMapData_Response >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CSource2Metrics_FetchMapData_Response >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CUserMessage_UserSentBugBug*
+Arena::CreateMaybeMessage< ::CUserMessage_UserSentBugBug >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CUserMessage_UserSentBugBug >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 
