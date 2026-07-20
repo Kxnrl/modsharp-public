@@ -56,6 +56,62 @@ void __cdecl operator delete[](void* pMem)
 {
     g_pMemAlloc->Free(pMem);
 }
+#else
+
+#include <new>
+
+MS_IMPORT void* MemAlloc_AllocFunc(size_t nSize);
+MS_IMPORT void  MemAlloc_FreeFunc(void* pMem);
+
+void* operator new(size_t nSize)
+{
+    return MemAlloc_AllocFunc(nSize);
+}
+
+void* operator new[](size_t nSize)
+{
+    return MemAlloc_AllocFunc(nSize);
+}
+
+void* operator new(size_t nSize, const std::nothrow_t&) noexcept
+{
+    return MemAlloc_AllocFunc(nSize);
+}
+
+void* operator new[](size_t nSize, const std::nothrow_t&) noexcept
+{
+    return MemAlloc_AllocFunc(nSize);
+}
+
+void operator delete(void* pMem) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
+
+void operator delete[](void* pMem) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
+
+void operator delete(void* pMem, size_t) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
+
+void operator delete[](void* pMem, size_t) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
+
+void operator delete(void* pMem, const std::nothrow_t&) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
+
+void operator delete[](void* pMem, const std::nothrow_t&) noexcept
+{
+    MemAlloc_FreeFunc(pMem);
+}
 #endif
 
 void* AllocateMemory(size_t size)
