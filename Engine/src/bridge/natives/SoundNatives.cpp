@@ -114,7 +114,7 @@ static void StopSoundEventFilter(SndOpEventGuid_t* guid, RuntimeRecipientFilter*
     AssertPtr(g_pSoundOpGameSystem);
 
     CBroadcastRecipientFilter filter(pFilter, true);
-    address::server::SoundOpGameSystem_StopSoundEventFilter(g_pSoundOpGameSystem, &filter, guid);
+    address::server::SoundOpGameSystem_StopSoundEventFilter(g_pSoundOpGameSystem, &filter, guid->GetGuid());
 }
 
 static bool IsSoundEventValid(const char* pszSoundEvent)

@@ -226,7 +226,7 @@ using SoundOpGameSystem_SetSoundEventParamString_t = void (*)(SoundOpGameSystem*
 using SoundOpGameSystem_SetSoundEventParamString_t = void (*)(SoundOpGameSystem*, const IRecipientFilter*, const char*, CSosFieldData*, int16_t, bool, SndOpEventGuid_t, int32_t);
 #endif
 using SoundOpGameSystem_StopSoundEvent_t       = void (*)(SoundOpGameSystem*, SndOpEventGuid_t*);
-using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SndOpEventGuid_t*);
+using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, uint32_t);
 using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
 using CCSPlayer_MovementServices_TracePlayerBBox_t = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
