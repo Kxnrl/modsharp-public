@@ -566,6 +566,20 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEP;
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEA;
 
+    /// <summary>
+    ///     Re-entrancy guard for the GetEyePosition/GetEyeAngles detours.
+    /// </summary>
+    /// <remarks>
+    ///     The detour bodies resolve managed wrappers (<see cref="IEntityManager.MakeEntityFromPointer{T}" />,
+    ///     <c>CameraService.ViewEntity</c>) while executing inside the hooked native function. If any of that
+    ///     work reaches the hooked function again, the detour re-enters itself and recurses until the stack is
+    ///     exhausted — the process dies with <c>System.StackOverflowException</c>, which cannot be caught.
+    ///     Observed in production as ~17,200 identical frames of <c>LinuxGetEyePosition</c>.
+    ///     Thread-static because the detour can run on more than one thread.
+    /// </remarks>
+    [ThreadStatic]
+    private static bool _sInEyeHook;
+
     private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
         => (pawn.IsAlive && _sInstance.IsViewControl(pawn))
            || pawn.GetCameraService()?.ViewEntity?.GetAbsPtr() == pEntity;
@@ -573,15 +587,29 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector* WindowsGetEyePosition(nint pEntity, Vector* pRet)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
-            && ShouldOverrideEye(pawn, pEntity))
+        if (_sInEyeHook)
         {
-            var position = pawn.GetAbsOrigin() + pawn.ViewOffset;
-            pRet->X = position.X;
-            pRet->Y = position.Y;
-            pRet->Z = position.Z;
+            return _trWindowsEP(pEntity, pRet);
+        }
 
-            return pRet;
+        _sInEyeHook = true;
+
+        try
+        {
+            if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+                && ShouldOverrideEye(pawn, pEntity))
+            {
+                var position = pawn.GetAbsOrigin() + pawn.ViewOffset;
+                pRet->X = position.X;
+                pRet->Y = position.Y;
+                pRet->Z = position.Z;
+
+                return pRet;
+            }
+        }
+        finally
+        {
+            _sInEyeHook = false;
         }
 
         return _trWindowsEP(pEntity, pRet);
@@ -590,15 +618,29 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector* WindowsGetEyeAngles(nint pEntity, Vector* pRet)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
-            && ShouldOverrideEye(pawn, pEntity))
+        if (_sInEyeHook)
         {
-            var angles = pawn.GetNetVar<Vector>("v_angle");
-            pRet->X = angles.X;
-            pRet->Y = angles.Y;
-            pRet->Z = angles.Z;
+            return _trWindowsEA(pEntity, pRet);
+        }
 
-            return pRet;
+        _sInEyeHook = true;
+
+        try
+        {
+            if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+                && ShouldOverrideEye(pawn, pEntity))
+            {
+                var angles = pawn.GetNetVar<Vector>("v_angle");
+                pRet->X = angles.X;
+                pRet->Y = angles.Y;
+                pRet->Z = angles.Z;
+
+                return pRet;
+            }
+        }
+        finally
+        {
+            _sInEyeHook = false;
         }
 
         return _trWindowsEA(pEntity, pRet);
@@ -607,10 +649,24 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector LinuxGetEyePosition(nint pEntity)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
-            && ShouldOverrideEye(pawn, pEntity))
+        if (_sInEyeHook)
         {
-            return pawn.GetAbsOrigin() + pawn.ViewOffset;
+            return _trLinuxEP(pEntity);
+        }
+
+        _sInEyeHook = true;
+
+        try
+        {
+            if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+                && ShouldOverrideEye(pawn, pEntity))
+            {
+                return pawn.GetAbsOrigin() + pawn.ViewOffset;
+            }
+        }
+        finally
+        {
+            _sInEyeHook = false;
         }
 
         return _trLinuxEP(pEntity);
@@ -619,10 +675,24 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     [UnmanagedCallersOnly]
     private static unsafe Vector LinuxGetEyeAngles(nint pEntity)
     {
-        if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
-            && ShouldOverrideEye(pawn, pEntity))
+        if (_sInEyeHook)
         {
-            return pawn.GetNetVar<Vector>("v_angle");
+            return _trLinuxEA(pEntity);
+        }
+
+        _sInEyeHook = true;
+
+        try
+        {
+            if (_sInstance._entityManager.MakeEntityFromPointer<IPlayerPawn>(pEntity) is { } pawn
+                && ShouldOverrideEye(pawn, pEntity))
+            {
+                return pawn.GetNetVar<Vector>("v_angle");
+            }
+        }
+        finally
+        {
+            _sInEyeHook = false;
         }
 
         return _trLinuxEA(pEntity);
