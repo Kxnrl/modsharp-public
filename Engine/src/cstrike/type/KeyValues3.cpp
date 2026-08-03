@@ -253,7 +253,7 @@ KeyValues3* KeyValues3::GetArrayElement(int index)
 KeyValues3* KeyValues3::AddArrayElementToTail()
 {
     using fn         = KeyValues3* (*)(KeyValues3*);
-    static auto func = g_pGameData->GetAddress<fn>("KeyValues3::GetArrayElement");
+    static auto func = g_pGameData->GetAddress<fn>("KeyValues3::AddArrayElementToTail");
 
     return func(this);
 }

@@ -222,7 +222,7 @@ BeginMemberHookScope(CNetworkGameServer)
         return nullptr;
     }
 
-    DeclareMemberDetourHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, netadr_t* pNetAddress, void* pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
+    DeclareMemberDetourHook(ConnectClient, CServerSideClient*, (CNetworkGameServer * pServer, const char* pName, netadr_t* pNetAddress, uint32_t pNetInfo, C2S_CONNECT_Message* pMsg, const char* pszPassword, const void* hashedCdKey, int cdkeyLength, bool bLowViolence))
     {
 #ifdef CONNECT_HOOK_ASSERT
         WARN("%10s: 0x%p\n" // CNetworkGameServer*

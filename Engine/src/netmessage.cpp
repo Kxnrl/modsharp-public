@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -39,10 +39,10 @@
     SetNetworkMessageBypassHook(false);                                   \
     g_pMemAlloc->Free(msg)
 
-#define SendNetMessageB()                                                                   \
-    SetNetworkMessageBypassHook(true);                                                      \
-    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &pClients, net, msg, 0, true); \
-    SetNetworkMessageBypassHook(false);                                                     \
+#define SendNetMessageB()                                                                           \
+    SetNetworkMessageBypassHook(true);                                                              \
+    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &pClients, net, msg, 0, BUF_RELIABLE); \
+    SetNetworkMessageBypassHook(false);                                                             \
     g_pMemAlloc->Free(msg)
 
 void UTIL_SayText2Filter(IRecipientFilter* filter, bool chat, EntityIndex_t entity, const char* message, const char* param1, const char* param2, const char* param3, const char* param4)

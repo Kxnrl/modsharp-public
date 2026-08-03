@@ -70,7 +70,7 @@ public static unsafe partial class Core
 
     public static partial bool SetMemoryAccess(nint address, long size, MemoryAccess access, MemoryAccess* originalAccess);
 
-    public static partial void RejectConnection(nint pNetAdr, NetworkDisconnectionReason reason);
+    public static partial void RejectConnection(uint hNetInfo, NetworkDisconnectionReason reason);
 
     public static partial uint MakeStringToken(string str);
 }

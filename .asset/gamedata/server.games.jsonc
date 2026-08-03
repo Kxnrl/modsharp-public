@@ -42,7 +42,7 @@
     },
     "CBaseEntity::DispatchTraceAttack": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF",
+      "linux": "55 66 0F EF C0 48 89 E5 41 57 41 56 41 55 49 89 FD 31 FF",
       "windows": "40 55 53 56 57 41 54 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E0",
       "refs": {
         "strings": [
@@ -236,7 +236,7 @@
       "library": "server",
       "linux": {
         "factory": "+3 r",
-        "signature": "48 8B 3D ? ? ? ? E8 ? ? ? ? 48 C7 45 ? ? ? ? ? 48 89 DF E8 ? ? ? ? 48 83 C4 ? B8 ? ? ? ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 E8"
+        "signature": "48 8D 35 ? ? ? ? 89 C2 48 63 46"
       },
       "windows": {
         "factory": "+3 r",
@@ -440,7 +440,7 @@
     "CEntityInstance::GetEntityIndex": {
       "library": "server",
       "linux": "48 8B 57 ? B8 ? ? ? ? 48 85 D2 0F 84 ? ? ? ? 48 8D 05 ? ? ? ? B9 ? ? ? ? 49 B8 ? ? ? ? ? ? ? ? 48 8B 38 48 81 C7 ? ? ? ? 66 0F 1F 44 00 ? 48 8B B7 ? ? ? ? 48 85 F6 74 ? 48 39 F2 72 ? 48 8D 86 ? ? ? ? 48 39 C2 73 ? 48 89 D0 48 29 F0 48 C1 F8 ? 49 0F AF C0 8D 84 01 ? ? ? ? 85 C0 79 ? 48 8B 37 48 85 F6 74 ? 48 39 F2 72 ? 48 8D 86 ? ? ? ? 48 39 C2 73 ? 48 89 D0 48 29 F0 48 C1 F8 ? 49 0F AF C0 01 C8 79 ? 81 C1 ? ? ? ? 48 83 C7 ? 81 F9 ? ? ? ? 75 ? B8 ? ? ? ? C3 48 8B 37 48 85 F6 75 ? EB ? CC CC CC CC CC 55 48 89 E5 53",
-      "windows": "40 53 48 83 EC 20 4C 8B 41 10 48 8B DA"
+      "windows": "4C 8B 0D ? ? ? ? 48 8B 49 10 49 83 C1 10 48 85 C9 0F 84 ? ? ? ? 45 33 D2 49 BB 25 49 92 24 49 92 24 49"
     },
     "CEntityInstance::GetOrCreatePrivateScriptScope": {
       "library": "server",
@@ -540,7 +540,7 @@
     },
     "CGameEntitySystem::FindEntityByIndex": {
       "library": "server",
-      "linux": "81 FE FE 7F 00 00 77 ? 89 F0",
+      "linux": "31 C0 81 FE FE 7F 00 00 77 ?",
       "windows": "4C 8D 49 10 81 FA ? ? ? ?"
     },
     "CGameEntitySystem::FindInSphere": {
@@ -880,7 +880,7 @@
     "SoundOpGameSystem::DoStartSoundEvent": {
       "library": "server",
       "linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 44 89 C6",
-      "windows": "48 8B C4 48 89 48 ? 53 57",
+      "windows": "48 8B C4 48 89 48 ? 53 57 41 55",
       "refs": {
         "strings": [
           "%s:  %f tick(%d) curtime(%f) DoStartSoundEvent(%s)\n"
@@ -917,17 +917,6 @@
       "library": "server",
       "linux": "85 D2 74 ? 55 48 89 E5 41 57 41 56 4C 8D B7",
       "windows": "45 85 C0 0F 84 ? ? ? ? 53 41 55"
-    },
-    "StateChanged": {
-      "library": "server",
-      "linux": "80 BF ? ? ? ? ? 0F 85 ? ? ? ? 55 48 89 E5 41 57 49 89 D7",
-      "windows": "40 55 56 57 41 55 48 8D AC 24 68 FF FF FF",
-      "refs": {
-        "strings": [
-          " ignored FL_FULL_EDICT_CHANGED",
-          "CNetworkTransmitComponent::StateChanged( overflowed offsets )"
-        ]
-      }
     },
     "StudioModel::GetAttachment": {
       "library": "server",
@@ -1081,7 +1070,7 @@
     },
     "CBaseWeapon::Deploy": {
       "linux": 328,
-      "windows": 320 // 48 89 5C 24 10 57 48 83 EC ? 0F 29 74 24 20
+      "windows": 320
     },
     "CBaseWeapon::Holster": {
       "linux": 329,
