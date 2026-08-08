@@ -69,6 +69,10 @@ internal sealed class AdminOperationService
         {
             return await _storage.HasActiveAsync(steamId, type).ConfigureAwait(false);
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to check active {Type} for {SteamId}", type, steamId);
@@ -86,6 +90,10 @@ internal sealed class AdminOperationService
         try
         {
             return await _storage.HasActiveAsync(steamId, type).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
