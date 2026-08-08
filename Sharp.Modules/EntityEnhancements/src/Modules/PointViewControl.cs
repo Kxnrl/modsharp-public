@@ -575,9 +575,9 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     ///     work reaches the hooked function again, the detour re-enters itself and recurses until the stack is
     ///     exhausted — the process dies with <c>System.StackOverflowException</c>, which cannot be caught.
     ///     Observed in production as ~17,200 identical frames of <c>LinuxGetEyePosition</c>.
-    ///     Thread-static because the detour can run on more than one thread.
+    ///     Plain static: the frame is single-threaded and these run on the main thread, and the recursion
+    ///     being guarded is a thread re-entering itself, not two threads racing.
     /// </remarks>
-    [ThreadStatic]
     private static bool _sInEyeHook;
 
     private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
