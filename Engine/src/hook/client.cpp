@@ -206,11 +206,11 @@ BeginMemberHookScope(CSource2GameClients)
         g_pHookManager->Call_ClientFullyConnect(HookType_Post, slot);
     }
 
-    DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId))
+    DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, int32_t nClientType, SteamId_t steamId))
     {
         g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
 
-        PutInServer(pServerGameClient, slot, pszName, steamId);
+        PutInServer(pServerGameClient, slot, pszName, nClientType, steamId);
 
         g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
 

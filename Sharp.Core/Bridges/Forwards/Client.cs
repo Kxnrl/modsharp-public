@@ -83,7 +83,7 @@ internal static class Client
     public static event DelegateOnClientQueryConVar?    OnClientQueryConVar;
 
     [UnmanagedCallersOnly]
-    public static unsafe EHookAction OnConnectClientExport(SteamID steamId, sbyte* pName, nint pNetInfo, uint ip)
+    public static unsafe EHookAction OnConnectClientExport(SteamID steamId, sbyte* pName, uint hNetInfo, uint ip)
     {
         if (OnConnectClient is null)
         {
@@ -95,7 +95,7 @@ internal static class Client
 
         if (action.Action is EHookAction.SkipCallReturnOverride)
         {
-            Natives.Core.RejectConnection(pNetInfo, action.ReturnValue);
+            Natives.Core.RejectConnection(hNetInfo, action.ReturnValue);
         }
 
         return action.Action;

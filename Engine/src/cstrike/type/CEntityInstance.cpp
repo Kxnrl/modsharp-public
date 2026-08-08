@@ -34,28 +34,40 @@ HSCRIPT* CEntityInstance::GetOrCreatePublicScriptScope()
 
 HSCRIPT* CEntityInstance::GetOrCreatePrivateScriptScope()
 {
+#ifdef PLATFORM_WINDOWS
     return address::server::CEntityInstance_GetOrCreatePrivateScriptScope(this);
+#else
+    address::server::CEntityInstance_GetOrCreatePrivateScriptScope(this);
+    return *reinterpret_cast<HSCRIPT**>(reinterpret_cast<uintptr_t>(this) + 0x18);
+#endif
 }
 
 EntityIndex_t CEntityInstance::GetEntityIndexNative()
 {
-    EntityIndex_t index = INVALID_ENTITY_INDEX;
-    address::server::CEntityInstance_GetEntityIndex(this, &index);
-    return index;
+    return address::server::CEntityInstance_GetEntityIndex(this);
 }
 
 CBaseHandle CEntityInstance::GetRefEHandleNative()
 {
+#ifdef PLATFORM_WINDOWS
     EHandle_t handle = INVALID_EHANDLE;
     address::server::CEntityInstance_GetRefEHandle(this, &handle);
     return CBaseHandle(handle);
+#else
+    return CBaseHandle(address::server::CEntityInstance_GetRefEHandle(this));
+#endif
 }
 
 SchemaClassInfoData_t* CEntityInstance::GetSchemaClassInfo()
 {
+    DeclareVFuncIndex(CEntityInstance, GetDynamicBinding, offset);
+#ifdef PLATFORM_WINDOWS
     SchemaClassInfoData_t* rv = nullptr;
-    VCall_AutoVoid(CEntityInstance, GetDynamicBinding, this, &rv);
+    CALL_VIRTUAL(void, offset, this, &rv);
     return rv;
+#else
+    return CALL_VIRTUAL(SchemaClassInfoData_t*, offset, this);
+#endif
 }
 
 void CEntityInstance::Kill()

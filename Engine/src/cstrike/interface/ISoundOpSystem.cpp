@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -32,10 +32,21 @@ bool SoundOpGameSystem::SetSoundEventParamInternal(const IRecipientFilter* pFilt
 {
     if (!nGuid.IsValid())
         return false;
+
 #ifdef PLATFORM_WINDOWS
-    address::server::SoundOpGameSystem_SetSoundEventParamString(this, pFilter, nGuid, pParamName, pValue, 0, false);
+    using SoundOpGameSystem_SetSoundEventParam_t = void (*)(SoundOpGameSystem*, const IRecipientFilter*, const StartSoundEventInfo_t&, const char*, CSosFieldData*, int16_t, bool);
 #else
-    address::server::SoundOpGameSystem_SetSoundEventParamString(this, pFilter, pParamName, pValue, 0, false, nGuid, 0);
+    using SoundOpGameSystem_SetSoundEventParam_t = void (*)(SoundOpGameSystem*, const IRecipientFilter*, const char*, CSosFieldData*, int16_t, bool, StartSoundEventInfo_t);
+#endif
+
+    static auto fn = g_pGameData->GetAddress<SoundOpGameSystem_SetSoundEventParam_t>("SoundOpGameSystem::SetSoundEventParamString");
+
+    StartSoundEventInfo_t info(nGuid, 0, pFilter->GetRecipients());
+
+#ifdef PLATFORM_WINDOWS
+    fn(this, pFilter, info, pParamName, pValue, 0, false);
+#else
+    fn(this, pFilter, pParamName, pValue, 0, false, info);
 #endif
 
     return true;
