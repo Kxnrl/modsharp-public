@@ -568,7 +568,9 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
 
     // Re-entrancy guard. The detours resolve managed wrappers while inside the hooked function; if that
     // work re-enters the hook it recurses until the stack dies (production: ~17,200 frames, uncatchable).
-    // Plain static, not ThreadStatic — this guards a thread re-entering itself, not two threads racing.
+    // Plain static, not ThreadStatic: this guards a thread re-entering itself, and the surrounding code
+    // is single-thread by construction anyway — CBaseEntity::GetEyeAngles/GetEyePosition return a
+    // reference to a function-local static, and EntityPool is an unsynchronized Dictionary.
     private static bool _sInEyeHook;
 
     private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
