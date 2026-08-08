@@ -566,18 +566,9 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEP;
     private static unsafe delegate* unmanaged<nint, Vector>            _trLinuxEA;
 
-    /// <summary>
-    ///     Re-entrancy guard for the GetEyePosition/GetEyeAngles detours.
-    /// </summary>
-    /// <remarks>
-    ///     The detour bodies resolve managed wrappers (<see cref="IEntityManager.MakeEntityFromPointer{T}" />,
-    ///     <c>CameraService.ViewEntity</c>) while executing inside the hooked native function. If any of that
-    ///     work reaches the hooked function again, the detour re-enters itself and recurses until the stack is
-    ///     exhausted — the process dies with <c>System.StackOverflowException</c>, which cannot be caught.
-    ///     Observed in production as ~17,200 identical frames of <c>LinuxGetEyePosition</c>.
-    ///     Plain static: the frame is single-threaded and these run on the main thread, and the recursion
-    ///     being guarded is a thread re-entering itself, not two threads racing.
-    /// </remarks>
+    // Re-entrancy guard. The detours resolve managed wrappers while inside the hooked function; if that
+    // work re-enters the hook it recurses until the stack dies (production: ~17,200 frames, uncatchable).
+    // Plain static, not ThreadStatic — this guards a thread re-entering itself, not two threads racing.
     private static bool _sInEyeHook;
 
     private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
