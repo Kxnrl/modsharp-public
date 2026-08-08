@@ -64,9 +64,8 @@ static bool g_installFailed = false;
 // Read by BOTH entity-index detours (WriteDeltaEntity_Internal + WriteEnterPVS), so it lives at file scope.
 static int g_offEntityIndex = -1;
 
-// SendProxy struct offsets auto-resolved from the binary in InstallSendProxyHooks (before any encode), so a game
-// update that shifts these layouts needs no gamedata edit. Each falls back to its gamedata literal if the
-// disassembly anchor is gone (never a silent 0); -1 = unresolved. The typed accessors below read these.
+// Offsets resolved from the binary at install, so a layout shift needs no gamedata edit.
+// Falls back to the gamedata literal if the anchor is gone; -1 = unresolved, never a silent 0.
 // bf_write scratch + bf_read cursor — derived together from CFlattenedSerializer::BitCopyPrimitive.
 static int g_offBfWriteData     = -1;
 static int g_offBfWriteByteCap  = -1;
@@ -78,10 +77,7 @@ static int g_offBfReadCurBit    = -1;
 static int g_offWriteInfoBitTable   = -1;
 static int g_offWriteInfoSnapshot   = -1;
 static int g_offWriteInfoFieldCount = -1;
-// Flattened-serializer node (FieldCount/FieldsArray/FieldStride/Child) + fieldInfo encoder dispatch
-// (EncoderDispatch/EncoderBase/ParamOffset) — all boot-derived together from the string-anchored
-// CFlattenedSerializer::MaybeWriteFlattenedSerializers_R, which walks the field-record tree and, per leaf,
-// reads the encoder dispatch. Fall back to gamedata if the anchor/scan is gone; -1 = unresolved.
+// Serializer-node + fieldInfo dispatch offsets, derived from MaybeWriteFlattenedSerializers_R.
 static int g_offSerFieldCount  = -1;
 static int g_offSerFieldsArray = -1;
 static int g_offSerFieldStride = -1;
@@ -90,13 +86,10 @@ static int g_offFiDispatch     = -1;
 static int g_offFiBase         = -1;
 static int g_offFiParamOff     = -1;
 
-// Offset-drift safety (one-time, before any substitution). V3 validates the bf cursor offset (src advances by
-// exactly bitcount); V1 validates the serializer-tree offsets + WriteInfo_FieldCount (walk yields one leaf per
-// field). These two gate the field-RESOLUTION path. The ENCODE-path offsets (FieldInfo dispatch, bf_write layout,
-// registry) are NOT gated here — they rely on their own guards: encoder-map lookup (dispatch), overflow/byte-cap
-// reject (bf_write), name match (bit table), src-buffer gate (snapshot). A wrong value is inert via one of those,
-// or a loud crash (BfWrite_Data) — never silent corruption, now that params-using QAngle is excluded (see
-// KindForType). Until verified, real bits pass through; a failed V3/V1 latches substitution off with a WARN.
+// One-time offset-drift gate, before any substitution. V3 proves the bf cursor offset, V1 proves the
+// serializer-tree offsets. Encode-path offsets are not gated here — each has its own guard, so a wrong
+// value is inert or crashes loudly rather than corrupting silently (QAngle excluded, see KindForType).
+// Until it passes, real bits pass through; a failure latches substitution off with a WARN.
 static bool g_offsetsVerified = false;
 static bool g_offsetsBad      = false;
 
@@ -216,9 +209,7 @@ static SafetyHookInline g_wflHook{};
 static SafetyHookInline g_bitCopyHook{};
 
 // ─── Typed accessors over the engine's flattened-serializer structures ───
-// Each reads its layout from the SendProxy_* gamedata offsets (same names/values as before — only the
-// access is named now), mirroring the house pattern in cstrike/type/CServerSideClient.h so the scattered
-// +offset math stays out of the substitution logic.
+// Layout from the SendProxy_* offsets; pattern follows cstrike/type/CServerSideClient.h.
 
 // A flattened-serializer tree node, walked in the same DFS order as the bit-offset table.
 struct SpSerializerNode
@@ -389,11 +380,10 @@ static int KindForType(SpFieldType t)
         return KIND_FLOAT;
     case SpFieldType::Vector3:
         return KIND_VECTOR;
-    // QAngle deliberately excluded: it is the ONLY substituted type whose encoder dereferences the fieldInfo
-    // params pointer (a bit-count selector at params[0]), so a wrong FieldInfo_EncoderBase/ParamOffset (a future
-    // resolver misfire or a real layout drift) would feed it a bogus selector and emit a valid-but-wrong-format
-    // blob — silent client desync the drift gate can't catch (it never encodes). Re-enable only once the gate
-    // trial-encodes a live field and compares the blob to the real bits. Other types ignore params, so they're safe.
+    // QAngle excluded on purpose: it is the ONLY substituted type whose encoder dereferences the fieldInfo
+    // params pointer, so a wrong EncoderBase/ParamOffset emits a valid-but-wrong-format blob — a silent
+    // desync the drift gate cannot catch, because it never encodes. Re-enable only once the gate
+    // trial-encodes a live field and compares against the real bits. Other types ignore params.
     // Quantized/coord/normal need a count/mode word this path doesn't read; return -1 so no forward fires.
     case SpFieldType::QAngle3:
     default:
@@ -511,11 +501,8 @@ static bool ValuesEqual(int kind, const SendProxyValue& a, const SendProxyValue&
     }
 }
 
-// CNetworkGameServer::PerClientEncode(this, recipient, ..): arg1 is the server (this), arg2 the CServerSideClient
-// recipient we capture as t_client. The remaining args are the engine's per-frame OO-PVS encode context —
-// pFrameSnapshot (the shared packed frame), pClientFrame (this client's frame state), pPackBuffers (the pack/scratch
-// buffers, member read at +0x30), and transmitFlags (a flags word passed in r9d); all opaque to the substitution
-// path and forwarded to the original verbatim.
+// arg2 is the CServerSideClient recipient, captured as t_client. Remaining args are the engine's
+// per-frame encode context — opaque here, forwarded verbatim.
 static void* Detour_PerClientEncode(void* pServer, void* pClient, void* pFrameSnapshot, void* pClientFrame, void* pPackBuffers, void* transmitFlags)
 {
     // The whole substitution path assumes main-thread execution (no locks on g_pHooks/g_resolve) — assert it.
@@ -528,10 +515,7 @@ static void* Detour_PerClientEncode(void* pServer, void* pClient, void* pFrameSn
     return ret;
 }
 
-// CNetworkGameServerBase::WriteDeltaEntity_Internal(server, entityCtx, ..): arg1 is the server (this), arg2 the
-// per-entity pack context we read the entity index from. pFrameSnapshot is consumed by the engine but opaque to us;
-// pBaselineData/pWriteContext/writeOptions are the trailing delta-write context the function itself never reads (RE
-// verified) — all forwarded to the original verbatim.
+// arg2 is the per-entity pack context; we read only the entity index from it. Rest forwarded verbatim.
 static void* Detour_WriteDeltaEntity(void* pServer, void* pEntityCtx, void* pFrameSnapshot, void* pBaselineData, void* pWriteContext, void* writeOptions)
 {
     int prev = t_entityIdx;
@@ -543,10 +527,9 @@ static void* Detour_WriteDeltaEntity(void* pServer, void* pEntityCtx, void* pFra
     return ret;
 }
 
-// The from-baseline writer for a client's initial full snapshot. It never enters WriteDeltaEntity_Internal, so
-// without this t_entityIdx stays -1 and BitCopy passes real bits through. pEntityCtx is the SAME per-entity ctx the
-// delta writer gets (entity index at +0x34, dst bf_write at +0x88 — both paths write the same per-client buffer).
-// void(server, entityCtx): both call sites set only rdi/rsi and discard the return (verified in libengine2).
+// From-baseline writer for a client's first full snapshot. It never enters WriteDeltaEntity_Internal, so
+// without this hook t_entityIdx stays -1 and the initial snapshot goes out unspoofed.
+// pEntityCtx is the SAME per-entity ctx the delta writer gets (index +0x34, dst bf_write +0x88).
 static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
 {
     int prev = t_entityIdx;
@@ -557,12 +540,8 @@ static void Detour_WriteEnterPVS(void* pServer, void* pEntityCtx)
     t_entityIdx = prev;
 }
 
-// CFlattenedSerializer::WriteFieldList(serializer, dstBitWrite, fieldList, fieldContext, fieldDesc, ..). arg1 is the
-// serializer being written; pFieldDesc (arg5) is the per-call field descriptor (start-bit table + source snapshot +
-// field count) we read. The others are the engine's write context, opaque to the substitution path and forwarded
-// verbatim: pDstBitWrite (destination bf_write), pFieldList (CUtlVector of field records to write, {data@+0x10,
-// count@+8}), pFieldContext (per-write context, count read at +0x10), nFieldFlags/nFieldCount (words in r9d/arg7),
-// pFieldPathFilter (an optional int*: null-checked, its int compared), and nWriteFlags (trailing flags word).
+// arg1 is the serializer; arg5 (pFieldDesc) carries the start-bit table + source snapshot + field count,
+// which is all this path reads. Rest forwarded verbatim.
 static void* Detour_WriteFieldList(void* pSerializer, void* pDstBitWrite, void* pFieldList, void* pFieldContext, void* pFieldDesc, uint32_t nFieldFlags, uint32_t nFieldCount, void* pFieldPathFilter, uint32_t nWriteFlags)
 {
     void*          prevSer   = t_serializer;
@@ -635,10 +614,9 @@ static uint8_t Detour_BitCopy(void* dst, void* src, uint32_t bitcount)
     if (!IsUserPtr(src) || *reinterpret_cast<void**>(src) != t_srcData)
         return g_origBitCopy(dst, src, bitcount);
 
-    // Prove the boot-resolved offsets against live data before ever substituting (once). V3: the src cursor
-    // advances by exactly bitcount → BfRead/BfWrite_CurBit is right. V1: the serializer walk yields one leaf per
-    // bit-table entry → the tree offsets + t_fieldCount (hence WriteInfo_FieldCount) are right. A wrong offset
-    // fails one of these → substitution stays off (inert), never corrupts. Latches on the first hooked field.
+    // V3: src cursor advances by exactly bitcount → CurBit is right.
+    // V1: the walk yields one leaf per bit-table entry → tree offsets + field count are right.
+    // A wrong offset fails one of these and substitution stays off. Latches on the first hooked field.
     if (g_offsetsBad)
         return g_origBitCopy(dst, src, bitcount);
     if (!g_offsetsVerified)
@@ -810,10 +788,8 @@ static void BuildEncoderMap()
         "CFlattenedSerializer::EncoderBucket7",
     };
 
-    // Four strides boot-derived from the registry-walk function (zero-touch across game updates); AssignOffset
-    // prefers the derived value, falls back to the gamedata literal if the anchor is gone, and WARNs on mismatch.
-    // EncoderEntry_Func stays gamedata — its offset is structurally indistinguishable from the entry's other
-    // code-pointer fields (see ResolveEncoderRegistryStrides); a wrong classification only skips substitution.
+    // Strides derived from the registry-walk function; gamedata is the fallback, mismatch WARNs.
+    // EncoderEntry_Func stays gamedata — indistinguishable from the entry's other code pointers.
     int rBucketStride = -1, rBucketCount = -1, rEntryStride = -1, rEntryName = -1;
     ResolveEncoderRegistryStrides(rBucketStride, rBucketCount, rEntryStride, rEntryName);
     int bucketStride = 0, bucketCountOff = 0, entryStride = 0, entryNameOff = 0;
@@ -984,13 +960,10 @@ void Init()
 }
 } // namespace natives::sendproxy
 
-// Auto-derive the pack-context entity-index offset from libengine2 so a game update that shifts it needs no
-// gamedata edit. Anchor: CNetworkGameServerBase::WriteEnterPVS reads the entity index as the FIRST dword load
-// from its entityCtx arg (arg1) right in the prologue — `mov r32, [arg1 + 0x34]` — then immediately masks it
-// with 0x3ff to index the edict-chunk table, a stable Valve idiom. Returns the displacement, or -1 if the
-// anchor is gone (the caller then falls back to the gamedata literal). Verified derived==52 on both the current
-// libengine2.so and engine2.dll; this is the only SendProxy offset with an unambiguous single-instruction anchor
-// — the rest stay on gamedata because a wrong displacement here corrupts the stream silently rather than crashing.
+// Derive the pack-context entity-index offset from WriteEnterPVS, which loads it as the first dword from
+// its entityCtx arg then masks with 0x3ff — a stable Valve idiom. Returns -1 if the anchor is gone.
+// Verified 52 on current libengine2.so and engine2.dll. The only offset with an unambiguous
+// single-instruction anchor; the rest stay on gamedata because a wrong value here corrupts silently.
 static int ResolveEntityIndexOffset()
 {
     const auto addr = g_pGameData->GetAddress<uintptr_t>("CNetworkGameServerBase::WriteEnterPVS");

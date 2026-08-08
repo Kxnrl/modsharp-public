@@ -1,9 +1,8 @@
-// networksystem / engine — per-client flattened-serializer encode path (SendProxy).
-// ⚠ Never detour Encode/EncodeField (recursive, ~100KB frame). The per-client hooks below are all on
-//    non-recursive per-field / per-client stages.
+// SendProxy per-client encode path.
+// Never detour Encode/EncodeField — recursive, ~100KB frame. All hooks below are per-field/per-client.
 {
   "Addresses": {
-    // Per-client encode entry — recipient CServerSideClient* is arg2. (libengine2)
+    // recipient CServerSideClient* = arg2
     "CNetworkGameServer::PerClientEncode": {
       "library": "engine",
       "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 4C 8D BD ? ? ? ? 41 56 4C 8D 35",
@@ -12,7 +11,7 @@
         "strings": [ "WriteOOPVSDeltaEntities" ]
       }
     },
-    // Per-entity delta writer (entity index at arg2+0x34). String-anchored; byte sig kept as fallback.
+    // entity index = *(arg2+0x34)
     "CNetworkGameServerBase::WriteDeltaEntity_Internal": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 81 EC 28 01 00 00",
@@ -21,7 +20,7 @@
         "strings": [ "SV: CNetworkGameServerBase::WriteDeltaEntity_Internal merging changes added in %d additional fields!\n" ]
       }
     },
-    // From-baseline writer for a client's first full snapshot — same per-entity ctx as the delta writer.
+    // first full snapshot; same per-entity ctx as the delta writer
     "CNetworkGameServerBase::WriteEnterPVS": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 49 89 F5 41 54 53 48 81 EC 88 00 00 00 8B 76 34",
@@ -30,7 +29,7 @@
         "strings": [ "WriteEnterPVS: missing instance baseline for '%s'." ]
       }
     },
-    // serializer is arg0. String-anchored on its self-naming literal; byte sig kept as fallback.
+    // serializer = arg0
     "CFlattenedSerializer::WriteFieldList": {
       "library": "networksystem",
       "linux": "55 48 8D 05 ? ? ? ? 45 31 DB 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D",
@@ -39,15 +38,13 @@
         "strings": [ "CFlattenedSerializer::WriteFieldList" ]
       }
     },
-    // Per-field bit copy (dst, src, bitcount) — substitution point. Byte sig: references no string of its own.
+    // (dst, src, bitcount) — substitution point; no string of its own
     "CFlattenedSerializer::BitCopyPrimitive": {
       "library": "networksystem",
       "linux": "55 48 89 F0 41 89 D0 48 89 E5 41 57 41 56 41 55",
       "windows": "48 8B C4 44 89 40 ? 48 89 48 ? 41 57 48 83 EC 30"
     },
-    // Recursive flattened-serializer table writer. NOT hooked — scanned once at boot to auto-derive the
-    // serializer-node + fieldInfo struct offsets (it walks the field-record tree and reads each leaf's encoder
-    // dispatch). String-anchored on its self-naming assert; byte sig kept as fallback.
+    // not hooked — scanned at boot to derive the serializer-node + fieldInfo offsets
     "CFlattenedSerializer::MaybeWriteFlattenedSerializers_R": {
       "library": "networksystem",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 4D 89 C4 53 48 89 FB 48 81 EC 18 01 00 00",
@@ -56,9 +53,7 @@
         "strings": [ "CFlattenedSerializer::MaybeWriteFlattenedSerializers_R, skipping already wrote stable %s : %d\n" ]
       }
     },
-    // Registry-walk (CNetworkSerializer::InitFakeField). NOT hooked — scanned once at boot to auto-derive the
-    // encoder-registry strides (it loads EncoderRegistry via lea and walks the bucket/entry arrays). String-
-    // anchored on its self-naming assert; byte sig kept as fallback.
+    // not hooked — scanned at boot to derive the encoder-registry strides
     "CFlattenedSerializer::InitFakeField": {
       "library": "networksystem",
       "linux": "55 48 89 E5 41 57 41 56 48 8D 85 ? ? ? ? 41 55 49 89 C7 41 54 53 4C 89 CB 48 81 EC",
@@ -67,8 +62,7 @@
         "strings": [ "InitFakeField:  Couldn't find type lookup for '%s' of type '%s'\n" ]
       }
     },
-    // 8-bucket encoder table for field-type classification (buckets 1 int, 2 uint, 3 vec, 4 float, 5 string, 7 bool).
-    // Byte sig + factory (+3 r → registry base): the lea is deep in its fn, so a string anchor would be more fragile.
+    // field-type buckets: 1 int, 2 uint, 3 vec, 4 float, 5 string, 7 bool
     "CFlattenedSerializer::EncoderRegistry": {
       "library": "networksystem",
       "linux":   { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r" },
@@ -81,34 +75,26 @@
     "CFlattenedSerializer::EncoderBucket5": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +80 d" },  "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +80 d" } },
     "CFlattenedSerializer::EncoderBucket7": { "library": "networksystem", "linux": { "signature": "48 8D 05 ? ? ? ? 48 01 D0 4C 63 60 08 4C 8B 28", "factory": "+3 r +112 d" }, "windows": { "signature": "48 8D 3D ? ? ? ? 48 8B 85 ? ? ? ? 48 8D 15", "factory": "+3 r +112 d" } }
   },
-  // SendProxy struct offsets (windows==linux, both confirmed). Most are boot-derived at runtime (bf_write from
-  // BitCopyPrimitive; serializer-node + fieldInfo dispatch from MaybeWriteFlattenedSerializers_R; the encoder
-  // bucket/entry strides from InitFakeField) — these literals are the fallback if the disassembly anchor is gone.
-  // FieldInfo_Name + EncoderEntry_Func stay numeric (no unambiguous cross-platform derivation — FieldInfo_Name
-  // aliases SerializerField_Child at +8 and its struct is runtime-heap; EncoderEntry_Func is one of five look-alike
-  // code-pointer fields), so a shift in those two needs an edit here (not a recompile).
+  // windows == linux. Boot-derived at runtime; these literals are the fallback.
+  // FieldInfo_Name and EncoderEntry_Func are the exceptions — not derivable, so a shift needs an edit here.
   "Offsets": {
-    // Flattened-serializer node (walked by WalkToLeafRec): field count, record array, record stride, child ptr.
-    // Boot-derived (ResolveSerializerFieldInfoOffsets); fallback only.
+    // serializer node, walked by WalkToLeafRec
     "SendProxy_Serializer_FieldCount": { "linux": 40, "windows": 40 },
     "SendProxy_Serializer_FieldsArray": { "linux": 48, "windows": 48 },
     "SendProxy_Serializer_FieldStride": { "linux": 46, "windows": 46 },
     "SendProxy_SerializerField_Child": { "linux": 8, "windows": 8 },
-    // FieldInfo: name (numeric — aliases SerializerField_Child at +8, runtime-heap struct, no offline proof),
-    // encoder dispatch, params base, param-offset byte (0xFF = no params).
-    // Dispatch/base/param-offset boot-derived (ResolveSerializerFieldInfoOffsets); fallback only. Name stays numeric.
+    // FieldInfo. ParamOffset 0xFF = no params.
     "SendProxy_FieldInfo_Name": { "linux": 8, "windows": 8 },
     "SendProxy_FieldInfo_EncoderDispatch": { "linux": 56, "windows": 56 },
     "SendProxy_FieldInfo_EncoderBase": { "linux": 64, "windows": 64 },
     "SendProxy_FieldInfo_ParamOffset": { "linux": 201, "windows": 201 },
-    // bf_write scratch layout — boot-derived (ResolveBitBufOffsets); fallback only.
+    // bf_write scratch layout
     "SendProxy_BfWrite_Data": { "linux": 0, "windows": 0 },
     "SendProxy_BfWrite_ByteCap": { "linux": 8, "windows": 8 },
     "SendProxy_BfWrite_BitCap": { "linux": 12, "windows": 12 },
     "SendProxy_BfWrite_CurBit": { "linux": 16, "windows": 16 },
     "SendProxy_BfWrite_Overflow": { "linux": 32, "windows": 32 },
-    // Encoder registry: bucket {entries*, count} + strides, entry {name, fn}. Count/Bucket_Stride/Entry_Stride/
-    // Entry_Name boot-derived (ResolveEncoderRegistryStrides); fallback only. Entry_Func stays numeric (ambiguous).
+    // encoder registry: bucket {entries*, count}, entry {name, fn}
     "SendProxy_EncoderBucket_Count": { "linux": 8, "windows": 8 },
     "SendProxy_EncoderBucket_Stride": { "linux": 16, "windows": 16 },
     "SendProxy_EncoderEntry_Stride": { "linux": 128, "windows": 128 },
