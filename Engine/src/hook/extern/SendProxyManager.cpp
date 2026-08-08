@@ -380,6 +380,8 @@ static int KindForType(SpFieldType t)
         return KIND_FLOAT;
     case SpFieldType::Vector3:
         return KIND_VECTOR;
+    case SpFieldType::String:
+        return KIND_STRING;
     // QAngle excluded on purpose: it is the ONLY substituted type whose encoder dereferences the fieldInfo
     // params pointer, so a wrong EncoderBase/ParamOffset emits a valid-but-wrong-format blob — a silent
     // desync the drift gate cannot catch, because it never encodes. Re-enable only once the gate
