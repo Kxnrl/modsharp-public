@@ -569,14 +569,22 @@ internal class PointViewControl : IEnhancement, IGameListener, IEntityListener
     // CBasePlayerPawn::GetEyePosition tail-jumps through this same vtable slot to the pawn's view
     // entity (mov rax, [rax+0x5D0]; leave; jmp rax), so a view-entity cycle — A views B, B views A —
     // re-enters the detour with no managed frame between hops and exhausts the stack (production:
-    // 17,216 frames, uncatchable). Delegation is at most one hop when the graph is acyclic, so past
-    // the cap answer from the entity itself rather than delegating again, which breaks the cycle.
+    // 17,216 frames, uncatchable). Past the cap, answer from the entity itself rather than delegating
+    // again — that is what terminates the cycle.
+    //
+    // The cap is the player limit because only pawn -> pawn hops re-enter this detour (a camera prop's
+    // slot holds a different function), so an acyclic chain cannot be longer than the number of pawns.
+    // By pigeonhole, anything deeper has revisited a pawn and is therefore a cycle. That makes the cap
+    // exact: no legitimate chain is ever truncated, and every cycle is caught. A smaller value would
+    // cut real chains short — 32 players each spectating another is an ordinary state on a full server.
+    private const int MaxEyeDelegation = 64;
+
     // ThreadStatic is required, not a preference: a plain static int drifts. `++`/`--` are not atomic,
     // so a second thread in this path loses decrements, the count ratchets up, and once it is stuck at
     // the cap every call answers locally — view control silently stops delegating. Measured on a live
     // server: after ~60s the one-hop case returned the pawn's own origin instead of the view entity's.
-    private const                   int MaxEyeDelegation = 4;
-    [ThreadStatic] private static   int _sEyeDepth;
+    [ThreadStatic]
+    private static int _sEyeDepth;
 
     private static bool ShouldOverrideEye(IPlayerPawn pawn, nint pEntity)
         => (pawn.IsAlive && _sInstance.IsViewControl(pawn))
