@@ -27,4 +27,10 @@ void DestroyApiContext();
 
 uint64_t GetDualAddonId();
 
+// Resolves the dual-addon workshop id from the command line, falling back to
+// <gamedir>/../../sharp/dual_addon.txt. Safe to call at any point during init — it reads a plain
+// file and does not depend on the filesystem or convar systems being up yet. Cached after the
+// first call.
+uint64_t ResolveConfiguredDualAddonId();
+
 #endif

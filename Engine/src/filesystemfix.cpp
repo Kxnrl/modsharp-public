@@ -18,6 +18,7 @@
  */
 
 #include "filesystemfix.h"
+#include "steamworks.h"
 #include "global.h"
 #include "manager/HookManager.h"
 #include "sdkproxy.h"
@@ -49,7 +50,9 @@ void FixFileSystem()
         "SHADER_SOURCE_MOD",
         "SHADER_SOURCE_ROOT"};
 
-    const auto enableDualAddon = CommandLine()->HasParam("-dual_addon");
+    // Same source as steamworks: the command line, or sharp/dual_addon.txt for hosts that do not let
+    // the server's renter edit startup arguments.
+    const auto enableDualAddon = ResolveConfiguredDualAddonId() > 0;
     auto       hasReplaceValue = false;
     auto       assetsPath      = std::string();
 

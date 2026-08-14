@@ -1,4 +1,9 @@
 {
+  // Steam Workshop addon mounted for clients, equivalent to the -dual_addon startup argument.
+  // Set this if your host does not let you edit startup arguments. 0 or absent = disabled.
+  // The command line takes precedence when both are set.
+  "DualAddonId": 0,
+
   "Logger": {
     "Template": {
       "File": "[{Timestamp:yyyy/MM/dd HH:mm:ss.fff}] | {Level} | {SourceContext}{Scope} {MapName} {NewLine}{Message:lj}{NewLine}{Exception}{NewLine}",
