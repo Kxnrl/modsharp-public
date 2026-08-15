@@ -106,7 +106,10 @@ static void StopSoundEvent(SndOpEventGuid_t* guid)
 {
     AssertPtr(g_pSoundOpGameSystem);
 
-    address::server::SoundOpGameSystem_StopSoundEvent(g_pSoundOpGameSystem, guid);
+    StartSoundEventInfo_t info{*guid, 0, 0};
+
+    ScopedPluginStopSound guard;
+    address::server::SoundOpGameSystem_StopSoundEvent(g_pSoundOpGameSystem, &info, false);
 }
 
 static void StopSoundEventFilter(SndOpEventGuid_t* guid, RuntimeRecipientFilter* pFilter)
