@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -20,11 +20,14 @@
 #ifndef CSTRIKE_INTERFACE_NETCHANNEL_H
 #define CSTRIKE_INTERFACE_NETCHANNEL_H
 
-enum NetChannelBufType_t
+#include <cstdint>
+
+enum NetChannelBufType_t : int8_t
 {
-    BUF_RELIABLE = 0,
-    BUF_UNRELIABLE,
-    BUF_VOICE,
+    BUF_DEFAULT    = -1,
+    BUF_UNRELIABLE = 0,
+    BUF_RELIABLE   = 1,
+    BUF_VOICE      = 2
 };
 
 namespace google::protobuf
@@ -41,8 +44,6 @@ public:
     virtual float       GetTimeConnected()  = 0;
 
     // virtual float GetAvgLatency(int type) = 0; // 11
-
-    void SendNetMessage(class INetworkSerializable* pSerializable, google::protobuf::Message* pMessage, int reliable = -1);
 };
 
 #endif

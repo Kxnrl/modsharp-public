@@ -43,7 +43,7 @@ static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessag
 
     const CSharpNetworkDataWrapper data(pData, size, pNetMessage);
     SetNetworkMessageBypassHook(true);
-    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &clients, pNetMessage, &data, 0, true);
+    g_pGameEventSystem->PostEventAbstract(0, false, bitWide, &clients, pNetMessage, &data, 0, BUF_RELIABLE);
     SetNetworkMessageBypassHook(false);
 
     return true;

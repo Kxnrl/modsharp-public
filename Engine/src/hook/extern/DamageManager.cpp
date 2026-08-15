@@ -33,7 +33,7 @@
 
 BeginMemberHookScope(CBaseEntity)
 {
-    DeclareMemberDetourHook(DispatchTraceAttack, int64_t, (CBaseEntity * pEntity, CTakeDamageInfo * pInfo, CTakeDamageResult * pResult))
+    DeclareMemberDetourHook(DispatchTraceAttack, void, (CBaseEntity * pEntity, CTakeDamageInfo * pInfo, CTakeDamageResult * pResult))
     {
         if (CBaseEntity::InBypassHook())
             return DispatchTraceAttack(pEntity, pInfo, pResult);
@@ -63,15 +63,15 @@ BeginMemberHookScope(CBaseEntity)
             {
                 pResult->m_bWasDamageSuppressed = true;
                 forwards::OnPlayerDispatchTraceAttackPost->Invoke(pClient, pController, pPlayer, pInfo, pResult, action);
-                return 0;
+                return;
             }
             if (action != EHookAction::Ignored)
             {
                 FatalError("OnPlayerDispatchTraceAttackPre: unsupported hook action '%s'", EHookActionName(action));
             }
-            const auto result = DispatchTraceAttack(pEntity, pInfo, pResult);
+            DispatchTraceAttack(pEntity, pInfo, pResult);
             forwards::OnPlayerDispatchTraceAttackPost->Invoke(pClient, pController, pPlayer, pInfo, pResult, action);
-            return result;
+            return;
         }
 
         const auto action = forwards::OnEntityDispatchTraceAttackPre->Invoke(pEntity, pInfo, pResult);
@@ -79,15 +79,14 @@ BeginMemberHookScope(CBaseEntity)
         {
             pResult->m_bWasDamageSuppressed = true;
             forwards::OnEntityDispatchTraceAttackPost->Invoke(pEntity, pInfo, pResult, action);
-            return 0;
+            return;
         }
         if (action != EHookAction::Ignored)
         {
             FatalError("OnEntityDispatchTraceAttackPre: unsupported hook action '%s'", EHookActionName(action));
         }
-        const auto result = DispatchTraceAttack(pEntity, pInfo, pResult);
+        DispatchTraceAttack(pEntity, pInfo, pResult);
         forwards::OnEntityDispatchTraceAttackPost->Invoke(pEntity, pInfo, pResult, action);
-        return result;
     }
 }
 

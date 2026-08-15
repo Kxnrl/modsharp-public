@@ -233,7 +233,7 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
 
 BeginMemberHookScope(CCSPlayerController)
 {
-    DeclareMemberDetourHook(ProcessUserCommands, void, (CCSPlayerController * pController, CUserCmd * pCommands, int commandCount, bool paused, float margin))
+    DeclareMemberDetourHook(ProcessUserCommands, int, (CCSPlayerController * pController, CUserCmd * pCommands, int commandCount, bool paused, float margin))
     {
         VPROF_MS_HOOK();
 

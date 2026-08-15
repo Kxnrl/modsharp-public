@@ -29,6 +29,7 @@
 #include "cstrike/interface/ISoundOpSystem.h"
 #include "cstrike/type/CEntityKeyValues.h"
 #include "cstrike/type/CNetworkVelocityVector.h"
+#include "cstrike/type/CTakeDamageResult.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/QAngle.h"
 #include "cstrike/type/Variant.h"
@@ -213,12 +214,12 @@ SndOpEventGuid_t CBaseEntity::EmitSound(const char* pszSound, const float* pVolu
     // NOTE 这里Volume不生效, 需要二次下发, 所以传参先默认传1.0, 然后判断是否覆盖音量
 
 #ifdef PLATFORM_WINDOWS
-    StartSoundEventInfo_t info;
-    static auto           fn = g_pGameData->GetAddress<void (*)(CBaseEntity*, StartSoundEventInfo_t*, const IRecipientFilter*, const char*, float, int64_t)>("CBaseEntity::EmitSoundFilter");
-    fn(this, &info, pFilter, pszSound, 1, 0);
+    StartSoundEventInfo_t info{};
+    static auto           fn = g_pGameData->GetAddress<void (*)(CBaseEntity*, StartSoundEventInfo_t*, const IRecipientFilter*, const char*, float, Vector*)>("CBaseEntity::EmitSoundFilter");
+    fn(this, &info, pFilter, pszSound, 1.0f, nullptr);
 #else
-    static auto fn   = g_pGameData->GetAddress<StartSoundEventInfo_t (*)(CBaseEntity*, const IRecipientFilter*, const char*, float, int64_t)>("CBaseEntity::EmitSoundFilter");
-    const auto  info = fn(this, pFilter, pszSound, 1, 0);
+    static auto fn   = g_pGameData->GetAddress<StartSoundEventInfo_t (*)(CBaseEntity*, const IRecipientFilter*, const char*, float, Vector*)>("CBaseEntity::EmitSoundFilter");
+    const auto  info = fn(this, pFilter, pszSound, 1.0f, nullptr);
 #endif
 
     if (info.m_nSndOpEventGuid.IsValid() && pVolume != nullptr)
@@ -240,7 +241,10 @@ void CBaseEntity::StopSound(const char* pszSound)
 
 int64_t CBaseEntity::DispatchTraceAttack(const CTakeDamageInfo* info)
 {
-    return address::server::CBaseEntity_DispatchTraceAttack(this, info, nullptr);
+    CTakeDamageResult result(0);
+    result.CopyFrom(const_cast<CTakeDamageInfo*>(info));
+    address::server::CBaseEntity_DispatchTraceAttack(this, info, &result);
+    return result.m_bWasDamageSuppressed ? 0 : result.m_nHealthLost;
 }
 
 void CBaseEntity::SetGroundEntity(CBaseEntity* pGround, void* pPhysicsBody)
