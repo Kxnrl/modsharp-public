@@ -108,7 +108,6 @@ static void StopSoundEvent(SndOpEventGuid_t* guid)
 
     StartSoundEventInfo_t info{*guid, 0, 0};
 
-    ScopedPluginStopSound guard;
     address::server::SoundOpGameSystem_StopSoundEvent(g_pSoundOpGameSystem, &info, false);
 }
 
