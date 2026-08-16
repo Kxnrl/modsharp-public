@@ -38,19 +38,10 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => 0;
 
-    /// <summary>
-    ///     How often handler caches are re-validated against storage, so operations removed
-    ///     externally (e.g. a website unban writing to a shared database) take effect without
-    ///     a reconnect or server restart.
-    /// </summary>
+    // How often handler caches are re-validated against storage.
     private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
 
-    /// <summary>
-    ///     A freshly-applied punishment is written to storage asynchronously, so a cache entry younger than
-    ///     this is skipped by the re-check — otherwise the refresh could evict it before its write is visible
-    ///     (in particular across a shared/replicated database). Two full refresh cycles of headroom so a
-    ///     slow write (retry/replication lag) can't drop a just-applied punishment.
-    /// </summary>
+    // Two refresh cycles of headroom, so a slow storage write can't get a just-applied punishment evicted.
     private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
 
     private CancellationTokenSource? _refreshCts;
@@ -541,18 +532,15 @@ internal class AdminOperationEngine : IClientListener
         }
     }
 
-    /// <summary>
-    ///     Re-validates every handler's cached identities against storage and evicts entries
-    ///     that no longer have an active record (removed externally or expired).
-    /// </summary>
+    // Re-validates cached identities against storage and evicts those with no active record.
     private async Task RefreshCachedOperationsAsync(CancellationToken token)
     {
         // Snapshot handler caches on the game thread; handlers are not thread-safe.
         var snapshot = await _bridge.ModSharp
                                     .InvokeFrameActionAsync(() => _handlers.Values
                                             .Select(x => (x.Handler,
-                                                          Identities: x.Handler.GetCachedIdentities(CacheGraceWindow).ToArray()))
-                                            .Where(x => x.Identities.Length > 0)
+                                                          Identities: x.Handler.GetCachedIdentities(CacheGraceWindow)))
+                                            .Where(x => x.Identities.Count > 0)
                                             .ToArray(),
                                         token)
                                     .ConfigureAwait(false);
@@ -582,7 +570,7 @@ internal class AdminOperationEngine : IClientListener
                          // replaced/unregistered, and the entry may have been re-applied (and re-persisted) by an
                          // admin — a re-applied entry has a fresh AddedAt, so it is now grace-excluded. Only evict
                          // what the currently-registered handler still reports as eligible.
-                         var stillCached = new Dictionary<AdminOperationType, HashSet<SteamID>>();
+                         var stillCached = new Dictionary<AdminOperationType, IReadOnlySet<SteamID>>();
 
                          foreach (var (handler, steamId) in stale)
                          {
@@ -594,7 +582,7 @@ internal class AdminOperationEngine : IClientListener
 
                              if (!stillCached.TryGetValue(handler.Type, out var eligible))
                              {
-                                 eligible                   = handler.GetCachedIdentities(CacheGraceWindow).ToHashSet();
+                                 eligible                  = handler.GetCachedIdentities(CacheGraceWindow);
                                  stillCached[handler.Type] = eligible;
                              }
 

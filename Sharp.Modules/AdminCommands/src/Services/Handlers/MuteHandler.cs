@@ -55,11 +55,11 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.MuteRemoved", $"unmuted {target.Name}");
 
-    public IReadOnlyCollection<SteamID> GetCachedIdentities(TimeSpan grace)
+    public IReadOnlySet<SteamID> GetCachedIdentities(TimeSpan grace)
     {
         var cutoff = DateTime.UtcNow - grace;
 
-        return _mutes.Where(x => x.Value.AddedAt <= cutoff).Select(x => x.Key).ToArray();
+        return _mutes.Where(x => x.Value.AddedAt <= cutoff).Select(x => x.Key).ToHashSet();
     }
 
     public void RegisterHooks()

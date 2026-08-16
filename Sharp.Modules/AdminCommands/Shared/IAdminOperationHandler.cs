@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Units;
@@ -69,6 +70,6 @@ public interface IAdminOperationHandler
     ///     punishment is not evicted before its storage write has propagated. <br />
     ///     Handlers that do not cache state can rely on the default empty implementation.
     /// </summary>
-    IReadOnlyCollection<SteamID> GetCachedIdentities(TimeSpan grace)
-        => [];
+    IReadOnlySet<SteamID> GetCachedIdentities(TimeSpan grace)
+        => FrozenSet<SteamID>.Empty;
 }

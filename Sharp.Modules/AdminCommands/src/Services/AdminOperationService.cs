@@ -55,9 +55,8 @@ internal sealed class AdminOperationService
     }
 
     /// <summary>
-    ///     Like <see cref="HasActiveAsync" /> but distinguishes storage failures (<c>null</c>) from a
-    ///     definitive "no active record" (<c>false</c>), so cache-eviction callers never treat a
-    ///     transient database outage as a removal.
+    ///     Like <see cref="HasActiveAsync" /> but returns <c>null</c> on a storage failure, so callers can tell it
+    ///     apart from a definitive "no active record".
     /// </summary>
     public async Task<bool?> TryHasActiveAsync(SteamID steamId,
         AdminOperationType                             type,
