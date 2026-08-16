@@ -44,6 +44,11 @@ internal class AdminOperationEngine : IClientListener
     // Two refresh cycles of headroom, so a slow storage write can't get a just-applied punishment evicted.
     private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
 
+    // Servers sharing one operations database are usually restarted together, which would line their refresh
+    // cycles up and hit the database in bursts. Jitter each wait so the fleet spreads out instead.
+    private static TimeSpan NextRefreshDelay
+        => CacheRefreshInterval + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 10_000));
+
     private CancellationTokenSource? _refreshCts;
 
     private readonly ILogger<AdminOperationEngine> _logger;
@@ -516,7 +521,7 @@ internal class AdminOperationEngine : IClientListener
         {
             try
             {
-                await Task.Delay(CacheRefreshInterval, token).ConfigureAwait(false);
+                await Task.Delay(NextRefreshDelay, token).ConfigureAwait(false);
                 await RefreshCachedOperationsAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (token.IsCancellationRequested)
