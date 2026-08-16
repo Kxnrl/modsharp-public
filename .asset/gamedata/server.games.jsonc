@@ -902,17 +902,6 @@
       "linux": "55 48 89 E5 41 57 41 56 45 89 CE 41 55 45 89 C5",
       "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B E9 49 8B F0 48 8B 0D"
     },
-    // 搜字符串 "InputStopSound" 跳转到 .data 分区里的引用
-    // 会看到有 "StopSound" 字符串, 它下面指向的函数跳转后
-    // 第一个带两个参数的函数就是StopSoundEvent
-    // 或者搜 vable ConstraintSoundInfo, index为1的虚函数里就是
-    // 或者 vtable CAmbientGeneric 的最后一个虚函数
-    "SoundOpGameSystem::StopSoundEvent": {
-      "library": "server",
-      "linux": "8B 0E 85 C9 0F 84",
-      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 56 48 83 EC ? 83 3A"
-    },
-    // SoundOpGameSystem::StopSoundEvent 里带3个参数的就是
     "SoundOpGameSystem::StopSoundEventFilter": {
       "library": "server",
       "linux": "85 D2 74 ? 55 48 89 E5 41 57 41 56 4C 8D B7",

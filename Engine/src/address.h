@@ -231,8 +231,7 @@ using StudioModel_LookupAttachment_t = void* (*)(void*, uint8_t*, const char*);
 using StudioModel_LookupAttachment_t = int32_t (*)(void*, const char*);
 #endif
 using StudioModel_GetAttachment_t              = bool (*)(void*, uint8_t, Vector*, Vector*);
-using SoundOpGameSystem_StopSoundEvent_t       = void (*)(SoundOpGameSystem*, SndOpEventGuid_t*);
-using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SndOpEventGuid_t*);
+using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SoundEventGuid_t);
 using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
 using CCSPlayer_MovementServices_TracePlayerBBox_t = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
@@ -307,7 +306,6 @@ inline CBaseModelEntity_SetCollisionBounds_t           CBaseModelEntity_SetColli
 inline CGamePhysicsQueryInterface_TraceShape_t         CGamePhysicsQueryInterface_TraceShape;
 inline StudioModel_LookupAttachment_t                  StudioModel_LookupAttachment;
 inline StudioModel_GetAttachment_t                     StudioModel_GetAttachment;
-inline SoundOpGameSystem_StopSoundEvent_t              SoundOpGameSystem_StopSoundEvent;
 inline SoundOpGameSystem_StopSoundEventFilter_t        SoundOpGameSystem_StopSoundEventFilter;
 inline CCollisionProperty_SetSolid_t                   CCollisionProperty_SetSolid;
 inline CCSPlayer_MovementServices_TracePlayerBBox_t    CCSPlayer_MovementServices_TracePlayerBBox;

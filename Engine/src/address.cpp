@@ -218,7 +218,6 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("StudioModel::GetAttachment", address::server::StudioModel_GetAttachment);
 
     // Sound OP
-    RESOLVE_GAMEDATA_ADDRESS("SoundOpGameSystem::StopSoundEvent", address::server::SoundOpGameSystem_StopSoundEvent);
     RESOLVE_GAMEDATA_ADDRESS("SoundOpGameSystem::StopSoundEventFilter", address::server::SoundOpGameSystem_StopSoundEventFilter);
 
     // Movement service
