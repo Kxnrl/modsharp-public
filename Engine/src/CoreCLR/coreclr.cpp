@@ -17,6 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef PLATFORM_WINDOWS
+#    ifndef _GNU_SOURCE
+#        define _GNU_SOURCE
+#    endif
+#endif
+
 #include "CoreCLR/coreclr.h"
 #include "CoreCLR/coreclr_delegates.h"
 #include "CoreCLR/hostfxr.h"
@@ -30,7 +36,9 @@
 #    define STR(s) L##s
 #else
 #    include <dlfcn.h>
+#    include <link.h>
 #    define STR(s) s
+#    include <safetyhook.hpp>
 #endif
 
 #include "logging.h"
@@ -40,17 +48,22 @@
 #include <array>
 #include <cassert>
 #include <charconv>
+#include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
+#include <new>
 #include <optional>
 #include <ranges>
 #include <string>
+#include <string_view>
 #include <vector>
 
 struct HostFxrUtils
 {
     hostfxr_initialize_for_runtime_config_fn Init;
     hostfxr_get_runtime_delegate_fn          GetDelegate;
+    hostfxr_get_runtime_property_value_fn    GetProperty;
     hostfxr_set_runtime_property_value_fn    SetProperty;
     hostfxr_close_fn                         Close;
 } static s_HostFxrUtils;
@@ -65,7 +78,6 @@ void* load_library(const char* path)
     return (void*)h;
 #else
     void* h = dlopen(path, RTLD_LAZY | RTLD_LOCAL);
-    assert(h != nullptr);
     return h;
 #endif
 }
@@ -101,14 +113,14 @@ struct Version
 
         int count = 0;
 
-        for (auto subrange  : input | std::views::split('.'))
+        for (auto subrange : input | std::views::split('.'))
         {
             // 应该不会遇到这个情况
             if (count >= 4)
                 break;
-            
-            std::string_view token(subrange.begin(), subrange.end());
 
+            std::string_view token(subrange.begin(), subrange.end());
+            
             _numbers[count] = sv_to_int(token).value_or(0);
             count++;
         }
@@ -176,8 +188,7 @@ static std::string FindDotnetRuntime()
 
     for (const auto& search_path : s_vecSearchPaths)
     {
-        if (!std::filesystem::exists(search_path))
-            continue;
+        if (!std::filesystem::exists(search_path)) continue;
 
         for (const auto& entry : std::filesystem::recursive_directory_iterator(search_path))
         {
@@ -244,17 +255,280 @@ bool LoadHostFxr()
     void* lib = load_library(path.c_str());
     if (lib == nullptr)
     {
+#ifdef PLATFORM_WINDOWS
         FatalError("Failed to load hostfxr library at %s", path.c_str());
+#else
+        const char* error = dlerror();
+        FatalError("Failed to load hostfxr library at %s: %s",
+                   path.c_str(), error != nullptr ? error : "unknown error");
+#endif
         return false;
     }
 
     s_HostFxrUtils.Init        = (hostfxr_initialize_for_runtime_config_fn)get_export(lib, "hostfxr_initialize_for_runtime_config");
     s_HostFxrUtils.GetDelegate = (hostfxr_get_runtime_delegate_fn)get_export(lib, "hostfxr_get_runtime_delegate");
+    s_HostFxrUtils.GetProperty = (hostfxr_get_runtime_property_value_fn)get_export(lib, "hostfxr_get_runtime_property_value");
     s_HostFxrUtils.SetProperty = (hostfxr_set_runtime_property_value_fn)get_export(lib, "hostfxr_set_runtime_property_value");
     s_HostFxrUtils.Close       = (hostfxr_close_fn)get_export(lib, "hostfxr_close");
 
-    return (s_HostFxrUtils.Init != nullptr && s_HostFxrUtils.GetDelegate != nullptr && s_HostFxrUtils.SetProperty != nullptr && s_HostFxrUtils.Close != nullptr);
+    return (s_HostFxrUtils.Init != nullptr && s_HostFxrUtils.GetDelegate != nullptr && s_HostFxrUtils.GetProperty != nullptr
+            && s_HostFxrUtils.SetProperty != nullptr && s_HostFxrUtils.Close != nullptr);
 }
+
+#ifndef PLATFORM_WINDOWS
+namespace
+{
+using SystemOperatorNewFn        = void* (*)(std::size_t);
+using SystemAlignedOperatorNewFn = void* (*)(std::size_t, std::align_val_t);
+
+SystemOperatorNewFn        s_SystemOperatorNew        = nullptr;
+SystemAlignedOperatorNewFn s_SystemAlignedOperatorNew = nullptr;
+
+void* CoreClrOperatorNew(std::size_t size)
+{
+    return s_SystemOperatorNew(size);
+}
+
+void* CoreClrOperatorNewNoThrow(std::size_t size, const std::nothrow_t&) noexcept
+{
+    try
+    {
+        return s_SystemOperatorNew(size);
+    }
+    catch (...)
+    {
+        return nullptr;
+    }
+}
+
+void* CoreClrAlignedOperatorNew(std::size_t size, std::align_val_t alignment)
+{
+    return s_SystemAlignedOperatorNew(size, alignment);
+}
+
+void* CoreClrAlignedOperatorNewNoThrow(std::size_t size, std::align_val_t alignment, const std::nothrow_t&) noexcept
+{
+    try
+    {
+        return s_SystemAlignedOperatorNew(size, alignment);
+    }
+    catch (...)
+    {
+        return nullptr;
+    }
+}
+
+void CoreClrOperatorDelete(void* memory) noexcept
+{
+    std::free(memory);
+}
+
+bool IsCppAllocatorImport(std::string_view name)
+{
+    return name.starts_with("_Znwm") || name.starts_with("_Znam")
+        || name.starts_with("_ZdlPv") || name.starts_with("_ZdaPv");
+}
+
+void* ResolveCoreClrAllocator(std::string_view name, void* libstdcpp)
+{
+    // libstdc++ overloads forward through interposable GOT slots, so CoreCLR must target leaf wrappers.
+    if (name.starts_with("_ZdlPv") || name.starts_with("_ZdaPv"))
+        return reinterpret_cast<void*>(&CoreClrOperatorDelete);
+
+    if (!name.starts_with("_Znwm") && !name.starts_with("_Znam"))
+        return nullptr;
+
+    const auto suffix = name.substr(5);
+    if (suffix.empty())
+        return reinterpret_cast<void*>(&CoreClrOperatorNew);
+    if (suffix == "RKSt9nothrow_t")
+        return reinterpret_cast<void*>(&CoreClrOperatorNewNoThrow);
+
+    const bool aligned = suffix == "St11align_val_t" || suffix == "St11align_val_tRKSt9nothrow_t";
+    if (!aligned)
+        return nullptr;
+
+    if (s_SystemAlignedOperatorNew == nullptr)
+    {
+        s_SystemAlignedOperatorNew = reinterpret_cast<SystemAlignedOperatorNewFn>(dlsym(libstdcpp, "_ZnwmSt11align_val_t"));
+        if (s_SystemAlignedOperatorNew == nullptr)
+            return nullptr;
+    }
+
+    return suffix == "St11align_val_t"
+        ? reinterpret_cast<void*>(&CoreClrAlignedOperatorNew)
+        : reinterpret_cast<void*>(&CoreClrAlignedOperatorNewNoThrow);
+}
+
+struct LoadedElfImage
+{
+    ElfW(Addr)        BaseAddress{};
+    const ElfW(Phdr)* ProgramHeaders{};
+    ElfW(Half)        ProgramHeaderCount{};
+};
+
+int FindCoreClrImage(dl_phdr_info* info, std::size_t, void* data)
+{
+    const char* path = info->dlpi_name;
+    if (path == nullptr)
+        return 0;
+
+    const char* filename = std::strrchr(path, '/');
+    filename             = filename != nullptr ? filename + 1 : path;
+    if (std::strcmp(filename, "libcoreclr.so") != 0)
+        return 0;
+
+    auto* image                 = static_cast<LoadedElfImage*>(data);
+    image->BaseAddress          = info->dlpi_addr;
+    image->ProgramHeaders       = info->dlpi_phdr;
+    image->ProgramHeaderCount   = info->dlpi_phnum;
+    return 1;
+}
+
+bool RebindCoreClrAllocatorImports()
+{
+    LoadedElfImage image{};
+    dl_iterate_phdr(FindCoreClrImage, &image);
+    if (image.ProgramHeaders == nullptr)
+        return false;
+
+    const ElfW(Dyn)* dynamic = nullptr;
+    for (ElfW(Half) i = 0; i < image.ProgramHeaderCount; ++i)
+    {
+        if (image.ProgramHeaders[i].p_type == PT_DYNAMIC)
+        {
+            dynamic = reinterpret_cast<const ElfW(Dyn)*>(image.BaseAddress + image.ProgramHeaders[i].p_vaddr);
+            break;
+        }
+    }
+
+    if (dynamic == nullptr)
+        return false;
+
+    const ElfW(Rela)* dynamicRelocations     = nullptr;
+    std::size_t       dynamicRelocationsSize = 0;
+    const ElfW(Rela)* pltRelocations         = nullptr;
+    std::size_t       pltRelocationsSize     = 0;
+    const ElfW(Sym)*  symbols                = nullptr;
+    const char*        strings                = nullptr;
+    ElfW(Sword)        pltRelocationType      = DT_NULL;
+
+    for (const ElfW(Dyn)* entry = dynamic; entry->d_tag != DT_NULL; ++entry)
+    {
+        switch (entry->d_tag)
+        {
+            case DT_JMPREL:
+                pltRelocations = reinterpret_cast<const ElfW(Rela)*>(entry->d_un.d_ptr);
+                break;
+            case DT_PLTRELSZ:
+                pltRelocationsSize = entry->d_un.d_val;
+                break;
+            case DT_RELA:
+                dynamicRelocations = reinterpret_cast<const ElfW(Rela)*>(entry->d_un.d_ptr);
+                break;
+            case DT_RELASZ:
+                dynamicRelocationsSize = entry->d_un.d_val;
+                break;
+            case DT_SYMTAB:
+                symbols = reinterpret_cast<const ElfW(Sym)*>(entry->d_un.d_ptr);
+                break;
+            case DT_STRTAB:
+                strings = reinterpret_cast<const char*>(entry->d_un.d_ptr);
+                break;
+            case DT_PLTREL:
+                pltRelocationType = entry->d_un.d_val;
+                break;
+            default:
+                break;
+        }
+    }
+
+    const bool hasDynamicRelocations = dynamicRelocations != nullptr && dynamicRelocationsSize != 0;
+    const bool hasPltRelocations     = pltRelocations != nullptr && pltRelocationsSize != 0 && pltRelocationType == DT_RELA;
+    if ((!hasDynamicRelocations && !hasPltRelocations) || symbols == nullptr || strings == nullptr)
+        return false;
+
+    const char* libstdcppName = nullptr;
+    for (const ElfW(Dyn)* entry = dynamic; entry->d_tag != DT_NULL; ++entry)
+    {
+        if (entry->d_tag != DT_NEEDED)
+            continue;
+
+        const char*                neededLibrary   = strings + entry->d_un.d_val;
+        constexpr std::string_view libstdcppPrefix = "libstdc++.so.";
+        if (std::string_view{neededLibrary}.starts_with(libstdcppPrefix))
+        {
+            libstdcppName = neededLibrary;
+            break;
+        }
+    }
+
+    if (libstdcppName == nullptr)
+        return false;
+
+    void* libstdcpp = dlopen(libstdcppName, RTLD_NOW | RTLD_LOCAL);
+    if (libstdcpp == nullptr)
+        return false;
+
+    s_SystemOperatorNew = reinterpret_cast<SystemOperatorNewFn>(dlsym(libstdcpp, "_Znwm"));
+    if (s_SystemOperatorNew == nullptr)
+        return false;
+
+    std::size_t reboundAllocatorCount = 0;
+
+    const auto applyRelocations = [&](const ElfW(Rela)* relocations, std::size_t size) {
+        const std::size_t relocationCount = size / sizeof(ElfW(Rela));
+        for (std::size_t i = 0; i < relocationCount; ++i)
+        {
+            const auto& relocation = relocations[i];
+            const auto  type       = ELF64_R_TYPE(relocation.r_info);
+            if (type != R_X86_64_GLOB_DAT && type != R_X86_64_JUMP_SLOT)
+                continue;
+
+            const auto symbolIndex = ELF64_R_SYM(relocation.r_info);
+            const char* symbolName = strings + symbols[symbolIndex].st_name;
+            if (!IsCppAllocatorImport(symbolName))
+                continue;
+
+            void* replacement = ResolveCoreClrAllocator(symbolName, libstdcpp);
+            if (replacement == nullptr)
+                return false;
+
+            auto** slot       = reinterpret_cast<void**>(image.BaseAddress + relocation.r_offset);
+            auto   protection = safetyhook::unprotect(reinterpret_cast<std::uint8_t*>(slot), sizeof(*slot));
+            if (!protection.has_value())
+                return false;
+
+            *slot = replacement;
+            ++reboundAllocatorCount;
+        }
+
+        return true;
+    };
+
+    if (hasDynamicRelocations && !applyRelocations(dynamicRelocations, dynamicRelocationsSize))
+        return false;
+    if (hasPltRelocations && !applyRelocations(pltRelocations, pltRelocationsSize))
+        return false;
+
+    return reboundAllocatorCount != 0;
+}
+
+void* s_CoreClrLibrary = nullptr;
+
+bool PreloadAndRebindCoreClr(hostfxr_handle context)
+{
+    const char_t* fxDepsFile = nullptr;
+    const int     rc         = s_HostFxrUtils.GetProperty(context, STR("FX_DEPS_FILE"), &fxDepsFile);
+    if (rc != 0 || fxDepsFile == nullptr)
+        return false;
+
+    const auto coreClrPath = std::filesystem::path(fxDepsFile).parent_path() / "libcoreclr.so";
+    s_CoreClrLibrary       = dlopen(coreClrPath.c_str(), RTLD_NOW | RTLD_LOCAL);
+    return s_CoreClrLibrary != nullptr && RebindCoreClrAllocatorImports();
+}
+} // namespace
+#endif
 
 load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t* config_path, const char_t* base_dir)
 {
@@ -262,7 +536,7 @@ load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t*
     void*          result = nullptr;
     hostfxr_handle cxt    = nullptr;
     int            rc     = s_HostFxrUtils.Init(config_path, nullptr, &cxt);
-    if (rc != 0 || cxt == nullptr)
+    if (rc < 0 || cxt == nullptr)
     {
         std::cerr << "Init failed: " << std::hex << std::showbase << rc << std::endl;
         s_HostFxrUtils.Close(cxt);
@@ -270,6 +544,17 @@ load_assembly_and_get_function_pointer_fn get_dotnet_load_assembly(const char_t*
     }
 
     s_HostFxrUtils.SetProperty(cxt, STR("APP_CONTEXT_BASE_DIRECTORY"), base_dir);
+
+#ifndef PLATFORM_WINDOWS
+    if (!PreloadAndRebindCoreClr(cxt))
+    {
+        const char* error = dlerror();
+        FatalError("Failed to preload CoreCLR and bind its allocator imports: %s", error != nullptr ? error : "unknown error");
+        return nullptr;
+    }
+
+    std::cout << "CoreCLR allocator imports bound to the system allocator." << std::endl;
+#endif
 
     // Get the load assembly function pointer
     rc = s_HostFxrUtils.GetDelegate(
