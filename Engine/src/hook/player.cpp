@@ -203,8 +203,7 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 #ifdef WEAPON_EVENT_ASSERT
         LOG("CCSPlayer_WeaponServices::EquipWeapon %p", pWeapon);
 #endif
-
-        return 0;
+        return ret;
     }
 
     DeclareVirtualHook(DropWeapon, void, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon, Vector * pVecTarget, Vector * pVelocity))
