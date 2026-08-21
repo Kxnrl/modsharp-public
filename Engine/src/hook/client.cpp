@@ -421,6 +421,14 @@ BeginStaticHookScope(HostSay)
             return;
         }
 
+        if (!pClient->IsInGame())
+        {
+            if (ms_log_chat->GetValue<bool>())
+                LOG("Player %s is not in game, blocking chat message", pClient->GetName());
+
+            return;
+        }
+
         const auto pCommand = args.Arg(0);
         const auto pArgs    = args.ArgS();
 
