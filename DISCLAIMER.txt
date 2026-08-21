@@ -1,0 +1,36 @@
+DISCLAIMER OF WARRANTY AND LIABILITY
+====================================
+
+This contribution ("asynchronous file logging", pull request #120 against
+Kxnrl/modsharp-public, commits perf(core) / perf(engine) / docs) is provided
+"AS IS" and "AS AVAILABLE", without warranty of any kind, express or implied,
+including but not limited to the implied warranties of merchantability,
+fitness for a particular purpose, title and non-infringement. This mirrors
+sections 15 and 16 of the GNU Affero General Public License v3, under which
+this project is licensed.
+
+In no event shall the authors or contributors of this change be liable for
+any claim, damages or other liability -- whether in an action of contract,
+tort or otherwise -- arising from, out of or in connection with this change
+or the use of or inability to use it, including without limitation loss of
+log data, server downtime, or any direct, indirect, incidental, special,
+exemplary or consequential damages, even if advised of the possibility of
+such damages.
+
+Operational notes (read before relying on log completeness):
+
+1. The native writer queue is bounded (4096 lines). When it is full, new
+   lines are DROPPED and counted instead of blocking the game thread; the
+   writer reports the dropped count to error.log when it catches up.
+2. Managed log events at Verbose/Debug/Information/Warning level are
+   buffered by asynchronous sinks. If the process terminates abnormally
+   before the buffers flush, the tail of those logs can be lost. The
+   Error path (managed) and the Fatal path (native) write synchronously
+   to keep this window as small as possible.
+3. This change was build-verified (managed: 0 warnings; native: clean link
+   inside the Steam Runtime 3 "sniper" SDK container) and runtime-verified
+   on one CS2 dedicated test server. This does not guarantee
+   fitness for any other environment. Operators deploy at their own risk
+   and are responsible for testing in their own environment.
+
+2026-08-21
