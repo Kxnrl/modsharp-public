@@ -119,6 +119,10 @@ void FatalError(const char* message, ...) MS_FMTFUNCTION(1, 2);
 
 void CreateLogging();
 
+// Drains the queue, joins the writer thread and closes the log files.
+// File logging falls back to synchronous writes afterwards.
+void ShutdownLogging();
+
 void WriteTextToFile(const char* path, const char* text);
 
 #define LOG(...) ConsoleMessage(__FUNCTION__, __VA_ARGS__)
