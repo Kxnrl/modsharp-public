@@ -183,7 +183,7 @@
     "CCollisionProperty::SetSolid": {
       "library": "server",
       "linux": "40 38 77 5B",
-      "windows": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F B6 F2"
+      "windows": "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F B6 F2 48 8B D9"
     },
     // str '%s:  CGameRules::CGameRules constructed\n'
     "CCSGameRules::Constructor": {
