@@ -479,6 +479,16 @@ public interface IModSharp
     /// </summary>
     void DualAddonOverrideCheck(SteamID steamId, double time);
 
+    /// <summary>
+    ///     Get dual addon publish file id
+    /// </summary>
+    ulong GetDualAddonId();
+
+    /// <summary>
+    ///     Set dual addon publish file id
+    /// </summary>
+    bool SetDualAddonId(ulong publishFileId);
+
 #endregion
 
 #region Workshop

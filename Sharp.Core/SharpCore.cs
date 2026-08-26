@@ -1419,6 +1419,21 @@ internal partial class SharpCore : ISharpCore
     public void DualAddonOverrideCheck(SteamID steamId, double time)
         => Game.DualAddonOverrideCheck(steamId, time);
 
+    public ulong GetDualAddonId()
+        => Game.DualAddonGetPublishFileId();
+
+    public bool SetDualAddonId(ulong publishFileId)
+    {
+        var success = Game.DualAddonSetPublishFileId(publishFileId);
+
+        if (success)
+        {
+            DualAddonPurgeCheck();
+        }
+
+        return success;
+    }
+
 #endregion
 
 #region DedicatedServerWorkshopManager
