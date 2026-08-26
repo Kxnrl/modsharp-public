@@ -30,7 +30,7 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
 {
     private readonly InterfaceBridge _bridge;
 
-    private readonly Dictionary<SteamID, DateTime?> _mutes;
+    private readonly Dictionary<SteamID, (DateTime? ExpiresAt, DateTime AddedAt)> _mutes;
 
     private bool _hooksRegistered;
 
@@ -54,6 +54,13 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
 
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.MuteRemoved", $"unmuted {target.Name}");
+
+    public IReadOnlySet<SteamID> GetCachedIdentities(TimeSpan grace)
+    {
+        var cutoff = DateTime.UtcNow - grace;
+
+        return _mutes.Where(x => x.Value.AddedAt <= cutoff).Select(x => x.Key).ToHashSet();
+    }
 
     public void RegisterHooks()
     {
@@ -84,12 +91,12 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
 
     private bool IsMuted(SteamID steamId)
     {
-        if (!_mutes.TryGetValue(steamId, out var expiresAt))
+        if (!_mutes.TryGetValue(steamId, out var entry))
         {
             return false;
         }
 
-        if (expiresAt.HasValue && expiresAt.Value < DateTime.UtcNow)
+        if (entry.ExpiresAt.HasValue && entry.ExpiresAt.Value < DateTime.UtcNow)
         {
             _mutes.Remove(steamId);
 
@@ -103,7 +110,7 @@ internal class MuteHandler : IAdminOperationHandler, IAdminOperationHookRegistra
     {
         if (muted)
         {
-            _mutes[steamId] = expiresAt;
+            _mutes[steamId] = (expiresAt, DateTime.UtcNow);
         }
         else
         {
