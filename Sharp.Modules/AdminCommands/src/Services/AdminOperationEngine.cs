@@ -39,7 +39,7 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerPriority => 0;
 
     private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
-    private static readonly TimeSpan CacheGraceWindow     = CacheRefreshInterval * 2;
+    private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
     private static TimeSpan NextRefreshDelay => CacheRefreshInterval + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 10_000));
 
     private CancellationTokenSource? _refreshCts;
@@ -586,9 +586,9 @@ internal class AdminOperationEngine : IClientListener
 
                                                               try
                                                               {
-                                                                  handler.OnRemoved(
-                                                                      steamId,
-                                                                      _bridge.ClientManager.GetGameClient(steamId));
+                                                                  handler.OnRemoved(steamId,
+                                                                                    _bridge.ClientManager
+                                                                                        .GetGameClient(steamId));
 
                                                                   _logger.LogInformation(
                                                                       "Evicted cached {Type} for {SteamId}: no active record in storage",
@@ -597,11 +597,10 @@ internal class AdminOperationEngine : IClientListener
                                                               }
                                                               catch (Exception ex)
                                                               {
-                                                                  _logger.LogError(
-                                                                      ex,
-                                                                      "Failed to evict cached {Type} for {SteamId}",
-                                                                      handler.Type,
-                                                                      steamId);
+                                                                  _logger.LogError(ex,
+                                                                                   "Failed to evict cached {Type} for {SteamId}",
+                                                                                   handler.Type,
+                                                                                   steamId);
                                                               }
                                                           }
                                                       },
