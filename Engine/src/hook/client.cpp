@@ -37,6 +37,7 @@
 #include "cstrike/type/CBufferString.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
+#include "cstrike/type/CUtlString.h"
 #include "cstrike/type/VProf.h"
 
 #include <proto/netmessages.pb.h>
@@ -531,6 +532,21 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
     }
 }
 
+BeginStaticHookScope(DispatchCustomHudClick)
+{
+    DeclareStaticDetourHook(DispatchCustomHudClick,
+                            void,
+                            (void* pScriptContext, CCSPlayerController* pPlayer, CBaseEntity* pLayout, CUtlString* pButtonId))
+    {
+        DispatchCustomHudClick(pScriptContext, pPlayer, pLayout, pButtonId);
+
+        if (!pPlayer || !pLayout || !pButtonId)
+            return;
+
+        forwards::OnCustomHudClicked->Invoke(pPlayer, pLayout, pButtonId->Get());
+    }
+}
+
 void InstallClientHooks()
 {
     // NOTE 修改初始Seed以避免不同服务器的Seed相同, 再更换服务器后可能出现问题
@@ -554,6 +570,8 @@ void InstallClientHooks()
 
     SHOOK(HostSay);
     SHOOK(ScriptPrintMessageChatAll);
+
+    SHOOK(DispatchCustomHudClick, {.address = reinterpret_cast<void*>(address::server::DispatchCustomHudClick)});
 
     g_pHookManager->Hook_ClientFullyConnect(HookType_Post, [](PlayerSlot_t slot) {
         const auto pClient = sv->GetClient(slot);

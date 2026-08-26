@@ -103,6 +103,7 @@ class IGameEventListener2;
 struct ResourceFileHeader_t;
 struct CResourceBlockInfo;
 class CUtlSymbolLarge;
+class CUtlString;
 
 namespace address
 {
@@ -242,6 +243,14 @@ using CGameEntitySystem_GetSpawnOriginOffset_t     = matrix3x4_t& (*)(const CGam
 using CCSPlayerPawn_SetDefaultGloves_t             = void (*)(CCSPlayerPawn* pawn, bool hide);
 using CBasePlayerPawn_SnapViewAngles_t             = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                      = void* (*)(Vector*, Vector*, Vector*);
+using CCSCustomHudLayout_SetHasClass_t              = void (*)(CBaseEntity*, CUtlString*, CUtlString*, int32_t);
+using CCSCustomHudLayout_SetHasClassForPlayer_t     = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*, int32_t);
+using CCSCustomHudLayout_SetDialogVariableString_t  = void (*)(CBaseEntity*, CUtlString*, CUtlString*, CUtlString*);
+using CCSCustomHudLayout_SetDialogVariableStringForPlayer_t = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*, CUtlString*);
+using CCSCustomHudLayout_ClearDialogVariableStringForPlayer_t = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*);
+using CCSCustomHudLayout_SetInputCaptureEnabled_t = void (*)(CBaseEntity*, int32_t, bool);
+using CCSCustomHudLayout_IsInputCaptureEnabled_t  = bool (*)(CBaseEntity*, int32_t);
+using DispatchCustomHudClick_t                    = void (*)(void*, CCSPlayerController*, CBaseEntity*, CUtlString*);
 
 #ifdef ENABLE_SCRIPT_ASSERT
 // cs_script: InitV8ClassTemplates(CCSBaseScript* ctx)
@@ -326,6 +335,14 @@ inline CCSScript_InitV8ClassTemplates_t                CCSScript_InitV8ClassTemp
 #endif
 inline CGameEntitySystem_GetSpawnOriginOffset_t        CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                CCSPlayerPawn_SetDefaultGloves;
+inline CCSCustomHudLayout_SetHasClass_t                 CCSCustomHudLayout_SetHasClass;
+inline CCSCustomHudLayout_SetHasClassForPlayer_t        CCSCustomHudLayout_SetHasClassForPlayer;
+inline CCSCustomHudLayout_SetDialogVariableString_t     CCSCustomHudLayout_SetDialogVariableString;
+inline CCSCustomHudLayout_SetDialogVariableStringForPlayer_t CCSCustomHudLayout_SetDialogVariableStringForPlayer;
+inline CCSCustomHudLayout_ClearDialogVariableStringForPlayer_t CCSCustomHudLayout_ClearDialogVariableStringForPlayer;
+inline CCSCustomHudLayout_SetInputCaptureEnabled_t      CCSCustomHudLayout_SetInputCaptureEnabled;
+inline CCSCustomHudLayout_IsInputCaptureEnabled_t       CCSCustomHudLayout_IsInputCaptureEnabled;
+inline DispatchCustomHudClick_t                         DispatchCustomHudClick;
 } // namespace server
 } // namespace address
 

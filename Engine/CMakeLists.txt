@@ -300,9 +300,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 	target_link_options(modsharp PUBLIC
 		-fuse-ld=mold
 		-static-libgcc
-		-Wl,-Bstatic
-		-lstdc++
-		-Wl,-Bdynamic
+		-static-libstdc++
 	)
 endif()
 

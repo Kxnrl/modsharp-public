@@ -35,6 +35,7 @@
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CRecipientFilter.h"
+#include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EmitSound.h"
 #include "cstrike/type/EntityIO.h"
@@ -475,6 +476,83 @@ static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+static void CustomHudSetHasClass(CBaseEntity* pLayout, const char* panelId, const char* className, int32_t hasClass)
+{
+    if ( !pLayout || !panelId || !className)
+        return;
+
+    CUtlString panel(panelId);
+    CUtlString cssClass(className);
+    address::server::CCSCustomHudLayout_SetHasClass(pLayout, &panel, &cssClass, hasClass);
+}
+
+static void CustomHudSetHasClassForPlayer(CBaseEntity* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
+{
+    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !className)
+        return;
+
+    CUtlString panel(panelId);
+    CUtlString cssClass(className);
+    address::server::CCSCustomHudLayout_SetHasClassForPlayer(pLayout, playerSlot, &panel, &cssClass, hasClass);
+}
+
+static void CustomHudSetDialogVariableString(CBaseEntity* pLayout, const char* panelId, const char* variableName, const char* value)
+{
+    if (!pLayout || !panelId || !variableName || !value)
+        return;
+
+    CUtlString panel(panelId);
+    CUtlString variable(variableName);
+    CUtlString stringValue(value);
+    address::server::CCSCustomHudLayout_SetDialogVariableString(pLayout, &panel, &variable, &stringValue);
+}
+
+static void CustomHudSetDialogVariableStringForPlayer(CBaseEntity* pLayout,
+                                                      PlayerSlot_t playerSlot,
+                                                      const char*  panelId,
+                                                      const char*  variableName,
+                                                      const char*  value)
+{
+    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !variableName || !value)
+        return;
+
+    CUtlString panel(panelId);
+    CUtlString variable(variableName);
+    CUtlString stringValue(value);
+    address::server::CCSCustomHudLayout_SetDialogVariableStringForPlayer(pLayout, playerSlot, &panel, &variable, &stringValue);
+}
+
+static void CustomHudClearDialogVariableStringForPlayer(CBaseEntity* pLayout,
+                                                        PlayerSlot_t playerSlot,
+                                                        const char*  panelId,
+                                                        const char*  variableName)
+{
+    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !variableName)
+        return;
+
+    CUtlString panel(panelId);
+    CUtlString variable(variableName);
+    address::server::CCSCustomHudLayout_ClearDialogVariableStringForPlayer(pLayout, playerSlot, &panel, &variable);
+}
+
+static void CustomHudSetInputCaptureEnabled(CBaseEntity* pLayout, PlayerSlot_t playerSlot, bool enabled)
+{
+    if (!pLayout || playerSlot >= CS_MAX_PLAYERS)
+        return;
+
+    address::server::CCSCustomHudLayout_SetInputCaptureEnabled(pLayout, playerSlot, enabled);
+}
+
+static bool CustomHudIsInputCaptureEnabled(CBaseEntity* pLayout, PlayerSlot_t playerSlot)
+{
+    if (!pLayout || playerSlot >= CS_MAX_PLAYERS)
+        return false;
+
+    return address::server::CCSCustomHudLayout_IsInputCaptureEnabled(pLayout, playerSlot);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 void Init()
 {
     // Entity List
@@ -558,6 +636,14 @@ void Init()
     bridge::CreateNative("Entity.IsWeapon", reinterpret_cast<void*>(IsWeapon));
     bridge::CreateNative("Entity.IsPlayerController", reinterpret_cast<void*>(EntityIsPlayerController));
     bridge::CreateNative("Entity.IsPlayerPawn", reinterpret_cast<void*>(EntityIsPlayerPawn));
+
+    bridge::CreateNative("CustomHud.SetHasClass", reinterpret_cast<void*>(CustomHudSetHasClass));
+    bridge::CreateNative("CustomHud.SetHasClassForPlayer", reinterpret_cast<void*>(CustomHudSetHasClassForPlayer));
+    bridge::CreateNative("CustomHud.SetDialogVariableString", reinterpret_cast<void*>(CustomHudSetDialogVariableString));
+    bridge::CreateNative("CustomHud.SetDialogVariableStringForPlayer", reinterpret_cast<void*>(CustomHudSetDialogVariableStringForPlayer));
+    bridge::CreateNative("CustomHud.ClearDialogVariableStringForPlayer", reinterpret_cast<void*>(CustomHudClearDialogVariableStringForPlayer));
+    bridge::CreateNative("CustomHud.SetInputCaptureEnabled", reinterpret_cast<void*>(CustomHudSetInputCaptureEnabled));
+    bridge::CreateNative("CustomHud.IsInputCaptureEnabled", reinterpret_cast<void*>(CustomHudIsInputCaptureEnabled));
 }
 
 EHookAction OnEntityFireOutput(CBaseEntity* pCaller, const CEntityIOOutput* pIO, CBaseEntity* pActivator, float flDelay)

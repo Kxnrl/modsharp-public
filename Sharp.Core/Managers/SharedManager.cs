@@ -88,4 +88,7 @@ internal class SharedManager : ISharedManager
 
     public IScriptManager GetScriptManager()
         => _serviceProvider.GetRequiredService<ICoreScriptManager>();
+
+    public ICustomHudManager GetCustomHudManager()
+        => _serviceProvider.GetRequiredService<ICoreCustomHudManager>();
 }
