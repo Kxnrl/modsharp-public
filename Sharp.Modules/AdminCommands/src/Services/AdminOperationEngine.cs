@@ -38,16 +38,9 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => 0;
 
-    // How often handler caches are re-validated against storage.
     private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
-
-    // Two refresh cycles of headroom, so a slow storage write can't get a just-applied punishment evicted.
-    private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
-
-    // Servers sharing one operations database are usually restarted together, which would line their refresh
-    // cycles up and hit the database in bursts. Jitter each wait so the fleet spreads out instead.
-    private static TimeSpan NextRefreshDelay
-        => CacheRefreshInterval + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 10_000));
+    private static readonly TimeSpan CacheGraceWindow     = CacheRefreshInterval * 2;
+    private static TimeSpan NextRefreshDelay => CacheRefreshInterval + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 10_000));
 
     private CancellationTokenSource? _refreshCts;
 
@@ -62,8 +55,7 @@ internal class AdminOperationEngine : IClientListener
     ///     Backup of core handlers displaced by external handler registrations.
     ///     Keyed by <see cref="AdminOperationType" />. Restored when the external module unregisters.
     /// </summary>
-    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)>
-        _coreHandlers = [];
+    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)> _coreHandlers;
 
     public AdminOperationEngine(ILogger<AdminOperationEngine> logger,
         InterfaceBridge                                       bridge,
@@ -75,6 +67,8 @@ internal class AdminOperationEngine : IClientListener
         _bridge        = bridge;
         _operations    = operations;
         _moduleContext = moduleContext;
+
+        _coreHandlers = [];
 
         _handlers = handlers.ToDictionary(h => h.Type,
                                           h => (h, AdminCommands.AssemblyName));
@@ -530,24 +524,22 @@ internal class AdminOperationEngine : IClientListener
             }
             catch (Exception ex)
             {
-                // Anything else (incl. a stray OCE from a handler) is logged and the loop continues — a single
-                // bad cycle must not permanently stop external-removal eviction.
                 _logger.LogError(ex, "Failed to refresh cached admin operations");
             }
         }
     }
 
-    // Re-validates cached identities against storage and evicts those with no active record.
     private async Task RefreshCachedOperationsAsync(CancellationToken token)
     {
-        // Snapshot handler caches on the game thread; handlers are not thread-safe.
         var snapshot = await _bridge.ModSharp
                                     .InvokeFrameActionAsync(() => _handlers.Values
-                                            .Select(x => (x.Handler,
-                                                          Identities: x.Handler.GetCachedIdentities(CacheGraceWindow)))
-                                            .Where(x => x.Identities.Count > 0)
-                                            .ToArray(),
-                                        token)
+                                                                           .Select(x => (x.Handler,
+                                                                                       Identities: x.Handler
+                                                                                           .GetCachedIdentities(
+                                                                                               CacheGraceWindow)))
+                                                                           .Where(x => x.Identities.Count > 0)
+                                                                           .ToArray(),
+                                                            token)
                                     .ConfigureAwait(false);
 
         var stale = new List<(IAdminOperationHandler Handler, SteamID SteamId)>();
@@ -556,7 +548,6 @@ internal class AdminOperationEngine : IClientListener
         {
             foreach (var steamId in identities)
             {
-                // null = storage failure: keep the cached entry, never evict on a database outage.
                 if (await _operations.TryHasActiveAsync(steamId, handler.Type, token).ConfigureAwait(false) == false)
                 {
                     stale.Add((handler, steamId));
@@ -570,47 +561,51 @@ internal class AdminOperationEngine : IClientListener
         }
 
         await _bridge.ModSharp.InvokeFrameActionAsync(() =>
-                     {
-                         // Re-validate on the game thread. Since the storage check, the handler may have been
-                         // replaced/unregistered, and the entry may have been re-applied (and re-persisted) by an
-                         // admin — a re-applied entry has a fresh AddedAt, so it is now grace-excluded. Only evict
-                         // what the currently-registered handler still reports as eligible.
-                         var stillCached = new Dictionary<AdminOperationType, IReadOnlySet<SteamID>>();
+                                                      {
+                                                          var stillCached
+                                                              = new Dictionary<AdminOperationType, IReadOnlySet<SteamID>>();
 
-                         foreach (var (handler, steamId) in stale)
-                         {
-                             if (!_handlers.TryGetValue(handler.Type, out var current)
-                                 || !ReferenceEquals(current.Handler, handler))
-                             {
-                                 continue;
-                             }
+                                                          foreach (var (handler, steamId) in stale)
+                                                          {
+                                                              if (!_handlers.TryGetValue(handler.Type, out var current)
+                                                                  || !ReferenceEquals(current.Handler, handler))
+                                                              {
+                                                                  continue;
+                                                              }
 
-                             if (!stillCached.TryGetValue(handler.Type, out var eligible))
-                             {
-                                 eligible                  = handler.GetCachedIdentities(CacheGraceWindow);
-                                 stillCached[handler.Type] = eligible;
-                             }
+                                                              if (!stillCached.TryGetValue(handler.Type, out var eligible))
+                                                              {
+                                                                  eligible = handler.GetCachedIdentities(CacheGraceWindow);
+                                                                  stillCached[handler.Type] = eligible;
+                                                              }
 
-                             if (!eligible.Contains(steamId))
-                             {
-                                 continue;
-                             }
+                                                              if (!eligible.Contains(steamId))
+                                                              {
+                                                                  continue;
+                                                              }
 
-                             try
-                             {
-                                 handler.OnRemoved(steamId, _bridge.ClientManager.GetGameClient(steamId));
+                                                              try
+                                                              {
+                                                                  handler.OnRemoved(
+                                                                      steamId,
+                                                                      _bridge.ClientManager.GetGameClient(steamId));
 
-                                 _logger.LogInformation("Evicted cached {Type} for {SteamId}: no active record in storage",
-                                                        handler.Type,
-                                                        steamId);
-                             }
-                             catch (Exception ex)
-                             {
-                                 _logger.LogError(ex, "Failed to evict cached {Type} for {SteamId}", handler.Type, steamId);
-                             }
-                         }
-                     },
-                     token)
+                                                                  _logger.LogInformation(
+                                                                      "Evicted cached {Type} for {SteamId}: no active record in storage",
+                                                                      handler.Type,
+                                                                      steamId);
+                                                              }
+                                                              catch (Exception ex)
+                                                              {
+                                                                  _logger.LogError(
+                                                                      ex,
+                                                                      "Failed to evict cached {Type} for {SteamId}",
+                                                                      handler.Type,
+                                                                      steamId);
+                                                              }
+                                                          }
+                                                      },
+                                                      token)
                      .ConfigureAwait(false);
     }
 
