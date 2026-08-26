@@ -25,6 +25,7 @@
 #include "logging.h"
 #include "netmessage.h"
 #include "sdkproxy.h"
+#include "steamworks.h"
 
 #include "CoreCLR/NativeSpan.h"
 #include "CoreCLR/RuntimeProtobufMessage.h"
@@ -294,6 +295,16 @@ static void DualAddonOverrideCheck(SteamId_t steamId, double time)
     ::DualMountAddonOverrideClientCheck(steamId, time);
 }
 
+static uint64_t DualAddonGetPublishFileId()
+{
+    return ::GetDualAddonId();
+}
+
+static bool DualAddonSetPublishFileId(uint64_t publishFileId)
+{
+    return ::SetDualAddonId(publishFileId);
+}
+
 static bool AddWorkshopMap(uint64_t sharedFileId, const char* mapName, const char* path)
 {
     return g_pServerWorkshopManager->AddWorkshopMap(sharedFileId, mapName, path);
@@ -353,6 +364,8 @@ void Init()
 
     bridge::CreateNative("Game.DualAddonPurgeCheck", reinterpret_cast<void*>(DualAddonPurgeCheck));
     bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));
+    bridge::CreateNative("Game.DualAddonGetPublishFileId", reinterpret_cast<void*>(DualAddonGetPublishFileId));
+    bridge::CreateNative("Game.DualAddonSetPublishFileId", reinterpret_cast<void*>(DualAddonSetPublishFileId));
 
     bridge::CreateNative("Game.AddWorkshopMap", reinterpret_cast<void*>(AddWorkshopMap));
     bridge::CreateNative("Game.WorkshopMapExists", reinterpret_cast<void*>(WorkshopMapExists));
