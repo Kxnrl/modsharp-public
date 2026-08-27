@@ -75,6 +75,18 @@ public:
 #define SCHEMA_POINTER_FIELD(type, varName) \
     SCHEMA_POINTER_FIELD_OFFSET(type, varName, 0)
 
+// CNetworkUtlVectorBase< type >
+#define SCHEMA_NETWORK_VECTOR_BASE_FIELD_OFFSET(type, field, extra_offset)                                      \
+    SCHEMA_SETUP_FIELD_DATA(field)                                                                              \
+    CNetworkVectorBaseImpl<type> field()                                                                        \
+    {                                                                                                           \
+        const SchemaFieldData& fieldData = _schema_data_##field();                                              \
+        return CNetworkVectorBaseImpl<type>(this, &fieldData, fieldData.key.offset + (extra_offset), IsStruct); \
+    }
+
+#define SCHEMA_NETWORK_VECTOR_BASE_FIELD(type, varName) \
+    SCHEMA_NETWORK_VECTOR_BASE_FIELD_OFFSET(type, varName, 0)
+
 #define DECLARE_SCHEMA_TYPE(className, isStruct)                  \
     static constexpr const char* ThisClass = #className;          \
     static constexpr bool        IsStruct  = isStruct;            \

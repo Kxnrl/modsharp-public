@@ -81,6 +81,7 @@ set(modsharp_SOURCES
 	"src/cstrike/type/CEntityInstance.cpp"
 	"src/cstrike/type/CEntityKeyValues.cpp"
 	"src/cstrike/type/CNetworkGameServer.cpp"
+	"src/cstrike/type/CNetworkUtlVectorBase.cpp"
 	"src/cstrike/type/CRecipientFilter.cpp"
 	"src/cstrike/type/CServerSideClient.cpp"
 	"src/cstrike/type/CUtlString.cpp"
