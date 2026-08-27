@@ -85,6 +85,7 @@ internal partial class SharpCore : ISharpCore
     private readonly List<GameSimulateHookInfo>                _gameSimulateHooks;
     private readonly ConcurrentQueue<AssemblyAction>           _actionQueue;
     private readonly ConcurrentDictionary<Guid, AssemblyTimer> _timers;
+    private readonly ICoreScriptManager                        _scriptManager;
     private readonly FrozenDictionary<string, string?>         _commandLines;
 
     private readonly string _gamePath;
@@ -99,10 +100,11 @@ internal partial class SharpCore : ISharpCore
     private GlobalVars?    _globalVars;
     private GameRules?     _gameRules;
 
-    public SharpCore(ILogger<SharpCore> logger, IShutdownMonitor shutdownMonitor, ICoreAssemblyManager assemblyManager)
+    public SharpCore(ILogger<SharpCore> logger, IShutdownMonitor shutdownMonitor, ICoreAssemblyManager assemblyManager, ICoreScriptManager scriptManager)
     {
         _logger          = logger;
         _assemblyManager = assemblyManager;
+        _scriptManager   = scriptManager;
 
         shutdownMonitor.RegisterShutdownEvent(Shutdown);
 
@@ -1657,6 +1659,7 @@ internal partial class SharpCore : ISharpCore
 
         _assemblyManager.MarkAssemblyUnloaded(assembly);
         ClearUnloadedTimers(assembly);
+        _scriptManager.OnModuleUnload(assembly);
     }
 
     public void OnModuleUnloaded(IModSharpModule module)

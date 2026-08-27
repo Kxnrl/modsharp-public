@@ -442,6 +442,34 @@
       "linux": "48 85 FF 0F 84 ? ? ? ? 55 48 89 E5 41 56 41 55 41 54 41 89 F4",
       "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 56 48 83 EC ? 0F B6 F2"
     },
+    "CCSScript::CreateEntityWrapper": {
+      "on_demand": true,
+      "library": "server",
+      "windows": "48 89 5C 24 10 55 56 57 48 83 EC 30 49 8B E8 48 C7 44 24 60 00 00 00 00 48 8B DA 48 8B F9"
+    },
+    "CCSScript::CreateEntityWrapperDispatcher": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 EC ? 48 8B 07 FF 90 ? ? ? ? 48 8D 3D"
+    },
+    "CCSScript::GetCurrentScript": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "8B 05 ? ? ? ? 31 D2 85 C0",
+      "windows": "8B 05 ? ? ? ? 85 C0 7E ? FF C8"
+    },
+    "CCSScript::ScriptStackPop": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "83 2D 39 9F C2 01 01",
+      "windows": "FF 0D 32 A0 C0 01"
+    },
+    "CCSScript::ScriptStackPush": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "55 48 89 E5 41 56 41 55 49 89 FD 8B 3D 7F A0 C2 01",
+      "windows": "48 89 6C 24 18 56 48 83 EC 20 48 63 05 37 DF C0 01"
+    },
     "CEntityIdentity::AcceptInput": {
       "library": "server",
       "linux": "55 48 89 E5 41 57 41 56 4C 8D BD ? ? ? ? 4D 89 CE",

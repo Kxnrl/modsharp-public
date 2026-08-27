@@ -27,6 +27,7 @@
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IGameSystem.h"
 #include "cstrike/schema.h"
+#include "cstrike/type/CCSScript.h"
 #include "cstrike/type/CEntityClass.h"
 
 #include <ranges>

@@ -50,6 +50,7 @@ set(modsharp_SOURCES
 	"src/bridge/natives/GameNatives.cpp"
 	"src/bridge/natives/NetNatives.cpp"
 	"src/bridge/natives/PlayerNatives.cpp"
+	"src/bridge/natives/ScriptNatives.cpp"
 	"src/bridge/natives/SoundNatives.cpp"
 	"src/command.cpp"
 	"src/cstrike/component/CGameSceneNode.cpp"
@@ -89,6 +90,7 @@ set(modsharp_SOURCES
 	"src/gamedata.cpp"
 	"src/gamefactory.cpp"
 	"src/hook/client.cpp"
+	"src/hook/cs_script.cpp"
 	"src/hook/cvar.cpp"
 	"src/hook/engine.cpp"
 	"src/hook/entity.cpp"
@@ -137,6 +139,7 @@ set(modsharp_SOURCES
 	"src/steamproxy.cpp"
 	"src/steamworks.cpp"
 	"src/strtool.cpp"
+	"src/v8proxy.cpp"
 	"vendors/safetyhook/safetyhook.cpp"
 	"vendors/zydis/Zydis.c"
 )
@@ -194,6 +197,7 @@ target_compile_definitions(modsharp PUBLIC
 	X64BITS
 	_CRT_NO_VA_START_VALIDATION
 	_ITERATOR_DEBUG_LEVEL=0
+	USING_V8_SHARED
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release") # release
@@ -260,6 +264,7 @@ target_include_directories(modsharp PUBLIC
 	"vendors/steamworks/include"
 	"vendors/protobuf/src"
 	"vendors/json/"
+	"vendors/v8/include"
 	src
 )
 
@@ -274,6 +279,7 @@ if(WIN32) # windows
 	target_link_libraries(modsharp PUBLIC
 		psapi
 		tier0
+		v8
 	)
 endif()
 
@@ -282,6 +288,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		libtier0.so
 		protobuf
 		libsteam_api.so
+		v8
 	)
 endif()
 

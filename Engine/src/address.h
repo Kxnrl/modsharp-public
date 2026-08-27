@@ -243,6 +243,13 @@ using CCSPlayerPawn_SetDefaultGloves_t             = void (*)(CCSPlayerPawn* paw
 using CBasePlayerPawn_SnapViewAngles_t             = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                      = void* (*)(Vector*, Vector*, Vector*);
 
+#ifdef ENABLE_SCRIPT_ASSERT
+// cs_script: InitV8ClassTemplates(CCSBaseScript* ctx)
+// Top-level entry that registers all V8 class templates (Entity, CSPlayerPawn, CSWeaponBase, etc.)
+// Hook this to inject custom methods after all classes are registered.
+using CCSScript_InitV8ClassTemplates_t = void (*)(void* ctx);
+#endif
+
 inline NetworkStateChanged_t                           NetworkStateChanged;
 inline CAttributeList_SetOrAddAttributeValueByName_t   CAttributeList_SetOrAddAttributeValueByName;
 inline CEntityIdentity_SetEntityName_t                 CEntityIdentity_SetEntityName;
@@ -314,6 +321,9 @@ inline FindWeaponVDataByName_t                         FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                    GetLegacyGameEventListener;
 inline CBasePlayerPawn_SnapViewAngles_t                CBasePlayerPawn_SnapViewAngles;
 inline CreateTriggerInternal_t                         CreateTriggerInternal;
+#ifdef ENABLE_SCRIPT_ASSERT
+inline CCSScript_InitV8ClassTemplates_t                CCSScript_InitV8ClassTemplates;
+#endif
 inline CGameEntitySystem_GetSpawnOriginOffset_t        CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                CCSPlayerPawn_SetDefaultGloves;
 } // namespace server

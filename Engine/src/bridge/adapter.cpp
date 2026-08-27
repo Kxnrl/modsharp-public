@@ -28,6 +28,7 @@
 #include "bridge/natives/NetNatives.h"
 #include "bridge/natives/PlayerNatives.h"
 #include "bridge/natives/SchemaNatives.h"
+#include "bridge/natives/ScriptNatives.h"
 #include "bridge/natives/SoundNatives.h"
 #include "bridge/natives/TransmitManager.h"
 
@@ -95,6 +96,7 @@ void InitNatives()
     natives::transmit::Init();
     natives::econitemschema::Init();
     natives::sound::Init();
+    natives::script::Init();
 }
 
 } // namespace bridge
