@@ -85,6 +85,7 @@
     <ClCompile Include="src\hook\extern\GiveNamedItem.cpp" />
     <ClCompile Include="src\hook\extern\HandleCommandJoinTeam.cpp" />
     <ClCompile Include="src\hook\extern\MovementManager.cpp" />
+    <ClCompile Include="src\hook\extern\SendProxyManager.cpp" />
     <ClCompile Include="src\hook\extern\TransmitManager.cpp" />
     <ClCompile Include="src\hook\extern\ValveConsoleLog.cpp" />
     <ClCompile Include="src\hook\gamerule.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\bridge\natives\EventNatives.h" />
     <ClInclude Include="src\bridge\natives\GameNatives.h" />
     <ClInclude Include="src\bridge\natives\PlayerNatives.h" />
+    <ClInclude Include="src\bridge\natives\SendProxyManager.h" />
     <ClInclude Include="src\bridge\natives\TransmitManager.h" />
     <ClInclude Include="src\cstrike\type\CEconItemView.h" />
     <ClInclude Include="src\cstrike\type\CGlobalVars.h" />

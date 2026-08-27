@@ -40,6 +40,8 @@ public interface ISharedSystem
 
     ITransmitManager GetTransmitManager();
 
+    ISendProxyManager GetSendProxyManager();
+
     IFileManager GetFileManager();
 
     ISchemaManager GetSchemaManager();

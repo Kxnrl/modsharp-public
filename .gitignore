@@ -425,3 +425,5 @@ Solution.sln.DotSettings.user
 
 # Script
 .script
+
+Engine/.build-native/
