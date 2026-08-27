@@ -581,6 +581,7 @@ public static class Bootstrap
         services.AddSingleton<IShutdownMonitor>(ShutdownMonitor);
         services.AddSingleton<ExceptionHandler>();
 
+        services.AddSingleton<ICoreAssemblyManager, AssemblyManager>();
         services.AddSingleton<ISharpCore, SharpCore>();
         services.AddSingleton<ICoreLibraryModuleManager, LibraryModuleManager>();
         services.AddSingleton<ICoreClientManager, ClientManager>();
