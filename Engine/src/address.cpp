@@ -161,7 +161,6 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::ClearDialogVariableStringForPlayer", address::server::CCSCustomHudLayout_ClearDialogVariableStringForPlayer);
     RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetInputCaptureEnabled", address::server::CCSCustomHudLayout_SetInputCaptureEnabled);
     RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::IsInputCaptureEnabled", address::server::CCSCustomHudLayout_IsInputCaptureEnabled);
-    RESOLVE_GAMEDATA_ADDRESS("DispatchCustomHudClick", address::server::DispatchCustomHudClick);
 
     // PlayerController
     RESOLVE_GAMEDATA_ADDRESS("CBasePlayerController::SwitchSteam", address::server::CBasePlayerController_SwitchSteam);

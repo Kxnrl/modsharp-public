@@ -543,7 +543,11 @@ BeginStaticHookScope(ProcessClientSvcUserMessage)
     {
         ProcessClientSvcUserMessage(nPlayerSlot, nMsgId, nMsgSize, pBuf);
 
-        if (nMsgId != CS_UM_CustomHudClicked)
+        if (nMsgId != CS_UM_CustomHudClicked
+            || nPlayerSlot < 0
+            || nPlayerSlot >= CS_MAX_PLAYERS
+            || pBuf == nullptr
+            || nMsgSize > static_cast<uint32_t>(std::numeric_limits<int32_t>::max()))
         {
             return;
         }
@@ -552,13 +556,19 @@ BeginStaticHookScope(ProcessClientSvcUserMessage)
         if (!message.ParseFromArray(pBuf, static_cast<int32_t>(nMsgSize)))
             return;
 
-        const auto handle = CBaseHandle::FromPackedValue(message.custom_hud_layout());
+        const auto packedHandle = message.custom_hud_layout();
+        const auto handle       = CBaseHandle::FromPackedValue(packedHandle);
         if (!handle.IsValid())
             return;
 
+        static auto vtable_address = modules::server->GetVirtualTableByName("CCSCustomHudLayout");
+
         auto* pPlayer = static_cast<CCSPlayerController*>(CCSPlayerController::FindBySlot(static_cast<PlayerSlot_t>(nPlayerSlot)));
         auto* pLayout = g_pGameEntitySystem->FindEntityByIndex<CBaseEntity*>(handle.GetEntryIndex());
-        if (!pPlayer || !pLayout)
+        if (!pPlayer
+            || !pLayout
+            || pLayout->GetActualEHandle().GetPackedValue() != packedHandle
+            || *reinterpret_cast<const uintptr_t*>(pLayout) != vtable_address)
         {
             return;
         }
