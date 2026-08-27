@@ -21,6 +21,7 @@ using System;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
@@ -164,12 +165,20 @@ internal sealed class ModSharpModule
             {
                 _sharpCore.OnModuleUnload(_instance);
                 onUnload(Name);
-                _instance.Shutdown();
+
+                try
+                {
+                    _instance.Shutdown();
+                }
+                catch (Exception e)
+                {
+                    Printer.Error($"An error occurred while shutting down module {Name}", e);
+                }
+
+                _sharpCore.OnModuleUnloaded(_instance);
             }
 
             State = ModuleLoadState.Unloaded;
-
-            _loader?.Dispose();
         }
         catch
         {
@@ -179,6 +188,15 @@ internal sealed class ModSharpModule
         }
         finally
         {
+            try
+            {
+                _loader?.Dispose();
+            }
+            catch (Exception e)
+            {
+                Printer.Error($"An error occurred while disposing loader of module {Name}", e);
+            }
+
             _processLock = null;
             _instance    = null;
             _loader      = null;
@@ -189,7 +207,9 @@ internal sealed class ModSharpModule
     {
         State = ModuleLoadState.Loading;
 
-        PluginLoader? loader = null;
+        PluginLoader?    loader   = null;
+        Assembly?        assembly = null;
+        IModSharpModule? instance = null;
 
         try
         {
@@ -216,7 +236,7 @@ internal sealed class ModSharpModule
                                                              config.EnableHotReload   = false;
                                                          });
 
-            var assembly = loader.LoadDefaultAssembly();
+            assembly = loader.LoadDefaultAssembly();
 
             var module = assembly.GetTypes()
                                  .FirstOrDefault(t => typeof(IModSharpModule).IsAssignableFrom(t) && !t.IsAbstract)
@@ -230,10 +250,12 @@ internal sealed class ModSharpModule
             }
 
             if (Activator.CreateInstance(module, shared, _dllPath, _rootPath, version, configuration, hotReload)
-                is not IModSharpModule instance)
+                is not IModSharpModule created)
             {
                 throw new TypeLoadException("Failed to create instance.");
             }
+
+            instance = created;
 
             if (!instance.Init())
             {
@@ -259,6 +281,23 @@ internal sealed class ModSharpModule
         catch
         {
             State = ModuleLoadState.Failure;
+
+            if (instance is not null)
+            {
+                try
+                {
+                    instance.Shutdown();
+                }
+                catch (Exception e)
+                {
+                    Printer.Error($"An error occurred while shutting down failed module {Name}", e);
+                }
+            }
+
+            if (assembly is not null)
+            {
+                _sharpCore.OnModuleLoadFailure(assembly);
+            }
 
             try
             {

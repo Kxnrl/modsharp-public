@@ -33,6 +33,7 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
+using Sharp.Shared.Utilities;
 using Forward = Sharp.Core.Bridges.Forwards.Client;
 using Native = Sharp.Core.Bridges.Natives.Client;
 
@@ -50,6 +51,7 @@ internal class ClientManager : ICoreClientManager
 
     private readonly ILogger<ClientManager> _logger;
     private readonly IConfiguration         _configuration;
+    private readonly ICoreAssemblyManager   _assemblyManager;
     private readonly ConfigurationWatcher   _configurationWatcher;
 
     private readonly List<IClientListener>                                     _listeners;
@@ -67,10 +69,14 @@ internal class ClientManager : ICoreClientManager
 
     private NetworkServer? _sv;
 
-    public ClientManager(ILogger<ClientManager> logger, IConfiguration configuration, IShutdownMonitor shutdown)
+    public ClientManager(ILogger<ClientManager> logger,
+        IConfiguration                          configuration,
+        IShutdownMonitor                        shutdown,
+        ICoreAssemblyManager                    assemblyManager)
     {
         _logger               = logger;
         _configuration        = configuration;
+        _assemblyManager      = assemblyManager;
         _configurationWatcher = new ConfigurationWatcher(configuration, LoadCommandPrefix, shutdown.Token);
 
         _listeners          = [];
@@ -82,6 +88,8 @@ internal class ClientManager : ICoreClientManager
         _admins             = [];
         _publicTriggers     = [];
         _silentTriggers     = [];
+
+        _assemblyManager.RegisterUnloadCleanup(ClearLeakedRegistrations);
 
         Forward.OnClientConnected                += OnClientConnected;
         Forward.OnClientActive                   += OnClientPutInServer;
@@ -457,8 +465,57 @@ internal class ClientManager : ICoreClientManager
         _sv = NetworkServer.Create(Bridges.Natives.Core.GetIServer());
     }
 
+    private void ClearLeakedRegistrations()
+    {
+        _assemblyManager.ClearLeakedListeners(_listeners, "ClientListener");
+
+        ClearLeakedCommands(_commandHooks, "CommandCallback");
+        ClearLeakedCommands(_commandListeners, "CommandListener");
+
+        foreach (var cookie in _queryConVarInfos.Keys.ToArray())
+        {
+            var info = _queryConVarInfos[cookie];
+
+            if (!_assemblyManager.IsDelegateUnloaded(info.Callback))
+            {
+                continue;
+            }
+
+            _queryConVarInfos.Remove(cookie);
+
+            _logger.LogWarning("{kind} leaked by unloaded module, removed: {detail} ({name})",
+                               "QueryConVarCallback",
+                               info.Callback.GetMethodSignature(),
+                               info.Name);
+        }
+    }
+
+    private void ClearLeakedCommands(Dictionary<string, IClientManager.DelegateClientCommand?> commands, string kind)
+    {
+        foreach (var command in commands.Keys.ToArray())
+        {
+            var cleaned = _assemblyManager.ClearLeakedMulticast(commands[command], kind, command);
+
+            if (cleaned is null)
+            {
+                commands.Remove(command);
+            }
+            else
+            {
+                commands[command] = cleaned;
+            }
+        }
+    }
+
     public void InstallClientListener(IClientListener listener)
     {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (listener.ListenerVersion != IClientListener.ApiVersion)
         {
             throw new InvalidOperationException("Your listener api version mismatch");
@@ -489,6 +546,13 @@ internal class ClientManager : ICoreClientManager
 
     public void InstallCommandCallback(string rawCommand, IClientManager.DelegateClientCommand callback)
     {
+        if (_assemblyManager.IsDelegateUnloaded(callback))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         var command = rawCommand.ToLower();
 
         if (_commandHooks.ContainsKey(command))
@@ -521,6 +585,13 @@ internal class ClientManager : ICoreClientManager
 
     public void InstallCommandListener(string rawCommand, IClientManager.DelegateClientCommand callback)
     {
+        if (_assemblyManager.IsDelegateUnloaded(callback))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         var command = rawCommand.ToLower();
 
         if (_commandListeners.ContainsKey(command))
@@ -608,6 +679,19 @@ internal class ClientManager : ICoreClientManager
         if (client.IsFakeClient)
         {
             throw new InvalidOperationException("You can not handle this with BOT");
+        }
+
+        if (!callback.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, register each callback separately",
+                                        nameof(callback));
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(callback))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return -1;
         }
 
         _sQueryCookie++;

@@ -47,7 +47,12 @@ public interface ISharpModuleManager
 
     /// <summary>
     ///     Get dynamic native function
-    ///     <remarks>After retrieving, you need to use 'is' operator for type conversion to ensure type safety</remarks>
+    ///     <remarks>
+    ///         After retrieving, you need to use 'is' operator for type conversion to ensure type safety <br />
+    ///         The returned delegate belongs to the registering module's ALC: do not cache it long-term;
+    ///         you must drop any cached delegate when you receive OnLibraryDisconnect,
+    ///         otherwise you will pin the unloaded module's ALC and may invoke unloaded code.
+    ///     </remarks>
     /// </summary>
     /// <code>
     /// var func = moduleManager.GetDynamicNative("MyFunction");
