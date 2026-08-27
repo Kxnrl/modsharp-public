@@ -117,9 +117,13 @@ public interface IModSharp
     /// <summary>
     ///     Invoke action at the end of current frame and wait <br />
     ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
     ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
     ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
-    ///         the cancellation may complete after the unload, so do not access plugin resources in the continuation, and always be ready to handle OperationCanceledException.
+    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
+    ///         and always be ready to handle OperationCanceledException.
     ///     </remarks>
     /// </summary>
     Task<T> InvokeFrameActionAsync<T>(Func<T> action, CancellationToken cancellationToken = default);
@@ -127,9 +131,13 @@ public interface IModSharp
     /// <summary>
     ///     Invoke action at the end of current frame and wait <br />
     ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
     ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
     ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
-    ///         the cancellation may complete after the unload, so do not access plugin resources in the continuation, and always be ready to handle OperationCanceledException.
+    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
+    ///         and always be ready to handle OperationCanceledException.
     ///     </remarks>
     /// </summary>
     Task InvokeFrameActionAsync(Action action, CancellationToken cancellationToken = default);

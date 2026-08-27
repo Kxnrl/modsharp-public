@@ -787,13 +787,13 @@ internal partial class SharpCore : ISharpCore
                                         nameof(action));
         }
 
-        var source = new TaskCompletionSource<T>();
+        var source = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         EnqueueAction(() =>
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
@@ -824,13 +824,13 @@ internal partial class SharpCore : ISharpCore
                                         nameof(action));
         }
 
-        var source = new TaskCompletionSource();
+        var source = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         EnqueueAction(() =>
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
