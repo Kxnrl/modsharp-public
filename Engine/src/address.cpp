@@ -120,6 +120,7 @@ bool address::Initialize()
     ResolveCCSPlayerPawn_IsPlayer();
     ResolveCCSPlayerPawn_SetDefaultGloves();
     ResolveCEntityClassEntityListOffset();
+    ResolveProcessClientSvcUserMessage();
 
     g_pHookManager->Hook_GameInit(HookType_Post, [] {
         ResolveCreateTriggerInternal();

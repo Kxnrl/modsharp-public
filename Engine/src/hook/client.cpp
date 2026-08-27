@@ -28,7 +28,9 @@
 
 #include "CoreCLR/RuntimeProtobufMessage.h"
 
+#include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/entity/PlayerController.h"
+#include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IMemAlloc.h"
 #include "cstrike/interface/INetwork.h"
@@ -37,13 +39,14 @@
 #include "cstrike/type/CBufferString.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
-#include "cstrike/type/CUtlString.h"
 #include "cstrike/type/VProf.h"
 
+#include <proto/cstrike15_usermessages.pb.h>
 #include <proto/netmessages.pb.h>
 #include <safetyhook.hpp>
 
 #include <algorithm>
+#include <limits>
 #include <random>
 #include <string>
 
@@ -532,18 +535,35 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
     }
 }
 
-BeginStaticHookScope(DispatchCustomHudClick)
+BeginStaticHookScope(ProcessClientSvcUserMessage)
 {
-    DeclareStaticDetourHook(DispatchCustomHudClick,
+    DeclareStaticDetourHook(ProcessClientSvcUserMessage,
                             void,
-                            (void* pScriptContext, CCSPlayerController* pPlayer, CBaseEntity* pLayout, CUtlString* pButtonId))
+                            (int32_t nPlayerSlot, int32_t nMsgId, uint32_t nMsgSize, const void* pBuf))
     {
-        DispatchCustomHudClick(pScriptContext, pPlayer, pLayout, pButtonId);
+        ProcessClientSvcUserMessage(nPlayerSlot, nMsgId, nMsgSize, pBuf);
 
-        if (!pPlayer || !pLayout || !pButtonId)
+        if (nMsgId != CS_UM_CustomHudClicked)
+        {
+            return;
+        }
+
+        CCSUsrMsg_CustomHudClicked message;
+        if (!message.ParseFromArray(pBuf, static_cast<int32_t>(nMsgSize)))
             return;
 
-        forwards::OnCustomHudClicked->Invoke(pPlayer, pLayout, pButtonId->Get());
+        const auto handle = CBaseHandle::FromPackedValue(message.custom_hud_layout());
+        if (!handle.IsValid())
+            return;
+
+        auto* pPlayer = static_cast<CCSPlayerController*>(CCSPlayerController::FindBySlot(static_cast<PlayerSlot_t>(nPlayerSlot)));
+        auto* pLayout = g_pGameEntitySystem->FindEntityByIndex<CBaseEntity*>(handle.GetEntryIndex());
+        if (!pPlayer || !pLayout)
+        {
+            return;
+        }
+
+        forwards::OnCustomHudClicked->Invoke(pPlayer, pLayout, message.button_id().c_str());
     }
 }
 
@@ -571,7 +591,7 @@ void InstallClientHooks()
     SHOOK(HostSay);
     SHOOK(ScriptPrintMessageChatAll);
 
-    SHOOK(DispatchCustomHudClick, {.address = reinterpret_cast<void*>(address::server::DispatchCustomHudClick)});
+    SHOOK(ProcessClientSvcUserMessage, {.address = reinterpret_cast<void*>(address::server::ProcessClientSvcUserMessage)});
 
     g_pHookManager->Hook_ClientFullyConnect(HookType_Post, [](PlayerSlot_t slot) {
         const auto pClient = sv->GetClient(slot);
