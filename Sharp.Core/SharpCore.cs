@@ -756,7 +756,7 @@ internal partial class SharpCore : ISharpCore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var source   = new TaskCompletionSource<T>();
+        var source   = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         var assembly = action.Method.Module.Assembly;
 
         EnqueueAction(assembly,
@@ -764,7 +764,7 @@ internal partial class SharpCore : ISharpCore
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
@@ -787,7 +787,7 @@ internal partial class SharpCore : ISharpCore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var source   = new TaskCompletionSource();
+        var source   = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var assembly = action.Method.Module.Assembly;
 
         EnqueueAction(assembly,
@@ -795,7 +795,7 @@ internal partial class SharpCore : ISharpCore
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
