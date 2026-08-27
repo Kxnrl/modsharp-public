@@ -87,6 +87,19 @@ public:
 #define SCHEMA_NETWORK_VECTOR_BASE_FIELD(type, varName) \
     SCHEMA_NETWORK_VECTOR_BASE_FIELD_OFFSET(type, varName, 0)
 
+// CUtlVectorEmbeddedNetworkVar< type > (read-only view of embedded schema-object elements).
+#define SCHEMA_EMBEDDED_NETWORK_VAR_FIELD_OFFSET(type, field, extra_offset)                    \
+    SCHEMA_SETUP_FIELD_DATA(field)                                                             \
+    CUtlVectorEmbeddedNetworkVarImpl<type> field()                                             \
+    {                                                                                          \
+        const SchemaFieldData& fieldData = _schema_data_##field();                             \
+        return CUtlVectorEmbeddedNetworkVarImpl<type>(                                         \
+            reinterpret_cast<uintptr_t>(this) + fieldData.key.offset + (extra_offset), #type); \
+    }
+
+#define SCHEMA_EMBEDDED_NETWORK_VAR_FIELD(type, varName) \
+    SCHEMA_EMBEDDED_NETWORK_VAR_FIELD_OFFSET(type, varName, 0)
+
 #define DECLARE_SCHEMA_TYPE(className, isStruct)                  \
     static constexpr const char* ThisClass = #className;          \
     static constexpr bool        IsStruct  = isStruct;            \
@@ -109,6 +122,7 @@ struct SchemaKey
 namespace schemas
 {
 int32_t   FindChainOffset(const char* className);
+int32_t   GetClassSize(const char* className);
 SchemaKey GetOffset(const char* className, const char* memberName);
 SchemaKey GetOffset(uint32_t hashKey);
 void*     FindDataMapInputFunc(const char* className, const char* fieldName);

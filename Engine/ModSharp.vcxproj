@@ -37,6 +37,7 @@
     <ClCompile Include="src\cstrike\type\CEntityKeyValues.cpp" />
     <ClCompile Include="src\cstrike\type\CRecipientFilter.cpp" />
     <ClCompile Include="src\cstrike\type\CUtlString.cpp" />
+    <ClCompile Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues3.cpp" />
     <ClCompile Include="src\hook\extern\DualMountAddon.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="src\cstrike\type\CUtlString.h" />
     <ClInclude Include="src\cstrike\type\CUtlSymbolLarge.h" />
     <ClInclude Include="src\cstrike\type\CUtlVector.h" />
+    <ClInclude Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.h" />
     <ClInclude Include="src\cstrike\type\KeyValues.h" />
     <ClInclude Include="src\cstrike\type\KeyValues3.h" />
     <ClInclude Include="src\cstrike\type\matrix3x4.h" />

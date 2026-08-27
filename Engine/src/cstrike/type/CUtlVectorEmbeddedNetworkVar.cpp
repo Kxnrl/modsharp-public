@@ -17,23 +17,11 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "cstrike/type/CNetworkUtlVectorBase.h"
+#include "cstrike/type/CUtlVectorEmbeddedNetworkVar.h"
 
 #include "cstrike/schema.h"
 
-void NetworkVectorBaseStateChanged(void* pInstance, const SchemaFieldData* pData, int32_t nOffset, bool isStruct, uint32_t nArrayIndex)
+int32_t UtlVectorEmbeddedNetworkVarSize(const char* classname)
 {
-    if (!pData->key.networked)
-    {
-        return;
-    }
-
-    if (pData->offset != 0)
-    {
-        NetworkStateChanged(reinterpret_cast<uintptr_t>(pInstance) + pData->offset, static_cast<uint32_t>(nOffset), nArrayIndex);
-    }
-    else if (!isStruct)
-    {
-        SetStateChanged(static_cast<CBaseEntity*>(pInstance), static_cast<uint32_t>(nOffset), nArrayIndex);
-    }
+    return schemas::GetClassSize(classname);
 }

@@ -24,18 +24,15 @@
 
 #include <cstdint>
 
-// Same layout as CUtlVector<T> (24 bytes); networked writes go through CNetworkVectorBaseImpl.
+struct SchemaFieldData;
+
+void NetworkVectorBaseStateChanged(void* pInstance, const SchemaFieldData* pData, int32_t nOffset, bool isStruct, uint32_t nArrayIndex);
+
 template <class T>
 class CNetworkUtlVectorBase : public CUtlVector<T>
 {
 };
 
-struct SchemaFieldData;
-
-void NetworkVectorBaseStateChanged(void* pInstance, const SchemaFieldData* pData, int32_t nOffset, bool isStruct, uint32_t nArrayIndex);
-
-// Accessor bound to (entity, field offset): reads delegate to the vector, writes raise
-// CBaseEntity::StateChanged with the touched element index.
 template <typename T>
 class CNetworkVectorBaseImpl
 {
