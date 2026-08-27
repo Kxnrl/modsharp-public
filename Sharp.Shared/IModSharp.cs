@@ -115,12 +115,22 @@ public interface IModSharp
     void InvokeFrameAction(Action action);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait
+    ///     Invoke action at the end of current frame and wait <br />
+    ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock.
+    ///     </remarks>
     /// </summary>
     Task<T> InvokeFrameActionAsync<T>(Func<T> action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait
+    ///     Invoke action at the end of current frame and wait <br />
+    ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock.
+    ///     </remarks>
     /// </summary>
     Task InvokeFrameActionAsync(Action action, CancellationToken cancellationToken = default);
 
