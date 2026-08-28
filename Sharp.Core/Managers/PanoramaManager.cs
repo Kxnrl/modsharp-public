@@ -20,11 +20,11 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.Bridges.Forwards;
 using Sharp.Core.GameEntities;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
-using Forward = Sharp.Core.Bridges.Forwards.CustomHud;
 
 namespace Sharp.Core.Managers;
 
@@ -42,7 +42,7 @@ internal class PanoramaManager : ICorePanoramaManager
         _logger         = logger;
         _clickListeners = [];
 
-        Forward.OnCustomHudClicked += OnCustomHudClicked;
+        Panorama.OnCustomHudLayoutClicked += OnCustomHudLayoutClicked;
     }
 
     public ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null)
@@ -94,7 +94,7 @@ internal class PanoramaManager : ICorePanoramaManager
         }
     }
 
-    private void OnCustomHudClicked(nint playerPointer, nint layoutPointer, string buttonId)
+    private void OnCustomHudLayoutClicked(nint playerPointer, nint layoutPointer, string buttonId)
     {
         var player = PlayerController.Create(playerPointer);
         var layout = CustomHudLayout.Create(layoutPointer);

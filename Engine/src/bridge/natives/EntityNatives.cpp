@@ -477,22 +477,22 @@ static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-static void CustomHudSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, int32_t hasClass)
+static void PanoramaCustomHudLayoutSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, int32_t hasClass)
 {
     pLayout->SetHasClass(panelId, className, hasClass);
 }
 
-static void CustomHudSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
+static void PanoramaCustomHudLayoutSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
 {
     pLayout->SetHasClassForPlayer(playerSlot, panelId, className, hasClass);
 }
 
-static void CustomHudSetDialogVariableString(CCSCustomHudLayout* pLayout, const char* panelId, const char* variableName, const char* value)
+static void PanoramaCustomHudLayoutSetDialogVariableString(CCSCustomHudLayout* pLayout, const char* panelId, const char* variableName, const char* value)
 {
     pLayout->SetDialogVariableString(panelId, variableName, value);
 }
 
-static void CustomHudSetDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value)
+static void PanoramaCustomHudLayoutSetDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value)
 {
     if (!pLayout)
         return;
@@ -500,17 +500,17 @@ static void CustomHudSetDialogVariableStringForPlayer(CCSCustomHudLayout* pLayou
     pLayout->SetDialogVariableStringForPlayer(playerSlot, panelId, variableName, value);
 }
 
-static void CustomHudClearDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName)
+static void PanoramaCustomHudLayoutClearDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName)
 {
     pLayout->ClearDialogVariableStringForPlayer(playerSlot, panelId, variableName);
 }
 
-static void CustomHudSetInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, bool enabled)
+static void PanoramaCustomHudLayoutSetInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, bool enabled)
 {
     pLayout->SetInputCaptureEnabled(playerSlot, enabled);
 }
 
-static bool CustomHudIsInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot)
+static bool PanoramaCustomHudLayoutIsInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot)
 {
     return pLayout->IsInputCaptureEnabled(playerSlot);
 }
@@ -601,13 +601,13 @@ void Init()
     bridge::CreateNative("Entity.IsPlayerController", reinterpret_cast<void*>(EntityIsPlayerController));
     bridge::CreateNative("Entity.IsPlayerPawn", reinterpret_cast<void*>(EntityIsPlayerPawn));
 
-    bridge::CreateNative("CustomHud.SetHasClass", reinterpret_cast<void*>(CustomHudSetHasClass));
-    bridge::CreateNative("CustomHud.SetHasClassForPlayer", reinterpret_cast<void*>(CustomHudSetHasClassForPlayer));
-    bridge::CreateNative("CustomHud.SetDialogVariableString", reinterpret_cast<void*>(CustomHudSetDialogVariableString));
-    bridge::CreateNative("CustomHud.SetDialogVariableStringForPlayer", reinterpret_cast<void*>(CustomHudSetDialogVariableStringForPlayer));
-    bridge::CreateNative("CustomHud.ClearDialogVariableStringForPlayer", reinterpret_cast<void*>(CustomHudClearDialogVariableStringForPlayer));
-    bridge::CreateNative("CustomHud.SetInputCaptureEnabled", reinterpret_cast<void*>(CustomHudSetInputCaptureEnabled));
-    bridge::CreateNative("CustomHud.IsInputCaptureEnabled", reinterpret_cast<void*>(CustomHudIsInputCaptureEnabled));
+    bridge::CreateNative("Panorama.SetHasClass", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetHasClass));
+    bridge::CreateNative("Panorama.SetHasClassForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetHasClassForPlayer));
+    bridge::CreateNative("Panorama.SetDialogVariableString", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetDialogVariableString));
+    bridge::CreateNative("Panorama.SetDialogVariableStringForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetDialogVariableStringForPlayer));
+    bridge::CreateNative("Panorama.ClearDialogVariableStringForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutClearDialogVariableStringForPlayer));
+    bridge::CreateNative("Panorama.SetInputCaptureEnabled", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetInputCaptureEnabled));
+    bridge::CreateNative("Panorama.IsInputCaptureEnabled", reinterpret_cast<void*>(PanoramaCustomHudLayoutIsInputCaptureEnabled));
 }
 
 EHookAction OnEntityFireOutput(CBaseEntity* pCaller, const CEntityIOOutput* pIO, CBaseEntity* pActivator, float flDelay)

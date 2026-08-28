@@ -141,7 +141,7 @@ DECLARE_FORWARD(Entity, OnEntityFollowed, void, FORWARD_ARG(CBaseEntity*, CBaseE
 DECLARE_FORWARD(Entity, OnEntityFireOutput, EHookAction, FORWARD_ARG(CBaseEntity*, const char*, CBaseEntity*, float));
 DECLARE_FORWARD(Entity, OnEntityAcceptInput, EHookAction, FORWARD_ARG(CBaseEntity*, const char*, Variant_t*, CBaseEntity*, CBaseEntity*));
 
-DECLARE_FORWARD(CustomHud, OnCustomHudClicked, void, FORWARD_ARG(CCSPlayerController*, CBaseEntity*, const char*));
+DECLARE_FORWARD(Panorama, OnCustomHudLayoutClicked, void, FORWARD_ARG(CCSPlayerController*, CBaseEntity*, const char*));
 
 // Event
 DECLARE_FORWARD(Event, HookFireEvent, bool, FORWARD_ARG(IGameEvent*, bool*));

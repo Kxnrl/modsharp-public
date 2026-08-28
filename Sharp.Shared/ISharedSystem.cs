@@ -58,5 +58,5 @@ public interface ISharedSystem
 
     IScriptManager GetScriptManager();
 
-    IPanoramaManager GetCustomHudManager();
+    IPanoramaManager GetPanoramaManager();
 }

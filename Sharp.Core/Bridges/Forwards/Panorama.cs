@@ -22,20 +22,20 @@ using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.Bridges.Forwards;
 
-internal static class CustomHud
+internal static class Panorama
 {
-    public delegate void DelegateOnCustomHudClicked(nint player, nint layout, string buttonId);
+    public delegate void DelegateOnCustomHudLayoutClicked(nint player, nint layout, string buttonId);
 
-    public static event DelegateOnCustomHudClicked? OnCustomHudClicked;
+    public static event DelegateOnCustomHudLayoutClicked? OnCustomHudLayoutClicked;
 
     [UnmanagedCallersOnly]
-    public static unsafe void OnCustomHudClickedExport(nint player, nint layout, sbyte* pButtonId)
+    public static unsafe void OnCustomHudLayoutClickedExport(nint player, nint layout, sbyte* pButtonId)
     {
-        if (OnCustomHudClicked is null || player == nint.Zero || layout == nint.Zero || pButtonId == null)
+        if (OnCustomHudLayoutClicked is null || player == nint.Zero || layout == nint.Zero || pButtonId == null)
         {
             return;
         }
 
-        OnCustomHudClicked.Invoke(player, layout, Utils.ReadString(pButtonId));
+        OnCustomHudLayoutClicked.Invoke(player, layout, Utils.ReadString(pButtonId));
     }
 }

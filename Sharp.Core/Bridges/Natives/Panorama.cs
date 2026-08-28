@@ -22,7 +22,7 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Core.Bridges.Natives;
 
-internal static partial class CustomHud
+internal static partial class Panorama
 {
     public static partial void SetHasClass(nint layout, string panelId, string className, HudPanelClassStatus hasClass);
 

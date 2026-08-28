@@ -17,44 +17,44 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Core.Bridges.Natives;
 using Sharp.Generator;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Types.Tier;
 using Sharp.Shared.Units;
-using Native = Sharp.Core.Bridges.Natives.CustomHud;
 
 namespace Sharp.Core.GameEntities;
 
 internal partial class CustomHudLayout : BaseEntity, ICustomHudLayout
 {
     public void SetClassOverride(string panelId, string className, HudPanelClassStatus classStatus)
-        => Native.SetHasClass(_this, panelId, className, classStatus);
+        => Panorama.SetHasClass(_this, panelId, className, classStatus);
 
     public void SetClassOverrideForPlayer(PlayerSlot playerSlot,
         string                                       panelId,
         string                                       className,
         HudPanelClassStatus                          classStatus)
-        => Native.SetHasClassForPlayer(_this, playerSlot, panelId, className, classStatus);
+        => Panorama.SetHasClassForPlayer(_this, playerSlot, panelId, className, classStatus);
 
     public void SetDialogVariableString(string panelId, string variableName, string value)
-        => Native.SetDialogVariableString(_this, panelId, variableName, value);
+        => Panorama.SetDialogVariableString(_this, panelId, variableName, value);
 
     public void SetDialogVariableStringForPlayer(PlayerSlot playerSlot,
         string                                              panelId,
         string                                              variableName,
         string                                              value)
-        => Native.SetDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName, value);
+        => Panorama.SetDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName, value);
 
     public void ClearDialogVariableStringForPlayer(PlayerSlot playerSlot, string panelId, string variableName)
-        => Native.ClearDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName);
+        => Panorama.ClearDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName);
 
     public void SetInputCaptureEnabled(PlayerSlot playerSlot, bool enabled)
-        => Native.SetInputCaptureEnabled(_this, playerSlot, enabled);
+        => Panorama.SetInputCaptureEnabled(_this, playerSlot, enabled);
 
     public bool IsInputCaptureEnabled(PlayerSlot playerSlot)
-        => Native.IsInputCaptureEnabled(_this, playerSlot);
+        => Panorama.IsInputCaptureEnabled(_this, playerSlot);
 
 #region Schemas
 

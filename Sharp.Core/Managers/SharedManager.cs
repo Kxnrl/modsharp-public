@@ -89,6 +89,6 @@ internal class SharedManager : ISharedManager
     public IScriptManager GetScriptManager()
         => _serviceProvider.GetRequiredService<ICoreScriptManager>();
 
-    public IPanoramaManager GetCustomHudManager()
+    public IPanoramaManager GetPanoramaManager()
         => _serviceProvider.GetRequiredService<ICorePanoramaManager>();
 }
