@@ -19,24 +19,9 @@
 
 namespace Sharp.Shared.Enums;
 
-/// <summary>
-///     Controls whether a custom-HUD panel has a pre-defined CSS class.
-/// </summary>
-/// <remarks>
-///     This only changes class membership. For the change to have a visual effect, the compiled
-///     VCSS must contain a matching rule for the class.
-/// </remarks>
-public enum CustomHudClassOverride
+public enum HudPanelClassStatus : uint
 {
-    /// <summary>
-    ///     Removes the current override. A global operation restores the class membership
-    ///     declared by VXML; a per-player operation inherits the global value.
-    /// </summary>
-    Inherit,
-
-    /// <summary>Forces the panel to have the specified class.</summary>
-    Present,
-
-    /// <summary>Forces the panel not to have the specified class.</summary>
-    Absent,
+    Undefined    = 0xFFFFFFFF,
+    ForceDisable = 0,
+    ForceEnable  = 1,
 }

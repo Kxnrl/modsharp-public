@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Sharp.Generator;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -30,97 +29,32 @@ namespace Sharp.Core.GameEntities;
 
 internal partial class CustomHudLayout : BaseEntity, ICustomHudLayout
 {
-    public void SetClassOverride(string panelId, string className, CustomHudClassOverride classOverride)
-    {
-        ValidateIdentifier(panelId, nameof(panelId));
-        ValidateIdentifier(className, nameof(className));
-
-        Native.SetHasClass(_this, panelId, className, ToNativeOverride(classOverride));
-    }
+    public void SetClassOverride(string panelId, string className, HudPanelClassStatus classStatus)
+        => Native.SetHasClass(_this, panelId, className, classStatus);
 
     public void SetClassOverrideForPlayer(PlayerSlot playerSlot,
-        string                                        panelId,
-        string                                        className,
-        CustomHudClassOverride                        classOverride)
-    {
-        ValidatePlayerSlot(playerSlot);
-        ValidateIdentifier(panelId, nameof(panelId));
-        ValidateIdentifier(className, nameof(className));
-
-        Native.SetHasClassForPlayer(_this, playerSlot, panelId, className, ToNativeOverride(classOverride));
-    }
+        string                                       panelId,
+        string                                       className,
+        HudPanelClassStatus                          classStatus)
+        => Native.SetHasClassForPlayer(_this, playerSlot, panelId, className, classStatus);
 
     public void SetDialogVariableString(string panelId, string variableName, string value)
-    {
-        ValidateIdentifier(panelId, nameof(panelId));
-        ValidateIdentifier(variableName, nameof(variableName));
-        ArgumentNullException.ThrowIfNull(value);
-
-        Native.SetDialogVariableString(_this, panelId, variableName, value);
-    }
+        => Native.SetDialogVariableString(_this, panelId, variableName, value);
 
     public void SetDialogVariableStringForPlayer(PlayerSlot playerSlot,
-        string                                         panelId,
-        string                                         variableName,
-        string                                         value)
-    {
-        ValidatePlayerSlot(playerSlot);
-        ValidateIdentifier(panelId, nameof(panelId));
-        ValidateIdentifier(variableName, nameof(variableName));
-        ArgumentNullException.ThrowIfNull(value);
-
-        Native.SetDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName, value);
-    }
+        string                                              panelId,
+        string                                              variableName,
+        string                                              value)
+        => Native.SetDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName, value);
 
     public void ClearDialogVariableStringForPlayer(PlayerSlot playerSlot, string panelId, string variableName)
-    {
-        ValidatePlayerSlot(playerSlot);
-        ValidateIdentifier(panelId, nameof(panelId));
-        ValidateIdentifier(variableName, nameof(variableName));
-
-        Native.ClearDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName);
-    }
+        => Native.ClearDialogVariableStringForPlayer(_this, playerSlot, panelId, variableName);
 
     public void SetInputCaptureEnabled(PlayerSlot playerSlot, bool enabled)
-    {
-        ValidatePlayerSlot(playerSlot);
-
-        Native.SetInputCaptureEnabled(_this, playerSlot, enabled);
-    }
+        => Native.SetInputCaptureEnabled(_this, playerSlot, enabled);
 
     public bool IsInputCaptureEnabled(PlayerSlot playerSlot)
-    {
-        ValidatePlayerSlot(playerSlot);
-
-        return Native.IsInputCaptureEnabled(_this, playerSlot);
-    }
-
-    private static int ToNativeOverride(CustomHudClassOverride classOverride)
-        => classOverride switch
-        {
-            CustomHudClassOverride.Inherit => -1,
-            CustomHudClassOverride.Present => 1,
-            CustomHudClassOverride.Absent  => 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(classOverride),
-                                                       classOverride,
-                                                       "Unknown custom HUD class override."),
-        };
-
-    private static void ValidateIdentifier(string value, string parameterName)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            throw new ArgumentException("Custom HUD identifiers cannot be null or empty.", parameterName);
-        }
-    }
-
-    private static void ValidatePlayerSlot(PlayerSlot playerSlot)
-    {
-        if (!playerSlot.IsValid())
-        {
-            throw new ArgumentOutOfRangeException(nameof(playerSlot), playerSlot, "Player slot must be between 0 and 63.");
-        }
-    }
+        => Native.IsInputCaptureEnabled(_this, playerSlot);
 
 #region Schemas
 

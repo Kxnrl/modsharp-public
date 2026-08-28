@@ -21,18 +21,7 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Managers;
 
-/// <summary>
-///     Creates custom HUD layouts and dispatches their button-click events.
-/// </summary>
-/// <remarks>
-///     <para>
-///         This manager only creates the server entity. It does not distribute or mount assets
-///         on clients. The compiled VXML, VCSS and local images must already be present in
-///         client-mounted Workshop/addon content. Custom HUD layouts cannot load images from
-///         HTTP or HTTPS URLs.
-///     </para>
-/// </remarks>
-public interface ICustomHudManager
+public interface IPanoramaManager
 {
     /// <summary>
     ///     Callback invoked when a player clicks a Button in a custom HUD layout.
@@ -55,27 +44,16 @@ public interface ICustomHudManager
     ///     Spawning the entity does not verify client asset availability. Its compiled VXML,
     ///     referenced VCSS and local images must already be mounted by every client.
     /// </remarks>
-    /// <exception cref="System.ArgumentException">
-    ///     <paramref name="layoutResource" /> is empty or whitespace, or a supplied
-    ///     <paramref name="targetName" /> is empty or whitespace.
-    /// </exception>
-    /// <exception cref="System.PlatformNotSupportedException">
-    ///     The current platform or game build does not expose the custom-HUD native API.
-    /// </exception>
     ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null);
 
     /// <summary>
     ///     Installs a custom-HUD button-click listener.
     /// </summary>
     /// <remarks>Remove the listener during module shutdown.</remarks>
-    /// <param name="listener">Callback to register.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="listener" /> is <see langword="null" />.</exception>
     void InstallClickListener(CustomHudClickedHandler listener);
 
     /// <summary>
     ///     Removes a previously installed button-click listener.
     /// </summary>
-    /// <param name="listener">Previously registered callback to remove.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="listener" /> is <see langword="null" />.</exception>
     void RemoveClickListener(CustomHudClickedHandler listener);
 }

@@ -17,32 +17,33 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using Sharp.Shared.Enums;
 using Sharp.Shared.Units;
 
 namespace Sharp.Core.Bridges.Natives;
 
 internal static partial class CustomHud
 {
-    public static partial void SetHasClass(nint layout, string panelId, string className, int hasClass);
+    public static partial void SetHasClass(nint layout, string panelId, string className, HudPanelClassStatus hasClass);
 
-    public static partial void SetHasClassForPlayer(nint       layout,
-        PlayerSlot                                                playerSlot,
-        string                                                    panelId,
-        string                                                    className,
-        int                                                       hasClass);
+    public static partial void SetHasClassForPlayer(nint layout,
+        PlayerSlot                                       playerSlot,
+        string                                           panelId,
+        string                                           className,
+        HudPanelClassStatus                              hasClass);
 
     public static partial void SetDialogVariableString(nint layout, string panelId, string variableName, string value);
 
-    public static partial void SetDialogVariableStringForPlayer(nint       layout,
-        PlayerSlot                                                         playerSlot,
-        string                                                             panelId,
-        string                                                             variableName,
-        string                                                             value);
+    public static partial void SetDialogVariableStringForPlayer(nint layout,
+        PlayerSlot                                                   playerSlot,
+        string                                                       panelId,
+        string                                                       variableName,
+        string                                                       value);
 
-    public static partial void ClearDialogVariableStringForPlayer(nint       layout,
-        PlayerSlot                                                           playerSlot,
-        string                                                               panelId,
-        string                                                               variableName);
+    public static partial void ClearDialogVariableStringForPlayer(nint layout,
+        PlayerSlot                                                     playerSlot,
+        string                                                         panelId,
+        string                                                         variableName);
 
     public static partial void SetInputCaptureEnabled(nint layout, PlayerSlot playerSlot, bool enabled);
 

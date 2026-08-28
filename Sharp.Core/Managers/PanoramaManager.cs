@@ -25,19 +25,18 @@ using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
 using Forward = Sharp.Core.Bridges.Forwards.CustomHud;
-using Native = Sharp.Core.Bridges.Natives.CustomHud;
 
 namespace Sharp.Core.Managers;
 
-internal interface ICoreCustomHudManager : ICustomHudManager;
+internal interface ICorePanoramaManager : IPanoramaManager;
 
-internal class CustomHudManager : ICoreCustomHudManager
+internal class PanoramaManager : ICorePanoramaManager
 {
-    private readonly ICoreEntityManager                                  _entityManager;
-    private readonly ILogger<CustomHudManager>                            _logger;
-    private readonly List<ICustomHudManager.CustomHudClickedHandler>      _clickListeners;
+    private readonly ICoreEntityManager                             _entityManager;
+    private readonly ILogger<PanoramaManager>                       _logger;
+    private readonly List<IPanoramaManager.CustomHudClickedHandler> _clickListeners;
 
-    public CustomHudManager(ICoreEntityManager entityManager, ILogger<CustomHudManager> logger)
+    public PanoramaManager(ICoreEntityManager entityManager, ILogger<PanoramaManager> logger)
     {
         _entityManager  = entityManager;
         _logger         = logger;
@@ -71,7 +70,7 @@ internal class CustomHudManager : ICoreCustomHudManager
         return _entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues);
     }
 
-    public void InstallClickListener(ICustomHudManager.CustomHudClickedHandler listener)
+    public void InstallClickListener(IPanoramaManager.CustomHudClickedHandler listener)
     {
         ArgumentNullException.ThrowIfNull(listener);
 
@@ -85,7 +84,7 @@ internal class CustomHudManager : ICoreCustomHudManager
         _clickListeners.Add(listener);
     }
 
-    public void RemoveClickListener(ICustomHudManager.CustomHudClickedHandler listener)
+    public void RemoveClickListener(IPanoramaManager.CustomHudClickedHandler listener)
     {
         ArgumentNullException.ThrowIfNull(listener);
 
