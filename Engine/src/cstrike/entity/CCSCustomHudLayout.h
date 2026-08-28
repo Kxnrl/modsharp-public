@@ -25,6 +25,7 @@
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/type/CNetworkUtlVectorBase.h"
 #include "cstrike/type/CUtlString.h"
+#include "cstrike/type/CUtlSymbolLarge.h"
 #include "cstrike/type/CUtlVectorEmbeddedNetworkVar.h"
 
 enum class EHudPanelClassStatus_t : uint32_t
@@ -76,7 +77,7 @@ class CCSCustomHudLayout : public CBaseEntity
 {
     DECLARE_SCHEMA_CLASS(CCSCustomHudLayout)
 public:
-    SCHEMA_FIELD(CUtlString, m_strLayout)
+    SCHEMA_FIELD(CUtlSymbolLarge, m_strLayout)
     SCHEMA_EMBEDDED_NETWORK_VAR_FIELD(CCSCustomHudLayoutState, m_vecPlayerLayoutStates)
     SCHEMA_FIELD(CCSCustomHudLayoutState, m_globalLayoutState)
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecPanelIds)

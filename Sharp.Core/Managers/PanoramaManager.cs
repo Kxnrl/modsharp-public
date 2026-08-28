@@ -61,7 +61,8 @@ internal class PanoramaManager : ICorePanoramaManager
 
         var keyValues = new Dictionary<string, KeyValuesVariantValueItem>
         {
-            { "layout", layoutResource }, { "targetname", targetName ?? "ms_custom_hud_layout" },
+            { "layout", layoutResource },
+            { "targetname", string.IsNullOrWhiteSpace(targetName) ? "ms_custom_hud_layout" : targetName },
         };
 
         return _entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues);
@@ -113,13 +114,6 @@ internal class PanoramaManager : ICorePanoramaManager
 
         if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
         {
-            return;
-        }
-
-        if (callbacks.Count <= 0)
-        {
-            _clickCallbacks.Remove(handle);
-
             return;
         }
 

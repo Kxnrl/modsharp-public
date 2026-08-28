@@ -21,6 +21,9 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Managers;
 
+/// <remarks>
+///     All members must be called on the game main thread.
+/// </remarks>
 public interface IPanoramaManager
 {
     /// <summary>
