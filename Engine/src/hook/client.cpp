@@ -44,6 +44,7 @@
 
 #include <proto/cstrike15_usermessages.pb.h>
 #include <proto/netmessages.pb.h>
+
 #include <safetyhook.hpp>
 
 #include <algorithm>

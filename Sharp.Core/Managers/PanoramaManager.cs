@@ -25,6 +25,7 @@ using Sharp.Core.GameEntities;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
+using CustomHudClickedCallback = Sharp.Shared.Managers.IPanoramaManager.CustomHudClickedHandler;
 
 namespace Sharp.Core.Managers;
 
@@ -35,7 +36,8 @@ internal class PanoramaManager : ICorePanoramaManager
     private readonly ILogger<PanoramaManager> _logger;
     private readonly ICoreEntityManager       _entityManager;
 
-    private readonly List<IPanoramaManager.CustomHudClickedHandler> _clickListeners;
+    private readonly List<CustomHudClickedCallback>                   _clickListeners;
+    private readonly Dictionary<uint, List<CustomHudClickedCallback>> _clickCallbacks;
 
     public PanoramaManager(ILogger<PanoramaManager> logger, ICoreEntityManager entityManager)
     {
@@ -43,14 +45,12 @@ internal class PanoramaManager : ICorePanoramaManager
         _entityManager = entityManager;
 
         _clickListeners = [];
+        _clickCallbacks = [];
 
         Game.OnGameShutdown               += OnGameShutdown;
+        Entity.OnEntityDeleted            += OnEntityDeleted;
         Panorama.OnCustomHudLayoutClicked += OnCustomHudLayoutClicked;
     }
-
-    // no leak
-    private void OnGameShutdown()
-        => _clickListeners.Clear();
 
     public ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null)
     {
@@ -67,10 +67,8 @@ internal class PanoramaManager : ICorePanoramaManager
         return _entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues);
     }
 
-    public void InstallClickListener(IPanoramaManager.CustomHudClickedHandler listener)
+    public void InstallClickListener(CustomHudClickedCallback listener)
     {
-        ArgumentNullException.ThrowIfNull(listener);
-
         if (_clickListeners.Contains(listener))
         {
             _logger.LogError("Custom HUD click listener is already installed.\n{stackTrace}", Environment.StackTrace);
@@ -81,13 +79,75 @@ internal class PanoramaManager : ICorePanoramaManager
         _clickListeners.Add(listener);
     }
 
-    public void RemoveClickListener(IPanoramaManager.CustomHudClickedHandler listener)
+    public void RemoveClickListener(CustomHudClickedCallback listener)
     {
-        ArgumentNullException.ThrowIfNull(listener);
-
         if (!_clickListeners.Remove(listener))
         {
             _logger.LogError("Custom HUD click listener has not been installed.\n{stackTrace}", Environment.StackTrace);
+        }
+    }
+
+    public void InstallClickCallback(ICustomHudLayout layout, CustomHudClickedCallback callback)
+    {
+        var handle = layout.Handle.GetValue();
+
+        if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
+        {
+            callbacks               = [];
+            _clickCallbacks[handle] = callbacks;
+        }
+
+        if (callbacks.Contains(callback))
+        {
+            _logger.LogError("Custom HUD click callbacks is already installed.\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
+        callbacks.Add(callback);
+    }
+
+    public void RemoveClickCallback(ICustomHudLayout layout, CustomHudClickedCallback callback)
+    {
+        var handle = layout.Handle.GetValue();
+
+        if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
+        {
+            return;
+        }
+
+        if (callbacks.Count <= 0)
+        {
+            _clickCallbacks.Remove(handle);
+
+            return;
+        }
+
+        if (!callbacks.Remove(callback))
+        {
+            _logger.LogError("Custom HUD click callback has not been installed.\n{stackTrace}", Environment.StackTrace);
+        }
+        else if (callbacks.Count <= 0)
+        {
+            _clickCallbacks.Remove(handle);
+        }
+    }
+
+    private void OnGameShutdown()
+    {
+        // no leak
+        _clickListeners.Clear();
+        _clickCallbacks.Clear();
+    }
+
+    private void OnEntityDeleted(IntPtr entity)
+    {
+        var handle = BaseEntity.GetHandleValue(entity);
+
+        if (_clickCallbacks.Remove(handle, out var callbacks))
+        {
+            // clear ALC refs
+            callbacks.Clear();
         }
     }
 
@@ -105,17 +165,52 @@ internal class PanoramaManager : ICorePanoramaManager
             return;
         }
 
+        BroadcastAll(player, layout, buttonId);
+        BroadcastSingle(player, layout, buttonId);
+    }
+
+    private void BroadcastAll(PlayerController controller, CustomHudLayout layout, string buttonId)
+    {
+        if (_clickListeners.Count == 0)
+        {
+            return;
+        }
+
         for (var i = 0; i < _clickListeners.Count; i++)
         {
             try
             {
-                _clickListeners[i].Invoke(player, layout, buttonId);
+                _clickListeners[i].Invoke(controller, layout, buttonId);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling custom HUD click listener {listener}",
                                  _clickListeners[i].Method.DeclaringType?.Name ?? _clickListeners[i].Method.Name);
+            }
+        }
+    }
+
+    private void BroadcastSingle(PlayerController controller, CustomHudLayout layout, string buttonId)
+    {
+        var handle = layout.Handle.GetValue();
+
+        if (!_clickCallbacks.TryGetValue(handle, out var callbacks) || callbacks.Count <= 0)
+        {
+            return;
+        }
+
+        for (var i = 0; i < callbacks.Count; i++)
+        {
+            try
+            {
+                callbacks[i].Invoke(controller, layout, buttonId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,
+                                 "An error occurred while calling custom HUD click callback {listener}",
+                                 callbacks[i].Method.DeclaringType?.Name ?? callbacks[i].Method.Name);
             }
         }
     }
