@@ -60,6 +60,7 @@ set(modsharp_SOURCES
 	"src/cstrike/entity/CBaseEntity.cpp"
 	"src/cstrike/entity/CBaseModelEntity.cpp"
 	"src/cstrike/entity/CBaseWeapon.cpp"
+	"src/cstrike/entity/CCSCustomHudLayout.cpp"
 	"src/cstrike/entity/CTriggerPush.cpp"
 	"src/cstrike/entity/PlayerController.cpp"
 	"src/cstrike/entity/PlayerPawn.cpp"

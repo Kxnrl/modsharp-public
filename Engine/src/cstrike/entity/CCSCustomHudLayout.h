@@ -20,6 +20,8 @@
 #ifndef CSTRIKE_ENTITY_CUSTOMHUDLAYOUT_H
 #define CSTRIKE_ENTITY_CUSTOMHUDLAYOUT_H
 
+#include "definitions.h"
+
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/type/CNetworkUtlVectorBase.h"
 #include "cstrike/type/CUtlString.h"
@@ -48,6 +50,16 @@ public:
     uint16_t   m_nDialogVariableIndex;
     CUtlString m_sValue;
     bool       m_bIsSet;
+
+    explicit HUDPanelDialogVariableString_t();
+
+    HUDPanelDialogVariableString_t(uint16_t nPanelIdIndex, uint16_t nDialogVariableIndex, const CUtlString& sValue, bool bIsSet) : HUDPanelDialogVariableString_t()
+    {
+        m_nPanelIdIndex        = nPanelIdIndex;
+        m_nDialogVariableIndex = nDialogVariableIndex;
+        m_sValue               = sValue;
+        m_bIsSet               = bIsSet;
+    }
 };
 
 class CCSCustomHudLayoutState
@@ -70,6 +82,15 @@ public:
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecPanelIds)
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecClassNames)
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecDialogVariableNames)
+
+    void SetHasClass(const char* panelId, const char* className, int32_t hasClass);
+    void SetHasClassForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass);
+    void SetDialogVariableString(const char* panelId, const char* variableName, const char* value);
+    void SetDialogVariableStringForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value);
+    void ClearDialogVariableStringForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* variableName);
+    void SetInputCaptureEnabled(PlayerSlot_t playerSlot, bool enabled);
+
+    [[nodiscard]] bool IsInputCaptureEnabled(PlayerSlot_t playerSlot);
 };
 
 #endif

@@ -24,6 +24,7 @@
     <ClCompile Include="src\cstrike\component\PlayerPawnComponent.cpp" />
     <ClCompile Include="src\cstrike\econitem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp" />
+    <ClCompile Include="src\cstrike\entity\CCSCustomHudLayout.cpp" />
     <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp" />
     <ClCompile Include="src\cstrike\interfaces.cpp" />
     <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />

@@ -32,6 +32,7 @@
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/entity/CBaseWeapon.h"
+#include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CRecipientFilter.h"
@@ -476,79 +477,42 @@ static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-static void CustomHudSetHasClass(CBaseEntity* pLayout, const char* panelId, const char* className, int32_t hasClass)
+static void CustomHudSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, int32_t hasClass)
 {
-    if ( !pLayout || !panelId || !className)
-        return;
-
-    CUtlString panel(panelId);
-    CUtlString cssClass(className);
-    address::server::CCSCustomHudLayout_SetHasClass(pLayout, &panel, &cssClass, hasClass);
+    pLayout->SetHasClass(panelId, className, hasClass);
 }
 
-static void CustomHudSetHasClassForPlayer(CBaseEntity* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
+static void CustomHudSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
 {
-    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !className)
-        return;
-
-    CUtlString panel(panelId);
-    CUtlString cssClass(className);
-    address::server::CCSCustomHudLayout_SetHasClassForPlayer(pLayout, playerSlot, &panel, &cssClass, hasClass);
+    pLayout->SetHasClassForPlayer(playerSlot, panelId, className, hasClass);
 }
 
-static void CustomHudSetDialogVariableString(CBaseEntity* pLayout, const char* panelId, const char* variableName, const char* value)
+static void CustomHudSetDialogVariableString(CCSCustomHudLayout* pLayout, const char* panelId, const char* variableName, const char* value)
 {
-    if (!pLayout || !panelId || !variableName || !value)
-        return;
-
-    CUtlString panel(panelId);
-    CUtlString variable(variableName);
-    CUtlString stringValue(value);
-    address::server::CCSCustomHudLayout_SetDialogVariableString(pLayout, &panel, &variable, &stringValue);
+    pLayout->SetDialogVariableString(panelId, variableName, value);
 }
 
-static void CustomHudSetDialogVariableStringForPlayer(CBaseEntity* pLayout,
-                                                      PlayerSlot_t playerSlot,
-                                                      const char*  panelId,
-                                                      const char*  variableName,
-                                                      const char*  value)
+static void CustomHudSetDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value)
 {
-    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !variableName || !value)
+    if (!pLayout)
         return;
 
-    CUtlString panel(panelId);
-    CUtlString variable(variableName);
-    CUtlString stringValue(value);
-    address::server::CCSCustomHudLayout_SetDialogVariableStringForPlayer(pLayout, playerSlot, &panel, &variable, &stringValue);
+    pLayout->SetDialogVariableStringForPlayer(playerSlot, panelId, variableName, value);
 }
 
-static void CustomHudClearDialogVariableStringForPlayer(CBaseEntity* pLayout,
-                                                        PlayerSlot_t playerSlot,
-                                                        const char*  panelId,
-                                                        const char*  variableName)
+static void CustomHudClearDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName)
 {
-    if (!pLayout || playerSlot >= CS_MAX_PLAYERS || !panelId || !variableName)
-        return;
-
-    CUtlString panel(panelId);
-    CUtlString variable(variableName);
-    address::server::CCSCustomHudLayout_ClearDialogVariableStringForPlayer(pLayout, playerSlot, &panel, &variable);
+    pLayout->ClearDialogVariableStringForPlayer(playerSlot, panelId, variableName);
 }
 
-static void CustomHudSetInputCaptureEnabled(CBaseEntity* pLayout, PlayerSlot_t playerSlot, bool enabled)
+static void CustomHudSetInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, bool enabled)
 {
-    if (!pLayout || playerSlot >= CS_MAX_PLAYERS)
-        return;
-
-    address::server::CCSCustomHudLayout_SetInputCaptureEnabled(pLayout, playerSlot, enabled);
+    pLayout->SetInputCaptureEnabled(playerSlot, enabled);
 }
 
-static bool CustomHudIsInputCaptureEnabled(CBaseEntity* pLayout, PlayerSlot_t playerSlot)
+static bool CustomHudIsInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot)
 {
-    if (!pLayout || playerSlot >= CS_MAX_PLAYERS)
-        return false;
-
-    return address::server::CCSCustomHudLayout_IsInputCaptureEnabled(pLayout, playerSlot);
+    return pLayout->IsInputCaptureEnabled(playerSlot);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
