@@ -32,18 +32,25 @@ internal interface ICorePanoramaManager : IPanoramaManager;
 
 internal class PanoramaManager : ICorePanoramaManager
 {
-    private readonly ICoreEntityManager                             _entityManager;
-    private readonly ILogger<PanoramaManager>                       _logger;
+    private readonly ILogger<PanoramaManager> _logger;
+    private readonly ICoreEntityManager       _entityManager;
+
     private readonly List<IPanoramaManager.CustomHudClickedHandler> _clickListeners;
 
-    public PanoramaManager(ICoreEntityManager entityManager, ILogger<PanoramaManager> logger)
+    public PanoramaManager(ILogger<PanoramaManager> logger, ICoreEntityManager entityManager)
     {
-        _entityManager  = entityManager;
-        _logger         = logger;
+        _logger        = logger;
+        _entityManager = entityManager;
+
         _clickListeners = [];
 
+        Game.OnGameShutdown               += OnGameShutdown;
         Panorama.OnCustomHudLayoutClicked += OnCustomHudLayoutClicked;
     }
+
+    // no leak
+    private void OnGameShutdown()
+        => _clickListeners.Clear();
 
     public ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null)
     {
@@ -54,18 +61,8 @@ internal class PanoramaManager : ICorePanoramaManager
 
         var keyValues = new Dictionary<string, KeyValuesVariantValueItem>
         {
-            ["layout"] = layoutResource,
+            { "layout", layoutResource }, { "targetname", targetName ?? "ms_custom_hud_layout" },
         };
-
-        if (targetName is not null)
-        {
-            if (string.IsNullOrWhiteSpace(targetName))
-            {
-                throw new ArgumentException("Target name cannot be empty or whitespace.", nameof(targetName));
-            }
-
-            keyValues["targetname"] = targetName;
-        }
 
         return _entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues);
     }
