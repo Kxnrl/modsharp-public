@@ -41,8 +41,19 @@ public:
 
     [[nodiscard]] T* Element(int32_t i) const
     {
+        if (!IsValidIndex(i))
+        {
+            return nullptr;
+        }
+
+        const auto stride = Stride();
+        if (stride <= 0)
+        {
+            return nullptr;
+        }
+
         const auto base = *reinterpret_cast<const uintptr_t*>(m_pField + 8);
-        return reinterpret_cast<T*>(base + static_cast<uintptr_t>(static_cast<uint32_t>(i)) * Stride());
+        return reinterpret_cast<T*>(base + static_cast<uintptr_t>(i) * static_cast<uintptr_t>(stride));
     }
 
     [[nodiscard]] T* operator[](int32_t i) const { return Element(i); }
