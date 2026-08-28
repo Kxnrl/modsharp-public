@@ -29,7 +29,7 @@ public interface IPanoramaManager
     /// <param name="player">Player who clicked the button.</param>
     /// <param name="layout">Layout containing the clicked button.</param>
     /// <param name="buttonId">The clicked Button panel's <c>id</c> attribute.</param>
-    public delegate void CustomHudClickedHandler(IPlayerController player, ICustomHudLayout layout, string buttonId);
+    delegate void CustomHudClickedHandler(IPlayerController player, ICustomHudLayout layout, string buttonId);
 
     /// <summary>
     ///     Creates and spawns a <c>custom_hud_layout</c> entity.
@@ -47,13 +47,13 @@ public interface IPanoramaManager
     ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null);
 
     /// <summary>
-    ///     Installs a custom-HUD button-click listener as global.
+    ///     Installs a custom-HUD button-click listener as global on <b>current map</b>.
     /// </summary>
     /// <remarks>Remove the listener during module shutdown.</remarks>
     void InstallClickListener(CustomHudClickedHandler listener);
 
     /// <summary>
-    ///     Removes a previously installed button-click listener as global.
+    ///     Removes a previously installed button-click listener as global on <b>current map</b>.
     /// </summary>
     void RemoveClickListener(CustomHudClickedHandler listener);
 

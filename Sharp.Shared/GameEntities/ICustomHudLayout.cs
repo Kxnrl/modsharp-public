@@ -122,8 +122,9 @@ public interface ICustomHudLayout : IBaseEntity
     ///     Enables or disables mouse input capture for this layout for a player.
     /// </summary>
     /// <remarks>
-    ///     Input capture is tracked independently by every layout. Player movement is restored
-    ///     only after all layouts have released capture for the player.
+    ///     The server stores a single capture flag per (layout, player) and networks it to the client.
+    ///     How capture from multiple layouts combines — and whether or when player movement is affected
+    ///     or restored — is decided by the client HUD and is not guaranteed by this call.
     /// </remarks>
     void SetInputCaptureEnabled(PlayerSlot playerSlot, bool enabled);
 
@@ -137,7 +138,7 @@ public interface ICustomHudLayout : IBaseEntity
     }
 
     /// <summary>
-    ///     Enables or disables mouse input capture for this layout for a player.
+    ///     Enables or disables input capture for this layout for a player.
     /// </summary>
     void SetInputCaptureEnabled(IPlayerController player, bool enabled)
     {

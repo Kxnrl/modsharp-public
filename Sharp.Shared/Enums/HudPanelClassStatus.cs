@@ -21,7 +21,19 @@ namespace Sharp.Shared.Enums;
 
 public enum HudPanelClassStatus : uint
 {
+    /// <summary>
+    ///     Clears any override for this class, so the panel keeps its compiled-in default membership.
+    ///     Maps to the native <c>k_eHudPanelClassStatus_Undefined</c>.
+    /// </summary>
     Undefined    = 0xFFFFFFFF,
+
+    /// <summary>
+    ///     Forces the class off the panel. Maps to the native <c>k_eHudPanelClassStatus_DoesNotHaveClass</c>.
+    /// </summary>
     ForceDisable = 0,
+
+    /// <summary>
+    ///     Forces the class on the panel. Maps to the native <c>k_eHudPanelClassStatus_HasClass</c>.
+    /// </summary>
     ForceEnable  = 1,
 }

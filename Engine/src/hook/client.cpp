@@ -597,7 +597,14 @@ void InstallClientHooks()
     SHOOK(HostSay);
     SHOOK(ScriptPrintMessageChatAll);
 
-    SHOOK(ProcessClientSvcUserMessage, {.address = reinterpret_cast<void*>(address::server::ProcessClientSvcUserMessage)});
+    if (address::server::ProcessClientSvcUserMessage)
+    {
+        SHOOK(ProcessClientSvcUserMessage, {.address = reinterpret_cast<void*>(address::server::ProcessClientSvcUserMessage)});
+    }
+    else
+    {
+        FatalError("ProcessClientSvcUserMessage address unresolved.");
+    }
 
     g_pHookManager->Hook_ClientFullyConnect(HookType_Post, [](PlayerSlot_t slot) {
         const auto pClient = sv->GetClient(slot);

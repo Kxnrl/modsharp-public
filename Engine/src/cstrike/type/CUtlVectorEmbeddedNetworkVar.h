@@ -48,10 +48,13 @@ public:
     [[nodiscard]] T* operator[](int32_t i) const { return Element(i); }
 
 private:
-    // Element stride == the element's schema class size (e.g. 408). Cached per T.
     int32_t Stride() const
     {
-        static const int32_t s_stride = UtlVectorEmbeddedNetworkVarSize(m_pszClassName);
+        static int32_t s_stride = 0;
+        if (s_stride <= 0)
+        {
+            s_stride = UtlVectorEmbeddedNetworkVarSize(m_pszClassName);
+        }
         return s_stride;
     }
 
