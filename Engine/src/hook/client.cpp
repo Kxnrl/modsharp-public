@@ -29,6 +29,7 @@
 #include "CoreCLR/RuntimeProtobufMessage.h"
 
 #include "cstrike/entity/CBaseEntity.h"
+#include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/ICvar.h"
@@ -537,43 +538,37 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
 
 BeginStaticHookScope(ProcessClientSvcUserMessage)
 {
-    DeclareStaticDetourHook(ProcessClientSvcUserMessage,
-                            void,
-                            (int32_t nPlayerSlot, int32_t nMsgId, uint32_t nMsgSize, const void* pBuf))
+    DeclareStaticDetourHook(ProcessClientSvcUserMessage, void, (int32_t nPlayerSlot, int32_t nMsgId, uint32_t nMsgSize, const void* pBuf))
     {
         ProcessClientSvcUserMessage(nPlayerSlot, nMsgId, nMsgSize, pBuf);
 
-        if (nMsgId != CS_UM_CustomHudClicked
-            || nPlayerSlot < 0
-            || nPlayerSlot >= CS_MAX_PLAYERS
-            || pBuf == nullptr
-            || nMsgSize > static_cast<uint32_t>(std::numeric_limits<int32_t>::max()))
-        {
+        if (nMsgId != CS_UM_CustomHudClicked || !pBuf || nMsgSize >= 0xFFFF || nPlayerSlot < 0 || nPlayerSlot >= CS_MAX_PLAYERS)
             return;
-        }
 
         CCSUsrMsg_CustomHudClicked message;
         if (!message.ParseFromArray(pBuf, static_cast<int32_t>(nMsgSize)))
             return;
 
-        const auto packedHandle = message.custom_hud_layout();
-        const auto handle       = CBaseHandle::FromPackedValue(packedHandle);
+        if (!message.has_custom_hud_layout() || !message.has_button_id())
+            return;
+
+        const auto packed = message.custom_hud_layout();
+        const auto handle = CBaseHandle::FromPackedValue(packed);
         if (!handle.IsValid())
             return;
 
-        static auto vtable_address = modules::server->GetVirtualTableByName("CCSCustomHudLayout");
+        static auto vtable = modules::server->GetVirtualTableByName("CCSCustomHudLayout");
 
-        auto* pPlayer = static_cast<CCSPlayerController*>(CCSPlayerController::FindBySlot(static_cast<PlayerSlot_t>(nPlayerSlot)));
-        auto* pLayout = g_pGameEntitySystem->FindEntityByIndex<CBaseEntity*>(handle.GetEntryIndex());
-        if (!pPlayer
-            || !pLayout
-            || pLayout->GetActualEHandle().GetPackedValue() != packedHandle
-            || *reinterpret_cast<const uintptr_t*>(pLayout) != vtable_address)
-        {
+        const auto pLayout = g_pGameEntitySystem->FindEntityByIndex<CCSCustomHudLayout*>(handle.GetEntryIndex());
+        if (!pLayout || *reinterpret_cast<const uintptr_t*>(pLayout) != vtable || pLayout->GetActualEHandle().GetPackedValue() != packed)
             return;
-        }
 
-        forwards::OnCustomHudClicked->Invoke(pPlayer, pLayout, message.button_id().c_str());
+        const auto pController = reinterpret_cast<CCSPlayerController*>(CCSPlayerController::FindBySlot(static_cast<PlayerSlot_t>(nPlayerSlot)));
+
+        if (!pController || !pController->IsConnected())
+            return;
+
+        forwards::OnCustomHudLayoutClicked->Invoke(pController, pLayout, message.button_id().c_str());
     }
 }
 

@@ -24,7 +24,7 @@
 
 HUDPanelDialogVariableString_t::HUDPanelDialogVariableString_t()
 {
-    static void* vtable = modules::server->GetVirtualTableByNameEx("HUDPanelDialogVariableString_t");
+    static void* vtable = modules::server->GetVirtualTableByName("HUDPanelDialogVariableString_t");
     AssertPtr(vtable);
 
     m_pVTable = vtable;
