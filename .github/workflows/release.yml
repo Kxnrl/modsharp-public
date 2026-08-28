@@ -198,19 +198,26 @@ jobs:
     env:
       CC: clang-21
       CXX: clang++-21
+      CFLAGS: --gcc-install-dir=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14
+      CXXFLAGS: --gcc-install-dir=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14
+      LDFLAGS: -static-libgcc -static-libstdc++
     steps:
       - name: Install Clang 21
         run: |
           apt update
           apt install -y wget gnupg
           wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-          echo "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
-          echo "deb-src http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          echo "deb https://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
+          echo "deb-src https://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-21 main" >> /etc/apt/sources.list
           apt update
           apt install -y clang-21
           echo "CPLUS_INCLUDE_PATH=/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/x86_64-linux-gnu:/usr/lib/gcc-14/x86_64-linux-gnu/include/c++/14/backward" >> $GITHUB_ENV
-          echo "LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14" >> $GITHUB_ENV
+          GCC14_INSTALL_DIR="/usr/lib/gcc-14/lib/gcc/x86_64-linux-gnu/14"
+          GCC14_CLANG_LIB_DIR="/tmp/gcc14-clang-lib"
+          mkdir -p "$GCC14_CLANG_LIB_DIR"
+          ln -s "$GCC14_INSTALL_DIR/libgcc.a" "$GCC14_CLANG_LIB_DIR/libgcc_eh.a"
+          echo "LIBRARY_PATH=$GCC14_INSTALL_DIR:$GCC14_CLANG_LIB_DIR" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$GCC14_INSTALL_DIR" >> $GITHUB_ENV
 
       - name: Set Timezone
         uses: szenius/set-timezone@v2.0
@@ -441,18 +448,72 @@ jobs:
           pushd build/linux && zip -r ../../ModSharp-git${{env.GITCOMMIT}}-linux.zip * && popd
           pushd build/linux-extensions && zip -r ../../ModSharp-git${{env.GITCOMMIT}}-linux-extensions.zip * && popd
 
+      - name: Build release notes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          NEW_TAG: git-${{ needs.prefetch.outputs.git_commit }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          set -euo pipefail
+          BODY="$RUNNER_TEMP/RELEASE_BODY.md"
+          PREV_TAG="$(gh api "repos/${REPO}/releases/latest" --jq .tag_name 2>/dev/null || true)"
+
+          if [[ -z "$PREV_TAG" ]]; then
+            # first release ever: use GitHub's generated notes verbatim
+            gh api "repos/${REPO}/releases/generate-notes" \
+              -f tag_name="$NEW_TAG" -f target_commitish="$SHA" --jq .body > "$BODY"
+          else
+            # authoritative notes (PR lines + New Contributors), same API as generate_release_notes:true
+            NATIVE="$(gh api "repos/${REPO}/releases/generate-notes" \
+              -f tag_name="$NEW_TAG" -f target_commitish="$SHA" -f previous_tag_name="$PREV_TAG" --jq .body)"
+
+            # map: PR number -> native "What's Changed" line (authoritative PR title/author/link)
+            declare -A PRLINE
+            while IFS= read -r line; do
+              if [[ "$line" =~ /pull/([0-9]+) ]]; then PRLINE["${BASH_REMATCH[1]}"]="$line"; fi
+            done < <(printf '%s\n' "$NATIVE" | awk '/^## What.s Changed$/{f=1;next} /^## New Contributors$/{f=0} /^\*\*Full Changelog/{f=0} f')
+
+            # New Contributors block, verbatim from GitHub (trailing blank lines trimmed)
+            NC="$(printf '%s\n' "$NATIVE" | awk '/^## New Contributors$/{f=1} /^\*\*Full Changelog\*\*/{f=0} f' \
+                  | sed -e :a -e '/^[[:space:]]*$/{$d;N;ba}')"
+
+            # compose chronologically: PR commit -> native line, direct commit -> constructed line
+            {
+              echo "## What's Changed"
+              gh api "repos/${REPO}/compare/${PREV_TAG}...${SHA}" --paginate --jq '
+                .commits[] | [ (.commit.message|split("\n")[0]), (.author.login // .commit.author.name), .html_url ] | @tsv' \
+              | while IFS=$'\t' read -r subj who url; do
+                  case "$who" in "github-actions[bot]"|"dependabot[bot]") continue;; esac
+                  if [[ "$subj" =~ [(]#([0-9]+)[)]$ ]]; then
+                    num="${BASH_REMATCH[1]}"
+                    if [[ -n "${PRLINE[$num]:-}" ]]; then printf '%s\n' "${PRLINE[$num]}"; fi
+                  else
+                    printf '* %s by @%s in %s\n' "$subj" "$who" "$url"
+                  fi
+                done
+              if [[ -n "$NC" ]]; then printf '\n%s\n' "$NC"; fi
+              printf '\n**Full Changelog**: %s/%s/compare/%s...%s\n' "$SERVER_URL" "$REPO" "$PREV_TAG" "$NEW_TAG"
+            } > "$BODY"
+          fi
+
+          echo "----- generated release body -----"
+          cat "$BODY"
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         env:
           GITCOMMIT: ${{ needs.prefetch.outputs.git_commit }}
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
+          token: ${{ secrets.PAT_TOKEN }}
           overwrite_files: true
           prerelease: false
           name: ModSharp-git${{env.GITCOMMIT}}
           tag_name: git-${{env.GITCOMMIT}}
           fail_on_unmatched_files: true
-          generate_release_notes: true
+          body_path: ${{ runner.temp }}/RELEASE_BODY.md
           files: |
             ModSharp-git${{env.GITCOMMIT}}-windows.zip
             ModSharp-git${{env.GITCOMMIT}}-windows-extensions.zip

@@ -24,6 +24,11 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/message.h>
 
+#ifndef PLATFORM_WINDOWS
+static_assert(_GLIBCXX_USE_CXX11_ABI == 0, "engine protobuf requires the pre-C++11 COW string ABI (_GLIBCXX_USE_CXX11_ABI=0)");
+static_assert(sizeof(std::string) == 8, "std::string layout is not the COW ABI - toolchain mismatch with the engine");
+#endif
+
 bool ProtobufHasField(const google::protobuf::Message* message, const char* field)
 {
     const auto descriptor      = message->GetDescriptor();

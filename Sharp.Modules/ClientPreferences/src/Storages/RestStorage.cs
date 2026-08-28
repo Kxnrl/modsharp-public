@@ -48,12 +48,12 @@ internal class RestStorage : IStorage
 
         var authorization = kv.GetValueOrDefault("authorization", "modsharp");
 
-        _restApi = RestService.For<IRestApi>(host,
-                                             new RefitSettings
-                                             {
-                                                 AuthorizationHeaderValueGetter = (message, token)
-                                                     => Task.FromResult(authorization),
-                                             });
+        _restApi = RestService.ForGenerated<IRestApi>(host,
+                                                      new RefitSettings
+                                                      {
+                                                          AuthorizationHeaderValueGetter = (message, token)
+                                                              => ValueTask.FromResult(authorization),
+                                                      });
     }
 
     public void Init()

@@ -581,6 +581,7 @@ public static class Bootstrap
         services.AddSingleton<IShutdownMonitor>(ShutdownMonitor);
         services.AddSingleton<ExceptionHandler>();
 
+        services.AddSingleton<ICoreAssemblyManager, AssemblyManager>();
         services.AddSingleton<ISharpCore, SharpCore>();
         services.AddSingleton<ICoreLibraryModuleManager, LibraryModuleManager>();
         services.AddSingleton<ICoreClientManager, ClientManager>();
@@ -597,6 +598,7 @@ public static class Bootstrap
         services.AddSingleton<ICoreSharpModuleManager, SharpModuleManager>();
         services.AddSingleton<ICoreParticleManager, ParticleManager>();
         services.AddSingleton<ICoreAddonManager, AddonManager>();
+        services.AddSingleton<ICoreScriptManager, ScriptManager>();
         services.AddSingleton<ISharedManager, SharedManager>();
     }
 
@@ -617,6 +619,7 @@ public static class Bootstrap
         services.GetRequiredService<ICoreSharpModuleManager>();
         services.GetRequiredService<ICoreParticleManager>();
         services.GetRequiredService<ICoreAddonManager>();
+        services.GetRequiredService<ICoreScriptManager>();
 
         services.GetRequiredService<ExceptionHandler>().Start();
         services.GetRequiredService<ISharpCore>().InitMainThread();

@@ -30,7 +30,9 @@
 #include <cstdarg>
 #include <cstring>
 #include <filesystem>
+#include <mutex>
 #include <string>
+#include <system_error>
 
 #ifdef PLATFORM_WINDOWS
 #    include <windows.h>
@@ -42,13 +44,28 @@ std::string g_pLoggerMapName;
 
 namespace fs = std::filesystem;
 
+static constexpr const char* kLogDirectory = "../../sharp/logs";
+
+static void EnsureLogDirectory()
+{
+    static std::once_flag once;
+    std::call_once(once, [] {
+        std::error_code ec;
+        fs::create_directories(kLogDirectory, ec);
+    });
+}
+
+static FILE* OpenLogFile(const char* fileName)
+{
+    EnsureLogDirectory();
+
+    const auto path = std::string(kLogDirectory) + '/' + fileName;
+    return fopen(path.c_str(), "a+");
+}
+
 void CreateLogging()
 {
-    const fs::path path = "../../sharp/logs";
-    if (!fs::exists(path))
-    {
-        fs::create_directory(path);
-    }
+    EnsureLogDirectory();
 }
 
 void WriteTextToFile(const char* path, const char* text)
@@ -130,7 +147,7 @@ void FatalError(const char* message, ...)
     g_bInLoggingFlow = false;
 
     // 写入日志文件
-    const auto logFile = fopen("../../sharp/logs/fatal.log", "a+");
+    const auto logFile = OpenLogFile("fatal.log");
     if (logFile != nullptr)
     {
         fprintf(logFile, "[%s] | Fatal Error | %s\n", timestamp, g_pLoggerMapName.c_str());
@@ -181,7 +198,7 @@ void LogFatal(const char* message, ...)
     ConColorMsg({233, 0, 0, 255}, "L<Engine> [%s] | Fatal Error %s\n%s\n\n", timestamp, g_pLoggerMapName.c_str(), text);
     g_bInLoggingFlow = false;
 
-    const auto logFile = fopen("../../sharp/logs/fatal.log", "a+");
+    const auto logFile = OpenLogFile("fatal.log");
     if (logFile != nullptr)
     {
         if (!g_pLoggerMapName.empty())
@@ -211,7 +228,7 @@ void LogError(const char* message, ...)
     ConColorMsg({233, 0, 0, 255}, "L<Engine> [%s] | Error %s\n%s\n\n", timestamp, g_pLoggerMapName.c_str(), text);
     g_bInLoggingFlow = false;
 
-    const auto logFile = fopen("../../sharp/logs/error.log", "a+");
+    const auto logFile = OpenLogFile("error.log");
     if (logFile != nullptr)
     {
         if (!g_pLoggerMapName.empty())
@@ -241,7 +258,7 @@ void LogInfo(const char* message, ...)
     ConColorMsg(Color(0, 255, 255, 255), "L<Engine> [%s] | Information %s\n%s\n\n", timestamp, g_pLoggerMapName.c_str(), text);
     g_bInLoggingFlow = false;
 
-    const auto logFile = fopen("../../sharp/logs/info.log", "a+");
+    const auto logFile = OpenLogFile("info.log");
     if (logFile != nullptr)
     {
         if (!g_pLoggerMapName.empty())
@@ -271,7 +288,7 @@ void LogFuncError(const char* function, const char* message, ...)
     ConColorMsg({233, 0, 0, 255}, "L<Engine> [%s] | Error | %s %s\n%s\n\n", timestamp, function, g_pLoggerMapName.c_str(), text);
     g_bInLoggingFlow = false;
 
-    const auto logFile = fopen("../../sharp/logs/error.log", "a+");
+    const auto logFile = OpenLogFile("error.log");
     if (logFile != nullptr)
     {
         if (!g_pLoggerMapName.empty())
@@ -301,7 +318,7 @@ void LogFuncInfo(const char* function, const char* message, ...)
     ConColorMsg(Color(0, 255, 255, 255), "L<Engine> [%s] | Information | %s %s\n%s\n\n", timestamp, function, g_pLoggerMapName.c_str(), text);
     g_bInLoggingFlow = false;
 
-    const auto logFile = fopen("../../sharp/logs/info.log", "a+");
+    const auto logFile = OpenLogFile("info.log");
     if (logFile != nullptr)
     {
         if (!g_pLoggerMapName.empty())

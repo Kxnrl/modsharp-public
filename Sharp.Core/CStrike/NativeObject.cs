@@ -29,6 +29,11 @@ internal abstract class ContextObject : IContextObject
 
     internal void MarkAsDisposed()
     {
+        if (IsDisposed)
+        {
+            return;
+        }
+
         IsDisposed = true;
         OnDisposed();
     }

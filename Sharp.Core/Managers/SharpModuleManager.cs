@@ -84,12 +84,27 @@ internal class SharpModuleManager : ICoreSharpModuleManager
     {
         foreach (var module in _modules)
         {
-            module.ShutdownMutex();
+            try
+            {
+                module.ShutdownMutex();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to shutdown mutex of module [{name}]", module.Name);
+                Bridges.Natives.Core.FatalError($"Failed to shutdown mutex of module [{module.Name}]");
+            }
         }
 
         foreach (var module in _modules)
         {
-            module.Unload(OnModuleUnload);
+            try
+            {
+                module.Unload(OnModuleUnload);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to unload module [{name}]", module.Name);
+            }
         }
     }
 

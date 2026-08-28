@@ -258,6 +258,7 @@ void HookManager::Install()
     extern void InstallValveConsoleLog();
     extern void InstallDualMountAddonHooks();
     extern void InstallExtraAddonHooks();
+    extern void InstallCSScriptHooks();
 
     InstallValveConsoleLog();
     InstallEngineHooks();
@@ -286,6 +287,7 @@ void HookManager::Install()
         InstallDualMountAddonHooks();
 
     InstallSoundHooks();
+    InstallCSScriptHooks();
 }
 
 void HookManager::Uninstall()

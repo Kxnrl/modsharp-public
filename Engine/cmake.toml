@@ -19,9 +19,9 @@ compile-features = ["cxx_std_20"]
 
 # link
 private-link-libraries = ["protobuf"]
-windows.link-libraries = ["psapi", "tier0"]
+windows.link-libraries = ["psapi", "tier0", "v8"]
 linux.link-directories = ["lib", "protobuf-lib"]
-linux.link-libraries = ["libtier0.so", "protobuf", "libsteam_api.so"]
+linux.link-libraries = ["libtier0.so", "protobuf", "libsteam_api.so", "v8"]
 
 # flags
 msvc.compile-options = ["/utf-8"]
@@ -90,6 +90,7 @@ compile-definitions = [
     "X64BITS",
     "_CRT_NO_VA_START_VALIDATION",
     "_ITERATOR_DEBUG_LEVEL=0",
+    "USING_V8_SHARED",
 ]
 release.compile-definitions = ["NDEBUG"]
 debug.compile-definitions = ["_DEBUG", "DEBUG"]
@@ -158,5 +159,6 @@ include-directories = [
     "vendors/steamworks/include",
     "vendors/protobuf/src",
     "vendors/json/",
+    "vendors/v8/include",
     "src",
 ]

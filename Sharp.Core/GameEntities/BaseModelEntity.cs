@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Generator;
@@ -39,7 +40,12 @@ internal partial class BaseModelEntity : BaseEntity, IBaseModelEntity
         => Entity.LookupAttachment(_this, attachment);
 
     public void GetAttachment(int attachment, out Vector origin, out Vector angles)
-        => Entity.GetAttachment(_this, attachment, out origin, out angles);
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(attachment, 0);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(attachment, byte.MaxValue);
+
+        Entity.GetAttachment(_this, attachment, out origin, out angles);
+    }
 
     public int LookupBone(string bone)
         => Entity.LookupBone(_this, bone);

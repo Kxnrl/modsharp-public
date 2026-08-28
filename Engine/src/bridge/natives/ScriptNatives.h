@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -17,14 +17,12 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "cstrike/interface/INetChannel.h"
+#ifndef MS_NATIVE_SCRIPT_H
+#define MS_NATIVE_SCRIPT_H
 
-#include "gamedata.h"
-#include "global.h"
-
-void INetChannel::SendNetMessage(INetworkSerializable* pSerializable, google::protobuf::Message* pMessage, int reliable)
+namespace natives::script
 {
-    using fn          = void (*)(INetChannel*, INetworkSerializable*, google::protobuf::Message*, int);
-    static auto pCall = g_pGameData->GetAddress<fn>("INetChannel::SendNetMessage");
-    pCall(this, pSerializable, pMessage, reliable);
+void Init();
 }
+
+#endif

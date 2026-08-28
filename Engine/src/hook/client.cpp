@@ -24,6 +24,7 @@
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
+#include "sdkproxy.h"
 
 #include "CoreCLR/RuntimeProtobufMessage.h"
 
@@ -206,11 +207,11 @@ BeginMemberHookScope(CSource2GameClients)
         g_pHookManager->Call_ClientFullyConnect(HookType_Post, slot);
     }
 
-    DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, SteamId_t steamId))
+    DeclareMemberDetourHook(PutInServer, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot, const char* pszName, int32_t nClientType, SteamId_t steamId))
     {
         g_pHookManager->Call_ClientPutInServer(HookType_Pre, slot, pszName, steamId);
 
-        PutInServer(pServerGameClient, slot, pszName, steamId);
+        PutInServer(pServerGameClient, slot, pszName, nClientType, steamId);
 
         g_pHookManager->Call_ClientPutInServer(HookType_Post, slot, pszName, steamId);
 
@@ -286,6 +287,9 @@ BeginMemberHookScope(CServerSideClient)
 
         const auto pCommandString = pConCommand->command().c_str();
 
+        if (!pCommandString || !*pCommandString)
+            return false;
+
 #ifdef CLIENT_HOOK_ASSERT
         LOG("%10s: 0%p -> %s(%d) %llu\n"
             "%10s: %s\n"
@@ -295,9 +299,27 @@ BeginMemberHookScope(CServerSideClient)
         if (natives::client::PostCommand(pClient, pCommandString) == ECommandAction::Stopped)
             return true;
 
-        const auto result = ExecuteStringCommand(pClient, pConCommand);
+        if (!pClient->IsInGame() && V_stristr_fast(pCommandString, "say") != nullptr)
+        {
+            CCommand command{};
+            if (!command.Tokenize(pCommandString))
+                return false;
 
-        return result;
+            const auto c = command.Arg(0);
+            if (!c || c[0] == 0)
+                return false;
+
+            if (strncasecmp(c, "say", 3) == 0)
+            {
+                if (ms_log_chat->GetValue<bool>())
+                    LOG("Blocked chat command from not-in-game client %s<%d>: %s",
+                        pClient->GetName(), static_cast<int32_t>(pClient->GetSlot()), pCommandString);
+
+                return true;
+            }
+        }
+
+        return ExecuteStringCommand(pClient, pConCommand);
     }
 
     DeclareMemberDetourHook(IsHearingClient, bool, (CServerSideClient * pClient, int32_t nSlot))

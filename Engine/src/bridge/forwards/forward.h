@@ -47,6 +47,7 @@ class INetChannel;
 struct FireBulletParams;
 struct CTakeDamageResult;
 struct TeamRewardInfo;
+struct ScriptValue;
 
 namespace google::protobuf
 {
@@ -97,7 +98,7 @@ DECLARE_FORWARD(Network, OnTextMsg, EHookAction, FORWARD_ARG(uint32_t, const cha
 DECLARE_FORWARD(Network, OnPostEventAbstract, EHookAction, FORWARD_ARG(uint16_t, const void*, NetworkReceiver_t, bool*, NetworkReceiver_t*));
 
 // Client
-DECLARE_FORWARD(Client, OnConnectClient, EHookAction, FORWARD_ARG(SteamId_t, const char*, void*, uint32_t));
+DECLARE_FORWARD(Client, OnConnectClient, EHookAction, FORWARD_ARG(SteamId_t, const char*, uint32_t, uint32_t));
 DECLARE_FORWARD(Client, OnClientConnect, EHookAction, FORWARD_ARG(SteamId_t, const char*, char*, int, bool*));
 DECLARE_FORWARD(Client, OnClientConnected, void, FORWARD_ARG(CServerSideClient*));
 DECLARE_FORWARD(Client, OnClientActive, void, FORWARD_ARG(CServerSideClient*));
@@ -147,6 +148,14 @@ DECLARE_FORWARD(Event, FireGameEvent, void, FORWARD_ARG(IGameEvent*));
 // ConVar
 DECLARE_FORWARD(Cvar, OnConVarChanged, void, FORWARD_ARG(CConVarBaseData*));
 DECLARE_FORWARD(Cvar, OnConCommandTrigger, EHookAction, FORWARD_ARG(int64_t, CServerSideClient*, const char*));
+
+// Script (cs_script V8) — dispatch a JS call to a C#-registered method.
+// Args: managedId, info (FunctionCallbackInfo*), ret. C# reads self/args lazily via the
+// arg-reader natives. Outcome rides in ret: on success ret holds the return value; a ctx.ThrowError
+// sets ret.type == Error (message in ret.str), which the trampoline raises as a JS error — this is
+// self-described by the tag, NOT the bool, so a String return value is never taken for a throw. A
+// false return with a non-Error ret (unexpected managed fault / unknown id) raises a generic error.
+DECLARE_FORWARD(Script, OnScriptMethodCall, bool, FORWARD_ARG(int32_t, void*, ScriptValue*));
 
 // Steam
 DECLARE_FORWARD(Steam, OnGroupStatusResult, void, FORWARD_ARG(SteamId_t, uint64_t, bool, bool));

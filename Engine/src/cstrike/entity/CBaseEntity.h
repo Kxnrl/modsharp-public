@@ -60,6 +60,7 @@ public:
     SCHEMA_FIELD(float, m_flGravityScale)
     SCHEMA_FIELD(float, m_flActualGravityScale)
     SCHEMA_FIELD(float, m_flFriction)
+    SCHEMA_FIELD(float, m_flWaterLevel)
     SCHEMA_FIELD(CCollisionProperty*, m_pCollision)
     SCHEMA_FIELD(CBaseHandle, m_hOwnerEntity)
     SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)

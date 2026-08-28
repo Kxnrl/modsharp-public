@@ -190,19 +190,20 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 #endif
     }
 
-    DeclareMemberDetourHook(EquipWeapon, void, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon))
+    DeclareMemberDetourHook(EquipWeapon, uint16_t, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon))
     {
         if (!pWeapon)
-            return;
+            return 0;
 
-        EquipWeapon(pService, pWeapon);
+        const auto ret   = EquipWeapon(pService, pWeapon);
         const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
         if (const auto pController = pPawn->GetController<CCSPlayerController*>())
-            forwards::OnPlayerEquipWeapon->Invoke(sv->GetClient(pController->GetPlayerSlot()), pController, pPawn, pService, pWeapon, 0);
+            forwards::OnPlayerEquipWeapon->Invoke(sv->GetClient(pController->GetPlayerSlot()), pController, pPawn, pService, pWeapon, ret);
 
 #ifdef WEAPON_EVENT_ASSERT
         LOG("CCSPlayer_WeaponServices::EquipWeapon %p", pWeapon);
 #endif
+        return ret;
     }
 
     DeclareVirtualHook(DropWeapon, void, (CCSPlayer_WeaponServices * pService, CBaseWeapon * pWeapon, Vector * pVecTarget, Vector * pVelocity))

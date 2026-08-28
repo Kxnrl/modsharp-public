@@ -116,40 +116,40 @@ int32_t DispatchParticleEffectFilter(const char* pszParticleName, Vector* pOrigi
     s_bBypassDispatchEffect = true;
 
 #ifdef PLATFORM_WINDOWS
-    const auto ret = address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pOrigin, pAngles, nullptr, false, -1, pFilter, false);
+    address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pOrigin, pAngles, nullptr, false, -1, pFilter, false);
 #else
     auto origin_xy = *reinterpret_cast<double*>(pOrigin);
     auto angles_xy = *reinterpret_cast<double*>(pAngles);
 
-    const auto ret = address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, nullptr, false, -1, pFilter, false, origin_xy, pOrigin->z, angles_xy, pAngles->z);
+    address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, nullptr, false, -1, pFilter, false, origin_xy, pOrigin->z, angles_xy, pAngles->z);
 #endif
 
     s_bBypassDispatchEffect = false;
-    return ret;
+    return 0;
 }
 int32_t DispatchParticleEffectFilter(const char* pszParticleName, CBaseEntity* pEntity, Vector* pOrigin, Vector* pAngles, bool bResetAllParticlesOnEntity, IRecipientFilter* pFilter)
 {
     s_bBypassDispatchEffect = true;
 
 #ifdef PLATFORM_WINDOWS
-    const auto ret = address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pOrigin, pAngles, pEntity, false, -1, pFilter, bResetAllParticlesOnEntity);
+    address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pOrigin, pAngles, pEntity, false, -1, pFilter, bResetAllParticlesOnEntity);
 #else
     auto origin_xy = *reinterpret_cast<double*>(pOrigin);
     auto angles_xy = *reinterpret_cast<double*>(pAngles);
 
-    const auto ret = address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pEntity, false, -1, pFilter, bResetAllParticlesOnEntity, origin_xy, pOrigin->z, angles_xy, pAngles->z);
+    address::server::UTIL_DispatchParticleEffectFilterPosition(pszParticleName, pEntity, false, -1, pFilter, bResetAllParticlesOnEntity, origin_xy, pOrigin->z, angles_xy, pAngles->z);
 #endif
 
     s_bBypassDispatchEffect = false;
-    return ret;
+    return 0;
 }
 // const char* pszParticleName, ParticleAttachment_t iAttachType, CBaseEntity* pEntity, uint8_t iAttachmentIndex, uint32_t /* CUtlStringToken */ iAttachmentName = 0, bool bResetAllParticlesOnEntity = false, int32_t nSplitScreenPlayerSlot = -1, IRecipientFilter* pFilter = nullptr, bool bAllowDormantSpawn = false
 int32_t DispatchParticleEffectFilter(const char* pszParticleName, CBaseEntity* pEntity, ParticleAttachment_t iAttachType, IRecipientFilter* pFilter, uint8_t iAttachmentIndex, bool bResetAllParticlesOnEntity)
 {
     s_bBypassDispatchEffect = true;
-    const auto ret          = address::server::UTIL_DispatchParticleEffectFilterAttachment(pszParticleName, iAttachType, pEntity, iAttachmentIndex, 0, bResetAllParticlesOnEntity, -1, pFilter, false);
+    address::server::UTIL_DispatchParticleEffectFilterAttachment(pszParticleName, iAttachType, pEntity, iAttachmentIndex, 0, bResetAllParticlesOnEntity, -1, pFilter, false);
     s_bBypassDispatchEffect = false;
-    return ret;
+    return 0;
 }
 
 BeginStaticHookScope(UTIL_DispatchEffect)
@@ -186,7 +186,7 @@ BeginStaticHookScope(UTIL_DispatchEffectFilter)
 
 BeginMemberHookScope(IGameEventSystem)
 {
-    DeclareVirtualHook(PostEventAbstract, void, (IGameEventSystem * pGameEventSystem, int nSlot, bool bLocalOnly, int nClientCount, const NetworkReceiver_t* clients, INetworkMessageInternal* pEvent, CNetMessage* pData, unsigned long nSize, NetChannelBufType_t bufType))
+    DeclareVirtualHook(PostEventAbstract, void, (IGameEventSystem * pGameEventSystem, int nSlot, bool bLocalOnly, int nClientCount, const NetworkReceiver_t* clients, INetworkMessageInternal* pEvent, CNetMessage* pData, uint64_t nSize, NetChannelBufType_t bufType))
     {
 #ifdef HOOK_NETWORK_ASSERT
         WARN("%10s: 0x%p\n"   // IGameEventSystem*

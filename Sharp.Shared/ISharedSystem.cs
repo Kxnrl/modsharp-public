@@ -57,4 +57,6 @@ public interface ISharedSystem
     IParticleManager GetParticleManager();
 
     IAddonManager GetAddonManager();
+
+    IScriptManager GetScriptManager();
 }

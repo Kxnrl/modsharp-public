@@ -39,5 +39,6 @@ void CBaseWeapon::Holster()
 
 void CBaseWeapon::Deploy()
 {
-    VCall_AutoVoid(CBaseWeapon, Deploy, this);
+    DeclareVFuncIndex(CBaseWeapon, Deploy, offset);
+    CALL_VIRTUAL(bool, offset, this);
 }

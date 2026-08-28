@@ -25,6 +25,7 @@
 #include "logging.h"
 #include "netmessage.h"
 #include "sdkproxy.h"
+#include "steamworks.h"
 
 #include "CoreCLR/NativeSpan.h"
 #include "CoreCLR/RuntimeProtobufMessage.h"
@@ -298,6 +299,16 @@ static void DualAddonOverrideCheck(SteamId_t steamId, double time)
     ::DualMountAddonOverrideClientCheck(steamId, time);
 }
 
+static uint64_t DualAddonGetPublishFileId()
+{
+    return ::GetDualAddonId();
+}
+
+static bool DualAddonSetPublishFileId(uint64_t publishFileId)
+{
+    return ::SetDualAddonId(publishFileId);
+}
+
 static NativeSpan<uint64_t> ExtraAddonGetIds()
 {
     static std::vector<uint64_t> s_idCache;
@@ -467,6 +478,8 @@ void Init()
 
     bridge::CreateNative("Game.DualAddonPurgeCheck", reinterpret_cast<void*>(DualAddonPurgeCheck));
     bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));
+    bridge::CreateNative("Game.DualAddonGetPublishFileId", reinterpret_cast<void*>(DualAddonGetPublishFileId));
+    bridge::CreateNative("Game.DualAddonSetPublishFileId", reinterpret_cast<void*>(DualAddonSetPublishFileId));
 
     bridge::CreateNative("Game.ExtraAddonGetIds", reinterpret_cast<void*>(ExtraAddonGetIds));
     bridge::CreateNative("Game.ExtraAddonGetServerAddons", reinterpret_cast<void*>(ExtraAddonGetServerAddons));

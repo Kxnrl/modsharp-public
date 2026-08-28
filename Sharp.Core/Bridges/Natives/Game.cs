@@ -131,6 +131,10 @@ public static unsafe partial class Game
 
     public static partial void DualAddonOverrideCheck(ulong steamId, double time);
 
+    public static partial ulong DualAddonGetPublishFileId();
+
+    public static partial bool DualAddonSetPublishFileId(ulong publishFileId);
+
     public static partial NativeSpan<ulong> ExtraAddonGetIds();
 
     public static partial nint ExtraAddonGetServerAddons();

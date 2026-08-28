@@ -68,10 +68,10 @@ static void EngineError(const char* text)
     FatalError("CoreCLR Error: %s", text);
 }
 
-static void RejectConnection(void* pNetInfo, IServerGameClient::ENetworkDisconnectionReason reason)
+static void RejectConnection(uint32_t hNetInfo, IServerGameClient::ENetworkDisconnectionReason reason)
 {
     AssertPtr(g_pNetworkSystem);
-    g_pNetworkSystem->RejectNetChannel(pNetInfo, reason);
+    g_pNetworkSystem->RejectNetChannel(hNetInfo, reason);
 }
 
 static void LogMsg(const char* text)

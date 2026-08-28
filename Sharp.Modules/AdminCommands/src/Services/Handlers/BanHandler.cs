@@ -83,6 +83,13 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     public (string Key, string Fallback) GetRemovedNotification(IGameClient target)
         => ("Admin.BanRemoved", $"unbanned {target.Name}");
 
+    public IReadOnlySet<SteamID> GetCachedIdentities(TimeSpan grace)
+    {
+        var cutoff = DateTime.UtcNow - grace;
+
+        return _bans.Where(x => x.Value.AddedAt <= cutoff).Select(x => x.Key).ToHashSet();
+    }
+
     public void RegisterHooks()
     {
         if (_hooksRegistered)
@@ -174,7 +181,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
     {
         if (banned)
         {
-            _bans[steamId] = new BanEntry(expiresAt, type, ip);
+            _bans[steamId] = new BanEntry(expiresAt, type, ip, DateTime.UtcNow);
 
             if (!string.IsNullOrWhiteSpace(ip))
             {
@@ -218,7 +225,7 @@ internal class BanHandler : IAdminOperationHandler, IAdminOperationHookRegistrar
         return ip[..(lastDotIndex + 1)];
     }
 
-    private record struct BanEntry(DateTime? ExpiresAt, BanType Type, string? Ip);
+    private record struct BanEntry(DateTime? ExpiresAt, BanType Type, string? Ip, DateTime AddedAt);
 
     private record BanMetadata
     {

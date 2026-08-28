@@ -106,7 +106,9 @@ static void StopSoundEvent(SndOpEventGuid_t* guid)
 {
     AssertPtr(g_pSoundOpGameSystem);
 
-    address::server::SoundOpGameSystem_StopSoundEvent(g_pSoundOpGameSystem, guid);
+    CBroadcastRecipientFilter filter(true);
+    filter.AddAllPlayer();
+    address::server::SoundOpGameSystem_StopSoundEventFilter(g_pSoundOpGameSystem, &filter, guid->GetGuid());
 }
 
 static void StopSoundEventFilter(SndOpEventGuid_t* guid, RuntimeRecipientFilter* pFilter)
@@ -114,7 +116,7 @@ static void StopSoundEventFilter(SndOpEventGuid_t* guid, RuntimeRecipientFilter*
     AssertPtr(g_pSoundOpGameSystem);
 
     CBroadcastRecipientFilter filter(pFilter, true);
-    address::server::SoundOpGameSystem_StopSoundEventFilter(g_pSoundOpGameSystem, &filter, guid);
+    address::server::SoundOpGameSystem_StopSoundEventFilter(g_pSoundOpGameSystem, &filter, guid->GetGuid());
 }
 
 static bool IsSoundEventValid(const char* pszSoundEvent)

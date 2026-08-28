@@ -62,6 +62,12 @@ public:
         return (this->Base()[WordIndex(bit_idx)] & BitMask(bit_idx)) != 0;
     }
 
+    void Set(int bitNum) noexcept
+    {
+        const std::size_t bit_idx = bitNum;
+        this->Base()[WordIndex(bit_idx)] |= BitMask(bit_idx);
+    }
+
     void Clear(int bitNum) noexcept
     {
         const std::size_t bit_idx = bitNum;

@@ -41,7 +41,7 @@ int32_t CBaseModelEntity::LookupAttachment(const char* pAttachmentName)
     const auto pModel = pNode->GetStudioModel();
 
 #ifdef PLATFORM_WINDOWS
-    int32_t iAttachment = 0;
+    uint8_t iAttachment = 0;
     address::server::StudioModel_LookupAttachment(pModel, &iAttachment, pAttachmentName);
     return iAttachment;
 #else
@@ -60,7 +60,7 @@ void CBaseModelEntity::GetAttachment(int32_t iAttachment, Vector* absOrigin, Vec
     absOrigin->Init();
     absAngles->Init();
 
-    address::server::StudioModel_GetAttachment(pModel, iAttachment, absOrigin, absAngles);
+    address::server::StudioModel_GetAttachment(pModel, static_cast<uint8_t>(iAttachment), absOrigin, absAngles);
 }
 
 int32_t CBaseModelEntity::LookupBone(const char* pBoneName)

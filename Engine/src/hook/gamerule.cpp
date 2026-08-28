@@ -264,10 +264,10 @@ BeginStaticHookScope(HandleGCBanInfo)
         KickClient(pClient, reason);
     }
 
-    DeclareStaticDetourHook(HandleGCBanInfo, void, ())
+    DeclareStaticDetourHook(HandleGCBanInfo, void, (CCSGameRules * pGameRules))
     {
         if (!ms_fix_kick_cooldown->GetValue<bool>())
-            return HandleGCBanInfo();
+            return HandleGCBanInfo(pGameRules);
 
         const auto kickMode = sv_kick_players_with_cooldown->GetValue<int>();
         if (kickMode == 0)

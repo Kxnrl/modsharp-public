@@ -29,10 +29,12 @@
 #include "cstrike/component/PlayerPawnComponent.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
+#include "cstrike/interface/ICvar.h"
 #include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CMoveData.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
+#include "cstrike/type/CUserCmd.h"
 #include "cstrike/type/VProf.h"
 
 #include <proto/cs_usercmd.pb.h>
@@ -229,11 +231,56 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
 
         CheckMovingGround(pService, frametime);
     }
+
+    static bool IsModernWaterJump(CCSPlayerPawn * pPawn, CCSPlayer_MovementServices * pService)
+    {
+        static CConVarBaseData* pLegacyJumpConVar = icvar ? icvar->FindConVarIterator("sv_legacy_jump") : nullptr;
+        if (!pLegacyJumpConVar || pLegacyJumpConVar->GetValue<bool>())
+            return false;
+
+        if (pPawn->m_flWaterLevel() < 0.5f)
+            return false;
+
+        static CConVarBaseData* pAutoBhopConVar = icvar ? icvar->FindConVarIterator("sv_autobunnyhopping") : nullptr;
+        if (pAutoBhopConVar && pAutoBhopConVar->GetValue<bool>())
+            return true;
+
+        constexpr auto mask    = static_cast<uint64_t>(EButtons::IN_JUMP);
+        const auto&    buttons = pService->m_nButtons()->m_pButtonStates();
+        const bool     held    = (static_cast<uint64_t>(buttons.m_nKeyButtons) & mask) != 0;
+        const bool     changed = (static_cast<uint64_t>(buttons.m_nKeyButtonsChanged) & mask) != 0;
+        const bool     scroll  = (static_cast<uint64_t>(buttons.m_nScrollButtons) & mask) != 0;
+        return scroll || (held && changed);
+    }
+
+    DeclareMemberDetourHook(CheckLegacyJump, void, (CStrikeObject * pJump, CMoveData * pMoveData))
+    {
+        CheckLegacyJump(pJump, pMoveData);
+    }
+
+    DeclareMemberDetourHook(CheckModernJump, void, (CStrikeObject * pJump, CMoveData * pMoveData))
+    {
+        static int offset   = schemas::GetOffset("CCSPlayer_MovementServices", "m_ModernJump").offset;
+        const auto pService = pJump->GetFieldPointer<CCSPlayer_MovementServices*>(-offset);
+
+        const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
+        AssertPtr(pPawn);
+
+        if (IsModernWaterJump(pPawn, pService))
+        {
+            static const int nLegacyJumpOffset = schemas::GetOffset("CCSPlayer_MovementServices", "m_LegacyJump").offset;
+            CheckLegacyJump(pService->GetFieldPointer<CStrikeObject*>(nLegacyJumpOffset), pMoveData);
+        }
+        else
+        {
+            CheckModernJump(pJump, pMoveData);
+        }
+    }
 }
 
 BeginMemberHookScope(CCSPlayerController)
 {
-    DeclareMemberDetourHook(ProcessUserCommands, void, (CCSPlayerController * pController, CUserCmd * pCommands, int commandCount, bool paused, float margin))
+    DeclareMemberDetourHook(ProcessUserCommands, int, (CCSPlayerController * pController, CUserCmd * pCommands, int commandCount, bool paused, float margin))
     {
         VPROF_MS_HOOK();
 
@@ -388,6 +435,9 @@ void InstallMovementHook()
     HOOK(CCSPlayer_MovementServices, WalkMove);
     HOOK(CCSPlayer_MovementServices, Accelerate);
     HOOK(CCSPlayer_MovementServices, ProcessMove);
+
+    HOOK(CCSPlayer_MovementServices, CheckLegacyJump);
+    HOOK(CCSPlayer_MovementServices, CheckModernJump);
 
     VHOOK(CCSPlayer_MovementServices, CheckMovingGround, server);
 

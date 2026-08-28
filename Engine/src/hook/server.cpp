@@ -39,6 +39,7 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
+#include "cstrike/type/Vector.h"
 
 #include <Zydis.h>
 #include <safetyhook.hpp>
@@ -239,7 +240,7 @@ BeginMemberHookScope(CGameRulesGameSystem)
 class CNavMesh;
 BeginMemberHookScope(CNavMesh)
 {
-    DeclareMemberDetourHook(GetNearestNavArea, void*, (void*, float*, unsigned int*, unsigned int, int64_t, int64_t, float, int64_t))
+    DeclareMemberDetourHook(GetNearestNavArea, void*, (void*, Vector*, uint32_t*, uint32_t, int64_t, float, int64_t))
     {
         return nullptr;
     }

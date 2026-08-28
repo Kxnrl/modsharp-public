@@ -15,6 +15,7 @@
     <ClCompile Include="src\address_server.cpp" />
     <ClCompile Include="src\bridge\hookbridge.cpp" />
     <ClCompile Include="src\bridge\natives\NetNatives.cpp" />
+    <ClCompile Include="src\bridge\natives\ScriptNatives.cpp" />
     <ClCompile Include="src\bridge\natives\SoundNatives.cpp" />
     <ClCompile Include="src\command.cpp" />
     <ClCompile Include="src\CoreCLR\RuntimeProtobufMessage.cpp" />
@@ -29,7 +30,6 @@
     <ClCompile Include="src\cstrike\Interface\ICvar.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameTypes.cpp" />
-    <ClCompile Include="src\cstrike\Interface\INetChannel.cpp" />
     <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp" />
     <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp" />
     <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp" />
@@ -81,6 +81,7 @@
     <ClCompile Include="src\gamedata.cpp" />
     <ClCompile Include="src\gamefactory.cpp" />
     <ClCompile Include="src\hook\client.cpp" />
+    <ClCompile Include="src\hook\cs_script.cpp" />
     <ClCompile Include="src\hook\cvar.cpp" />
     <ClCompile Include="src\hook\engine.cpp" />
     <ClCompile Include="src\hook\entity.cpp" />
@@ -116,6 +117,7 @@
     <ClCompile Include="src\steamproxy.cpp" />
     <ClCompile Include="src\steamworks.cpp" />
     <ClCompile Include="src\strtool.cpp" />
+    <ClCompile Include="src\v8proxy.cpp" />
     <ClCompile Include="vendors\safetyhook\safetyhook.cpp" />
     <ClCompile Include="vendors\zydis\Zydis.c" />
   </ItemGroup>
@@ -124,6 +126,7 @@
     <ClInclude Include="src\address_scan.h" />
     <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
     <ClInclude Include="src\bridge\natives\NetNatives.h" />
+    <ClInclude Include="src\bridge\natives\ScriptNatives.h" />
     <ClInclude Include="src\bridge\natives\SoundNatives.h" />
     <ClInclude Include="src\command.h" />
     <ClInclude Include="src\CoreCLR\Nullable.h" />
@@ -154,6 +157,8 @@
     <ClInclude Include="src\cstrike\type\CCollisionProperty.h" />
     <ClInclude Include="src\cstrike\type\CCSHitboxSystem.h" />
     <ClInclude Include="src\cstrike\interface\CDedicatedServerWorkshopManager.h" />
+    <ClInclude Include="src\cstrike\type\CCSScript.h" />
+    <ClInclude Include="src\cstrike\type\ScriptValue.h" />
     <ClInclude Include="src\cstrike\type\CEconItemDefinition.h" />
     <ClInclude Include="src\cstrike\type\CEntityClass.h" />
     <ClInclude Include="src\cstrike\type\CEntityPrecacheContext.h" />
@@ -163,6 +168,8 @@
     <ClInclude Include="src\cstrike\type\CPlayerSlot.h" />
     <ClInclude Include="src\cstrike\type\CTakeDamageResult.h" />
     <ClInclude Include="src\cstrike\type\CHostState.h" />
+    <ClInclude Include="src\cstrike\type\CUtlAutoList.h" />
+    <ClInclude Include="src\cstrike\type\CUtlHashTable.h" />
     <ClInclude Include="src\cstrike\type\CUtlRBTree.h" />
     <ClInclude Include="src\cstrike\type\CUtlSourceLocation.h" />
     <ClInclude Include="src\cstrike\type\CUtlTSHash.h" />
@@ -191,6 +198,7 @@
     <ClInclude Include="src\cstrike\type\KeyValues3.h" />
     <ClInclude Include="src\cstrike\type\matrix3x4.h" />
     <ClInclude Include="src\cstrike\type\netadr_t.h" />
+    <ClInclude Include="src\cstrike\type\UtlCommon.h" />
     <ClInclude Include="src\hook\installer.h" />
     <ClInclude Include="src\mathematics.h" />
     <ClInclude Include="src\memory\zydis_utility.h" />
@@ -292,6 +300,7 @@
     <ClInclude Include="src\strtool.h" />
     <ClInclude Include="src\types.h" />
     <ClInclude Include="src\netmessage.h" />
+    <ClInclude Include="src\v8proxy.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\vhook\call.h" />
     <ClInclude Include="src\vhook\hook.h" />
@@ -339,7 +348,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>modsharp</TargetName>
     <OutDir>$(cs2)\game\sharp\bin\</OutDir>
-    <IncludePath>src;vendors/protobuf/src;vendors/steamworks/include/;vendors/zydis/;vendors/expected/include;vendors/safetyhook/include;vendors/json/;$(IncludePath)</IncludePath>
+    <IncludePath>src;vendors/protobuf/src;vendors/steamworks/include/;vendors/zydis/;vendors/expected/include;vendors/safetyhook/include;vendors/json/;vendors/v8/include;$(IncludePath)</IncludePath>
     <IntDir>../.build/Engine/.mid/$(Platform)\$(Configuration)\</IntDir>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
     <LibraryPath>$(LibraryPath)</LibraryPath>
@@ -351,7 +360,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DISASM_DISTORM;MODSHARP_EXPORTS;_WINDOWS;_USRDLL;WIN32;PLATFORM_WINDOWS;_WIN32;NOMINMAX;WINDOWS;COMPILER_MSVC64;COMPILER_MSVC;__STDC_LIMIT_MACROS;X64BITS;_CRT_NO_VA_START_VALIDATION;_ITERATOR_DEBUG_LEVEL=0;CRCPP_USE_CPP11;ZYDIS_STATIC_BUILD;ZYCORE_STATIC_BUILD;WIN32_LEAN_AND_MEAN;USING_V8_SHARED;$(EngineProperty);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -372,7 +381,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>psapi.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;v8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\src\CoreCLR\win64;lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

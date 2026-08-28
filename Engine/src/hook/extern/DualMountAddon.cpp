@@ -322,4 +322,5 @@ void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)
 void DualMountAddonPurgeClientCheck()
 {
     s_BypassCheckingTime.clear();
+    s_PendingMountClient.clear();
 }
