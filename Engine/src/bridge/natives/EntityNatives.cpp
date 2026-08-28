@@ -477,14 +477,14 @@ static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-static void PanoramaCustomHudLayoutSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, int32_t hasClass)
+static void PanoramaCustomHudLayoutSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
 {
-    pLayout->SetHasClass(panelId, className, hasClass);
+    pLayout->SetHasClass(panelId, className, classStatus);
 }
 
-static void PanoramaCustomHudLayoutSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
+static void PanoramaCustomHudLayoutSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
 {
-    pLayout->SetHasClassForPlayer(playerSlot, panelId, className, hasClass);
+    pLayout->SetHasClassForPlayer(playerSlot, panelId, className, classStatus);
 }
 
 static void PanoramaCustomHudLayoutSetDialogVariableString(CCSCustomHudLayout* pLayout, const char* panelId, const char* variableName, const char* value)

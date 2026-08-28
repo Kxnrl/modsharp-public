@@ -84,8 +84,8 @@ public:
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecClassNames)
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecDialogVariableNames)
 
-    void SetHasClass(const char* panelId, const char* className, int32_t hasClass);
-    void SetHasClassForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass);
+    void SetHasClass(const char* panelId, const char* className, EHudPanelClassStatus_t classStatus);
+    void SetHasClassForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus);
     void SetDialogVariableString(const char* panelId, const char* variableName, const char* value);
     void SetDialogVariableStringForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value);
     void ClearDialogVariableStringForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* variableName);

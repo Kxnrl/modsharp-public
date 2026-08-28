@@ -35,24 +35,24 @@ HUDPanelDialogVariableString_t::HUDPanelDialogVariableString_t()
     m_bIsSet               = false;
 }
 
-void CCSCustomHudLayout::SetHasClass(const char* panelId, const char* className, int32_t hasClass)
+void CCSCustomHudLayout::SetHasClass(const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
 {
     if (!panelId || !className)
         return;
 
     CUtlString panel(panelId);
     CUtlString cssClass(className);
-    address::server::CCSCustomHudLayout_SetHasClass(this, &panel, &cssClass, hasClass);
+    address::server::CCSCustomHudLayout_SetHasClass(this, &panel, &cssClass, classStatus);
 }
 
-void CCSCustomHudLayout::SetHasClassForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* className, int32_t hasClass)
+void CCSCustomHudLayout::SetHasClassForPlayer(PlayerSlot_t playerSlot, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
 {
     if (playerSlot >= CS_MAX_PLAYERS || !panelId || !className)
         return;
 
     CUtlString panel(panelId);
     CUtlString cssClass(className);
-    address::server::CCSCustomHudLayout_SetHasClassForPlayer(this, playerSlot, &panel, &cssClass, hasClass);
+    address::server::CCSCustomHudLayout_SetHasClassForPlayer(this, playerSlot, &panel, &cssClass, classStatus);
 }
 
 void CCSCustomHudLayout::SetDialogVariableString(const char* panelId, const char* variableName, const char* value)
