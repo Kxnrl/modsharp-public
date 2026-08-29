@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Forwards;
 using Sharp.Core.GameEntities;
@@ -35,14 +36,18 @@ internal class PanoramaManager : ICorePanoramaManager
 {
     private readonly ILogger<PanoramaManager> _logger;
     private readonly ICoreEntityManager       _entityManager;
+    private readonly ICoreAssemblyManager     _assemblyManager;
 
     private readonly List<CustomHudClickedCallback>                   _clickListeners;
     private readonly Dictionary<uint, List<CustomHudClickedCallback>> _clickCallbacks;
 
-    public PanoramaManager(ILogger<PanoramaManager> logger, ICoreEntityManager entityManager)
+    public PanoramaManager(ILogger<PanoramaManager> logger,
+        ICoreEntityManager                          entityManager,
+        ICoreAssemblyManager                        assemblyManager)
     {
-        _logger        = logger;
-        _entityManager = entityManager;
+        _logger          = logger;
+        _entityManager   = entityManager;
+        _assemblyManager = assemblyManager;
 
         _clickListeners = [];
         _clickCallbacks = [];
@@ -50,6 +55,8 @@ internal class PanoramaManager : ICorePanoramaManager
         Game.OnGameShutdown               += OnGameShutdown;
         Entity.OnEntityDeleted            += OnEntityDeleted;
         Panorama.OnCustomHudLayoutClicked += OnCustomHudLayoutClicked;
+
+        assemblyManager.RegisterUnloadCleanup(ClearLeakedRegistrations);
     }
 
     public ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null)
@@ -70,6 +77,13 @@ internal class PanoramaManager : ICorePanoramaManager
 
     public void InstallClickListener(CustomHudClickedCallback listener)
     {
+        if (_assemblyManager.IsDelegateUnloaded(listener))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (_clickListeners.Contains(listener))
         {
             _logger.LogError("Custom HUD click listener is already installed.\n{stackTrace}", Environment.StackTrace);
@@ -90,6 +104,13 @@ internal class PanoramaManager : ICorePanoramaManager
 
     public void InstallClickCallback(ICustomHudLayout layout, CustomHudClickedCallback callback)
     {
+        if (_assemblyManager.IsDelegateUnloaded(callback))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         var handle = layout.Handle.GetValue();
 
         if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
@@ -127,10 +148,26 @@ internal class PanoramaManager : ICorePanoramaManager
         }
     }
 
+    private void ClearLeakedRegistrations()
+    {
+        _assemblyManager.ClearLeakedCallbacks(_clickListeners, "CustomHudClickListener", x => x);
+
+        foreach (var handle in _clickCallbacks.Keys.ToArray())
+        {
+            var callbacks = _clickCallbacks[handle];
+
+            _assemblyManager.ClearLeakedCallbacks(callbacks, "CustomHudClickCallback", x => x);
+
+            if (callbacks.Count <= 0)
+            {
+                _clickCallbacks.Remove(handle);
+            }
+        }
+    }
+
     private void OnGameShutdown()
     {
-        // no leak
-        _clickListeners.Clear();
+        // entity based callback will purge on map end, no leak here
         _clickCallbacks.Clear();
     }
 

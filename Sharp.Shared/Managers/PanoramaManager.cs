@@ -50,13 +50,13 @@ public interface IPanoramaManager
     ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null);
 
     /// <summary>
-    ///     Installs a custom-HUD button-click listener as global on <b>current map</b>.
+    ///     Installs a custom-HUD button-click listener as global.
     /// </summary>
     /// <remarks>Remove the listener during module shutdown.</remarks>
     void InstallClickListener(CustomHudClickedHandler listener);
 
     /// <summary>
-    ///     Removes a previously installed button-click listener as global on <b>current map</b>.
+    ///     Removes a previously installed button-click listener as global.
     /// </summary>
     void RemoveClickListener(CustomHudClickedHandler listener);
 
