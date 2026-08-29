@@ -120,6 +120,7 @@ bool address::Initialize()
     ResolveCCSPlayerPawn_IsPlayer();
     ResolveCCSPlayerPawn_SetDefaultGloves();
     ResolveCEntityClassEntityListOffset();
+    ResolveProcessClientSvcUserMessage();
 
     g_pHookManager->Hook_GameInit(HookType_Post, [] {
         ResolveCreateTriggerInternal();
@@ -152,6 +153,14 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::EmitSoundFilter", address::server::CBaseEntity_EmitSoundFilter);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::StopSound", address::server::CBaseEntity_StopSound);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::DispatchTraceAttack", address::server::CBaseEntity_DispatchTraceAttack);
+
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetHasClass", address::server::CCSCustomHudLayout_SetHasClass);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetHasClassForPlayer", address::server::CCSCustomHudLayout_SetHasClassForPlayer);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetDialogVariableString", address::server::CCSCustomHudLayout_SetDialogVariableString);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetDialogVariableStringForPlayer", address::server::CCSCustomHudLayout_SetDialogVariableStringForPlayer);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::ClearDialogVariableStringForPlayer", address::server::CCSCustomHudLayout_ClearDialogVariableStringForPlayer);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::SetInputCaptureEnabled", address::server::CCSCustomHudLayout_SetInputCaptureEnabled);
+    RESOLVE_GAMEDATA_ADDRESS("CCSCustomHudLayout::IsInputCaptureEnabled", address::server::CCSCustomHudLayout_IsInputCaptureEnabled);
 
     // PlayerController
     RESOLVE_GAMEDATA_ADDRESS("CBasePlayerController::SwitchSteam", address::server::CBasePlayerController_SwitchSteam);

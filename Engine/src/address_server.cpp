@@ -34,6 +34,43 @@
 
 class CBaseGameSystemFactory;
 
+void ResolveProcessClientSvcUserMessage()
+{
+    auto svr_mod = modules::server;
+
+    auto message_vtable  = svr_mod->GetVirtualTableByName("CCSUsrMsg_CustomHudClicked_t");
+    auto layout_typeinfo = svr_mod->GetTypeInfoFromName("CCSCustomHudLayout");
+    if (!message_vtable.IsValid() || !layout_typeinfo.IsValid())
+    {
+        WARN("Failed to resolve ProcessClientSvcUserMessage references.");
+        return;
+    }
+
+    auto message_refs = svr_mod->GetReferenceRange(message_vtable);
+    auto layout_refs  = svr_mod->GetReferenceRange(layout_typeinfo);
+    if (message_refs.empty() || layout_refs.empty())
+    {
+        WARN("Failed to resolve ProcessClientSvcUserMessage references.");
+        return;
+    }
+
+    std::vector<std::span<const CModule::ReferenceEntry>> reference_sets{
+        message_refs,
+        layout_refs,
+    };
+
+    auto candidates = svr_mod->IntersectFunctionReferences(reference_sets);
+    if (candidates.size() != 1)
+    {
+        WARN("Failed to resolve ProcessClientSvcUserMessage: found %zu candidates.", candidates.size());
+        return;
+    }
+
+    auto resolved                                = candidates.front();
+    address::server::ProcessClientSvcUserMessage = reinterpret_cast<address::server::ProcessClientSvcUserMessage_t>(resolved);
+    FLOG("Found ProcessClientSvcUserMessage at server+0x%llx", resolved - svr_mod->Base());
+}
+
 void FindCEntityIdentity_SetEntityName()
 {
     const auto set_entity_name_functions = modules::server->FindAllFunctionsFromStringRefs({"CEntityIdentity::SetEntityName called, but there is no entity name string table pointer!\n"});

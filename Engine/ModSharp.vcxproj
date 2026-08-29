@@ -24,6 +24,7 @@
     <ClCompile Include="src\cstrike\component\PlayerPawnComponent.cpp" />
     <ClCompile Include="src\cstrike\econitem.cpp" />
     <ClCompile Include="src\cstrike\entity\CBaseWeapon.cpp" />
+    <ClCompile Include="src\cstrike\entity\CCSCustomHudLayout.cpp" />
     <ClCompile Include="src\cstrike\entity\CTriggerPush.cpp" />
     <ClCompile Include="src\cstrike\interfaces.cpp" />
     <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\cstrike\type\CEntityKeyValues.cpp" />
     <ClCompile Include="src\cstrike\type\CRecipientFilter.cpp" />
     <ClCompile Include="src\cstrike\type\CUtlString.cpp" />
+    <ClCompile Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues3.cpp" />
     <ClCompile Include="src\hook\extern\DualMountAddon.cpp" />
@@ -68,6 +70,7 @@
     <ClCompile Include="src\cstrike\schema.cpp" />
     <ClCompile Include="src\CoreCLR\coreclr.cpp" />
     <ClCompile Include="src\cstrike\type\CNetworkGameServer.cpp" />
+    <ClCompile Include="src\cstrike\type\CNetworkUtlVectorBase.cpp" />
     <ClCompile Include="src\cstrike\type\CServerSideClient.cpp" />
     <ClCompile Include="src\cstrike\Interface\CGameEntitySystem.cpp" />
     <ClCompile Include="src\cstrike\Interface\IGameSystem.cpp" />
@@ -132,6 +135,7 @@
     <ClInclude Include="src\bridge\natives\SchemaNatives.h" />
     <ClInclude Include="src\CoreCLR\RuntimeRecipientFilter.h" />
     <ClInclude Include="src\cstrike\component\CGameSceneNode.h" />
+    <ClInclude Include="src\cstrike\entity\CCSCustomHudLayout.h" />
     <ClInclude Include="src\cstrike\entity\CEconEntity.h" />
     <ClInclude Include="src\cstrike\entity\CLogicCase.h" />
     <ClInclude Include="src\cstrike\entity\CPointHurt.h" />
@@ -178,6 +182,7 @@
     <ClInclude Include="src\cstrike\type\CEntityIdentity.h" />
     <ClInclude Include="src\cstrike\type\CEntityKeyValues.h" />
     <ClInclude Include="src\cstrike\type\CInButtonState.h" />
+    <ClInclude Include="src\cstrike\type\CNetworkUtlVectorBase.h" />
     <ClInclude Include="src\cstrike\type\CNetworkVelocityVector.h" />
     <ClInclude Include="src\cstrike\type\Color32.h" />
     <ClInclude Include="src\cstrike\type\ConCommand.h" />
@@ -191,6 +196,7 @@
     <ClInclude Include="src\cstrike\type\CUtlString.h" />
     <ClInclude Include="src\cstrike\type\CUtlSymbolLarge.h" />
     <ClInclude Include="src\cstrike\type\CUtlVector.h" />
+    <ClInclude Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.h" />
     <ClInclude Include="src\cstrike\type\KeyValues.h" />
     <ClInclude Include="src\cstrike\type\KeyValues3.h" />
     <ClInclude Include="src\cstrike\type\matrix3x4.h" />

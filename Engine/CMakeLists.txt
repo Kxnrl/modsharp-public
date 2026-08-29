@@ -60,6 +60,7 @@ set(modsharp_SOURCES
 	"src/cstrike/entity/CBaseEntity.cpp"
 	"src/cstrike/entity/CBaseModelEntity.cpp"
 	"src/cstrike/entity/CBaseWeapon.cpp"
+	"src/cstrike/entity/CCSCustomHudLayout.cpp"
 	"src/cstrike/entity/CTriggerPush.cpp"
 	"src/cstrike/entity/PlayerController.cpp"
 	"src/cstrike/entity/PlayerPawn.cpp"
@@ -81,9 +82,11 @@ set(modsharp_SOURCES
 	"src/cstrike/type/CEntityInstance.cpp"
 	"src/cstrike/type/CEntityKeyValues.cpp"
 	"src/cstrike/type/CNetworkGameServer.cpp"
+	"src/cstrike/type/CNetworkUtlVectorBase.cpp"
 	"src/cstrike/type/CRecipientFilter.cpp"
 	"src/cstrike/type/CServerSideClient.cpp"
 	"src/cstrike/type/CUtlString.cpp"
+	"src/cstrike/type/CUtlVectorEmbeddedNetworkVar.cpp"
 	"src/cstrike/type/KeyValues.cpp"
 	"src/cstrike/type/KeyValues3.cpp"
 	"src/filesystemfix.cpp"
@@ -300,9 +303,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 	target_link_options(modsharp PUBLIC
 		-fuse-ld=mold
 		-static-libgcc
-		-Wl,-Bstatic
-		-lstdc++
-		-Wl,-Bdynamic
+		-static-libstdc++
 	)
 endif()
 

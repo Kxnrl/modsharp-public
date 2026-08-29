@@ -28,7 +28,10 @@
 
 #include "CoreCLR/RuntimeProtobufMessage.h"
 
+#include "cstrike/entity/CBaseEntity.h"
+#include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
+#include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IMemAlloc.h"
 #include "cstrike/interface/INetwork.h"
@@ -39,10 +42,13 @@
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
 
+#include <proto/cstrike15_usermessages.pb.h>
 #include <proto/netmessages.pb.h>
+
 #include <safetyhook.hpp>
 
 #include <algorithm>
+#include <limits>
 #include <random>
 #include <string>
 
@@ -531,6 +537,42 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
     }
 }
 
+BeginStaticHookScope(ProcessClientSvcUserMessage)
+{
+    DeclareStaticDetourHook(ProcessClientSvcUserMessage, void, (int32_t nPlayerSlot, int32_t nMsgId, uint32_t nMsgSize, const void* pBuf))
+    {
+        ProcessClientSvcUserMessage(nPlayerSlot, nMsgId, nMsgSize, pBuf);
+
+        if (nMsgId != CS_UM_CustomHudClicked || !pBuf || nMsgSize >= 0xFFFF || nPlayerSlot < 0 || nPlayerSlot >= CS_MAX_PLAYERS)
+            return;
+
+        CCSUsrMsg_CustomHudClicked message;
+        if (!message.ParseFromArray(pBuf, static_cast<int32_t>(nMsgSize)))
+            return;
+
+        if (!message.has_custom_hud_layout() || !message.has_button_id())
+            return;
+
+        const auto packed = message.custom_hud_layout();
+        const auto handle = CBaseHandle::FromPackedValue(packed);
+        if (!handle.IsValid())
+            return;
+
+        static auto vtable = modules::server->GetVirtualTableByName("CCSCustomHudLayout");
+
+        const auto pLayout = g_pGameEntitySystem->FindEntityByIndex<CCSCustomHudLayout*>(handle.GetEntryIndex());
+        if (!pLayout || *reinterpret_cast<const uintptr_t*>(pLayout) != vtable || pLayout->GetActualEHandle().GetPackedValue() != packed)
+            return;
+
+        const auto pController = reinterpret_cast<CCSPlayerController*>(CCSPlayerController::FindBySlot(static_cast<PlayerSlot_t>(nPlayerSlot)));
+
+        if (!pController || !pController->IsConnected())
+            return;
+
+        forwards::OnCustomHudLayoutClicked->Invoke(pController, pLayout, message.button_id().c_str());
+    }
+}
+
 void InstallClientHooks()
 {
     // NOTE 修改初始Seed以避免不同服务器的Seed相同, 再更换服务器后可能出现问题
@@ -554,6 +596,15 @@ void InstallClientHooks()
 
     SHOOK(HostSay);
     SHOOK(ScriptPrintMessageChatAll);
+
+    if (address::server::ProcessClientSvcUserMessage)
+    {
+        SHOOK(ProcessClientSvcUserMessage, {.address = reinterpret_cast<void*>(address::server::ProcessClientSvcUserMessage)});
+    }
+    else
+    {
+        FatalError("ProcessClientSvcUserMessage address unresolved.");
+    }
 
     g_pHookManager->Hook_ClientFullyConnect(HookType_Post, [](PlayerSlot_t slot) {
         const auto pClient = sv->GetClient(slot);
