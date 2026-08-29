@@ -28,7 +28,7 @@ namespace Sharp.Shared.Definition;
 // ReSharper disable IdentifierTypo
 /// <summary>
 ///     Persistent entities <br />
-///     Don't ask why it has such an odd name - naming things is hard
+///     Don't ask why it has such an odd name - valve's
 /// </summary>
 public static class PreservedEntities
 {
@@ -116,6 +116,8 @@ public static class PreservedEntities
         "observer",
         "point_script",
         "point_pulse",
+        "custom_hud_layout",
+        "cs_player_camera",
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
