@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
 using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Managers;
@@ -33,6 +34,11 @@ public interface IPanoramaManager
     /// <param name="layout">Layout containing the clicked button.</param>
     /// <param name="buttonId">The clicked Button panel's <c>id</c> attribute.</param>
     delegate void CustomHudClickedHandler(IPlayerController player, ICustomHudLayout layout, string buttonId);
+
+    /// <summary>
+    ///     Get Managed layouts
+    /// </summary>
+    IEnumerable<ICustomHudLayout> GetManagedLayouts();
 
     /// <summary>
     ///     Creates and spawns a <c>custom_hud_layout</c> entity.

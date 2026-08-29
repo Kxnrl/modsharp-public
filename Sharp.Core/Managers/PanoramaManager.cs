@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
@@ -38,8 +39,9 @@ internal class PanoramaManager : ICorePanoramaManager
     private readonly ICoreEntityManager       _entityManager;
     private readonly ICoreAssemblyManager     _assemblyManager;
 
-    private readonly List<CustomHudClickedCallback>                   _clickListeners;
-    private readonly Dictionary<uint, List<CustomHudClickedCallback>> _clickCallbacks;
+    private readonly List<CustomHudClickedCallback>                               _clickListeners;
+    private readonly Dictionary<ICustomHudLayout, List<CustomHudClickedCallback>> _clickCallbacks;
+    private readonly Dictionary<uint, ICustomHudLayout>                           _managedLayouts;
 
     public PanoramaManager(ILogger<PanoramaManager> logger,
         ICoreEntityManager                          entityManager,
@@ -52,11 +54,26 @@ internal class PanoramaManager : ICorePanoramaManager
         _clickListeners = [];
         _clickCallbacks = [];
 
+        _managedLayouts = [];
+
         Game.OnGameShutdown               += OnGameShutdown;
         Entity.OnEntityDeleted            += OnEntityDeleted;
         Panorama.OnCustomHudLayoutClicked += OnCustomHudLayoutClicked;
 
         assemblyManager.RegisterUnloadCleanup(ClearLeakedRegistrations);
+    }
+
+    public IEnumerable<ICustomHudLayout> GetManagedLayouts()
+    {
+        foreach (var entity in _managedLayouts.Values.ToArray())
+        {
+            if (!entity.IsValid() || entity.IsMarkedForDeletion())
+            {
+                continue;
+            }
+
+            yield return entity;
+        }
     }
 
     public ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null)
@@ -72,7 +89,14 @@ internal class PanoramaManager : ICorePanoramaManager
             { "targetname", string.IsNullOrWhiteSpace(targetName) ? "ms_custom_hud_layout" : targetName },
         };
 
-        return _entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues);
+        if (_entityManager.SpawnEntitySync<ICustomHudLayout>("custom_hud_layout", keyValues) is not { } layout)
+        {
+            return null;
+        }
+
+        _managedLayouts[layout.Handle.GetValue()] = layout;
+
+        return layout;
     }
 
     public void InstallClickListener(CustomHudClickedCallback listener)
@@ -111,12 +135,15 @@ internal class PanoramaManager : ICorePanoramaManager
             return;
         }
 
-        var handle = layout.Handle.GetValue();
+        if (!_managedLayouts.ContainsKey(layout.Handle.GetValue()))
+        {
+            throw new InvalidOperationException("Entity is not a managed layout");
+        }
 
-        if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
+        if (!_clickCallbacks.TryGetValue(layout, out var callbacks))
         {
             callbacks               = [];
-            _clickCallbacks[handle] = callbacks;
+            _clickCallbacks[layout] = callbacks;
         }
 
         if (callbacks.Contains(callback))
@@ -131,9 +158,7 @@ internal class PanoramaManager : ICorePanoramaManager
 
     public void RemoveClickCallback(ICustomHudLayout layout, CustomHudClickedCallback callback)
     {
-        var handle = layout.Handle.GetValue();
-
-        if (!_clickCallbacks.TryGetValue(handle, out var callbacks))
+        if (!_clickCallbacks.TryGetValue(layout, out var callbacks))
         {
             return;
         }
@@ -144,7 +169,7 @@ internal class PanoramaManager : ICorePanoramaManager
         }
         else if (callbacks.Count <= 0)
         {
-            _clickCallbacks.Remove(handle);
+            _clickCallbacks.Remove(layout);
         }
     }
 
@@ -152,30 +177,38 @@ internal class PanoramaManager : ICorePanoramaManager
     {
         _assemblyManager.ClearLeakedCallbacks(_clickListeners, "CustomHudClickListener", x => x);
 
-        foreach (var handle in _clickCallbacks.Keys.ToArray())
+        foreach (var layout in _clickCallbacks.Keys.ToArray())
         {
-            var callbacks = _clickCallbacks[handle];
+            var callbacks = _clickCallbacks[layout];
 
             _assemblyManager.ClearLeakedCallbacks(callbacks, "CustomHudClickCallback", x => x);
 
             if (callbacks.Count <= 0)
             {
-                _clickCallbacks.Remove(handle);
+                _clickCallbacks.Remove(layout);
             }
         }
     }
 
     private void OnGameShutdown()
     {
+        _managedLayouts.Clear();
+
         // entity based callback will purge on map end, no leak here
         _clickCallbacks.Clear();
     }
 
-    private void OnEntityDeleted(IntPtr entity)
+    private void OnEntityDeleted(nint pointer)
     {
-        var handle = BaseEntity.GetHandleValue(entity);
+        var handle = BaseEntity.GetHandleValue(pointer);
 
-        if (_clickCallbacks.Remove(handle, out var callbacks))
+        // not managed layout
+        if (!_managedLayouts.Remove(handle, out var layout))
+        {
+            return;
+        }
+
+        if (_clickCallbacks.Remove(layout, out var callbacks))
         {
             // clear ALC refs
             callbacks.Clear();
@@ -196,53 +229,63 @@ internal class PanoramaManager : ICorePanoramaManager
             return;
         }
 
+        if (!_managedLayouts.ContainsKey(layout.Handle.GetValue()))
+        {
+            return;
+        }
+
         BroadcastAll(player, layout, buttonId);
         BroadcastSingle(player, layout, buttonId);
     }
 
     private void BroadcastAll(PlayerController controller, CustomHudLayout layout, string buttonId)
-    {
-        if (_clickListeners.Count == 0)
-        {
-            return;
-        }
-
-        for (var i = 0; i < _clickListeners.Count; i++)
-        {
-            try
-            {
-                _clickListeners[i].Invoke(controller, layout, buttonId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e,
-                                 "An error occurred while calling custom HUD click listener {listener}",
-                                 _clickListeners[i].Method.DeclaringType?.Name ?? _clickListeners[i].Method.Name);
-            }
-        }
-    }
+        => Dispatch(_clickListeners, controller, layout, buttonId);
 
     private void BroadcastSingle(PlayerController controller, CustomHudLayout layout, string buttonId)
     {
-        var handle = layout.Handle.GetValue();
+        if (_clickCallbacks.TryGetValue(layout, out var callbacks))
+        {
+            // 这里因为有可能在Callback中Kill了, 会触发清理, 所以必须使用Clone Array
+            Dispatch(callbacks, controller, layout, buttonId);
+        }
+    }
 
-        if (!_clickCallbacks.TryGetValue(handle, out var callbacks) || callbacks.Count <= 0)
+    private void Dispatch(List<CustomHudClickedCallback> handlers,
+        PlayerController                                 controller,
+        CustomHudLayout                                  layout,
+        string                                           buttonId)
+    {
+        var count = handlers.Count;
+
+        if (count == 0)
         {
             return;
         }
 
-        for (var i = 0; i < callbacks.Count; i++)
+        var buffer = ArrayPool<CustomHudClickedCallback>.Shared.Rent(count);
+
+        try
         {
-            try
+            handlers.CopyTo(buffer);
+
+            for (var i = 0; i < count; i++)
             {
-                callbacks[i].Invoke(controller, layout, buttonId);
+                try
+                {
+                    buffer[i].Invoke(controller, layout, buttonId);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e,
+                                     "An error occurred while calling custom HUD click handler {handler}",
+                                     buffer[i].Method.DeclaringType?.Name ?? buffer[i].Method.Name);
+                }
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e,
-                                 "An error occurred while calling custom HUD click callback {listener}",
-                                 callbacks[i].Method.DeclaringType?.Name ?? callbacks[i].Method.Name);
-            }
+        }
+        finally
+        {
+            // for preventing ALC leak, clear array is required
+            ArrayPool<CustomHudClickedCallback>.Shared.Return(buffer, true);
         }
     }
 }
