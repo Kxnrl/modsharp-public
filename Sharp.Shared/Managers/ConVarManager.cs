@@ -167,7 +167,18 @@ public interface IConVarManager
         ConVarFlags?                        flags       = null);
 
     /// <summary>
-    ///     Must be called during unload, otherwise leak occurs
+    ///     Deprecated no-op. The engine command is released automatically once its callbacks drain.
     /// </summary>
+    [Obsolete("Use ReleaseConsoleCommandCallback/ReleaseServerCommandCallback; the engine command is released once its callbacks drain.")]
     bool ReleaseCommand(string name);
+
+    /// <summary>
+    ///     Release a previously registered console command callback; the engine command is released once all its callbacks drain
+    /// </summary>
+    void ReleaseConsoleCommandCallback(string name, Func<IGameClient?, StringCommand, ECommandAction> fn);
+
+    /// <summary>
+    ///     Release a previously registered server command callback; the engine command is released once all its callbacks drain
+    /// </summary>
+    void ReleaseServerCommandCallback(string name, Func<StringCommand, ECommandAction> fn);
 }

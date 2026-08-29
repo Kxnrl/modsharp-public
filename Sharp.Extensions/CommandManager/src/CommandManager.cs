@@ -70,7 +70,7 @@ internal class CommandManager : ICommandManager, ISharpExtension
 
         foreach (var c in _serverCommandHooks.Keys)
         {
-            _conVarManager.ReleaseCommand(c);
+            _conVarManager.ReleaseServerCommandCallback(c, OnServerCommand);
         }
     }
 

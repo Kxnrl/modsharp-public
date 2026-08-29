@@ -208,6 +208,18 @@ static bool ReleaseCommand(const char* name)
     return g_ConVarManager.ReleaseCommand(name);
 }
 
+static int64_t FindGameCommandHandle(const char* name)
+{
+    auto handle = g_ConVarManager.FindGameCommandHandle(name);
+    return *reinterpret_cast<int64_t*>(&handle);
+}
+
+static int64_t FindSharpCommandHandle(const char* name)
+{
+    auto handle = g_ConVarManager.FindSharpCommandHandle(name);
+    return *reinterpret_cast<int64_t*>(&handle);
+}
+
 static void ReplicateToClient(const CConVarBaseData* pConVar, const char* pszValue, const CServerSideClient* pClient)
 {
     CSingleRecipientFilter filter(pClient->GetSlot(), true);
@@ -227,6 +239,8 @@ void Init()
     bridge::CreateNative("Cvar.SetMinBound", reinterpret_cast<void*>(SetConVarMinBound));
     bridge::CreateNative("Cvar.SetMaxBound", reinterpret_cast<void*>(SetConVarMaxBound));
     bridge::CreateNative("Cvar.ReleaseCommand", reinterpret_cast<void*>(ReleaseCommand));
+    bridge::CreateNative("Cvar.FindGameCommandHandle", reinterpret_cast<void*>(FindGameCommandHandle));
+    bridge::CreateNative("Cvar.FindSharpCommandHandle", reinterpret_cast<void*>(FindSharpCommandHandle));
     bridge::CreateNative("Cvar.ReplicateToClient", reinterpret_cast<void*>(ReplicateToClient));
 
     // hook
