@@ -148,7 +148,7 @@ internal class PanoramaManager : ICorePanoramaManager
 
         if (callbacks.Contains(callback))
         {
-            _logger.LogError("Custom HUD click callbacks is already installed.\n{stackTrace}", Environment.StackTrace);
+            _logger.LogError("Custom HUD click callback is already installed.\n{stackTrace}", Environment.StackTrace);
 
             return;
         }
@@ -245,7 +245,8 @@ internal class PanoramaManager : ICorePanoramaManager
     {
         if (_clickCallbacks.TryGetValue(layout, out var callbacks))
         {
-            // 这里因为有可能在Callback中Kill了, 会触发清理, 所以必须使用Clone Array
+            // the entity maybe get kill in the callback -> entity killed -> purge callback list
+            // so we need to use clone array during the callback
             Dispatch(callbacks, controller, layout, buttonId);
         }
     }
