@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -172,7 +172,9 @@ private:
     }
 
 public:
-    bool ReleaseCommand(const char* name);
+    bool             ReleaseCommand(const char* name);
+    ConCommandHandle FindGameCommandHandle(const char* name) const noexcept;
+    ConCommandHandle FindSharpCommandHandle(const char* name) const noexcept;
 
 private:
     std::unordered_map<CConVarBaseData*, ConVarHandle>     m_CreatedConVarHandles;

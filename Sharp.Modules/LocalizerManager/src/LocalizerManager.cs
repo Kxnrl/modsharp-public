@@ -135,7 +135,7 @@ internal class LocalizerManager : IModSharpModule, ILocalizerManager, IClientLis
     public void Shutdown()
     {
         _clients.RemoveClientListener(this);
-        _conVar.ReleaseCommand(ReloadLocalesCommandName);
+        _conVar.ReleaseServerCommandCallback(ReloadLocalesCommandName, OnCommandReloadLcales);
     }
 
 #endregion
