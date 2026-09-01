@@ -47,10 +47,18 @@ public interface IClientListener
     {
     }
 
+    /// <summary>
+    ///     Calls when a player is active. 
+    ///     This basically is a wrapper for <b>player_active</b> event, and you should not be confused with 
+    ///     the actual <b>ClientPutInServer</b>, which is called earlier than <b>player_active</b>.
+    /// </summary>
     void OnClientPutInServer(IGameClient client)
     {
     }
 
+    /// <summary>
+    ///     Calls a player is verified by the steam authentication. 
+    /// </summary>
     void OnClientPostAdminCheck(IGameClient client)
     {
     }
