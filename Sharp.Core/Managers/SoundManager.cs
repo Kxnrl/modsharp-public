@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared.GameEntities;
@@ -54,10 +53,11 @@ internal unsafe class SoundManager : ICoreSoundManager
     {
         if (!float.IsFinite(playbackOffset) || playbackOffset < 0.0f)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(playbackOffset),
-                playbackOffset,
-                "Playback offset must be finite and non-negative.");
+            _logger.LogWarning(
+                "Cannot start SoundEvent {SoundEvent}: playback offset {PlaybackOffset} must be finite and non-negative",
+                sound,
+                playbackOffset);
+            return default;
         }
 
         var guid = StartSoundEvent(sound, entity, volume, filter);
