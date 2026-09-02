@@ -38,6 +38,20 @@ public interface ISoundManager
         RecipientFilter                     filter = default);
 
     /// <summary>
+    ///     Starts a SoundEvent from an elapsed playback position.
+    /// </summary>
+    /// <param name="sound">SoundEvent name.</param>
+    /// <param name="playbackOffset">Non-negative position, in seconds, inside the sound.</param>
+    /// <param name="entity">Optional source entity.</param>
+    /// <param name="volume">Optional volume override.</param>
+    /// <param name="filter">Recipients that receive both the start and offset update.</param>
+    /// <remarks>
+    ///     This seeks into the sound; it does not schedule playback to begin later.
+    /// </remarks>
+    SoundOpEventGuid StartSoundEventAtOffset(string sound, float playbackOffset,
+        IBaseEntity? entity = null, float? volume = null, RecipientFilter filter = default);
+
+    /// <summary>
     ///     Stops a SoundEvent
     /// </summary>
     void StopSoundEvent(SoundOpEventGuid guid);

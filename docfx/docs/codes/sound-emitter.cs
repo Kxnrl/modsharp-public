@@ -62,6 +62,9 @@ public sealed class SoundEmitter : IModSharpModule
 
         sm.StartSoundEvent(soundEvent, filter: new RecipientFilter(CStrikeTeam.CT)); // start a sound event to CT only
 
+        // start only for this client, already advanced ten seconds into the sound
+        sm.StartSoundEventAtOffset(soundEvent, 10.0f, filter: new RecipientFilter(client));
+
         var guid = sm.StartSoundEvent(soundEvent); // start a global sound event to all clients
 
         ms.PushTimer(() =>

@@ -6,6 +6,7 @@ This tutorial demonstrates how to use the audio system to perform the following 
 - Get sound duration
 - Modify parameters in sound events
 - Emit sounds
+- Start playback at a time offset
 - Stop sounds
 
 [!code-csharp[SoundEmitterExample.cs](../../codes/sound-emitter.cs)]

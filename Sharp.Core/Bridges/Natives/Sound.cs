@@ -33,6 +33,8 @@ public static unsafe partial class Sound
 
     public static partial bool SetSoundEventParamFloat(long guid, string param, float value, RecipientFilter* filter);
 
+    public static partial bool SetSoundEventParamFloatHash(long guid, string param, float value, RecipientFilter* filter);
+
     public static partial bool SetSoundEventParamVector(long guid, string param, Vector* value, RecipientFilter* filter);
 
     public static partial bool SetSoundEventParamInt32(long guid, string param, int value, RecipientFilter* filter);

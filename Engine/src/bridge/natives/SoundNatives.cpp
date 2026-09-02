@@ -27,6 +27,7 @@
 #include "bridge/natives/SoundNatives.h"
 
 #include "cstrike/interface/ISoundOpSystem.h"
+#include "cstrike/type/CHashKey.h"
 #include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/EmitSound.h"
 
@@ -60,6 +61,20 @@ static bool SetSoundEventParamFloat(int64_t guid, const char* pszParam, float fl
     CSosFieldDataFloat        param(flValue);
     SndOpEventGuid_t          event(guid);
     return g_pSoundOpGameSystem->SetSoundEventParam(&filter, event, pszParam, &param);
+}
+
+static bool SetSoundEventParamFloatHash(int64_t guid, const char* pszParam, float flValue, RuntimeRecipientFilter* pFilter)
+{
+    AssertPtr(g_pSoundOpGameSystem);
+
+    const CHashKey paramHash(pszParam);
+    if (paramHash.GetHashCode() == 0)
+        return false;
+
+    CBroadcastRecipientFilter filter(pFilter, true);
+    CSosFieldDataFloat        param(flValue);
+    SndOpEventGuid_t          event(guid);
+    return g_pSoundOpGameSystem->SetSoundEventParamHash(&filter, event, paramHash.GetHashCode(), &param);
 }
 
 static bool SetSoundEventParamVector(int64_t guid, const char* pszParam, const Vector& vecValue, RuntimeRecipientFilter* pFilter)
@@ -135,6 +150,7 @@ void natives::sound::Init()
     bridge::CreateNative("Sound.StopSoundEvent", reinterpret_cast<void*>(StopSoundEvent));
     bridge::CreateNative("Sound.StopSoundEventFilter", reinterpret_cast<void*>(StopSoundEventFilter));
     bridge::CreateNative("Sound.SetSoundEventParamFloat", reinterpret_cast<void*>(SetSoundEventParamFloat));
+    bridge::CreateNative("Sound.SetSoundEventParamFloatHash", reinterpret_cast<void*>(SetSoundEventParamFloatHash));
     bridge::CreateNative("Sound.SetSoundEventParamVector", reinterpret_cast<void*>(SetSoundEventParamVector));
     bridge::CreateNative("Sound.SetSoundEventParamInt32", reinterpret_cast<void*>(SetSoundEventParamInt32));
     bridge::CreateNative("Sound.SetSoundEventParamUInt32", reinterpret_cast<void*>(SetSoundEventParamUInt32));

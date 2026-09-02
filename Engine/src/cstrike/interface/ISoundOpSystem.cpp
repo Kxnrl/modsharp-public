@@ -52,6 +52,27 @@ bool SoundOpGameSystem::SetSoundEventParamInternal(const IRecipientFilter* pFilt
     return true;
 }
 
+bool SoundOpGameSystem::SetSoundEventParamHash(const IRecipientFilter* pFilter, const SndOpEventGuid_t& nGuid, uint32_t nParamHash, CSosFieldData* pValue)
+{
+    if (!nGuid.IsValid())
+        return false;
+
+#ifdef PLATFORM_WINDOWS
+    using SoundOpGameSystem_SetSoundEventParamHash_t = bool (*)(SoundOpGameSystem*, const IRecipientFilter*, const StartSoundEventInfo_t&, uint32_t, CSosFieldData*, int16_t, bool);
+#else
+    using SoundOpGameSystem_SetSoundEventParamHash_t = bool (*)(SoundOpGameSystem*, const IRecipientFilter*, uint32_t, CSosFieldData*, int16_t, bool, StartSoundEventInfo_t);
+#endif
+
+    static auto fn = g_pGameData->GetAddress<SoundOpGameSystem_SetSoundEventParamHash_t>("SoundOpGameSystem::SetSoundEventParamHash");
+    StartSoundEventInfo_t info(nGuid, 0, pFilter->GetRecipients());
+
+#ifdef PLATFORM_WINDOWS
+    return fn(this, pFilter, info, nParamHash, pValue, 0, false);
+#else
+    return fn(this, pFilter, nParamHash, pValue, 0, false, info);
+#endif
+}
+
 SndOpEventGuid_t SoundOpGameSystem::StartSoundEvent(const IRecipientFilter* pFilter, const char* pSound, CBaseEntity* pEntity, int16_t nSeed, float flSoundTime)
 {
 #ifdef PLATFORM_WINDOWS

@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared.GameEntities;
@@ -29,6 +30,8 @@ internal interface ICoreSoundManager : ISoundManager;
 
 internal unsafe class SoundManager : ICoreSoundManager
 {
+    private const string DelayOverrideParameter = "_builtins._delay_override";
+
     private readonly ILogger<SoundManager> _logger;
 
     public SoundManager(ILogger<SoundManager> logger)
@@ -42,6 +45,35 @@ internal unsafe class SoundManager : ICoreSoundManager
         float?                                     volume = null,
         RecipientFilter                            filter = default)
         => Sound.StartSoundEvent(entity?.GetAbsPtr() ?? nint.Zero, sound, &volume, &filter);
+
+    public SoundOpEventGuid StartSoundEventAtOffset(string sound,
+        float                                     playbackOffset,
+        IBaseEntity?                              entity = null,
+        float?                                    volume = null,
+        RecipientFilter                           filter = default)
+    {
+        if (!float.IsFinite(playbackOffset) || playbackOffset < 0.0f)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(playbackOffset),
+                playbackOffset,
+                "Playback offset must be finite and non-negative.");
+        }
+
+        var guid = StartSoundEvent(sound, entity, volume, filter);
+        if (playbackOffset == 0.0f || !guid.IsValid())
+            return guid;
+
+        if (Sound.SetSoundEventParamFloatHash(guid, DelayOverrideParameter, -playbackOffset, &filter))
+            return guid;
+
+        StopSoundEvent(guid, filter);
+        _logger.LogWarning(
+            "Failed to start SoundEvent {SoundEvent} at playback offset {PlaybackOffset}",
+            sound,
+            playbackOffset);
+        return default;
+    }
 
     public void StopSoundEvent(SoundOpEventGuid guid)
         => Sound.StopSoundEvent(&guid);

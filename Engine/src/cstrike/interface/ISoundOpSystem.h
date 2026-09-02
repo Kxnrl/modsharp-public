@@ -147,6 +147,9 @@ public:
     {
         return SetSoundEventParamInternal(pFilter, nGuid, pParamName, pValue);
     }
+
+    bool SetSoundEventParamHash(const IRecipientFilter* pFilter, const SndOpEventGuid_t& nGuid, uint32_t nParamHash, CSosFieldData* pValue);
+
     SndOpEventGuid_t StartSoundEvent(const IRecipientFilter* pFilter, const char* pSound, CBaseEntity* pEntity = nullptr, int16_t unknown = -1, float flSoundTime = 0.0f);
     SndOpEventGuid_t StartSoundEventAll(const char* pSound, CBaseEntity* pEntity = nullptr, int16_t unknown = -1, float flSoundTime = 0.0f);
 };
