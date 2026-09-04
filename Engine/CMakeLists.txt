@@ -142,6 +142,7 @@ set(modsharp_SOURCES
 	"src/steamproxy.cpp"
 	"src/steamworks.cpp"
 	"src/strtool.cpp"
+	"src/symbol_name.cpp"
 	"src/v8proxy.cpp"
 	"vendors/safetyhook/safetyhook.cpp"
 	"vendors/zydis/Zydis.c"
@@ -281,6 +282,7 @@ endif()
 if(WIN32) # windows
 	target_link_libraries(modsharp PUBLIC
 		psapi
+		dbghelp
 		tier0
 		v8
 	)
@@ -291,6 +293,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		libtier0.so
 		protobuf
 		libsteam_api.so
+		dl
+		pthread
+		m
 		v8
 	)
 endif()

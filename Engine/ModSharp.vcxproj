@@ -118,10 +118,12 @@
     <ClCompile Include="src\steamworks.cpp" />
     <ClCompile Include="src\strtool.cpp" />
     <ClCompile Include="src\v8proxy.cpp" />
+    <ClCompile Include="src\symbol_name.cpp" />
     <ClCompile Include="vendors\safetyhook\safetyhook.cpp" />
     <ClCompile Include="vendors\zydis\Zydis.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\symbol_name.h" />
     <ClInclude Include="src\address_resolve.h" />
     <ClInclude Include="src\address_scan.h" />
     <ClInclude Include="src\bridge\natives\EconItemSchemaNative.h" />
@@ -384,7 +386,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>psapi.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;v8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;dbghelp.lib;tier0.lib;steam_api64.lib;libprotobuf.lib;v8.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(MSBuildProjectDirectory)\src\CoreCLR\win64;lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

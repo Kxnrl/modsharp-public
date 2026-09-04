@@ -19,12 +19,19 @@
 
 using System;
 using System.Collections.Generic;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 
 namespace Sharp.Shared;
 
 public interface ILibraryModule
 {
+    nint BaseAddress { get; }
+
+    nuint ImageSize { get; }
+
+    string ModuleName { get; }
+
     /// <summary>
     ///     Find function address by IDA pattern (non-unique) <br />
     ///     <remarks>This method is typically used for iterating through addresses</remarks>
@@ -39,10 +46,18 @@ public interface ILibraryModule
     /// <param name="decorated">If true, will treat <paramref name="tableName" /> as the mangled (symbol) name</param>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
+    bool TryGetVirtualTableByName(string tableName, out nint address, bool decorated = false);
+
     /// <summary>
     ///     Get exported function address (similar to GetProcAddress or dlsym).
     /// </summary>
-    /// <param name="functionName">The name of the exported function</param>
+    /// <param name="exportName">The name of the exported function</param>
+    nint GetExportFunction(string exportName);
+
+    /// <summary>Find exported functions whose names match the supplied name.</summary>
+    NativeFunctionInfo[] FindExportFunctions(string exportName);
+
+    [Obsolete("Use GetExportFunction instead.")]
     nint GetFunctionByName(string functionName);
 
     /// <summary>
@@ -80,11 +95,17 @@ public interface ILibraryModule
     /// <param name="str">The string literal to search for</param>
     nint FindStringExact(string str);
 
+    nint FindString(string str, bool readOnly, bool exact);
+
     /// <summary>
     ///     Find the address in memory that contains a pointer to the specific value provided.
     /// </summary>
     /// <param name="ptr">The value/address to search for within the module's memory space</param>
     nint FindPtr(nint ptr);
+
+    nint[] FindPointers(nint ptr);
+
+    nint[] GetVirtualFunctions(string tableName);
 
     /// <summary>
     ///     Finds virtual tables that contain the specified partial string in their type descriptor or name.
@@ -178,4 +199,10 @@ public interface ILibraryModule
     /// <param name="end">The resolved end address of the function.</param>
     /// <returns>True if the function identification was successful.</returns>
     bool GetFunctionRange(nint middle, out nint start, out nint end);
+
+    ModuleSegmentInfo[] GetSegments();
+
+    bool TryGetTypeInfo(string typeName, out nint typeInfo);
+
+    NativeFunctionRange[] GetKnownFunctionRanges();
 }
