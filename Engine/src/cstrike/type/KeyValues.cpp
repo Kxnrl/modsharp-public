@@ -36,7 +36,7 @@ KeyValues::KeyValues(const char* setName, void* kvsystem, bool unkState)
     constexpr std::string_view symbol_name = "_ZN9KeyValuesC2EPKcP16IKeyValuesSystemb";
 #endif
 
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
 
     func(this, setName, kvsystem, unkState);
 }
@@ -50,7 +50,7 @@ KeyValues::~KeyValues()
     constexpr std::string_view symbol_name = "_ZN9KeyValuesD2Ev";
 #endif
 
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
 
     func(this);
 }
@@ -64,7 +64,7 @@ bool KeyValues::LoadFromBuffer(const char* resourceName, const char* pBuffer, vo
     constexpr std::string_view symbol_name = "_ZN9KeyValues14LoadFromBufferEPKcS1_P11IFileSystemS1_PFbS1_PvEP19IKeyValuesErrorSpewS4_S1_";
 #endif
 
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
 
     return func(this, resourceName, pBuffer, pFileSystem, pPathID, pfnEvaluateSymbolProc, pErrorSpew, pUnk1, pUnk2);
 }
@@ -78,7 +78,7 @@ bool KeyValues::LoadFromBuffer(const char* resourceName, CUtlBuffer& buf, void* 
     constexpr std::string_view symbol_name = "_ZN9KeyValues14LoadFromBufferEPKcR10CUtlBufferP11IFileSystemS1_PFbS1_PvEP19IKeyValuesErrorSpewS6_S1_";
 #endif
 
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
 
     return func(this, resourceName, buf, pFileSystem, pPathID, pfnEvaluateSymbolProc, pErrorSpew, pUnk1, pUnk2);
 }
@@ -91,7 +91,7 @@ void KeyValues::SetName(const char* name)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues7SetNameEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
 
     func(this, name);
 }
@@ -104,7 +104,7 @@ const char* KeyValues::GetName() const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues7GetNameEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -116,7 +116,7 @@ KeyValues* KeyValues::FindKey(const char* keyName, bool bCreate)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues7FindKeyEPKcb";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, bCreate);
 }
 
@@ -128,7 +128,7 @@ const KeyValues* KeyValues::FindKey(const char* keyName) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues7FindKeyEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName);
 }
 
@@ -140,7 +140,7 @@ KeyValues* KeyValues::AddKey(const char* keyName)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues6AddKeyEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName);
 }
 
@@ -152,7 +152,7 @@ KeyValues* KeyValues::GetFirstSubKey()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues14GetFirstSubKeyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -164,7 +164,7 @@ KeyValues* KeyValues::FindLastSubKey()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues14FindLastSubKeyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -176,7 +176,7 @@ bool KeyValues::FindAndDeleteSubKey(const char* name)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues19FindAndDeleteSubKeyEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, name);
 }
 
@@ -188,7 +188,7 @@ KeyValues* KeyValues::GetNextKey()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues10GetNextKeyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -200,7 +200,7 @@ KeyValues* KeyValues::GetFirstTrueSubKey()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues18GetFirstTrueSubKeyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -212,7 +212,7 @@ KeyValues* KeyValues::GetNextTrueSubKey()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues17GetNextTrueSubKeyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -224,7 +224,7 @@ KeyValues* KeyValues::GetFirstValue()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues13GetFirstValueEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -236,7 +236,7 @@ KeyValues* KeyValues::GetNextValue()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues12GetNextValueEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -248,7 +248,7 @@ int KeyValues::GetInt(const char* keyName, int defaultValue) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues6GetIntEPKci";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultValue);
 }
 
@@ -260,7 +260,7 @@ uint64_t KeyValues::GetUint64(const char* keyName, uint64_t defaultValue) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues9GetUint64EPKcy";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultValue);
 }
 
@@ -272,7 +272,7 @@ float KeyValues::GetFloat(const char* keyName, float defaultValue) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues8GetFloatEPKcf";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultValue);
 }
 
@@ -290,7 +290,7 @@ const char* KeyValues::Internal_GetString(const char* keyName, const char* defau
 #else
     constexpr std::string_view symbol_name = "_ZN15CKeyValues_Data18Internal_GetStringEPKcPcm";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultValue, pszOut, maxlen);
 }
 
@@ -302,7 +302,7 @@ void* KeyValues::GetPtr(const char* keyName, void* defaultValue) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues6GetPtrEPKcPv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultValue);
 }
 
@@ -314,7 +314,7 @@ Color32 KeyValues::GetColor(const char* keyName, const Color32& defaultColor) co
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues8GetColorEPKcRK5Color";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName, defaultColor);
 }
 
@@ -326,7 +326,7 @@ bool KeyValues::IsEmpty(const char* keyName) const
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues7IsEmptyEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, keyName);
 }
 
@@ -338,7 +338,7 @@ void KeyValues::SetString(const char* keyName, const char* value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues9SetStringEPKcS1_";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -350,7 +350,7 @@ void KeyValues::SetInt(const char* keyName, int value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues6SetIntEPKci";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -362,7 +362,7 @@ void KeyValues::SetUint64(const char* keyName, uint64_t value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues9SetUint64EPKcy";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -374,7 +374,7 @@ void KeyValues::SetFloat(const char* keyName, float value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues8SetFloatEPKcf";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -386,7 +386,7 @@ void KeyValues::SetPtr(const char* keyName, void* value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues6SetPtrEPKcPv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -398,7 +398,7 @@ void KeyValues::SetColor(const char* keyName, Color32 value)
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues8SetColorEPKc5Color";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this, keyName, value);
 }
 
@@ -410,7 +410,7 @@ KeyValues* KeyValues::MakeCopy()
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues8MakeCopyEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this);
 }
 
@@ -422,7 +422,7 @@ void KeyValues::Clear()
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues5ClearEv";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     func(this);
 }
 
@@ -434,7 +434,7 @@ bool KeyValues::LoadFromFile(class IFileSystem* file_system, const char* filenam
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues12LoadFromFileEP11IFileSystemPKcS3_PFbS3_PvES4_S3_";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, file_system, filename, path_id);
 }
 
@@ -446,7 +446,7 @@ bool KeyValues::SaveToFile(class IFileSystem* file_system, const char* filename,
 #else
     constexpr std::string_view symbol_name = "_ZN9KeyValues10SaveToFileEP11IFileSystemPKcS3_bb";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, file_system, filename, path_id, allow_empty_string);
 }
 
@@ -458,7 +458,7 @@ void KeyValues::RecursiveSaveToFile(const CUtlBuffer& buf, int indent, bool sort
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues19RecursiveSaveToFileER10CUtlBufferibb";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, buf, indent, sort, allow_empty_string);
 }
 
@@ -470,6 +470,6 @@ CKeyValues_Data::types_t KeyValues::GetDataType(const char* name)
 #else
     constexpr std::string_view symbol_name = "_ZNK9KeyValues11GetDataTypeEPKc";
 #endif
-    static auto func = modules::tier0->GetFunctionByName(symbol_name).As<fn>();
+    static auto func = modules::tier0->GetExportByName(symbol_name).As<fn>();
     return func(this, name);
 }

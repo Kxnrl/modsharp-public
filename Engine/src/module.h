@@ -126,11 +126,38 @@ private:
     uintptr_t m_nValue{};
 };
 
-struct RunTimeVTableInfo
+struct RuntimeVTableInfo
 {
     CUtlString demangled_name;
     uintptr_t  address;
     uint64_t   offset;
+};
+
+struct RuntimeExportInfo
+{
+    CUtlString raw_name;
+    CUtlString signature;
+    uintptr_t  address;
+};
+
+struct RuntimeModuleInfo
+{
+    uintptr_t  base_address;
+    std::size_t size;
+    const char* name;
+};
+
+struct RuntimeSegmentInfo
+{
+    uintptr_t  address;
+    std::size_t size;
+    uint8_t    flags;
+};
+
+struct RuntimeFunctionInfo
+{
+    uintptr_t start;
+    uintptr_t end;
 };
 
 class IModule
@@ -147,7 +174,7 @@ public:
     [[nodiscard]] virtual void* FindDataEx(const uint8_t* needle, std::size_t needle_size, bool read_only)         = 0;
     [[nodiscard]] virtual void* FindPtrEx(const void* ptr)                                                         = 0;
 
-    virtual void FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info) = 0;
+    virtual void FindVtablePartial(const char* name, CUtlLeanVector<RuntimeVTableInfo>* info) = 0;
     virtual bool IsPointerDerivedFromEx(void* ptr, const char* name)                          = 0;
 
     [[nodiscard]] virtual bool  GetReferencesEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results)                                      = 0;
@@ -155,6 +182,16 @@ public:
     [[nodiscard]] virtual bool  FindAllFunctionsFromPointersRefsEx(CUtlLeanVector<std::uintptr_t>* ptrs, CUtlLeanVector<std::uintptr_t>* results) = 0;
     virtual bool                GetFunctionRangeEx(std::uintptr_t middle, std::uintptr_t* start, std::uintptr_t* end)                             = 0;
     [[nodiscard]] virtual void* FindStringExactEx(const char* str)                                                                                = 0;
+    [[nodiscard]] virtual bool  FindExportFunctionsEx(const char* name, CUtlLeanVector<RuntimeExportInfo>* results)                       = 0;
+
+    virtual void                GetModuleInfoEx(RuntimeModuleInfo* info) const                                              = 0;
+    [[nodiscard]] virtual bool  FindPtrsEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results)                    = 0;
+    [[nodiscard]] virtual void* FindStringWithOptionsEx(const char* str, bool read_only, bool exact)                        = 0;
+    [[nodiscard]] virtual bool  GetVFunctionsEx(const char* table_name, CUtlLeanVector<std::uintptr_t>* results)          = 0;
+    [[nodiscard]] virtual bool  GetSegmentsEx(CUtlLeanVector<RuntimeSegmentInfo>* results) const                          = 0;
+    [[nodiscard]] virtual void* GetTypeInfoFromNameEx(const char* name) const                                               = 0;
+    [[nodiscard]] virtual bool  GetFunctionEntriesEx(CUtlLeanVector<RuntimeFunctionInfo>* results) const                  = 0;
+    [[nodiscard]] virtual void* FindVirtualTableByNameEx(const char* table_name, bool is_raw_name = false)                  = 0;
 };
 
 enum SegmentFlags : uint8_t
@@ -179,7 +216,7 @@ public:
         std::string     demangled_name;
         uint64_t        offset;
 
-        std::vector<VTable*> children;
+        std::vector<std::string> base_classes;
 
 #ifdef PLATFORM_WINDOWS
         _s_RTTICompleteObjectLocator* object_locator;
@@ -218,6 +255,13 @@ public:
         uintptr_t end{};
     };
 
+    struct ExportSymbol
+    {
+        std::string raw_name;
+        std::string signature;
+        uintptr_t   address;
+    };
+
 private:
     std::vector<Segment> _segments{};
     uintptr_t            _base_address{};
@@ -225,10 +269,16 @@ private:
     std::string          _module_name{};
     void*                _createInterFaceFn;
 
-    std::unordered_map<std::string, uintptr_t>              _cached_vtables{};
+    std::unordered_map<std::string, uintptr_t>            _cached_vtables{};
     std::unordered_map<std::string, std::vector<uintptr_t>> _vtable_functions{};
+    std::vector<ExportSymbol>                              _export_symbols{};
+    std::unordered_map<std::string, std::vector<std::size_t>> _export_aliases{};
 
     void GetModuleInfo(std::string_view mod);
+    void DumpExports(void* module_base);
+    void AddExportSymbol(std::string_view raw_name, std::string_view signature, uintptr_t address);
+    void AddExportAlias(std::string_view alias, std::size_t symbol_index);
+    [[nodiscard]] std::vector<std::size_t> FindExportSymbols(std::string_view name) const;
 
     std::vector<FunctionEntry>  _function_entries{};
     std::vector<ReferenceEntry> _references{};
@@ -240,7 +290,6 @@ private:
 
 #ifndef PLATFORM_WINDOWS
     std::unordered_map<std::string, uintptr_t> _exports{};
-    void                                       DumpExports(void* module_base);
 
     std::uintptr_t                                     _eh_frame_hdr_addr{};
     std::vector<std::uintptr_t>                        _eh_fde_starts{};
@@ -271,6 +320,11 @@ public:
         return _module_name;
     }
 
+    [[nodiscard]] std::size_t Size() const
+    {
+        return _size;
+    }
+
     std::vector<std::uintptr_t> GetVFunctionsFromVTable(const std::string& szVtableName);
 
     void LoopVFunctions(const std::string& vtable_name, const std::function<bool(CAddress)>& callback);
@@ -281,10 +335,13 @@ public:
     [[nodiscard]] CAddress              FindData(const uint8_t* needle, std::size_t needle_size, bool read_only) const;
     [[nodiscard]] CAddress              FindPtr(std::uintptr_t ptr) const;
     [[nodiscard]] std::vector<CAddress> FindPtrs(std::uintptr_t ptr) const;
+    [[nodiscard]] CAddress              FindVirtualTableByName(const std::string& name, bool is_raw_name = false);
     [[nodiscard]] CAddress              GetVirtualTableByName(const std::string& name, bool is_raw_name = false);
     [[nodiscard]] CAddress              FindInterface(std::string_view name) const;
     [[nodiscard]] std::vector<CAddress> FindPatternMulti(std::string_view svPattern) const;
-    [[nodiscard]] CAddress              GetFunctionByName(std::string_view proc_name) const;
+    [[nodiscard]] CAddress                  GetExportByName(std::string_view proc_name) const;
+    [[nodiscard]] CAddress                  FindExportByDemangledName(std::string_view proc_name) const;
+    [[nodiscard]] std::vector<ExportSymbol> FindExportFunctions(std::string_view proc_name) const;
 
     [[nodiscard]] CAddress GetTypeInfoFromName(std::string_view name) const;
 
@@ -306,14 +363,14 @@ public:
         return FindPattern(svPattern);
     }
 
-    [[nodiscard]] void* GetVirtualTableByNameEx(const char* svTableName, bool bDecorated = false) override
+    [[nodiscard]] void* GetVirtualTableByNameEx(const char* svTableName, bool is_raw_name = false) override
     {
-        return GetVirtualTableByName(svTableName);
+        return GetVirtualTableByName(svTableName, is_raw_name);
     }
 
     [[nodiscard]] void* GetFunctionByNameEx(const char* svFunctionName) noexcept override
     {
-        return GetFunctionByName(svFunctionName);
+        return GetExportByName(svFunctionName);
     }
 
     [[nodiscard]] void* FindInterfaceEx(const char* svInterfaceName) override
@@ -351,7 +408,7 @@ public:
         return FindPtr(reinterpret_cast<uintptr_t>(ptr));
     }
 
-    void FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info) override;
+    void FindVtablePartial(const char* name, CUtlLeanVector<RuntimeVTableInfo>* info) override;
     bool IsPointerDerivedFromEx(void* ptr, const char* name) override
     {
         return IsPointerDerivedFrom(ptr, name);
@@ -455,6 +512,117 @@ public:
     [[nodiscard]] void* FindStringExactEx(const char* str) override
     {
         return FindString(str, false, true);
+    }
+
+    [[nodiscard]] bool FindExportFunctionsEx(const char* name, CUtlLeanVector<RuntimeExportInfo>* results) override
+    {
+        if (name == nullptr || results == nullptr)
+            return false;
+
+        const auto symbols = FindExportFunctions(name);
+        if (symbols.empty())
+            return false;
+
+        results->SetCount(static_cast<int32_t>(symbols.size()));
+        for (std::size_t i = 0; i < symbols.size(); ++i)
+        {
+            auto& result     = results->Element(static_cast<int32_t>(i));
+            result.raw_name  = symbols[i].raw_name.c_str();
+            result.signature = symbols[i].signature.c_str();
+            result.address   = symbols[i].address;
+        }
+
+        return true;
+    }
+
+    void GetModuleInfoEx(RuntimeModuleInfo* info) const override
+    {
+        if (info == nullptr)
+            return;
+
+        info->base_address = _base_address;
+        info->size         = _size;
+        info->name         = _module_name.c_str();
+    }
+
+    [[nodiscard]] bool FindPtrsEx(std::uintptr_t ptr, CUtlLeanVector<std::uintptr_t>* results) override
+    {
+        if (results == nullptr)
+            return false;
+
+        const auto pointers = FindPtrs(ptr);
+        if (pointers.empty())
+            return false;
+
+        results->SetCount(static_cast<int32_t>(pointers.size()));
+        for (std::size_t i = 0; i < pointers.size(); ++i)
+            results->Element(static_cast<int32_t>(i)) = pointers[i];
+
+        return true;
+    }
+
+    [[nodiscard]] void* FindStringWithOptionsEx(const char* str, bool read_only, bool exact) override
+    {
+        return str == nullptr ? nullptr : FindString(str, read_only, exact).As();
+    }
+
+    [[nodiscard]] bool GetVFunctionsEx(const char* table_name, CUtlLeanVector<std::uintptr_t>* results) override
+    {
+        if (table_name == nullptr || results == nullptr)
+            return false;
+
+        const auto functions = GetVFunctionsFromVTable(table_name);
+        if (functions.empty())
+            return false;
+
+        results->SetCount(static_cast<int32_t>(functions.size()));
+        for (std::size_t i = 0; i < functions.size(); ++i)
+            results->Element(static_cast<int32_t>(i)) = functions[i];
+
+        return true;
+    }
+
+    [[nodiscard]] bool GetSegmentsEx(CUtlLeanVector<RuntimeSegmentInfo>* results) const override
+    {
+        if (results == nullptr || _segments.empty())
+            return false;
+
+        results->SetCount(static_cast<int32_t>(_segments.size()));
+        for (std::size_t i = 0; i < _segments.size(); ++i)
+        {
+            auto& result  = results->Element(static_cast<int32_t>(i));
+            result.address = _segments[i].address;
+            result.size    = _segments[i].size;
+            result.flags   = _segments[i].flags;
+        }
+
+        return true;
+    }
+
+    [[nodiscard]] void* GetTypeInfoFromNameEx(const char* name) const override
+    {
+        return name == nullptr ? nullptr : GetTypeInfoFromName(name).As();
+    }
+
+    [[nodiscard]] bool GetFunctionEntriesEx(CUtlLeanVector<RuntimeFunctionInfo>* results) const override
+    {
+        if (results == nullptr || _function_entries.empty())
+            return false;
+
+        results->SetCount(static_cast<int32_t>(_function_entries.size()));
+        for (std::size_t i = 0; i < _function_entries.size(); ++i)
+        {
+            auto& result = results->Element(static_cast<int32_t>(i));
+            result.start = _function_entries[i].start;
+            result.end   = _function_entries[i].end;
+        }
+
+        return true;
+    }
+
+    [[nodiscard]] void* FindVirtualTableByNameEx(const char* table_name, bool is_raw_name = false) override
+    {
+        return table_name == nullptr ? nullptr : FindVirtualTableByName(table_name, is_raw_name).As();
     }
 };
 

@@ -22,11 +22,13 @@
 #include "logging.h"
 #include "memory/scan.h"
 #include "strtool.h"
+#include "symbol_name.h"
 
 #include <algorithm>
 #include <iterator>
 #include <memory>
 #include <span>
+#include <unordered_set>
 #include <utility>
 
 #ifdef PLATFORM_WINDOWS
@@ -38,6 +40,97 @@
 CModule::CModule(std::string_view str)
 {
     GetModuleInfo(str);
+}
+
+void CModule::AddExportAlias(std::string_view alias, std::size_t symbol_index)
+{
+    if (alias.empty())
+        return;
+
+    const auto add_alias = [&](std::string key) {
+        auto& symbols = _export_aliases[std::move(key)];
+        if (std::ranges::find(symbols, symbol_index) == symbols.end())
+            symbols.push_back(symbol_index);
+    };
+
+    add_alias(std::string(alias));
+
+    auto normalized = symbol_name::NormalizeFunctionSignature(alias);
+    if (normalized != alias)
+        add_alias(std::move(normalized));
+}
+
+void CModule::AddExportSymbol(std::string_view raw_name, std::string_view signature, uintptr_t address)
+{
+    if (raw_name.empty() || signature.empty() || address == 0)
+        return;
+
+    const auto existing = std::ranges::find_if(_export_symbols, [&](const ExportSymbol& symbol) {
+        return symbol.raw_name == raw_name && symbol.address == address;
+    });
+    if (existing != _export_symbols.end())
+        return;
+
+    auto normalized = symbol_name::NormalizeFunctionSignature(signature);
+    if (normalized.empty())
+        return;
+
+    const auto symbol_index = _export_symbols.size();
+    _export_symbols.push_back({std::string(raw_name), std::move(normalized), address});
+
+    AddExportAlias(raw_name, symbol_index);
+    AddExportAlias(signature, symbol_index);
+    AddExportAlias(_export_symbols.back().signature, symbol_index);
+    AddExportAlias(symbol_name::QualifiedFunctionName(_export_symbols.back().signature), symbol_index);
+}
+
+std::vector<std::size_t> CModule::FindExportSymbols(std::string_view name) const
+{
+    if (const auto exact = _export_aliases.find(std::string(name)); exact != _export_aliases.end())
+        return exact->second;
+
+    const auto normalized = symbol_name::NormalizeFunctionSignature(name);
+    if (const auto canonical = _export_aliases.find(normalized); canonical != _export_aliases.end())
+        return canonical->second;
+
+    return {};
+}
+
+std::vector<CModule::ExportSymbol> CModule::FindExportFunctions(std::string_view proc_name) const
+{
+    std::vector<ExportSymbol> result;
+    for (const auto index : FindExportSymbols(proc_name))
+        result.push_back(_export_symbols[index]);
+
+    std::ranges::sort(result, [](const ExportSymbol& left, const ExportSymbol& right) {
+        if (left.signature != right.signature)
+            return left.signature < right.signature;
+        if (left.address != right.address)
+            return left.address < right.address;
+        return left.raw_name < right.raw_name;
+    });
+
+    return result;
+}
+
+CAddress CModule::FindExportByDemangledName(std::string_view proc_name) const
+{
+    const auto symbols = FindExportSymbols(proc_name);
+    if (symbols.empty())
+        return {};
+
+    std::unordered_set<uintptr_t> addresses;
+    for (const auto index : symbols)
+        addresses.insert(_export_symbols[index].address);
+
+    if (addresses.size() != 1)
+    {
+        WARN("Demangled export \"%.*s\" is ambiguous in %s (%zu addresses)",
+             static_cast<int>(proc_name.size()), proc_name.data(), _module_name.c_str(), addresses.size());
+        return {};
+    }
+
+    return *addresses.begin();
 }
 
 CAddress CModule::FindPattern(std::string_view pattern) const
@@ -153,6 +246,8 @@ CAddress CModule::FindInterface(std::string_view name) const
 
 std::vector<CAddress> CModule::FindPatternMulti(std::string_view svPattern) const
 {
+    std::vector<CAddress> results;
+
     for (auto&& segment : _segments)
     {
         if ((segment.flags & FLAG_X) == 0)
@@ -160,18 +255,15 @@ std::vector<CAddress> CModule::FindPatternMulti(std::string_view svPattern) cons
 
         const auto& data = segment.data;
 
-        auto result = scan::FindPatternMulti(const_cast<uint8_t*>(data.data()), data.size(), svPattern);
-        if (!result.empty())
-        {
-            std::ranges::transform(result, result.begin(), [&](CAddress address) {
-                return address + segment.address;
-            });
+        auto segment_results = scan::FindPatternMulti(const_cast<uint8_t*>(data.data()), data.size(), svPattern);
+        std::ranges::transform(segment_results, segment_results.begin(), [&](CAddress address) {
+            return address + segment.address;
+        });
 
-            return result;
-        }
+        results.insert(results.end(), segment_results.begin(), segment_results.end());
     }
 
-    return {};
+    return results;
 }
 
 std::vector<std::uintptr_t> CModule::GetVFunctionsFromVTable(const std::string& szVtableName)
@@ -195,27 +287,21 @@ std::vector<std::uintptr_t> CModule::GetVFunctionsFromVTable(const std::string& 
 
 void CModule::LoopVFunctions(const std::string& vtable_name, const std::function<bool(CAddress)>& callback)
 {
-    auto vtable = GetVirtualTableByName(vtable_name);
+    auto vtable = FindVirtualTableByName(vtable_name);
     if (!vtable.IsValid())
         return;
 
-    uintptr_t segmentStart = 0;
-    uintptr_t segmentEnd   = 0;
-
-    for (const auto& segment : _segments)
-    {
-        if ((segment.flags & FLAG_X) != 0)
-        {
-            segmentStart = segment.address;
-            segmentEnd   = segment.address + segment.size;
-            break;
-        }
-    }
+    const auto is_executable_address = [this](std::uintptr_t address) {
+        return std::ranges::any_of(_segments, [address](const Segment& segment) {
+            return (segment.flags & FLAG_X) != 0
+                   && segment.address <= address && address < segment.address + segment.size;
+        });
+    };
 
     for (;;)
     {
         auto address = vtable.Get<uintptr_t>();
-        if (address < segmentStart || address > segmentEnd)
+        if (!is_executable_address(address))
             return;
 
         if (callback(address))
@@ -228,9 +314,28 @@ void CModule::LoopVFunctions(const std::string& vtable_name, const std::function
 static constexpr std::string_view class_prefix  = "class ";
 static constexpr std::string_view struct_prefix = "struct ";
 
-CAddress CModule::GetVirtualTableByName(const std::string& name, bool is_raw_name)
+static std::string_view StripTypePrefix(std::string_view name)
 {
-    if (const auto it = _cached_vtables.find(name); it != _cached_vtables.end())
+    if (name.starts_with(class_prefix))
+        return name.substr(class_prefix.size());
+    if (name.starts_with(struct_prefix))
+        return name.substr(struct_prefix.size());
+    return name;
+}
+
+static bool TypeNameMatches(std::string_view actual, std::string_view requested)
+{
+    return !requested.empty() && StripTypePrefix(actual) == StripTypePrefix(requested);
+}
+
+CAddress CModule::FindVirtualTableByName(const std::string& name, bool is_raw_name)
+{
+    std::string cache_key;
+    cache_key.reserve(name.size() + 1);
+    cache_key.push_back(is_raw_name ? '\x01' : '\x00');
+    cache_key.append(name);
+
+    if (const auto it = _cached_vtables.find(cache_key); it != _cached_vtables.end())
     {
         return it->second;
     }
@@ -272,16 +377,25 @@ CAddress CModule::GetVirtualTableByName(const std::string& name, bool is_raw_nam
 #endif
     });
 
-    if (it == _vtables.end()) [[unlikely]]
-        FatalError("Failed to find vtable \"%s\"", name.c_str());
+    if (it == _vtables.end())
+        return {};
 
-    auto address          = it->get()->vtable_address;
-    _cached_vtables[name] = address;
+    auto address               = it->get()->vtable_address;
+    _cached_vtables[cache_key] = address;
 
     return address;
 }
 
-void CModule::FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableInfo>* info)
+CAddress CModule::GetVirtualTableByName(const std::string& name, bool is_raw_name)
+{
+    auto address = FindVirtualTableByName(name, is_raw_name);
+    if (!address.IsValid()) [[unlikely]]
+        FatalError("Failed to find vtable \"%s\"", name.c_str());
+
+    return address;
+}
+
+void CModule::FindVtablePartial(const char* name, CUtlLeanVector<RuntimeVTableInfo>* info)
 {
     std::vector<VTable> result{};
 
@@ -311,7 +425,7 @@ void CModule::FindVtablePartial(const char* name, CUtlLeanVector<RunTimeVTableIn
 
 bool CModule::IsPointerDerivedFrom(void* ptr, std::string_view vtable_name)
 {
-    if (ptr == nullptr) [[unlikely]]
+    if (ptr == nullptr || vtable_name.empty()) [[unlikely]]
         return false;
 
     auto vtable_address = *static_cast<uintptr_t*>(ptr);
@@ -325,11 +439,12 @@ bool CModule::IsPointerDerivedFrom(void* ptr, std::string_view vtable_name)
     if (it == _vtables.end())
         return false;
 
-    auto vtable = it->get();
+    const auto* vtable = it->get();
+    if (TypeNameMatches(vtable->demangled_name, vtable_name))
+        return true;
 
-    return std::ranges::any_of(vtable->children, [vtable_name](const VTable* a) {
-        std::string_view name = a->demangled_name;
-        return name == vtable_name || name.find(vtable_name) != std::string_view::npos;
+    return std::ranges::any_of(vtable->base_classes, [vtable_name](const std::string& name) {
+        return TypeNameMatches(name, vtable_name);
     });
 }
 

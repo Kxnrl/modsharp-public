@@ -19,9 +19,9 @@ compile-features = ["cxx_std_20"]
 
 # link
 private-link-libraries = ["protobuf"]
-windows.link-libraries = ["psapi", "tier0", "v8"]
+windows.link-libraries = ["psapi", "dbghelp", "tier0", "v8"]
 linux.link-directories = ["lib", "protobuf-lib"]
-linux.link-libraries = ["libtier0.so", "protobuf", "libsteam_api.so", "v8"]
+linux.link-libraries = ["libtier0.so", "protobuf", "libsteam_api.so", "dl", "pthread", "m", "v8"]
 
 # flags
 msvc.compile-options = ["/utf-8"]

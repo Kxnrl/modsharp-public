@@ -787,9 +787,9 @@ bool InitV8()
     // Export spelling differs between tier0 builds; try both. Runtime lookup instead of a
     // link-time import so a tier0 without the export fails here, not at dlopen of the module.
     {
-        auto address = modules::tier0->GetFunctionByName("MakeGlobalSymbol");
+        auto address = modules::tier0->GetExportByName("MakeGlobalSymbol");
         if (!address.IsValid())
-            address = modules::tier0->GetFunctionByName("_MakeGlobalSymbol");
+            address = modules::tier0->GetExportByName("_MakeGlobalSymbol");
 
         if (!address.IsValid())
         {

@@ -648,7 +648,7 @@ static void PatchGiveNamedItemLimit()
         FatalError("Failed to find address for 'CCSPlayer_ItemServices::GiveNamedItem'");
     }
 
-    auto V_stricmp_fast = modules::tier0->GetFunctionByName("V_stricmp_fast");
+    auto V_stricmp_fast = modules::tier0->GetExportByName("V_stricmp_fast");
     if (!V_stricmp_fast.IsValid()) [[unlikely]]
     {
         FatalError("Failed to get V_stricmp_fast from tier0");

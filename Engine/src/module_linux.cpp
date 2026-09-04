@@ -18,7 +18,7 @@
  */
 
 #ifdef PLATFORM_POSIX
-
+#define DEBUG
 #    include "logging.h"
 #    include "module.h"
 #    include "scopetimer.h"
@@ -33,6 +33,7 @@
 #    include <unordered_set>
 
 #    include <cxxabi.h>
+#    include <elf.h>
 #    include <fcntl.h>
 #    include <link.h>
 #    include <sys/mman.h>
@@ -40,14 +41,152 @@
 #    include <thread>
 #    include <unistd.h>
 
-static std::vector<std::pair<std::string, dl_phdr_info>> module_list{};
+namespace
+{
+struct AddressRange
+{
+    std::uintptr_t start;
+    std::uintptr_t end;
+};
+
+bool IsSupportedElfFile(const std::uint8_t* bytes, std::size_t file_size)
+{
+    if (bytes == nullptr || file_size < sizeof(Elf64_Ehdr))
+        return false;
+
+    const auto* header = reinterpret_cast<const Elf64_Ehdr*>(bytes);
+    return std::memcmp(header->e_ident, ELFMAG, SELFMAG) == 0
+           && header->e_ident[EI_CLASS] == ELFCLASS64
+           && header->e_ident[EI_DATA] == ELFDATA2LSB
+           && header->e_shentsize >= sizeof(Elf64_Shdr);
+}
+
+bool MatchesLoadedProgramHeaders(const std::uint8_t* bytes, std::size_t file_size, const dl_phdr_info& loaded)
+{
+    if (!IsSupportedElfFile(bytes, file_size))
+        return false;
+
+    const auto* header = reinterpret_cast<const Elf64_Ehdr*>(bytes);
+    if (header->e_phnum != loaded.dlpi_phnum || header->e_phentsize < sizeof(Elf64_Phdr)
+        || header->e_phoff > file_size)
+    {
+        return false;
+    }
+
+    for (std::size_t i = 0; i < header->e_phnum; ++i)
+    {
+        if (i > (file_size - header->e_phoff) / header->e_phentsize)
+            return false;
+
+        const auto offset = header->e_phoff + i * header->e_phentsize;
+        if (offset > file_size || sizeof(Elf64_Phdr) > file_size - offset)
+            return false;
+
+        Elf64_Phdr file_header{};
+        std::memcpy(&file_header, bytes + offset, sizeof(file_header));
+        if (std::memcmp(&file_header, &loaded.dlpi_phdr[i], sizeof(file_header)) != 0)
+            return false;
+    }
+
+    return true;
+}
+
+std::vector<AddressRange> GetElfExecutableRanges(const std::uint8_t* bytes,
+                                                 std::size_t         file_size,
+                                                 std::uintptr_t      base_address)
+{
+    std::vector<AddressRange> ranges;
+    if (!IsSupportedElfFile(bytes, file_size))
+        return ranges;
+
+    const auto* header = reinterpret_cast<const Elf64_Ehdr*>(bytes);
+    const auto section_header_fits = [&](std::size_t index) {
+        if (header->e_shoff > file_size || index > (file_size - header->e_shoff) / header->e_shentsize)
+            return false;
+
+        const auto offset = header->e_shoff + index * header->e_shentsize;
+        return offset <= file_size && sizeof(Elf64_Shdr) <= file_size - offset;
+    };
+
+    const auto read_section_header = [&](std::size_t index, Elf64_Shdr& section) {
+        if (!section_header_fits(index))
+            return false;
+
+        std::memcpy(&section, bytes + header->e_shoff + index * header->e_shentsize, sizeof(section));
+        return true;
+    };
+
+    std::size_t section_count = header->e_shnum;
+    if (section_count == 0)
+    {
+        Elf64_Shdr first_section{};
+        if (!read_section_header(0, first_section))
+            return ranges;
+        section_count = first_section.sh_size;
+    }
+
+    if (section_count == 0 || !section_header_fits(section_count - 1))
+        return ranges;
+
+    ranges.reserve(section_count);
+    for (std::size_t i = 0; i < section_count; ++i)
+    {
+        Elf64_Shdr section{};
+        if (!read_section_header(i, section))
+            return {};
+
+        if ((section.sh_flags & (SHF_ALLOC | SHF_EXECINSTR)) != (SHF_ALLOC | SHF_EXECINSTR)
+            || section.sh_size == 0)
+        {
+            continue;
+        }
+
+        if (section.sh_addr > std::numeric_limits<std::uintptr_t>::max() - base_address
+            || section.sh_size > std::numeric_limits<std::uintptr_t>::max() - base_address - section.sh_addr)
+        {
+            return {};
+        }
+
+        ranges.push_back({base_address + section.sh_addr, base_address + section.sh_addr + section.sh_size});
+    }
+
+    std::ranges::sort(ranges, {}, &AddressRange::start);
+
+    std::vector<AddressRange> merged_ranges;
+    merged_ranges.reserve(ranges.size());
+    for (const auto& range : ranges)
+    {
+        if (merged_ranges.empty() || merged_ranges.back().end < range.start)
+        {
+            merged_ranges.push_back(range);
+            continue;
+        }
+
+        merged_ranges.back().end = std::max(merged_ranges.back().end, range.end);
+    }
+
+    return merged_ranges;
+}
+
+std::string Demangle(const char* mangled_name)
+{
+    int    status = -1;
+    size_t length = 0;
+
+    std::unique_ptr<char, void (*)(void*)> demangled_ptr(
+        abi::__cxa_demangle(mangled_name, nullptr, &length, &status),
+        std::free);
+
+    return status == 0 ? std::string(demangled_ptr.get()) : mangled_name;
+}
+
+} // namespace
 
 void CModule::GetModuleInfo(std::string_view mod)
 {
-    if (module_list.empty()) [[unlikely]]
-    {
-        dl_iterate_phdr(
-            [](struct dl_phdr_info* info, size_t, void*) {
+    std::vector<std::pair<std::string, dl_phdr_info>> module_list;
+    dl_iterate_phdr(
+            [](struct dl_phdr_info* info, size_t, void* data) {
                 std::string name = info->dlpi_name;
 
                 if (name.rfind(".so") == std::string::npos)
@@ -64,14 +203,14 @@ void CModule::GetModuleInfo(std::string_view mod)
                 if (!isFromGameBin && !isFromRootBin)
                     return 0;
 
-                auto& mod_info = module_list.emplace_back();
+                auto& modules  = *static_cast<std::vector<std::pair<std::string, dl_phdr_info>>*>(data);
+                auto& mod_info = modules.emplace_back();
 
                 mod_info.first  = name;
                 mod_info.second = *info;
                 return 0;
             },
-            nullptr);
-    }
+            &module_list);
 
     const auto it = std::ranges::find_if(module_list,
                                          [&](const auto& i) {
@@ -89,17 +228,46 @@ void CModule::GetModuleInfo(std::string_view mod)
     this->_base_address = info.dlpi_addr;
     this->_module_name  = path.substr(path.find_last_of('/') + 1);
 
+    std::size_t elf_file_size{};
+    const auto  unmap_file = [&elf_file_size](const void* ptr) {
+        if (ptr != nullptr)
+            munmap(const_cast<void*>(ptr), elf_file_size);
+    };
+    std::unique_ptr<const void, decltype(unmap_file)> mapped_file(nullptr, unmap_file);
+
+    const std::string path_string(path);
+    const int         fd = open(path_string.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd >= 0)
+    {
+        struct stat file_stat{};
+        if (fstat(fd, &file_stat) == 0 && file_stat.st_size >= static_cast<off_t>(sizeof(Elf64_Ehdr)))
+        {
+            elf_file_size = static_cast<std::size_t>(file_stat.st_size);
+            void* mapping = mmap(nullptr, elf_file_size, PROT_READ, MAP_PRIVATE, fd, 0);
+            if (mapping != MAP_FAILED)
+                mapped_file.reset(mapping);
+        }
+        close(fd);
+    }
+
+    const auto* elf_bytes      = static_cast<const std::uint8_t*>(mapped_file.get());
+    const bool  has_file_image = MatchesLoadedProgramHeaders(elf_bytes, elf_file_size, info);
+    const auto  executable_ranges = has_file_image
+        ? GetElfExecutableRanges(elf_bytes, elf_file_size, _base_address)
+        : std::vector<AddressRange>{};
+
     uintptr_t min_vaddr = std::numeric_limits<uintptr_t>::max();
     uintptr_t max_vaddr = 0;
 
     for (auto i = 0; i < info.dlpi_phnum; i++)
     {
-        auto address            = _base_address + info.dlpi_phdr[i].p_paddr;
-        auto size               = (uintptr_t)info.dlpi_phdr[i].p_memsz;
-        auto type               = info.dlpi_phdr[i].p_type;
-        auto is_dynamic_section = type == PT_DYNAMIC;
+        const auto& program_header     = info.dlpi_phdr[i];
+        auto        address            = _base_address + program_header.p_vaddr;
+        auto        size               = static_cast<uintptr_t>(program_header.p_memsz);
+        auto        type               = program_header.p_type;
+        auto        is_dynamic_section = type == PT_DYNAMIC;
 
-        auto flags = info.dlpi_phdr[i].p_flags;
+        auto flags = program_header.p_flags;
 
         auto is_executable = (flags & PF_X) != 0;
         auto is_readable   = (flags & PF_R) != 0;
@@ -123,24 +291,76 @@ void CModule::GetModuleInfo(std::string_view mod)
         /*if (info.dlpi_phdr[i].p_paddr == 0)
             continue;*/
 
-        auto* data = reinterpret_cast<std::uint8_t*>(address);
-
-        auto& segment = _segments.emplace_back();
-
-        segment.address = address;
-        segment.data    = std::vector(data, data + size);
-        segment.size    = size;
-
         min_vaddr = std::min(min_vaddr, address);
         max_vaddr = std::max(max_vaddr, address + size);
 
-        if (is_executable)
-            segment.flags |= FLAG_X;
-
+        std::uint8_t segment_flags{};
         if (is_readable)
-            segment.flags |= FLAG_R;
+            segment_flags |= FLAG_R;
         if (is_writable)
-            segment.flags |= FLAG_W;
+            segment_flags |= FLAG_W;
+
+        const auto append_segment = [&](std::uintptr_t segment_address, std::size_t segment_size, std::uint8_t flags) {
+            if (segment_size == 0)
+                return;
+
+            auto& segment   = _segments.emplace_back();
+            segment.address = segment_address;
+            segment.size    = segment_size;
+            segment.flags   = flags;
+
+            // Only executable bytes come from the ELF file. Other segments
+            // retain their relocated runtime image.
+            if ((flags & FLAG_X) != 0 && has_file_image && segment_address >= address)
+            {
+                const auto load_offset = segment_address - address;
+                const auto initialized_size = load_offset < program_header.p_filesz
+                    ? std::min<std::size_t>(segment_size, program_header.p_filesz - load_offset)
+                    : 0;
+                const auto file_offset = program_header.p_offset + load_offset;
+
+                if (load_offset <= program_header.p_memsz && file_offset <= elf_file_size
+                    && initialized_size <= elf_file_size - file_offset)
+                {
+                    segment.data.resize(segment_size);
+                    if (initialized_size != 0)
+                        std::memcpy(segment.data.data(), elf_bytes + file_offset, initialized_size);
+                    return;
+                }
+            }
+
+            const auto* data = reinterpret_cast<const std::uint8_t*>(segment_address);
+            segment.data.assign(data, data + segment_size);
+        };
+
+        bool appended_executable_range = false;
+        if (is_executable && !executable_ranges.empty())
+        {
+            const auto load_end = address + size;
+            auto       cursor   = address;
+
+            for (const auto& range : executable_ranges)
+            {
+                const auto overlap_start = std::max(address, range.start);
+                const auto overlap_end   = std::min(load_end, range.end);
+                if (overlap_start >= overlap_end)
+                    continue;
+
+                append_segment(cursor, overlap_start - cursor, segment_flags);
+                append_segment(overlap_start, overlap_end - overlap_start, segment_flags | FLAG_X);
+                cursor                    = overlap_end;
+                appended_executable_range = true;
+            }
+
+            if (appended_executable_range)
+                append_segment(cursor, load_end - cursor, segment_flags);
+        }
+
+        if (!appended_executable_range)
+        {
+            const auto fallback_flags = is_executable && executable_ranges.empty() ? segment_flags | FLAG_X : segment_flags;
+            append_segment(address, size, fallback_flags);
+        }
     }
 
     _size = max_vaddr - min_vaddr;
@@ -256,29 +476,23 @@ void CModule::DumpExports(void* module_base)
         std::string_view name    = &string_table[symbols[i].st_name];
 
         _exports[name.data()] = address;
+
+        if (symbols[i].st_shndx == SHN_UNDEF || ELF64_ST_TYPE(symbols[i].st_info) != STT_FUNC)
+            continue;
+
+        const auto demangled_name = Demangle(name.data());
+        AddExportSymbol(name, demangled_name, address);
     }
 
     if (auto it = _exports.find("CreateInterface"); it != _exports.end()) [[unlikely]]
         _createInterFaceFn = reinterpret_cast<void*>(it->second);
 }
 
-CAddress CModule::GetFunctionByName(std::string_view proc_name) const
+CAddress CModule::GetExportByName(std::string_view proc_name) const
 {
-    if (auto it = _exports.find(proc_name.data()); it != _exports.end())
+    if (auto it = _exports.find(std::string(proc_name)); it != _exports.end())
         return it->second;
-    return {};
-}
-
-static std::string demangle(const char* mangled_name)
-{
-    int    status = -1;
-    size_t length = 0;
-
-    std::unique_ptr<char, void (*)(void*)> demangled_ptr(
-        abi::__cxa_demangle(mangled_name, nullptr, &length, &status),
-        std::free);
-
-    return status == 0 ? std::string(demangled_ptr.get()) : mangled_name;
+    return FindExportByDemangledName(proc_name);
 }
 
 static CAddress engine2_class_typeinfo_vtable;
@@ -288,7 +502,7 @@ static CAddress engine2_vmi_class_typeinfo_vtable;
 void CModule::DumpVtables()
 {
     auto get_vtable = [this](const char* name) -> CAddress {
-        CAddress symbol_address = GetFunctionByName(name);
+        CAddress symbol_address = GetExportByName(name);
         if (symbol_address.IsValid())
         {
             return symbol_address.Offset(0x10);
@@ -375,8 +589,6 @@ void CModule::DumpVtables()
     const auto min_ti_addr = known_typeinfos.front().address();
     const auto max_ti_addr = known_typeinfos.back().address();
 
-    std::unordered_map<const std::type_info*, VTable*> ti_to_vtable_map;
-    ti_to_vtable_map.reserve(known_typeinfos.size() / 2);
     _vtables.reserve(known_typeinfos.size());
 
     // bruteforcing vtable
@@ -411,10 +623,7 @@ void CModule::DumpVtables()
 
             auto start_address = current_addr + 0x8;
 
-            auto vtable = std::make_unique<VTable>(type_info, start_address, demangle(type_info->name()), offset);
-
-            if (offset == 0) [[likely]]
-                ti_to_vtable_map[type_info] = vtable.get();
+            auto vtable = std::make_unique<VTable>(type_info, start_address, Demangle(type_info->name()), offset);
 
             _vtables.push_back(std::move(vtable));
         }
@@ -444,17 +653,11 @@ void CModule::DumpVtables()
                 if (!visited.contains(base_ti))
                 {
                     visited.insert(base_ti);
+                    start_node->base_classes.emplace_back(Demangle(base_ti->name()));
 
-                    auto it = ti_to_vtable_map.find(base_ti);
-                    if (it != ti_to_vtable_map.end())
-                    {
-                        VTable* parent_vtable = it->second;
-
-                        start_node->children.push_back(parent_vtable);
-
-                        // add to worklist to find its parents
-                        worklist.push_back(base_ti);
-                    }
+                    // Type info is sufficient to continue walking even when
+                    // the base class's vtable lives in another module.
+                    worklist.push_back(base_ti);
                 }
             };
 
@@ -482,9 +685,9 @@ void CModule::DumpVtables()
             if (vtable->demangled_name.find("CWeapon") == std::string::npos || vtable->offset != 0)
                 continue;
             printf("Vtable for %s (offset: 0x%llx)\n", vtable->demangled_name.c_str(), vtable->offset);
-            for (const auto& child : vtable->children)
+            for (const auto& base_class : vtable->base_classes)
             {
-                printf("    %s(offset: 0x%llx)\n", child->demangled_name.c_str(), child->offset);
+                printf("    %s\n", base_class.c_str());
             }
         }
     }
@@ -523,18 +726,13 @@ void CModule::ParseEhFrameHeader()
     const auto* table     = reinterpret_cast<const std::int32_t*>(hdr + 12);
     const auto  hdr_addr  = _eh_frame_hdr_addr;
 
-    std::uintptr_t exec_start = 0;
-    std::uintptr_t exec_end   = 0;
-    for (const auto& seg : _segments)
-    {
-        if (seg.flags & FLAG_X)
-        {
-            exec_start = seg.address;
-            exec_end   = seg.address + seg.size;
-            break;
-        }
-    }
-    if (exec_start == 0)
+    const auto is_executable_address = [&](std::uintptr_t address) {
+        return std::ranges::any_of(_segments, [address](const Segment& segment) {
+            return (segment.flags & FLAG_X) != 0
+                   && segment.address <= address && address < segment.address + segment.size;
+        });
+    };
+    if (std::ranges::none_of(_segments, [](const Segment& segment) { return (segment.flags & FLAG_X) != 0; }))
         return;
 
     _eh_fde_starts.reserve(fde_count);
@@ -550,7 +748,7 @@ void CModule::ParseEhFrameHeader()
         const auto fde_addr = static_cast<std::uintptr_t>(
             static_cast<std::int64_t>(hdr_addr) + fde_rel);
 
-        if (pc_begin < exec_start || pc_begin >= exec_end)
+        if (!is_executable_address(pc_begin))
             continue;
 
         // FDE layout: [length:u32] [cie_ptr:u32] [pc_begin:sdata4] [pc_range:u32] ...
@@ -824,11 +1022,12 @@ struct CfgBasicBlock
 
 void CModule::BuildFunctionIndexAndReferences()
 {
-    std::uintptr_t exec_start{}, exec_end{}, exec_size{};
-
+    std::vector<const Segment*> executable_segments;
     std::vector<const Segment*> data_segments;
+    executable_segments.reserve(_segments.size());
     data_segments.reserve(_segments.size());
 
+    std::size_t    executable_size = 0;
     std::uintptr_t min_data_addr = std::numeric_limits<std::uintptr_t>::max();
     std::uintptr_t max_data_addr = 0;
 
@@ -836,12 +1035,8 @@ void CModule::BuildFunctionIndexAndReferences()
     {
         if (seg.flags & FLAG_X)
         {
-            if (!exec_start)
-            {
-                exec_start = seg.address;
-                exec_end   = seg.address + seg.size;
-                exec_size  = seg.size;
-            }
+            executable_segments.push_back(&seg);
+            executable_size += seg.size;
         }
         else
         {
@@ -851,8 +1046,20 @@ void CModule::BuildFunctionIndexAndReferences()
         }
     }
 
-    auto is_function_pointer = [=](std::uintptr_t addr) noexcept {
-        return exec_start <= addr && addr < exec_end;
+    if (executable_segments.empty())
+        return;
+
+    std::ranges::sort(executable_segments, {}, &Segment::address);
+
+    const auto find_executable_segment = [&](std::uintptr_t address) -> const Segment* {
+        const auto it = std::ranges::find_if(executable_segments, [address](const Segment* segment) {
+            return segment->address <= address && address < segment->address + segment->size;
+        });
+        return it == executable_segments.end() ? nullptr : *it;
+    };
+
+    auto is_function_pointer = [&](std::uintptr_t addr) noexcept {
+        return find_executable_segment(addr) != nullptr;
     };
 
     auto is_data_pointer = [&](std::uintptr_t addr) noexcept {
@@ -864,7 +1071,7 @@ void CModule::BuildFunctionIndexAndReferences()
     };
 
     std::vector<std::uintptr_t> seen_functions;
-    seen_functions.reserve(exec_size / 32);
+    seen_functions.reserve(executable_size / 32);
 
     // phase1: scan data for function ptrs
     for (const Segment* seg : data_segments)
@@ -887,14 +1094,19 @@ void CModule::BuildFunctionIndexAndReferences()
     {
         std::vector<std::uintptr_t> functions;
         std::vector<ReferenceEntry> refs;
+        std::vector<ReferenceEntry> jump_refs;
     };
 
     const auto num_threads = std::max(1u, std::thread::hardware_concurrency());
-    const auto chunk_size  = (exec_size + num_threads - 1) / num_threads;
+    const auto chunk_size  = std::max<std::size_t>(1, (executable_size + num_threads - 1) / num_threads);
 
-    std::vector<ChunkResult> chunk_results(num_threads);
-    std::vector<std::thread> threads;
-    threads.reserve(num_threads);
+    struct DecodeChunk
+    {
+        std::uintptr_t segment_end;
+        std::uintptr_t decode_start;
+        std::uintptr_t chunk_start;
+        std::uintptr_t chunk_end;
+    };
 
     // multithreaded solution inspired by the code snippet @angelfor3v3r gave me a long time ago.
     // to be honest i could have used yaxpeax-x86, which is the fastest decoder i have found yet (it takes about 100ms to decode libserver.so .text section
@@ -902,14 +1114,36 @@ void CModule::BuildFunctionIndexAndReferences()
     // not to mention safetyhook also uses zydis and i use the encoder feature from zydis too.
     // hopefully no one copies or recodes this function in another language and claims they coded it without giving credit 😭🙏
 
-    auto disassemble_chunk = [&](std::uint32_t idx, std::uintptr_t decode_start, std::uintptr_t chunk_start, std::uintptr_t chunk_end) {
+    // Each chunk decodes 24 bytes early to handle boundaries landing in the
+    // middle of an instruction, but never crosses an executable range boundary.
+    constexpr std::size_t    warmup_bytes = 24;
+    std::vector<DecodeChunk> decode_chunks;
+    for (const auto* segment : executable_segments)
+    {
+        const auto segment_start = segment->address;
+        const auto segment_end   = segment->address + segment->size;
+        for (auto chunk_start = segment_start; chunk_start < segment_end;)
+        {
+            const auto chunk_end = std::min<std::uintptr_t>(chunk_start + chunk_size, segment_end);
+            const auto warmup    = std::min<std::size_t>(warmup_bytes, chunk_start - segment_start);
+            decode_chunks.push_back({segment_end, chunk_start - warmup,
+                                     chunk_start, chunk_end});
+            chunk_start = chunk_end;
+        }
+    }
+
+    std::vector<ChunkResult> chunk_results(decode_chunks.size());
+
+    auto disassemble_chunk = [&](std::size_t idx, const DecodeChunk& chunk) {
         ZydisDecoder decoder{};
         if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
             return;
 
         auto& result = chunk_results[idx];
-        result.functions.reserve(chunk_size / 64);
-        result.refs.reserve(chunk_size / 8);
+        const auto result_capacity = chunk.chunk_end - chunk.chunk_start;
+        result.functions.reserve(result_capacity / 64);
+        result.refs.reserve(result_capacity / 8);
+        result.jump_refs.reserve(result_capacity / 64);
 
         ZydisDecodedInstruction instr{};
 
@@ -917,10 +1151,10 @@ void CModule::BuildFunctionIndexAndReferences()
         ZydisMnemonic            prev_mnemonic{};
         bool                     has_prev = false;
 
-        for (auto ip = decode_start; ip < chunk_end;)
+        for (auto ip = chunk.decode_start; ip < chunk.chunk_end;)
         {
             if (ZYAN_FAILED(ZydisDecoderDecodeInstruction(&decoder, nullptr,
-                                                          reinterpret_cast<const void*>(ip), exec_end - ip, &instr)))
+                                                          reinterpret_cast<const void*>(ip), chunk.segment_end - ip, &instr)))
             {
                 ip++;
                 has_prev = false;
@@ -930,7 +1164,7 @@ void CModule::BuildFunctionIndexAndReferences()
             const auto length = instr.length;
 
             // only record results after warm-up phase
-            if (ip >= chunk_start)
+            if (ip >= chunk.chunk_start)
             {
                 if (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
                 {
@@ -942,20 +1176,26 @@ void CModule::BuildFunctionIndexAndReferences()
                     {
                         const auto target = ip + length + instr.raw.imm[0].value.s;
                         if (is_function_pointer(target))
+                        {
                             result.functions.push_back(target);
+                            result.refs.emplace_back(target, ip);
+                        }
                     }
-                    else if (instr.opcode == 0xE9 && instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR && prev_category != ZYDIS_CATEGORY_CALL)
+                    else if (instr.opcode == 0xE9 && instr.meta.category == ZYDIS_CATEGORY_UNCOND_BR)
                     {
                         const auto target = ip + length + instr.raw.imm[0].value.s;
 
-                        // Function entries are 16-byte aligned; this filters out
-                        // most jmp-label and nullsub targets.
-                        if ((target & 15) == 0 && is_function_pointer(target))
+                        if (is_function_pointer(target))
                         {
+                            result.jump_refs.emplace_back(target, ip);
+
+                            // Function entries are 16-byte aligned; this filters out
+                            // most jmp-label and nullsub targets.
                             // Treat as a tail call only when preceded by stack
                             // cleanup. Stay conservative to avoid false positives;
                             // FDE seeding recovers anything we skip here.
-                            if (has_prev && (prev_category == ZYDIS_CATEGORY_POP || prev_mnemonic == ZYDIS_MNEMONIC_LEAVE))
+                            if (prev_category != ZYDIS_CATEGORY_CALL && (target & 15) == 0
+                                && has_prev && (prev_category == ZYDIS_CATEGORY_POP || prev_mnemonic == ZYDIS_MNEMONIC_LEAVE))
                             {
                                 result.functions.push_back(target);
                             }
@@ -986,22 +1226,15 @@ void CModule::BuildFunctionIndexAndReferences()
         std::ranges::sort(result.functions);
     };
 
-    // each chunk decodes 24 bytes early to handle boundaries landing in the middle of an instruction
-    // so we would not get garbage results which can cause missing references
-    // technically we can go with 16 bytes, which handles the maximum instruction lenth(15), but we use
-    // 24 here to ensure the decoder has fully synchronized before the chunk for actual decoding start
-    constexpr std::size_t warmup_bytes = 24;
-
-    for (auto i = 0u; i < num_threads; ++i)
+    const auto               worker_count = std::min<std::size_t>(num_threads, decode_chunks.size());
+    std::vector<std::thread> threads;
+    threads.reserve(worker_count);
+    for (std::size_t worker = 0; worker < worker_count; ++worker)
     {
-        const auto chunk_start = exec_start + i * chunk_size;
-        if (chunk_start >= exec_end)
-            break;
-
-        const auto chunk_end    = std::min(chunk_start + chunk_size, exec_end);
-        const auto decode_start = std::max(exec_start, chunk_start - warmup_bytes);
-
-        threads.emplace_back(disassemble_chunk, i, decode_start, chunk_start, chunk_end);
+        threads.emplace_back([&, worker] {
+            for (std::size_t i = worker; i < decode_chunks.size(); i += worker_count)
+                disassemble_chunk(i, decode_chunks[i]);
+        });
     }
 
     // wait for completion
@@ -1011,21 +1244,26 @@ void CModule::BuildFunctionIndexAndReferences()
     // merge results from each thread
     std::size_t total_funcs = seen_functions.size();
     std::size_t total_refs  = 0;
+    std::size_t total_jumps = 0;
 
     for (const auto& r : chunk_results)
     {
         total_funcs += r.functions.size();
         total_refs += r.refs.size();
+        total_jumps += r.jump_refs.size();
     }
 
     std::vector<ReferenceEntry> temp_refs;
+    std::vector<ReferenceEntry> temp_jump_refs;
     temp_refs.reserve(total_refs);
+    temp_jump_refs.reserve(total_jumps);
     seen_functions.reserve(total_funcs + _eh_fde_starts.size());
 
     for (auto& r : chunk_results)
     {
         // todo: C++23 .append_range(std::views::as_rvalue(r.abc));
         temp_refs.insert(temp_refs.end(), std::move_iterator(r.refs.begin()), std::move_iterator(r.refs.end()));
+        temp_jump_refs.insert(temp_jump_refs.end(), std::move_iterator(r.jump_refs.begin()), std::move_iterator(r.jump_refs.end()));
         seen_functions.insert(seen_functions.end(), std::move_iterator(r.functions.begin()), std::move_iterator(r.functions.end()));
     }
 
@@ -1040,6 +1278,7 @@ void CModule::BuildFunctionIndexAndReferences()
 
     // sort merged results
     std::ranges::sort(temp_refs, std::less{}, &ReferenceEntry::source_ip);
+    std::ranges::sort(temp_jump_refs, std::less{}, &ReferenceEntry::source_ip);
     std::ranges::sort(seen_functions);
 
     const auto [first, last] = std::ranges::unique(seen_functions);
@@ -1065,12 +1304,18 @@ void CModule::BuildFunctionIndexAndReferences()
 
             for (std::size_t i = lo; i < hi; ++i)
             {
-                const auto start = seen_functions[i];
-                const auto next  = (i + 1 < seen_functions.size()) ? seen_functions[i + 1] : exec_end;
+                const auto  start      = seen_functions[i];
+                const auto* executable = find_executable_segment(start);
+                if (executable == nullptr)
+                    continue;
+
+                const auto executable_start = executable->address;
+                const auto executable_end   = executable->address + executable->size;
+                const auto next             = (i + 1 < seen_functions.size() && seen_functions[i + 1] < executable_end) ? seen_functions[i + 1] : executable_end;
                 // hard_end bounds the CFG walk; we never legitimately cross into
                 // the next known function. The cap is a runtime safety net.
                 const auto hard_end = std::min<std::uintptr_t>(next, start + kCfgPerFuncCap);
-                if (start >= exec_end || hard_end <= start)
+                if (hard_end <= start)
                     continue;
 
                 const auto blocks = cfg_collect_blocks(&decoder, start, hard_end);
@@ -1095,7 +1340,7 @@ void CModule::BuildFunctionIndexAndReferences()
                 // rather than in padding.
                 if (next == hard_end)
                 {
-                    const auto extended = find_last_real_insn_end(&decoder, next, end, exec_start, exec_end);
+                    const auto extended = find_last_real_insn_end(&decoder, next, end, executable_start, executable_end);
                     if (extended > end)
                         end = extended;
                 }
@@ -1127,31 +1372,43 @@ void CModule::BuildFunctionIndexAndReferences()
             th.join();
     }
 
-    // drop empty entries (e.g. start at/after exec_end, decode failure)
+    // Drop empty entries (e.g. a decode failure at a seeded start).
     std::erase_if(_function_entries, [](const FunctionEntry& e) { return e.end <= e.start; });
 
     if (_function_entries.empty()) [[unlikely]]
         return;
 
     // phase4: build reference map
-    _references.reserve(temp_refs.size());
+    _references.reserve(temp_refs.size() + temp_jump_refs.size());
 
-    auto       func_it     = _function_entries.begin();
-    const auto func_end_it = _function_entries.end();
+    auto append_valid_refs = [&](const std::vector<ReferenceEntry>& refs, bool require_cross_function_target) {
+        auto       func_it     = _function_entries.begin();
+        const auto func_end_it = _function_entries.end();
 
-    for (const auto& ref : temp_refs)
-    {
-        const auto source_ip = ref.source_ip;
+        for (const auto& ref : refs)
+        {
+            const auto source_ip = ref.source_ip;
 
-        while (func_it != func_end_it && func_it->end <= source_ip)
-            ++func_it;
+            while (func_it != func_end_it && func_it->end <= source_ip)
+                ++func_it;
 
-        if (func_it == func_end_it)
-            break;
+            if (func_it == func_end_it)
+                break;
 
-        if (source_ip >= func_it->start)
+            if (source_ip < func_it->start)
+                continue;
+
+            if (require_cross_function_target
+                && (ref.target == func_it->start
+                    || !std::ranges::binary_search(_function_entries, ref.target, {}, &FunctionEntry::start)))
+                continue;
+
             _references.push_back(ref);
-    }
+        }
+    };
+
+    append_valid_refs(temp_refs, false);
+    append_valid_refs(temp_jump_refs, true);
 
     std::ranges::sort(_references, std::less{}, &ReferenceEntry::target);
 #    ifdef DEBUG
