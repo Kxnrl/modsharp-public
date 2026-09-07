@@ -925,6 +925,14 @@
       "linux": "48 8B 07 48 85 C0 74 ? 48 8B 50",
       "windows": "4C 8B C2 48 8B D1 48 8B 09"
     },
+    // VScript native: GetAddon() — returns the workshop ID associated with the
+    // current map. ExtraAddon hooks this so a multi-addon comma string isn't
+    // returned to gamemodes that read it via VScript.
+    "ScriptGetAddon": {
+      "library": "server",
+      "linux": "55 48 89 E5 41 55 41 54 48 8D 75 ? 53 48 83 EC ? 48 8D 05 ? ? ? ? 48 C7 45 ? ? ? ? ? 48 C7 45 ? ? ? ? ? 48 8B 38 48 8B 07 FF 90 ? ? ? ? 8B 55",
+      "windows": "40 56 48 83 EC ? 48 8B 0D ? ? ? ? 48 8D 54 24"
+    },
     "ScriptPrintMessageChatAll": {
       "library": "server",
       "linux": "48 89 FE 45 31 C9 45 31 C0 31 C9 31 D2 BF ? ? ? ? E9 ? ? ? ? CC CC CC CC CC CC CC CC CC 80 7F",

@@ -81,6 +81,11 @@
     - name: ICommandManager
       href: command-manager.md
 
+- name: 创意工坊插件
+  items:
+    - name: Extra Addon
+      href: extra-addon.md
+
 - name: 第一方模组
   items:
     - name: Client Preferences
