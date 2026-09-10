@@ -35,6 +35,11 @@ public interface ICustomHudLayout : IBaseEntity
     string Layout { get; }
 
     /// <summary>
+    ///     Whether this layout is visible to observing players.
+    /// </summary>
+    bool Observable { get; set; }
+
+    /// <summary>
     ///     Overrides whether a panel has a pre-defined CSS class for every player.
     /// </summary>
     /// <remarks>

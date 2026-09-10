@@ -149,6 +149,9 @@ extern CSVCMsg_CreateStringTableDefaultTypeInternal _CSVCMsg_CreateStringTable_d
 class CSVCMsg_CrosshairAngle;
 struct CSVCMsg_CrosshairAngleDefaultTypeInternal;
 extern CSVCMsg_CrosshairAngleDefaultTypeInternal _CSVCMsg_CrosshairAngle_default_instance_;
+class CSVCMsg_EncryptedData;
+struct CSVCMsg_EncryptedDataDefaultTypeInternal;
+extern CSVCMsg_EncryptedDataDefaultTypeInternal _CSVCMsg_EncryptedData_default_instance_;
 class CSVCMsg_FixAngle;
 struct CSVCMsg_FixAngleDefaultTypeInternal;
 extern CSVCMsg_FixAngleDefaultTypeInternal _CSVCMsg_FixAngle_default_instance_;
@@ -304,6 +307,7 @@ template<> ::CSVCMsg_ClearAllStringTables* Arena::CreateMaybeMessage<::CSVCMsg_C
 template<> ::CSVCMsg_CmdKeyValues* Arena::CreateMaybeMessage<::CSVCMsg_CmdKeyValues>(Arena*);
 template<> ::CSVCMsg_CreateStringTable* Arena::CreateMaybeMessage<::CSVCMsg_CreateStringTable>(Arena*);
 template<> ::CSVCMsg_CrosshairAngle* Arena::CreateMaybeMessage<::CSVCMsg_CrosshairAngle>(Arena*);
+template<> ::CSVCMsg_EncryptedData* Arena::CreateMaybeMessage<::CSVCMsg_EncryptedData>(Arena*);
 template<> ::CSVCMsg_FixAngle* Arena::CreateMaybeMessage<::CSVCMsg_FixAngle>(Arena*);
 template<> ::CSVCMsg_FlattenedSerializer* Arena::CreateMaybeMessage<::CSVCMsg_FlattenedSerializer>(Arena*);
 template<> ::CSVCMsg_FullFrameSplit* Arena::CreateMaybeMessage<::CSVCMsg_FullFrameSplit>(Arena*);
@@ -435,11 +439,12 @@ enum SVC_Messages : int {
   svc_Broadcast_Command = 74,
   svc_HltvFixupOperatorStatus = 75,
   svc_UserCmds = 76,
-  svc_NextMsgPredicted = 77
+  svc_NextMsgPredicted = 77,
+  svc_EncryptedData = 78
 };
 bool SVC_Messages_IsValid(int value);
 constexpr SVC_Messages SVC_Messages_MIN = svc_ServerInfo;
-constexpr SVC_Messages SVC_Messages_MAX = svc_NextMsgPredicted;
+constexpr SVC_Messages SVC_Messages_MAX = svc_EncryptedData;
 constexpr int SVC_Messages_ARRAYSIZE = SVC_Messages_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SVC_Messages_descriptor();
@@ -10035,9 +10040,10 @@ class CSVCMsg_VoiceData /*final*/ :
   enum : int {
     kAudioFieldNumber = 1,
     kXuidFieldNumber = 4,
-    kProximityFieldNumber = 3,
     kAudibleMaskFieldNumber = 5,
     kTickFieldNumber = 6,
+    kProximityFieldNumber = 3,
+    kCasterFieldNumber = 9,
     kPassthroughFieldNumber = 7,
     kClientDeprecatedFieldNumber = 2,
     kEntityFieldNumber = 8,
@@ -10073,19 +10079,6 @@ class CSVCMsg_VoiceData /*final*/ :
   void _internal_set_xuid(uint64_t value);
   public:
 
-  // optional bool proximity = 3;
-  bool has_proximity() const;
-  private:
-  bool _internal_has_proximity() const;
-  public:
-  void clear_proximity();
-  bool proximity() const;
-  void set_proximity(bool value);
-  private:
-  bool _internal_proximity() const;
-  void _internal_set_proximity(bool value);
-  public:
-
   // optional int32 audible_mask = 5;
   bool has_audible_mask() const;
   private:
@@ -10110,6 +10103,32 @@ class CSVCMsg_VoiceData /*final*/ :
   private:
   uint32_t _internal_tick() const;
   void _internal_set_tick(uint32_t value);
+  public:
+
+  // optional bool proximity = 3;
+  bool has_proximity() const;
+  private:
+  bool _internal_has_proximity() const;
+  public:
+  void clear_proximity();
+  bool proximity() const;
+  void set_proximity(bool value);
+  private:
+  bool _internal_proximity() const;
+  void _internal_set_proximity(bool value);
+  public:
+
+  // optional bool caster = 9;
+  bool has_caster() const;
+  private:
+  bool _internal_has_caster() const;
+  public:
+  void clear_caster();
+  bool caster() const;
+  void set_caster(bool value);
+  private:
+  bool _internal_caster() const;
+  void _internal_set_caster(bool value);
   public:
 
   // optional int32 passthrough = 7;
@@ -10163,12 +10182,193 @@ class CSVCMsg_VoiceData /*final*/ :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::CMsgVoiceAudio* audio_;
     uint64_t xuid_;
-    bool proximity_;
     int32_t audible_mask_;
     uint32_t tick_;
+    bool proximity_;
+    bool caster_;
     int32_t passthrough_;
     int32_t client_deprecated_;
     int32_t entity_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_netmessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CSVCMsg_EncryptedData /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CSVCMsg_EncryptedData) */ {
+ public:
+  inline CSVCMsg_EncryptedData() : CSVCMsg_EncryptedData(nullptr) {}
+  ~CSVCMsg_EncryptedData() override;
+  explicit PROTOBUF_CONSTEXPR CSVCMsg_EncryptedData(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CSVCMsg_EncryptedData(const CSVCMsg_EncryptedData& from);
+  CSVCMsg_EncryptedData(CSVCMsg_EncryptedData&& from) noexcept
+    : CSVCMsg_EncryptedData() {
+    *this = ::std::move(from);
+  }
+
+  inline CSVCMsg_EncryptedData& operator=(const CSVCMsg_EncryptedData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CSVCMsg_EncryptedData& operator=(CSVCMsg_EncryptedData&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CSVCMsg_EncryptedData& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CSVCMsg_EncryptedData* internal_default_instance() {
+    return reinterpret_cast<const CSVCMsg_EncryptedData*>(
+               &_CSVCMsg_EncryptedData_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    45;
+
+  friend void swap(CSVCMsg_EncryptedData& a, CSVCMsg_EncryptedData& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CSVCMsg_EncryptedData* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CSVCMsg_EncryptedData* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CSVCMsg_EncryptedData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CSVCMsg_EncryptedData>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CSVCMsg_EncryptedData& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CSVCMsg_EncryptedData& from) {
+    CSVCMsg_EncryptedData::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CSVCMsg_EncryptedData* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CSVCMsg_EncryptedData";
+  }
+  protected:
+  explicit CSVCMsg_EncryptedData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kEncryptedFieldNumber = 1,
+    kKeyTypeFieldNumber = 2,
+  };
+  // optional bytes encrypted = 1;
+  bool has_encrypted() const;
+  private:
+  bool _internal_has_encrypted() const;
+  public:
+  void clear_encrypted();
+  const std::string& encrypted() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_encrypted(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_encrypted();
+  PROTOBUF_NODISCARD std::string* release_encrypted();
+  void set_allocated_encrypted(std::string* encrypted);
+  private:
+  const std::string& _internal_encrypted() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_encrypted(const std::string& value);
+  std::string* _internal_mutable_encrypted();
+  public:
+
+  // optional int32 key_type = 2;
+  bool has_key_type() const;
+  private:
+  bool _internal_has_key_type() const;
+  public:
+  void clear_key_type();
+  int32_t key_type() const;
+  void set_key_type(int32_t value);
+  private:
+  int32_t _internal_key_type() const;
+  void _internal_set_key_type(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CSVCMsg_EncryptedData)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr encrypted_;
+    int32_t key_type_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_netmessages_2eproto;
@@ -10230,7 +10430,7 @@ class CSVCMsg_PacketReliable /*final*/ :
                &_CSVCMsg_PacketReliable_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    45;
+    46;
 
   friend void swap(CSVCMsg_PacketReliable& a, CSVCMsg_PacketReliable& b) {
     a.Swap(&b);
@@ -10420,7 +10620,7 @@ class CSVCMsg_FullFrameSplit /*final*/ :
                &_CSVCMsg_FullFrameSplit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    46;
+    47;
 
   friend void swap(CSVCMsg_FullFrameSplit& a, CSVCMsg_FullFrameSplit& b) {
     a.Swap(&b);
@@ -10630,7 +10830,7 @@ class CSVCMsg_HLTVStatus /*final*/ :
                &_CSVCMsg_HLTVStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    47;
+    48;
 
   friend void swap(CSVCMsg_HLTVStatus& a, CSVCMsg_HLTVStatus& b) {
     a.Swap(&b);
@@ -10840,7 +11040,7 @@ class CSVCMsg_ServerSteamID /*final*/ :
                &_CSVCMsg_ServerSteamID_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    48;
+    49;
 
   friend void swap(CSVCMsg_ServerSteamID& a, CSVCMsg_ServerSteamID& b) {
     a.Swap(&b);
@@ -11000,7 +11200,7 @@ class CSVCMsg_CmdKeyValues /*final*/ :
                &_CSVCMsg_CmdKeyValues_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    49;
+    50;
 
   friend void swap(CSVCMsg_CmdKeyValues& a, CSVCMsg_CmdKeyValues& b) {
     a.Swap(&b);
@@ -11165,7 +11365,7 @@ class CSVCMsg_RconServerDetails /*final*/ :
                &_CSVCMsg_RconServerDetails_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    50;
+    51;
 
   friend void swap(CSVCMsg_RconServerDetails& a, CSVCMsg_RconServerDetails& b) {
     a.Swap(&b);
@@ -11350,7 +11550,7 @@ class CMsgIPCAddress /*final*/ :
                &_CMsgIPCAddress_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    51;
+    52;
 
   friend void swap(CMsgIPCAddress& a, CMsgIPCAddress& b) {
     a.Swap(&b);
@@ -11525,7 +11725,7 @@ class CMsgServerPeer /*final*/ :
                &_CMsgServerPeer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    52;
+    53;
 
   friend void swap(CMsgServerPeer& a, CMsgServerPeer& b) {
     a.Swap(&b);
@@ -11765,7 +11965,7 @@ class CSVCMsg_PeerList /*final*/ :
                &_CSVCMsg_PeerList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    53;
+    54;
 
   friend void swap(CSVCMsg_PeerList& a, CSVCMsg_PeerList& b) {
     a.Swap(&b);
@@ -11929,7 +12129,7 @@ class CSVCMsg_ClearAllStringTables /*final*/ :
                &_CSVCMsg_ClearAllStringTables_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    54;
+    55;
 
   friend void swap(CSVCMsg_ClearAllStringTables& a, CSVCMsg_ClearAllStringTables& b) {
     a.Swap(&b);
@@ -12109,7 +12309,7 @@ class ProtoFlattenedSerializerField_t_polymorphic_field_t /*final*/ :
                &_ProtoFlattenedSerializerField_t_polymorphic_field_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    55;
+    56;
 
   friend void swap(ProtoFlattenedSerializerField_t_polymorphic_field_t& a, ProtoFlattenedSerializerField_t_polymorphic_field_t& b) {
     a.Swap(&b);
@@ -12284,7 +12484,7 @@ class ProtoFlattenedSerializerField_t /*final*/ :
                &_ProtoFlattenedSerializerField_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    56;
+    57;
 
   friend void swap(ProtoFlattenedSerializerField_t& a, ProtoFlattenedSerializerField_t& b) {
     a.Swap(&b);
@@ -12616,7 +12816,7 @@ class ProtoFlattenedSerializer_t /*final*/ :
                &_ProtoFlattenedSerializer_t_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    57;
+    58;
 
   friend void swap(ProtoFlattenedSerializer_t& a, ProtoFlattenedSerializer_t& b) {
     a.Swap(&b);
@@ -12815,7 +13015,7 @@ class CSVCMsg_FlattenedSerializer /*final*/ :
                &_CSVCMsg_FlattenedSerializer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    58;
+    59;
 
   friend void swap(CSVCMsg_FlattenedSerializer& a, CSVCMsg_FlattenedSerializer& b) {
     a.Swap(&b);
@@ -13025,7 +13225,7 @@ class CSVCMsg_StopSound /*final*/ :
                &_CSVCMsg_StopSound_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    59;
+    60;
 
   friend void swap(CSVCMsg_StopSound& a, CSVCMsg_StopSound& b) {
     a.Swap(&b);
@@ -13185,7 +13385,7 @@ class CBidirMsg_RebroadcastGameEvent /*final*/ :
                &_CBidirMsg_RebroadcastGameEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    60;
+    61;
 
   friend void swap(CBidirMsg_RebroadcastGameEvent& a, CBidirMsg_RebroadcastGameEvent& b) {
     a.Swap(&b);
@@ -13390,7 +13590,7 @@ class CBidirMsg_RebroadcastSource /*final*/ :
                &_CBidirMsg_RebroadcastSource_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    61;
+    62;
 
   friend void swap(CBidirMsg_RebroadcastSource& a, CBidirMsg_RebroadcastSource& b) {
     a.Swap(&b);
@@ -13550,7 +13750,7 @@ class CBidirMsg_PredictionEvent /*final*/ :
                &_CBidirMsg_PredictionEvent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    62;
+    63;
 
   friend void swap(CBidirMsg_PredictionEvent& a, CBidirMsg_PredictionEvent& b) {
     a.Swap(&b);
@@ -13790,7 +13990,7 @@ class CMsgServerNetworkStats_Port /*final*/ :
                &_CMsgServerNetworkStats_Port_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    63;
+    64;
 
   friend void swap(CMsgServerNetworkStats_Port& a, CMsgServerNetworkStats_Port& b) {
     a.Swap(&b);
@@ -13970,7 +14170,7 @@ class CMsgServerNetworkStats_Player /*final*/ :
                &_CMsgServerNetworkStats_Player_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    64;
+    65;
 
   friend void swap(CMsgServerNetworkStats_Player& a, CMsgServerNetworkStats_Player& b) {
     a.Swap(&b);
@@ -14240,7 +14440,7 @@ class CMsgServerNetworkStats /*final*/ :
                &_CMsgServerNetworkStats_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    65;
+    66;
 
   friend void swap(CMsgServerNetworkStats& a, CMsgServerNetworkStats& b) {
     a.Swap(&b);
@@ -14773,7 +14973,7 @@ class CSVCMsg_HltvReplay /*final*/ :
                &_CSVCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    66;
+    67;
 
   friend void swap(CSVCMsg_HltvReplay& a, CSVCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -15038,7 +15238,7 @@ class CCLCMsg_HltvReplay /*final*/ :
                &_CCLCMsg_HltvReplay_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    67;
+    68;
 
   friend void swap(CCLCMsg_HltvReplay& a, CCLCMsg_HltvReplay& b) {
     a.Swap(&b);
@@ -15258,7 +15458,7 @@ class CSVCMsg_Broadcast_Command /*final*/ :
                &_CSVCMsg_Broadcast_Command_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    68;
+    69;
 
   friend void swap(CSVCMsg_Broadcast_Command& a, CSVCMsg_Broadcast_Command& b) {
     a.Swap(&b);
@@ -15423,7 +15623,7 @@ class CCLCMsg_HltvFixupOperatorTick /*final*/ :
                &_CCLCMsg_HltvFixupOperatorTick_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    69;
+    70;
 
   friend void swap(CCLCMsg_HltvFixupOperatorTick& a, CCLCMsg_HltvFixupOperatorTick& b) {
     a.Swap(&b);
@@ -15708,7 +15908,7 @@ class CSVCMsg_HltvFixupOperatorStatus /*final*/ :
                &_CSVCMsg_HltvFixupOperatorStatus_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    70;
+    71;
 
   friend void swap(CSVCMsg_HltvFixupOperatorStatus& a, CSVCMsg_HltvFixupOperatorStatus& b) {
     a.Swap(&b);
@@ -15888,7 +16088,7 @@ class CMsgServerUserCmd /*final*/ :
                &_CMsgServerUserCmd_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    71;
+    72;
 
   friend void swap(CMsgServerUserCmd& a, CMsgServerUserCmd& b) {
     a.Swap(&b);
@@ -16133,7 +16333,7 @@ class CSVCMsg_UserCommands /*final*/ :
                &_CSVCMsg_UserCommands_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    72;
+    73;
 
   friend void swap(CSVCMsg_UserCommands& a, CSVCMsg_UserCommands& b) {
     a.Swap(&b);
@@ -16297,7 +16497,7 @@ class CSVCMsg_NextMsgPredicted /*final*/ :
                &_CSVCMsg_NextMsgPredicted_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    73;
+    74;
 
   friend void swap(CSVCMsg_NextMsgPredicted& a, CSVCMsg_NextMsgPredicted& b) {
     a.Swap(&b);
@@ -23614,7 +23814,7 @@ inline void CSVCMsg_VoiceData::set_allocated_audio(::CMsgVoiceAudio* audio) {
 
 // optional int32 client_deprecated = 2 [default = -1];
 inline bool CSVCMsg_VoiceData::_internal_has_client_deprecated() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_client_deprecated() const {
@@ -23622,7 +23822,7 @@ inline bool CSVCMsg_VoiceData::has_client_deprecated() const {
 }
 inline void CSVCMsg_VoiceData::clear_client_deprecated() {
   _impl_.client_deprecated_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline int32_t CSVCMsg_VoiceData::_internal_client_deprecated() const {
   return _impl_.client_deprecated_;
@@ -23632,7 +23832,7 @@ inline int32_t CSVCMsg_VoiceData::client_deprecated() const {
   return _internal_client_deprecated();
 }
 inline void CSVCMsg_VoiceData::_internal_set_client_deprecated(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.client_deprecated_ = value;
 }
 inline void CSVCMsg_VoiceData::set_client_deprecated(int32_t value) {
@@ -23642,7 +23842,7 @@ inline void CSVCMsg_VoiceData::set_client_deprecated(int32_t value) {
 
 // optional bool proximity = 3;
 inline bool CSVCMsg_VoiceData::_internal_has_proximity() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_proximity() const {
@@ -23650,7 +23850,7 @@ inline bool CSVCMsg_VoiceData::has_proximity() const {
 }
 inline void CSVCMsg_VoiceData::clear_proximity() {
   _impl_.proximity_ = false;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline bool CSVCMsg_VoiceData::_internal_proximity() const {
   return _impl_.proximity_;
@@ -23660,7 +23860,7 @@ inline bool CSVCMsg_VoiceData::proximity() const {
   return _internal_proximity();
 }
 inline void CSVCMsg_VoiceData::_internal_set_proximity(bool value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.proximity_ = value;
 }
 inline void CSVCMsg_VoiceData::set_proximity(bool value) {
@@ -23698,7 +23898,7 @@ inline void CSVCMsg_VoiceData::set_xuid(uint64_t value) {
 
 // optional int32 audible_mask = 5;
 inline bool CSVCMsg_VoiceData::_internal_has_audible_mask() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_audible_mask() const {
@@ -23706,7 +23906,7 @@ inline bool CSVCMsg_VoiceData::has_audible_mask() const {
 }
 inline void CSVCMsg_VoiceData::clear_audible_mask() {
   _impl_.audible_mask_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline int32_t CSVCMsg_VoiceData::_internal_audible_mask() const {
   return _impl_.audible_mask_;
@@ -23716,7 +23916,7 @@ inline int32_t CSVCMsg_VoiceData::audible_mask() const {
   return _internal_audible_mask();
 }
 inline void CSVCMsg_VoiceData::_internal_set_audible_mask(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.audible_mask_ = value;
 }
 inline void CSVCMsg_VoiceData::set_audible_mask(int32_t value) {
@@ -23726,7 +23926,7 @@ inline void CSVCMsg_VoiceData::set_audible_mask(int32_t value) {
 
 // optional uint32 tick = 6;
 inline bool CSVCMsg_VoiceData::_internal_has_tick() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_tick() const {
@@ -23734,7 +23934,7 @@ inline bool CSVCMsg_VoiceData::has_tick() const {
 }
 inline void CSVCMsg_VoiceData::clear_tick() {
   _impl_.tick_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline uint32_t CSVCMsg_VoiceData::_internal_tick() const {
   return _impl_.tick_;
@@ -23744,7 +23944,7 @@ inline uint32_t CSVCMsg_VoiceData::tick() const {
   return _internal_tick();
 }
 inline void CSVCMsg_VoiceData::_internal_set_tick(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.tick_ = value;
 }
 inline void CSVCMsg_VoiceData::set_tick(uint32_t value) {
@@ -23754,7 +23954,7 @@ inline void CSVCMsg_VoiceData::set_tick(uint32_t value) {
 
 // optional int32 passthrough = 7;
 inline bool CSVCMsg_VoiceData::_internal_has_passthrough() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_passthrough() const {
@@ -23762,7 +23962,7 @@ inline bool CSVCMsg_VoiceData::has_passthrough() const {
 }
 inline void CSVCMsg_VoiceData::clear_passthrough() {
   _impl_.passthrough_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline int32_t CSVCMsg_VoiceData::_internal_passthrough() const {
   return _impl_.passthrough_;
@@ -23772,7 +23972,7 @@ inline int32_t CSVCMsg_VoiceData::passthrough() const {
   return _internal_passthrough();
 }
 inline void CSVCMsg_VoiceData::_internal_set_passthrough(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.passthrough_ = value;
 }
 inline void CSVCMsg_VoiceData::set_passthrough(int32_t value) {
@@ -23782,7 +23982,7 @@ inline void CSVCMsg_VoiceData::set_passthrough(int32_t value) {
 
 // optional int32 entity = 8 [default = -1];
 inline bool CSVCMsg_VoiceData::_internal_has_entity() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
 }
 inline bool CSVCMsg_VoiceData::has_entity() const {
@@ -23790,7 +23990,7 @@ inline bool CSVCMsg_VoiceData::has_entity() const {
 }
 inline void CSVCMsg_VoiceData::clear_entity() {
   _impl_.entity_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
 }
 inline int32_t CSVCMsg_VoiceData::_internal_entity() const {
   return _impl_.entity_;
@@ -23800,12 +24000,140 @@ inline int32_t CSVCMsg_VoiceData::entity() const {
   return _internal_entity();
 }
 inline void CSVCMsg_VoiceData::_internal_set_entity(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000100u;
   _impl_.entity_ = value;
 }
 inline void CSVCMsg_VoiceData::set_entity(int32_t value) {
   _internal_set_entity(value);
   // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.entity)
+}
+
+// optional bool caster = 9;
+inline bool CSVCMsg_VoiceData::_internal_has_caster() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  return value;
+}
+inline bool CSVCMsg_VoiceData::has_caster() const {
+  return _internal_has_caster();
+}
+inline void CSVCMsg_VoiceData::clear_caster() {
+  _impl_.caster_ = false;
+  _impl_._has_bits_[0] &= ~0x00000020u;
+}
+inline bool CSVCMsg_VoiceData::_internal_caster() const {
+  return _impl_.caster_;
+}
+inline bool CSVCMsg_VoiceData::caster() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_VoiceData.caster)
+  return _internal_caster();
+}
+inline void CSVCMsg_VoiceData::_internal_set_caster(bool value) {
+  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_.caster_ = value;
+}
+inline void CSVCMsg_VoiceData::set_caster(bool value) {
+  _internal_set_caster(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.caster)
+}
+
+// -------------------------------------------------------------------
+
+// CSVCMsg_EncryptedData
+
+// optional bytes encrypted = 1;
+inline bool CSVCMsg_EncryptedData::_internal_has_encrypted() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSVCMsg_EncryptedData::has_encrypted() const {
+  return _internal_has_encrypted();
+}
+inline void CSVCMsg_EncryptedData::clear_encrypted() {
+  _impl_.encrypted_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSVCMsg_EncryptedData::encrypted() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_EncryptedData.encrypted)
+  return _internal_encrypted();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSVCMsg_EncryptedData::set_encrypted(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.encrypted_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSVCMsg_EncryptedData.encrypted)
+}
+inline std::string* CSVCMsg_EncryptedData::mutable_encrypted() {
+  std::string* _s = _internal_mutable_encrypted();
+  // @@protoc_insertion_point(field_mutable:CSVCMsg_EncryptedData.encrypted)
+  return _s;
+}
+inline const std::string& CSVCMsg_EncryptedData::_internal_encrypted() const {
+  return _impl_.encrypted_.Get();
+}
+inline void CSVCMsg_EncryptedData::_internal_set_encrypted(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.encrypted_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_EncryptedData::_internal_mutable_encrypted() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.encrypted_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSVCMsg_EncryptedData::release_encrypted() {
+  // @@protoc_insertion_point(field_release:CSVCMsg_EncryptedData.encrypted)
+  if (!_internal_has_encrypted()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.encrypted_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.encrypted_.IsDefault()) {
+    _impl_.encrypted_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSVCMsg_EncryptedData::set_allocated_encrypted(std::string* encrypted) {
+  if (encrypted != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.encrypted_.SetAllocated(encrypted, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.encrypted_.IsDefault()) {
+    _impl_.encrypted_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSVCMsg_EncryptedData.encrypted)
+}
+
+// optional int32 key_type = 2;
+inline bool CSVCMsg_EncryptedData::_internal_has_key_type() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CSVCMsg_EncryptedData::has_key_type() const {
+  return _internal_has_key_type();
+}
+inline void CSVCMsg_EncryptedData::clear_key_type() {
+  _impl_.key_type_ = 0;
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline int32_t CSVCMsg_EncryptedData::_internal_key_type() const {
+  return _impl_.key_type_;
+}
+inline int32_t CSVCMsg_EncryptedData::key_type() const {
+  // @@protoc_insertion_point(field_get:CSVCMsg_EncryptedData.key_type)
+  return _internal_key_type();
+}
+inline void CSVCMsg_EncryptedData::_internal_set_key_type(int32_t value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.key_type_ = value;
+}
+inline void CSVCMsg_EncryptedData::set_key_type(int32_t value) {
+  _internal_set_key_type(value);
+  // @@protoc_insertion_point(field_set:CSVCMsg_EncryptedData.key_type)
 }
 
 // -------------------------------------------------------------------
@@ -28348,6 +28676,8 @@ inline void CSVCMsg_NextMsgPredicted::set_message_type_id(uint32_t value) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

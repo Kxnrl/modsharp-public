@@ -61,5 +61,8 @@ internal partial class CustomHudLayout : BaseEntity, ICustomHudLayout
     [NativeSchemaField("CCSCustomHudLayout", "m_strLayout", typeof(CUtlSymbolLarge))]
     private partial SchemaField GetLayoutField();
 
+    [NativeSchemaField("CCSCustomHudLayout", "m_bObservable", typeof(bool))]
+    private partial SchemaField GetObservableField();
+
 #endregion
 }

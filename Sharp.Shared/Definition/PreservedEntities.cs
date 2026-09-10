@@ -117,6 +117,7 @@ public static class PreservedEntities
         "point_script",
         "point_pulse",
         "custom_hud_layout",
+        "custom_player_camera",
         "cs_player_camera",
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 

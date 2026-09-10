@@ -671,8 +671,14 @@ static ScriptStackFnKind ClassifyScriptStackFn(CModule* mod, uintptr_t fn, uintp
 
 // Resolve push+pop off the method-call dispatcher (string "PublicMethod:%s"), which brackets its
 // invoke with push…pop; classify its callees by the getter-derived depth global. Zydis first, then the
-// on_demand gamedata signatures "CCSScript::ScriptStackPush"/"ScriptStackPop" (win+linux); either left
-// null on failure.
+// gamedata keys "CCSScript::ScriptStackPush"/"ScriptStackPop"; either left null on failure.
+//
+// Those two keys weld the RIP displacement on purpose, so they are pinned to one build and must be
+// re-cut every GameUpdate. Wildcarding the operands is not an option: pop (`dec [rip+depth]; ret`)
+// then matches a handful of unrelated sites on both platforms, and push (a CUtlVector AddToTail
+// instantiation) matches its byte-identical template twin, which differs only in the globals the
+// wildcards would cover. Binding the wrong twin silently pushes onto another vector, so a
+// stale-and-mismatching key is the safer failure than a wildcarded one.
 static void ResolveScriptStackFns(uintptr_t getter, ScriptStackPushFn& outPush, ScriptStackPopFn& outPop)
 {
     auto* mod = modules::server;
