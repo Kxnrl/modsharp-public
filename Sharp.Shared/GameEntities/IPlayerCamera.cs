@@ -86,24 +86,4 @@ public interface IPlayerCamera : IBaseEntity
     ///     m_flCameraOffsetReturnStrength
     /// </summary>
     float CameraOffsetReturnStrength { get; set; }
-
-    /// <summary>
-    ///     Compatibility shim for the pre-2026-09 schema. Prefer <see cref="CameraMode" />.
-    /// </summary>
-    [Obsolete("m_bEnabled was removed from the schema; use CameraMode.")]
-    bool Enabled
-    {
-        get => CameraMode != CustomCameraMode.Disabled;
-        set => CameraMode = value ? CustomCameraMode.Controlled : CustomCameraMode.Disabled;
-    }
-
-    /// <summary>
-    ///     Compatibility shim for the pre-2026-09 schema. Prefer <see cref="CameraMode" />.
-    /// </summary>
-    [Obsolete("m_bIsControllingAngles was removed from the schema; use CameraMode.")]
-    bool IsControllingAngles
-    {
-        get => CameraMode == CustomCameraMode.Controlled;
-        set => CameraMode = value ? CustomCameraMode.Controlled : CustomCameraMode.ControlledPosition;
-    }
 }
