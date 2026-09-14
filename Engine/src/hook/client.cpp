@@ -67,6 +67,8 @@ static CConVarBaseData* ms_fix_voice_chat        = nullptr;
 static uint64_t         s_RandomSeed;
 static uint64_t         s_PlayerSeed[CS_MAX_PLAYERS];
 
+extern void BanSteamIdInternal(uint64_t steamId, int32_t reason);
+
 BeginMemberHookScope(CSource2GameClients)
 {
     DeclareVirtualHook(CheckConnect, bool, (IServerGameClient * pServerGameClients, PlayerSlot_t slot, const char* pszName, SteamId_t steamId, const char* pszAddress, bool bFakeClient, CBufferString* pRejectReason))
@@ -357,10 +359,28 @@ BeginMemberHookScope(CServerSideClient)
         const CServerSideClient* client         = nullptr;
         double                   lastRefillTime = -1.0;
         double                   tokens         = CmdKeyValues_BucketCapacity;
+        int32_t                  logging        = 0;
 
         void Update(double now)
         {
             tokens = std::min(CmdKeyValues_BucketCapacity, tokens + (now - lastRefillTime) * CmdKeyValues_RefillRate);
+        }
+
+        [[nodiscard]] bool ShouldLog()
+        {
+            if (tokens < 1.0)
+            {
+                logging++;
+                tokens = CmdKeyValues_BucketCapacity;
+                return true;
+            }
+
+            return false;
+        }
+
+        [[nodiscard]] bool ShouldKick() const
+        {
+            return logging >= 3;
         }
 
     private:
@@ -381,12 +401,8 @@ BeginMemberHookScope(CServerSideClient)
         if (!pClient || !pMessage)
             return false;
 
-        const auto slot = pClient->GetSlot();
-        if (slot >= CS_MAX_PLAYERS)
-            return false;
-
         const auto now   = Plat_FloatTime();
-        auto&      state = s_CmdKeyValuesRateState[slot];
+        auto&      state = s_CmdKeyValuesRateState[pClient->GetSlot()];
         if (state.client != pClient || state.lastRefillTime < 0.0 || now < state.lastRefillTime)
         {
             state        = {};
@@ -398,19 +414,25 @@ BeginMemberHookScope(CServerSideClient)
         }
 
         state.lastRefillTime = now;
+        state.tokens -= 1.0;
 
-        // Charge every message, even if its payload is tiny, empty, or already parsed.
-        if (state.tokens < 1.0)
+        if (state.ShouldKick())
         {
-            WARN("Rejected CCLCMsg_CmdKeyValues from %s<%llu> slot %u", pClient->GetName(), pClient->GetSteamId(), static_cast<uint32_t>(slot));
+            FLOG("Rejected CCLCMsg_CmdKeyValues from %s<%llu>: kicked", pClient->GetName(), pClient->GetSteamId());
+            BanSteamIdInternal(pClient->GetSteamId(), 13);
             return false;
         }
 
-        state.tokens -= 1.0;
+        if (state.ShouldLog())
+        {
+            WARN("Rejected CCLCMsg_CmdKeyValues from %s<%llu>: dropped", pClient->GetName(), pClient->GetSteamId());
+            return true;
+        }
+
         return CLCMsg_CmdKeyValues(pClient, pMessage);
     }
 
-    constexpr uint32_t max_message_rate             = 128;
+    constexpr uint32_t max_message_rate             = 192;
     constexpr uint64_t max_decoded_bytes_per_second = 262144;
     constexpr uint64_t max_message_bytes            = 16384;
     constexpr uint32_t max_packet_offsets           = 64;
@@ -439,9 +461,6 @@ BeginMemberHookScope(CServerSideClient)
 
     static void ResetVoiceMessageRateState(const PlayerSlot_t slot)
     {
-        if (slot >= CS_MAX_PLAYERS)
-            return;
-
         const auto lastLogTime                    = s_VoiceMessageRateState[slot].lastLogTime;
         s_VoiceMessageRateState[slot]             = {};
         s_VoiceMessageRateState[slot].lastLogTime = lastLogTime;
@@ -481,21 +500,22 @@ BeginMemberHookScope(CServerSideClient)
         return false;
     }
 
-    static bool RejectVoiceMessage(const CServerSideClient* pClient, const double now)
+    static void RejectVoiceMessage(const CServerSideClient* pClient, const double now)
     {
         auto& state = s_VoiceMessageRateState[pClient->GetSlot()];
         if (state.lastLogTime < 0.0 || now < state.lastLogTime || now - state.lastLogTime >= 1.0)
         {
             state.lastLogTime = now;
-            WARN("Rejected CCLCMsg_VoiceData from %s<%llu>: (tracked_messages=%u tracked_work=%llu tracked_packets=%u)",
+
+            FLOG("Rejected CCLCMsg_VoiceData from %s<%llu>: (tracked_messages=%u tracked_work=%llu tracked_packets=%u)",
                  pClient->GetName(),
                  pClient->GetSteamId(),
                  state.messageCount,
                  state.decodedWorkSize,
                  state.packetCount);
-        }
 
-        return false;
+            BanSteamIdInternal(pClient->GetSteamId(), 13);
+        }
     }
 
     DeclareVirtualHook(CLCMsg_VoiceData, bool, (CServerSideClient * pClient, CNetMessage * pVoiceData))
@@ -539,7 +559,12 @@ BeginMemberHookScope(CServerSideClient)
         const auto packetCount     = std::max(packetOffsets, numPackets);
         const auto decodedWorkSize = static_cast<uint64_t>(messageSize) + static_cast<uint64_t>(packetCount) * sizeof(uint32_t);
         if (ShouldKick(pClient->GetSlot(), now, decodedWorkSize, packetCount))
-            return RejectVoiceMessage(pClient, now);
+        {
+            RejectVoiceMessage(pClient, now);
+
+            // kicked
+            return false;
+        }
 
         const auto action = forwards::OnClientSpeakPre->Invoke(pClient, xuid, sectionNumber, voiceDataPtr, voiceDataSize);
         if (action == EHookAction::SkipCallReturnOverride)
