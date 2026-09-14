@@ -352,14 +352,20 @@ BeginMemberHookScope(CServerSideClient)
         return IsHearingClient(pClient, nSlot);
     }
 
-    constexpr double cmd_keyvalues_bucket_capacity = 8.0;
-    constexpr double cmd_keyvalues_refill_rate     = 2.0;
-
     struct CmdKeyValuesRateState
     {
-        const CServerSideClient* client = nullptr;
-        double lastRefillTime           = -1.0;
-        double tokens                   = cmd_keyvalues_bucket_capacity;
+        const CServerSideClient* client         = nullptr;
+        double                   lastRefillTime = -1.0;
+        double                   tokens         = CmdKeyValues_BucketCapacity;
+
+        void Update(double now)
+        {
+            tokens = std::min(CmdKeyValues_BucketCapacity, tokens + (now - lastRefillTime) * CmdKeyValues_RefillRate);
+        }
+
+    private:
+        static constexpr double CmdKeyValues_BucketCapacity = 8.0;
+        static constexpr double CmdKeyValues_RefillRate     = 2.0;
     };
 
     static CmdKeyValuesRateState s_CmdKeyValuesRateState[CS_MAX_PLAYERS];
@@ -377,10 +383,10 @@ BeginMemberHookScope(CServerSideClient)
 
         const auto slot = pClient->GetSlot();
         if (slot >= CS_MAX_PLAYERS)
-            return CLCMsg_CmdKeyValues(pClient, pMessage);
+            return false;
 
-        const auto now = Plat_FloatTime();
-        auto& state    = s_CmdKeyValuesRateState[slot];
+        const auto now   = Plat_FloatTime();
+        auto&      state = s_CmdKeyValuesRateState[slot];
         if (state.client != pClient || state.lastRefillTime < 0.0 || now < state.lastRefillTime)
         {
             state        = {};
@@ -388,15 +394,15 @@ BeginMemberHookScope(CServerSideClient)
         }
         else
         {
-            state.tokens = std::min(cmd_keyvalues_bucket_capacity, state.tokens + (now - state.lastRefillTime) * cmd_keyvalues_refill_rate);
+            state.Update(now);
         }
+
         state.lastRefillTime = now;
 
         // Charge every message, even if its payload is tiny, empty, or already parsed.
         if (state.tokens < 1.0)
         {
-            WARN("Rejected CCLCMsg_CmdKeyValues from %s<%llu> slot %u: cmdkeyvalues-rate-limit",
-                 pClient->GetName(), pClient->GetSteamId(), static_cast<uint32_t>(slot));
+            WARN("Rejected CCLCMsg_CmdKeyValues from %s<%llu> slot %u", pClient->GetName(), pClient->GetSteamId(), static_cast<uint32_t>(slot));
             return false;
         }
 
@@ -443,9 +449,6 @@ BeginMemberHookScope(CServerSideClient)
 
     static bool ShouldKick(const PlayerSlot_t slot, const double now, const uint64_t decodedWorkSize, const uint32_t packetCount)
     {
-        if (slot >= CS_MAX_PLAYERS)
-            return true;
-
         auto& state = s_VoiceMessageRateState[slot];
         if (now < state.lastMessageTime)
             ResetVoiceMessageRateState(slot);
@@ -458,8 +461,8 @@ BeginMemberHookScope(CServerSideClient)
                 break;
 
             state.decodedWorkSize -= sample.decodedWorkSize;
-            state.packetCount     -= sample.packetCount;
-            state.firstMessage    = (state.firstMessage + 1) % max_message_rate;
+            state.packetCount -= sample.packetCount;
+            state.firstMessage = (state.firstMessage + 1) % max_message_rate;
             --state.messageCount;
         }
 
@@ -474,29 +477,21 @@ BeginMemberHookScope(CServerSideClient)
         state.samples[index] = {now, decodedWorkSize, packetCount};
         ++state.messageCount;
         state.decodedWorkSize += decodedWorkSize;
-        state.packetCount     += packetCount;
+        state.packetCount += packetCount;
         return false;
     }
 
     static bool RejectVoiceMessage(const CServerSideClient* pClient, const double now)
     {
-        const auto slot = pClient->GetSlot();
-        if (slot >= CS_MAX_PLAYERS)
-        {
-            return false;
-        }
-
-        auto& state = s_VoiceMessageRateState[slot];
+        auto& state = s_VoiceMessageRateState[pClient->GetSlot()];
         if (state.lastLogTime < 0.0 || now < state.lastLogTime || now - state.lastLogTime >= 1.0)
         {
             state.lastLogTime = now;
-            WARN("Rejected CCLCMsg_VoiceData from %s<%llu> slot %u: voice-rate-limit "
-                 "(tracked_messages=%u tracked_work=%llu tracked_packets=%u)",
+            WARN("Rejected CCLCMsg_VoiceData from %s<%llu>: (tracked_messages=%u tracked_work=%llu tracked_packets=%u)",
                  pClient->GetName(),
                  pClient->GetSteamId(),
-                 static_cast<uint32_t>(slot),
                  state.messageCount,
-                 static_cast<unsigned long long>(state.decodedWorkSize),
+                 state.decodedWorkSize,
                  state.packetCount);
         }
 
@@ -505,42 +500,43 @@ BeginMemberHookScope(CServerSideClient)
 
     DeclareVirtualHook(CLCMsg_VoiceData, bool, (CServerSideClient * pClient, CNetMessage * pVoiceData))
     {
-        if (!pClient || !pVoiceData)
+        if (!pClient || !pVoiceData || pClient->IsFakeClient())
             return false;
 
         const auto msg = static_cast<const CCLCMsg_VoiceData*>(pVoiceData->AsProto());
         if (!msg || !msg->has_audio())
             return false;
 
+        const auto xuid = msg->xuid();
+
+        if (xuid == 0 || xuid != pClient->GetSteamId())
+            return false;
+
         const auto& audio         = msg->audio();
         const auto  sectionNumber = audio.section_number();
-        const auto& voiceData     = audio.voice_data();
-        const auto  voiceDataPtr  = voiceData.data();
-        const auto  voiceDataSize = voiceData.size();
-        const auto  xuid          = msg->xuid();
-
-        const auto now           = Plat_FloatTime();
-        const auto packetOffsets = audio.packet_offsets_size();
-        const auto numPackets    = audio.num_packets();
 
         if (!VoiceDataFormat_t_IsValid(audio.format()))
             return false;
+
+        const auto  now           = Plat_FloatTime();
+        const auto  packetOffsets = static_cast<uint32_t>(audio.packet_offsets_size());
+        const auto  numPackets    = audio.num_packets();
+        const auto& voiceData     = audio.voice_data();
+        const auto  voiceDataPtr  = voiceData.data();
+        const auto  voiceDataSize = voiceData.size();
+
         if (voiceDataSize == 0 && (packetOffsets != 0 || numPackets != 0))
             return false;
 
         // Check cheap fields before ByteSizeLong walks the protobuf fields.
-        if (packetOffsets > static_cast<int>(max_packet_offsets))
-            return false;
-        if (numPackets > max_packet_offsets)
-            return false;
-        if (voiceDataSize > max_message_bytes)
+        if (packetOffsets > max_packet_offsets || numPackets > max_packet_offsets || voiceDataSize > max_message_bytes)
             return false;
 
         const auto messageSize = msg->ByteSizeLong();
         if (messageSize > max_message_bytes)
             return false;
 
-        const auto packetCount     = std::max(static_cast<uint32_t>(packetOffsets), numPackets);
+        const auto packetCount     = std::max(packetOffsets, numPackets);
         const auto decodedWorkSize = static_cast<uint64_t>(messageSize) + static_cast<uint64_t>(packetCount) * sizeof(uint32_t);
         if (ShouldKick(pClient->GetSlot(), now, decodedWorkSize, packetCount))
             return RejectVoiceMessage(pClient, now);
