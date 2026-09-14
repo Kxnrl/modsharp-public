@@ -352,9 +352,114 @@ BeginMemberHookScope(CServerSideClient)
         return IsHearingClient(pClient, nSlot);
     }
 
+    constexpr uint32_t max_message_rate             = 128;
+    constexpr uint64_t max_decoded_bytes_per_second = 262144;
+    constexpr uint64_t max_message_bytes            = 16384;
+    constexpr uint32_t max_packet_offsets           = 64;
+    constexpr uint32_t max_packets_per_second       = 1024;
+
+    struct VoiceMessageSample
+    {
+        double   time            = 0.0;
+        uint64_t decodedWorkSize = 0;
+        uint32_t packetCount     = 0;
+    };
+
+    struct VoiceMessageRateState
+    {
+        VoiceMessageSample samples[max_message_rate]{};
+
+        double   lastMessageTime = -1.0;
+        double   lastLogTime     = -1.0;
+        uint32_t firstMessage    = 0;
+        uint32_t messageCount    = 0;
+        uint64_t decodedWorkSize = 0;
+        uint32_t packetCount     = 0;
+    };
+
+    static VoiceMessageRateState s_VoiceMessageRateState[CS_MAX_PLAYERS];
+
+    static void ResetVoiceMessageRateState(const PlayerSlot_t slot)
+    {
+        if (slot >= CS_MAX_PLAYERS)
+            return;
+
+        const auto lastLogTime                    = s_VoiceMessageRateState[slot].lastLogTime;
+        s_VoiceMessageRateState[slot]             = {};
+        s_VoiceMessageRateState[slot].lastLogTime = lastLogTime;
+    }
+
+    static bool ShouldKick(const PlayerSlot_t slot, const double now, const uint64_t decodedWorkSize, const uint32_t packetCount)
+    {
+        if (slot >= CS_MAX_PLAYERS)
+            return true;
+
+        auto& state = s_VoiceMessageRateState[slot];
+        if (now < state.lastMessageTime)
+            ResetVoiceMessageRateState(slot);
+        state.lastMessageTime = now;
+
+        while (state.messageCount != 0)
+        {
+            const auto& sample = state.samples[state.firstMessage];
+            if (now - sample.time < 1.0)
+                break;
+
+            state.decodedWorkSize -= sample.decodedWorkSize;
+            state.packetCount     -= sample.packetCount;
+            state.firstMessage    = (state.firstMessage + 1) % max_message_rate;
+            --state.messageCount;
+        }
+
+        if (state.messageCount >= max_message_rate)
+            return true;
+        if (decodedWorkSize > max_decoded_bytes_per_second - state.decodedWorkSize)
+            return true;
+        if (packetCount > max_packets_per_second - state.packetCount)
+            return true;
+
+        const auto index     = (state.firstMessage + state.messageCount) % max_message_rate;
+        state.samples[index] = {now, decodedWorkSize, packetCount};
+        ++state.messageCount;
+        state.decodedWorkSize += decodedWorkSize;
+        state.packetCount     += packetCount;
+        return false;
+    }
+
+    static bool RejectVoiceMessage(const CServerSideClient* pClient, const double now)
+    {
+        const auto slot = pClient->GetSlot();
+        if (slot >= CS_MAX_PLAYERS)
+        {
+            return false;
+        }
+
+        auto& state = s_VoiceMessageRateState[slot];
+        if (state.lastLogTime < 0.0 || now < state.lastLogTime || now - state.lastLogTime >= 1.0)
+        {
+            state.lastLogTime = now;
+            WARN("Rejected CCLCMsg_VoiceData from %s<%llu> slot %u: voice-rate-limit "
+                 "(tracked_messages=%u tracked_work=%llu tracked_packets=%u)",
+                 pClient->GetName(),
+                 pClient->GetSteamId(),
+                 static_cast<uint32_t>(slot),
+                 state.messageCount,
+                 static_cast<unsigned long long>(state.decodedWorkSize),
+                 state.packetCount);
+        }
+
+        return false;
+    }
+
     DeclareVirtualHook(CLCMsg_VoiceData, bool, (CServerSideClient * pClient, CNetMessage * pVoiceData))
     {
-        const auto  msg           = static_cast<const CCLCMsg_VoiceData*>(pVoiceData->AsProto());
+        if (!pClient || !pVoiceData)
+            return false;
+
+        const auto msg = static_cast<const CCLCMsg_VoiceData*>(pVoiceData->AsProto());
+        if (!msg || !msg->has_audio())
+            return false;
+
         const auto& audio         = msg->audio();
         const auto  sectionNumber = audio.section_number();
         const auto& voiceData     = audio.voice_data();
@@ -362,18 +467,44 @@ BeginMemberHookScope(CServerSideClient)
         const auto  voiceDataSize = voiceData.size();
         const auto  xuid          = msg->xuid();
 
+        const auto now           = Plat_FloatTime();
+        const auto packetOffsets = audio.packet_offsets_size();
+        const auto numPackets    = audio.num_packets();
+
+        if (!VoiceDataFormat_t_IsValid(audio.format()))
+            return false;
+        if (voiceDataSize == 0 && packetOffsets != 0)
+            return false;
+
+        // Check cheap fields before ByteSizeLong walks the protobuf fields.
+        if (packetOffsets > static_cast<int>(max_packet_offsets))
+            return false;
+        if (numPackets > max_packet_offsets)
+            return false;
+        if (voiceDataSize > max_message_bytes)
+            return false;
+
+        const auto messageSize = msg->ByteSizeLong();
+        if (messageSize > max_message_bytes)
+            return false;
+
+        const auto packetCount     = std::max(static_cast<uint32_t>(packetOffsets), numPackets);
+        const auto decodedWorkSize = static_cast<uint64_t>(messageSize) + static_cast<uint64_t>(packetCount) * sizeof(uint32_t);
+        if (ShouldKick(pClient->GetSlot(), now, decodedWorkSize, packetCount))
+            return RejectVoiceMessage(pClient, now);
+
         const auto action = forwards::OnClientSpeakPre->Invoke(pClient, xuid, sectionNumber, voiceDataPtr, voiceDataSize);
         if (action == EHookAction::SkipCallReturnOverride)
         {
             forwards::OnClientSpeakPost->Invoke(pClient, xuid, sectionNumber, voiceDataPtr, voiceDataSize, action);
-            return true; // always true
+            return true;
         }
 
         if (action == EHookAction::Ignored)
         {
-            CLCMsg_VoiceData(pClient, pVoiceData);
+            const auto result = CLCMsg_VoiceData(pClient, pVoiceData);
             forwards::OnClientSpeakPost->Invoke(pClient, xuid, sectionNumber, voiceDataPtr, voiceDataSize, action);
-            return true;
+            return result;
         }
 
         FatalError("OnClientSpeakPre: unsupported hook action '%s'", EHookActionName(action));
@@ -613,8 +744,14 @@ void InstallClientHooks()
     });
 
     g_pHookManager->Hook_ClientConnect(HookType_Post, [](PlayerSlot_t slot, const char*, SteamId_t, bool) {
+        if (slot >= CS_MAX_PLAYERS) return;
+        CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
         s_PlayerSeed[slot] = s_RandomSeed;
         s_RandomSeed += 66;
+    });
+
+    g_pHookManager->Hook_ClientDisconnect(HookType_Post, [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
+        CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
     });
 
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);
