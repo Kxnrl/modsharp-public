@@ -352,6 +352,58 @@ BeginMemberHookScope(CServerSideClient)
         return IsHearingClient(pClient, nSlot);
     }
 
+    constexpr double cmd_keyvalues_bucket_capacity = 8.0;
+    constexpr double cmd_keyvalues_refill_rate     = 2.0;
+
+    struct CmdKeyValuesRateState
+    {
+        const CServerSideClient* client = nullptr;
+        double lastRefillTime           = -1.0;
+        double tokens                   = cmd_keyvalues_bucket_capacity;
+    };
+
+    static CmdKeyValuesRateState s_CmdKeyValuesRateState[CS_MAX_PLAYERS];
+
+    static void ResetCmdKeyValuesRateState(const PlayerSlot_t slot)
+    {
+        if (slot < CS_MAX_PLAYERS)
+            s_CmdKeyValuesRateState[slot] = {};
+    }
+
+    DeclareMemberDetourHook(CLCMsg_CmdKeyValues, bool, (CServerSideClient * pClient, CNetMessage * pMessage))
+    {
+        if (!pClient || !pMessage)
+            return false;
+
+        const auto slot = pClient->GetSlot();
+        if (slot >= CS_MAX_PLAYERS)
+            return CLCMsg_CmdKeyValues(pClient, pMessage);
+
+        const auto now = Plat_FloatTime();
+        auto& state    = s_CmdKeyValuesRateState[slot];
+        if (state.client != pClient || state.lastRefillTime < 0.0 || now < state.lastRefillTime)
+        {
+            state        = {};
+            state.client = pClient;
+        }
+        else
+        {
+            state.tokens = std::min(cmd_keyvalues_bucket_capacity, state.tokens + (now - state.lastRefillTime) * cmd_keyvalues_refill_rate);
+        }
+        state.lastRefillTime = now;
+
+        // Charge every message, even if its payload is tiny, empty, or already parsed.
+        if (state.tokens < 1.0)
+        {
+            WARN("Rejected CCLCMsg_CmdKeyValues from %s<%llu> slot %u: cmdkeyvalues-rate-limit",
+                 pClient->GetName(), pClient->GetSteamId(), static_cast<uint32_t>(slot));
+            return false;
+        }
+
+        state.tokens -= 1.0;
+        return CLCMsg_CmdKeyValues(pClient, pMessage);
+    }
+
     constexpr uint32_t max_message_rate             = 128;
     constexpr uint64_t max_decoded_bytes_per_second = 262144;
     constexpr uint64_t max_message_bytes            = 16384;
@@ -720,6 +772,7 @@ void InstallClientHooks()
     HOOK(CSource2GameClients, FullyConnected);
 
     HOOK(CServerSideClient, ExecuteStringCommand);
+    HOOK(CServerSideClient, CLCMsg_CmdKeyValues);
     HOOK(CServerSideClient, IsHearingClient);
     VHOOK(CServerSideClient, CLCMsg_VoiceData, engine);
     VHOOK(CServerSideClient, CLCMsg_RespondCvarValue, engine);
@@ -746,12 +799,14 @@ void InstallClientHooks()
     g_pHookManager->Hook_ClientConnect(HookType_Post, [](PlayerSlot_t slot, const char*, SteamId_t, bool) {
         if (slot >= CS_MAX_PLAYERS) return;
         CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
+        CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
         s_PlayerSeed[slot] = s_RandomSeed;
         s_RandomSeed += 66;
     });
 
     g_pHookManager->Hook_ClientDisconnect(HookType_Post, [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
         CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
+        CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
     });
 
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);
