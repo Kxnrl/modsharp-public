@@ -18,7 +18,7 @@
  */
 
 #ifdef PLATFORM_POSIX
-#define DEBUG
+// #define DEBUG
 #    include "logging.h"
 #    include "module.h"
 #    include "scopetimer.h"
