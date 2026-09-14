@@ -502,6 +502,8 @@ BeginMemberHookScope(CServerSideClient)
 
     static void RejectVoiceMessage(const CServerSideClient* pClient, const double now)
     {
+        BanSteamIdInternal(pClient->GetSteamId(), 13);
+
         auto& state = s_VoiceMessageRateState[pClient->GetSlot()];
         if (state.lastLogTime < 0.0 || now < state.lastLogTime || now - state.lastLogTime >= 1.0)
         {
@@ -513,8 +515,6 @@ BeginMemberHookScope(CServerSideClient)
                  state.messageCount,
                  state.decodedWorkSize,
                  state.packetCount);
-
-            BanSteamIdInternal(pClient->GetSteamId(), 13);
         }
     }
 
