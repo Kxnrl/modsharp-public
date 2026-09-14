@@ -17,20 +17,18 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Sharp.Shared.Attributes;
-using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 
 namespace Sharp.Shared.GameEntities;
 
 /// <summary>
-///     cs_player_camera <br />
+///     custom_player_camera <br />
 ///     Move this to control a player's view without moving their pawn.
 /// </summary>
-[NetClass("CCSPlayerCamera")]
-public interface IPlayerCamera : IBaseEntity
+[NetClass("CCSCustomPlayerCamera")]
+public interface ICustomPlayerCamera : IBaseEntity
 {
     /// <summary>
     ///     m_hPawn

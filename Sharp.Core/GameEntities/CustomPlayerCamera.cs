@@ -20,14 +20,13 @@
 using Sharp.Core.Utilities;
 using Sharp.Generator;
 using Sharp.Shared;
-using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Types;
 
 namespace Sharp.Core.GameEntities;
 
-internal partial class PlayerCamera : BaseEntity, IPlayerCamera
+internal partial class CustomPlayerCamera : BaseEntity, ICustomPlayerCamera
 {
     public IBasePlayerPawn? Pawn => BasePlayerPawn.Create(PawnHandle.GetEntityPtr());
 
