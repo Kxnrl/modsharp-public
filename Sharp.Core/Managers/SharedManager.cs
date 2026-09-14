@@ -86,6 +86,9 @@ internal class SharedManager : ISharedManager
     public IParticleManager GetParticleManager()
         => _serviceProvider.GetRequiredService<ICoreParticleManager>();
 
+    public IAddonManager GetAddonManager()
+        => _serviceProvider.GetRequiredService<ICoreAddonManager>();
+
     public IScriptManager GetScriptManager()
         => _serviceProvider.GetRequiredService<ICoreScriptManager>();
 

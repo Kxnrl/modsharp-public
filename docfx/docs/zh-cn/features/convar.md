@@ -30,3 +30,11 @@
 | ms_fix_spawngroups_leak | 修SpawnGroup泄露问题 | false | - |
 | ms_hook_map_music | 外挂地图音乐 | false | - |
 | ms_map_music_threshold | 外挂地图音乐且转发至Transmit功能中 | 15 | 5 - 300 |
+| ms_extra_addons | 服务端额外插件的工坊 ID（逗号分隔），详见[创意工坊插件](workshop-addons.md) | (启动参数值) | - |
+| ms_client_extra_addons | 推送给所有客户端的工坊 ID（仅下载） | "" | - |
+| ms_extra_addons_timeout | 客户端下载插件期间允许的重连超时（秒） | 10 | 1 - 600 |
+| ms_extra_addons_debug | 输出额外插件流程的详细调试日志 | false | - |
+| ms_cache_clients_with_addons | 缓存客户端已下载的插件列表，重连时跳过重复下载 | false | - |
+| ms_cache_clients_duration | 缓存保留时长（秒，0 表示永久） | 0 | 0 - ∞ |
+| ms_block_disconnect_messages | 屏蔽客户端为下载插件而重连时的 "loop shutdown" 消息 | false | - |
+| ms_addon_mount_download | 挂载时强制重新下载插件，即使已安装 | false | - |

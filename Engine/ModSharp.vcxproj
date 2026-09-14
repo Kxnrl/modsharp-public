@@ -41,7 +41,10 @@
     <ClCompile Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues3.cpp" />
+    <ClCompile Include="src\hook\extern\AddonHooks.cpp" />
     <ClCompile Include="src\hook\extern\DualMountAddon.cpp" />
+    <ClCompile Include="src\hook\extern\ExtraAddon.cpp"/>
+    <ClCompile Include="src\hook\extern\ExtraAddonHooks.cpp"/>
     <ClCompile Include="src\kv3proxy.cpp" />
     <ClCompile Include="src\kvproxy.cpp" />
     <ClCompile Include="src\logging.cpp" />

@@ -95,6 +95,12 @@ public:
         return CreateConVar(name, defaultValue, false, defaultValue, false, defaultValue, description, flags);
     }
 
+    template <typename T>
+    CConVarBaseData* CreateConVar(const char* name, T defaultValue, const char* description, int32_t flags, FnGenericChangeCallback_t callback)
+    {
+        return CreateConVar(name, defaultValue, false, defaultValue, false, defaultValue, description, flags, callback);
+    }
+
     void             CreateConsoleCommand(const char* pName, FnCommandCallback_t callback, const char* pHelpString = nullptr, int64_t flags = 0, FnCommandCompletionCallback completionFunc = nullptr);
     ConCommandHandle CreateSharpConsoleCommand(const char* pName, const char* pHelpString = nullptr, int64_t flags = 0);
 

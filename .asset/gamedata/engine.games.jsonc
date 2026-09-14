@@ -107,6 +107,17 @@
         ]
       }
     },
+    // str "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+    "ReplyConnection": {
+      "library": "engine",
+      "linux": "55 B9 ? ? ? ? 41 B8",
+      "windows": "48 8B C4 55 41 55 41 56",
+      "refs": {
+        "strings": [
+          "Sending S2C_CONNECTION to %s [addons:'%s']\n"
+        ]
+      }
+    },
     "Source2_Init": {
       "library": "engine",
       "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 4C 8D 25 ? ? ? ? 48 89 BD",
@@ -124,6 +135,11 @@
     "CNetworkGameServer::m_ServerState": {
       "linux": 56,
       "windows": 56
+    },
+    // str "Sending S2C_CONNECTION to %s [addons:'%s']\n" 中的 addons 字段
+    "CNetworkGameServer::m_Addons": {
+      "linux": 344,
+      "windows": 344
     },
     // CNetworkGameServer::GetClientCount 就是 mov eax, [this+X] / retn, X 即为此偏移
     "CNetworkGameServer::m_vecClients": {
