@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 
 namespace Sharp.Shared;
@@ -46,6 +45,12 @@ public interface ILibraryModule
     /// <param name="decorated">If true, will treat <paramref name="tableName" /> as the mangled (symbol) name</param>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
+    /// <summary>
+    /// </summary>
+    /// <param name="tableName">The name of the vtable, for example: "CCSPlayerPawn"</param>
+    /// <param name="address">The address of given vtable, would be 0 if it doesn't exist</param>
+    /// <param name="decorated">If true, will treat <paramref name="tableName" /> as the mangled (symbol) name</param>
+    /// <returns>True if found</returns>
     bool TryGetVirtualTableByName(string tableName, out nint address, bool decorated = false);
 
     /// <summary>
@@ -54,7 +59,9 @@ public interface ILibraryModule
     /// <param name="exportName">The name of the exported function</param>
     nint GetExportFunction(string exportName);
 
-    /// <summary>Find exported functions whose names match the supplied name.</summary>
+    /// <summary>
+    ///     Find exported functions whose names match the supplied name.
+    /// </summary>
     NativeFunctionInfo[] FindExportFunctions(string exportName);
 
     [Obsolete("Use GetExportFunction instead.")]
@@ -95,16 +102,34 @@ public interface ILibraryModule
     /// <param name="str">The string literal to search for</param>
     nint FindStringExact(string str);
 
+    /// <summary>
+    ///     Find address of the given string in the module's data section.
+    /// </summary>
+    /// <param name="str">The string literal to search for</param>
+    /// <param name="readOnly">Should scan the readonly data sections?</param>
+    /// <param name="exact">
+    ///     Should match the exact string? (e.g., searching for "Error" will match a standalone "Error", but
+    ///     will skip over "FatalError")
+    /// </param>
     nint FindString(string str, bool readOnly, bool exact);
 
     /// <summary>
-    ///     Find the address in memory that contains a pointer to the specific value provided.
+    ///     Find the address in current module's memory that contains a pointer to the specific value provided.
     /// </summary>
     /// <param name="ptr">The value/address to search for within the module's memory space</param>
     nint FindPtr(nint ptr);
 
+    /// <summary>
+    ///     Find the addresses in current module's memory that contains a pointer to the specific value provided.
+    /// </summary>
+    /// <param name="ptr">The value/address to search for within the module's memory space</param>
     nint[] FindPointers(nint ptr);
 
+    /// <summary>
+    ///     Get the list of virtual function addresses of the given <paramref name="tableName" />
+    /// </summary>
+    /// <param name="tableName">The name of the vtable, for example: "CCSPlayerPawn"</param>
+    /// <returns></returns>
     nint[] GetVirtualFunctions(string tableName);
 
     /// <summary>
@@ -138,7 +163,7 @@ public interface ILibraryModule
     /// <summary>
     ///     Finds the start address of a function that references the specific string literal.
     /// </summary>
-    /// <param name="str">The string literal to look for references to.</param>
+    /// <param name="strs">The string literals to look for references to.</param>
     /// <returns>The function address, or throws/returns 0 if not found.</returns>
     nint FindFunction(ReadOnlySpan<string> strs);
 
