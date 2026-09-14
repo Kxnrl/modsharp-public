@@ -68,6 +68,15 @@
         ]
       }
     },
+    "CServerSideClient::CLCMsg_CmdKeyValues": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "Server::CmdKeyValues"
+        ],
+        "vtable": "CServerSideClient"
+      }
+    },
     "CServerSideClient::ExecuteStringCommand": {
       "library": "engine",
       "refs": {
