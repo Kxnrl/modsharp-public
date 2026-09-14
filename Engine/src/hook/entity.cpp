@@ -59,6 +59,7 @@
 #include <safetyhook.hpp>
 
 #include <algorithm>
+#include <limits>
 
 // #define ENTITY_HOOK_ASSERT
 // #define ENTITY_LISTENER_ASSERT
@@ -1310,7 +1311,7 @@ static void AddOutputCustom_DamageType(const CEntityIdentity* pInstance, const c
 
     if (strcasecmp(pEntity->GetClassname(), "point_hurt") == 0)
     {
-        const auto value = std::clamp(atoi(vecArgs[1].c_str()), 0, INT_MAX);
+        const auto value = std::clamp(atoi(vecArgs[1].c_str()), 0, std::numeric_limits<int32_t>::max());
         pEntity->m_bitsDamageType(value);
 
         if (ms_entity_io_verbose_logging->GetValue<bool>())

@@ -134,6 +134,9 @@ BeginMemberHookScope(CNetworkGameServer)
         sv        = pServer;
         gpGlobals = pServer->GetGlobalVars();
 
+        // clear ban cache
+        s_bBannedSteamIds.clear();
+
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
              "%10s: %f\n"

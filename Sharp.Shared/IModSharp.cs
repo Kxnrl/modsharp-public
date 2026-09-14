@@ -115,22 +115,46 @@ public interface IModSharp
     void InvokeFrameAction(Action action);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait
+    ///     Invoke action at the end of current frame and wait <br />
+    ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
+    ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
+    ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
+    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
+    ///         and always be ready to handle OperationCanceledException.
+    ///     </remarks>
     /// </summary>
     Task<T> InvokeFrameActionAsync<T>(Func<T> action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait
+    ///     Invoke action at the end of current frame and wait <br />
+    ///     <remarks>
+    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
+    ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
+    ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
+    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
+    ///         and always be ready to handle OperationCanceledException.
+    ///     </remarks>
     /// </summary>
     Task InvokeFrameActionAsync(Action action, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Add timer to queue<br />
+    ///     <remarks>
+    ///         After the owning plugin is unloaded, the timer is removed and no longer runs (ownership is judged by the plugin's AssemblyLoadContext).
+    ///     </remarks>
     /// </summary>
     Guid PushTimer(Action action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
     /// <summary>
     ///     Add timer to queue<br />
+    ///     <remarks>
+    ///         After the owning plugin is unloaded, the timer is removed and no longer runs (ownership is judged by the plugin's AssemblyLoadContext).
+    ///     </remarks>
     /// </summary>
     Guid PushTimer(Func<TimerAction> action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
@@ -150,7 +174,8 @@ public interface IModSharp
     string GetGamePath();
 
     /// <summary>
-    ///     Install GameFrame Hook
+    ///     Install GameFrame Hook <br />
+    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     /// </summary>
     void InstallGameFrameHook(Action<bool, bool, bool>? pre,
         Action<bool, bool, bool>?                       post,
@@ -158,12 +183,14 @@ public interface IModSharp
         int                                             postPriority = 0);
 
     /// <summary>
-    ///     Install EntityThink Hook
+    ///     Install EntityThink Hook <br />
+    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     /// </summary>
     void InstallEntityThinkHook(Action? pre, Action? post, int prePriority = 0, int postPriority = 0);
 
     /// <summary>
-    ///     Install ServerGameSimulate Hook
+    ///     Install ServerGameSimulate Hook <br />
+    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     /// </summary>
     void InstallServerGameSimulateHook(Action callback, int priority = 0);
 
@@ -356,7 +383,8 @@ public interface IModSharp
 #region Listener
 
     /// <summary>
-    ///     Install <see cref="IGameListener" /> to listen for game events
+    ///     Install <see cref="IGameListener" /> to listen for game events <br />
+    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     /// </summary>
     void InstallGameListener(IGameListener listener);
 
@@ -366,7 +394,8 @@ public interface IModSharp
     void RemoveGameListener(IGameListener listener);
 
     /// <summary>
-    ///     Install <see cref="ISteamListener" /> to listen for Steam events
+    ///     Install <see cref="ISteamListener" /> to listen for Steam events <br />
+    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     /// </summary>
     void InstallSteamListener(ISteamListener listener);
 
@@ -478,6 +507,16 @@ public interface IModSharp
     ///     Override cache for a player
     /// </summary>
     void DualAddonOverrideCheck(SteamID steamId, double time);
+
+    /// <summary>
+    ///     Get dual addon publish file id
+    /// </summary>
+    ulong GetDualAddonId();
+
+    /// <summary>
+    ///     Set dual addon publish file id
+    /// </summary>
+    bool SetDualAddonId(ulong publishFileId);
 
 #endregion
 

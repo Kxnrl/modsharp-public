@@ -224,6 +224,9 @@ static_assert(sizeof(CNetworkSerializerCodeGenDatabase) == 0xB0);
 // Map: class_name -> set of networked field names
 static std::unordered_map<std::string, std::unordered_set<std::string>> g_NetworkedFieldMap;
 
+// Map: class_name -> schema class size (CNetworkSerializerClassInfo::m_nClassSize)
+static std::unordered_map<std::string, int32_t> g_ClassSizeMap;
+
 static void BuildNetworkedFieldMap()
 {
     // CEntityInstance::vtable[0] returns CNetworkSerializerClassInfo*
@@ -308,6 +311,8 @@ static void BuildNetworkedFieldMap()
         const auto& class_name = class_info->m_pszClassName;
         if (class_name.IsEmpty()) continue;
 
+        g_ClassSizeMap[class_name.Get()] = class_info->m_nClassSize;
+
         auto& fieldSet = g_NetworkedFieldMap[class_name.Get()];
         for (auto* fieldInfo : class_info->m_Fields)
         {
@@ -332,6 +337,16 @@ static bool IsFieldNetworked(const char* className, const char* fieldName)
     if (classIt == g_NetworkedFieldMap.end()) return false;
 
     return classIt->second.contains(fieldName);
+}
+
+int32_t schemas::GetClassSize(const char* className)
+{
+    if (const auto it = g_ClassSizeMap.find(className); it != g_ClassSizeMap.end())
+    {
+        return it->second;
+    }
+
+    return 0;
 }
 
 int32_t schemas::FindChainOffset(const char* className)

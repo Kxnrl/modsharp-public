@@ -44,15 +44,18 @@ internal interface ICoreEntityManager : IEntityManager;
 // ReSharper disable ForCanBeConvertedToForeach
 internal class EntityManager : ICoreEntityManager
 {
-    private readonly List<IEntityListener>  _listeners;
     private readonly ILogger<EntityManager> _logger;
+    private readonly ICoreAssemblyManager   _assemblyManager;
+
+    private readonly List<IEntityListener> _listeners;
 
     private PlayerSlot _maxSlots;
 
-    public EntityManager(ILogger<EntityManager> logger)
+    public EntityManager(ILogger<EntityManager> logger, ICoreAssemblyManager assemblyManager)
     {
-        _logger    = logger;
-        _listeners = [];
+        _logger          = logger;
+        _assemblyManager = assemblyManager;
+        _listeners       = [];
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
@@ -62,6 +65,8 @@ internal class EntityManager : ICoreEntityManager
         Forward.OnEntityAcceptInput += OnEntityAcceptInput;
 
         Bridges.Forwards.Game.OnServerInit += OnServerInit;
+
+        _assemblyManager.RegisterUnloadCleanup(() => _assemblyManager.ClearLeakedListeners(_listeners, "EntityListener"));
     }
 
     private void OnServerInit()
@@ -266,6 +271,13 @@ internal class EntityManager : ICoreEntityManager
 
     public void InstallEntityListener(IEntityListener listener)
     {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (listener.ListenerVersion != IEntityListener.ApiVersion)
         {
             throw new InvalidOperationException("Your listener api version mismatch");

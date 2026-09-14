@@ -38,6 +38,12 @@ internal class AdminOperationEngine : IClientListener
     public int ListenerVersion  => IClientListener.ApiVersion;
     public int ListenerPriority => 0;
 
+    private static readonly TimeSpan CacheRefreshInterval = TimeSpan.FromSeconds(60);
+    private static readonly TimeSpan CacheGraceWindow = CacheRefreshInterval * 2;
+    private static TimeSpan NextRefreshDelay => CacheRefreshInterval + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 10_000));
+
+    private CancellationTokenSource? _refreshCts;
+
     private readonly ILogger<AdminOperationEngine> _logger;
     private readonly InterfaceBridge               _bridge;
     private readonly AdminOperationService         _operations;
@@ -49,8 +55,7 @@ internal class AdminOperationEngine : IClientListener
     ///     Backup of core handlers displaced by external handler registrations.
     ///     Keyed by <see cref="AdminOperationType" />. Restored when the external module unregisters.
     /// </summary>
-    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)>
-        _coreHandlers = [];
+    private readonly Dictionary<AdminOperationType, (IAdminOperationHandler Handler, string ModuleIdentity)> _coreHandlers;
 
     public AdminOperationEngine(ILogger<AdminOperationEngine> logger,
         InterfaceBridge                                       bridge,
@@ -62,6 +67,8 @@ internal class AdminOperationEngine : IClientListener
         _bridge        = bridge;
         _operations    = operations;
         _moduleContext = moduleContext;
+
+        _coreHandlers = [];
 
         _handlers = handlers.ToDictionary(h => h.Type,
                                           h => (h, AdminCommands.AssemblyName));
@@ -148,10 +155,17 @@ internal class AdminOperationEngine : IClientListener
     public void Init()
     {
         _bridge.ClientManager.InstallClientListener(this);
+
+        _refreshCts = new CancellationTokenSource();
+        _           = RefreshCacheLoopAsync(_refreshCts.Token);
     }
 
     public void Shutdown()
     {
+        _refreshCts?.Cancel();
+        _refreshCts?.Dispose();
+        _refreshCts = null;
+
         _bridge.ClientManager.RemoveClientListener(this);
     }
 
@@ -493,6 +507,105 @@ internal class AdminOperationEngine : IClientListener
         {
             _logger.LogError(ex, "Failed to load operations for {SteamId}", steamId);
         }
+    }
+
+    private async Task RefreshCacheLoopAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(NextRefreshDelay, token).ConfigureAwait(false);
+                await RefreshCachedOperationsAsync(token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to refresh cached admin operations");
+            }
+        }
+    }
+
+    private async Task RefreshCachedOperationsAsync(CancellationToken token)
+    {
+        var snapshot = await _bridge.ModSharp
+                                    .InvokeFrameActionAsync(() => _handlers.Values
+                                                                           .Select(x => (x.Handler,
+                                                                                       Identities: x.Handler
+                                                                                           .GetCachedIdentities(
+                                                                                               CacheGraceWindow)))
+                                                                           .Where(x => x.Identities.Count > 0)
+                                                                           .ToArray(),
+                                                            token)
+                                    .ConfigureAwait(false);
+
+        var stale = new List<(IAdminOperationHandler Handler, SteamID SteamId)>();
+
+        foreach (var (handler, identities) in snapshot)
+        {
+            foreach (var steamId in identities)
+            {
+                if (await _operations.TryHasActiveAsync(steamId, handler.Type, token).ConfigureAwait(false) == false)
+                {
+                    stale.Add((handler, steamId));
+                }
+            }
+        }
+
+        if (stale.Count == 0)
+        {
+            return;
+        }
+
+        await _bridge.ModSharp.InvokeFrameActionAsync(() =>
+                                                      {
+                                                          var stillCached
+                                                              = new Dictionary<AdminOperationType, IReadOnlySet<SteamID>>();
+
+                                                          foreach (var (handler, steamId) in stale)
+                                                          {
+                                                              if (!_handlers.TryGetValue(handler.Type, out var current)
+                                                                  || !ReferenceEquals(current.Handler, handler))
+                                                              {
+                                                                  continue;
+                                                              }
+
+                                                              if (!stillCached.TryGetValue(handler.Type, out var eligible))
+                                                              {
+                                                                  eligible = handler.GetCachedIdentities(CacheGraceWindow);
+                                                                  stillCached[handler.Type] = eligible;
+                                                              }
+
+                                                              if (!eligible.Contains(steamId))
+                                                              {
+                                                                  continue;
+                                                              }
+
+                                                              try
+                                                              {
+                                                                  handler.OnRemoved(steamId,
+                                                                                    _bridge.ClientManager
+                                                                                        .GetGameClient(steamId));
+
+                                                                  _logger.LogInformation(
+                                                                      "Evicted cached {Type} for {SteamId}: no active record in storage",
+                                                                      handler.Type,
+                                                                      steamId);
+                                                              }
+                                                              catch (Exception ex)
+                                                              {
+                                                                  _logger.LogError(ex,
+                                                                                   "Failed to evict cached {Type} for {SteamId}",
+                                                                                   handler.Type,
+                                                                                   steamId);
+                                                              }
+                                                          }
+                                                      },
+                                                      token)
+                     .ConfigureAwait(false);
     }
 
 #endregion

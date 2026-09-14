@@ -32,9 +32,11 @@
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/entity/CBaseWeapon.h"
+#include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CRecipientFilter.h"
+#include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EmitSound.h"
 #include "cstrike/type/EntityIO.h"
@@ -475,6 +477,46 @@ static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
+static void PanoramaCustomHudLayoutSetHasClass(CCSCustomHudLayout* pLayout, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
+{
+    pLayout->SetHasClass(panelId, className, classStatus);
+}
+
+static void PanoramaCustomHudLayoutSetHasClassForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* className, EHudPanelClassStatus_t classStatus)
+{
+    pLayout->SetHasClassForPlayer(playerSlot, panelId, className, classStatus);
+}
+
+static void PanoramaCustomHudLayoutSetDialogVariableString(CCSCustomHudLayout* pLayout, const char* panelId, const char* variableName, const char* value)
+{
+    pLayout->SetDialogVariableString(panelId, variableName, value);
+}
+
+static void PanoramaCustomHudLayoutSetDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName, const char* value)
+{
+    if (!pLayout)
+        return;
+
+    pLayout->SetDialogVariableStringForPlayer(playerSlot, panelId, variableName, value);
+}
+
+static void PanoramaCustomHudLayoutClearDialogVariableStringForPlayer(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, const char* panelId, const char* variableName)
+{
+    pLayout->ClearDialogVariableStringForPlayer(playerSlot, panelId, variableName);
+}
+
+static void PanoramaCustomHudLayoutSetInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot, bool enabled)
+{
+    pLayout->SetInputCaptureEnabled(playerSlot, enabled);
+}
+
+static bool PanoramaCustomHudLayoutIsInputCaptureEnabled(CCSCustomHudLayout* pLayout, PlayerSlot_t playerSlot)
+{
+    return pLayout->IsInputCaptureEnabled(playerSlot);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 void Init()
 {
     // Entity List
@@ -558,6 +600,14 @@ void Init()
     bridge::CreateNative("Entity.IsWeapon", reinterpret_cast<void*>(IsWeapon));
     bridge::CreateNative("Entity.IsPlayerController", reinterpret_cast<void*>(EntityIsPlayerController));
     bridge::CreateNative("Entity.IsPlayerPawn", reinterpret_cast<void*>(EntityIsPlayerPawn));
+
+    bridge::CreateNative("Panorama.SetHasClass", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetHasClass));
+    bridge::CreateNative("Panorama.SetHasClassForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetHasClassForPlayer));
+    bridge::CreateNative("Panorama.SetDialogVariableString", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetDialogVariableString));
+    bridge::CreateNative("Panorama.SetDialogVariableStringForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetDialogVariableStringForPlayer));
+    bridge::CreateNative("Panorama.ClearDialogVariableStringForPlayer", reinterpret_cast<void*>(PanoramaCustomHudLayoutClearDialogVariableStringForPlayer));
+    bridge::CreateNative("Panorama.SetInputCaptureEnabled", reinterpret_cast<void*>(PanoramaCustomHudLayoutSetInputCaptureEnabled));
+    bridge::CreateNative("Panorama.IsInputCaptureEnabled", reinterpret_cast<void*>(PanoramaCustomHudLayoutIsInputCaptureEnabled));
 }
 
 EHookAction OnEntityFireOutput(CBaseEntity* pCaller, const CEntityIOOutput* pIO, CBaseEntity* pActivator, float flDelay)

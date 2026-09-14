@@ -107,7 +107,7 @@ static bool FindPattern(std::string_view module_name, std::string_view pattern, 
 
     // a sane symbol name should not contain a whitespace
     if (pattern.starts_with('@') && pattern.find(' ') == std::string_view::npos) [[unlikely]]
-        address = module_ptr->GetFunctionByName(pattern.substr(1));
+        address = module_ptr->GetExportByName(pattern.substr(1));
     else
         address = module_ptr->FindPatternStrict(pattern);
 

@@ -253,12 +253,12 @@ struct KeyValuesVariantValueItem
 {
     KeyValuesVariantValueItemType type;
     union {
-        bool     bValue;
-        int32_t  i32Value;
-        float    flValue;
-        char*    szValue;
-        void*    pValue;
-        uint64_t u64Value;
+        bool        bValue;
+        int32_t     i32Value;
+        float       flValue;
+        const char* szValue;
+        void*       pValue;
+        uint64_t    u64Value;
     };
 
     // 如果是string确保 this alive
@@ -297,7 +297,7 @@ static_assert(sizeof(KeyValuesVariantValueItem) == 16);
 
 struct KeyValuesVariantItem
 {
-    char*                     Key;
+    const char*               Key;
     KeyValuesVariantValueItem Value;
 };
 static_assert(sizeof(KeyValuesVariantItem) == 24);

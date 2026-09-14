@@ -134,64 +134,58 @@ static bool GetBlockTempEntState(const BlockTE_t type, const PlayerSlot_t slot)
 
 struct Entity2Networkable_t;
 
-#ifdef USE_FULL_RE_TRANSMIT_INFO
-class CCheckTransmitInfo
+class CCheckTransmitInfo // sizeof = 584 (0x248)
 {
+    // +0  CDeltaEntityHeaderWriter (engine2.dll!WriteDeltaEntities)
+    CBitVec<MAX_ENTITY_COUNT>* m_pTransmitEntity;
+
+    // +8  CheckEntities => m_pNonTransmitEntity = Entities & ~m_pTransmitEntity
+    //     :: CDeltaEntityNonTransmitHeaderWriter / ...Reader
+    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pNonTransmitEntity;
+    // +16 PVS Delta => COutOfPVSDeltaEntityHeaderWriter
+    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pOutOfPvsEntity;
+    // +24 HLTV/Replay (CSendJob_HltvSource) nullptr otherwise
+    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pHltvEntity;
+
+    [[maybe_unused]] int32_t  m_nAreaCount;    // +32
+    [[maybe_unused]] int32_t  m_nPad36;        // +36
+    [[maybe_unused]] int32_t* m_pAreas;        // +40
+    [[maybe_unused]] int32_t  m_nAreaCapacity; // +48
+    [[maybe_unused]] int32_t  m_nPad52;        // +52
+    [[maybe_unused]] int32_t  m_nPVSDwords;    // +56
+    [[maybe_unused]] int32_t  m_nWorldIndex;   // +60
+    [[maybe_unused]] uint32_t m_PVSBits[128];  // +64 .. +576
+
+    int32_t m_nPlayerSlot; // +576
+    bool    m_bFullUpdate; // +580
+
 public:
-    CBitVec<MAX_ENTITY_COUNT>* m_pTransmitEntity; // entity n is already marked for transmission
-
-private:
-    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pUnkBitVec1; // 8
-    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pUnkBitVec2; // 16
-    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pUnkBitVec3; // 24
-
-public:
-    CBitVec<MAX_ENTITY_COUNT>* m_pTransmitAlways; // entity n is always send even if not in PVS (HLTV and Replay only)
-
-private:
-    [[maybe_unused]] CUtlVector<int32_t> m_pUnkVec; // 40
-    [[maybe_unused]] void*               m_pVisInfo;
-    [[maybe_unused]] int8_t              m_unk72[0x200];
-
-public:
-    int32_t m_nPlayerSlot;
-    bool    m_bFullUpdate;
-
-    PlayerSlot_t GetPlayerSlot() const
+    [[nodiscard]] inline PlayerSlot_t GetPlayerSlot() const
     {
-        AssertBool(m_nPlayerSlot >= 0 && m_nPlayerSlot < CS_MAX_PLAYERS);
+        AssertBool(m_nPlayerSlot >= 0 && static_cast<uint32_t>(m_nPlayerSlot) < CS_MAX_PLAYERS);
 
         return static_cast<PlayerSlot_t>(m_nPlayerSlot);
     }
 
-    void ClearUnknown() const
+    [[nodiscard]] inline bool IsFullUpdate() const noexcept { return m_bFullUpdate; }
+
+    [[nodiscard]] inline bool IsTransmitting(EntityIndex_t index) const noexcept { return m_pTransmitEntity->IsBitSet(index); }
+
+    inline void BlockTransmit(const CBaseEntity* pEntity) const noexcept { BlockTransmit(pEntity->GetEntityIndex()); }
+
+    inline void BlockTransmit(const EntityIndex_t index) const noexcept
     {
-        m_pUnkBitVec1->ClearAll();
-        m_pUnkBitVec2->ClearAll();
-        m_pUnkBitVec3->ClearAll();
+        if (m_pTransmitEntity->IsBitSet(index))
+        {
+            m_pTransmitEntity->Clear(index);
+        }
+
+        m_pNonTransmitEntity->Set(index);
     }
+
+    CCheckTransmitInfo() = delete;
 };
-#else
-struct CCheckTransmitInfo
-{
-public:
-    CBitVec<MAX_ENTITY_COUNT>* m_pTransmitEntity; // entity n is already marked for transmission
-
-private:
-    [[maybe_unused]] int8_t m_pad8[568];
-
-public:
-    int32_t m_nPlayerSlot;
-    bool    m_bFullUpdate;
-
-    PlayerSlot_t GetPlayerSlot() const
-    {
-        AssertBool(m_nPlayerSlot >= 0 && m_nPlayerSlot < CS_MAX_PLAYERS);
-
-        return static_cast<PlayerSlot_t>(m_nPlayerSlot);
-    }
-};
-#endif
+static_assert(sizeof(CCheckTransmitInfo) == 584);
 
 static char* DumpString(const char* pOriginal)
 {
@@ -688,7 +682,7 @@ BeginMemberHookScope(ISource2GameEntities)
             }
 
             // LOOP Pawn
-            if (g_iBypassTick[playerSlot] <= 0 && g_bEverSpawned[playerSlot] && !pInfo->m_bFullUpdate)
+            if (g_iBypassTick[playerSlot] <= 0 && g_bEverSpawned[playerSlot] && !pInfo->IsFullUpdate())
             {
                 for (auto i = 1; i <= maxClients; i++)
                 {
@@ -709,7 +703,7 @@ BeginMemberHookScope(ISource2GameEntities)
                     if (!pPawn)
                         continue;
 
-                    pInfo->m_pTransmitEntity->Clear(pPawn->GetEntityIndex());
+                    pInfo->BlockTransmit(pPawn);
                 }
 
                 if (blockPawn)
@@ -725,14 +719,14 @@ BeginMemberHookScope(ISource2GameEntities)
 
                         if (const auto pObserver = pSenderController->GetObserverPawn())
                         {
-                            pInfo->m_pTransmitEntity->Clear(pObserver->GetEntityIndex());
+                            pInfo->BlockTransmit(pObserver);
                         }
 
                         if (const auto pPlayer = pSenderController->GetPlayerPawn())
                         {
                             if (pPlayer->GetLifeState() != LIFE_ALIVE)
                             {
-                                pInfo->m_pTransmitEntity->Clear(pPlayer->GetEntityIndex());
+                                pInfo->BlockTransmit(pPlayer);
                             }
                         }
                     }
@@ -748,7 +742,7 @@ BeginMemberHookScope(ISource2GameEntities)
                     if (pPawn == pReceiverPawn || pPawn == pReceiverObserver)
                         continue;
 
-                    pInfo->m_pTransmitEntity->Clear(pPawn->GetEntityIndex());
+                    pInfo->BlockTransmit(pPawn);
                 }
             }
 
@@ -756,9 +750,9 @@ BeginMemberHookScope(ISource2GameEntities)
             {
                 for (auto i = 0u; i < nEntities; i++)
                 {
-                    const auto entity = static_cast<int32_t>(pEntityIndicies[i]);
+                    const auto entity = static_cast<EntityIndex_t>(pEntityIndicies[i]);
 
-                    if (!pInfo->m_pTransmitEntity->IsBitSet(entity) || entity <= maxClients)
+                    if (!pInfo->IsTransmitting(entity) || entity <= maxClients)
                     {
                         continue;
                     }
@@ -780,7 +774,7 @@ BeginMemberHookScope(ISource2GameEntities)
 
                     if (!g_pHooks[entity]->CanSee(controllerIndex))
                     {
-                        pInfo->m_pTransmitEntity->Clear(entity);
+                        pInfo->BlockTransmit(entity);
                         continue;
                     }
 
@@ -792,13 +786,13 @@ BeginMemberHookScope(ISource2GameEntities)
 
                     if (g_pHooks[entity]->GetBlockAll())
                     {
-                        pInfo->m_pTransmitEntity->Clear(entity);
+                        pInfo->BlockTransmit(entity);
                         continue;
                     }
 
                     if (owner != INVALID_ENTITY_INDEX && g_pHooks[owner] != nullptr && !g_pHooks[owner]->CanSee(controllerIndex))
                     {
-                        pInfo->m_pTransmitEntity->Clear(entity);
+                        pInfo->BlockTransmit(entity);
                     }
                 }
             }

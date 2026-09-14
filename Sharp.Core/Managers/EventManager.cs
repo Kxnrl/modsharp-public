@@ -36,16 +36,21 @@ internal interface ICoreEventManager : IEventManager;
 // ReSharper disable ForCanBeConvertedToForeach
 internal partial class EventManager : ICoreEventManager
 {
-    private readonly List<IEventListener>  _listeners;
     private readonly ILogger<EventManager> _logger;
+    private readonly ICoreAssemblyManager  _assemblyManager;
 
-    public EventManager(ILogger<EventManager> logger)
+    private readonly List<IEventListener> _listeners;
+
+    public EventManager(ILogger<EventManager> logger, ICoreAssemblyManager assemblyManager)
     {
-        _logger    = logger;
-        _listeners = [];
+        _logger          = logger;
+        _assemblyManager = assemblyManager;
+        _listeners       = [];
 
         Forward.HookFireEvent += OnHookFireEvent;
         Forward.FireGameEvent += OnFireGameEvent;
+
+        _assemblyManager.RegisterUnloadCleanup(() => _assemblyManager.ClearLeakedListeners(_listeners, "EventListener"));
     }
 
     private void OnFireGameEvent(nint ptr)
@@ -123,6 +128,13 @@ internal partial class EventManager : ICoreEventManager
 
     public void InstallEventListener(IEventListener listener)
     {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (listener.ListenerVersion != IEventListener.ApiVersion)
         {
             throw new InvalidOperationException("Your listener api version mismatch");

@@ -58,4 +58,6 @@ MS_IMPORT uint64_t V_StringToUint64(const char* string, uint64_t defaultValue, b
 MS_IMPORT float    V_StringToFloat32(const char* string, float defaultValue, bool* successful = nullptr, char** remainder = nullptr, uint32_t flags = 0, void* err_listener = nullptr);
 MS_IMPORT double   V_StringToFloat64(const char* string, double defaultValue, bool* successful = nullptr, char** remainder = nullptr, uint32_t flags = 0, void* err_listener = nullptr);
 
+MS_CLASS_IMPORT const char* V_stristr_fast(const char* pStr, const char* pSearch);
+
 #endif

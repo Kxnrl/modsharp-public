@@ -118,7 +118,7 @@ internal class MenuExample : IModSharpModule
     public void Shutdown()
     {
         _sharedSystem.GetHookManager().PlayerSpawnPost.RemoveForward(OnPlayerSpawnPost);
-        _sharedSystem.GetConVarManager().ReleaseCommand("menu_type_toggle");
+        _sharedSystem.GetConVarManager().ReleaseServerCommandCallback("menu_type_toggle", OnCommandMenuTypeToggle);
     }
 
     public string DisplayName => "MenuExample";

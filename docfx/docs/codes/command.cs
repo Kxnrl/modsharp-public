@@ -38,7 +38,7 @@ public sealed class Command : IModSharpModule
     {
         // must release the command in Shutdown
         // otherwise you will get fucked after reloaded.
-        _sharedSystem.GetConVarManager().ReleaseCommand("ms_echo");
+        _sharedSystem.GetConVarManager().ReleaseServerCommandCallback("ms_echo", OnServerCommand);
         _sharedSystem.GetClientManager().RemoveCommandCallback("hello", OnClientCommand);
     }
 

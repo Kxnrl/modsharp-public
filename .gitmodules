@@ -7,3 +7,6 @@
 [submodule "Engine/vendors/protobuf"]
 	path = Engine/vendors/protobuf
 	url = https://github.com/protocolbuffers/protobuf
+[submodule "Engine/vendors/v8"]
+	path = Engine/vendors/v8
+	url = https://github.com/SourceSharp/v8

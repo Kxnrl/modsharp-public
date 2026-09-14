@@ -24,7 +24,7 @@
     },
     "CNetworkGameServer::GetFreeClient": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 49 89 F4 53 48 81 EC ? ? ? ? 41 C6 01",
+      "linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53 48 83 EC 28 8B 87",
       "windows": "48 89 54 24 10 53 56 57 41 56 48 83 EC ?",
       "refs": {
         "strings": [
@@ -35,7 +35,7 @@
     // str '---------players--------\n'
     "CNetworkGameServer::PrintStatus": {
       "library": "engine",
-      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53",
+      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 57 41 56 41 89 F6",
       "windows": "48 89 5C 24 ? 44 89 44 24 ? 89 54 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 33 DB",
       "refs": {
         "strings": [
@@ -47,7 +47,7 @@
     // "SV:  Spawn Server: %s\n"
     "CNetworkGameServer::SpawnServer": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 48 85 F6 8B 3D",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 48 85 F6",
       "windows": "48 89 5C 24 20 55 56 57 41 54 41 56 48 8D 6C 24 C9",
       "refs": {
         "strings": [
@@ -60,7 +60,7 @@
     // "PrepareForAssetLoad(%s)"
     "CNetworkGameServer::SpawnServer_Unknown": {
       "library": "engine",
-      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC",
+      "linux": "55 48 89 E5 41 56 41 55 4C 8D 2D ? ? ? ? 41 54 53 4C 8B A7",
       "windows": "48 89 5C 24 18 48 89 74 24 20 55 57 41 54 41 56 41 57 48 8B EC",
       "refs": {
         "strings": [
@@ -99,7 +99,7 @@
     },
     "HostStateRequest": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 89 F3 48 83 EC ? 48 83 7F ? ? 74 ? 8B 3D",
+      "linux": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F 30 00",
       "windows": "48 89 74 24 ? 57 48 83 EC ? 33 F6 48 8B FA 48 39 35",
       "refs": {
         "strings": [
@@ -109,7 +109,7 @@
     },
     "Source2_Init": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 48 89 BD ? ? ? ? 48 8B 3D ? ? ? ? 48 85 FF",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 4C 8D 25 ? ? ? ? 48 89 BD",
       "windows": "40 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 4C 8B E1",
       "refs": {
         "strings": [

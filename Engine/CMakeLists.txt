@@ -50,6 +50,7 @@ set(modsharp_SOURCES
 	"src/bridge/natives/GameNatives.cpp"
 	"src/bridge/natives/NetNatives.cpp"
 	"src/bridge/natives/PlayerNatives.cpp"
+	"src/bridge/natives/ScriptNatives.cpp"
 	"src/bridge/natives/SoundNatives.cpp"
 	"src/command.cpp"
 	"src/cstrike/component/CGameSceneNode.cpp"
@@ -59,6 +60,7 @@ set(modsharp_SOURCES
 	"src/cstrike/entity/CBaseEntity.cpp"
 	"src/cstrike/entity/CBaseModelEntity.cpp"
 	"src/cstrike/entity/CBaseWeapon.cpp"
+	"src/cstrike/entity/CCSCustomHudLayout.cpp"
 	"src/cstrike/entity/CTriggerPush.cpp"
 	"src/cstrike/entity/PlayerController.cpp"
 	"src/cstrike/entity/PlayerPawn.cpp"
@@ -80,15 +82,18 @@ set(modsharp_SOURCES
 	"src/cstrike/type/CEntityInstance.cpp"
 	"src/cstrike/type/CEntityKeyValues.cpp"
 	"src/cstrike/type/CNetworkGameServer.cpp"
+	"src/cstrike/type/CNetworkUtlVectorBase.cpp"
 	"src/cstrike/type/CRecipientFilter.cpp"
 	"src/cstrike/type/CServerSideClient.cpp"
 	"src/cstrike/type/CUtlString.cpp"
+	"src/cstrike/type/CUtlVectorEmbeddedNetworkVar.cpp"
 	"src/cstrike/type/KeyValues.cpp"
 	"src/cstrike/type/KeyValues3.cpp"
 	"src/filesystemfix.cpp"
 	"src/gamedata.cpp"
 	"src/gamefactory.cpp"
 	"src/hook/client.cpp"
+	"src/hook/cs_script.cpp"
 	"src/hook/cvar.cpp"
 	"src/hook/engine.cpp"
 	"src/hook/entity.cpp"
@@ -137,6 +142,8 @@ set(modsharp_SOURCES
 	"src/steamproxy.cpp"
 	"src/steamworks.cpp"
 	"src/strtool.cpp"
+	"src/symbol_name.cpp"
+	"src/v8proxy.cpp"
 	"vendors/safetyhook/safetyhook.cpp"
 	"vendors/zydis/Zydis.c"
 )
@@ -194,6 +201,7 @@ target_compile_definitions(modsharp PUBLIC
 	X64BITS
 	_CRT_NO_VA_START_VALIDATION
 	_ITERATOR_DEBUG_LEVEL=0
+	USING_V8_SHARED
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release") # release
@@ -260,6 +268,7 @@ target_include_directories(modsharp PUBLIC
 	"vendors/steamworks/include"
 	"vendors/protobuf/src"
 	"vendors/json/"
+	"vendors/v8/include"
 	src
 )
 
@@ -273,7 +282,9 @@ endif()
 if(WIN32) # windows
 	target_link_libraries(modsharp PUBLIC
 		psapi
+		dbghelp
 		tier0
+		v8
 	)
 endif()
 
@@ -282,6 +293,10 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		libtier0.so
 		protobuf
 		libsteam_api.so
+		dl
+		pthread
+		m
+		v8
 	)
 endif()
 
@@ -293,9 +308,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 	target_link_options(modsharp PUBLIC
 		-fuse-ld=mold
 		-static-libgcc
-		-Wl,-Bstatic
-		-lstdc++
-		-Wl,-Bdynamic
+		-static-libstdc++
 	)
 endif()
 

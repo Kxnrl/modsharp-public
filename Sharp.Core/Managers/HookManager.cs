@@ -20,12 +20,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.CStrike;
 using Sharp.Core.GameEntities;
 using Sharp.Core.GameObjects;
+using Sharp.Core.Helpers;
 using Sharp.Core.Managers.Forwards;
 using Sharp.Core.Managers.Hooks;
 using Sharp.Core.Objects;
@@ -38,6 +40,7 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
+using Sharp.Shared.Utilities;
 
 // ReSharper disable ArrangeObjectCreationWhenTypeNotEvident
 
@@ -64,7 +67,8 @@ internal interface ICoreHookType<in TParams, THookReturn> where TParams : class,
     bool IsHookInvokeRequired(bool isPost);
 }
 
-internal abstract class HookType<TParams, THookReturn, TClass> : ICoreHookType<TParams, THookReturn>,
+internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupObject,
+    ICoreHookType<TParams, THookReturn>,
     IHookType<TParams, THookReturn>
     where TParams : class, IFunctionParams
     where TClass : HookType<TParams, THookReturn, TClass>
@@ -98,6 +102,19 @@ internal abstract class HookType<TParams, THookReturn, TClass> : ICoreHookType<T
             throw new InvalidOperationException($"Pre Hook of {GetType().Name} is not support");
         }
 
+        if (!pre.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, install each callback separately",
+                                        nameof(pre));
+        }
+
+        if (UnloadCleanupObject.AssemblyManager?.IsDelegateUnloaded(pre) == true)
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (_preHooks.Any(x => x.Callback.Equals(pre)))
         {
             return;
@@ -112,6 +129,19 @@ internal abstract class HookType<TParams, THookReturn, TClass> : ICoreHookType<T
         if (!AllowPost)
         {
             throw new InvalidOperationException($"Post Hook of {GetType().Name} is not support");
+        }
+
+        if (!post.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, install each callback separately",
+                                        nameof(post));
+        }
+
+        if (UnloadCleanupObject.AssemblyManager?.IsDelegateUnloaded(post) == true)
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
         }
 
         if (_postHooks.Any(x => x.Equals(post)))
@@ -199,6 +229,12 @@ internal abstract class HookType<TParams, THookReturn, TClass> : ICoreHookType<T
 
     public bool IsHookInvokeRequired(bool isPost)
         => !isPost ? _preHooks.Count != 0 : _postHooks.Count != 0;
+
+    internal override void ClearLeakedHooks(ICoreAssemblyManager assemblyManager)
+    {
+        assemblyManager.ClearLeakedCallbacks(_preHooks, $"{GetType().Name}<pre>", x => x.Callback);
+        assemblyManager.ClearLeakedCallbacks(_postHooks, $"{GetType().Name}<post>", x => x.Callback);
+    }
 }
 
 #endregion
@@ -212,7 +248,7 @@ internal interface ICoreForwardType<in TParams> where TParams : class, IFunction
     bool IsForwardInvokeRequired();
 }
 
-internal abstract class ForwardType<TParams, TClass> : ICoreForwardType<TParams>, IForwardType<TParams>
+internal abstract class ForwardType<TParams, TClass> : UnloadCleanupObject, ICoreForwardType<TParams>, IForwardType<TParams>
     where TParams : class, IFunctionParams
     where TClass : ForwardType<TParams, TClass>
 {
@@ -230,6 +266,19 @@ internal abstract class ForwardType<TParams, TClass> : ICoreForwardType<TParams>
 
     public void InstallForward(Action<TParams> func, int priority)
     {
+        if (!func.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, install each callback separately",
+                                        nameof(func));
+        }
+
+        if (UnloadCleanupObject.AssemblyManager?.IsDelegateUnloaded(func) == true)
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (_hooks.Any(x => x.Callback.Equals(func)))
         {
             return;
@@ -238,6 +287,9 @@ internal abstract class ForwardType<TParams, TClass> : ICoreForwardType<TParams>
         _hooks.Add(new HookInfo(func, priority));
         _hooks.Sort((x, y) => y.Priority.CompareTo(x.Priority));
     }
+
+    internal override void ClearLeakedHooks(ICoreAssemblyManager assemblyManager)
+        => assemblyManager.ClearLeakedCallbacks(_hooks, GetType().Name, x => x.Callback);
 
     public void RemoveForward(Action<TParams> func)
     {
@@ -386,8 +438,21 @@ internal class HookManager : ICoreHookManager
 
 #endregion
 
-    public HookManager(ILoggerFactory factory)
+    public HookManager(ILoggerFactory factory, ICoreAssemblyManager assemblyManager)
     {
+        UnloadCleanupObject.AssemblyManager = assemblyManager;
+
+        assemblyManager.RegisterUnloadCleanup(() =>
+        {
+            foreach (var field in typeof(HookManager).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+            {
+                if (field.GetValue(this) is UnloadCleanupObject source)
+                {
+                    source.ClearLeakedHooks(assemblyManager);
+                }
+            }
+        });
+
         _clientCanHear             = new ClientCanHearHook(factory);
         _clientConnect             = new ClientConnectHook(factory);
         _connectClient             = new ConnectClientHook(factory);

@@ -25,11 +25,12 @@
 #include <string>
 #include <string_view>
 
-static constexpr uint32_t MURMURHASH_SEED            = 0x31415926;
-static constexpr uint32_t MURMURHASH_SOUNDEVENT_SEED = 0x53524332;
-static constexpr uint32_t MURMURHASH_SOUNDSTACK_SEED = 0x50524748;
-static constexpr uint32_t MURMURHASH_SEED_MODSHARP   = 0x11451419;
-static constexpr uint32_t MURMURHASH_RESOURCE_SEED   = 0xEDABCDEF;
+static constexpr uint32_t MURMURHASH_SEED               = 0x31415926;
+static constexpr uint32_t MURMURHASH_SOUNDEVENT_SEED    = 0x53524332;
+static constexpr uint32_t MURMURHASH_SOUNDSTACK_SEED    = 0x50524748;
+static constexpr uint32_t MURMURHASH_SEED_MODSHARP      = 0x11451419;
+static constexpr uint32_t MURMURHASH_RESOURCE_SEED      = 0xEDABCDEF;
+static constexpr uint32_t MURMURHASH_SCRIPTWRAPPER_SEED = 0x3501A674;
 
 constexpr uint32_t Read32LE(const char* data)
 {

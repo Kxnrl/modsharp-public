@@ -12,14 +12,14 @@
 
     <ItemGroup>
         <PackageReference Include="LiteDB" Version="5.0.21" />
-        <PackageReference Include="Refit" Version="10.2.0" />
+        <PackageReference Include="Refit" Version="15.2.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sharp.Shared\Sharp.Shared.csproj" Private="false" ExcludeAssets="runtime" />
         <ProjectReference Include="..\Shared\Sharp.Modules.ClientPreferences.Shared.csproj" Private="false" ExcludeAssets="runtime" />
-        <PackageReference Include="StackExchange.Redis" Version="3.0.0" />
-        <PackageReference Include="MySqlConnector" Version="2.6.0" />
+        <PackageReference Include="StackExchange.Redis" Version="3.1.31" />
+        <PackageReference Include="MySqlConnector" Version="2.6.2" />
     </ItemGroup>
 
 </Project>

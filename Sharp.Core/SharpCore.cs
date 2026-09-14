@@ -37,6 +37,7 @@ using Sharp.Core.Bridges;
 using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.Helpers;
+using Sharp.Core.Managers;
 using Sharp.Core.Objects;
 using Sharp.Shared;
 using Sharp.Shared.CStrike;
@@ -57,6 +58,10 @@ internal interface ISharpCore : IModSharp
     void InitMainThread();
 
     void OnModuleUnload(IModSharpModule module);
+
+    void OnModuleUnloaded(IModSharpModule module);
+
+    void OnModuleLoadFailure(Assembly assembly);
 }
 
 // ReSharper disable ForCanBeConvertedToForeach
@@ -68,7 +73,8 @@ internal partial class SharpCore : ISharpCore
 
     private record GameSimulateHookInfo(Action Callback, int Priority);
 
-    private readonly ILogger<SharpCore> _logger;
+    private readonly ILogger<SharpCore>   _logger;
+    private readonly ICoreAssemblyManager _assemblyManager;
 
     private readonly List<IGameListener>                       _gameListeners;
     private readonly List<ISteamListener>                      _steamListeners;
@@ -79,8 +85,10 @@ internal partial class SharpCore : ISharpCore
     private readonly List<GameSimulateHookInfo>                _gameSimulateHooks;
     private readonly ConcurrentQueue<AssemblyAction>           _actionQueue;
     private readonly ConcurrentDictionary<Guid, AssemblyTimer> _timers;
-    private readonly string                                    _gamePath;
+    private readonly ICoreScriptManager                        _scriptManager;
     private readonly FrozenDictionary<string, string?>         _commandLines;
+
+    private readonly string _gamePath;
 
     private int          _mainThreadId;
     private IDisposable? _logContext;
@@ -92,9 +100,11 @@ internal partial class SharpCore : ISharpCore
     private GlobalVars?    _globalVars;
     private GameRules?     _gameRules;
 
-    public SharpCore(ILogger<SharpCore> logger, IShutdownMonitor shutdownMonitor)
+    public SharpCore(ILogger<SharpCore> logger, IShutdownMonitor shutdownMonitor, ICoreAssemblyManager assemblyManager, ICoreScriptManager scriptManager)
     {
-        _logger = logger;
+        _logger          = logger;
+        _assemblyManager = assemblyManager;
+        _scriptManager   = scriptManager;
 
         shutdownMonitor.RegisterShutdownEvent(Shutdown);
 
@@ -144,6 +154,8 @@ internal partial class SharpCore : ISharpCore
         Bridges.Forwards.Steam.OnSteamServersConnectFailure += OnSteamServersConnectFailure;
         Bridges.Forwards.Steam.OnDownloadItemResult         += OnDownloadItemResult;
         Bridges.Forwards.Steam.OnItemInstalled              += OnItemInstalled;
+
+        _assemblyManager.RegisterUnloadCleanup(ClearLeakedRegistrations);
 
         CenterHtmlHelper.InitDelegates();
     }
@@ -548,7 +560,15 @@ internal partial class SharpCore : ISharpCore
 
                 for (var i = 0; i < timers.Length; i++)
                 {
-                    var timer  = timers[i];
+                    var timer = timers[i];
+
+                    if (_assemblyManager.IsDelegateUnloaded(timer.Callback))
+                    {
+                        _timers.Remove(timer.UniqueId, out _);
+
+                        continue;
+                    }
+
                     var remove = false;
 
                     try
@@ -610,6 +630,13 @@ internal partial class SharpCore : ISharpCore
 
         while (_actionQueue.TryDequeue(out var action))
         {
+            if (_assemblyManager.IsDelegateUnloaded(action.Owner))
+            {
+                DiscardAction(action.OnDiscard);
+
+                continue;
+            }
+
             try
             {
                 action.Action.Invoke();
@@ -756,15 +783,19 @@ internal partial class SharpCore : ISharpCore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var source   = new TaskCompletionSource<T>();
-        var assembly = action.Method.Module.Assembly;
+        if (!action.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, register each callback separately",
+                                        nameof(action));
+        }
 
-        EnqueueAction(assembly,
-                      () =>
+        var source = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        EnqueueAction(() =>
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
@@ -778,7 +809,9 @@ internal partial class SharpCore : ISharpCore
                           {
                               source.SetException(e);
                           }
-                      });
+                      },
+                      action,
+                      () => source.TrySetCanceled());
 
         return source.Task;
     }
@@ -787,15 +820,19 @@ internal partial class SharpCore : ISharpCore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var source   = new TaskCompletionSource();
-        var assembly = action.Method.Module.Assembly;
+        if (!action.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, register each callback separately",
+                                        nameof(action));
+        }
 
-        EnqueueAction(assembly,
-                      () =>
+        var source = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        EnqueueAction(() =>
                       {
                           if (cancellationToken.IsCancellationRequested)
                           {
-                              source.SetCanceled(CancellationToken.None);
+                              source.SetCanceled(cancellationToken);
 
                               return;
                           }
@@ -809,18 +846,40 @@ internal partial class SharpCore : ISharpCore
                           {
                               source.SetException(e);
                           }
-                      });
+                      },
+                      action,
+                      () => source.TrySetCanceled());
 
         return source.Task;
     }
 
     public Guid PushTimer(Action action, double interval, GameTimerFlags flags = GameTimerFlags.None)
     {
-        var timer = new AssemblyActionTimer(action.Method.Module.Assembly, interval, flags, action);
+        if (!action.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, register each callback separately",
+                                        nameof(action));
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(action))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return Guid.Empty;
+        }
+
+        var timer = new AssemblyActionTimer(interval, flags, action);
 
         if (!_timers.TryAdd(timer.UniqueId, timer))
         {
             throw new InvalidOperationException($"Could not push timer {timer.UniqueId}");
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(action))
+        {
+            _timers.Remove(timer.UniqueId, out _);
+
+            return Guid.Empty;
         }
 
         return timer.UniqueId;
@@ -828,11 +887,31 @@ internal partial class SharpCore : ISharpCore
 
     public Guid PushTimer(Func<TimerAction> action, double interval, GameTimerFlags flags = GameTimerFlags.None)
     {
-        var timer = new AssemblyFunctionTimer(action.Method.Module.Assembly, interval, flags, action);
+        if (!action.HasSingleTarget)
+        {
+            throw new ArgumentException("Multicast delegates are not supported, register each callback separately",
+                                        nameof(action));
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(action))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return Guid.Empty;
+        }
+
+        var timer = new AssemblyFunctionTimer(interval, flags, action);
 
         if (!_timers.TryAdd(timer.UniqueId, timer))
         {
             throw new InvalidOperationException($"Could not push timer {timer.UniqueId}");
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(action))
+        {
+            _timers.Remove(timer.UniqueId, out _);
+
+            return Guid.Empty;
         }
 
         return timer.UniqueId;
@@ -1116,6 +1195,13 @@ internal partial class SharpCore : ISharpCore
 
     public void InstallGameListener(IGameListener listener)
     {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (listener.ListenerVersion != IGameListener.ApiVersion)
         {
             throw new InvalidOperationException("Your listener api version mismatch");
@@ -1142,6 +1228,13 @@ internal partial class SharpCore : ISharpCore
 
     public void InstallSteamListener(ISteamListener listener)
     {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (listener.ListenerVersion != ISteamListener.ApiVersion)
         {
             throw new InvalidOperationException("Your listener api version mismatch");
@@ -1188,6 +1281,22 @@ internal partial class SharpCore : ISharpCore
         int                                                    prePriority  = 0,
         int                                                    postPriority = 0)
     {
+        if ((pre is not null && !pre.HasSingleTarget) || (post is not null && !post.HasSingleTarget))
+        {
+            _logger.LogError("Multicast delegates are not supported, install each callback separately!\n{stackTrace}",
+                             Environment.StackTrace);
+
+            return;
+        }
+
+        if ((pre is not null && _assemblyManager.IsDelegateUnloaded(pre))
+            || (post is not null && _assemblyManager.IsDelegateUnloaded(post)))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         GameFrameHookInfo? preHook  = null;
         GameFrameHookInfo? postHook = null;
 
@@ -1230,6 +1339,22 @@ internal partial class SharpCore : ISharpCore
 
     public void InstallEntityThinkHook(Action? pre, Action? post, int prePriority = 0, int postPriority = 0)
     {
+        if ((pre is not null && !pre.HasSingleTarget) || (post is not null && !post.HasSingleTarget))
+        {
+            _logger.LogError("Multicast delegates are not supported, install each callback separately!\n{stackTrace}",
+                             Environment.StackTrace);
+
+            return;
+        }
+
+        if ((pre is not null && _assemblyManager.IsDelegateUnloaded(pre))
+            || (post is not null && _assemblyManager.IsDelegateUnloaded(post)))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         EntityThinkHookInfo? preHook  = null;
         EntityThinkHookInfo? postHook = null;
 
@@ -1272,6 +1397,21 @@ internal partial class SharpCore : ISharpCore
 
     public void InstallServerGameSimulateHook(Action callback, int priority = 0)
     {
+        if (!callback.HasSingleTarget)
+        {
+            _logger.LogError("Multicast delegates are not supported, install each callback separately!\n{stackTrace}",
+                             Environment.StackTrace);
+
+            return;
+        }
+
+        if (_assemblyManager.IsDelegateUnloaded(callback))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
+
+            return;
+        }
+
         if (_gameSimulateHooks.Any(x => x.Callback.Equals(callback)))
         {
             _logger.LogError("You are already installed this hook<post>!\n{stackTrace}", Environment.StackTrace);
@@ -1419,6 +1559,21 @@ internal partial class SharpCore : ISharpCore
     public void DualAddonOverrideCheck(SteamID steamId, double time)
         => Game.DualAddonOverrideCheck(steamId, time);
 
+    public ulong GetDualAddonId()
+        => Game.DualAddonGetPublishFileId();
+
+    public bool SetDualAddonId(ulong publishFileId)
+    {
+        var success = Game.DualAddonSetPublishFileId(publishFileId);
+
+        if (success)
+        {
+            DualAddonPurgeCheck();
+        }
+
+        return success;
+    }
+
 #endregion
 
 #region DedicatedServerWorkshopManager
@@ -1456,6 +1611,11 @@ internal partial class SharpCore : ISharpCore
     {
         _logger.LogInformation("Shutdown SharpCore");
 
+        while (_actionQueue.TryDequeue(out var action))
+        {
+            DiscardAction(action.OnDiscard);
+        }
+
         if (_timers.IsEmpty)
         {
             return;
@@ -1468,6 +1628,11 @@ internal partial class SharpCore : ISharpCore
             try
             {
                 var x = timers[i];
+
+                if (_assemblyManager.IsDelegateUnloaded(x.Callback))
+                {
+                    continue;
+                }
 
                 if (!x.IsInitialized)
                 {
@@ -1492,22 +1657,55 @@ internal partial class SharpCore : ISharpCore
     {
         var assembly = module.GetType().Assembly;
 
-        ClearAssemblyTimer(assembly);
-        ClearAssemblyAction(assembly);
+        _assemblyManager.MarkAssemblyUnloaded(assembly);
+        ClearUnloadedTimers(assembly);
+        _scriptManager.OnModuleUnload(assembly);
+    }
+
+    public void OnModuleUnloaded(IModSharpModule module)
+        => _assemblyManager.InvokeUnloadCleanup();
+
+    public void OnModuleLoadFailure(Assembly assembly)
+    {
+        _assemblyManager.MarkAssemblyUnloaded(assembly);
+        ClearUnloadedTimers(null);
+        _assemblyManager.InvokeUnloadCleanup();
+    }
+
+    private void ClearLeakedRegistrations()
+    {
+        _assemblyManager.ClearLeakedListeners(_gameListeners, "GameListener");
+        _assemblyManager.ClearLeakedListeners(_steamListeners, "SteamListener");
+
+        _assemblyManager.ClearLeakedCallbacks(_framePreHooks, "GameFramePreHook", x => x.Callback);
+        _assemblyManager.ClearLeakedCallbacks(_framePostHooks, "GameFramePostHook", x => x.Callback);
+        _assemblyManager.ClearLeakedCallbacks(_entityPreHooks, "EntityThinkPreHook", x => x.Callback);
+        _assemblyManager.ClearLeakedCallbacks(_entityPostHooks, "EntityThinkPostHook", x => x.Callback);
+        _assemblyManager.ClearLeakedCallbacks(_gameSimulateHooks, "ServerGameSimulateHook", x => x.Callback);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnqueueAction(Action action)
     {
-        var assembly = action.Method.Module.Assembly;
-        EnqueueAction(assembly, action);
+        if (action.HasSingleTarget)
+        {
+            _actionQueue.Enqueue(new AssemblyAction(action, action));
+
+            return;
+        }
+
+        foreach (var callback in action.GetInvocationList())
+        {
+            var single = (Action) callback;
+
+            _actionQueue.Enqueue(new AssemblyAction(single, single));
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnqueueAction(Assembly assembly, Action action)
-        => _actionQueue.Enqueue(new AssemblyAction(assembly, action));
+    private void EnqueueAction(Action action, Delegate owner, Action? onDiscard)
+        => _actionQueue.Enqueue(new AssemblyAction(action, owner, onDiscard));
 
     private void ClearMapTimer()
     {
@@ -1533,59 +1731,55 @@ internal partial class SharpCore : ISharpCore
         }
     }
 
-    private void ClearAssemblyTimer(Assembly assembly)
+    private void ClearUnloadedTimers(Assembly? forceRunAnchor)
     {
-        var timers = _timers.Where(x => x.Value.Assembly.Equals(assembly))
+        var timers = _timers.Where(x => _assemblyManager.IsDelegateUnloaded(x.Value.Callback))
                             .Select(x => x.Key)
                             .ToArray();
 
         for (var i = 0; i < timers.Length; i++)
         {
-            if (_timers.Remove(timers[i], out var timer) && timer.Flags.HasFlag(GameTimerFlags.ForceCallBeforeShutdown))
-            {
-                try
-                {
-                    timer.ForceRun();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
-                }
-            }
-        }
-    }
-
-    private void ClearAssemblyAction(Assembly assembly)
-    {
-        if (_actionQueue.Count == 0)
-        {
-            return;
-        }
-
-        var backup = new List<AssemblyAction>(_actionQueue.Count);
-
-        while (_actionQueue.TryDequeue(out var item))
-        {
-            if (item.Assembly.Equals(assembly))
+            if (!_timers.Remove(timers[i], out var timer))
             {
                 continue;
             }
 
-            backup.Add(item);
-        }
+            if (forceRunAnchor is null
+                || !timer.Flags.HasFlag(GameTimerFlags.ForceCallBeforeShutdown)
+                || !_assemblyManager.IsDelegateOwnedBy(timer.Callback, forceRunAnchor))
+            {
+                continue;
+            }
 
-        if (backup.Count == 0)
+            try
+            {
+                timer.ForceRun();
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "An error occurred while timer removed with flag {f}", timer.Flags);
+            }
+        }
+    }
+
+    private void DiscardAction(Action? onDiscard)
+    {
+        if (onDiscard is null)
         {
             return;
         }
 
-        foreach (var item in backup)
+        try
         {
-            _actionQueue.Enqueue(item);
+            onDiscard.Invoke();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred while discarding frame action");
         }
     }
 
-    private readonly record struct AssemblyAction(Assembly Assembly, Action Action);
+    private readonly record struct AssemblyAction(Action Action, Delegate Owner, Action? OnDiscard = null);
 
     [StructLayout(LayoutKind.Explicit, Size = 16)]
     private readonly unsafe struct WorkshopMap

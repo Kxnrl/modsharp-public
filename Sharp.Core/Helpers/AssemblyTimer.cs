@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Reflection;
 using Sharp.Shared.Enums;
 
 namespace Sharp.Core.Helpers;
@@ -26,19 +25,19 @@ namespace Sharp.Core.Helpers;
 internal abstract class AssemblyTimer
 {
     public Guid           UniqueId      { get; init; }
-    public Assembly       Assembly      { get; init; }
+    public Delegate       Callback      { get; }
     public GameTimerFlags Flags         { get; private set; }
     public bool           IsInitialized => _lastCallTime > 0;
 
     private readonly double _interval;
     private          double _lastCallTime;
 
-    protected AssemblyTimer(Assembly assembly,
+    protected AssemblyTimer(Delegate callback,
         double                       interval,
         GameTimerFlags               flags)
     {
         UniqueId = Guid.NewGuid();
-        Assembly = assembly;
+        Callback = callback;
         Flags    = flags;
 
         _interval = interval;
@@ -88,10 +87,9 @@ internal sealed class AssemblyFunctionTimer : AssemblyTimer
 {
     private readonly Func<TimerAction> _callback;
 
-    public AssemblyFunctionTimer(Assembly assembly,
-        double                            interval,
-        GameTimerFlags                    flags,
-        Func<TimerAction>                 callback) : base(assembly, interval, flags)
+    public AssemblyFunctionTimer(double interval,
+        GameTimerFlags                  flags,
+        Func<TimerAction>               callback) : base(callback, interval, flags)
         => _callback = callback;
 
     protected override TimerAction Run()
@@ -102,10 +100,9 @@ internal sealed class AssemblyActionTimer : AssemblyTimer
 {
     private readonly Action _callback;
 
-    public AssemblyActionTimer(Assembly assembly,
-        double                          interval,
-        GameTimerFlags                  flags,
-        Action                          callback) : base(assembly, interval, flags)
+    public AssemblyActionTimer(double interval,
+        GameTimerFlags                flags,
+        Action                        callback) : base(callback, interval, flags)
         => _callback = callback;
 
     protected override TimerAction Run()

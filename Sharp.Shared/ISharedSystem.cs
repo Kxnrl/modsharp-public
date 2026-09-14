@@ -55,4 +55,8 @@ public interface ISharedSystem
     ISharpModuleManager GetSharpModuleManager();
 
     IParticleManager GetParticleManager();
+
+    IScriptManager GetScriptManager();
+
+    IPanoramaManager GetPanoramaManager();
 }

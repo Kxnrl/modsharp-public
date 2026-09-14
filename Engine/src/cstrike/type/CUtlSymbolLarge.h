@@ -28,8 +28,10 @@ public:
     constexpr CUtlSymbolLarge(const char* pString) :
         m_pString(pString) {}
 
-    bool operator==(const CUtlSymbolLarge& src) const { return m_pString == src.m_pString; }
-    bool operator!=(const CUtlSymbolLarge& src) const { return m_pString != src.m_pString; }
+    bool operator==(const CUtlSymbolLarge& src) const { return (uintptr_t)m_pString == (uintptr_t)src.m_pString; }
+    bool operator!=(const CUtlSymbolLarge& src) const { return (uintptr_t)m_pString != (uintptr_t)src.m_pString; }
+
+    bool operator<(const CUtlSymbolLarge& src) const { return (uintptr_t)m_pString < (uintptr_t)src.m_pString; }
 
     [[nodiscard]] const char* Get() const
     {

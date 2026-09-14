@@ -2581,6 +2581,7 @@ class CUserMessageSayText /*final*/ :
   enum : int {
     kTextFieldNumber = 2,
     kChatFieldNumber = 3,
+    kTextallchatFieldNumber = 4,
     kPlayerindexFieldNumber = 1,
   };
   // optional string text = 2;
@@ -2614,6 +2615,19 @@ class CUserMessageSayText /*final*/ :
   void _internal_set_chat(bool value);
   public:
 
+  // optional bool textallchat = 4;
+  bool has_textallchat() const;
+  private:
+  bool _internal_has_textallchat() const;
+  public:
+  void clear_textallchat();
+  bool textallchat() const;
+  void set_textallchat(bool value);
+  private:
+  bool _internal_textallchat() const;
+  void _internal_set_textallchat(bool value);
+  public:
+
   // optional int32 playerindex = 1 [default = -1];
   bool has_playerindex() const;
   private:
@@ -2639,6 +2653,7 @@ class CUserMessageSayText /*final*/ :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr text_;
     bool chat_;
+    bool textallchat_;
     int32_t playerindex_;
   };
   union { Impl_ _impl_; };
@@ -2780,6 +2795,7 @@ class CUserMessageSayText2 /*final*/ :
     kParam3FieldNumber = 6,
     kParam4FieldNumber = 7,
     kChatFieldNumber = 2,
+    kTextallchatFieldNumber = 8,
     kEntityindexFieldNumber = 1,
   };
   // optional string messagename = 3;
@@ -2885,6 +2901,19 @@ class CUserMessageSayText2 /*final*/ :
   void _internal_set_chat(bool value);
   public:
 
+  // optional bool textallchat = 8;
+  bool has_textallchat() const;
+  private:
+  bool _internal_has_textallchat() const;
+  public:
+  void clear_textallchat();
+  bool textallchat() const;
+  void set_textallchat(bool value);
+  private:
+  bool _internal_textallchat() const;
+  void _internal_set_textallchat(bool value);
+  public:
+
   // optional int32 entityindex = 1 [default = -1];
   bool has_entityindex() const;
   private:
@@ -2914,6 +2943,7 @@ class CUserMessageSayText2 /*final*/ :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param3_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param4_;
     bool chat_;
+    bool textallchat_;
     int32_t entityindex_;
   };
   union { Impl_ _impl_; };
@@ -24459,7 +24489,7 @@ inline void CUserMessageScreenTilt::set_time(float value) {
 
 // optional int32 playerindex = 1 [default = -1];
 inline bool CUserMessageSayText::_internal_has_playerindex() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CUserMessageSayText::has_playerindex() const {
@@ -24467,7 +24497,7 @@ inline bool CUserMessageSayText::has_playerindex() const {
 }
 inline void CUserMessageSayText::clear_playerindex() {
   _impl_.playerindex_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline int32_t CUserMessageSayText::_internal_playerindex() const {
   return _impl_.playerindex_;
@@ -24477,7 +24507,7 @@ inline int32_t CUserMessageSayText::playerindex() const {
   return _internal_playerindex();
 }
 inline void CUserMessageSayText::_internal_set_playerindex(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.playerindex_ = value;
 }
 inline void CUserMessageSayText::set_playerindex(int32_t value) {
@@ -24581,13 +24611,41 @@ inline void CUserMessageSayText::set_chat(bool value) {
   // @@protoc_insertion_point(field_set:CUserMessageSayText.chat)
 }
 
+// optional bool textallchat = 4;
+inline bool CUserMessageSayText::_internal_has_textallchat() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CUserMessageSayText::has_textallchat() const {
+  return _internal_has_textallchat();
+}
+inline void CUserMessageSayText::clear_textallchat() {
+  _impl_.textallchat_ = false;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline bool CUserMessageSayText::_internal_textallchat() const {
+  return _impl_.textallchat_;
+}
+inline bool CUserMessageSayText::textallchat() const {
+  // @@protoc_insertion_point(field_get:CUserMessageSayText.textallchat)
+  return _internal_textallchat();
+}
+inline void CUserMessageSayText::_internal_set_textallchat(bool value) {
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.textallchat_ = value;
+}
+inline void CUserMessageSayText::set_textallchat(bool value) {
+  _internal_set_textallchat(value);
+  // @@protoc_insertion_point(field_set:CUserMessageSayText.textallchat)
+}
+
 // -------------------------------------------------------------------
 
 // CUserMessageSayText2
 
 // optional int32 entityindex = 1 [default = -1];
 inline bool CUserMessageSayText2::_internal_has_entityindex() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
 }
 inline bool CUserMessageSayText2::has_entityindex() const {
@@ -24595,7 +24653,7 @@ inline bool CUserMessageSayText2::has_entityindex() const {
 }
 inline void CUserMessageSayText2::clear_entityindex() {
   _impl_.entityindex_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
 }
 inline int32_t CUserMessageSayText2::_internal_entityindex() const {
   return _impl_.entityindex_;
@@ -24605,7 +24663,7 @@ inline int32_t CUserMessageSayText2::entityindex() const {
   return _internal_entityindex();
 }
 inline void CUserMessageSayText2::_internal_set_entityindex(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00000080u;
   _impl_.entityindex_ = value;
 }
 inline void CUserMessageSayText2::set_entityindex(int32_t value) {
@@ -24979,6 +25037,34 @@ inline void CUserMessageSayText2::set_allocated_param4(std::string* param4) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:CUserMessageSayText2.param4)
+}
+
+// optional bool textallchat = 8;
+inline bool CUserMessageSayText2::_internal_has_textallchat() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CUserMessageSayText2::has_textallchat() const {
+  return _internal_has_textallchat();
+}
+inline void CUserMessageSayText2::clear_textallchat() {
+  _impl_.textallchat_ = false;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline bool CUserMessageSayText2::_internal_textallchat() const {
+  return _impl_.textallchat_;
+}
+inline bool CUserMessageSayText2::textallchat() const {
+  // @@protoc_insertion_point(field_get:CUserMessageSayText2.textallchat)
+  return _internal_textallchat();
+}
+inline void CUserMessageSayText2::_internal_set_textallchat(bool value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.textallchat_ = value;
+}
+inline void CUserMessageSayText2::set_textallchat(bool value) {
+  _internal_set_textallchat(value);
+  // @@protoc_insertion_point(field_set:CUserMessageSayText2.textallchat)
 }
 
 // -------------------------------------------------------------------
