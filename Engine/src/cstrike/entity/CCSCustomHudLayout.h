@@ -78,6 +78,7 @@ class CCSCustomHudLayout : public CBaseEntity
     DECLARE_SCHEMA_CLASS(CCSCustomHudLayout)
 public:
     SCHEMA_FIELD(CUtlSymbolLarge, m_strLayout)
+    SCHEMA_FIELD(bool, m_bObservable)
     SCHEMA_EMBEDDED_NETWORK_VAR_FIELD(CCSCustomHudLayoutState, m_vecPlayerLayoutStates)
     SCHEMA_FIELD(CCSCustomHudLayoutState, m_globalLayoutState)
     SCHEMA_NETWORK_VECTOR_BASE_FIELD(CUtlString, m_vecPanelIds)
