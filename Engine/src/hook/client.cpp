@@ -525,7 +525,7 @@ BeginMemberHookScope(CServerSideClient)
 
         if (!VoiceDataFormat_t_IsValid(audio.format()))
             return false;
-        if (voiceDataSize == 0 && packetOffsets != 0)
+        if (voiceDataSize == 0 && (packetOffsets != 0 || numPackets != 0))
             return false;
 
         // Check cheap fields before ByteSizeLong walks the protobuf fields.
