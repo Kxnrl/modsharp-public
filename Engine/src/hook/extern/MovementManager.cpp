@@ -44,6 +44,8 @@
 #include <Zydis.h>
 #include <safetyhook.hpp>
 
+#include <format>
+
 // #define LOG_FIX_TICKCOUNT
 
 volatile float g_flReplaceMaxSpeed;
@@ -428,9 +430,130 @@ static void PatchJumpInWaterVelocityZ()
     WARN("Found pattern for JumpInWaterVelocityZ but failed to validate and patch the instruction.");
 }
 
+static CAddress FindCPlayerMovementService_RunCommand()
+{
+    auto svr_mod = modules::server;
+
+    auto vfuncs = svr_mod->GetVFunctionsFromVTable("CPlayer_MovementServices");
+    if (vfuncs.empty())
+    {
+        FatalError("No VFuncs found for CPlayer_MovementServices??");
+        return {};
+    }
+
+    uintptr_t thread_id_address{};
+#ifdef PLATFORM_WINDOWS
+    thread_id_address = reinterpret_cast<uintptr_t>(GetProcAddress(GetModuleHandleA("kernel32.dll"), "GetCurrentThreadId"));
+#else
+    thread_id_address = modules::tier0->GetExportByName("ThreadGetCurrentId");
+#endif
+
+    if (thread_id_address == 0) [[unlikely]]
+    {
+        FatalError("Failed to get GetCurrentThreadId address");
+    }
+
+    // 'zorf'
+    constexpr uint32_t frozen_hex = 0x7A6F7266;
+
+    std::vector<uintptr_t> candidate_only_call;
+    std::vector<uintptr_t> candidate_only_mov;
+
+    for (uintptr_t vfunc : vfuncs)
+    {
+        auto range = svr_mod->GetFunctionRange(vfunc);
+        if (range == nullptr)
+            continue;
+
+        bool found_call{};
+        bool found_mov{};
+
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+            // .text:0000000180B800D6 FF 15 D4 D1 99 00                                               call    cs:GetCurrentThreadId; windows
+            // .text:000000000158D932 E8 19 12 3F FF                                                  call    _ThreadGetCurrentId; linux
+
+            // .text:000000000158D8C7 C7 40 18 66 72 6F 7A                                            mov     dword ptr [rax+18h], 7A6F7266h; linux
+            // .text:0000000180B7FFDF 8B 05 EF 1F B7 00                                               mov     eax, cs:dword_1816F1FD4; windows (66 72 6F 7A dword_1816F1FD4 dd 'zorf' )
+            // if these two conditions meet it means this function address is what we are looking for
+
+            if (found_call && found_mov)
+                return true;
+
+            if (!found_call)
+            {
+                if (instr.mnemonic == ZYDIS_MNEMONIC_CALL && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
+                {
+                    found_call = true;
+                    return false;
+                }
+            }
+
+            if (!found_mov)
+            {
+                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV)
+                {
+                    if ((instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) != 0
+                        && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+                    {
+                        auto abs = ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip);
+                        if (abs != 0 && *reinterpret_cast<uint32_t*>(abs) == frozen_hex)
+                        {
+                            found_mov = true;
+                            return false;
+                        }
+                    }
+                    else if (operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && operands[1].imm.value.u == frozen_hex)
+                    {
+                        found_mov = true;
+                        return false;
+                    }
+                }
+            }
+
+            return false;
+        });
+
+        if (found_mov && found_call)
+        {
+            FLOG("Found CPlayer_MovementServices::RunCommand at server+0x%llx", vfunc - svr_mod->Base());
+            return vfunc;
+        }
+
+        if (found_call)
+            candidate_only_call.push_back(vfunc);
+        else if (found_mov)
+            candidate_only_mov.push_back(vfunc);
+    }
+
+    std::string diag = std::format(
+        "Failed to find CPlayer_MovementServices::RunCommand by scanning virtual functions."
+        "\n  Scanned {} vfuncs from CPlayer_MovementServices vtable.",
+        vfuncs.size());
+
+    if (!candidate_only_mov.empty())
+    {
+        diag += std::format("\n  -> Found 'zorf' (MOV) without ThreadID call in {} function(s):", candidate_only_mov.size());
+        for (auto fn : candidate_only_mov)
+            diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
+    }
+
+    if (!candidate_only_call.empty())
+    {
+        diag += std::format("\n  -> Found ThreadID (CALL) without 'zorf' mov in {} function(s):", candidate_only_call.size());
+        for (auto fn : candidate_only_call)
+            diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
+    }
+
+    diag += "\n  Falling back to gamedata...";
+
+    WARN("%s", diag.c_str());
+
+    return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
+}
+
 void InstallMovementHook()
 {
-    HOOK(CPlayer_MovementServices, RunCommand);
+    HOOK(CPlayer_MovementServices, RunCommand, {.address = FindCPlayerMovementService_RunCommand()});
 
     HOOK(CCSPlayer_MovementServices, WalkMove);
     HOOK(CCSPlayer_MovementServices, Accelerate);
