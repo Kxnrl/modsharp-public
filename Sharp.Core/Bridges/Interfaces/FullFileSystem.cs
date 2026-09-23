@@ -39,13 +39,13 @@ internal unsafe partial class FullFileSystem : NativeObject
     [NativeVirtualMethod(Offset = 18, LinuxOffset = 17)]
     public partial int Size(nint fileHandle);
 
-    [NativeVirtualMethod(Offset = 21, LinuxOffset = 20)]
+    [NativeVirtualMethod(Offset = 21, LinuxOffset = 21)]
     public partial bool FileExists(string filename, string pathId);
 
-    [NativeVirtualMethod(Offset = 31, LinuxOffset = 30)]
+    [NativeVirtualMethod(Offset = 31, LinuxOffset = 31)]
     public partial void AddSearchPath(string path, string pathId, int addType, int priority, int unknown);
 
-    [NativeVirtualMethod(Offset = 32, LinuxOffset = 31)]
+    [NativeVirtualMethod(Offset = 32, LinuxOffset = 32)]
     public partial void RemoveSearchPath(string path, string pathId);
 
     [NativeVirtualMethod(Offset = 61, LinuxOffset = 60)]

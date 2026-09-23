@@ -259,10 +259,6 @@ public:
     virtual void* FindOrAddFileName(const char* pFileName)           = 0;
     virtual bool  String(const void** handle, char* buf, int buflen) = 0;
 
-    virtual void unk006() = 0;
-    virtual void unk007() = 0;
-    virtual void unk008() = 0;
-
     virtual void Trace_DumpUnclosedFiles() = 0;
 
     virtual void PrintSearchPaths(void) = 0;
