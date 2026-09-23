@@ -27,66 +27,115 @@ namespace Sharp.Modules.EntityEnhancements.Modules;
 
 internal sealed unsafe class FilterCrashFixes : IEnhancement
 {
-    private static delegate* unmanaged<nint, InputData*, void> _sTrampoline;
-    private static FilterCrashFixes?                           _sInstance;
+    // native bool comes back in al; byte keeps it 1 byte wide since this assembly has runtime marshalling enabled
+    private static delegate* unmanaged<nint, nint, nint, byte> _sFilterModelTrampoline;
+    private static delegate* unmanaged<nint, nint, nint, byte> _sFilterContextTrampoline;
+    private static delegate* unmanaged<nint, nint, nint, byte> _sFilterMassGreaterTrampoline;
 
     private readonly ILogger<FilterCrashFixes> _logger;
-    private readonly ISharedSystem             _sharedSystem;
-    private readonly IDetourHook               _hook;
+    private readonly IGameData                 _gameData;
+    private readonly IVirtualHook              _filterModelHook;
+    private readonly IVirtualHook              _filterContextHook;
+    private readonly IVirtualHook              _filterMassGreaterHook;
 
     public FilterCrashFixes(ISharedSystem sharedSystem)
     {
-        _logger       = sharedSystem.GetLoggerFactory().CreateLogger<FilterCrashFixes>();
-        _sharedSystem = sharedSystem;
-        _hook         = sharedSystem.GetHookManager().CreateDetourHook();
-
-        if (_sTrampoline != null)
+        if (_sFilterModelTrampoline != null || _sFilterContextTrampoline != null || _sFilterMassGreaterTrampoline != null)
         {
             throw new InvalidOperationException("Double Hook!");
         }
 
-        _sInstance = this;
+        var hooks = sharedSystem.GetHookManager();
+
+        _logger                = sharedSystem.GetLoggerFactory().CreateLogger<FilterCrashFixes>();
+        _gameData              = sharedSystem.GetModSharp().GetGameData();
+        _filterModelHook       = hooks.CreateVirtualHook();
+        _filterContextHook     = hooks.CreateVirtualHook();
+        _filterMassGreaterHook = hooks.CreateVirtualHook();
     }
 
     public void Init()
     {
-        _hook.Prepare(_sharedSystem.GetSchemaManager().GetDataMapInputFunc("CBaseFilter", "InputTestActivator"),
-                      (nint) (delegate* unmanaged<nint, InputData*, void>) (&Hook));
+        var offset = _gameData.GetVFuncIndex("CBaseFilter", "PassesFilterImpl");
 
-        if (!_hook.Install())
-        {
-            _logger.LogError("{n} init failed", GetType().Name);
-        }
-        else
-        {
-            _sTrampoline = (delegate* unmanaged<nint, InputData*, void>) _hook.Trampoline;
-        }
+        _sFilterModelTrampoline = Install(_filterModelHook,
+                                          "CFilterModel",
+                                          offset,
+                                          (nint) (delegate* unmanaged<nint, nint, nint, byte>) (&FilterModelHook));
+
+        _sFilterContextTrampoline = Install(_filterContextHook,
+                                            "CFilterContext",
+                                            offset,
+                                            (nint) (delegate* unmanaged<nint, nint, nint, byte>) (&FilterContextHook));
+
+        _sFilterMassGreaterTrampoline = Install(_filterMassGreaterHook,
+                                                "CFilterMassGreater",
+                                                offset,
+                                                (nint) (delegate* unmanaged<nint, nint, nint, byte>) (&FilterMassGreaterHook));
     }
 
     public void Shutdown()
     {
-        _hook.Uninstall();
-        _hook.Dispose();
+        _filterModelHook.Uninstall();
+        _filterContextHook.Uninstall();
+        _filterMassGreaterHook.Uninstall();
+
+        _sFilterModelTrampoline       = null;
+        _sFilterContextTrampoline     = null;
+        _sFilterMassGreaterTrampoline = null;
+    }
+
+    private delegate* unmanaged<nint, nint, nint, byte> Install(IVirtualHook hook, string className, int offset, nint hookFn)
+    {
+        try
+        {
+            hook.Prepare("server", className, offset, hookFn);
+
+            if (hook.Install())
+            {
+                return (delegate* unmanaged<nint, nint, nint, byte>) hook.Trampoline;
+            }
+
+            _logger.LogError("{n} init failed", className);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "{n} init failed", className);
+        }
+
+        return null;
     }
 
     [UnmanagedCallersOnly]
-    private static void Hook(nint pEntity, InputData* pInput)
+    private static byte FilterModelHook(nint pFilter, nint pCaller, nint pEntity)
     {
-        if (pInput->pActivator == nint.Zero)
+        if (pEntity == nint.Zero)
         {
-            return;
+            return 0;
         }
 
-        _sTrampoline(pEntity, pInput);
+        return _sFilterModelTrampoline(pFilter, pCaller, pEntity);
     }
 
-    [StructLayout(LayoutKind.Explicit)]
-    private struct InputData
+    [UnmanagedCallersOnly]
+    private static byte FilterContextHook(nint pFilter, nint pCaller, nint pEntity)
     {
-        [FieldOffset(0)]
-        public nint pActivator;
+        if (pEntity == nint.Zero)
+        {
+            return 0;
+        }
 
-        [FieldOffset(8)]
-        public nint pCaller;
+        return _sFilterContextTrampoline(pFilter, pCaller, pEntity);
+    }
+
+    [UnmanagedCallersOnly]
+    private static byte FilterMassGreaterHook(nint pFilter, nint pCaller, nint pEntity)
+    {
+        if (pEntity == nint.Zero)
+        {
+            return 0;
+        }
+
+        return _sFilterMassGreaterTrampoline(pFilter, pCaller, pEntity);
     }
 }

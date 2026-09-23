@@ -1130,6 +1130,11 @@
       "linux": 146,
       "windows": 147 // 40 53 48 83 EC ? 48 8B 81 ? ? ? ? 48 8B DA 48 85 C0
     },
+    // str "CBaseFilter_API::TestActivator", the vcall whose result is compared against m_bNegated
+    "CBaseFilter::PassesFilterImpl": {
+      "linux": 239,
+      "windows": 238
+    },
     "CBasePlayerController::CanHearAndReadChatFrom": {
       "linux": 264,
       "windows": 263 // 48 83 EC ? 8B 81 ? ? ? ? 4C 8B C9
