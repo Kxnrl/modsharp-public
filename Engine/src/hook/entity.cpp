@@ -74,6 +74,7 @@ static bool EntityInputEnhancement(const CEntityIdentity* pEntity, const char* p
 
 static CBaseEntity* s_pInputCallerOverride = nullptr;
 
+// IScriptVM::SetValue(ScriptVariant_t) and SetValue(const char*) are adjacent overloads that MSVC orders in reverse, so their slots swap between platforms
 #ifdef PLATFORM_WINDOWS
 constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 33;
 #else
@@ -291,6 +292,7 @@ BeginMemberHookScope(CEntityIdentity)
         if (natives::entity::OnEntityAcceptInput(pInstance, pInput->Get(), pActivator, pCaller, pValue, 0) == EHookAction::SkipCallReturnOverride)
             return false;
 
+        // Since the 2026-09-23 update float inputs stringify with %f and break logic_case matching, and inputs read args rather than the variant, so re-dispatch through CBaseEntity::AcceptInput to rebuild args
         if (pValue && pValue->FieldType() == FieldType_t::FIELD_FLOAT32
             && strcasecmp(pInput->Get(), "InValue") == 0
             && strcasecmp(pInstance->GetClassname(), "logic_case") == 0)
@@ -318,6 +320,7 @@ BeginMemberHookScope(CEntityIdentity)
                 const Variant_t* m_pPrevious;
             };
 
+            // CBaseEntity::AcceptInput re-enters this detour with the same value pointer
             RedispatchValue value(pValue->Float());
             return pInstance->GetBaseEntity()->AcceptInput(pInput->Get(), pActivator, pCaller, value.Get());
         }

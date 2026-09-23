@@ -60,7 +60,7 @@ struct NetMessageInfo_t
     CUtlString        m_szGroup;
     NetworkMessageId  m_MessageId;
     NetworkGroupId    m_GroupId;
-    uint8_t           m_nFlags;
+    uint8_t           m_nFlags; // bits 0-5: buf type, bit 6: auto-assigned message id
     int               m_unk001;
     bool              m_bOkayToRedispatch;
 };

@@ -587,7 +587,7 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
 
 static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon)
 {
-    if (!pszWeapon || strnlen(pszWeapon, 5) <= 4) // 'weapon_' or 'item_'
+    if (!pszWeapon || strnlen(pszWeapon, 5) <= 4 || strcasecmp(pszWeapon, "(null)") == 0) // 'weapon_' or 'item_'
         return EquipPlayerItem(pPlayer, pEntity);
 
     const auto pController = pPlayer->GetController<CCSPlayerController*>();

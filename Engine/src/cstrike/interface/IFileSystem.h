@@ -351,6 +351,7 @@ public:
 
     virtual void GetAvailableDrives(void* drives) = 0;
 
+    // win: 55, linux: 105; MSVC merges same-name overloads in reverse order at the first ReadLine, moving this breaks the Linux layout
     virtual CUtlString ReadLine(FileHandle_t file, bool bStripNewline = true) = 0;
 
     virtual void GetSearchPathsForPathID(const char*, GetSearchPathTypes_t, CUtlVector<CUtlString>*) = 0;
