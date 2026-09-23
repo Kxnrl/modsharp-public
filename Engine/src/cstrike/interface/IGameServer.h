@@ -72,38 +72,18 @@ private:
     virtual void Unknown38() = 0;
     virtual void Unknown39() = 0;
     virtual void Unknown40() = 0;
-    virtual void Unknown41() = 0;
 
 public:
-    virtual void GameServerSteamAPIActivated()         = 0; // 42
-    virtual void GameServerSteamAPIDeactivated()       = 0; // 43
-    virtual void HostNameChanged(const char* hostname) = 0; // 44
-    virtual void FatalShutdown() const                 = 0; // 45
-    virtual void UpdateWhenNotInGame(float frameTime)  = 0; // 46
+    virtual void GameServerSteamAPIActivated()         = 0; // 41
+    virtual void GameServerSteamAPIDeactivated()       = 0; // 42
+    virtual void HostNameChanged(const char* hostname) = 0; // 43
+    virtual void FatalShutdown() const                 = 0; // 44
+    virtual void UpdateWhenNotInGame(float frameTime)  = 0; // 45
 
 private:
-    // Economy 相关 不知道是什么
-    virtual void Unknown47() = 0;
-    virtual void Unknown48() = 0;
-    virtual void Unknown49() = 0;
-    virtual void Unknown50() = 0;
+    virtual void Unknown46() = 0;
 
-private:
-    // Model / Character ??
-    virtual void Unknown51() = 0;
-    virtual void Unknown52() = 0;
-    virtual void Unknown53() = 0;
-    virtual void Unknown54() = 0;
-    virtual void Unknown55() = 0;
-    virtual void Unknown56() = 0;
-    virtual void Unknown57() = 0;
-
-private:
-    virtual void Unknown58() = 0;
-    virtual void Unknown59() = 0;
-
-private:
-    virtual void ConVarChanged(const char* name, const char* value) = 0; // 60
+    virtual void ConVarChanged(const char* name, const char* value) = 0; // 47
 };
 
 using IServerGameDLL = CSource2Server;

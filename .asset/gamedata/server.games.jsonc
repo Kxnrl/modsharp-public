@@ -8,14 +8,13 @@
     "CBaseEntity::AbsAngles": {
       "library": "server",
       "linux": "55 48 89 E5 53 48 83 EC ? 48 8B 9F ? ? ? ? 80 BB ? ? ? ? ? 75 ? 48 8D 83 D4 00 00 00 48 8B 5D F8 C9 C3",
-      "windows": "40 53 48 83 EC ? 48 8B 99 ? ? ? ? 90 80 BB ? ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8D 83 ? ? ? ? 48 83 C4 ? 5B C3 CC CC CC CC 48 89 5C 24",
+      "windows": "40 53 48 83 EC ? 48 8B 99 ? ? ? ? 90 80 BB ? ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8D 83 D4 00 00 00 48 83 C4 ? 5B C3",
       "vscript": "GetAbsAngles"
     },
     "CBaseEntity::AbsOrigin": {
       "library": "server",
       "linux": "55 48 89 E5 53 48 83 EC ? 48 8B 9F ? ? ? ? 80 BB ? ? ? ? ? 75 ? 48 8D 83 C8 00 00 00 48 8B 5D F8 C9 C3",
-      "windows": "40 53 48 83 EC ? 48 8B 99 ? ? ? ? 90 80 BB ? ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8D 83 ? ? ? ? 48 83 C4 ? 5B C3 CC CC CC CC 40 53",
-      "vscript": "ScriptGetAbsOrigin"
+      "windows": "40 53 48 83 EC ? 48 8B 99 ? ? ? ? 90 80 BB ? ? ? ? ? 74 ? 48 8B CB E8 ? ? ? ? 48 8D 83 C8 00 00 00 48 83 C4 ? 5B C3"
     },
     "CBaseEntity::AbsVelocity": {
       "library": "server",
@@ -104,7 +103,7 @@
     },
     "CCSCustomHudLayout::ClearDialogVariableStringForPlayer": {
       "library": "server",
-      "linux": "55 48 89 E5 41 55 41 54 53 89 F3 48 83 EC 18",
+      "linux": "55 48 89 E5 41 55 41 54 53 89 F3 48 83 EC ? 85 F6 78 ? 49 89 FD 39 B7 ? ? ? ? 7F ? 48 83 C4 ? 5B 41 5C 41 5D 5D C3",
       "windows": "85 D2 0F 88 ? ? ? ? 53 56 41 56 48 83 EC ? 48 63 DA 4D 8B F1 49 8B C0"
     },
     "CCSCustomHudLayout::IsInputCaptureEnabled": {
@@ -124,7 +123,7 @@
     },
     "CCSCustomHudLayout::SetHasClass": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 49 89 D7 41 56 48 8D 55",
+      "linux": "55 48 89 E5 41 57 49 89 D7 41 56 48 8D 55 ? 41 55 41 54 49 89 FC 53 48 83 EC ? 89 4D ? 31 C9 66 89 4D ? E8",
       "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 33 ED 4C 8D 44 24 ? 66 89 6C 24 ? 41 8B F9 48 8B D9"
     },
     "CCSCustomHudLayout::SetHasClassForPlayer": {
@@ -134,7 +133,7 @@
     },
     "CCSCustomHudLayout::SetInputCaptureEnabled": {
       "library": "server",
-      "linux": "55 48 89 E5 41 55 41 54 53 48 63 DE 48 83 EC 48",
+      "linux": "55 48 89 E5 41 55 41 54 53 48 63 DE 48 83 EC ? 85 DB 78 ? 49 89 FC 39 9F ? ? ? ? 7F",
       "windows": "85 D2 78 ? 48 89 5C 24 10 56 48 83 EC ? 48 89 7C 24 30 41 0F B6 F0 48 8D B9 ? ? ? ?"
     },
     "CBaseModelEntity::GetBoneTransform": {
@@ -178,7 +177,7 @@
     "CBasePlayerController::HandleCommandJoinTeam": {
       "library": "server",
       "linux": "55 48 89 E5 41 57 41 56 41 89 D6 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC",
-      "windows": "48 89 5C 24 08 44 88 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 90",
+      "windows": "48 89 5C 24 08 44 88 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 3D ? ? ? ? 41 0F B6 C0",
       "refs": {
         "strings": [
           "Team for queue player#%d/%d (%x - %s) on %s team for %s teams: %s\n",
@@ -191,12 +190,12 @@
     "CBasePlayerController::SetPawn": {
       "library": "server",
       "linux": "55 48 8D 87 ? ? ? ? 48 89 E5 41 57 41 56 41 89 CE 41 55 45 89 CD",
-      "windows": "44 88 4C 24 20 53 57"
+      "windows": "44 88 4C 24 20 53 57 41 54 41 56 41 57 48 83 EC ? 4C 8B 15 ? ? ? ? 48 8D 99"
     },
     // str 'CCSPlayerPawnBase::SwitchTeam( %d ) - invalid team index.'
     "CBasePlayerController::SwitchSteam": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 49 8B 7D 00",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 49 8B 7D 00 E8",
       "windows": "40 53 57 48 81 EC ? ? ? ? 48 8B D9 8B FA",
       "refs": {
         "strings": [
@@ -213,11 +212,11 @@
       "on_demand": true,
       "library": "server",
       "linux": "55 48 89 E5 41 57 49 89 FF 48 89 F7 41 56 41 55 41 54 53 48 81 EC ? ? ? ? E8",
-      "windows": "48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B DA 48 8B F1 48 8D 55"
+      "windows": "48 89 7C 24 ? 55 48 8B EC 48 81 EC ? ? ? ? 48 8B F9 48 8D 4D ? E8 ? ? ? ? F2 0F 10 87 ? ? ? ? 48 8B CF 8B 87"
     },
     "CCollisionProperty::SetSolid": {
       "library": "server",
-      "linux": "40 38 77 5B",
+      "linux": "40 38 77 5B 74 ? 40 0F B6 F6 E9",
       "windows": "48 89 5C 24 18 48 89 74 24 20 57 48 83 EC ? 0F B6 FA 48 8B D9 38 51 5B"
     },
     // str '%s:  CGameRules::CGameRules constructed\n'
@@ -234,8 +233,8 @@
     // convar ref 'mp_endmatch_votenextmap_keepcurrent'
     "CCSGameRules::CreateEndMatchMapGroupVoteOptions": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 4C 8D 2D",
-      "windows": "48 89 5C 24 20 48 89 4C 24 08 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 D9",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 4C 8D 2D ? ? ? ? 44 8B 40 58",
+      "windows": "48 89 5C 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 4C 8B E1",
       "refs": {
         "strings": [
           "Invalid skirmish '%s' in mp_endmatch_votenextmap_wargames_modes\n"
@@ -256,7 +255,7 @@
     "CCSGameRules::RestartRound": {
       "library": "server",
       "linux": "55 48 8D 35 ? ? ? ? BA ? ? ? ? 48 89 E5",
-      "windows": "48 8B C4 48 89 48 08 55 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? F3 0F 10 1D",
+      "windows": "48 8B C4 48 89 48 08 55 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? F3 0F 10 1D ? ? ? ? 48 8D 15",
       "refs": {
         "strings": [
           "RestartRound",
@@ -341,7 +340,7 @@
     // str 'flAccelSpeed = %f, flGoalSpeed = %f, flStoredAccel = %f'
     "CCSPlayer_MovementServices::Accelerate": {
       "library": "server",
-      "linux": "55 0F 28 F9 48 89 E5 41 57 41 56 41 55",
+      "linux": "55 0F 28 ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC ? F3 0F 11 45 ? F3 0F 10 42",
       "windows": "40 53 41 54 41 55 41 57 48 81 EC ? ? ? ? F2 41 0F 10 01",
       "refs": {
         "strings": [
@@ -476,7 +475,7 @@
       "on_demand": true,
       "library": "server",
       "linux": "48 85 FF 0F 84 ? ? ? ? 55 48 89 E5 41 55 41 54 41 89 F4 53 48 89 FB 48 83 EC ? 8B 35 ? ? ? ? E8 ? ? ? ? 83 F8 ? 74 ? 45 84 E4 0F 85",
-      "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 08 48 89 7C 24 10 55 48 8B EC"
+      "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 48 89 7C 24 ? 55 48 8B EC 48 83 EC ? 0F B6 DA 48 8B F9 8B 15"
     },
     "CCSScript::CreateEntityWrapper": {
       "on_demand": true,
@@ -498,12 +497,12 @@
       "on_demand": true,
       "library": "server",
       "linux": "83 2D 19 DB D5 01 ?",
-      "windows": "FF 0D 82 32 C1 01"
+      "windows": "FF 0D 1A A1 D8 01"
     },
     "CCSScript::ScriptStackPush": {
       "on_demand": true,
       "library": "server",
-      "linux": "55 48 89 E5 41 56 41 55 49 89 FD 8B 3D FF 00 C3 01",
+      "linux": "55 48 89 E5 41 56 41 55 49 89 FD 8B 3D 5F DC D5 01",
       "windows": "48 89 6C 24 18 56 48 83 EC ? 48 63 05 4F DF D8 01"
     },
     "CEntityIdentity::AcceptInput": {
@@ -529,7 +528,7 @@
     "CEntityInstance::GetRefEHandle": {
       "library": "server",
       "linux": "48 8B 57 10 B8 ? ? ? ? 48 85 D2 74 ? 8B 42 10 8B 4A 30 C1 E8 ? 83 E1 ? 29 C8 83 7A 10 ? 74 ? 0F B7 52 10 66 81 E2 ? ? C1 E0 ? 0F B7 D2 09 D0 C3 0F 1F 40 00",
-      "windows": "4C 8B CA 48 85 C9 74 ? 48 8B 49 10",
+      "windows": "4C 8B CA 48 85 C9 74 ? 48 8B 49 10 48 85 C9 74 ? 44 8B 41 10",
       "vscript": "GetEntityHandle"
     },
     "CEntityInstance::Kill": {
@@ -640,8 +639,8 @@
     },
     "CGamePhysicsQueryInterface::TraceShape": {
       "library": "server",
-      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 49 89 F7 41 56 48 8D 35 ? ? ? ? 49 89 CE",
-      "windows": "48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 54 41 56 41 57",
+      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 49 89 F7 41 56 48 8D 35 ? ? ? ? 49 89 CE 41 55 4D 89 C5",
+      "windows": "48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? B8",
       "refs": {
         "strings": [
           "Physics/TraceShape (Server)"
@@ -663,7 +662,7 @@
     // str "CNavMesh::GetNearestNavArea"
     "CNavMesh::GetNearestNavArea": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 89 CE",
+      "linux": "55 48 89 E5 41 57 49 89 FF 41 56 41 89 CE 41 55 41 54 53 48 81 EC ? ? ? ? 48 8D 05 ? ? ? ? 4C 89 85",
       "windows": "48 89 5C 24 ? 44 89 4C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24",
       "refs": {
         "strings": [
@@ -690,7 +689,7 @@
     "CreateTriggerInternal": {
       "on_demand": true,
       "library": "server",
-      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 49 89 FC 53 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? C6 45",
+      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 41 56 41 55 49 89 FD 41 54 53 48 81 EC ? ? ? ? 4C 8D 25 ? ? ? ? C6 45",
       "windows": "48 8B C4 48 89 50 ? 55 41 56 48 8D 68"
     },
     "CSoundEmitterSystem::EmitSound": {
@@ -782,7 +781,7 @@
     },
     "CTriggerGravity::GravityTouch": {
       "library": "server",
-      "linux": "55 48 89 E5 41 54 49 89 FC 48 89 F7 53 48 89 F3 FF 90",
+      "linux": "48 8B 06 55 48 89 E5 41 54 49 89 FC 48 89 F7 53 48 89 F3 FF 90",
       "windows": "48 89 5C 24 ? 57 48 83 EC ? 48 8B 02 48 8B F9 48 8B CA 48 8B DA FF 90 ? ? ? ? 84 C0 74 ? F3 0F 10 8F"
     },
     // 搜 cvar 'mp_weapons_allow_pistols' 的引用
@@ -811,8 +810,8 @@
     },
     "HandleGCBanInfo": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC 68 48 8B 05",
-      "windows": "41 54 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 44 8B 60 58",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC ? 48 8B 05 ? ? ? ? 44 8B 68 ? 45 85 ED 0F 8E ? ? ? ? 8B 15 ? ? ? ? 85 D2 75",
+      "windows": "41 54 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 44 8B 60 ? 45 85 E4 7F ? 48 8D 0D",
       "refs": {
         "strings": [
           "Kicking user %s (sv_kick_players_with_cooldown=%d)\n"
@@ -821,7 +820,7 @@
     },
     "HostSay": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 49 89 F7 41 56 41 55 41 89 D5",
+      "linux": "55 48 89 E5 41 57 49 89 F7 41 56 41 55 41 89 D5 41 54 49 89 FC 53 4C 89 C3 48 81 EC",
       "windows": "44 89 4C 24 20 44 88 44 24 18",
       "refs": {
         "strings": [
@@ -853,12 +852,12 @@
     "KeyValues3::AllocArray_Float32_Internal": {
       "library": "server",
       "linux": "55 89 F0 44 89 CE 48 89 E5 41 57 41 56 41 55 49 89 D5 41 54 41 89 CC 53 48 89 FB 48 83 EC ? 44 8B 55 ? 44 8B 75 ? 0F B6 55 ? 45 89 D7 45 84 C0 74 ? 83 F8 ? 7F ? 41 89 C6 44 89 C7 41 83 E6 ? 85 C9 0F 85 ? ? ? ? 45 84 C9 0F 84 ? ? ? ? 48 83 EC ? 89 C1 45 31 C9 6A ? 45 31 C0 48 89 DF 41 C1 E6 ? E8 ? ? ? ? 0F B6 43 ? 83 E0 ? 44 09 F0 88 43 ? 58 5A 80 23 ? 4C 89 6B ? 48 8D 65 ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 66 0F 1F 44 00 ? 83 F8 ? 7F ? 45 84 C9 0F 85 ? ? ? ? 48 83 EC ? 89 C1 44 89 55 ? 45 31 C9 6A ? 45 31 C0 BE ? ? ? ? 48 89 DF 89 45 ? E8 ? ? ? ? 44 8B 55 ? 41 0F B6 CE 48 89 DF 8B 75 ? 89 4D ? 41 0F B6 D2 E8 ? ? ? ? 48 8D 7D ? 48 89 DE E8 ? ? ? ? 48 63 55 ? 59 48 8B 45 ? 5E 85 D2 74 ? 48 89 C3 4D 89 EE 48 8D 04 D0 48 89 45 ? 48 8B 3B 44 89 FE 48 83 C3 ? 49 83 C6 ? 8B 55 ? 48 89 7D ? E8 ? ? ? ? 48 8B 7D ? 66 0F EF C0",
-      "windows": "44 89 4C 24 20 4C 89 44 24 18 89 54 24 10 53 55 56 57 41 56 48 83 EC 50 0F B6 84 24 ? ? ? ? 45 8B F1 48 63 EA 49 8B D8 0F B6 94 24 ? ? ? ? 48 8B F9 84 C0 0F 84 ? ? ? ? 83 FD 02 0F 8F ? ? ? ? 45 85 C9 75 ? 84 D2 0F 85 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 30 00 44 8B CD 89 74 24 28 0F B6 D0 48 89 74 24 20 E8 DA DB 00 00"
+      "windows": "44 89 4C 24 ? 4C 89 44 24 ? 89 54 24 ? 53 55 56 57 41 56 48 83 EC ? 0F B6 84 24 ? ? ? ? 45 8B F1 48 63 EA 49 8B D8 0F B6 94 24 ? ? ? ? 48 8B F9 84 C0 0F 84 ? ? ? ? 83 FD ? 0F 8F ? ? ? ? 45 85 C9 75 ? 84 D2 0F 85 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 ? ? 44 8B CD 89 74 24 ? 0F B6 D0 48 89 74 24 ? E8 ? ? ? ? 48 BA ? ? ? ? ? ? ? ? 48 89 77 ? 48 8B C5 4C 8D 04 AD ? ? ? ? 48 C1 E0 ? 48 8B C8 48 33 0F 48 23 CA 48 8B D3 48 33 C8 48 83 E1 ? 48 89 0F 48 8D 4F ? E8 ? ? ? ? 41 83 FE ? 0F 85 ? ? ? ? 48 8B CB 48 83 C4 ? 41 5E 5F 5E 5D 5B E9 ? ? ? ? 83 FD ? 0F 8D ? ? ? ? 84 D2 0F 84 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 ? ? 44 8B CD 89 74 24 ? 48 89 74 24 ? E8 ? ? ? ? 48 8B C5 48 BA ? ? ? ? ? ? ? ? 48 C1 E0 ? 48 8B F5 48 8B C8 48 33 0F 48 23 CA 48 33 C8 48 89 0F 45 85 F6 75 ? 48 83 E1 ? 48 89 0F 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 41 83 FE ? 75 ? 48 83 C9 ? 48 89 0F 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 48 C7 C1 ? ? ? ? B8 ? ? ? ? 48 F7 E6 48 0F 42 C1 48 8B C8 E8 ? ? ? ? 48 8B 94 24 ? ? ? ? 4C 8D 04 AD ? ? ? ? 48 8B C8 48 8B D8 E8 ? ? ? ? 48 83 0F ? 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 44 0F B6 84 24 ? ? ? ? 33 F6 4C 89 A4 24 ? ? ? ? 44 8B CD C6 44 24 ? ? B2 ? 89 74 24 ? 4C 89 6C 24 ? 48 89 74 24 ? 4C 89 7C 24 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 17 48 8B CA 48 C1 E9 ? 0F B6 C1 24 ? 3C ? 0F 84 ? ? ? ? 80 F9 ? 0F 84 ? ? ? ? 0F B6 C1 83 C0 ? 3D ? ? ? ? 0F 87 ? ? ? ? 4C 8D 05 ? ? ? ? 48 98 41 0F B6 84 00 ? ? ? ? 41 8B 8C 80 ? ? ? ? 49 03 C8 FF E1 48 8B 05 ? ? ? ? 48 8B 57 ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 40 38 73 ? 74 ? 4C 8B 73 ? EB ? 4C 8D 73 ? 8B EE 39 73 ? 7E ? 0F 1F 00 49 8B 16 48 8B CF E8 ? ? ? ? FF C5 4D 8D 76 ? 3B 6B ? 7C ? 48 8B 07 A8 ? 75 ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? E9 ? ? ? ? A8 ? 0F 85 ? ? ? ? 48 C1 E8 ? 48 8B CF 0F B7 C0 48 83 C0 ? 48 C1 E0 ? 48 2B C8 0F 84 ? ? ? ? 48 8B 09 48 85 C9 0F 84 ? ? ? ? 44 8B 81 ? ? ? ? 41 8B D0 81 E2 ? ? ? ? 76 ? 48 3B 99 ? ? ? ? 72 ? 48 63 81 ? ? ? ? 48 03 81 ? ? ? ? 48 3B D8 72 ? 39 33 0F 8C ? ? ? ? 85 D2 74 ? 41 F7 C0 ? ? ? ? 74 ? 48 3B 99 ? ? ? ? 72 ? 48 8B 91 ? ? ? ? EB ? 48 8B D6 48 63 81 ? ? ? ? 48 03 C2 48 3B D8 73 ? 40 38 73 ? 0F 84 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? EB ? 48 8D 81 ? ? ? ? 48 8B D3 4C 8D 89 ? ? ? ? 48 89 44 24 ? 4C 8D 81 ? ? ? ? E8 ? ? ? ? EB ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? 4C 8B C3 48 8B 05 ? ? ? ? B2 ? 48 8B 08 48 8B 01 FF 50 ? 8B AC 24 ? ? ? ? 48 83 27 ? 48 8B 9C 24 ? ? ? ? 48 81 27 ? ? ? ? 45 33 C9 48 83 0F ? 45 33 C0 8B D5 48 89 77 ? 48 8B CF 40 88 74 24 ? E8 ? ? ? ? 48 8B 17 48 8B C2 25 ? ? ? ? 48 3D ? ? ? ? 74 ? 48 81 E2 ? ? ? ? 48 81 CA ? ? ? ? 48 89 17 48 8B C2 25 ? ? ? ? 48 3D ? ? ? ? 74 ? 48 81 E2 ? ? ? ? 48 81 CA ? ? ? ? 48 89 17 48 8B CF E8 ? ? ? ? 44 0F B6 AC 24 ? ? ? ? 44 8B C5 44 0F B6 A4 24 ? ? ? ? 45 0F B6 CD 48 8B 4F ? 48 8B D7 44 88 64 24 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 2F 48 8B C5 48 C1 E8 ? 3C ? 0F 85 ? ? ? ? 48 8B 47 ? 4C 8D 78 ? 40 38 70 ? 74 ? 4D 8B 3F 8B 68 ? E9 ? ? ? ? 48 8B 57 ? 48 85 D2 0F 84 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 48 8B 05 ? ? ? ? 48 8B D3 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 45 33 C9 4C 8B C7 33 D2 48 8B CB E8 ? ? ? ? 48 8B 07 A8 ? 75 ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? E9 ? ? ? ? A8 ? 0F 85 ? ? ? ? 48 C1 E8 ? 48 8B CF 0F B7 C0 48 83 C0 ? 48 C1 E0 ? 48 2B C8 0F 84 ? ? ? ? 48 8B 09 48 85 C9 0F 84 ? ? ? ? 44 8B 81 ? ? ? ? 41 8B D0 81 E2 ? ? ? ? 76 ? 48 3B 99 ? ? ? ? 72 ? 48 63 81 ? ? ? ? 48 03 81 ? ? ? ? 48 3B D8 72 ? 39 33 7C ? 85 D2 74 ? 41 F7 C0 ? ? ? ? 74 ? 48 3B 99 ? ? ? ? 72 ? 48 8B 91 ? ? ? ? EB ? 48 8B D6 48 63 81 ? ? ? ? 48 03 C2 48 3B D8 73 ? 48 8B D1 48 8B CB E8 ? ? ? ? E9 ? ? ? ? 48 8D 81 ? ? ? ? 48 8B D3 4C 8D 89 ? ? ? ? 48 89 44 24 ? 4C 8D 81 ? ? ? ? E8 ? ? ? ? E9 ? ? ? ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? 4C 8B C3 48 8B 05 ? ? ? ? B2 ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? F6 C2 ? 74 ? 48 8B 4F ? E8 ? ? ? ? 48 B8 ? ? ? ? ? ? ? ? 48 89 77 ? 48 21 07 E9 ? ? ? ? 24 ? 4C 8B FE 3C ? 75 ? 48 C1 ED ? 83 E5 ? EB ? 8B EE 8B FE 4C 8B F3 66 0F 1F 44 00 ? 3B FD 74 ? 48 63 C7 45 33 C9 40 88 74 24 ? 45 0F B6 C4 89 74 24 ? 41 0F B6 D5 48 89 74 24 ? 49 8B 1C C7 48 8B CB E8 ? ? ? ? F3 41 0F 10 06"
     },
     "KeyValues3::AllocArray_Int32_Internal": {
       "library": "server",
       "linux": "55 89 F0 44 89 CE 48 89 E5 41 57 41 56 41 55 49 89 D5 41 54 41 89 CC 53 48 89 FB 48 83 EC ? 44 8B 55 ? 44 8B 75 ? 0F B6 55 ? 45 89 D7 45 84 C0 74 ? 83 F8 ? 7F ? 41 89 C6 44 89 C7 41 83 E6 ? 85 C9 0F 85 ? ? ? ? 45 84 C9 0F 84 ? ? ? ? 48 83 EC ? 89 C1 45 31 C9 6A ? 45 31 C0 48 89 DF 41 C1 E6 ? E8 ? ? ? ? 0F B6 43 ? 83 E0 ? 44 09 F0 88 43 ? 58 5A 80 23 ? 4C 89 6B ? 48 8D 65 ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 66 0F 1F 44 00 ? 83 F8 ? 7F ? 45 84 C9 0F 85 ? ? ? ? 48 83 EC ? 89 C1 44 89 55 ? 45 31 C9 6A ? 45 31 C0 BE ? ? ? ? 48 89 DF 89 45 ? E8 ? ? ? ? 44 8B 55 ? 41 0F B6 CE 48 89 DF 8B 75 ? 89 4D ? 41 0F B6 D2 E8 ? ? ? ? 48 8D 7D ? 48 89 DE E8 ? ? ? ? 48 63 55 ? 59 48 8B 45 ? 5E 85 D2 74 ? 48 89 C3 4D 89 EE 48 8D 04 D0 48 89 45 ? 48 8B 3B 44 89 FE 48 83 C3 ? 49 83 C6 ? 8B 55 ? 48 89 7D ? E8 ? ? ? ? 49 63 56",
-      "windows": "44 89 4C 24 20 4C 89 44 24 18 89 54 24 10 53 55 56 57 41 56 48 83 EC 50 0F B6 84 24 ? ? ? ? 45 8B F1 48 63 EA 49 8B D8 0F B6 94 24 ? ? ? ? 48 8B F9 84 C0 0F 84 ? ? ? ? 83 FD 02 0F 8F ? ? ? ? 45 85 C9 75 ? 84 D2 0F 85 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 30 00 44 8B CD 89 74 24 28 0F B6 D0 48 89 74 24 20 E8 EA E3 00 00"
+      "windows": "44 89 4C 24 ? 4C 89 44 24 ? 89 54 24 ? 53 55 56 57 41 56 48 83 EC ? 0F B6 84 24 ? ? ? ? 45 8B F1 48 63 EA 49 8B D8 0F B6 94 24 ? ? ? ? 48 8B F9 84 C0 0F 84 ? ? ? ? 83 FD ? 0F 8F ? ? ? ? 45 85 C9 75 ? 84 D2 0F 85 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 ? ? 44 8B CD 89 74 24 ? 0F B6 D0 48 89 74 24 ? E8 ? ? ? ? 48 BA ? ? ? ? ? ? ? ? 48 89 77 ? 48 8B C5 4C 8D 04 AD ? ? ? ? 48 C1 E0 ? 48 8B C8 48 33 0F 48 23 CA 48 8B D3 48 33 C8 48 83 E1 ? 48 89 0F 48 8D 4F ? E8 ? ? ? ? 41 83 FE ? 0F 85 ? ? ? ? 48 8B CB 48 83 C4 ? 41 5E 5F 5E 5D 5B E9 ? ? ? ? 83 FD ? 0F 8D ? ? ? ? 84 D2 0F 84 ? ? ? ? 44 0F B6 84 24 ? ? ? ? 33 F6 C6 44 24 ? ? 44 8B CD 89 74 24 ? 48 89 74 24 ? E8 ? ? ? ? 48 8B C5 48 BA ? ? ? ? ? ? ? ? 48 C1 E0 ? 48 8B F5 48 8B C8 48 33 0F 48 23 CA 48 33 C8 48 89 0F 45 85 F6 75 ? 48 83 E1 ? 48 89 0F 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 41 83 FE ? 75 ? 48 83 C9 ? 48 89 0F 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 48 C7 C1 ? ? ? ? B8 ? ? ? ? 48 F7 E6 48 0F 42 C1 48 8B C8 E8 ? ? ? ? 48 8B 94 24 ? ? ? ? 4C 8D 04 AD ? ? ? ? 48 8B C8 48 8B D8 E8 ? ? ? ? 48 83 0F ? 48 89 5F ? 48 83 C4 ? 41 5E 5F 5E 5D 5B C3 44 0F B6 84 24 ? ? ? ? 33 F6 4C 89 A4 24 ? ? ? ? 44 8B CD C6 44 24 ? ? B2 ? 89 74 24 ? 4C 89 6C 24 ? 48 89 74 24 ? 4C 89 7C 24 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 17 48 8B CA 48 C1 E9 ? 0F B6 C1 24 ? 3C ? 0F 84 ? ? ? ? 80 F9 ? 0F 84 ? ? ? ? 0F B6 C1 83 C0 ? 3D ? ? ? ? 0F 87 ? ? ? ? 4C 8D 05 ? ? ? ? 48 98 41 0F B6 84 00 ? ? ? ? 41 8B 8C 80 ? ? ? ? 49 03 C8 FF E1 48 8B 05 ? ? ? ? 48 8B 57 ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 40 38 73 ? 74 ? 4C 8B 73 ? EB ? 4C 8D 73 ? 8B EE 39 73 ? 7E ? 0F 1F 00 49 8B 16 48 8B CF E8 ? ? ? ? FF C5 4D 8D 76 ? 3B 6B ? 7C ? 48 8B 07 A8 ? 75 ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? E9 ? ? ? ? A8 ? 0F 85 ? ? ? ? 48 C1 E8 ? 48 8B CF 0F B7 C0 48 83 C0 ? 48 C1 E0 ? 48 2B C8 0F 84 ? ? ? ? 48 8B 09 48 85 C9 0F 84 ? ? ? ? 44 8B 81 ? ? ? ? 41 8B D0 81 E2 ? ? ? ? 76 ? 48 3B 99 ? ? ? ? 72 ? 48 63 81 ? ? ? ? 48 03 81 ? ? ? ? 48 3B D8 72 ? 39 33 0F 8C ? ? ? ? 85 D2 74 ? 41 F7 C0 ? ? ? ? 74 ? 48 3B 99 ? ? ? ? 72 ? 48 8B 91 ? ? ? ? EB ? 48 8B D6 48 63 81 ? ? ? ? 48 03 C2 48 3B D8 73 ? 40 38 73 ? 0F 84 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? EB ? 48 8D 81 ? ? ? ? 48 8B D3 4C 8D 89 ? ? ? ? 48 89 44 24 ? 4C 8D 81 ? ? ? ? E8 ? ? ? ? EB ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? 4C 8B C3 48 8B 05 ? ? ? ? B2 ? 48 8B 08 48 8B 01 FF 50 ? 8B AC 24 ? ? ? ? 48 83 27 ? 48 8B 9C 24 ? ? ? ? 48 81 27 ? ? ? ? 45 33 C9 48 83 0F ? 45 33 C0 8B D5 48 89 77 ? 48 8B CF 40 88 74 24 ? E8 ? ? ? ? 48 8B 17 48 8B C2 25 ? ? ? ? 48 3D ? ? ? ? 74 ? 48 81 E2 ? ? ? ? 48 81 CA ? ? ? ? 48 89 17 48 8B C2 25 ? ? ? ? 48 3D ? ? ? ? 74 ? 48 81 E2 ? ? ? ? 48 81 CA ? ? ? ? 48 89 17 48 8B CF E8 ? ? ? ? 44 0F B6 AC 24 ? ? ? ? 44 8B C5 44 0F B6 A4 24 ? ? ? ? 45 0F B6 CD 48 8B 4F ? 48 8B D7 44 88 64 24 ? E8 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 2F 48 8B C5 48 C1 E8 ? 3C ? 0F 85 ? ? ? ? 48 8B 47 ? 4C 8D 78 ? 40 38 70 ? 74 ? 4D 8B 3F 8B 68 ? E9 ? ? ? ? 48 8B 57 ? 48 85 D2 0F 84 ? ? ? ? 48 8B 05 ? ? ? ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 48 8B 05 ? ? ? ? 48 8B D3 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? 48 8B 5F ? 48 85 DB 0F 84 ? ? ? ? 45 33 C9 4C 8B C7 33 D2 48 8B CB E8 ? ? ? ? 48 8B 07 A8 ? 75 ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? E9 ? ? ? ? A8 ? 0F 85 ? ? ? ? 48 C1 E8 ? 48 8B CF 0F B7 C0 48 83 C0 ? 48 C1 E0 ? 48 2B C8 0F 84 ? ? ? ? 48 8B 09 48 85 C9 0F 84 ? ? ? ? 44 8B 81 ? ? ? ? 41 8B D0 81 E2 ? ? ? ? 76 ? 48 3B 99 ? ? ? ? 72 ? 48 63 81 ? ? ? ? 48 03 81 ? ? ? ? 48 3B D8 72 ? 39 33 7C ? 85 D2 74 ? 41 F7 C0 ? ? ? ? 74 ? 48 3B 99 ? ? ? ? 72 ? 48 8B 91 ? ? ? ? EB ? 48 8B D6 48 63 81 ? ? ? ? 48 03 C2 48 3B D8 73 ? 48 8B D1 48 8B CB E8 ? ? ? ? E9 ? ? ? ? 48 8D 81 ? ? ? ? 48 8B D3 4C 8D 89 ? ? ? ? 48 89 44 24 ? 4C 8D 81 ? ? ? ? E8 ? ? ? ? E9 ? ? ? ? 40 38 73 ? 74 ? 48 8B 05 ? ? ? ? 48 8B 53 ? 48 8B 08 48 8B 01 FF 50 ? 0F B6 43 ? 89 43 ? 40 88 73 ? 89 73 ? 4C 8B C3 48 8B 05 ? ? ? ? B2 ? 48 8B 08 48 8B 01 FF 50 ? E9 ? ? ? ? F6 C2 ? 74 ? 48 8B 4F ? E8 ? ? ? ? 48 B8 ? ? ? ? ? ? ? ? 48 89 77 ? 48 21 07 E9 ? ? ? ? 24 ? 4C 8B FE 3C ? 75 ? 48 C1 ED ? 83 E5 ? EB ? 8B EE 8B FE 4C 8B F3 66 0F 1F 44 00 ? 3B FD 74 ? 48 63 C7 45 33 C9 40 88 74 24 ? 45 0F B6 C4 89 74 24 ? 41 0F B6 D5 48 89 74 24 ? 49 8B 1C C7 48 8B CB E8 ? ? ? ? 49 63 06"
     },
     "KeyValues3::FindMember": {
       "library": "server",
@@ -945,7 +944,7 @@
     },
     "ScriptPrintMessageChatAll": {
       "library": "server",
-      "linux": "48 89 FE 45 31 C9 45 31 C0 31 C9 31 D2 BF ? ? ? ? E9 ? ? ? ? CC CC CC CC CC CC CC CC CC 80 7F ? ? 75 ? C3",
+      "linux": "48 89 FE 45 31 C9 45 31 C0 31 C9 31 D2 BF 03 00 00 00 E9",
       "windows": "48 83 EC 38 33 C0 48 8B D1 48 89 44 24 ? 45 33 C9 45 33 C0 48 89 44 24 ? B9 ? ? ? ? E8 ? ? ? ? 48 83 C4 38 C3 CC CC CC CC CC CC CC CC 48 89 5C 24 ?"
     },
     "ScriptSetConVarDouble": {

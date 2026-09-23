@@ -209,7 +209,7 @@ BeginMemberHookScope(IGameEventSystem)
             return PostEventAbstract(pGameEventSystem, nSlot, bLocalOnly, nClientCount, clients, pEvent, pData, nSize, bufType);
 
         const auto pInfo  = pEvent->GetNetMessageInfo();
-        const auto nMsgId = pInfo->m_MessageId;
+        const auto nMsgId = static_cast<uint16_t>(pInfo->m_MessageId);
         const auto pMsg   = static_cast<const google::protobuf::Message*>(pData->AsProto());
 
         switch (nMsgId)

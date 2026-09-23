@@ -295,6 +295,7 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
 static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity);
+static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon);
 
 static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
 {
@@ -314,6 +315,12 @@ static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
         return nullptr;
 
     return pEntity;
+}
+
+static const char* ResolvePulseWeapon(const void* pEntityArgument)
+{
+    const auto ppszWeapon = *reinterpret_cast<const char* const* const*>(static_cast<const char*>(pEntityArgument) + 0x10);
+    return ppszWeapon ? *ppszWeapon : nullptr;
 }
 
 static CCSPlayerPawn* ResolvePulsePlayer(const void* pContext)
@@ -436,7 +443,7 @@ BeginMemberHookScope(CGamePlayerEquip)
 
         if (const auto pPlayer = ResolvePulsePlayer(pContext))
         {
-            if (EquipPlayerItem(pPlayer, pEntity))
+            if (TriggerForPlayer(pEntity, pPlayer, ResolvePulseWeapon(pEntityArgument)))
                 return 0;
         }
         return PulseTriggerForActivatedPlayer(pArg1, pArg2, pArg3, pContext, pEntityArgument);
@@ -573,6 +580,59 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
         {
             WARN("game_player_equip: GiveNamedItem with unknown type '%s'\n", name.c_str());
         }
+    }
+
+    return true;
+}
+
+static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon)
+{
+    if (!pszWeapon || strnlen(pszWeapon, 5) <= 4) // 'weapon_' or 'item_'
+        return EquipPlayerItem(pPlayer, pEntity);
+
+    const auto pController = pPlayer->GetController<CCSPlayerController*>();
+    if (!pController)
+        return true;
+
+    const auto data = s_WeaponMap.find(pszWeapon);
+    if (data == s_WeaponMap.end())
+        return true;
+
+    const auto flags = pEntity->GetSpawnFlags();
+
+    if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
+    {
+        pPlayer->RemoveAllItems(true);
+    }
+    else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
+    {
+        if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_GRENADES && data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
+        {
+            CBaseWeapon* pWeapon = nullptr;
+            while ((pWeapon = pPlayer->GetWeaponBySlot(data->second.m_eSlot)) != nullptr)
+            {
+                pPlayer->RemovePlayerItem(pWeapon);
+            }
+        }
+    }
+
+    if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
+    {
+        const auto team = pPlayer->GetTeam();
+        if (data->second.m_iTeamNum != team)
+        {
+            pPlayer->TransientChangeTeam(data->second.m_iTeamNum);
+            pPlayer->GiveNamedItem(pszWeapon);
+            pPlayer->TransientChangeTeam(team);
+        }
+        else
+        {
+            pPlayer->GiveNamedItem(pszWeapon);
+        }
+    }
+    else
+    {
+        pPlayer->GiveNamedItem(pszWeapon);
     }
 
     return true;

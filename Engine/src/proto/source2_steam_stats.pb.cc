@@ -141,7 +141,19 @@ PROTOBUF_CONSTEXPR CMsgSource2NetworkFlowQuality::CMsgSource2NetworkFlowQuality(
   , /*decltype(_impl_.packet_misdelivery_rate_p95_x4_)*/0u
   , /*decltype(_impl_.net_ping_p5_)*/0u
   , /*decltype(_impl_.net_ping_p50_)*/0u
-  , /*decltype(_impl_.net_ping_p95_)*/0u} {}
+  , /*decltype(_impl_.net_ping_p95_)*/0u
+  , /*decltype(_impl_.msgproc_usec_p50_)*/0u
+  , /*decltype(_impl_.msgproc_usec_p95_)*/0u
+  , /*decltype(_impl_.msgproc_usec_p99_)*/0u
+  , /*decltype(_impl_.msgproc_usec_max_)*/0u
+  , /*decltype(_impl_.msgproc_usec_avg_p50_)*/0u
+  , /*decltype(_impl_.msgproc_usec_avg_p95_)*/0u
+  , /*decltype(_impl_.msgproc_usec_avg_p99_)*/0u
+  , /*decltype(_impl_.msgproc_usec_avg_max_)*/0u
+  , /*decltype(_impl_.queuedmsgs_p50_)*/0u
+  , /*decltype(_impl_.queuedmsgs_p95_)*/0u
+  , /*decltype(_impl_.queuedmsgs_p99_)*/0u
+  , /*decltype(_impl_.queuedmsgs_max_)*/0u} {}
 struct CMsgSource2NetworkFlowQualityDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgSource2NetworkFlowQualityDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -521,6 +533,18 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.net_ping_p5_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.net_ping_p50_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.net_ping_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_p50_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_max_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_avg_p50_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_avg_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_avg_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.msgproc_usec_avg_max_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.queuedmsgs_p50_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.queuedmsgs_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.queuedmsgs_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.queuedmsgs_max_),
   1,
   0,
   3,
@@ -565,6 +589,18 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   41,
   42,
   43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
+  55,
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PerfIntervalSample_Tag, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PerfIntervalSample_Tag, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -768,19 +804,19 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 0, 20, -1, sizeof(::CMsgSource2SystemSpecs)},
   { 34, 58, -1, sizeof(::CMsgSource2VProfLiteReportItem)},
   { 76, 85, -1, sizeof(::CMsgSource2VProfLiteReport)},
-  { 88, 138, -1, sizeof(::CMsgSource2NetworkFlowQuality)},
-  { 182, 190, -1, sizeof(::CMsgSource2PerfIntervalSample_Tag)},
-  { 192, 204, -1, sizeof(::CMsgSource2PerfIntervalSample)},
-  { 210, 223, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification_Client)},
-  { 230, 243, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
-  { 250, 258, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
-  { 260, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
-  { 267, 293, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
-  { 313, 321, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
-  { 323, 335, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
-  { 341, 350, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
-  { 353, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
-  { 360, 373, -1, sizeof(::CUserMessage_UserSentBugBug)},
+  { 88, 150, -1, sizeof(::CMsgSource2NetworkFlowQuality)},
+  { 206, 214, -1, sizeof(::CMsgSource2PerfIntervalSample_Tag)},
+  { 216, 228, -1, sizeof(::CMsgSource2PerfIntervalSample)},
+  { 234, 247, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification_Client)},
+  { 254, 267, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
+  { 274, 282, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
+  { 284, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
+  { 291, 317, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
+  { 337, 345, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
+  { 347, 359, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
+  { 365, 374, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
+  { 377, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
+  { 384, 397, -1, sizeof(::CUserMessage_UserSentBugBug)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -830,7 +866,7 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   "rce2VProfLiteReport\022.\n\005total\030\001 \001(\0132\037.CMs"
   "gSource2VProfLiteReportItem\022.\n\005items\030\002 \003"
   "(\0132\037.CMsgSource2VProfLiteReportItem\022\030\n\020d"
-  "iscarded_frames\030\003 \001(\r\"\360\t\n\035CMsgSource2Net"
+  "iscarded_frames\030\003 \001(\r\"\260\014\n\035CMsgSource2Net"
   "workFlowQuality\022\020\n\010duration\030\001 \001(\r\022\023\n\013byt"
   "es_total\030\005 \001(\004\022\034\n\024bytes_total_reliable\030\006"
   " \001(\004\022\031\n\021bytes_total_voice\030\007 \001(\004\022\025\n\rbytes"
@@ -862,7 +898,15 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   "ivery_rate_p50_x4\030J \001(\r\022&\n\036packet_misdel"
   "ivery_rate_p95_x4\030K \001(\r\022\023\n\013net_ping_p5\030P"
   " \001(\r\022\024\n\014net_ping_p50\030Q \001(\r\022\024\n\014net_ping_p"
-  "95\030R \001(\r\"\373\001\n\035CMsgSource2PerfIntervalSamp"
+  "95\030R \001(\r\022\030\n\020msgproc_usec_p50\030Z \001(\r\022\030\n\020ms"
+  "gproc_usec_p95\030[ \001(\r\022\030\n\020msgproc_usec_p99"
+  "\030\\ \001(\r\022\030\n\020msgproc_usec_max\030] \001(\r\022\034\n\024msgp"
+  "roc_usec_avg_p50\030^ \001(\r\022\034\n\024msgproc_usec_a"
+  "vg_p95\030_ \001(\r\022\034\n\024msgproc_usec_avg_p99\030` \001"
+  "(\r\022\034\n\024msgproc_usec_avg_max\030a \001(\r\022\026\n\016queu"
+  "edmsgs_p50\030d \001(\r\022\026\n\016queuedmsgs_p95\030e \001(\r"
+  "\022\026\n\016queuedmsgs_p99\030f \001(\r\022\026\n\016queuedmsgs_m"
+  "ax\030g \001(\r\"\373\001\n\035CMsgSource2PerfIntervalSamp"
   "le\022\031\n\021frame_time_max_ms\030\001 \001(\002\022\031\n\021frame_t"
   "ime_avg_ms\030\002 \001(\002\022\031\n\021frame_time_min_ms\030\003 "
   "\001(\002\022\023\n\013frame_count\030\004 \001(\005\022\033\n\023frame_time_t"
@@ -937,7 +981,7 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   ;
 static ::_pbi::once_flag descriptor_table_source2_5fsteam_5fstats_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_source2_5fsteam_5fstats_2eproto = {
-    false, false, 5214, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
+    false, false, 5534, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
     "source2_steam_stats.proto",
     &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 16,
     schemas, file_default_instances, TableStruct_source2_5fsteam_5fstats_2eproto::offsets,
@@ -2876,6 +2920,42 @@ class CMsgSource2NetworkFlowQuality::_Internal {
   static void set_has_net_ping_p95(HasBits* has_bits) {
     (*has_bits)[1] |= 2048u;
   }
+  static void set_has_msgproc_usec_p50(HasBits* has_bits) {
+    (*has_bits)[1] |= 4096u;
+  }
+  static void set_has_msgproc_usec_p95(HasBits* has_bits) {
+    (*has_bits)[1] |= 8192u;
+  }
+  static void set_has_msgproc_usec_p99(HasBits* has_bits) {
+    (*has_bits)[1] |= 16384u;
+  }
+  static void set_has_msgproc_usec_max(HasBits* has_bits) {
+    (*has_bits)[1] |= 32768u;
+  }
+  static void set_has_msgproc_usec_avg_p50(HasBits* has_bits) {
+    (*has_bits)[1] |= 65536u;
+  }
+  static void set_has_msgproc_usec_avg_p95(HasBits* has_bits) {
+    (*has_bits)[1] |= 131072u;
+  }
+  static void set_has_msgproc_usec_avg_p99(HasBits* has_bits) {
+    (*has_bits)[1] |= 262144u;
+  }
+  static void set_has_msgproc_usec_avg_max(HasBits* has_bits) {
+    (*has_bits)[1] |= 524288u;
+  }
+  static void set_has_queuedmsgs_p50(HasBits* has_bits) {
+    (*has_bits)[1] |= 1048576u;
+  }
+  static void set_has_queuedmsgs_p95(HasBits* has_bits) {
+    (*has_bits)[1] |= 2097152u;
+  }
+  static void set_has_queuedmsgs_p99(HasBits* has_bits) {
+    (*has_bits)[1] |= 4194304u;
+  }
+  static void set_has_queuedmsgs_max(HasBits* has_bits) {
+    (*has_bits)[1] |= 8388608u;
+  }
 };
 
 CMsgSource2NetworkFlowQuality::CMsgSource2NetworkFlowQuality(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -2933,12 +3013,24 @@ CMsgSource2NetworkFlowQuality::CMsgSource2NetworkFlowQuality(const CMsgSource2Ne
     , decltype(_impl_.packet_misdelivery_rate_p95_x4_){}
     , decltype(_impl_.net_ping_p5_){}
     , decltype(_impl_.net_ping_p50_){}
-    , decltype(_impl_.net_ping_p95_){}};
+    , decltype(_impl_.net_ping_p95_){}
+    , decltype(_impl_.msgproc_usec_p50_){}
+    , decltype(_impl_.msgproc_usec_p95_){}
+    , decltype(_impl_.msgproc_usec_p99_){}
+    , decltype(_impl_.msgproc_usec_max_){}
+    , decltype(_impl_.msgproc_usec_avg_p50_){}
+    , decltype(_impl_.msgproc_usec_avg_p95_){}
+    , decltype(_impl_.msgproc_usec_avg_p99_){}
+    , decltype(_impl_.msgproc_usec_avg_max_){}
+    , decltype(_impl_.queuedmsgs_p50_){}
+    , decltype(_impl_.queuedmsgs_p95_){}
+    , decltype(_impl_.queuedmsgs_p99_){}
+    , decltype(_impl_.queuedmsgs_max_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.bytes_total_, &from._impl_.bytes_total_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.net_ping_p95_) -
-    reinterpret_cast<char*>(&_impl_.bytes_total_)) + sizeof(_impl_.net_ping_p95_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.queuedmsgs_max_) -
+    reinterpret_cast<char*>(&_impl_.bytes_total_)) + sizeof(_impl_.queuedmsgs_max_));
   // @@protoc_insertion_point(copy_constructor:CMsgSource2NetworkFlowQuality)
 }
 
@@ -2993,6 +3085,18 @@ inline void CMsgSource2NetworkFlowQuality::SharedCtor(
     , decltype(_impl_.net_ping_p5_){0u}
     , decltype(_impl_.net_ping_p50_){0u}
     , decltype(_impl_.net_ping_p95_){0u}
+    , decltype(_impl_.msgproc_usec_p50_){0u}
+    , decltype(_impl_.msgproc_usec_p95_){0u}
+    , decltype(_impl_.msgproc_usec_p99_){0u}
+    , decltype(_impl_.msgproc_usec_max_){0u}
+    , decltype(_impl_.msgproc_usec_avg_p50_){0u}
+    , decltype(_impl_.msgproc_usec_avg_p95_){0u}
+    , decltype(_impl_.msgproc_usec_avg_p99_){0u}
+    , decltype(_impl_.msgproc_usec_avg_max_){0u}
+    , decltype(_impl_.queuedmsgs_p50_){0u}
+    , decltype(_impl_.queuedmsgs_p95_){0u}
+    , decltype(_impl_.queuedmsgs_p99_){0u}
+    , decltype(_impl_.queuedmsgs_max_){0u}
   };
 }
 
@@ -3046,10 +3150,15 @@ void CMsgSource2NetworkFlowQuality::Clear() {
         reinterpret_cast<char*>(&_impl_.packet_misdelivery_rate_p50_x4_) -
         reinterpret_cast<char*>(&_impl_.recvmargin_p50_)) + sizeof(_impl_.packet_misdelivery_rate_p50_x4_));
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     ::memset(&_impl_.packet_misdelivery_rate_p95_x4_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.net_ping_p95_) -
-        reinterpret_cast<char*>(&_impl_.packet_misdelivery_rate_p95_x4_)) + sizeof(_impl_.net_ping_p95_));
+        reinterpret_cast<char*>(&_impl_.msgproc_usec_max_) -
+        reinterpret_cast<char*>(&_impl_.packet_misdelivery_rate_p95_x4_)) + sizeof(_impl_.msgproc_usec_max_));
+  }
+  if (cached_has_bits & 0x00ff0000u) {
+    ::memset(&_impl_.msgproc_usec_avg_p50_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.queuedmsgs_max_) -
+        reinterpret_cast<char*>(&_impl_.msgproc_usec_avg_p50_)) + sizeof(_impl_.queuedmsgs_max_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -3457,6 +3566,114 @@ const char* CMsgSource2NetworkFlowQuality::_InternalParse(const char* ptr, ::_pb
         } else
           goto handle_unusual;
         continue;
+      // optional uint32 msgproc_usec_p50 = 90;
+      case 90:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 208)) {
+          _Internal::set_has_msgproc_usec_p50(&_impl_._has_bits_);
+          _impl_.msgproc_usec_p50_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_p95 = 91;
+      case 91:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 216)) {
+          _Internal::set_has_msgproc_usec_p95(&_impl_._has_bits_);
+          _impl_.msgproc_usec_p95_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_p99 = 92;
+      case 92:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 224)) {
+          _Internal::set_has_msgproc_usec_p99(&_impl_._has_bits_);
+          _impl_.msgproc_usec_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_max = 93;
+      case 93:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 232)) {
+          _Internal::set_has_msgproc_usec_max(&_impl_._has_bits_);
+          _impl_.msgproc_usec_max_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_avg_p50 = 94;
+      case 94:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 240)) {
+          _Internal::set_has_msgproc_usec_avg_p50(&_impl_._has_bits_);
+          _impl_.msgproc_usec_avg_p50_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_avg_p95 = 95;
+      case 95:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 248)) {
+          _Internal::set_has_msgproc_usec_avg_p95(&_impl_._has_bits_);
+          _impl_.msgproc_usec_avg_p95_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_avg_p99 = 96;
+      case 96:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 0)) {
+          _Internal::set_has_msgproc_usec_avg_p99(&_impl_._has_bits_);
+          _impl_.msgproc_usec_avg_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 msgproc_usec_avg_max = 97;
+      case 97:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _Internal::set_has_msgproc_usec_avg_max(&_impl_._has_bits_);
+          _impl_.msgproc_usec_avg_max_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 queuedmsgs_p50 = 100;
+      case 100:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _Internal::set_has_queuedmsgs_p50(&_impl_._has_bits_);
+          _impl_.queuedmsgs_p50_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 queuedmsgs_p95 = 101;
+      case 101:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _Internal::set_has_queuedmsgs_p95(&_impl_._has_bits_);
+          _impl_.queuedmsgs_p95_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 queuedmsgs_p99 = 102;
+      case 102:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _Internal::set_has_queuedmsgs_p99(&_impl_._has_bits_);
+          _impl_.queuedmsgs_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 queuedmsgs_max = 103;
+      case 103:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
+          _Internal::set_has_queuedmsgs_max(&_impl_._has_bits_);
+          _impl_.queuedmsgs_max_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -3750,6 +3967,78 @@ uint8_t* CMsgSource2NetworkFlowQuality::_InternalSerialize(
   if (cached_has_bits & 0x00000800u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(82, this->_internal_net_ping_p95(), target);
+  }
+
+  // optional uint32 msgproc_usec_p50 = 90;
+  if (cached_has_bits & 0x00001000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(90, this->_internal_msgproc_usec_p50(), target);
+  }
+
+  // optional uint32 msgproc_usec_p95 = 91;
+  if (cached_has_bits & 0x00002000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(91, this->_internal_msgproc_usec_p95(), target);
+  }
+
+  // optional uint32 msgproc_usec_p99 = 92;
+  if (cached_has_bits & 0x00004000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(92, this->_internal_msgproc_usec_p99(), target);
+  }
+
+  // optional uint32 msgproc_usec_max = 93;
+  if (cached_has_bits & 0x00008000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(93, this->_internal_msgproc_usec_max(), target);
+  }
+
+  // optional uint32 msgproc_usec_avg_p50 = 94;
+  if (cached_has_bits & 0x00010000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(94, this->_internal_msgproc_usec_avg_p50(), target);
+  }
+
+  // optional uint32 msgproc_usec_avg_p95 = 95;
+  if (cached_has_bits & 0x00020000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(95, this->_internal_msgproc_usec_avg_p95(), target);
+  }
+
+  // optional uint32 msgproc_usec_avg_p99 = 96;
+  if (cached_has_bits & 0x00040000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(96, this->_internal_msgproc_usec_avg_p99(), target);
+  }
+
+  // optional uint32 msgproc_usec_avg_max = 97;
+  if (cached_has_bits & 0x00080000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(97, this->_internal_msgproc_usec_avg_max(), target);
+  }
+
+  // optional uint32 queuedmsgs_p50 = 100;
+  if (cached_has_bits & 0x00100000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(100, this->_internal_queuedmsgs_p50(), target);
+  }
+
+  // optional uint32 queuedmsgs_p95 = 101;
+  if (cached_has_bits & 0x00200000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(101, this->_internal_queuedmsgs_p95(), target);
+  }
+
+  // optional uint32 queuedmsgs_p99 = 102;
+  if (cached_has_bits & 0x00400000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(102, this->_internal_queuedmsgs_p99(), target);
+  }
+
+  // optional uint32 queuedmsgs_max = 103;
+  if (cached_has_bits & 0x00800000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(103, this->_internal_queuedmsgs_max(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -4048,7 +4337,7 @@ size_t CMsgSource2NetworkFlowQuality::ByteSizeLong() const {
     }
 
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     // optional uint32 packet_misdelivery_rate_p95_x4 = 75;
     if (cached_has_bits & 0x00000100u) {
       total_size += 2 +
@@ -4075,6 +4364,92 @@ size_t CMsgSource2NetworkFlowQuality::ByteSizeLong() const {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_net_ping_p95());
+    }
+
+    // optional uint32 msgproc_usec_p50 = 90;
+    if (cached_has_bits & 0x00001000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_p50());
+    }
+
+    // optional uint32 msgproc_usec_p95 = 91;
+    if (cached_has_bits & 0x00002000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_p95());
+    }
+
+    // optional uint32 msgproc_usec_p99 = 92;
+    if (cached_has_bits & 0x00004000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_p99());
+    }
+
+    // optional uint32 msgproc_usec_max = 93;
+    if (cached_has_bits & 0x00008000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_max());
+    }
+
+  }
+  if (cached_has_bits & 0x00ff0000u) {
+    // optional uint32 msgproc_usec_avg_p50 = 94;
+    if (cached_has_bits & 0x00010000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_avg_p50());
+    }
+
+    // optional uint32 msgproc_usec_avg_p95 = 95;
+    if (cached_has_bits & 0x00020000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_avg_p95());
+    }
+
+    // optional uint32 msgproc_usec_avg_p99 = 96;
+    if (cached_has_bits & 0x00040000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_avg_p99());
+    }
+
+    // optional uint32 msgproc_usec_avg_max = 97;
+    if (cached_has_bits & 0x00080000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_msgproc_usec_avg_max());
+    }
+
+    // optional uint32 queuedmsgs_p50 = 100;
+    if (cached_has_bits & 0x00100000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_queuedmsgs_p50());
+    }
+
+    // optional uint32 queuedmsgs_p95 = 101;
+    if (cached_has_bits & 0x00200000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_queuedmsgs_p95());
+    }
+
+    // optional uint32 queuedmsgs_p99 = 102;
+    if (cached_has_bits & 0x00400000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_queuedmsgs_p99());
+    }
+
+    // optional uint32 queuedmsgs_max = 103;
+    if (cached_has_bits & 0x00800000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_queuedmsgs_max());
     }
 
   }
@@ -4233,7 +4608,7 @@ void CMsgSource2NetworkFlowQuality::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& 
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00000f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     if (cached_has_bits & 0x00000100u) {
       _this->_impl_.packet_misdelivery_rate_p95_x4_ = from._impl_.packet_misdelivery_rate_p95_x4_;
     }
@@ -4245,6 +4620,45 @@ void CMsgSource2NetworkFlowQuality::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& 
     }
     if (cached_has_bits & 0x00000800u) {
       _this->_impl_.net_ping_p95_ = from._impl_.net_ping_p95_;
+    }
+    if (cached_has_bits & 0x00001000u) {
+      _this->_impl_.msgproc_usec_p50_ = from._impl_.msgproc_usec_p50_;
+    }
+    if (cached_has_bits & 0x00002000u) {
+      _this->_impl_.msgproc_usec_p95_ = from._impl_.msgproc_usec_p95_;
+    }
+    if (cached_has_bits & 0x00004000u) {
+      _this->_impl_.msgproc_usec_p99_ = from._impl_.msgproc_usec_p99_;
+    }
+    if (cached_has_bits & 0x00008000u) {
+      _this->_impl_.msgproc_usec_max_ = from._impl_.msgproc_usec_max_;
+    }
+    _this->_impl_._has_bits_[1] |= cached_has_bits;
+  }
+  if (cached_has_bits & 0x00ff0000u) {
+    if (cached_has_bits & 0x00010000u) {
+      _this->_impl_.msgproc_usec_avg_p50_ = from._impl_.msgproc_usec_avg_p50_;
+    }
+    if (cached_has_bits & 0x00020000u) {
+      _this->_impl_.msgproc_usec_avg_p95_ = from._impl_.msgproc_usec_avg_p95_;
+    }
+    if (cached_has_bits & 0x00040000u) {
+      _this->_impl_.msgproc_usec_avg_p99_ = from._impl_.msgproc_usec_avg_p99_;
+    }
+    if (cached_has_bits & 0x00080000u) {
+      _this->_impl_.msgproc_usec_avg_max_ = from._impl_.msgproc_usec_avg_max_;
+    }
+    if (cached_has_bits & 0x00100000u) {
+      _this->_impl_.queuedmsgs_p50_ = from._impl_.queuedmsgs_p50_;
+    }
+    if (cached_has_bits & 0x00200000u) {
+      _this->_impl_.queuedmsgs_p95_ = from._impl_.queuedmsgs_p95_;
+    }
+    if (cached_has_bits & 0x00400000u) {
+      _this->_impl_.queuedmsgs_p99_ = from._impl_.queuedmsgs_p99_;
+    }
+    if (cached_has_bits & 0x00800000u) {
+      _this->_impl_.queuedmsgs_max_ = from._impl_.queuedmsgs_max_;
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
@@ -4268,8 +4682,8 @@ void CMsgSource2NetworkFlowQuality::InternalSwap(CMsgSource2NetworkFlowQuality* 
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
   swap(_impl_._has_bits_[1], other->_impl_._has_bits_[1]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgSource2NetworkFlowQuality, _impl_.net_ping_p95_)
-      + sizeof(CMsgSource2NetworkFlowQuality::_impl_.net_ping_p95_)
+      PROTOBUF_FIELD_OFFSET(CMsgSource2NetworkFlowQuality, _impl_.queuedmsgs_max_)
+      + sizeof(CMsgSource2NetworkFlowQuality::_impl_.queuedmsgs_max_)
       - PROTOBUF_FIELD_OFFSET(CMsgSource2NetworkFlowQuality, _impl_.bytes_total_)>(
           reinterpret_cast<char*>(&_impl_.bytes_total_),
           reinterpret_cast<char*>(&other->_impl_.bytes_total_));

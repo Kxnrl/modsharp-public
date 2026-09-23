@@ -1320,6 +1320,18 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
     kNetPingP5FieldNumber = 80,
     kNetPingP50FieldNumber = 81,
     kNetPingP95FieldNumber = 82,
+    kMsgprocUsecP50FieldNumber = 90,
+    kMsgprocUsecP95FieldNumber = 91,
+    kMsgprocUsecP99FieldNumber = 92,
+    kMsgprocUsecMaxFieldNumber = 93,
+    kMsgprocUsecAvgP50FieldNumber = 94,
+    kMsgprocUsecAvgP95FieldNumber = 95,
+    kMsgprocUsecAvgP99FieldNumber = 96,
+    kMsgprocUsecAvgMaxFieldNumber = 97,
+    kQueuedmsgsP50FieldNumber = 100,
+    kQueuedmsgsP95FieldNumber = 101,
+    kQueuedmsgsP99FieldNumber = 102,
+    kQueuedmsgsMaxFieldNumber = 103,
   };
   // optional uint64 bytes_total = 5;
   bool has_bytes_total() const;
@@ -1893,6 +1905,162 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
   void _internal_set_net_ping_p95(uint32_t value);
   public:
 
+  // optional uint32 msgproc_usec_p50 = 90;
+  bool has_msgproc_usec_p50() const;
+  private:
+  bool _internal_has_msgproc_usec_p50() const;
+  public:
+  void clear_msgproc_usec_p50();
+  uint32_t msgproc_usec_p50() const;
+  void set_msgproc_usec_p50(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_p50() const;
+  void _internal_set_msgproc_usec_p50(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_p95 = 91;
+  bool has_msgproc_usec_p95() const;
+  private:
+  bool _internal_has_msgproc_usec_p95() const;
+  public:
+  void clear_msgproc_usec_p95();
+  uint32_t msgproc_usec_p95() const;
+  void set_msgproc_usec_p95(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_p95() const;
+  void _internal_set_msgproc_usec_p95(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_p99 = 92;
+  bool has_msgproc_usec_p99() const;
+  private:
+  bool _internal_has_msgproc_usec_p99() const;
+  public:
+  void clear_msgproc_usec_p99();
+  uint32_t msgproc_usec_p99() const;
+  void set_msgproc_usec_p99(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_p99() const;
+  void _internal_set_msgproc_usec_p99(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_max = 93;
+  bool has_msgproc_usec_max() const;
+  private:
+  bool _internal_has_msgproc_usec_max() const;
+  public:
+  void clear_msgproc_usec_max();
+  uint32_t msgproc_usec_max() const;
+  void set_msgproc_usec_max(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_max() const;
+  void _internal_set_msgproc_usec_max(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_avg_p50 = 94;
+  bool has_msgproc_usec_avg_p50() const;
+  private:
+  bool _internal_has_msgproc_usec_avg_p50() const;
+  public:
+  void clear_msgproc_usec_avg_p50();
+  uint32_t msgproc_usec_avg_p50() const;
+  void set_msgproc_usec_avg_p50(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_avg_p50() const;
+  void _internal_set_msgproc_usec_avg_p50(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_avg_p95 = 95;
+  bool has_msgproc_usec_avg_p95() const;
+  private:
+  bool _internal_has_msgproc_usec_avg_p95() const;
+  public:
+  void clear_msgproc_usec_avg_p95();
+  uint32_t msgproc_usec_avg_p95() const;
+  void set_msgproc_usec_avg_p95(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_avg_p95() const;
+  void _internal_set_msgproc_usec_avg_p95(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_avg_p99 = 96;
+  bool has_msgproc_usec_avg_p99() const;
+  private:
+  bool _internal_has_msgproc_usec_avg_p99() const;
+  public:
+  void clear_msgproc_usec_avg_p99();
+  uint32_t msgproc_usec_avg_p99() const;
+  void set_msgproc_usec_avg_p99(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_avg_p99() const;
+  void _internal_set_msgproc_usec_avg_p99(uint32_t value);
+  public:
+
+  // optional uint32 msgproc_usec_avg_max = 97;
+  bool has_msgproc_usec_avg_max() const;
+  private:
+  bool _internal_has_msgproc_usec_avg_max() const;
+  public:
+  void clear_msgproc_usec_avg_max();
+  uint32_t msgproc_usec_avg_max() const;
+  void set_msgproc_usec_avg_max(uint32_t value);
+  private:
+  uint32_t _internal_msgproc_usec_avg_max() const;
+  void _internal_set_msgproc_usec_avg_max(uint32_t value);
+  public:
+
+  // optional uint32 queuedmsgs_p50 = 100;
+  bool has_queuedmsgs_p50() const;
+  private:
+  bool _internal_has_queuedmsgs_p50() const;
+  public:
+  void clear_queuedmsgs_p50();
+  uint32_t queuedmsgs_p50() const;
+  void set_queuedmsgs_p50(uint32_t value);
+  private:
+  uint32_t _internal_queuedmsgs_p50() const;
+  void _internal_set_queuedmsgs_p50(uint32_t value);
+  public:
+
+  // optional uint32 queuedmsgs_p95 = 101;
+  bool has_queuedmsgs_p95() const;
+  private:
+  bool _internal_has_queuedmsgs_p95() const;
+  public:
+  void clear_queuedmsgs_p95();
+  uint32_t queuedmsgs_p95() const;
+  void set_queuedmsgs_p95(uint32_t value);
+  private:
+  uint32_t _internal_queuedmsgs_p95() const;
+  void _internal_set_queuedmsgs_p95(uint32_t value);
+  public:
+
+  // optional uint32 queuedmsgs_p99 = 102;
+  bool has_queuedmsgs_p99() const;
+  private:
+  bool _internal_has_queuedmsgs_p99() const;
+  public:
+  void clear_queuedmsgs_p99();
+  uint32_t queuedmsgs_p99() const;
+  void set_queuedmsgs_p99(uint32_t value);
+  private:
+  uint32_t _internal_queuedmsgs_p99() const;
+  void _internal_set_queuedmsgs_p99(uint32_t value);
+  public:
+
+  // optional uint32 queuedmsgs_max = 103;
+  bool has_queuedmsgs_max() const;
+  private:
+  bool _internal_has_queuedmsgs_max() const;
+  public:
+  void clear_queuedmsgs_max();
+  uint32_t queuedmsgs_max() const;
+  void set_queuedmsgs_max(uint32_t value);
+  private:
+  uint32_t _internal_queuedmsgs_max() const;
+  void _internal_set_queuedmsgs_max(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CMsgSource2NetworkFlowQuality)
  private:
   class _Internal;
@@ -1947,6 +2115,18 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
     uint32_t net_ping_p5_;
     uint32_t net_ping_p50_;
     uint32_t net_ping_p95_;
+    uint32_t msgproc_usec_p50_;
+    uint32_t msgproc_usec_p95_;
+    uint32_t msgproc_usec_p99_;
+    uint32_t msgproc_usec_max_;
+    uint32_t msgproc_usec_avg_p50_;
+    uint32_t msgproc_usec_avg_p95_;
+    uint32_t msgproc_usec_avg_p99_;
+    uint32_t msgproc_usec_avg_max_;
+    uint32_t queuedmsgs_p50_;
+    uint32_t queuedmsgs_p95_;
+    uint32_t queuedmsgs_p99_;
+    uint32_t queuedmsgs_max_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_source2_5fsteam_5fstats_2eproto;
@@ -7461,6 +7641,342 @@ inline void CMsgSource2NetworkFlowQuality::_internal_set_net_ping_p95(uint32_t v
 inline void CMsgSource2NetworkFlowQuality::set_net_ping_p95(uint32_t value) {
   _internal_set_net_ping_p95(value);
   // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.net_ping_p95)
+}
+
+// optional uint32 msgproc_usec_p50 = 90;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p50() const {
+  bool value = (_impl_._has_bits_[1] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p50() const {
+  return _internal_has_msgproc_usec_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p50() {
+  _impl_.msgproc_usec_p50_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00001000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p50() const {
+  return _impl_.msgproc_usec_p50_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_p50)
+  return _internal_msgproc_usec_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p50(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00001000u;
+  _impl_.msgproc_usec_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p50(uint32_t value) {
+  _internal_set_msgproc_usec_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_p50)
+}
+
+// optional uint32 msgproc_usec_p95 = 91;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p95() const {
+  bool value = (_impl_._has_bits_[1] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p95() const {
+  return _internal_has_msgproc_usec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p95() {
+  _impl_.msgproc_usec_p95_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00002000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p95() const {
+  return _impl_.msgproc_usec_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_p95)
+  return _internal_msgproc_usec_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p95(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00002000u;
+  _impl_.msgproc_usec_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p95(uint32_t value) {
+  _internal_set_msgproc_usec_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_p95)
+}
+
+// optional uint32 msgproc_usec_p99 = 92;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p99() const {
+  bool value = (_impl_._has_bits_[1] & 0x00004000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p99() const {
+  return _internal_has_msgproc_usec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p99() {
+  _impl_.msgproc_usec_p99_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00004000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p99() const {
+  return _impl_.msgproc_usec_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_p99)
+  return _internal_msgproc_usec_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p99(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00004000u;
+  _impl_.msgproc_usec_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p99(uint32_t value) {
+  _internal_set_msgproc_usec_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_p99)
+}
+
+// optional uint32 msgproc_usec_max = 93;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_max() const {
+  bool value = (_impl_._has_bits_[1] & 0x00008000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_max() const {
+  return _internal_has_msgproc_usec_max();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_max() {
+  _impl_.msgproc_usec_max_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00008000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_max() const {
+  return _impl_.msgproc_usec_max_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_max)
+  return _internal_msgproc_usec_max();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_max(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00008000u;
+  _impl_.msgproc_usec_max_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_max(uint32_t value) {
+  _internal_set_msgproc_usec_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_max)
+}
+
+// optional uint32 msgproc_usec_avg_p50 = 94;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p50() const {
+  bool value = (_impl_._has_bits_[1] & 0x00010000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p50() const {
+  return _internal_has_msgproc_usec_avg_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p50() {
+  _impl_.msgproc_usec_avg_p50_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00010000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p50() const {
+  return _impl_.msgproc_usec_avg_p50_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p50)
+  return _internal_msgproc_usec_avg_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p50(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00010000u;
+  _impl_.msgproc_usec_avg_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p50(uint32_t value) {
+  _internal_set_msgproc_usec_avg_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p50)
+}
+
+// optional uint32 msgproc_usec_avg_p95 = 95;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p95() const {
+  bool value = (_impl_._has_bits_[1] & 0x00020000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p95() const {
+  return _internal_has_msgproc_usec_avg_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p95() {
+  _impl_.msgproc_usec_avg_p95_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00020000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p95() const {
+  return _impl_.msgproc_usec_avg_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p95)
+  return _internal_msgproc_usec_avg_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p95(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00020000u;
+  _impl_.msgproc_usec_avg_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p95(uint32_t value) {
+  _internal_set_msgproc_usec_avg_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p95)
+}
+
+// optional uint32 msgproc_usec_avg_p99 = 96;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p99() const {
+  bool value = (_impl_._has_bits_[1] & 0x00040000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p99() const {
+  return _internal_has_msgproc_usec_avg_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p99() {
+  _impl_.msgproc_usec_avg_p99_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00040000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p99() const {
+  return _impl_.msgproc_usec_avg_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p99)
+  return _internal_msgproc_usec_avg_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p99(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00040000u;
+  _impl_.msgproc_usec_avg_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p99(uint32_t value) {
+  _internal_set_msgproc_usec_avg_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_p99)
+}
+
+// optional uint32 msgproc_usec_avg_max = 97;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_max() const {
+  bool value = (_impl_._has_bits_[1] & 0x00080000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_max() const {
+  return _internal_has_msgproc_usec_avg_max();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_max() {
+  _impl_.msgproc_usec_avg_max_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00080000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_max() const {
+  return _impl_.msgproc_usec_avg_max_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_max)
+  return _internal_msgproc_usec_avg_max();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_max(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00080000u;
+  _impl_.msgproc_usec_avg_max_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_max(uint32_t value) {
+  _internal_set_msgproc_usec_avg_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.msgproc_usec_avg_max)
+}
+
+// optional uint32 queuedmsgs_p50 = 100;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p50() const {
+  bool value = (_impl_._has_bits_[1] & 0x00100000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p50() const {
+  return _internal_has_queuedmsgs_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p50() {
+  _impl_.queuedmsgs_p50_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00100000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p50() const {
+  return _impl_.queuedmsgs_p50_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.queuedmsgs_p50)
+  return _internal_queuedmsgs_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p50(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00100000u;
+  _impl_.queuedmsgs_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p50(uint32_t value) {
+  _internal_set_queuedmsgs_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.queuedmsgs_p50)
+}
+
+// optional uint32 queuedmsgs_p95 = 101;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p95() const {
+  bool value = (_impl_._has_bits_[1] & 0x00200000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p95() const {
+  return _internal_has_queuedmsgs_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p95() {
+  _impl_.queuedmsgs_p95_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00200000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p95() const {
+  return _impl_.queuedmsgs_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.queuedmsgs_p95)
+  return _internal_queuedmsgs_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p95(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00200000u;
+  _impl_.queuedmsgs_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p95(uint32_t value) {
+  _internal_set_queuedmsgs_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.queuedmsgs_p95)
+}
+
+// optional uint32 queuedmsgs_p99 = 102;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p99() const {
+  bool value = (_impl_._has_bits_[1] & 0x00400000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p99() const {
+  return _internal_has_queuedmsgs_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p99() {
+  _impl_.queuedmsgs_p99_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00400000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p99() const {
+  return _impl_.queuedmsgs_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.queuedmsgs_p99)
+  return _internal_queuedmsgs_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p99(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00400000u;
+  _impl_.queuedmsgs_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p99(uint32_t value) {
+  _internal_set_queuedmsgs_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.queuedmsgs_p99)
+}
+
+// optional uint32 queuedmsgs_max = 103;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_max() const {
+  bool value = (_impl_._has_bits_[1] & 0x00800000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_max() const {
+  return _internal_has_queuedmsgs_max();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_max() {
+  _impl_.queuedmsgs_max_ = 0u;
+  _impl_._has_bits_[1] &= ~0x00800000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_max() const {
+  return _impl_.queuedmsgs_max_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.queuedmsgs_max)
+  return _internal_queuedmsgs_max();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_max(uint32_t value) {
+  _impl_._has_bits_[1] |= 0x00800000u;
+  _impl_.queuedmsgs_max_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_max(uint32_t value) {
+  _internal_set_queuedmsgs_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.queuedmsgs_max)
 }
 
 // -------------------------------------------------------------------

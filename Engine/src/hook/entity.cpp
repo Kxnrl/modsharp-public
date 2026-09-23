@@ -74,6 +74,12 @@ static bool EntityInputEnhancement(const CEntityIdentity* pEntity, const char* p
 
 static CBaseEntity* s_pInputCallerOverride = nullptr;
 
+#ifdef PLATFORM_WINDOWS
+constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 33;
+#else
+constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 34;
+#endif
+
 // extern for movement manager
 extern void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue);
 extern void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue);
@@ -260,32 +266,61 @@ BeginMemberHookScope(CTriggerPush)
 // 实现EventIOOutputHook
 BeginMemberHookScope(CEntityIOOutput)
 {
-    DeclareMemberDetourHook(FireOutput, void, (CEntityIOOutput * pIO, CBaseEntity * pActivator, CBaseEntity * pCaller, const Variant_t& value, float flDelay, void* a6, void* a7))
+    DeclareMemberDetourHook(FireOutput, void, (CEntityIOOutput * pIO, CBaseEntity * pActivator, CBaseEntity * pCaller, void* pArgs, float flDelay, KeyValues3* pKeyValues, const Variant_t* pValue))
     {
         if (!pCaller)
-            return FireOutput(pIO, pActivator, pCaller, value, flDelay, a6, a7);
+            return FireOutput(pIO, pActivator, pCaller, pArgs, flDelay, pKeyValues, pValue);
 
         if (natives::entity::OnEntityFireOutput(s_pInputCallerOverride ? s_pInputCallerOverride : pCaller, pIO, pActivator, flDelay) == EHookAction::SkipCallReturnOverride)
             return;
 
-        FireOutput(pIO, pActivator, pCaller, value, flDelay, a6, a7);
+        FireOutput(pIO, pActivator, pCaller, pArgs, flDelay, pKeyValues, pValue);
     }
 }
 
 // 实现劫持AcceptInput
 BeginMemberHookScope(CEntityIdentity)
 {
-    // As of game build 24116939 the trailing void* was dropped: CEntityIdentity::AcceptInput went
-    // from 8 params to 7. a7 is kept only to forward it untouched to the original.
-    DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, void* a6, void* a7))
+    DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, void* pArgs, KeyValues3* pKeyValues))
     {
-        if (!pInstance || !pInput)
-            return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, a6, a7);
+        static const Variant_t* _pRedispatchValue = nullptr;
 
-        int nOutputId = 0; // todo: remove
+        if (!pInstance || !pInput || (_pRedispatchValue && pValue == _pRedispatchValue))
+            return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);
 
-        if (natives::entity::OnEntityAcceptInput(pInstance, pInput->Get(), pActivator, pCaller, pValue, nOutputId) == EHookAction::SkipCallReturnOverride)
+        if (natives::entity::OnEntityAcceptInput(pInstance, pInput->Get(), pActivator, pCaller, pValue, 0) == EHookAction::SkipCallReturnOverride)
             return false;
+
+        if (pValue && pValue->FieldType() == FieldType_t::FIELD_FLOAT32
+            && strcasecmp(pInput->Get(), "InValue") == 0
+            && strcasecmp(pInstance->GetClassname(), "logic_case") == 0)
+        {
+            class RedispatchValue
+            {
+            public:
+                explicit RedispatchValue(float flValue) :
+                    m_pPrevious(_pRedispatchValue)
+                {
+                    snprintf(m_szValue, sizeof(m_szValue), "%g", static_cast<double>(flValue));
+                    m_Value.SetString(m_szValue);
+                    _pRedispatchValue = &m_Value;
+                }
+                ~RedispatchValue() { _pRedispatchValue = m_pPrevious; }
+
+                RedispatchValue(const RedispatchValue&)            = delete;
+                RedispatchValue& operator=(const RedispatchValue&) = delete;
+
+                [[nodiscard]] Variant_t& Get() { return m_Value; }
+
+            private:
+                char             m_szValue[32];
+                Variant_t        m_Value;
+                const Variant_t* m_pPrevious;
+            };
+
+            RedispatchValue value(pValue->Float());
+            return pInstance->GetBaseEntity()->AcceptInput(pInput->Get(), pActivator, pCaller, value.Get());
+        }
 
         if (ms_entity_io_enhancement->GetValue<bool>() && EntityInputEnhancement(pInstance, pInput->Get(), pActivator, pCaller, pValue))
             return true;
@@ -301,7 +336,7 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hActivator = pActivator->GetPublicScriptScope())
                     {
                         ScriptVariant_t activator(hActivator);
-                        CALL_VIRTUAL(bool, 33, g_pScriptVM, pScope, "activator", &activator);
+                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "activator", &activator);
 
                         // WARN("Fix Activator %p(%s) for %s -> %s", pActivator, pActivator->GetClassname(), pInstance->GetName(), pInput->Get());
                     }
@@ -311,7 +346,7 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hCaller = pCaller->GetPublicScriptScope())
                     {
                         ScriptVariant_t caller(hCaller);
-                        CALL_VIRTUAL(bool, 33, g_pScriptVM, pScope, "caller", &caller);
+                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "caller", &caller);
 
                         // WARN("Fix Caller %p(%s) for %s -> %s", pCaller, pCaller->GetClassname(), pInstance->GetName(), pInput->Get());
                     }
@@ -321,7 +356,7 @@ BeginMemberHookScope(CEntityIdentity)
             // g_pScriptVM->SetValueVariant(pScope, "caller", &caller);
         }
 
-        return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, a6, a7);
+        return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);
     }
 }
 

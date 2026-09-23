@@ -52,7 +52,7 @@ public:
     virtual const char*       GetUnscopedName()   = 0;
     virtual NetMessageInfo_t* GetNetMessageInfo() = 0;
 
-    virtual void SetMessageId(unsigned short nMessageId) = 0;
+    virtual void SetMessageId(int nMessageId) = 0;
 
     virtual void AddCategoryMask(int nMask, bool) = 0;
 
@@ -85,6 +85,9 @@ public:
     }
 
     virtual void* AllocAndCopy() const = 0;
+
+    virtual int         GetType() const = 0;
+    virtual const char* GetName() const = 0;
 
     // Helper function to cast up the abstract message to a concrete CNetMessagePB<T> type.
     // Doesn't do any validity checks itself!

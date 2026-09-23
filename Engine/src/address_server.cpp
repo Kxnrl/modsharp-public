@@ -1056,6 +1056,8 @@ void ResolveCBaseEntity_AbsOrigin()
     if (!func.IsValid())
     {
         WARN("Failed to find OnC4Explode (string 'c4.explode').");
+        AssignOrFallback(svr_mod, address::server::CBaseEntity_AbsOrigin, 0, "CBaseEntity::GetAbsOrigin", "CBaseEntity::AbsOrigin");
+        AssignOrFallback(svr_mod, address::server::CBaseEntity_SetAbsOrigin, 0, "CBaseEntity::SetAbsOrigin");
         return;
     }
 
@@ -1063,6 +1065,8 @@ void ResolveCBaseEntity_AbsOrigin()
     if (!range)
     {
         WARN("Failed to get function range for OnC4Explode.");
+        AssignOrFallback(svr_mod, address::server::CBaseEntity_AbsOrigin, 0, "CBaseEntity::GetAbsOrigin", "CBaseEntity::AbsOrigin");
+        AssignOrFallback(svr_mod, address::server::CBaseEntity_SetAbsOrigin, 0, "CBaseEntity::SetAbsOrigin");
         return;
     }
 
