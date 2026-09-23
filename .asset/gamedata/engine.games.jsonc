@@ -47,7 +47,7 @@
     // "SV:  Spawn Server: %s\n"
     "CNetworkGameServer::SpawnServer": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 48 85 F6",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 49 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 48 85 F6 BE ? ? ? ? 41 8B 7D 00 0F 84",
       "windows": "48 89 5C 24 20 55 56 57 41 54 41 56 48 8D 6C 24 C9",
       "refs": {
         "strings": [
@@ -108,7 +108,7 @@
     },
     "HostStateRequest": {
       "library": "engine",
-      "linux": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F 30 00",
+      "linux": "55 48 89 E5 41 56 41 55 41 54 49 89 F4 53 48 83 7F 30 ? 48 89 FB 74 ? 8B 3D ? ? ? ? BE ? ? ? ? E8",
       "windows": "48 89 74 24 ? 57 48 83 EC ? 33 F6 48 8B FA 48 39 35",
       "refs": {
         "strings": [
