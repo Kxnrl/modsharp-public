@@ -101,7 +101,6 @@ struct TypeDescription_t
     float fieldTolerance;
 };
 
-    uint16_t   flatGroup;
 static_assert(sizeof(TypeDescription_t) == 0x38);
 static_assert(offsetof(TypeDescription_t, fieldName) == 0x08);
 static_assert(offsetof(TypeDescription_t, fieldOffset) == 0x10);
