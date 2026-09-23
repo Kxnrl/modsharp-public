@@ -178,7 +178,7 @@
     "CBasePlayerController::HandleCommandJoinTeam": {
       "library": "server",
       "linux": "55 48 89 E5 41 57 41 56 41 89 D6 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC",
-      "windows": "48 89 5C 24 08 44 88 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 80",
+      "windows": "48 89 5C 24 08 44 88 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 90",
       "refs": {
         "strings": [
           "Team for queue player#%d/%d (%x - %s) on %s team for %s teams: %s\n",
@@ -196,7 +196,7 @@
     // str 'CCSPlayerPawnBase::SwitchTeam( %d ) - invalid team index.'
     "CBasePlayerController::SwitchSteam": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 4C 8D 2D ? ? ? ? 49 8B 7D 00",
       "windows": "40 53 57 48 81 EC ? ? ? ? 48 8B D9 8B FA",
       "refs": {
         "strings": [
@@ -234,8 +234,8 @@
     // convar ref 'mp_endmatch_votenextmap_keepcurrent'
     "CCSGameRules::CreateEndMatchMapGroupVoteOptions": {
       "library": "server",
-      "linux": "55 BE ? ? ? ? 48 89 E5 41 57 4C 8D 3D",
-      "windows": "48 89 4C 24 08 55 41 54 48 8D 6C 24 B1",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 4C 8D 2D",
+      "windows": "48 89 5C 24 20 48 89 4C 24 08 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 D9",
       "refs": {
         "strings": [
           "Invalid skirmish '%s' in mp_endmatch_votenextmap_wargames_modes\n"
@@ -256,7 +256,7 @@
     "CCSGameRules::RestartRound": {
       "library": "server",
       "linux": "55 48 8D 35 ? ? ? ? BA ? ? ? ? 48 89 E5",
-      "windows": "48 8B C4 48 89 48 08 55 48 8D A8 08 FC FF FF",
+      "windows": "48 8B C4 48 89 48 08 55 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? F3 0F 10 1D",
       "refs": {
         "strings": [
           "RestartRound",
@@ -281,7 +281,7 @@
     // str 'TerminateRound: unknown round end ID %i\n'
     "CCSGameRules::TerminateRound": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 8D 35 ? ? ? ? 48 89 FB",
+      "linux": "55 48 89 E5 41 57 41 56 49 89 FE 41 55 41 54 53 48 81 EC ? ? ? ? 48 8D 05 ? ? ? ? F3 0F 11 85 ? ? ? ? 89 B5",
       "windows": "48 8B C4 4C 89 48 ? 48 89 48 ? 55 41 54",
       "refs": {
         "strings": [
@@ -341,7 +341,7 @@
     // str 'flAccelSpeed = %f, flGoalSpeed = %f, flStoredAccel = %f'
     "CCSPlayer_MovementServices::Accelerate": {
       "library": "server",
-      "linux": "55 0F 28 F1 48 89 E5",
+      "linux": "55 0F 28 F9 48 89 E5 41 57 41 56 41 55",
       "windows": "40 53 41 54 41 55 41 57 48 81 EC ? ? ? ? F2 41 0F 10 01",
       "refs": {
         "strings": [
@@ -386,7 +386,7 @@
     // cvar "sv_show_move_collisions"
     "CCSPlayer_MovementServices::WalkMove": {
       "library": "server",
-      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D B5 ? ? ? ? 41 55 41 BD ? ? ? ? 41 54 49 89 FC 53 48 89 F3 48 81 EC",
+      "linux": "48 B8 ? ? ? ? ? ? ? ? 55 66 0F EF C0 48 89 E5 41 57 41 56 4C 8D BD ? ? ? ? 41 55 49 89 F5",
       "windows": "48 8B C4 48 89 70 ? 48 89 78 ? 55 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 48 8B F1",
       "refs": {
         "strings": [
@@ -476,7 +476,7 @@
       "on_demand": true,
       "library": "server",
       "linux": "48 85 FF 0F 84 ? ? ? ? 55 48 89 E5 41 56 41 55 41 54 41 89 F4",
-      "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 ? 56 48 83 EC ? 0F B6 F2"
+      "windows": "48 85 C9 0F 84 ? ? ? ? 48 89 5C 24 08 48 89 7C 24 10 55 48 8B EC"
     },
     "CCSScript::CreateEntityWrapper": {
       "on_demand": true,
@@ -640,8 +640,8 @@
     },
     "CGamePhysicsQueryInterface::TraceShape": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 49 89 CF 41 56 49 89 F6 41 55 4D 89 C5 41 54 49 89 D4",
-      "windows": "48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 56 41 57 48 8D AC 24 ? ? ? ? B8",
+      "linux": "55 48 8D 05 ? ? ? ? 48 89 E5 41 57 49 89 F7 41 56 48 8D 35 ? ? ? ? 49 89 CE",
+      "windows": "48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 54 41 56 41 57",
       "refs": {
         "strings": [
           "Physics/TraceShape (Server)"
@@ -696,7 +696,7 @@
     "CSoundEmitterSystem::EmitSound": {
       "library": "server",
       "linux": "48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 48 89 07",
-      "windows": "4C 8B DC 4D 89 43 18 55",
+      "windows": "4C 8B DC 4D 89 43 18 55 53 56 41 55",
       "refs": {
         "strings": [
           "EmitSoundByHandle",
@@ -811,8 +811,8 @@
     },
     "HandleGCBanInfo": {
       "library": "server",
-      "linux": "55 48 8D 3D ? ? ? ? BE ? ? ? ? 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC 68",
-      "windows": "41 54 48 81 EC ? ? ? ? BA ? ? ? ?",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC 68 48 8B 05",
+      "windows": "41 54 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 44 8B 60 58",
       "refs": {
         "strings": [
           "Kicking user %s (sv_kick_players_with_cooldown=%d)\n"
