@@ -759,7 +759,10 @@ void InstallGiveNamedItemHooks()
 
     VHOOK(CGamePlayerEquip, Precache, server, {.gamedata = "CBaseEntity::Precache"});
     HOOK(CGamePlayerEquip, InputTriggerForAllPlayers, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForAllPlayers")});
-    HOOK(CGamePlayerEquip, InputTriggerForActivatedPlayer, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForActivatedPlayer")});
+    if (auto* input = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForAllPlayers"))
+        HOOK(CGamePlayerEquip, InputTriggerForAllPlayers, {.address = input});
+    if (auto* input = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForActivatedPlayer"))
+        HOOK(CGamePlayerEquip, InputTriggerForActivatedPlayer, {.address = input});
 
     VHOOK(CGamePlayerEquip, Use, server, {.gamedata = "CBaseEntity::Use"});
     VHOOK(CGamePlayerEquip, Touch, server, {.gamedata = "CBaseEntity::Touch"});

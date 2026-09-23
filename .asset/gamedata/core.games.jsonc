@@ -30,8 +30,8 @@
     },
     // server.dll -> xref 'sv_phys_stop_at_collision' 最上面的 __fastcall
     "CVPhys2World::GenerateIntersectionNotifications": {
-      "linux": 121,
-      "windows": 121
+      "linux": 122,
+      "windows": 122
     },
     "IGameEventSystem::PostEventAbstract": {
       "linux": 15,

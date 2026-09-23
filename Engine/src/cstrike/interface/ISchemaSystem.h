@@ -20,6 +20,7 @@
 #ifndef CSTRIKE_INTERFACE_SCHEMA_H
 #define CSTRIKE_INTERFACE_SCHEMA_H
 
+#include <cstddef>
 #include <cstdint>
 
 enum class FieldType_t : uint8_t;
@@ -84,49 +85,40 @@ struct SchemaBaseClassInfoData_t
     SchemaClassInfoData_t* m_pClass;
 };
 
-class CBaseEntity;
-using InputFunc_t = void (CBaseEntity::*)(void* data);
-
 struct TypeDescription_t
 {
     FieldType_t    fieldType;
     const char*    fieldName;
-    int32_t        fieldOffset; // Local offset value
+    int            fieldOffset;
     unsigned short fieldSize;
-    int32_t        flags;
-    // the name of the variable in the map/fgd data, or the name of the action
-    const char* externalName;
-    // pointer to the function set for save/restoring of custom data types
-    void* pSaveRestoreOps;
-    // for associating function with string names
-    InputFunc_t inputFunc;
-
-    // For embedding additional datatables inside this one
+    int            flags;
+    const char*    externalName;
     union {
         DataMap_t*  td;
         const char* enumName;
     };
-
-    // Stores the actual member variable size in bytes
-    int32_t fieldSizeInBytes;
-    // Tolerance for field errors for float fields
+    int   fieldSizeInBytes;
     float fieldTolerance;
-    // For raw fields (including children of embedded stuff) this is the flattened offset
-    int32_t    flatOffset[2];
-    uint16_t   flatGroup;
-    void*      pPredictionCopyOps;
-    DataMap_t* m_pPredictionCopyDataMap;
 };
+
+    uint16_t   flatGroup;
+static_assert(sizeof(TypeDescription_t) == 0x38);
+static_assert(offsetof(TypeDescription_t, fieldName) == 0x08);
+static_assert(offsetof(TypeDescription_t, fieldOffset) == 0x10);
+static_assert(offsetof(TypeDescription_t, externalName) == 0x20);
+static_assert(offsetof(TypeDescription_t, td) == 0x28);
+static_assert(offsetof(TypeDescription_t, fieldSizeInBytes) == 0x30);
 
 struct DataMap_t
 {
     TypeDescription_t* dataDesc;
-    int32_t            dataNumFields;
+    int                dataNumFields;
     const char*        dataClassName;
     DataMap_t*         baseMap;
-    void*              m_pOptimizedDataMap;
-    int32_t            m_nPackedSize;
 };
+
+static_assert(sizeof(DataMap_t) == 0x20);
+static_assert(offsetof(DataMap_t, baseMap) == 0x18);
 
 struct SchemaClassInfoData_t
 {

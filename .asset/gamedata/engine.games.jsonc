@@ -136,13 +136,13 @@
     },
     // CNetworkGameServer::GetClientCount 就是 mov eax, [this+X] / retn, X 即为此偏移
     "CNetworkGameServer::m_vecClients": {
-      "linux": 584,
-      "windows": 584
+      "linux": 616,
+      "windows": 616
     },
     // 搜 "map/mapname", 上面最后一个 qword load [this + disp] 就是
     "CNetworkGameServer::m_MapName": {
-      "linux": 336,
-      "windows": 336
+      "linux": 368,
+      "windows": 368
     },
     // 搜 "CServerSideClientBase::SpawnPlayer"
     // 找到带 client->m_Slot + 1 的引用
@@ -231,8 +231,8 @@
   },
   "VFuncs": {
     "CNetworkGameServer::DisconnectClient": {
-      "linux": 78,
-      "windows": 73
+      "linux": 79,
+      "windows": 74
     },
     "CNetworkGameServer::GetAddonName": {
       "linux": 26,
@@ -247,8 +247,8 @@
       "windows": 25
     },
     "CNetworkGameServer::SpawnServer": {
-      "linux": 36,
-      "windows": 36
+      "linux": 37,
+      "windows": 37
     },
     "CServerSideClient::CLCMsg_RespondCvarValue": {
       "linux": 40,
