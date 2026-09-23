@@ -282,6 +282,7 @@ BeginMemberHookScope(CEntityIOOutput)
 // 实现劫持AcceptInput
 BeginMemberHookScope(CEntityIdentity)
 {
+    // a connection's override parameter lives in pKeyValues under "--old-connection-literal--" and takes precedence over pArgs
     DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, void* pArgs, KeyValues3* pKeyValues))
     {
         static const Variant_t* _pRedispatchValue = nullptr;

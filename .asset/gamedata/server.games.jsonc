@@ -176,7 +176,7 @@
     // str "Team for queue player#%d/%d (%x - %s) on %s team for %s teams: %s"
     "CBasePlayerController::HandleCommandJoinTeam": {
       "library": "server",
-      "linux": "55 48 89 E5 41 57 41 56 41 89 D6 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC",
+      "linux": "55 48 89 E5 41 57 41 56 41 55 41 54 41 89 F4 53 48 89 FB 48 81 EC ? ? ? ? 48 8D 05",
       "windows": "48 89 5C 24 08 44 88 44 24 18 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 3D ? ? ? ? 41 0F B6 C0",
       "refs": {
         "strings": [
@@ -841,6 +841,7 @@
     },
     "KeyValues3::~KeyValues3": {
       "library": "server",
+      // signs Free(this, bool) itself: the Linux destructor is a 7-byte "xor esi, esi; jmp Free" wrapper that cannot be signed uniquely, and KeyValues3.cpp passing false is equivalent
       "linux": "55 48 89 E5 41 56 41 55 41 54 41 89 F4 53 0F B7 07 48 89 FB 66 C1 E8 ? 3C ?",
       "windows": "40 53 41 57 48 83 EC ? 4C 8B 01"
     },
@@ -849,6 +850,7 @@
       "linux": "55 48 89 E5 41 54 53 0F B7 07 48 89 FB 66 C1 E8",
       "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F B6 01"
     },
+    // the AllocArray siblings are byte-identical up to the trailing element conversion (on Windows the call rel32 only reflects position), so the signatures must reach that instruction
     "KeyValues3::AllocArray_Float32_Internal": {
       "library": "server",
       "linux": "55 89 F0 44 89 CE 48 89 E5 41 57 41 56 41 55 49 89 D5 41 54 41 89 CC 53 48 89 FB 48 83 EC ? 44 8B 55 ? 44 8B 75 ? 0F B6 55 ? 45 89 D7 45 84 C0 74 ? 83 F8 ? 7F ? 41 89 C6 44 89 C7 41 83 E6 ? 85 C9 0F 85 ? ? ? ? 45 84 C9 0F 84 ? ? ? ? 48 83 EC ? 89 C1 45 31 C9 6A ? 45 31 C0 48 89 DF 41 C1 E6 ? E8 ? ? ? ? 0F B6 43 ? 83 E0 ? 44 09 F0 88 43 ? 58 5A 80 23 ? 4C 89 6B ? 48 8D 65 ? 5B 41 5C 41 5D 41 5E 41 5F 5D C3 66 0F 1F 44 00 ? 83 F8 ? 7F ? 45 84 C9 0F 85 ? ? ? ? 48 83 EC ? 89 C1 44 89 55 ? 45 31 C9 6A ? 45 31 C0 BE ? ? ? ? 48 89 DF 89 45 ? E8 ? ? ? ? 44 8B 55 ? 41 0F B6 CE 48 89 DF 8B 75 ? 89 4D ? 41 0F B6 D2 E8 ? ? ? ? 48 8D 7D ? 48 89 DE E8 ? ? ? ? 48 63 55 ? 59 48 8B 45 ? 5E 85 D2 74 ? 48 89 C3 4D 89 EE 48 8D 04 D0 48 89 45 ? 48 8B 3B 44 89 FE 48 83 C3 ? 49 83 C6 ? 8B 55 ? 48 89 7D ? E8 ? ? ? ? 48 8B 7D ? 66 0F EF C0",
