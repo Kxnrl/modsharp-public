@@ -355,89 +355,101 @@ public static partial class UsermessagesReflection {
           "bnRfaW5kZXgYASABKAU6Ai0xEhQKDHBsYXllcl9zbG90cxgCIAMoBRIQCghy",
           "ZXNwb25zZRgDIAEoCRIfCgplbnRfb3JpZ2luGAQgASgLMgsuQ01zZ1ZlY3Rv",
           "chIRCglwcmVfZGVsYXkYBSABKAISFAoMbWl4X3ByaW9yaXR5GAYgASgFIikK",
-          "GENVc2VyTWVzc2FnZV9Vc2FnZVJlcG9ydBINCgV1c2FnZRgBIAEoCSqOCQoR",
-          "RUJhc2VVc2VyTWVzc2FnZXMSFwoTVU1fQWNoaWV2ZW1lbnRFdmVudBBlEhcK",
-          "E1VNX0N1cnJlbnRUaW1lc2NhbGUQaBIXChNVTV9EZXNpcmVkVGltZXNjYWxl",
-          "EGkSCwoHVU1fRmFkZRBqEhAKDFVNX0dhbWVUaXRsZRBrEg0KCVVNX0h1ZE1z",
-          "ZxBuEg4KClVNX0h1ZFRleHQQbxISCg5VTV9Db2xvcmVkVGV4dBBxEhMKD1VN",
-          "X1JlcXVlc3RTdGF0ZRByEg8KC1VNX1Jlc2V0SFVEEHMSDQoJVU1fUnVtYmxl",
-          "EHQSDgoKVU1fU2F5VGV4dBB1Eg8KC1VNX1NheVRleHQyEHYSFQoRVU1fU2F5",
-          "VGV4dENoYW5uZWwQdxIMCghVTV9TaGFrZRB4Eg8KC1VNX1NoYWtlRGlyEHkS",
-          "EQoNVU1fV2F0ZXJTaGFrZRB6Eg4KClVNX1RleHRNc2cQfBIRCg1VTV9TY3Jl",
-          "ZW5UaWx0EH0SEQoMVU1fVm9pY2VNYXNrEIABEhEKDFVNX1NlbmRBdWRpbxCC",
-          "ARISCg1VTV9JdGVtUGlja3VwEIMBEhIKDVVNX0FtbW9EZW5pZWQQhAESEAoL",
-          "VU1fU2hvd01lbnUQhgESEgoNVU1fQ3JlZGl0c01zZxCHARIfChpVTV9DbG9z",
-          "ZUNhcHRpb25QbGFjZWhvbGRlchCOARIYChNVTV9DYW1lcmFUcmFuc2l0aW9u",
-          "EI8BEhYKEVVNX0F1ZGlvUGFyYW1ldGVyEJABEhcKElVNX1BhcnRpY2xlTWFu",
-          "YWdlchCRARIQCgtVTV9IdWRFcnJvchCSARIXChJVTV9DdXN0b21HYW1lRXZl",
-          "bnQQlAESFwoSVU1fQW5pbUdyYXBoVXBkYXRlEJUBEhsKFlVNX0hhcHRpY3NN",
-          "YW5hZ2VyUHVsc2UQlgESHAoXVU1fSGFwdGljc01hbmFnZXJFZmZlY3QQlwES",
-          "GAoTVU1fVXBkYXRlQ3NzQ2xhc3NlcxCZARIXChJVTV9TZXJ2ZXJGcmFtZVRp",
-          "bWUQmgESHAoXVU1fTGFnQ29tcGVuc2F0aW9uRXJyb3IQmwESGAoTVU1fUmVx",
-          "dWVzdERsbFN0YXR1cxCcARIZChRVTV9SZXF1ZXN0VXRpbEFjdGlvbhCdARIa",
-          "ChVVTV9VdGlsQWN0aW9uUmVzcG9uc2UQngESGQoUVU1fRGxsU3RhdHVzUmVz",
-          "cG9uc2UQnwESGAoTVU1fUmVxdWVzdEludmVudG9yeRCgARIZChRVTV9JbnZl",
-          "bnRvcnlSZXNwb25zZRChARIZChRVTV9SZXF1ZXN0RGlhZ25vc3RpYxCiARIa",
-          "ChVVTV9EaWFnbm9zdGljUmVzcG9uc2UQowESFQoQVU1fRXh0cmFVc2VyRGF0",
-          "YRCkARIbChZVTV9Ob3RpZnlSZXNwb25zZUZvdW5kEKUBEh8KGlVNX1BsYXlS",
-          "ZXNwb25zZUNvbmRpdGlvbmFsEKYBEhYKEVVNX1VzZXJTZW50QnVnQnVnEKcB",
-          "EhMKDlVNX1VzYWdlUmVwb3J0EKgBEhAKC1VNX01BWF9CQVNFEMgBKnsKE0VC",
-          "YXNlRW50aXR5TWVzc2FnZXMSEgoNRU1fUGxheUppbmdsZRCIARIVChBFTV9T",
-          "Y3JlZW5PdmVybGF5EIkBEhYKEUVNX1Byb3BhZ2F0ZUZvcmNlEIsBEg8KCkVN",
-          "X0RvU3BhcmsQjAESEAoLRU1fRml4QW5nbGUQjQEqbwoJZVJvbGxUeXBlEhYK",
-          "CVJPTExfTk9ORRD///////////8BEg4KClJPTExfU1RBVFMQABIQCgxST0xM",
-          "X0NSRURJVFMQARIXChNST0xMX0xBVEVfSk9JTl9MT0dPEAISDwoLUk9MTF9P",
-          "VVRUUk8QAyrTEAoQUEFSVElDTEVfTUVTU0FHRRImCiJHQU1FX1BBUlRJQ0xF",
-          "X01BTkFHRVJfRVZFTlRfQ1JFQVRFEAASJgoiR0FNRV9QQVJUSUNMRV9NQU5B",
-          "R0VSX0VWRU5UX1VQREFURRABEi4KKkdBTUVfUEFSVElDTEVfTUFOQUdFUl9F",
-          "VkVOVF9VUERBVEVfRk9SV0FSRBACEjIKLkdBTUVfUEFSVElDTEVfTUFOQUdF",
-          "Ul9FVkVOVF9VUERBVEVfT1JJRU5UQVRJT04QAxIvCitHQU1FX1BBUlRJQ0xF",
-          "X01BTkFHRVJfRVZFTlRfVVBEQVRFX0ZBTExCQUNLEAQSKgomR0FNRV9QQVJU",
-          "SUNMRV9NQU5BR0VSX0VWRU5UX1VQREFURV9FTlQQBRItCilHQU1FX1BBUlRJ",
-          "Q0xFX01BTkFHRVJfRVZFTlRfVVBEQVRFX09GRlNFVBAGEicKI0dBTUVfUEFS",
-          "VElDTEVfTUFOQUdFUl9FVkVOVF9ERVNUUk9ZEAcSMQotR0FNRV9QQVJUSUNM",
-          "RV9NQU5BR0VSX0VWRU5UX0RFU1RST1lfSU5WT0xWSU5HEAgSJwojR0FNRV9Q",
-          "QVJUSUNMRV9NQU5BR0VSX0VWRU5UX1JFTEVBU0UQCRInCiNHQU1FX1BBUlRJ",
-          "Q0xFX01BTkFHRVJfRVZFTlRfTEFURU5DWRAKEisKJ0dBTUVfUEFSVElDTEVf",
-          "TUFOQUdFUl9FVkVOVF9TSE9VTERfRFJBVxALEiYKIkdBTUVfUEFSVElDTEVf",
-          "TUFOQUdFUl9FVkVOVF9GUk9aRU4QDBI/CjtHQU1FX1BBUlRJQ0xFX01BTkFH",
-          "RVJfRVZFTlRfQ0hBTkdFX0NPTlRST0xfUE9JTlRfQVRUQUNITUVOVBANEjYK",
-          "MkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9VUERBVEVfRU5USVRZX1BP",
-          "U0lUSU9OEA4SMgouR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NFVF9G",
-          "T1dfUFJPUEVSVElFUxAPEigKJEdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVO",
-          "VF9TRVRfVEVYVBAQEjQKMEdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9T",
-          "RVRfU0hPVUxEX0NIRUNLX0ZPVxAREjcKM0dBTUVfUEFSVElDTEVfTUFOQUdF",
-          "Ul9FVkVOVF9TRVRfQ09OVFJPTF9QT0lOVF9NT0RFTBASEjoKNkdBTUVfUEFS",
-          "VElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfQ09OVFJPTF9QT0lOVF9TTkFQU0hP",
-          "VBATEjUKMUdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfVEVYVFVS",
-          "RV9BVFRSSUJVVEUQFBI9CjlHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRf",
-          "U0VUX1NDRU5FX09CSkVDVF9HRU5FUklDX0ZMQUcQFRI/CjtHQU1FX1BBUlRJ",
-          "Q0xFX01BTkFHRVJfRVZFTlRfU0VUX1NDRU5FX09CSkVDVF9USU5UX0FORF9E",
-          "RVNBVBAWEi0KKUdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9ERVNUUk9Z",
-          "X05BTUVEEBcSLAooR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NLSVBf",
-          "VE9fVElNRRAYEioKJkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9DQU5f",
-          "RlJFRVpFEBkSNwozR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NFVF9O",
-          "QU1FRF9WQUxVRV9DT05URVhUEBoSMAosR0FNRV9QQVJUSUNMRV9NQU5BR0VS",
-          "X0VWRU5UX1VQREFURV9UUkFOU0ZPUk0QGxI6CjZHQU1FX1BBUlRJQ0xFX01B",
-          "TkFHRVJfRVZFTlRfRlJFRVpFX1RSQU5TSVRJT05fT1ZFUlJJREUQHBIwCixH",
-          "QU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfRlJFRVpFX0lOVk9MVklORxAd",
-          "Ej4KOkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9BRERfTU9ERUxMSVNU",
-          "X09WRVJSSURFX0VMRU1FTlQQHhI4CjRHQU1FX1BBUlRJQ0xFX01BTkFHRVJf",
-          "RVZFTlRfQ0xFQVJfTU9ERUxMSVNUX09WRVJSSURFEB8SMgouR0FNRV9QQVJU",
-          "SUNMRV9NQU5BR0VSX0VWRU5UX0NSRUFURV9QSFlTSUNTX1NJTRAgEjMKL0dB",
-          "TUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9ERVNUUk9ZX1BIWVNJQ1NfU0lN",
-          "ECESKQolR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NFVF9WREFUQRAi",
-          "EjUKMUdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfTUFURVJJQUxf",
-          "T1ZFUlJJREUQIxInCiNHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfQURE",
-          "X0ZBThAkEioKJkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9VUERBVEVf",
-          "RkFOECUSMgouR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NFVF9DTFVT",
-          "VEVSX0dST1dUSBAmEioKJkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9S",
-          "RU1PVkVfRkFOECcSMQotR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX0NS",
-          "RUFURV9TTU9LRV9HUklEECgSNAowR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VW",
-          "RU5UX1NFVF9PVkVSUklERV9URVhUVVJFECkqdAoQRUhhcHRpY1B1bHNlVHlw",
-          "ZRIeChpWUl9IQU5EX0hBUFRJQ19QVUxTRV9MSUdIVBAAEh8KG1ZSX0hBTkRf",
-          "SEFQVElDX1BVTFNFX01FRElVTRABEh8KG1ZSX0hBTkRfSEFQVElDX1BVTFNF",
-          "X1NUUk9ORxAC"));
+          "GENVc2VyTWVzc2FnZV9Vc2FnZVJlcG9ydBINCgV1c2FnZRgBIAEoCSK6AQog",
+          "Q1VzZXJNZXNzYWdlX1JlbW90ZVNlcnZlckNvbW1hbmQSUQoHY29tbWFuZBgB",
+          "IAEoDjIqLkNVc2VyTWVzc2FnZV9SZW1vdGVTZXJ2ZXJDb21tYW5kLkVDb21t",
+          "YW5kOhRFQ29tbWFuZENoYW5nZUNvblZhchIOCgZjb252YXIYAiABKAkSDQoF",
+          "dmFsdWUYAyABKAkiJAoIRUNvbW1hbmQSGAoURUNvbW1hbmRDaGFuZ2VDb25W",
+          "YXIQASLAAgogQ1VzZXJNZXNzYWdlUmVtb3RlU2VydmVyUmVzcG9uc2USWAoO",
+          "Y29tbWFuZF9yZXN1bHQYASABKA4yMC5DVXNlck1lc3NhZ2VSZW1vdGVTZXJ2",
+          "ZXJSZXNwb25zZS5FQ29tbWFuZFJlc3VsdDoORVJlc3VsdFN1Y2Nlc3MSDgoG",
+          "Y29udmFyGAIgASgJEg8KB3Jlc3VsdHMYAyABKAkioAEKDkVDb21tYW5kUmVz",
+          "dWx0EhIKDkVSZXN1bHRTdWNjZXNzEAESHAoYRVJlc3VsdFNlcnZlckRvZXNu",
+          "dEFsbG93EAISIQodRVJlc3VsdENsaWVudE5vdEF1dGhlbnRpY2F0ZWQQAxIb",
+          "ChdFUmVzdWx0Q2xpZW50Tm90QWxsb3dlZBAEEhwKGEVSZXN1bHRDb21tYW5k",
+          "Tm90QWxsb3dlZBAFKskJChFFQmFzZVVzZXJNZXNzYWdlcxIXChNVTV9BY2hp",
+          "ZXZlbWVudEV2ZW50EGUSFwoTVU1fQ3VycmVudFRpbWVzY2FsZRBoEhcKE1VN",
+          "X0Rlc2lyZWRUaW1lc2NhbGUQaRILCgdVTV9GYWRlEGoSEAoMVU1fR2FtZVRp",
+          "dGxlEGsSDQoJVU1fSHVkTXNnEG4SDgoKVU1fSHVkVGV4dBBvEhIKDlVNX0Nv",
+          "bG9yZWRUZXh0EHESEwoPVU1fUmVxdWVzdFN0YXRlEHISDwoLVU1fUmVzZXRI",
+          "VUQQcxINCglVTV9SdW1ibGUQdBIOCgpVTV9TYXlUZXh0EHUSDwoLVU1fU2F5",
+          "VGV4dDIQdhIVChFVTV9TYXlUZXh0Q2hhbm5lbBB3EgwKCFVNX1NoYWtlEHgS",
+          "DwoLVU1fU2hha2VEaXIQeRIRCg1VTV9XYXRlclNoYWtlEHoSDgoKVU1fVGV4",
+          "dE1zZxB8EhEKDVVNX1NjcmVlblRpbHQQfRIRCgxVTV9Wb2ljZU1hc2sQgAES",
+          "EQoMVU1fU2VuZEF1ZGlvEIIBEhIKDVVNX0l0ZW1QaWNrdXAQgwESEgoNVU1f",
+          "QW1tb0RlbmllZBCEARIQCgtVTV9TaG93TWVudRCGARISCg1VTV9DcmVkaXRz",
+          "TXNnEIcBEh8KGlVNX0Nsb3NlQ2FwdGlvblBsYWNlaG9sZGVyEI4BEhgKE1VN",
+          "X0NhbWVyYVRyYW5zaXRpb24QjwESFgoRVU1fQXVkaW9QYXJhbWV0ZXIQkAES",
+          "FwoSVU1fUGFydGljbGVNYW5hZ2VyEJEBEhAKC1VNX0h1ZEVycm9yEJIBEhcK",
+          "ElVNX0N1c3RvbUdhbWVFdmVudBCUARIXChJVTV9BbmltR3JhcGhVcGRhdGUQ",
+          "lQESGwoWVU1fSGFwdGljc01hbmFnZXJQdWxzZRCWARIcChdVTV9IYXB0aWNz",
+          "TWFuYWdlckVmZmVjdBCXARIYChNVTV9VcGRhdGVDc3NDbGFzc2VzEJkBEhcK",
+          "ElVNX1NlcnZlckZyYW1lVGltZRCaARIcChdVTV9MYWdDb21wZW5zYXRpb25F",
+          "cnJvchCbARIYChNVTV9SZXF1ZXN0RGxsU3RhdHVzEJwBEhkKFFVNX1JlcXVl",
+          "c3RVdGlsQWN0aW9uEJ0BEhoKFVVNX1V0aWxBY3Rpb25SZXNwb25zZRCeARIZ",
+          "ChRVTV9EbGxTdGF0dXNSZXNwb25zZRCfARIYChNVTV9SZXF1ZXN0SW52ZW50",
+          "b3J5EKABEhkKFFVNX0ludmVudG9yeVJlc3BvbnNlEKEBEhkKFFVNX1JlcXVl",
+          "c3REaWFnbm9zdGljEKIBEhoKFVVNX0RpYWdub3N0aWNSZXNwb25zZRCjARIV",
+          "ChBVTV9FeHRyYVVzZXJEYXRhEKQBEhsKFlVNX05vdGlmeVJlc3BvbnNlRm91",
+          "bmQQpQESHwoaVU1fUGxheVJlc3BvbnNlQ29uZGl0aW9uYWwQpgESFgoRVU1f",
+          "VXNlclNlbnRCdWdCdWcQpwESEwoOVU1fVXNhZ2VSZXBvcnQQqAESGwoWVU1f",
+          "UmVtb3RlU2VydmVyQ29tbWFuZBCpARIcChdVTV9SZW1vdGVTZXJ2ZXJSZXNw",
+          "b25zZRCqARIQCgtVTV9NQVhfQkFTRRDIASp7ChNFQmFzZUVudGl0eU1lc3Nh",
+          "Z2VzEhIKDUVNX1BsYXlKaW5nbGUQiAESFQoQRU1fU2NyZWVuT3ZlcmxheRCJ",
+          "ARIWChFFTV9Qcm9wYWdhdGVGb3JjZRCLARIPCgpFTV9Eb1NwYXJrEIwBEhAK",
+          "C0VNX0ZpeEFuZ2xlEI0BKm8KCWVSb2xsVHlwZRIWCglST0xMX05PTkUQ////",
+          "////////ARIOCgpST0xMX1NUQVRTEAASEAoMUk9MTF9DUkVESVRTEAESFwoT",
+          "Uk9MTF9MQVRFX0pPSU5fTE9HTxACEg8KC1JPTExfT1VUVFJPEAMq0xAKEFBB",
+          "UlRJQ0xFX01FU1NBR0USJgoiR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5U",
+          "X0NSRUFURRAAEiYKIkdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9VUERB",
+          "VEUQARIuCipHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfVVBEQVRFX0ZP",
+          "UldBUkQQAhIyCi5HQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfVVBEQVRF",
+          "X09SSUVOVEFUSU9OEAMSLworR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5U",
+          "X1VQREFURV9GQUxMQkFDSxAEEioKJkdBTUVfUEFSVElDTEVfTUFOQUdFUl9F",
+          "VkVOVF9VUERBVEVfRU5UEAUSLQopR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VW",
+          "RU5UX1VQREFURV9PRkZTRVQQBhInCiNHQU1FX1BBUlRJQ0xFX01BTkFHRVJf",
+          "RVZFTlRfREVTVFJPWRAHEjEKLUdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVO",
+          "VF9ERVNUUk9ZX0lOVk9MVklORxAIEicKI0dBTUVfUEFSVElDTEVfTUFOQUdF",
+          "Ul9FVkVOVF9SRUxFQVNFEAkSJwojR0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VW",
+          "RU5UX0xBVEVOQ1kQChIrCidHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRf",
+          "U0hPVUxEX0RSQVcQCxImCiJHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRf",
+          "RlJPWkVOEAwSPwo7R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX0NIQU5H",
+          "RV9DT05UUk9MX1BPSU5UX0FUVEFDSE1FTlQQDRI2CjJHQU1FX1BBUlRJQ0xF",
+          "X01BTkFHRVJfRVZFTlRfVVBEQVRFX0VOVElUWV9QT1NJVElPThAOEjIKLkdB",
+          "TUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfRk9XX1BST1BFUlRJRVMQ",
+          "DxIoCiRHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfU0VUX1RFWFQQEBI0",
+          "CjBHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfU0VUX1NIT1VMRF9DSEVD",
+          "S19GT1cQERI3CjNHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfU0VUX0NP",
+          "TlRST0xfUE9JTlRfTU9ERUwQEhI6CjZHQU1FX1BBUlRJQ0xFX01BTkFHRVJf",
+          "RVZFTlRfU0VUX0NPTlRST0xfUE9JTlRfU05BUFNIT1QQExI1CjFHQU1FX1BB",
+          "UlRJQ0xFX01BTkFHRVJfRVZFTlRfU0VUX1RFWFRVUkVfQVRUUklCVVRFEBQS",
+          "PQo5R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX1NFVF9TQ0VORV9PQkpF",
+          "Q1RfR0VORVJJQ19GTEFHEBUSPwo7R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VW",
+          "RU5UX1NFVF9TQ0VORV9PQkpFQ1RfVElOVF9BTkRfREVTQVQQFhItCilHQU1F",
+          "X1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfREVTVFJPWV9OQU1FRBAXEiwKKEdB",
+          "TUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TS0lQX1RPX1RJTUUQGBIqCiZH",
+          "QU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfQ0FOX0ZSRUVaRRAZEjcKM0dB",
+          "TUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfTkFNRURfVkFMVUVfQ09O",
+          "VEVYVBAaEjAKLEdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9VUERBVEVf",
+          "VFJBTlNGT1JNEBsSOgo2R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX0ZS",
+          "RUVaRV9UUkFOU0lUSU9OX09WRVJSSURFEBwSMAosR0FNRV9QQVJUSUNMRV9N",
+          "QU5BR0VSX0VWRU5UX0ZSRUVaRV9JTlZPTFZJTkcQHRI+CjpHQU1FX1BBUlRJ",
+          "Q0xFX01BTkFHRVJfRVZFTlRfQUREX01PREVMTElTVF9PVkVSUklERV9FTEVN",
+          "RU5UEB4SOAo0R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX0NMRUFSX01P",
+          "REVMTElTVF9PVkVSUklERRAfEjIKLkdBTUVfUEFSVElDTEVfTUFOQUdFUl9F",
+          "VkVOVF9DUkVBVEVfUEhZU0lDU19TSU0QIBIzCi9HQU1FX1BBUlRJQ0xFX01B",
+          "TkFHRVJfRVZFTlRfREVTVFJPWV9QSFlTSUNTX1NJTRAhEikKJUdBTUVfUEFS",
+          "VElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfVkRBVEEQIhI1CjFHQU1FX1BBUlRJ",
+          "Q0xFX01BTkFHRVJfRVZFTlRfU0VUX01BVEVSSUFMX09WRVJSSURFECMSJwoj",
+          "R0FNRV9QQVJUSUNMRV9NQU5BR0VSX0VWRU5UX0FERF9GQU4QJBIqCiZHQU1F",
+          "X1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfVVBEQVRFX0ZBThAlEjIKLkdBTUVf",
+          "UEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfQ0xVU1RFUl9HUk9XVEgQJhIq",
+          "CiZHQU1FX1BBUlRJQ0xFX01BTkFHRVJfRVZFTlRfUkVNT1ZFX0ZBThAnEjEK",
+          "LUdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9DUkVBVEVfU01PS0VfR1JJ",
+          "RBAoEjQKMEdBTUVfUEFSVElDTEVfTUFOQUdFUl9FVkVOVF9TRVRfT1ZFUlJJ",
+          "REVfVEVYVFVSRRApKnQKEEVIYXB0aWNQdWxzZVR5cGUSHgoaVlJfSEFORF9I",
+          "QVBUSUNfUFVMU0VfTElHSFQQABIfChtWUl9IQU5EX0hBUFRJQ19QVUxTRV9N",
+          "RURJVU0QARIfChtWUl9IQU5EX0hBUFRJQ19QVUxTRV9TVFJPTkcQAg=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::EBaseUserMessages), typeof(global::EBaseEntityMessages), typeof(global::eRollType), typeof(global::PARTICLE_MESSAGE), typeof(global::EHapticPulseType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -538,7 +550,9 @@ public static partial class UsermessagesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_ExtraUserData), global::CUserMessage_ExtraUserData.Parser, new[]{ "Item", "Value1", "Value2", "Detail1", "Detail2" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_NotifyResponseFound), global::CUserMessage_NotifyResponseFound.Parser, new[]{ "EntIndex", "RuleName", "ResponseValue", "ResponseConcept", "Criteria", "IntCriteriaNames", "IntCriteriaValues", "FloatCriteriaNames", "FloatCriteriaValues", "SymbolCriteriaNames", "SymbolCriteriaValues", "SpeakResult" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_NotifyResponseFound.Types.Criteria), global::CUserMessage_NotifyResponseFound.Types.Criteria.Parser, new[]{ "NameSymbol", "Value" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_PlayResponseConditional), global::CUserMessage_PlayResponseConditional.Parser, new[]{ "EntIndex", "PlayerSlots", "Response", "EntOrigin", "PreDelay", "MixPriority" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_UsageReport), global::CUserMessage_UsageReport.Parser, new[]{ "Usage" }, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_UsageReport), global::CUserMessage_UsageReport.Parser, new[]{ "Usage" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessage_RemoteServerCommand), global::CUserMessage_RemoteServerCommand.Parser, new[]{ "Command", "Convar", "Value" }, null, new[]{ typeof(global::CUserMessage_RemoteServerCommand.Types.ECommand) }, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CUserMessageRemoteServerResponse), global::CUserMessageRemoteServerResponse.Parser, new[]{ "CommandResult", "Convar", "Results" }, null, new[]{ typeof(global::CUserMessageRemoteServerResponse.Types.ECommandResult) }, null, null)
         }));
   }
   #endregion
@@ -596,6 +610,8 @@ public enum EBaseUserMessages {
   [pbr::OriginalName("UM_PlayResponseConditional")] UmPlayResponseConditional = 166,
   [pbr::OriginalName("UM_UserSentBugBug")] UmUserSentBugBug = 167,
   [pbr::OriginalName("UM_UsageReport")] UmUsageReport = 168,
+  [pbr::OriginalName("UM_RemoteServerCommand")] UmRemoteServerCommand = 169,
+  [pbr::OriginalName("UM_RemoteServerResponse")] UmRemoteServerResponse = 170,
   [pbr::OriginalName("UM_MAX_BASE")] UmMaxBase = 200,
 }
 
@@ -37409,6 +37425,650 @@ public sealed partial class CUserMessage_UsageReport : pb::IMessage<CUserMessage
     }
   }
   #endif
+
+}
+
+public sealed partial class CUserMessage_RemoteServerCommand : pb::IMessage<CUserMessage_RemoteServerCommand>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CUserMessage_RemoteServerCommand> _parser = new pb::MessageParser<CUserMessage_RemoteServerCommand>(() => new CUserMessage_RemoteServerCommand());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CUserMessage_RemoteServerCommand> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::UsermessagesReflection.Descriptor.MessageTypes[54]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessage_RemoteServerCommand() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessage_RemoteServerCommand(CUserMessage_RemoteServerCommand other) : this() {
+    _hasBits0 = other._hasBits0;
+    command_ = other.command_;
+    convar_ = other.convar_;
+    value_ = other.value_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessage_RemoteServerCommand Clone() {
+    return new CUserMessage_RemoteServerCommand(this);
+  }
+
+  /// <summary>Field number for the "command" field.</summary>
+  public const int CommandFieldNumber = 1;
+  private readonly static global::CUserMessage_RemoteServerCommand.Types.ECommand CommandDefaultValue = global::CUserMessage_RemoteServerCommand.Types.ECommand.ChangeConVar;
+
+  private global::CUserMessage_RemoteServerCommand.Types.ECommand command_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CUserMessage_RemoteServerCommand.Types.ECommand Command {
+    get { if ((_hasBits0 & 1) != 0) { return command_; } else { return CommandDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      command_ = value;
+    }
+  }
+  /// <summary>Gets whether the "command" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCommand {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "command" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCommand() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "convar" field.</summary>
+  public const int ConvarFieldNumber = 2;
+  private readonly static string ConvarDefaultValue = "";
+
+  private string convar_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Convar {
+    get { return convar_ ?? ConvarDefaultValue; }
+    set {
+      convar_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "convar" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasConvar {
+    get { return convar_ != null; }
+  }
+  /// <summary>Clears the value of the "convar" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearConvar() {
+    convar_ = null;
+  }
+
+  /// <summary>Field number for the "value" field.</summary>
+  public const int ValueFieldNumber = 3;
+  private readonly static string ValueDefaultValue = "";
+
+  private string value_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Value {
+    get { return value_ ?? ValueDefaultValue; }
+    set {
+      value_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "value" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasValue {
+    get { return value_ != null; }
+  }
+  /// <summary>Clears the value of the "value" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearValue() {
+    value_ = null;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CUserMessage_RemoteServerCommand);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CUserMessage_RemoteServerCommand other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Command != other.Command) return false;
+    if (Convar != other.Convar) return false;
+    if (Value != other.Value) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasCommand) hash ^= Command.GetHashCode();
+    if (HasConvar) hash ^= Convar.GetHashCode();
+    if (HasValue) hash ^= Value.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasCommand) {
+      output.WriteRawTag(8);
+      output.WriteEnum((int) Command);
+    }
+    if (HasConvar) {
+      output.WriteRawTag(18);
+      output.WriteString(Convar);
+    }
+    if (HasValue) {
+      output.WriteRawTag(26);
+      output.WriteString(Value);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasCommand) {
+      output.WriteRawTag(8);
+      output.WriteEnum((int) Command);
+    }
+    if (HasConvar) {
+      output.WriteRawTag(18);
+      output.WriteString(Convar);
+    }
+    if (HasValue) {
+      output.WriteRawTag(26);
+      output.WriteString(Value);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasCommand) {
+      size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Command);
+    }
+    if (HasConvar) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Convar);
+    }
+    if (HasValue) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Value);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CUserMessage_RemoteServerCommand other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasCommand) {
+      Command = other.Command;
+    }
+    if (other.HasConvar) {
+      Convar = other.Convar;
+    }
+    if (other.HasValue) {
+      Value = other.Value;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          Command = (global::CUserMessage_RemoteServerCommand.Types.ECommand) input.ReadEnum();
+          break;
+        }
+        case 18: {
+          Convar = input.ReadString();
+          break;
+        }
+        case 26: {
+          Value = input.ReadString();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          Command = (global::CUserMessage_RemoteServerCommand.Types.ECommand) input.ReadEnum();
+          break;
+        }
+        case 18: {
+          Convar = input.ReadString();
+          break;
+        }
+        case 26: {
+          Value = input.ReadString();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+  #region Nested types
+  /// <summary>Container for nested types declared in the CUserMessage_RemoteServerCommand message type.</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static partial class Types {
+    public enum ECommand {
+      [pbr::OriginalName("ECommandChangeConVar")] ChangeConVar = 1,
+    }
+
+  }
+  #endregion
+
+}
+
+public sealed partial class CUserMessageRemoteServerResponse : pb::IMessage<CUserMessageRemoteServerResponse>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CUserMessageRemoteServerResponse> _parser = new pb::MessageParser<CUserMessageRemoteServerResponse>(() => new CUserMessageRemoteServerResponse());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CUserMessageRemoteServerResponse> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::UsermessagesReflection.Descriptor.MessageTypes[55]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessageRemoteServerResponse() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessageRemoteServerResponse(CUserMessageRemoteServerResponse other) : this() {
+    _hasBits0 = other._hasBits0;
+    commandResult_ = other.commandResult_;
+    convar_ = other.convar_;
+    results_ = other.results_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CUserMessageRemoteServerResponse Clone() {
+    return new CUserMessageRemoteServerResponse(this);
+  }
+
+  /// <summary>Field number for the "command_result" field.</summary>
+  public const int CommandResultFieldNumber = 1;
+  private readonly static global::CUserMessageRemoteServerResponse.Types.ECommandResult CommandResultDefaultValue = global::CUserMessageRemoteServerResponse.Types.ECommandResult.EresultSuccess;
+
+  private global::CUserMessageRemoteServerResponse.Types.ECommandResult commandResult_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::CUserMessageRemoteServerResponse.Types.ECommandResult CommandResult {
+    get { if ((_hasBits0 & 1) != 0) { return commandResult_; } else { return CommandResultDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      commandResult_ = value;
+    }
+  }
+  /// <summary>Gets whether the "command_result" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCommandResult {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "command_result" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCommandResult() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "convar" field.</summary>
+  public const int ConvarFieldNumber = 2;
+  private readonly static string ConvarDefaultValue = "";
+
+  private string convar_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Convar {
+    get { return convar_ ?? ConvarDefaultValue; }
+    set {
+      convar_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "convar" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasConvar {
+    get { return convar_ != null; }
+  }
+  /// <summary>Clears the value of the "convar" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearConvar() {
+    convar_ = null;
+  }
+
+  /// <summary>Field number for the "results" field.</summary>
+  public const int ResultsFieldNumber = 3;
+  private readonly static string ResultsDefaultValue = "";
+
+  private string results_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Results {
+    get { return results_ ?? ResultsDefaultValue; }
+    set {
+      results_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "results" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasResults {
+    get { return results_ != null; }
+  }
+  /// <summary>Clears the value of the "results" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearResults() {
+    results_ = null;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CUserMessageRemoteServerResponse);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CUserMessageRemoteServerResponse other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (CommandResult != other.CommandResult) return false;
+    if (Convar != other.Convar) return false;
+    if (Results != other.Results) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasCommandResult) hash ^= CommandResult.GetHashCode();
+    if (HasConvar) hash ^= Convar.GetHashCode();
+    if (HasResults) hash ^= Results.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasCommandResult) {
+      output.WriteRawTag(8);
+      output.WriteEnum((int) CommandResult);
+    }
+    if (HasConvar) {
+      output.WriteRawTag(18);
+      output.WriteString(Convar);
+    }
+    if (HasResults) {
+      output.WriteRawTag(26);
+      output.WriteString(Results);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasCommandResult) {
+      output.WriteRawTag(8);
+      output.WriteEnum((int) CommandResult);
+    }
+    if (HasConvar) {
+      output.WriteRawTag(18);
+      output.WriteString(Convar);
+    }
+    if (HasResults) {
+      output.WriteRawTag(26);
+      output.WriteString(Results);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasCommandResult) {
+      size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CommandResult);
+    }
+    if (HasConvar) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Convar);
+    }
+    if (HasResults) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Results);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CUserMessageRemoteServerResponse other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasCommandResult) {
+      CommandResult = other.CommandResult;
+    }
+    if (other.HasConvar) {
+      Convar = other.Convar;
+    }
+    if (other.HasResults) {
+      Results = other.Results;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          CommandResult = (global::CUserMessageRemoteServerResponse.Types.ECommandResult) input.ReadEnum();
+          break;
+        }
+        case 18: {
+          Convar = input.ReadString();
+          break;
+        }
+        case 26: {
+          Results = input.ReadString();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          CommandResult = (global::CUserMessageRemoteServerResponse.Types.ECommandResult) input.ReadEnum();
+          break;
+        }
+        case 18: {
+          Convar = input.ReadString();
+          break;
+        }
+        case 26: {
+          Results = input.ReadString();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+  #region Nested types
+  /// <summary>Container for nested types declared in the CUserMessageRemoteServerResponse message type.</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static partial class Types {
+    public enum ECommandResult {
+      [pbr::OriginalName("EResultSuccess")] EresultSuccess = 1,
+      [pbr::OriginalName("EResultServerDoesntAllow")] EresultServerDoesntAllow = 2,
+      [pbr::OriginalName("EResultClientNotAuthenticated")] EresultClientNotAuthenticated = 3,
+      [pbr::OriginalName("EResultClientNotAllowed")] EresultClientNotAllowed = 4,
+      [pbr::OriginalName("EResultCommandNotAllowed")] EresultCommandNotAllowed = 5,
+    }
+
+  }
+  #endregion
 
 }
 

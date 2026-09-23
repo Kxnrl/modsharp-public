@@ -446,19 +446,6 @@ static void ProcessDataMapFields(SchemaClass_t*                        derived_s
         if (field_name == nullptr)
             continue;
 
-        if (dataMap_field.inputFunc != nullptr)
-        {
-            auto new_dm_field  = derived_schema_class->dataMapFields.AddToTailGetPtr();
-            new_dm_field->name = field_name;
-            memcpy(&new_dm_field->inputFunc, &dataMap_field.inputFunc, sizeof(void*));
-
-            char key_buffer[512];
-            snprintf(key_buffer, sizeof(key_buffer), "%s->%s", derived_schema_class->name.Get(), field_name);
-            g_DataMapInputFuncMap[MurmurHash2(key_buffer, MURMURHASH_SEED_MODSHARP)] = new_dm_field->inputFunc;
-
-            continue;
-        }
-
         constexpr int32_t invalid_offset = 0x7fffffff;
         const auto        offset         = dataMap_field.fieldOffset;
 

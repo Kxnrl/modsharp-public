@@ -1815,8 +1815,40 @@ struct CUserMessage_UsageReportDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CUserMessage_UsageReportDefaultTypeInternal _CUserMessage_UsageReport_default_instance_;
-static ::_pb::Metadata file_level_metadata_usermessages_2eproto[107];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_usermessages_2eproto[5];
+PROTOBUF_CONSTEXPR CUserMessage_RemoteServerCommand::CUserMessage_RemoteServerCommand(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.convar_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.value_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.command_)*/1} {}
+struct CUserMessage_RemoteServerCommandDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CUserMessage_RemoteServerCommandDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CUserMessage_RemoteServerCommandDefaultTypeInternal() {}
+  union {
+    CUserMessage_RemoteServerCommand _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CUserMessage_RemoteServerCommandDefaultTypeInternal _CUserMessage_RemoteServerCommand_default_instance_;
+PROTOBUF_CONSTEXPR CUserMessageRemoteServerResponse::CUserMessageRemoteServerResponse(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.convar_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.results_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.command_result_)*/1} {}
+struct CUserMessageRemoteServerResponseDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR CUserMessageRemoteServerResponseDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~CUserMessageRemoteServerResponseDefaultTypeInternal() {}
+  union {
+    CUserMessageRemoteServerResponse _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CUserMessageRemoteServerResponseDefaultTypeInternal _CUserMessageRemoteServerResponse_default_instance_;
+static ::_pb::Metadata file_level_metadata_usermessages_2eproto[109];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_usermessages_2eproto[7];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_usermessages_2eproto = nullptr;
 
 const uint32_t TableStruct_usermessages_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -3281,6 +3313,30 @@ const uint32_t TableStruct_usermessages_2eproto::offsets[] PROTOBUF_SECTION_VARI
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CUserMessage_UsageReport, _impl_.usage_),
   0,
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_RemoteServerCommand, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_RemoteServerCommand, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_RemoteServerCommand, _impl_.command_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_RemoteServerCommand, _impl_.convar_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessage_RemoteServerCommand, _impl_.value_),
+  2,
+  0,
+  1,
+  PROTOBUF_FIELD_OFFSET(::CUserMessageRemoteServerResponse, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessageRemoteServerResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::CUserMessageRemoteServerResponse, _impl_.command_result_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessageRemoteServerResponse, _impl_.convar_),
+  PROTOBUF_FIELD_OFFSET(::CUserMessageRemoteServerResponse, _impl_.results_),
+  2,
+  0,
+  1,
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, 7, -1, sizeof(::CUserMessageAchievementEvent)},
@@ -3390,6 +3446,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 1405, 1423, -1, sizeof(::CUserMessage_NotifyResponseFound)},
   { 1435, 1447, -1, sizeof(::CUserMessage_PlayResponseConditional)},
   { 1453, 1460, -1, sizeof(::CUserMessage_UsageReport)},
+  { 1461, 1470, -1, sizeof(::CUserMessage_RemoteServerCommand)},
+  { 1473, 1482, -1, sizeof(::CUserMessageRemoteServerResponse)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -3500,6 +3558,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CUserMessage_NotifyResponseFound_default_instance_._instance,
   &::_CUserMessage_PlayResponseConditional_default_instance_._instance,
   &::_CUserMessage_UsageReport_default_instance_._instance,
+  &::_CUserMessage_RemoteServerCommand_default_instance_._instance,
+  &::_CUserMessageRemoteServerResponse_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_usermessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -3878,108 +3938,122 @@ const char descriptor_table_protodef_usermessages_2eproto[] PROTOBUF_SECTION_VAR
   "lots\030\002 \003(\005\022\020\n\010response\030\003 \001(\t\022\037\n\nent_orig"
   "in\030\004 \001(\0132\013.CMsgVector\022\021\n\tpre_delay\030\005 \001(\002"
   "\022\024\n\014mix_priority\030\006 \001(\005\")\n\030CUserMessage_U"
-  "sageReport\022\r\n\005usage\030\001 \001(\t*\216\t\n\021EBaseUserM"
-  "essages\022\027\n\023UM_AchievementEvent\020e\022\027\n\023UM_C"
-  "urrentTimescale\020h\022\027\n\023UM_DesiredTimescale"
-  "\020i\022\013\n\007UM_Fade\020j\022\020\n\014UM_GameTitle\020k\022\r\n\tUM_"
-  "HudMsg\020n\022\016\n\nUM_HudText\020o\022\022\n\016UM_ColoredTe"
-  "xt\020q\022\023\n\017UM_RequestState\020r\022\017\n\013UM_ResetHUD"
-  "\020s\022\r\n\tUM_Rumble\020t\022\016\n\nUM_SayText\020u\022\017\n\013UM_"
-  "SayText2\020v\022\025\n\021UM_SayTextChannel\020w\022\014\n\010UM_"
-  "Shake\020x\022\017\n\013UM_ShakeDir\020y\022\021\n\rUM_WaterShak"
-  "e\020z\022\016\n\nUM_TextMsg\020|\022\021\n\rUM_ScreenTilt\020}\022\021"
-  "\n\014UM_VoiceMask\020\200\001\022\021\n\014UM_SendAudio\020\202\001\022\022\n\r"
-  "UM_ItemPickup\020\203\001\022\022\n\rUM_AmmoDenied\020\204\001\022\020\n\013"
-  "UM_ShowMenu\020\206\001\022\022\n\rUM_CreditsMsg\020\207\001\022\037\n\032UM"
-  "_CloseCaptionPlaceholder\020\216\001\022\030\n\023UM_Camera"
-  "Transition\020\217\001\022\026\n\021UM_AudioParameter\020\220\001\022\027\n"
-  "\022UM_ParticleManager\020\221\001\022\020\n\013UM_HudError\020\222\001"
-  "\022\027\n\022UM_CustomGameEvent\020\224\001\022\027\n\022UM_AnimGrap"
-  "hUpdate\020\225\001\022\033\n\026UM_HapticsManagerPulse\020\226\001\022"
-  "\034\n\027UM_HapticsManagerEffect\020\227\001\022\030\n\023UM_Upda"
-  "teCssClasses\020\231\001\022\027\n\022UM_ServerFrameTime\020\232\001"
-  "\022\034\n\027UM_LagCompensationError\020\233\001\022\030\n\023UM_Req"
-  "uestDllStatus\020\234\001\022\031\n\024UM_RequestUtilAction"
-  "\020\235\001\022\032\n\025UM_UtilActionResponse\020\236\001\022\031\n\024UM_Dl"
-  "lStatusResponse\020\237\001\022\030\n\023UM_RequestInventor"
-  "y\020\240\001\022\031\n\024UM_InventoryResponse\020\241\001\022\031\n\024UM_Re"
-  "questDiagnostic\020\242\001\022\032\n\025UM_DiagnosticRespo"
-  "nse\020\243\001\022\025\n\020UM_ExtraUserData\020\244\001\022\033\n\026UM_Noti"
-  "fyResponseFound\020\245\001\022\037\n\032UM_PlayResponseCon"
-  "ditional\020\246\001\022\026\n\021UM_UserSentBugBug\020\247\001\022\023\n\016U"
-  "M_UsageReport\020\250\001\022\020\n\013UM_MAX_BASE\020\310\001*{\n\023EB"
-  "aseEntityMessages\022\022\n\rEM_PlayJingle\020\210\001\022\025\n"
-  "\020EM_ScreenOverlay\020\211\001\022\026\n\021EM_PropagateForc"
-  "e\020\213\001\022\017\n\nEM_DoSpark\020\214\001\022\020\n\013EM_FixAngle\020\215\001*"
-  "o\n\teRollType\022\026\n\tROLL_NONE\020\377\377\377\377\377\377\377\377\377\001\022\016\n\n"
-  "ROLL_STATS\020\000\022\020\n\014ROLL_CREDITS\020\001\022\027\n\023ROLL_L"
-  "ATE_JOIN_LOGO\020\002\022\017\n\013ROLL_OUTTRO\020\003*\323\020\n\020PAR"
-  "TICLE_MESSAGE\022&\n\"GAME_PARTICLE_MANAGER_E"
-  "VENT_CREATE\020\000\022&\n\"GAME_PARTICLE_MANAGER_E"
-  "VENT_UPDATE\020\001\022.\n*GAME_PARTICLE_MANAGER_E"
-  "VENT_UPDATE_FORWARD\020\002\0222\n.GAME_PARTICLE_M"
-  "ANAGER_EVENT_UPDATE_ORIENTATION\020\003\022/\n+GAM"
-  "E_PARTICLE_MANAGER_EVENT_UPDATE_FALLBACK"
-  "\020\004\022*\n&GAME_PARTICLE_MANAGER_EVENT_UPDATE"
-  "_ENT\020\005\022-\n)GAME_PARTICLE_MANAGER_EVENT_UP"
-  "DATE_OFFSET\020\006\022\'\n#GAME_PARTICLE_MANAGER_E"
-  "VENT_DESTROY\020\007\0221\n-GAME_PARTICLE_MANAGER_"
-  "EVENT_DESTROY_INVOLVING\020\010\022\'\n#GAME_PARTIC"
-  "LE_MANAGER_EVENT_RELEASE\020\t\022\'\n#GAME_PARTI"
-  "CLE_MANAGER_EVENT_LATENCY\020\n\022+\n\'GAME_PART"
-  "ICLE_MANAGER_EVENT_SHOULD_DRAW\020\013\022&\n\"GAME"
-  "_PARTICLE_MANAGER_EVENT_FROZEN\020\014\022\?\n;GAME"
-  "_PARTICLE_MANAGER_EVENT_CHANGE_CONTROL_P"
-  "OINT_ATTACHMENT\020\r\0226\n2GAME_PARTICLE_MANAG"
-  "ER_EVENT_UPDATE_ENTITY_POSITION\020\016\0222\n.GAM"
-  "E_PARTICLE_MANAGER_EVENT_SET_FOW_PROPERT"
-  "IES\020\017\022(\n$GAME_PARTICLE_MANAGER_EVENT_SET"
-  "_TEXT\020\020\0224\n0GAME_PARTICLE_MANAGER_EVENT_S"
-  "ET_SHOULD_CHECK_FOW\020\021\0227\n3GAME_PARTICLE_M"
-  "ANAGER_EVENT_SET_CONTROL_POINT_MODEL\020\022\022:"
-  "\n6GAME_PARTICLE_MANAGER_EVENT_SET_CONTRO"
-  "L_POINT_SNAPSHOT\020\023\0225\n1GAME_PARTICLE_MANA"
-  "GER_EVENT_SET_TEXTURE_ATTRIBUTE\020\024\022=\n9GAM"
-  "E_PARTICLE_MANAGER_EVENT_SET_SCENE_OBJEC"
-  "T_GENERIC_FLAG\020\025\022\?\n;GAME_PARTICLE_MANAGE"
-  "R_EVENT_SET_SCENE_OBJECT_TINT_AND_DESAT\020"
-  "\026\022-\n)GAME_PARTICLE_MANAGER_EVENT_DESTROY"
-  "_NAMED\020\027\022,\n(GAME_PARTICLE_MANAGER_EVENT_"
-  "SKIP_TO_TIME\020\030\022*\n&GAME_PARTICLE_MANAGER_"
-  "EVENT_CAN_FREEZE\020\031\0227\n3GAME_PARTICLE_MANA"
-  "GER_EVENT_SET_NAMED_VALUE_CONTEXT\020\032\0220\n,G"
-  "AME_PARTICLE_MANAGER_EVENT_UPDATE_TRANSF"
-  "ORM\020\033\022:\n6GAME_PARTICLE_MANAGER_EVENT_FRE"
-  "EZE_TRANSITION_OVERRIDE\020\034\0220\n,GAME_PARTIC"
-  "LE_MANAGER_EVENT_FREEZE_INVOLVING\020\035\022>\n:G"
-  "AME_PARTICLE_MANAGER_EVENT_ADD_MODELLIST"
-  "_OVERRIDE_ELEMENT\020\036\0228\n4GAME_PARTICLE_MAN"
-  "AGER_EVENT_CLEAR_MODELLIST_OVERRIDE\020\037\0222\n"
-  ".GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYS"
-  "ICS_SIM\020 \0223\n/GAME_PARTICLE_MANAGER_EVENT"
-  "_DESTROY_PHYSICS_SIM\020!\022)\n%GAME_PARTICLE_"
-  "MANAGER_EVENT_SET_VDATA\020\"\0225\n1GAME_PARTIC"
-  "LE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE\020#"
-  "\022\'\n#GAME_PARTICLE_MANAGER_EVENT_ADD_FAN\020"
-  "$\022*\n&GAME_PARTICLE_MANAGER_EVENT_UPDATE_"
-  "FAN\020%\0222\n.GAME_PARTICLE_MANAGER_EVENT_SET"
-  "_CLUSTER_GROWTH\020&\022*\n&GAME_PARTICLE_MANAG"
-  "ER_EVENT_REMOVE_FAN\020\'\0221\n-GAME_PARTICLE_M"
-  "ANAGER_EVENT_CREATE_SMOKE_GRID\020(\0224\n0GAME"
-  "_PARTICLE_MANAGER_EVENT_SET_OVERRIDE_TEX"
-  "TURE\020)*t\n\020EHapticPulseType\022\036\n\032VR_HAND_HA"
-  "PTIC_PULSE_LIGHT\020\000\022\037\n\033VR_HAND_HAPTIC_PUL"
-  "SE_MEDIUM\020\001\022\037\n\033VR_HAND_HAPTIC_PULSE_STRO"
-  "NG\020\002"
+  "sageReport\022\r\n\005usage\030\001 \001(\t\"\272\001\n CUserMessa"
+  "ge_RemoteServerCommand\022Q\n\007command\030\001 \001(\0162"
+  "*.CUserMessage_RemoteServerCommand.EComm"
+  "and:\024ECommandChangeConVar\022\016\n\006convar\030\002 \001("
+  "\t\022\r\n\005value\030\003 \001(\t\"$\n\010ECommand\022\030\n\024ECommand"
+  "ChangeConVar\020\001\"\300\002\n CUserMessageRemoteSer"
+  "verResponse\022X\n\016command_result\030\001 \001(\01620.CU"
+  "serMessageRemoteServerResponse.ECommandR"
+  "esult:\016EResultSuccess\022\016\n\006convar\030\002 \001(\t\022\017\n"
+  "\007results\030\003 \001(\t\"\240\001\n\016ECommandResult\022\022\n\016ERe"
+  "sultSuccess\020\001\022\034\n\030EResultServerDoesntAllo"
+  "w\020\002\022!\n\035EResultClientNotAuthenticated\020\003\022\033"
+  "\n\027EResultClientNotAllowed\020\004\022\034\n\030EResultCo"
+  "mmandNotAllowed\020\005*\311\t\n\021EBaseUserMessages\022"
+  "\027\n\023UM_AchievementEvent\020e\022\027\n\023UM_CurrentTi"
+  "mescale\020h\022\027\n\023UM_DesiredTimescale\020i\022\013\n\007UM"
+  "_Fade\020j\022\020\n\014UM_GameTitle\020k\022\r\n\tUM_HudMsg\020n"
+  "\022\016\n\nUM_HudText\020o\022\022\n\016UM_ColoredText\020q\022\023\n\017"
+  "UM_RequestState\020r\022\017\n\013UM_ResetHUD\020s\022\r\n\tUM"
+  "_Rumble\020t\022\016\n\nUM_SayText\020u\022\017\n\013UM_SayText2"
+  "\020v\022\025\n\021UM_SayTextChannel\020w\022\014\n\010UM_Shake\020x\022"
+  "\017\n\013UM_ShakeDir\020y\022\021\n\rUM_WaterShake\020z\022\016\n\nU"
+  "M_TextMsg\020|\022\021\n\rUM_ScreenTilt\020}\022\021\n\014UM_Voi"
+  "ceMask\020\200\001\022\021\n\014UM_SendAudio\020\202\001\022\022\n\rUM_ItemP"
+  "ickup\020\203\001\022\022\n\rUM_AmmoDenied\020\204\001\022\020\n\013UM_ShowM"
+  "enu\020\206\001\022\022\n\rUM_CreditsMsg\020\207\001\022\037\n\032UM_CloseCa"
+  "ptionPlaceholder\020\216\001\022\030\n\023UM_CameraTransiti"
+  "on\020\217\001\022\026\n\021UM_AudioParameter\020\220\001\022\027\n\022UM_Part"
+  "icleManager\020\221\001\022\020\n\013UM_HudError\020\222\001\022\027\n\022UM_C"
+  "ustomGameEvent\020\224\001\022\027\n\022UM_AnimGraphUpdate\020"
+  "\225\001\022\033\n\026UM_HapticsManagerPulse\020\226\001\022\034\n\027UM_Ha"
+  "pticsManagerEffect\020\227\001\022\030\n\023UM_UpdateCssCla"
+  "sses\020\231\001\022\027\n\022UM_ServerFrameTime\020\232\001\022\034\n\027UM_L"
+  "agCompensationError\020\233\001\022\030\n\023UM_RequestDllS"
+  "tatus\020\234\001\022\031\n\024UM_RequestUtilAction\020\235\001\022\032\n\025U"
+  "M_UtilActionResponse\020\236\001\022\031\n\024UM_DllStatusR"
+  "esponse\020\237\001\022\030\n\023UM_RequestInventory\020\240\001\022\031\n\024"
+  "UM_InventoryResponse\020\241\001\022\031\n\024UM_RequestDia"
+  "gnostic\020\242\001\022\032\n\025UM_DiagnosticResponse\020\243\001\022\025"
+  "\n\020UM_ExtraUserData\020\244\001\022\033\n\026UM_NotifyRespon"
+  "seFound\020\245\001\022\037\n\032UM_PlayResponseConditional"
+  "\020\246\001\022\026\n\021UM_UserSentBugBug\020\247\001\022\023\n\016UM_UsageR"
+  "eport\020\250\001\022\033\n\026UM_RemoteServerCommand\020\251\001\022\034\n"
+  "\027UM_RemoteServerResponse\020\252\001\022\020\n\013UM_MAX_BA"
+  "SE\020\310\001*{\n\023EBaseEntityMessages\022\022\n\rEM_PlayJ"
+  "ingle\020\210\001\022\025\n\020EM_ScreenOverlay\020\211\001\022\026\n\021EM_Pr"
+  "opagateForce\020\213\001\022\017\n\nEM_DoSpark\020\214\001\022\020\n\013EM_F"
+  "ixAngle\020\215\001*o\n\teRollType\022\026\n\tROLL_NONE\020\377\377\377"
+  "\377\377\377\377\377\377\001\022\016\n\nROLL_STATS\020\000\022\020\n\014ROLL_CREDITS\020"
+  "\001\022\027\n\023ROLL_LATE_JOIN_LOGO\020\002\022\017\n\013ROLL_OUTTR"
+  "O\020\003*\323\020\n\020PARTICLE_MESSAGE\022&\n\"GAME_PARTICL"
+  "E_MANAGER_EVENT_CREATE\020\000\022&\n\"GAME_PARTICL"
+  "E_MANAGER_EVENT_UPDATE\020\001\022.\n*GAME_PARTICL"
+  "E_MANAGER_EVENT_UPDATE_FORWARD\020\002\0222\n.GAME"
+  "_PARTICLE_MANAGER_EVENT_UPDATE_ORIENTATI"
+  "ON\020\003\022/\n+GAME_PARTICLE_MANAGER_EVENT_UPDA"
+  "TE_FALLBACK\020\004\022*\n&GAME_PARTICLE_MANAGER_E"
+  "VENT_UPDATE_ENT\020\005\022-\n)GAME_PARTICLE_MANAG"
+  "ER_EVENT_UPDATE_OFFSET\020\006\022\'\n#GAME_PARTICL"
+  "E_MANAGER_EVENT_DESTROY\020\007\0221\n-GAME_PARTIC"
+  "LE_MANAGER_EVENT_DESTROY_INVOLVING\020\010\022\'\n#"
+  "GAME_PARTICLE_MANAGER_EVENT_RELEASE\020\t\022\'\n"
+  "#GAME_PARTICLE_MANAGER_EVENT_LATENCY\020\n\022+"
+  "\n\'GAME_PARTICLE_MANAGER_EVENT_SHOULD_DRA"
+  "W\020\013\022&\n\"GAME_PARTICLE_MANAGER_EVENT_FROZE"
+  "N\020\014\022\?\n;GAME_PARTICLE_MANAGER_EVENT_CHANG"
+  "E_CONTROL_POINT_ATTACHMENT\020\r\0226\n2GAME_PAR"
+  "TICLE_MANAGER_EVENT_UPDATE_ENTITY_POSITI"
+  "ON\020\016\0222\n.GAME_PARTICLE_MANAGER_EVENT_SET_"
+  "FOW_PROPERTIES\020\017\022(\n$GAME_PARTICLE_MANAGE"
+  "R_EVENT_SET_TEXT\020\020\0224\n0GAME_PARTICLE_MANA"
+  "GER_EVENT_SET_SHOULD_CHECK_FOW\020\021\0227\n3GAME"
+  "_PARTICLE_MANAGER_EVENT_SET_CONTROL_POIN"
+  "T_MODEL\020\022\022:\n6GAME_PARTICLE_MANAGER_EVENT"
+  "_SET_CONTROL_POINT_SNAPSHOT\020\023\0225\n1GAME_PA"
+  "RTICLE_MANAGER_EVENT_SET_TEXTURE_ATTRIBU"
+  "TE\020\024\022=\n9GAME_PARTICLE_MANAGER_EVENT_SET_"
+  "SCENE_OBJECT_GENERIC_FLAG\020\025\022\?\n;GAME_PART"
+  "ICLE_MANAGER_EVENT_SET_SCENE_OBJECT_TINT"
+  "_AND_DESAT\020\026\022-\n)GAME_PARTICLE_MANAGER_EV"
+  "ENT_DESTROY_NAMED\020\027\022,\n(GAME_PARTICLE_MAN"
+  "AGER_EVENT_SKIP_TO_TIME\020\030\022*\n&GAME_PARTIC"
+  "LE_MANAGER_EVENT_CAN_FREEZE\020\031\0227\n3GAME_PA"
+  "RTICLE_MANAGER_EVENT_SET_NAMED_VALUE_CON"
+  "TEXT\020\032\0220\n,GAME_PARTICLE_MANAGER_EVENT_UP"
+  "DATE_TRANSFORM\020\033\022:\n6GAME_PARTICLE_MANAGE"
+  "R_EVENT_FREEZE_TRANSITION_OVERRIDE\020\034\0220\n,"
+  "GAME_PARTICLE_MANAGER_EVENT_FREEZE_INVOL"
+  "VING\020\035\022>\n:GAME_PARTICLE_MANAGER_EVENT_AD"
+  "D_MODELLIST_OVERRIDE_ELEMENT\020\036\0228\n4GAME_P"
+  "ARTICLE_MANAGER_EVENT_CLEAR_MODELLIST_OV"
+  "ERRIDE\020\037\0222\n.GAME_PARTICLE_MANAGER_EVENT_"
+  "CREATE_PHYSICS_SIM\020 \0223\n/GAME_PARTICLE_MA"
+  "NAGER_EVENT_DESTROY_PHYSICS_SIM\020!\022)\n%GAM"
+  "E_PARTICLE_MANAGER_EVENT_SET_VDATA\020\"\0225\n1"
+  "GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL"
+  "_OVERRIDE\020#\022\'\n#GAME_PARTICLE_MANAGER_EVE"
+  "NT_ADD_FAN\020$\022*\n&GAME_PARTICLE_MANAGER_EV"
+  "ENT_UPDATE_FAN\020%\0222\n.GAME_PARTICLE_MANAGE"
+  "R_EVENT_SET_CLUSTER_GROWTH\020&\022*\n&GAME_PAR"
+  "TICLE_MANAGER_EVENT_REMOVE_FAN\020\'\0221\n-GAME"
+  "_PARTICLE_MANAGER_EVENT_CREATE_SMOKE_GRI"
+  "D\020(\0224\n0GAME_PARTICLE_MANAGER_EVENT_SET_O"
+  "VERRIDE_TEXTURE\020)*t\n\020EHapticPulseType\022\036\n"
+  "\032VR_HAND_HAPTIC_PULSE_LIGHT\020\000\022\037\n\033VR_HAND"
+  "_HAPTIC_PULSE_MEDIUM\020\001\022\037\n\033VR_HAND_HAPTIC"
+  "_PULSE_STRONG\020\002"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_usermessages_2eproto_deps[1] = {
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_usermessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_usermessages_2eproto = {
-    false, false, 18684, descriptor_table_protodef_usermessages_2eproto,
+    false, false, 19255, descriptor_table_protodef_usermessages_2eproto,
     "usermessages.proto",
-    &descriptor_table_usermessages_2eproto_once, descriptor_table_usermessages_2eproto_deps, 1, 107,
+    &descriptor_table_usermessages_2eproto_once, descriptor_table_usermessages_2eproto_deps, 1, 109,
     schemas, file_default_instances, TableStruct_usermessages_2eproto::offsets,
     file_level_metadata_usermessages_2eproto, file_level_enum_descriptors_usermessages_2eproto,
     file_level_service_descriptors_usermessages_2eproto,
@@ -3990,9 +4064,55 @@ PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_usermess
 
 // Force running AddDescriptors() at dynamic initialization time.
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_usermessages_2eproto(&descriptor_table_usermessages_2eproto);
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EBaseUserMessages_descriptor() {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CUserMessage_RemoteServerCommand_ECommand_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
   return file_level_enum_descriptors_usermessages_2eproto[0];
+}
+bool CUserMessage_RemoteServerCommand_ECommand_IsValid(int value) {
+  switch (value) {
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+constexpr CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand::ECommandChangeConVar;
+constexpr CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand::ECommand_MIN;
+constexpr CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand::ECommand_MAX;
+constexpr int CUserMessage_RemoteServerCommand::ECommand_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CUserMessageRemoteServerResponse_ECommandResult_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
+  return file_level_enum_descriptors_usermessages_2eproto[1];
+}
+bool CUserMessageRemoteServerResponse_ECommandResult_IsValid(int value) {
+  switch (value) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+      return true;
+    default:
+      return false;
+  }
+}
+
+#if (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::EResultSuccess;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::EResultServerDoesntAllow;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::EResultClientNotAuthenticated;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::EResultClientNotAllowed;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::EResultCommandNotAllowed;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::ECommandResult_MIN;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::ECommandResult_MAX;
+constexpr int CUserMessageRemoteServerResponse::ECommandResult_ARRAYSIZE;
+#endif  // (__cplusplus < 201703) && (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EBaseUserMessages_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
+  return file_level_enum_descriptors_usermessages_2eproto[2];
 }
 bool EBaseUserMessages_IsValid(int value) {
   switch (value) {
@@ -4046,6 +4166,8 @@ bool EBaseUserMessages_IsValid(int value) {
     case 166:
     case 167:
     case 168:
+    case 169:
+    case 170:
     case 200:
       return true;
     default:
@@ -4055,7 +4177,7 @@ bool EBaseUserMessages_IsValid(int value) {
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EBaseEntityMessages_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
-  return file_level_enum_descriptors_usermessages_2eproto[1];
+  return file_level_enum_descriptors_usermessages_2eproto[3];
 }
 bool EBaseEntityMessages_IsValid(int value) {
   switch (value) {
@@ -4072,7 +4194,7 @@ bool EBaseEntityMessages_IsValid(int value) {
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* eRollType_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
-  return file_level_enum_descriptors_usermessages_2eproto[2];
+  return file_level_enum_descriptors_usermessages_2eproto[4];
 }
 bool eRollType_IsValid(int value) {
   switch (value) {
@@ -4089,7 +4211,7 @@ bool eRollType_IsValid(int value) {
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PARTICLE_MESSAGE_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
-  return file_level_enum_descriptors_usermessages_2eproto[3];
+  return file_level_enum_descriptors_usermessages_2eproto[5];
 }
 bool PARTICLE_MESSAGE_IsValid(int value) {
   switch (value) {
@@ -4143,7 +4265,7 @@ bool PARTICLE_MESSAGE_IsValid(int value) {
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EHapticPulseType_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_usermessages_2eproto);
-  return file_level_enum_descriptors_usermessages_2eproto[4];
+  return file_level_enum_descriptors_usermessages_2eproto[6];
 }
 bool EHapticPulseType_IsValid(int value) {
   switch (value) {
@@ -37038,6 +37160,650 @@ void CUserMessage_UsageReport::InternalSwap(CUserMessage_UsageReport* other) {
       file_level_metadata_usermessages_2eproto[106]);
 }
 
+// ===================================================================
+
+class CUserMessage_RemoteServerCommand::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CUserMessage_RemoteServerCommand>()._impl_._has_bits_);
+  static void set_has_command(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_convar(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_value(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CUserMessage_RemoteServerCommand::CUserMessage_RemoteServerCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CUserMessage_RemoteServerCommand)
+}
+CUserMessage_RemoteServerCommand::CUserMessage_RemoteServerCommand(const CUserMessage_RemoteServerCommand& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CUserMessage_RemoteServerCommand* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.convar_){}
+    , decltype(_impl_.value_){}
+    , decltype(_impl_.command_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.convar_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_convar()) {
+    _this->_impl_.convar_.Set(from._internal_convar(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.value_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.value_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_value()) {
+    _this->_impl_.value_.Set(from._internal_value(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.command_ = from._impl_.command_;
+  // @@protoc_insertion_point(copy_constructor:CUserMessage_RemoteServerCommand)
+}
+
+inline void CUserMessage_RemoteServerCommand::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.convar_){}
+    , decltype(_impl_.value_){}
+    , decltype(_impl_.command_){1}
+  };
+  _impl_.convar_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.value_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.value_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CUserMessage_RemoteServerCommand::~CUserMessage_RemoteServerCommand() {
+  // @@protoc_insertion_point(destructor:CUserMessage_RemoteServerCommand)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CUserMessage_RemoteServerCommand::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.convar_.Destroy();
+  _impl_.value_.Destroy();
+}
+
+void CUserMessage_RemoteServerCommand::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CUserMessage_RemoteServerCommand::Clear() {
+// @@protoc_insertion_point(message_clear_start:CUserMessage_RemoteServerCommand)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.convar_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.value_.ClearNonDefaultToEmpty();
+    }
+    _impl_.command_ = 1;
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CUserMessage_RemoteServerCommand::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional .CUserMessage_RemoteServerCommand.ECommand command = 1 [default = ECommandChangeConVar];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::CUserMessage_RemoteServerCommand_ECommand_IsValid(val))) {
+            _internal_set_command(static_cast<::CUserMessage_RemoteServerCommand_ECommand>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
+          }
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string convar = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_convar();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessage_RemoteServerCommand.convar");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string value = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_value();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessage_RemoteServerCommand.value");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CUserMessage_RemoteServerCommand::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CUserMessage_RemoteServerCommand)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional .CUserMessage_RemoteServerCommand.ECommand command = 1 [default = ECommandChangeConVar];
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      1, this->_internal_command(), target);
+  }
+
+  // optional string convar = 2;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_convar().data(), static_cast<int>(this->_internal_convar().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessage_RemoteServerCommand.convar");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_convar(), target);
+  }
+
+  // optional string value = 3;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessage_RemoteServerCommand.value");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_value(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CUserMessage_RemoteServerCommand)
+  return target;
+}
+
+size_t CUserMessage_RemoteServerCommand::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CUserMessage_RemoteServerCommand)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    // optional string convar = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_convar());
+    }
+
+    // optional string value = 3;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_value());
+    }
+
+    // optional .CUserMessage_RemoteServerCommand.ECommand command = 1 [default = ECommandChangeConVar];
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_command());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CUserMessage_RemoteServerCommand::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CUserMessage_RemoteServerCommand::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CUserMessage_RemoteServerCommand::GetClassData() const { return &_class_data_; }
+
+
+void CUserMessage_RemoteServerCommand::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CUserMessage_RemoteServerCommand*>(&to_msg);
+  auto& from = static_cast<const CUserMessage_RemoteServerCommand&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CUserMessage_RemoteServerCommand)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_convar(from._internal_convar());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_value(from._internal_value());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.command_ = from._impl_.command_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CUserMessage_RemoteServerCommand::CopyFrom(const CUserMessage_RemoteServerCommand& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CUserMessage_RemoteServerCommand)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CUserMessage_RemoteServerCommand::IsInitialized() const {
+  return true;
+}
+
+void CUserMessage_RemoteServerCommand::InternalSwap(CUserMessage_RemoteServerCommand* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.convar_, lhs_arena,
+      &other->_impl_.convar_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.value_, lhs_arena,
+      &other->_impl_.value_, rhs_arena
+  );
+  swap(_impl_.command_, other->_impl_.command_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CUserMessage_RemoteServerCommand::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_usermessages_2eproto_getter, &descriptor_table_usermessages_2eproto_once,
+      file_level_metadata_usermessages_2eproto[107]);
+}
+
+// ===================================================================
+
+class CUserMessageRemoteServerResponse::_Internal {
+ public:
+  using HasBits = decltype(std::declval<CUserMessageRemoteServerResponse>()._impl_._has_bits_);
+  static void set_has_command_result(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_convar(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_results(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+};
+
+CUserMessageRemoteServerResponse::CUserMessageRemoteServerResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:CUserMessageRemoteServerResponse)
+}
+CUserMessageRemoteServerResponse::CUserMessageRemoteServerResponse(const CUserMessageRemoteServerResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  CUserMessageRemoteServerResponse* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.convar_){}
+    , decltype(_impl_.results_){}
+    , decltype(_impl_.command_result_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.convar_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_convar()) {
+    _this->_impl_.convar_.Set(from._internal_convar(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.results_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.results_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_results()) {
+    _this->_impl_.results_.Set(from._internal_results(), 
+      _this->GetArenaForAllocation());
+  }
+  _this->_impl_.command_result_ = from._impl_.command_result_;
+  // @@protoc_insertion_point(copy_constructor:CUserMessageRemoteServerResponse)
+}
+
+inline void CUserMessageRemoteServerResponse::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.convar_){}
+    , decltype(_impl_.results_){}
+    , decltype(_impl_.command_result_){1}
+  };
+  _impl_.convar_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.results_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.results_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+CUserMessageRemoteServerResponse::~CUserMessageRemoteServerResponse() {
+  // @@protoc_insertion_point(destructor:CUserMessageRemoteServerResponse)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void CUserMessageRemoteServerResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.convar_.Destroy();
+  _impl_.results_.Destroy();
+}
+
+void CUserMessageRemoteServerResponse::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void CUserMessageRemoteServerResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:CUserMessageRemoteServerResponse)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _impl_.convar_.ClearNonDefaultToEmpty();
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _impl_.results_.ClearNonDefaultToEmpty();
+    }
+    _impl_.command_result_ = 1;
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* CUserMessageRemoteServerResponse::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional .CUserMessageRemoteServerResponse.ECommandResult command_result = 1 [default = EResultSuccess];
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          if (PROTOBUF_PREDICT_TRUE(::CUserMessageRemoteServerResponse_ECommandResult_IsValid(val))) {
+            _internal_set_command_result(static_cast<::CUserMessageRemoteServerResponse_ECommandResult>(val));
+          } else {
+            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(1, val, mutable_unknown_fields());
+          }
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string convar = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_convar();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessageRemoteServerResponse.convar");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional string results = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_results();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "CUserMessageRemoteServerResponse.results");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* CUserMessageRemoteServerResponse::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:CUserMessageRemoteServerResponse)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional .CUserMessageRemoteServerResponse.ECommandResult command_result = 1 [default = EResultSuccess];
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      1, this->_internal_command_result(), target);
+  }
+
+  // optional string convar = 2;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_convar().data(), static_cast<int>(this->_internal_convar().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessageRemoteServerResponse.convar");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_convar(), target);
+  }
+
+  // optional string results = 3;
+  if (cached_has_bits & 0x00000002u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_results().data(), static_cast<int>(this->_internal_results().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "CUserMessageRemoteServerResponse.results");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_results(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:CUserMessageRemoteServerResponse)
+  return target;
+}
+
+size_t CUserMessageRemoteServerResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CUserMessageRemoteServerResponse)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    // optional string convar = 2;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_convar());
+    }
+
+    // optional string results = 3;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_results());
+    }
+
+    // optional .CUserMessageRemoteServerResponse.ECommandResult command_result = 1 [default = EResultSuccess];
+    if (cached_has_bits & 0x00000004u) {
+      total_size += 1 +
+        ::_pbi::WireFormatLite::EnumSize(this->_internal_command_result());
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CUserMessageRemoteServerResponse::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    CUserMessageRemoteServerResponse::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CUserMessageRemoteServerResponse::GetClassData() const { return &_class_data_; }
+
+
+void CUserMessageRemoteServerResponse::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<CUserMessageRemoteServerResponse*>(&to_msg);
+  auto& from = static_cast<const CUserMessageRemoteServerResponse&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:CUserMessageRemoteServerResponse)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000007u) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_convar(from._internal_convar());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_internal_set_results(from._internal_results());
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.command_result_ = from._impl_.command_result_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void CUserMessageRemoteServerResponse::CopyFrom(const CUserMessageRemoteServerResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CUserMessageRemoteServerResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool CUserMessageRemoteServerResponse::IsInitialized() const {
+  return true;
+}
+
+void CUserMessageRemoteServerResponse::InternalSwap(CUserMessageRemoteServerResponse* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.convar_, lhs_arena,
+      &other->_impl_.convar_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.results_, lhs_arena,
+      &other->_impl_.results_, rhs_arena
+  );
+  swap(_impl_.command_result_, other->_impl_.command_result_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata CUserMessageRemoteServerResponse::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_usermessages_2eproto_getter, &descriptor_table_usermessages_2eproto_once,
+      file_level_metadata_usermessages_2eproto[108]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 PROTOBUF_NAMESPACE_OPEN
 template<> PROTOBUF_NOINLINE ::CUserMessageAchievementEvent*
@@ -37467,6 +38233,14 @@ Arena::CreateMaybeMessage< ::CUserMessage_PlayResponseConditional >(Arena* arena
 template<> PROTOBUF_NOINLINE ::CUserMessage_UsageReport*
 Arena::CreateMaybeMessage< ::CUserMessage_UsageReport >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CUserMessage_UsageReport >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CUserMessage_RemoteServerCommand*
+Arena::CreateMaybeMessage< ::CUserMessage_RemoteServerCommand >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CUserMessage_RemoteServerCommand >(arena);
+}
+template<> PROTOBUF_NOINLINE ::CUserMessageRemoteServerResponse*
+Arena::CreateMaybeMessage< ::CUserMessageRemoteServerResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::CUserMessageRemoteServerResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

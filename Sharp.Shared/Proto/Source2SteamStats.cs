@@ -46,7 +46,7 @@ public static partial class Source2SteamStatsReflection {
           "ASgNIpYBChpDTXNnU291cmNlMlZQcm9mTGl0ZVJlcG9ydBIuCgV0b3RhbBgB",
           "IAEoCzIfLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0SXRlbRIuCgVpdGVt",
           "cxgCIAMoCzIfLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0SXRlbRIYChBk",
-          "aXNjYXJkZWRfZnJhbWVzGAMgASgNIvAJCh1DTXNnU291cmNlMk5ldHdvcmtG",
+          "aXNjYXJkZWRfZnJhbWVzGAMgASgNIrAMCh1DTXNnU291cmNlMk5ldHdvcmtG",
           "bG93UXVhbGl0eRIQCghkdXJhdGlvbhgBIAEoDRITCgtieXRlc190b3RhbBgF",
           "IAEoBBIcChRieXRlc190b3RhbF9yZWxpYWJsZRgGIAEoBBIZChFieXRlc190",
           "b3RhbF92b2ljZRgHIAEoBBIVCg1ieXRlc19zZWNfcDk1GAogASgNEhUKDWJ5",
@@ -74,77 +74,84 @@ public static partial class Source2SteamStatsReflection {
           "YWtqaXR0ZXJfcDk1GEkgASgNEiYKHnBhY2tldF9taXNkZWxpdmVyeV9yYXRl",
           "X3A1MF94NBhKIAEoDRImCh5wYWNrZXRfbWlzZGVsaXZlcnlfcmF0ZV9wOTVf",
           "eDQYSyABKA0SEwoLbmV0X3BpbmdfcDUYUCABKA0SFAoMbmV0X3BpbmdfcDUw",
-          "GFEgASgNEhQKDG5ldF9waW5nX3A5NRhSIAEoDSL7AQodQ01zZ1NvdXJjZTJQ",
-          "ZXJmSW50ZXJ2YWxTYW1wbGUSGQoRZnJhbWVfdGltZV9tYXhfbXMYASABKAIS",
-          "GQoRZnJhbWVfdGltZV9hdmdfbXMYAiABKAISGQoRZnJhbWVfdGltZV9taW5f",
-          "bXMYAyABKAISEwoLZnJhbWVfY291bnQYBCABKAUSGwoTZnJhbWVfdGltZV90",
-          "b3RhbF9tcxgFIAEoAhIwCgR0YWdzGAYgAygLMiIuQ01zZ1NvdXJjZTJQZXJm",
-          "SW50ZXJ2YWxTYW1wbGUuVGFnGiUKA1RhZxILCgN0YWcYASABKAkSEQoJbWF4",
-          "X3ZhbHVlGAIgASgNIrsECi1DU291cmNlMk1ldHJpY3NfTWF0Y2hQZXJmU3Vt",
-          "bWFyeV9Ob3RpZmljYXRpb24SDQoFYXBwaWQYASABKA0SEQoJZ2FtZV9tb2Rl",
-          "GAIgASgJEhcKD3NlcnZlcl9idWlsZF9pZBgDIAEoDRIUCgxzZXJ2ZXJfcG9w",
-          "aWQYBCABKAcSMwoOc2VydmVyX3Byb2ZpbGUYCiABKAsyGy5DTXNnU291cmNl",
-          "MlZQcm9mTGl0ZVJlcG9ydBJGCgdjbGllbnRzGAsgAygLMjUuQ1NvdXJjZTJN",
-          "ZXRyaWNzX01hdGNoUGVyZlN1bW1hcnlfTm90aWZpY2F0aW9uLkNsaWVudBIL",
-          "CgNtYXAYFCABKAkargIKBkNsaWVudBItCgxzeXN0ZW1fc3BlY3MYASABKAsy",
-          "Fy5DTXNnU291cmNlMlN5c3RlbVNwZWNzEiwKB3Byb2ZpbGUYAiABKAsyGy5D",
-          "TXNnU291cmNlMlZQcm9mTGl0ZVJlcG9ydBIQCghidWlsZF9pZBgDIAEoDRI3",
-          "Cg9kb3duc3RyZWFtX2Zsb3cYBCABKAsyHi5DTXNnU291cmNlMk5ldHdvcmtG",
-          "bG93UXVhbGl0eRI1Cg11cHN0cmVhbV9mbG93GAUgASgLMh4uQ01zZ1NvdXJj",
-          "ZTJOZXR3b3JrRmxvd1F1YWxpdHkSDwoHc3RlYW1pZBgKIAEoBhI0CgxwZXJm",
-          "X3NhbXBsZXMYCyADKAsyHi5DTXNnU291cmNlMlBlcmZJbnRlcnZhbFNhbXBs",
-          "ZSKVBgokQ01zZ1NvdXJjZTJQbGF5U3RhdHNQYWNrZWRSZWNvcmRMaXN0EhMK",
-          "C3JlY29yZF9uYW1lGAEgASgJEkIKCmZpZWxkX2RlZnMYAiADKAsyLi5DTXNn",
-          "U291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExpc3QuRmllbGREZWYSFAoM",
-          "cmVjb3JkX2NvdW50GAMgASgNEhcKC3VpbnQ2NF92YWxzGAQgAygEQgIQARIX",
-          "Cgt1aW50MzJfdmFscxgFIAMoDUICEAESFwoLdWludDE2X3ZhbHMYBiADKA1C",
-          "AhABEhYKCnVpbnQ4X3ZhbHMYByADKA1CAhABEhYKCmludDY0X3ZhbHMYCCAD",
-          "KANCAhABEhYKCmludDMyX3ZhbHMYCSADKAVCAhABEhYKCmludDE2X3ZhbHMY",
-          "CiADKAVCAhABEhUKCWludDhfdmFscxgLIAMoBUICEAESGAoMZmxvYXQ2NF92",
-          "YWxzGAwgAygBQgIQARIYCgxmbG9hdDMyX3ZhbHMYDSADKAJCAhABEhUKCWJv",
-          "b2xfdmFscxgOIAMoCEICEAESEwoLc3RyaW5nX3ZhbHMYDyADKAkSIwobbG93",
-          "X2NhcmRpbmFsaXR5X3N0cmluZ192YWxzGBAgAygJEhwKEHV0Y2RhdGV0aW1l",
-          "X3ZhbHMYESADKAdCAhABEiMKF3N0ZWFtaWR0cnVzdGJ1Y2tldF92YWxzGBIg",
-          "AygGQgIQARJLChB0cnVzdGJ1Y2tldF92YWxzGBMgAygLMjEuQ01zZ1NvdXJj",
-          "ZTJQbGF5U3RhdHNQYWNrZWRSZWNvcmRMaXN0LlN0ZWFtSURMaXN0EhgKDHN0",
-          "ZWFtaWRfdmFscxgUIAMoBEICEAEaaQoIRmllbGREZWYSEgoKZmllbGRfbmFt",
-          "ZRgBIAEoCRJJCgpmaWVsZF90eXBlGAIgASgOMhsuRVNvdXJjZTJQbGF5U3Rh",
-          "dHNGaWVsZFR5cGU6GFNvdXJjZTJQbGF5U3RhdHNfSW52YWxpZBoiCgtTdGVh",
-          "bUlETGlzdBITCgdzdGVhbWlkGAEgAygGQgIQASJ6CixDU291cmNlMk1ldHJp",
-          "Y3NfUmVjb3JkUGxheVN0YXRzX05vdGlmaWNhdGlvbhI7CgxyZWNvcmRfdHlw",
-          "ZXMYASADKAsyJS5DTXNnU291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExp",
-          "c3QSDQoFYXBwaWQYAiABKA0ijwEKJENTb3VyY2UyTWV0cmljc19GZXRjaE1h",
-          "cERhdGFfUmVxdWVzdBINCgVhcHBpZBgBIAEoDRIQCghtYXBfbmFtZRgCIAEo",
-          "CRIRCglnYW1lX3R5cGUYAyABKA0SEQoJZ2FtZV9tb2RlGAQgASgNEg0KBXBh",
-          "cmFtGAUgASgJEhEKCXRpbWVfc3BhbhgGIAEoDSKdAQolQ1NvdXJjZTJNZXRy",
-          "aWNzX0ZldGNoTWFwRGF0YV9SZXNwb25zZRI/CgdyZXN1bHRzGAEgAygLMi4u",
-          "Q1NvdXJjZTJNZXRyaWNzX0ZldGNoTWFwRGF0YV9SZXNwb25zZS5NYXBEYXRh",
-          "GjMKB01hcERhdGESDAoEbmFtZRgBIAEoCRIMCgR0eXBlGAIgASgJEgwKBGRh",
-          "dGEYAyABKAkixgEKG0NVc2VyTWVzc2FnZV9Vc2VyU2VudEJ1Z0J1ZxIUCgxj",
-          "b21tYW5kX2xpbmUYASABKAkSFAoMYXV0b2V4ZWNfY2ZnGAIgASgJEi0KDHN5",
-          "c3RlbV9zcGVjcxgDIAEoCzIXLkNNc2dTb3VyY2UyU3lzdGVtU3BlY3MSEAoI",
-          "YnVpbGRfaWQYBCABKA0SEQoJb3N2ZXJzaW9uGAUgASgFEhQKDGNvbW1hbmRf",
-          "bG9ncxgGIAEoCRIRCglidWdidWdfbm8YByABKAUq0AQKGkVTb3VyY2UyUGxh",
-          "eVN0YXRzRmllbGRUeXBlEhwKGFNvdXJjZTJQbGF5U3RhdHNfSW52YWxpZBAA",
-          "EhsKF1NvdXJjZTJQbGF5U3RhdHNfVUludDY0EAESGwoXU291cmNlMlBsYXlT",
-          "dGF0c19VSW50MzIQAhIbChdTb3VyY2UyUGxheVN0YXRzX1VJbnQxNhADEhoK",
-          "FlNvdXJjZTJQbGF5U3RhdHNfVUludDgQBBIaChZTb3VyY2UyUGxheVN0YXRz",
-          "X0ludDY0EAUSGgoWU291cmNlMlBsYXlTdGF0c19JbnQzMhAGEhoKFlNvdXJj",
-          "ZTJQbGF5U3RhdHNfSW50MTYQBxIZChVTb3VyY2UyUGxheVN0YXRzX0ludDgQ",
-          "CBIcChhTb3VyY2UyUGxheVN0YXRzX0Zsb2F0NjQQCRIcChhTb3VyY2UyUGxh",
-          "eVN0YXRzX0Zsb2F0MzIQChIZChVTb3VyY2UyUGxheVN0YXRzX0Jvb2wQCxIb",
-          "ChdTb3VyY2UyUGxheVN0YXRzX1N0cmluZxAMEikKJVNvdXJjZTJQbGF5U3Rh",
-          "dHNfTG93Q2FyZGluYWxpdHlTdHJpbmcQDRIgChxTb3VyY2UyUGxheVN0YXRz",
-          "X1VUQ0RhdGVUaW1lEA4SJwojU291cmNlMlBsYXlTdGF0c19TdGVhbUlEVHJ1",
-          "c3RCdWNrZXQQDxIqCiZTb3VyY2UyUGxheVN0YXRzX1N0ZWFtSURUcnVzdEJ1",
-          "Y2tldE1pbhAQEhwKGFNvdXJjZTJQbGF5U3RhdHNfU3RlYW1JRBAR"));
+          "GFEgASgNEhQKDG5ldF9waW5nX3A5NRhSIAEoDRIYChBtc2dwcm9jX3VzZWNf",
+          "cDUwGFogASgNEhgKEG1zZ3Byb2NfdXNlY19wOTUYWyABKA0SGAoQbXNncHJv",
+          "Y191c2VjX3A5ORhcIAEoDRIYChBtc2dwcm9jX3VzZWNfbWF4GF0gASgNEhwK",
+          "FG1zZ3Byb2NfdXNlY19hdmdfcDUwGF4gASgNEhwKFG1zZ3Byb2NfdXNlY19h",
+          "dmdfcDk1GF8gASgNEhwKFG1zZ3Byb2NfdXNlY19hdmdfcDk5GGAgASgNEhwK",
+          "FG1zZ3Byb2NfdXNlY19hdmdfbWF4GGEgASgNEhYKDnF1ZXVlZG1zZ3NfcDUw",
+          "GGQgASgNEhYKDnF1ZXVlZG1zZ3NfcDk1GGUgASgNEhYKDnF1ZXVlZG1zZ3Nf",
+          "cDk5GGYgASgNEhYKDnF1ZXVlZG1zZ3NfbWF4GGcgASgNIvsBCh1DTXNnU291",
+          "cmNlMlBlcmZJbnRlcnZhbFNhbXBsZRIZChFmcmFtZV90aW1lX21heF9tcxgB",
+          "IAEoAhIZChFmcmFtZV90aW1lX2F2Z19tcxgCIAEoAhIZChFmcmFtZV90aW1l",
+          "X21pbl9tcxgDIAEoAhITCgtmcmFtZV9jb3VudBgEIAEoBRIbChNmcmFtZV90",
+          "aW1lX3RvdGFsX21zGAUgASgCEjAKBHRhZ3MYBiADKAsyIi5DTXNnU291cmNl",
+          "MlBlcmZJbnRlcnZhbFNhbXBsZS5UYWcaJQoDVGFnEgsKA3RhZxgBIAEoCRIR",
+          "CgltYXhfdmFsdWUYAiABKA0iuwQKLUNTb3VyY2UyTWV0cmljc19NYXRjaFBl",
+          "cmZTdW1tYXJ5X05vdGlmaWNhdGlvbhINCgVhcHBpZBgBIAEoDRIRCglnYW1l",
+          "X21vZGUYAiABKAkSFwoPc2VydmVyX2J1aWxkX2lkGAMgASgNEhQKDHNlcnZl",
+          "cl9wb3BpZBgEIAEoBxIzCg5zZXJ2ZXJfcHJvZmlsZRgKIAEoCzIbLkNNc2dT",
+          "b3VyY2UyVlByb2ZMaXRlUmVwb3J0EkYKB2NsaWVudHMYCyADKAsyNS5DU291",
+          "cmNlMk1ldHJpY3NfTWF0Y2hQZXJmU3VtbWFyeV9Ob3RpZmljYXRpb24uQ2xp",
+          "ZW50EgsKA21hcBgUIAEoCRquAgoGQ2xpZW50Ei0KDHN5c3RlbV9zcGVjcxgB",
+          "IAEoCzIXLkNNc2dTb3VyY2UyU3lzdGVtU3BlY3MSLAoHcHJvZmlsZRgCIAEo",
+          "CzIbLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0EhAKCGJ1aWxkX2lkGAMg",
+          "ASgNEjcKD2Rvd25zdHJlYW1fZmxvdxgEIAEoCzIeLkNNc2dTb3VyY2UyTmV0",
+          "d29ya0Zsb3dRdWFsaXR5EjUKDXVwc3RyZWFtX2Zsb3cYBSABKAsyHi5DTXNn",
+          "U291cmNlMk5ldHdvcmtGbG93UXVhbGl0eRIPCgdzdGVhbWlkGAogASgGEjQK",
+          "DHBlcmZfc2FtcGxlcxgLIAMoCzIeLkNNc2dTb3VyY2UyUGVyZkludGVydmFs",
+          "U2FtcGxlIpUGCiRDTXNnU291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExp",
+          "c3QSEwoLcmVjb3JkX25hbWUYASABKAkSQgoKZmllbGRfZGVmcxgCIAMoCzIu",
+          "LkNNc2dTb3VyY2UyUGxheVN0YXRzUGFja2VkUmVjb3JkTGlzdC5GaWVsZERl",
+          "ZhIUCgxyZWNvcmRfY291bnQYAyABKA0SFwoLdWludDY0X3ZhbHMYBCADKARC",
+          "AhABEhcKC3VpbnQzMl92YWxzGAUgAygNQgIQARIXCgt1aW50MTZfdmFscxgG",
+          "IAMoDUICEAESFgoKdWludDhfdmFscxgHIAMoDUICEAESFgoKaW50NjRfdmFs",
+          "cxgIIAMoA0ICEAESFgoKaW50MzJfdmFscxgJIAMoBUICEAESFgoKaW50MTZf",
+          "dmFscxgKIAMoBUICEAESFQoJaW50OF92YWxzGAsgAygFQgIQARIYCgxmbG9h",
+          "dDY0X3ZhbHMYDCADKAFCAhABEhgKDGZsb2F0MzJfdmFscxgNIAMoAkICEAES",
+          "FQoJYm9vbF92YWxzGA4gAygIQgIQARITCgtzdHJpbmdfdmFscxgPIAMoCRIj",
+          "Chtsb3dfY2FyZGluYWxpdHlfc3RyaW5nX3ZhbHMYECADKAkSHAoQdXRjZGF0",
+          "ZXRpbWVfdmFscxgRIAMoB0ICEAESIwoXc3RlYW1pZHRydXN0YnVja2V0X3Zh",
+          "bHMYEiADKAZCAhABEksKEHRydXN0YnVja2V0X3ZhbHMYEyADKAsyMS5DTXNn",
+          "U291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExpc3QuU3RlYW1JRExpc3QS",
+          "GAoMc3RlYW1pZF92YWxzGBQgAygEQgIQARppCghGaWVsZERlZhISCgpmaWVs",
+          "ZF9uYW1lGAEgASgJEkkKCmZpZWxkX3R5cGUYAiABKA4yGy5FU291cmNlMlBs",
+          "YXlTdGF0c0ZpZWxkVHlwZToYU291cmNlMlBsYXlTdGF0c19JbnZhbGlkGiIK",
+          "C1N0ZWFtSURMaXN0EhMKB3N0ZWFtaWQYASADKAZCAhABInoKLENTb3VyY2Uy",
+          "TWV0cmljc19SZWNvcmRQbGF5U3RhdHNfTm90aWZpY2F0aW9uEjsKDHJlY29y",
+          "ZF90eXBlcxgBIAMoCzIlLkNNc2dTb3VyY2UyUGxheVN0YXRzUGFja2VkUmVj",
+          "b3JkTGlzdBINCgVhcHBpZBgCIAEoDSKPAQokQ1NvdXJjZTJNZXRyaWNzX0Zl",
+          "dGNoTWFwRGF0YV9SZXF1ZXN0Eg0KBWFwcGlkGAEgASgNEhAKCG1hcF9uYW1l",
+          "GAIgASgJEhEKCWdhbWVfdHlwZRgDIAEoDRIRCglnYW1lX21vZGUYBCABKA0S",
+          "DQoFcGFyYW0YBSABKAkSEQoJdGltZV9zcGFuGAYgASgNIp0BCiVDU291cmNl",
+          "Mk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3BvbnNlEj8KB3Jlc3VsdHMYASAD",
+          "KAsyLi5DU291cmNlMk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3BvbnNlLk1h",
+          "cERhdGEaMwoHTWFwRGF0YRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkS",
+          "DAoEZGF0YRgDIAEoCSLGAQobQ1VzZXJNZXNzYWdlX1VzZXJTZW50QnVnQnVn",
+          "EhQKDGNvbW1hbmRfbGluZRgBIAEoCRIUCgxhdXRvZXhlY19jZmcYAiABKAkS",
+          "LQoMc3lzdGVtX3NwZWNzGAMgASgLMhcuQ01zZ1NvdXJjZTJTeXN0ZW1TcGVj",
+          "cxIQCghidWlsZF9pZBgEIAEoDRIRCglvc3ZlcnNpb24YBSABKAUSFAoMY29t",
+          "bWFuZF9sb2dzGAYgASgJEhEKCWJ1Z2J1Z19ubxgHIAEoBSrQBAoaRVNvdXJj",
+          "ZTJQbGF5U3RhdHNGaWVsZFR5cGUSHAoYU291cmNlMlBsYXlTdGF0c19JbnZh",
+          "bGlkEAASGwoXU291cmNlMlBsYXlTdGF0c19VSW50NjQQARIbChdTb3VyY2Uy",
+          "UGxheVN0YXRzX1VJbnQzMhACEhsKF1NvdXJjZTJQbGF5U3RhdHNfVUludDE2",
+          "EAMSGgoWU291cmNlMlBsYXlTdGF0c19VSW50OBAEEhoKFlNvdXJjZTJQbGF5",
+          "U3RhdHNfSW50NjQQBRIaChZTb3VyY2UyUGxheVN0YXRzX0ludDMyEAYSGgoW",
+          "U291cmNlMlBsYXlTdGF0c19JbnQxNhAHEhkKFVNvdXJjZTJQbGF5U3RhdHNf",
+          "SW50OBAIEhwKGFNvdXJjZTJQbGF5U3RhdHNfRmxvYXQ2NBAJEhwKGFNvdXJj",
+          "ZTJQbGF5U3RhdHNfRmxvYXQzMhAKEhkKFVNvdXJjZTJQbGF5U3RhdHNfQm9v",
+          "bBALEhsKF1NvdXJjZTJQbGF5U3RhdHNfU3RyaW5nEAwSKQolU291cmNlMlBs",
+          "YXlTdGF0c19Mb3dDYXJkaW5hbGl0eVN0cmluZxANEiAKHFNvdXJjZTJQbGF5",
+          "U3RhdHNfVVRDRGF0ZVRpbWUQDhInCiNTb3VyY2UyUGxheVN0YXRzX1N0ZWFt",
+          "SURUcnVzdEJ1Y2tldBAPEioKJlNvdXJjZTJQbGF5U3RhdHNfU3RlYW1JRFRy",
+          "dXN0QnVja2V0TWluEBASHAoYU291cmNlMlBsYXlTdGF0c19TdGVhbUlEEBE="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ESource2PlayStatsFieldType), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2SystemSpecs), global::CMsgSource2SystemSpecs.Parser, new[]{ "CpuId", "CpuBrand", "CpuModel", "CpuNumPhysical", "RamPhysicalTotalMb", "GpuRendersystemDllName", "GpuVendorId", "GpuDriverName", "GpuDriverVersionHigh", "GpuDriverVersionLow", "GpuDxSupportLevel", "GpuTextureMemorySizeMb", "BackbufferWidth", "BackbufferHeight" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2VProfLiteReportItem), global::CMsgSource2VProfLiteReportItem.Parser, new[]{ "Name", "ActiveSamples", "ActiveSamples1Secmax", "UsecMax", "UsecAvgActive", "UsecP50Active", "UsecP99Active", "UsecAvgAll", "UsecP50All", "UsecP99All", "Usec1SecmaxAvgActive", "Usec1SecmaxP50Active", "Usec1SecmaxP95Active", "Usec1SecmaxP99Active", "Usec1SecmaxAvgAll", "Usec1SecmaxP50All", "Usec1SecmaxP95All", "Usec1SecmaxP99All" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2VProfLiteReport), global::CMsgSource2VProfLiteReport.Parser, new[]{ "Total", "Items", "DiscardedFrames" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2NetworkFlowQuality), global::CMsgSource2NetworkFlowQuality.Parser, new[]{ "Duration", "BytesTotal", "BytesTotalReliable", "BytesTotalVoice", "BytesSecP95", "BytesSecP99", "EnginemsgsTotal", "EnginemsgsSecP95", "EnginemsgsSecP99", "NetframesTotal", "NetframesDropped", "NetframesOutoforder", "NetframesSizeExceedsMtu", "NetframesSizeP95", "NetframesSizeP99", "TicksTotal", "TicksGood", "TicksGoodAlmostLate", "TicksFixedDropped", "TicksFixedLate", "TicksBadDropped", "TicksBadLate", "TicksBadOther", "TickMissrateSamplesTotal", "TickMissrateSamplesPerfect", "TickMissrateSamplesPerfectnet", "TickMissratenetP75X10", "TickMissratenetP95X10", "TickMissratenetP99X10", "RecvmarginP1", "RecvmarginP5", "RecvmarginP25", "RecvmarginP50", "RecvmarginP75", "RecvmarginP95", "NetframeJitterP50", "NetframeJitterP99", "IntervalPeakjitterP50", "IntervalPeakjitterP95", "PacketMisdeliveryRateP50X4", "PacketMisdeliveryRateP95X4", "NetPingP5", "NetPingP50", "NetPingP95" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2NetworkFlowQuality), global::CMsgSource2NetworkFlowQuality.Parser, new[]{ "Duration", "BytesTotal", "BytesTotalReliable", "BytesTotalVoice", "BytesSecP95", "BytesSecP99", "EnginemsgsTotal", "EnginemsgsSecP95", "EnginemsgsSecP99", "NetframesTotal", "NetframesDropped", "NetframesOutoforder", "NetframesSizeExceedsMtu", "NetframesSizeP95", "NetframesSizeP99", "TicksTotal", "TicksGood", "TicksGoodAlmostLate", "TicksFixedDropped", "TicksFixedLate", "TicksBadDropped", "TicksBadLate", "TicksBadOther", "TickMissrateSamplesTotal", "TickMissrateSamplesPerfect", "TickMissrateSamplesPerfectnet", "TickMissratenetP75X10", "TickMissratenetP95X10", "TickMissratenetP99X10", "RecvmarginP1", "RecvmarginP5", "RecvmarginP25", "RecvmarginP50", "RecvmarginP75", "RecvmarginP95", "NetframeJitterP50", "NetframeJitterP99", "IntervalPeakjitterP50", "IntervalPeakjitterP95", "PacketMisdeliveryRateP50X4", "PacketMisdeliveryRateP95X4", "NetPingP5", "NetPingP50", "NetPingP95", "MsgprocUsecP50", "MsgprocUsecP95", "MsgprocUsecP99", "MsgprocUsecMax", "MsgprocUsecAvgP50", "MsgprocUsecAvgP95", "MsgprocUsecAvgP99", "MsgprocUsecAvgMax", "QueuedmsgsP50", "QueuedmsgsP95", "QueuedmsgsP99", "QueuedmsgsMax" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PerfIntervalSample), global::CMsgSource2PerfIntervalSample.Parser, new[]{ "FrameTimeMaxMs", "FrameTimeAvgMs", "FrameTimeMinMs", "FrameCount", "FrameTimeTotalMs", "Tags" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PerfIntervalSample.Types.Tag), global::CMsgSource2PerfIntervalSample.Types.Tag.Parser, new[]{ "Tag_", "MaxValue" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSource2Metrics_MatchPerfSummary_Notification), global::CSource2Metrics_MatchPerfSummary_Notification.Parser, new[]{ "Appid", "GameMode", "ServerBuildId", "ServerPopid", "ServerProfile", "Clients", "Map" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CSource2Metrics_MatchPerfSummary_Notification.Types.Client), global::CSource2Metrics_MatchPerfSummary_Notification.Types.Client.Parser, new[]{ "SystemSpecs", "Profile", "BuildId", "DownstreamFlow", "UpstreamFlow", "Steamid", "PerfSamples" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PlayStatsPackedRecordList), global::CMsgSource2PlayStatsPackedRecordList.Parser, new[]{ "RecordName", "FieldDefs", "RecordCount", "Uint64Vals", "Uint32Vals", "Uint16Vals", "Uint8Vals", "Int64Vals", "Int32Vals", "Int16Vals", "Int8Vals", "Float64Vals", "Float32Vals", "BoolVals", "StringVals", "LowCardinalityStringVals", "UtcdatetimeVals", "SteamidtrustbucketVals", "TrustbucketVals", "SteamidVals" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PlayStatsPackedRecordList.Types.FieldDef), global::CMsgSource2PlayStatsPackedRecordList.Types.FieldDef.Parser, new[]{ "FieldName", "FieldType" }, null, null, null, null),
@@ -2510,6 +2517,18 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     netPingP5_ = other.netPingP5_;
     netPingP50_ = other.netPingP50_;
     netPingP95_ = other.netPingP95_;
+    msgprocUsecP50_ = other.msgprocUsecP50_;
+    msgprocUsecP95_ = other.msgprocUsecP95_;
+    msgprocUsecP99_ = other.msgprocUsecP99_;
+    msgprocUsecMax_ = other.msgprocUsecMax_;
+    msgprocUsecAvgP50_ = other.msgprocUsecAvgP50_;
+    msgprocUsecAvgP95_ = other.msgprocUsecAvgP95_;
+    msgprocUsecAvgP99_ = other.msgprocUsecAvgP99_;
+    msgprocUsecAvgMax_ = other.msgprocUsecAvgMax_;
+    queuedmsgsP50_ = other.queuedmsgsP50_;
+    queuedmsgsP95_ = other.queuedmsgsP95_;
+    queuedmsgsP99_ = other.queuedmsgsP99_;
+    queuedmsgsMax_ = other.queuedmsgsMax_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -3707,6 +3726,330 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     _hasBits1 &= ~2048;
   }
 
+  /// <summary>Field number for the "msgproc_usec_p50" field.</summary>
+  public const int MsgprocUsecP50FieldNumber = 90;
+  private readonly static uint MsgprocUsecP50DefaultValue = 0;
+
+  private uint msgprocUsecP50_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecP50 {
+    get { if ((_hasBits1 & 4096) != 0) { return msgprocUsecP50_; } else { return MsgprocUsecP50DefaultValue; } }
+    set {
+      _hasBits1 |= 4096;
+      msgprocUsecP50_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_p50" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecP50 {
+    get { return (_hasBits1 & 4096) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_p50" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecP50() {
+    _hasBits1 &= ~4096;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_p95" field.</summary>
+  public const int MsgprocUsecP95FieldNumber = 91;
+  private readonly static uint MsgprocUsecP95DefaultValue = 0;
+
+  private uint msgprocUsecP95_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecP95 {
+    get { if ((_hasBits1 & 8192) != 0) { return msgprocUsecP95_; } else { return MsgprocUsecP95DefaultValue; } }
+    set {
+      _hasBits1 |= 8192;
+      msgprocUsecP95_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_p95" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecP95 {
+    get { return (_hasBits1 & 8192) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_p95" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecP95() {
+    _hasBits1 &= ~8192;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_p99" field.</summary>
+  public const int MsgprocUsecP99FieldNumber = 92;
+  private readonly static uint MsgprocUsecP99DefaultValue = 0;
+
+  private uint msgprocUsecP99_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecP99 {
+    get { if ((_hasBits1 & 16384) != 0) { return msgprocUsecP99_; } else { return MsgprocUsecP99DefaultValue; } }
+    set {
+      _hasBits1 |= 16384;
+      msgprocUsecP99_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_p99" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecP99 {
+    get { return (_hasBits1 & 16384) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_p99" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecP99() {
+    _hasBits1 &= ~16384;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_max" field.</summary>
+  public const int MsgprocUsecMaxFieldNumber = 93;
+  private readonly static uint MsgprocUsecMaxDefaultValue = 0;
+
+  private uint msgprocUsecMax_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecMax {
+    get { if ((_hasBits1 & 32768) != 0) { return msgprocUsecMax_; } else { return MsgprocUsecMaxDefaultValue; } }
+    set {
+      _hasBits1 |= 32768;
+      msgprocUsecMax_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_max" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecMax {
+    get { return (_hasBits1 & 32768) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_max" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecMax() {
+    _hasBits1 &= ~32768;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_avg_p50" field.</summary>
+  public const int MsgprocUsecAvgP50FieldNumber = 94;
+  private readonly static uint MsgprocUsecAvgP50DefaultValue = 0;
+
+  private uint msgprocUsecAvgP50_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecAvgP50 {
+    get { if ((_hasBits1 & 65536) != 0) { return msgprocUsecAvgP50_; } else { return MsgprocUsecAvgP50DefaultValue; } }
+    set {
+      _hasBits1 |= 65536;
+      msgprocUsecAvgP50_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_avg_p50" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecAvgP50 {
+    get { return (_hasBits1 & 65536) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_avg_p50" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecAvgP50() {
+    _hasBits1 &= ~65536;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_avg_p95" field.</summary>
+  public const int MsgprocUsecAvgP95FieldNumber = 95;
+  private readonly static uint MsgprocUsecAvgP95DefaultValue = 0;
+
+  private uint msgprocUsecAvgP95_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecAvgP95 {
+    get { if ((_hasBits1 & 131072) != 0) { return msgprocUsecAvgP95_; } else { return MsgprocUsecAvgP95DefaultValue; } }
+    set {
+      _hasBits1 |= 131072;
+      msgprocUsecAvgP95_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_avg_p95" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecAvgP95 {
+    get { return (_hasBits1 & 131072) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_avg_p95" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecAvgP95() {
+    _hasBits1 &= ~131072;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_avg_p99" field.</summary>
+  public const int MsgprocUsecAvgP99FieldNumber = 96;
+  private readonly static uint MsgprocUsecAvgP99DefaultValue = 0;
+
+  private uint msgprocUsecAvgP99_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecAvgP99 {
+    get { if ((_hasBits1 & 262144) != 0) { return msgprocUsecAvgP99_; } else { return MsgprocUsecAvgP99DefaultValue; } }
+    set {
+      _hasBits1 |= 262144;
+      msgprocUsecAvgP99_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_avg_p99" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecAvgP99 {
+    get { return (_hasBits1 & 262144) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_avg_p99" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecAvgP99() {
+    _hasBits1 &= ~262144;
+  }
+
+  /// <summary>Field number for the "msgproc_usec_avg_max" field.</summary>
+  public const int MsgprocUsecAvgMaxFieldNumber = 97;
+  private readonly static uint MsgprocUsecAvgMaxDefaultValue = 0;
+
+  private uint msgprocUsecAvgMax_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint MsgprocUsecAvgMax {
+    get { if ((_hasBits1 & 524288) != 0) { return msgprocUsecAvgMax_; } else { return MsgprocUsecAvgMaxDefaultValue; } }
+    set {
+      _hasBits1 |= 524288;
+      msgprocUsecAvgMax_ = value;
+    }
+  }
+  /// <summary>Gets whether the "msgproc_usec_avg_max" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMsgprocUsecAvgMax {
+    get { return (_hasBits1 & 524288) != 0; }
+  }
+  /// <summary>Clears the value of the "msgproc_usec_avg_max" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMsgprocUsecAvgMax() {
+    _hasBits1 &= ~524288;
+  }
+
+  /// <summary>Field number for the "queuedmsgs_p50" field.</summary>
+  public const int QueuedmsgsP50FieldNumber = 100;
+  private readonly static uint QueuedmsgsP50DefaultValue = 0;
+
+  private uint queuedmsgsP50_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint QueuedmsgsP50 {
+    get { if ((_hasBits1 & 1048576) != 0) { return queuedmsgsP50_; } else { return QueuedmsgsP50DefaultValue; } }
+    set {
+      _hasBits1 |= 1048576;
+      queuedmsgsP50_ = value;
+    }
+  }
+  /// <summary>Gets whether the "queuedmsgs_p50" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasQueuedmsgsP50 {
+    get { return (_hasBits1 & 1048576) != 0; }
+  }
+  /// <summary>Clears the value of the "queuedmsgs_p50" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearQueuedmsgsP50() {
+    _hasBits1 &= ~1048576;
+  }
+
+  /// <summary>Field number for the "queuedmsgs_p95" field.</summary>
+  public const int QueuedmsgsP95FieldNumber = 101;
+  private readonly static uint QueuedmsgsP95DefaultValue = 0;
+
+  private uint queuedmsgsP95_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint QueuedmsgsP95 {
+    get { if ((_hasBits1 & 2097152) != 0) { return queuedmsgsP95_; } else { return QueuedmsgsP95DefaultValue; } }
+    set {
+      _hasBits1 |= 2097152;
+      queuedmsgsP95_ = value;
+    }
+  }
+  /// <summary>Gets whether the "queuedmsgs_p95" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasQueuedmsgsP95 {
+    get { return (_hasBits1 & 2097152) != 0; }
+  }
+  /// <summary>Clears the value of the "queuedmsgs_p95" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearQueuedmsgsP95() {
+    _hasBits1 &= ~2097152;
+  }
+
+  /// <summary>Field number for the "queuedmsgs_p99" field.</summary>
+  public const int QueuedmsgsP99FieldNumber = 102;
+  private readonly static uint QueuedmsgsP99DefaultValue = 0;
+
+  private uint queuedmsgsP99_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint QueuedmsgsP99 {
+    get { if ((_hasBits1 & 4194304) != 0) { return queuedmsgsP99_; } else { return QueuedmsgsP99DefaultValue; } }
+    set {
+      _hasBits1 |= 4194304;
+      queuedmsgsP99_ = value;
+    }
+  }
+  /// <summary>Gets whether the "queuedmsgs_p99" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasQueuedmsgsP99 {
+    get { return (_hasBits1 & 4194304) != 0; }
+  }
+  /// <summary>Clears the value of the "queuedmsgs_p99" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearQueuedmsgsP99() {
+    _hasBits1 &= ~4194304;
+  }
+
+  /// <summary>Field number for the "queuedmsgs_max" field.</summary>
+  public const int QueuedmsgsMaxFieldNumber = 103;
+  private readonly static uint QueuedmsgsMaxDefaultValue = 0;
+
+  private uint queuedmsgsMax_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint QueuedmsgsMax {
+    get { if ((_hasBits1 & 8388608) != 0) { return queuedmsgsMax_; } else { return QueuedmsgsMaxDefaultValue; } }
+    set {
+      _hasBits1 |= 8388608;
+      queuedmsgsMax_ = value;
+    }
+  }
+  /// <summary>Gets whether the "queuedmsgs_max" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasQueuedmsgsMax {
+    get { return (_hasBits1 & 8388608) != 0; }
+  }
+  /// <summary>Clears the value of the "queuedmsgs_max" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearQueuedmsgsMax() {
+    _hasBits1 &= ~8388608;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -3766,6 +4109,18 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (NetPingP5 != other.NetPingP5) return false;
     if (NetPingP50 != other.NetPingP50) return false;
     if (NetPingP95 != other.NetPingP95) return false;
+    if (MsgprocUsecP50 != other.MsgprocUsecP50) return false;
+    if (MsgprocUsecP95 != other.MsgprocUsecP95) return false;
+    if (MsgprocUsecP99 != other.MsgprocUsecP99) return false;
+    if (MsgprocUsecMax != other.MsgprocUsecMax) return false;
+    if (MsgprocUsecAvgP50 != other.MsgprocUsecAvgP50) return false;
+    if (MsgprocUsecAvgP95 != other.MsgprocUsecAvgP95) return false;
+    if (MsgprocUsecAvgP99 != other.MsgprocUsecAvgP99) return false;
+    if (MsgprocUsecAvgMax != other.MsgprocUsecAvgMax) return false;
+    if (QueuedmsgsP50 != other.QueuedmsgsP50) return false;
+    if (QueuedmsgsP95 != other.QueuedmsgsP95) return false;
+    if (QueuedmsgsP99 != other.QueuedmsgsP99) return false;
+    if (QueuedmsgsMax != other.QueuedmsgsMax) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -3817,6 +4172,18 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (HasNetPingP5) hash ^= NetPingP5.GetHashCode();
     if (HasNetPingP50) hash ^= NetPingP50.GetHashCode();
     if (HasNetPingP95) hash ^= NetPingP95.GetHashCode();
+    if (HasMsgprocUsecP50) hash ^= MsgprocUsecP50.GetHashCode();
+    if (HasMsgprocUsecP95) hash ^= MsgprocUsecP95.GetHashCode();
+    if (HasMsgprocUsecP99) hash ^= MsgprocUsecP99.GetHashCode();
+    if (HasMsgprocUsecMax) hash ^= MsgprocUsecMax.GetHashCode();
+    if (HasMsgprocUsecAvgP50) hash ^= MsgprocUsecAvgP50.GetHashCode();
+    if (HasMsgprocUsecAvgP95) hash ^= MsgprocUsecAvgP95.GetHashCode();
+    if (HasMsgprocUsecAvgP99) hash ^= MsgprocUsecAvgP99.GetHashCode();
+    if (HasMsgprocUsecAvgMax) hash ^= MsgprocUsecAvgMax.GetHashCode();
+    if (HasQueuedmsgsP50) hash ^= QueuedmsgsP50.GetHashCode();
+    if (HasQueuedmsgsP95) hash ^= QueuedmsgsP95.GetHashCode();
+    if (HasQueuedmsgsP99) hash ^= QueuedmsgsP99.GetHashCode();
+    if (HasQueuedmsgsMax) hash ^= QueuedmsgsMax.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -4011,6 +4378,54 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
       output.WriteRawTag(144, 5);
       output.WriteUInt32(NetPingP95);
     }
+    if (HasMsgprocUsecP50) {
+      output.WriteRawTag(208, 5);
+      output.WriteUInt32(MsgprocUsecP50);
+    }
+    if (HasMsgprocUsecP95) {
+      output.WriteRawTag(216, 5);
+      output.WriteUInt32(MsgprocUsecP95);
+    }
+    if (HasMsgprocUsecP99) {
+      output.WriteRawTag(224, 5);
+      output.WriteUInt32(MsgprocUsecP99);
+    }
+    if (HasMsgprocUsecMax) {
+      output.WriteRawTag(232, 5);
+      output.WriteUInt32(MsgprocUsecMax);
+    }
+    if (HasMsgprocUsecAvgP50) {
+      output.WriteRawTag(240, 5);
+      output.WriteUInt32(MsgprocUsecAvgP50);
+    }
+    if (HasMsgprocUsecAvgP95) {
+      output.WriteRawTag(248, 5);
+      output.WriteUInt32(MsgprocUsecAvgP95);
+    }
+    if (HasMsgprocUsecAvgP99) {
+      output.WriteRawTag(128, 6);
+      output.WriteUInt32(MsgprocUsecAvgP99);
+    }
+    if (HasMsgprocUsecAvgMax) {
+      output.WriteRawTag(136, 6);
+      output.WriteUInt32(MsgprocUsecAvgMax);
+    }
+    if (HasQueuedmsgsP50) {
+      output.WriteRawTag(160, 6);
+      output.WriteUInt32(QueuedmsgsP50);
+    }
+    if (HasQueuedmsgsP95) {
+      output.WriteRawTag(168, 6);
+      output.WriteUInt32(QueuedmsgsP95);
+    }
+    if (HasQueuedmsgsP99) {
+      output.WriteRawTag(176, 6);
+      output.WriteUInt32(QueuedmsgsP99);
+    }
+    if (HasQueuedmsgsMax) {
+      output.WriteRawTag(184, 6);
+      output.WriteUInt32(QueuedmsgsMax);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -4197,6 +4612,54 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
       output.WriteRawTag(144, 5);
       output.WriteUInt32(NetPingP95);
     }
+    if (HasMsgprocUsecP50) {
+      output.WriteRawTag(208, 5);
+      output.WriteUInt32(MsgprocUsecP50);
+    }
+    if (HasMsgprocUsecP95) {
+      output.WriteRawTag(216, 5);
+      output.WriteUInt32(MsgprocUsecP95);
+    }
+    if (HasMsgprocUsecP99) {
+      output.WriteRawTag(224, 5);
+      output.WriteUInt32(MsgprocUsecP99);
+    }
+    if (HasMsgprocUsecMax) {
+      output.WriteRawTag(232, 5);
+      output.WriteUInt32(MsgprocUsecMax);
+    }
+    if (HasMsgprocUsecAvgP50) {
+      output.WriteRawTag(240, 5);
+      output.WriteUInt32(MsgprocUsecAvgP50);
+    }
+    if (HasMsgprocUsecAvgP95) {
+      output.WriteRawTag(248, 5);
+      output.WriteUInt32(MsgprocUsecAvgP95);
+    }
+    if (HasMsgprocUsecAvgP99) {
+      output.WriteRawTag(128, 6);
+      output.WriteUInt32(MsgprocUsecAvgP99);
+    }
+    if (HasMsgprocUsecAvgMax) {
+      output.WriteRawTag(136, 6);
+      output.WriteUInt32(MsgprocUsecAvgMax);
+    }
+    if (HasQueuedmsgsP50) {
+      output.WriteRawTag(160, 6);
+      output.WriteUInt32(QueuedmsgsP50);
+    }
+    if (HasQueuedmsgsP95) {
+      output.WriteRawTag(168, 6);
+      output.WriteUInt32(QueuedmsgsP95);
+    }
+    if (HasQueuedmsgsP99) {
+      output.WriteRawTag(176, 6);
+      output.WriteUInt32(QueuedmsgsP99);
+    }
+    if (HasQueuedmsgsMax) {
+      output.WriteRawTag(184, 6);
+      output.WriteUInt32(QueuedmsgsMax);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -4338,6 +4801,42 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     }
     if (HasNetPingP95) {
       size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetPingP95);
+    }
+    if (HasMsgprocUsecP50) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecP50);
+    }
+    if (HasMsgprocUsecP95) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecP95);
+    }
+    if (HasMsgprocUsecP99) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecP99);
+    }
+    if (HasMsgprocUsecMax) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecMax);
+    }
+    if (HasMsgprocUsecAvgP50) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecAvgP50);
+    }
+    if (HasMsgprocUsecAvgP95) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecAvgP95);
+    }
+    if (HasMsgprocUsecAvgP99) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecAvgP99);
+    }
+    if (HasMsgprocUsecAvgMax) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(MsgprocUsecAvgMax);
+    }
+    if (HasQueuedmsgsP50) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(QueuedmsgsP50);
+    }
+    if (HasQueuedmsgsP95) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(QueuedmsgsP95);
+    }
+    if (HasQueuedmsgsP99) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(QueuedmsgsP99);
+    }
+    if (HasQueuedmsgsMax) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(QueuedmsgsMax);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -4482,6 +4981,42 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     }
     if (other.HasNetPingP95) {
       NetPingP95 = other.NetPingP95;
+    }
+    if (other.HasMsgprocUsecP50) {
+      MsgprocUsecP50 = other.MsgprocUsecP50;
+    }
+    if (other.HasMsgprocUsecP95) {
+      MsgprocUsecP95 = other.MsgprocUsecP95;
+    }
+    if (other.HasMsgprocUsecP99) {
+      MsgprocUsecP99 = other.MsgprocUsecP99;
+    }
+    if (other.HasMsgprocUsecMax) {
+      MsgprocUsecMax = other.MsgprocUsecMax;
+    }
+    if (other.HasMsgprocUsecAvgP50) {
+      MsgprocUsecAvgP50 = other.MsgprocUsecAvgP50;
+    }
+    if (other.HasMsgprocUsecAvgP95) {
+      MsgprocUsecAvgP95 = other.MsgprocUsecAvgP95;
+    }
+    if (other.HasMsgprocUsecAvgP99) {
+      MsgprocUsecAvgP99 = other.MsgprocUsecAvgP99;
+    }
+    if (other.HasMsgprocUsecAvgMax) {
+      MsgprocUsecAvgMax = other.MsgprocUsecAvgMax;
+    }
+    if (other.HasQueuedmsgsP50) {
+      QueuedmsgsP50 = other.QueuedmsgsP50;
+    }
+    if (other.HasQueuedmsgsP95) {
+      QueuedmsgsP95 = other.QueuedmsgsP95;
+    }
+    if (other.HasQueuedmsgsP99) {
+      QueuedmsgsP99 = other.QueuedmsgsP99;
+    }
+    if (other.HasQueuedmsgsMax) {
+      QueuedmsgsMax = other.QueuedmsgsMax;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -4674,6 +5209,54 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
           NetPingP95 = input.ReadUInt32();
           break;
         }
+        case 720: {
+          MsgprocUsecP50 = input.ReadUInt32();
+          break;
+        }
+        case 728: {
+          MsgprocUsecP95 = input.ReadUInt32();
+          break;
+        }
+        case 736: {
+          MsgprocUsecP99 = input.ReadUInt32();
+          break;
+        }
+        case 744: {
+          MsgprocUsecMax = input.ReadUInt32();
+          break;
+        }
+        case 752: {
+          MsgprocUsecAvgP50 = input.ReadUInt32();
+          break;
+        }
+        case 760: {
+          MsgprocUsecAvgP95 = input.ReadUInt32();
+          break;
+        }
+        case 768: {
+          MsgprocUsecAvgP99 = input.ReadUInt32();
+          break;
+        }
+        case 776: {
+          MsgprocUsecAvgMax = input.ReadUInt32();
+          break;
+        }
+        case 800: {
+          QueuedmsgsP50 = input.ReadUInt32();
+          break;
+        }
+        case 808: {
+          QueuedmsgsP95 = input.ReadUInt32();
+          break;
+        }
+        case 816: {
+          QueuedmsgsP99 = input.ReadUInt32();
+          break;
+        }
+        case 824: {
+          QueuedmsgsMax = input.ReadUInt32();
+          break;
+        }
       }
     }
   #endif
@@ -4863,6 +5446,54 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
         }
         case 656: {
           NetPingP95 = input.ReadUInt32();
+          break;
+        }
+        case 720: {
+          MsgprocUsecP50 = input.ReadUInt32();
+          break;
+        }
+        case 728: {
+          MsgprocUsecP95 = input.ReadUInt32();
+          break;
+        }
+        case 736: {
+          MsgprocUsecP99 = input.ReadUInt32();
+          break;
+        }
+        case 744: {
+          MsgprocUsecMax = input.ReadUInt32();
+          break;
+        }
+        case 752: {
+          MsgprocUsecAvgP50 = input.ReadUInt32();
+          break;
+        }
+        case 760: {
+          MsgprocUsecAvgP95 = input.ReadUInt32();
+          break;
+        }
+        case 768: {
+          MsgprocUsecAvgP99 = input.ReadUInt32();
+          break;
+        }
+        case 776: {
+          MsgprocUsecAvgMax = input.ReadUInt32();
+          break;
+        }
+        case 800: {
+          QueuedmsgsP50 = input.ReadUInt32();
+          break;
+        }
+        case 808: {
+          QueuedmsgsP95 = input.ReadUInt32();
+          break;
+        }
+        case 816: {
+          QueuedmsgsP99 = input.ReadUInt32();
+          break;
+        }
+        case 824: {
+          QueuedmsgsMax = input.ReadUInt32();
           break;
         }
       }

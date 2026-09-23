@@ -11537,6 +11537,7 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve /*final*/ :
     kTournamentCastersAccountIdsFieldNumber = 13,
     kOpVarValuesFieldNumber = 19,
     kTeammateColorsFieldNumber = 21,
+    kClanTagsFieldNumber = 23,
     kTournamentEventFieldNumber = 11,
     kPreMatchDataFieldNumber = 15,
     kMatchIdFieldNumber = 3,
@@ -11710,6 +11711,30 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve /*final*/ :
       teammate_colors() const;
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t >*
       mutable_teammate_colors();
+
+  // repeated string clan_tags = 23;
+  int clan_tags_size() const;
+  private:
+  int _internal_clan_tags_size() const;
+  public:
+  void clear_clan_tags();
+  const std::string& clan_tags(int index) const;
+  std::string* mutable_clan_tags(int index);
+  void set_clan_tags(int index, const std::string& value);
+  void set_clan_tags(int index, std::string&& value);
+  void set_clan_tags(int index, const char* value);
+  void set_clan_tags(int index, const char* value, size_t size);
+  std::string* add_clan_tags();
+  void add_clan_tags(const std::string& value);
+  void add_clan_tags(std::string&& value);
+  void add_clan_tags(const char* value);
+  void add_clan_tags(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& clan_tags() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_clan_tags();
+  private:
+  const std::string& _internal_clan_tags(int index) const;
+  std::string* _internal_add_clan_tags();
+  public:
 
   // optional .TournamentEvent tournament_event = 11;
   bool has_tournament_event() const;
@@ -11908,6 +11933,7 @@ class CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve /*final*/ :
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint32_t > tournament_casters_account_ids_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::OperationalVarValue > op_var_values_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedField< int32_t > teammate_colors_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> clan_tags_;
     ::TournamentEvent* tournament_event_;
     ::CPreMatchInfoData* pre_match_data_;
     uint64_t match_id_;
@@ -22268,10 +22294,11 @@ class CEconItemPreviewDataBlock /*final*/ :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kCustomnamesFieldNumber = 11,
     kStickersFieldNumber = 12,
     kKeychainsFieldNumber = 20,
     kVariationsFieldNumber = 22,
-    kCustomnameFieldNumber = 11,
+    kBlobdataFieldNumber = 25,
     kItemidFieldNumber = 2,
     kAccountidFieldNumber = 1,
     kDefindexFieldNumber = 3,
@@ -22291,7 +22318,32 @@ class CEconItemPreviewDataBlock /*final*/ :
     kPetindexFieldNumber = 19,
     kStyleFieldNumber = 21,
     kUpgradeLevelFieldNumber = 23,
+    kPetFoodExpirationDateFieldNumber = 24,
   };
+  // repeated string customnames = 11;
+  int customnames_size() const;
+  private:
+  int _internal_customnames_size() const;
+  public:
+  void clear_customnames();
+  const std::string& customnames(int index) const;
+  std::string* mutable_customnames(int index);
+  void set_customnames(int index, const std::string& value);
+  void set_customnames(int index, std::string&& value);
+  void set_customnames(int index, const char* value);
+  void set_customnames(int index, const char* value, size_t size);
+  std::string* add_customnames();
+  void add_customnames(const std::string& value);
+  void add_customnames(std::string&& value);
+  void add_customnames(const char* value);
+  void add_customnames(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& customnames() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_customnames();
+  private:
+  const std::string& _internal_customnames(int index) const;
+  std::string* _internal_add_customnames();
+  public:
+
   // repeated .CEconItemPreviewDataBlock.Sticker stickers = 12;
   int stickers_size() const;
   private:
@@ -22346,22 +22398,22 @@ class CEconItemPreviewDataBlock /*final*/ :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker >&
       variations() const;
 
-  // optional string customname = 11;
-  bool has_customname() const;
+  // optional bytes blobdata = 25;
+  bool has_blobdata() const;
   private:
-  bool _internal_has_customname() const;
+  bool _internal_has_blobdata() const;
   public:
-  void clear_customname();
-  const std::string& customname() const;
+  void clear_blobdata();
+  const std::string& blobdata() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_customname(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_customname();
-  PROTOBUF_NODISCARD std::string* release_customname();
-  void set_allocated_customname(std::string* customname);
+  void set_blobdata(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_blobdata();
+  PROTOBUF_NODISCARD std::string* release_blobdata();
+  void set_allocated_blobdata(std::string* blobdata);
   private:
-  const std::string& _internal_customname() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_customname(const std::string& value);
-  std::string* _internal_mutable_customname();
+  const std::string& _internal_blobdata() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_blobdata(const std::string& value);
+  std::string* _internal_mutable_blobdata();
   public:
 
   // optional uint64 itemid = 2;
@@ -22611,6 +22663,19 @@ class CEconItemPreviewDataBlock /*final*/ :
   void _internal_set_upgrade_level(uint32_t value);
   public:
 
+  // optional uint32 pet_food_expiration_date = 24;
+  bool has_pet_food_expiration_date() const;
+  private:
+  bool _internal_has_pet_food_expiration_date() const;
+  public:
+  void clear_pet_food_expiration_date();
+  uint32_t pet_food_expiration_date() const;
+  void set_pet_food_expiration_date(uint32_t value);
+  private:
+  uint32_t _internal_pet_food_expiration_date() const;
+  void _internal_set_pet_food_expiration_date(uint32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:CEconItemPreviewDataBlock)
  private:
   class _Internal;
@@ -22621,10 +22686,11 @@ class CEconItemPreviewDataBlock /*final*/ :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> customnames_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker > stickers_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker > keychains_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CEconItemPreviewDataBlock_Sticker > variations_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr customname_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr blobdata_;
     uint64_t itemid_;
     uint32_t accountid_;
     uint32_t defindex_;
@@ -22644,6 +22710,7 @@ class CEconItemPreviewDataBlock /*final*/ :
     uint32_t petindex_;
     uint32_t style_;
     uint32_t upgrade_level_;
+    uint32_t pet_food_expiration_date_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_cstrike15_5fgcmessages_2eproto;
@@ -31908,6 +31975,7 @@ class CSOPersonaDataPublic /*final*/ :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kClanTagFieldNumber = 7,
     kCommendationFieldNumber = 2,
     kPlayerLevelFieldNumber = 1,
     kElevatedStateFieldNumber = 3,
@@ -31915,6 +31983,24 @@ class CSOPersonaDataPublic /*final*/ :
     kXpTrailLevelFieldNumber = 5,
     kClanIdFieldNumber = 6,
   };
+  // optional string clan_tag = 7;
+  bool has_clan_tag() const;
+  private:
+  bool _internal_has_clan_tag() const;
+  public:
+  void clear_clan_tag();
+  const std::string& clan_tag() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_clan_tag(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_clan_tag();
+  PROTOBUF_NODISCARD std::string* release_clan_tag();
+  void set_allocated_clan_tag(std::string* clan_tag);
+  private:
+  const std::string& _internal_clan_tag() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_clan_tag(const std::string& value);
+  std::string* _internal_mutable_clan_tag();
+  public:
+
   // optional .PlayerCommendationInfo commendation = 2;
   bool has_commendation() const;
   private:
@@ -32008,6 +32094,7 @@ class CSOPersonaDataPublic /*final*/ :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr clan_tag_;
     ::PlayerCommendationInfo* commendation_;
     int32_t player_level_;
     bool elevated_state_;
@@ -52212,6 +52299,81 @@ inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_match_id_additio
   // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.match_id_additional)
 }
 
+// repeated string clan_tags = 23;
+inline int CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_clan_tags_size() const {
+  return _impl_.clan_tags_.size();
+}
+inline int CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::clan_tags_size() const {
+  return _internal_clan_tags_size();
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::clear_clan_tags() {
+  _impl_.clan_tags_.Clear();
+}
+inline std::string* CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_clan_tags() {
+  std::string* _s = _internal_add_clan_tags();
+  // @@protoc_insertion_point(field_add_mutable:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+  return _s;
+}
+inline const std::string& CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_clan_tags(int index) const {
+  return _impl_.clan_tags_.Get(index);
+}
+inline const std::string& CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::clan_tags(int index) const {
+  // @@protoc_insertion_point(field_get:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+  return _internal_clan_tags(index);
+}
+inline std::string* CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::mutable_clan_tags(int index) {
+  // @@protoc_insertion_point(field_mutable:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+  return _impl_.clan_tags_.Mutable(index);
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_clan_tags(int index, const std::string& value) {
+  _impl_.clan_tags_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_clan_tags(int index, std::string&& value) {
+  _impl_.clan_tags_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_clan_tags(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.clan_tags_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::set_clan_tags(int index, const char* value, size_t size) {
+  _impl_.clan_tags_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline std::string* CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::_internal_add_clan_tags() {
+  return _impl_.clan_tags_.Add();
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_clan_tags(const std::string& value) {
+  _impl_.clan_tags_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_clan_tags(std::string&& value) {
+  _impl_.clan_tags_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_clan_tags(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.clan_tags_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline void CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::add_clan_tags(const char* value, size_t size) {
+  _impl_.clan_tags_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::clan_tags() const {
+  // @@protoc_insertion_point(field_list:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+  return _impl_.clan_tags_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve::mutable_clan_tags() {
+  // @@protoc_insertion_point(field_mutable_list:CMsgGCCStrike15_v2_MatchmakingGC2ServerReserve.clan_tags)
+  return &_impl_.clan_tags_;
+}
+
 // -------------------------------------------------------------------
 
 // CMsgGCCStrike15_v2_MatchmakingServerReservationResponse
@@ -62398,72 +62560,79 @@ inline void CEconItemPreviewDataBlock::set_killeatervalue(uint32_t value) {
   // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.killeatervalue)
 }
 
-// optional string customname = 11;
-inline bool CEconItemPreviewDataBlock::_internal_has_customname() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
-  return value;
+// repeated string customnames = 11;
+inline int CEconItemPreviewDataBlock::_internal_customnames_size() const {
+  return _impl_.customnames_.size();
 }
-inline bool CEconItemPreviewDataBlock::has_customname() const {
-  return _internal_has_customname();
+inline int CEconItemPreviewDataBlock::customnames_size() const {
+  return _internal_customnames_size();
 }
-inline void CEconItemPreviewDataBlock::clear_customname() {
-  _impl_.customname_.ClearToEmpty();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+inline void CEconItemPreviewDataBlock::clear_customnames() {
+  _impl_.customnames_.Clear();
 }
-inline const std::string& CEconItemPreviewDataBlock::customname() const {
-  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.customname)
-  return _internal_customname();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void CEconItemPreviewDataBlock::set_customname(ArgT0&& arg0, ArgT... args) {
- _impl_._has_bits_[0] |= 0x00000001u;
- _impl_.customname_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.customname)
-}
-inline std::string* CEconItemPreviewDataBlock::mutable_customname() {
-  std::string* _s = _internal_mutable_customname();
-  // @@protoc_insertion_point(field_mutable:CEconItemPreviewDataBlock.customname)
+inline std::string* CEconItemPreviewDataBlock::add_customnames() {
+  std::string* _s = _internal_add_customnames();
+  // @@protoc_insertion_point(field_add_mutable:CEconItemPreviewDataBlock.customnames)
   return _s;
 }
-inline const std::string& CEconItemPreviewDataBlock::_internal_customname() const {
-  return _impl_.customname_.Get();
+inline const std::string& CEconItemPreviewDataBlock::_internal_customnames(int index) const {
+  return _impl_.customnames_.Get(index);
 }
-inline void CEconItemPreviewDataBlock::_internal_set_customname(const std::string& value) {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  _impl_.customname_.Set(value, GetArenaForAllocation());
+inline const std::string& CEconItemPreviewDataBlock::customnames(int index) const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.customnames)
+  return _internal_customnames(index);
 }
-inline std::string* CEconItemPreviewDataBlock::_internal_mutable_customname() {
-  _impl_._has_bits_[0] |= 0x00000001u;
-  return _impl_.customname_.Mutable(GetArenaForAllocation());
+inline std::string* CEconItemPreviewDataBlock::mutable_customnames(int index) {
+  // @@protoc_insertion_point(field_mutable:CEconItemPreviewDataBlock.customnames)
+  return _impl_.customnames_.Mutable(index);
 }
-inline std::string* CEconItemPreviewDataBlock::release_customname() {
-  // @@protoc_insertion_point(field_release:CEconItemPreviewDataBlock.customname)
-  if (!_internal_has_customname()) {
-    return nullptr;
-  }
-  _impl_._has_bits_[0] &= ~0x00000001u;
-  auto* p = _impl_.customname_.Release();
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.customname_.IsDefault()) {
-    _impl_.customname_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  return p;
+inline void CEconItemPreviewDataBlock::set_customnames(int index, const std::string& value) {
+  _impl_.customnames_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.customnames)
 }
-inline void CEconItemPreviewDataBlock::set_allocated_customname(std::string* customname) {
-  if (customname != nullptr) {
-    _impl_._has_bits_[0] |= 0x00000001u;
-  } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
-  }
-  _impl_.customname_.SetAllocated(customname, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.customname_.IsDefault()) {
-    _impl_.customname_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:CEconItemPreviewDataBlock.customname)
+inline void CEconItemPreviewDataBlock::set_customnames(int index, std::string&& value) {
+  _impl_.customnames_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.customnames)
+}
+inline void CEconItemPreviewDataBlock::set_customnames(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.customnames_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:CEconItemPreviewDataBlock.customnames)
+}
+inline void CEconItemPreviewDataBlock::set_customnames(int index, const char* value, size_t size) {
+  _impl_.customnames_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:CEconItemPreviewDataBlock.customnames)
+}
+inline std::string* CEconItemPreviewDataBlock::_internal_add_customnames() {
+  return _impl_.customnames_.Add();
+}
+inline void CEconItemPreviewDataBlock::add_customnames(const std::string& value) {
+  _impl_.customnames_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:CEconItemPreviewDataBlock.customnames)
+}
+inline void CEconItemPreviewDataBlock::add_customnames(std::string&& value) {
+  _impl_.customnames_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:CEconItemPreviewDataBlock.customnames)
+}
+inline void CEconItemPreviewDataBlock::add_customnames(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.customnames_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:CEconItemPreviewDataBlock.customnames)
+}
+inline void CEconItemPreviewDataBlock::add_customnames(const char* value, size_t size) {
+  _impl_.customnames_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:CEconItemPreviewDataBlock.customnames)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+CEconItemPreviewDataBlock::customnames() const {
+  // @@protoc_insertion_point(field_list:CEconItemPreviewDataBlock.customnames)
+  return _impl_.customnames_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+CEconItemPreviewDataBlock::mutable_customnames() {
+  // @@protoc_insertion_point(field_mutable_list:CEconItemPreviewDataBlock.customnames)
+  return &_impl_.customnames_;
 }
 
 // repeated .CEconItemPreviewDataBlock.Sticker stickers = 12;
@@ -62836,6 +63005,102 @@ inline void CEconItemPreviewDataBlock::_internal_set_upgrade_level(uint32_t valu
 inline void CEconItemPreviewDataBlock::set_upgrade_level(uint32_t value) {
   _internal_set_upgrade_level(value);
   // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.upgrade_level)
+}
+
+// optional uint32 pet_food_expiration_date = 24;
+inline bool CEconItemPreviewDataBlock::_internal_has_pet_food_expiration_date() const {
+  bool value = (_impl_._has_bits_[0] & 0x00100000u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock::has_pet_food_expiration_date() const {
+  return _internal_has_pet_food_expiration_date();
+}
+inline void CEconItemPreviewDataBlock::clear_pet_food_expiration_date() {
+  _impl_.pet_food_expiration_date_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00100000u;
+}
+inline uint32_t CEconItemPreviewDataBlock::_internal_pet_food_expiration_date() const {
+  return _impl_.pet_food_expiration_date_;
+}
+inline uint32_t CEconItemPreviewDataBlock::pet_food_expiration_date() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.pet_food_expiration_date)
+  return _internal_pet_food_expiration_date();
+}
+inline void CEconItemPreviewDataBlock::_internal_set_pet_food_expiration_date(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00100000u;
+  _impl_.pet_food_expiration_date_ = value;
+}
+inline void CEconItemPreviewDataBlock::set_pet_food_expiration_date(uint32_t value) {
+  _internal_set_pet_food_expiration_date(value);
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.pet_food_expiration_date)
+}
+
+// optional bytes blobdata = 25;
+inline bool CEconItemPreviewDataBlock::_internal_has_blobdata() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CEconItemPreviewDataBlock::has_blobdata() const {
+  return _internal_has_blobdata();
+}
+inline void CEconItemPreviewDataBlock::clear_blobdata() {
+  _impl_.blobdata_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CEconItemPreviewDataBlock::blobdata() const {
+  // @@protoc_insertion_point(field_get:CEconItemPreviewDataBlock.blobdata)
+  return _internal_blobdata();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CEconItemPreviewDataBlock::set_blobdata(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.blobdata_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CEconItemPreviewDataBlock.blobdata)
+}
+inline std::string* CEconItemPreviewDataBlock::mutable_blobdata() {
+  std::string* _s = _internal_mutable_blobdata();
+  // @@protoc_insertion_point(field_mutable:CEconItemPreviewDataBlock.blobdata)
+  return _s;
+}
+inline const std::string& CEconItemPreviewDataBlock::_internal_blobdata() const {
+  return _impl_.blobdata_.Get();
+}
+inline void CEconItemPreviewDataBlock::_internal_set_blobdata(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.blobdata_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CEconItemPreviewDataBlock::_internal_mutable_blobdata() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.blobdata_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CEconItemPreviewDataBlock::release_blobdata() {
+  // @@protoc_insertion_point(field_release:CEconItemPreviewDataBlock.blobdata)
+  if (!_internal_has_blobdata()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.blobdata_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.blobdata_.IsDefault()) {
+    _impl_.blobdata_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CEconItemPreviewDataBlock::set_allocated_blobdata(std::string* blobdata) {
+  if (blobdata != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.blobdata_.SetAllocated(blobdata, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.blobdata_.IsDefault()) {
+    _impl_.blobdata_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CEconItemPreviewDataBlock.blobdata)
 }
 
 // -------------------------------------------------------------------
@@ -68550,7 +68815,7 @@ inline void CSOGameAccountSteamChina::set_time_play_ban(uint32_t value) {
 
 // optional int32 player_level = 1;
 inline bool CSOPersonaDataPublic::_internal_has_player_level() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
 }
 inline bool CSOPersonaDataPublic::has_player_level() const {
@@ -68558,7 +68823,7 @@ inline bool CSOPersonaDataPublic::has_player_level() const {
 }
 inline void CSOPersonaDataPublic::clear_player_level() {
   _impl_.player_level_ = 0;
-  _impl_._has_bits_[0] &= ~0x00000002u;
+  _impl_._has_bits_[0] &= ~0x00000004u;
 }
 inline int32_t CSOPersonaDataPublic::_internal_player_level() const {
   return _impl_.player_level_;
@@ -68568,7 +68833,7 @@ inline int32_t CSOPersonaDataPublic::player_level() const {
   return _internal_player_level();
 }
 inline void CSOPersonaDataPublic::_internal_set_player_level(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_._has_bits_[0] |= 0x00000004u;
   _impl_.player_level_ = value;
 }
 inline void CSOPersonaDataPublic::set_player_level(int32_t value) {
@@ -68578,7 +68843,7 @@ inline void CSOPersonaDataPublic::set_player_level(int32_t value) {
 
 // optional .PlayerCommendationInfo commendation = 2;
 inline bool CSOPersonaDataPublic::_internal_has_commendation() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.commendation_ != nullptr);
   return value;
 }
@@ -68587,7 +68852,7 @@ inline bool CSOPersonaDataPublic::has_commendation() const {
 }
 inline void CSOPersonaDataPublic::clear_commendation() {
   if (_impl_.commendation_ != nullptr) _impl_.commendation_->Clear();
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
 inline const ::PlayerCommendationInfo& CSOPersonaDataPublic::_internal_commendation() const {
   const ::PlayerCommendationInfo* p = _impl_.commendation_;
@@ -68605,14 +68870,14 @@ inline void CSOPersonaDataPublic::unsafe_arena_set_allocated_commendation(
   }
   _impl_.commendation_ = commendation;
   if (commendation) {
-    _impl_._has_bits_[0] |= 0x00000001u;
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:CSOPersonaDataPublic.commendation)
 }
 inline ::PlayerCommendationInfo* CSOPersonaDataPublic::release_commendation() {
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
   ::PlayerCommendationInfo* temp = _impl_.commendation_;
   _impl_.commendation_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
@@ -68628,13 +68893,13 @@ inline ::PlayerCommendationInfo* CSOPersonaDataPublic::release_commendation() {
 }
 inline ::PlayerCommendationInfo* CSOPersonaDataPublic::unsafe_arena_release_commendation() {
   // @@protoc_insertion_point(field_release:CSOPersonaDataPublic.commendation)
-  _impl_._has_bits_[0] &= ~0x00000001u;
+  _impl_._has_bits_[0] &= ~0x00000002u;
   ::PlayerCommendationInfo* temp = _impl_.commendation_;
   _impl_.commendation_ = nullptr;
   return temp;
 }
 inline ::PlayerCommendationInfo* CSOPersonaDataPublic::_internal_mutable_commendation() {
-  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_._has_bits_[0] |= 0x00000002u;
   if (_impl_.commendation_ == nullptr) {
     auto* p = CreateMaybeMessage<::PlayerCommendationInfo>(GetArenaForAllocation());
     _impl_.commendation_ = p;
@@ -68658,9 +68923,9 @@ inline void CSOPersonaDataPublic::set_allocated_commendation(::PlayerCommendatio
       commendation = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, commendation, submessage_arena);
     }
-    _impl_._has_bits_[0] |= 0x00000001u;
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    _impl_._has_bits_[0] &= ~0x00000001u;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
   _impl_.commendation_ = commendation;
   // @@protoc_insertion_point(field_set_allocated:CSOPersonaDataPublic.commendation)
@@ -68668,7 +68933,7 @@ inline void CSOPersonaDataPublic::set_allocated_commendation(::PlayerCommendatio
 
 // optional bool elevated_state = 3;
 inline bool CSOPersonaDataPublic::_internal_has_elevated_state() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
 }
 inline bool CSOPersonaDataPublic::has_elevated_state() const {
@@ -68676,7 +68941,7 @@ inline bool CSOPersonaDataPublic::has_elevated_state() const {
 }
 inline void CSOPersonaDataPublic::clear_elevated_state() {
   _impl_.elevated_state_ = false;
-  _impl_._has_bits_[0] &= ~0x00000004u;
+  _impl_._has_bits_[0] &= ~0x00000008u;
 }
 inline bool CSOPersonaDataPublic::_internal_elevated_state() const {
   return _impl_.elevated_state_;
@@ -68686,7 +68951,7 @@ inline bool CSOPersonaDataPublic::elevated_state() const {
   return _internal_elevated_state();
 }
 inline void CSOPersonaDataPublic::_internal_set_elevated_state(bool value) {
-  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_._has_bits_[0] |= 0x00000008u;
   _impl_.elevated_state_ = value;
 }
 inline void CSOPersonaDataPublic::set_elevated_state(bool value) {
@@ -68696,7 +68961,7 @@ inline void CSOPersonaDataPublic::set_elevated_state(bool value) {
 
 // optional uint32 xp_trail_timestamp_refresh = 4;
 inline bool CSOPersonaDataPublic::_internal_has_xp_trail_timestamp_refresh() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
 }
 inline bool CSOPersonaDataPublic::has_xp_trail_timestamp_refresh() const {
@@ -68704,7 +68969,7 @@ inline bool CSOPersonaDataPublic::has_xp_trail_timestamp_refresh() const {
 }
 inline void CSOPersonaDataPublic::clear_xp_trail_timestamp_refresh() {
   _impl_.xp_trail_timestamp_refresh_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000008u;
+  _impl_._has_bits_[0] &= ~0x00000010u;
 }
 inline uint32_t CSOPersonaDataPublic::_internal_xp_trail_timestamp_refresh() const {
   return _impl_.xp_trail_timestamp_refresh_;
@@ -68714,7 +68979,7 @@ inline uint32_t CSOPersonaDataPublic::xp_trail_timestamp_refresh() const {
   return _internal_xp_trail_timestamp_refresh();
 }
 inline void CSOPersonaDataPublic::_internal_set_xp_trail_timestamp_refresh(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000008u;
+  _impl_._has_bits_[0] |= 0x00000010u;
   _impl_.xp_trail_timestamp_refresh_ = value;
 }
 inline void CSOPersonaDataPublic::set_xp_trail_timestamp_refresh(uint32_t value) {
@@ -68724,7 +68989,7 @@ inline void CSOPersonaDataPublic::set_xp_trail_timestamp_refresh(uint32_t value)
 
 // optional uint32 xp_trail_level = 5;
 inline bool CSOPersonaDataPublic::_internal_has_xp_trail_level() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
 }
 inline bool CSOPersonaDataPublic::has_xp_trail_level() const {
@@ -68732,7 +68997,7 @@ inline bool CSOPersonaDataPublic::has_xp_trail_level() const {
 }
 inline void CSOPersonaDataPublic::clear_xp_trail_level() {
   _impl_.xp_trail_level_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000010u;
+  _impl_._has_bits_[0] &= ~0x00000020u;
 }
 inline uint32_t CSOPersonaDataPublic::_internal_xp_trail_level() const {
   return _impl_.xp_trail_level_;
@@ -68742,7 +69007,7 @@ inline uint32_t CSOPersonaDataPublic::xp_trail_level() const {
   return _internal_xp_trail_level();
 }
 inline void CSOPersonaDataPublic::_internal_set_xp_trail_level(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000010u;
+  _impl_._has_bits_[0] |= 0x00000020u;
   _impl_.xp_trail_level_ = value;
 }
 inline void CSOPersonaDataPublic::set_xp_trail_level(uint32_t value) {
@@ -68752,7 +69017,7 @@ inline void CSOPersonaDataPublic::set_xp_trail_level(uint32_t value) {
 
 // optional uint32 clan_id = 6;
 inline bool CSOPersonaDataPublic::_internal_has_clan_id() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CSOPersonaDataPublic::has_clan_id() const {
@@ -68760,7 +69025,7 @@ inline bool CSOPersonaDataPublic::has_clan_id() const {
 }
 inline void CSOPersonaDataPublic::clear_clan_id() {
   _impl_.clan_id_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000020u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline uint32_t CSOPersonaDataPublic::_internal_clan_id() const {
   return _impl_.clan_id_;
@@ -68770,12 +69035,80 @@ inline uint32_t CSOPersonaDataPublic::clan_id() const {
   return _internal_clan_id();
 }
 inline void CSOPersonaDataPublic::_internal_set_clan_id(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000020u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.clan_id_ = value;
 }
 inline void CSOPersonaDataPublic::set_clan_id(uint32_t value) {
   _internal_set_clan_id(value);
   // @@protoc_insertion_point(field_set:CSOPersonaDataPublic.clan_id)
+}
+
+// optional string clan_tag = 7;
+inline bool CSOPersonaDataPublic::_internal_has_clan_tag() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CSOPersonaDataPublic::has_clan_tag() const {
+  return _internal_has_clan_tag();
+}
+inline void CSOPersonaDataPublic::clear_clan_tag() {
+  _impl_.clan_tag_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CSOPersonaDataPublic::clan_tag() const {
+  // @@protoc_insertion_point(field_get:CSOPersonaDataPublic.clan_tag)
+  return _internal_clan_tag();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CSOPersonaDataPublic::set_clan_tag(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.clan_tag_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CSOPersonaDataPublic.clan_tag)
+}
+inline std::string* CSOPersonaDataPublic::mutable_clan_tag() {
+  std::string* _s = _internal_mutable_clan_tag();
+  // @@protoc_insertion_point(field_mutable:CSOPersonaDataPublic.clan_tag)
+  return _s;
+}
+inline const std::string& CSOPersonaDataPublic::_internal_clan_tag() const {
+  return _impl_.clan_tag_.Get();
+}
+inline void CSOPersonaDataPublic::_internal_set_clan_tag(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.clan_tag_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CSOPersonaDataPublic::_internal_mutable_clan_tag() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.clan_tag_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CSOPersonaDataPublic::release_clan_tag() {
+  // @@protoc_insertion_point(field_release:CSOPersonaDataPublic.clan_tag)
+  if (!_internal_has_clan_tag()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.clan_tag_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.clan_tag_.IsDefault()) {
+    _impl_.clan_tag_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CSOPersonaDataPublic::set_allocated_clan_tag(std::string* clan_tag) {
+  if (clan_tag != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.clan_tag_.SetAllocated(clan_tag, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.clan_tag_.IsDefault()) {
+    _impl_.clan_tag_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CSOPersonaDataPublic.clan_tag)
 }
 
 // -------------------------------------------------------------------

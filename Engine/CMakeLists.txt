@@ -87,7 +87,6 @@ set(modsharp_SOURCES
 	"src/cstrike/type/CServerSideClient.cpp"
 	"src/cstrike/type/CUtlString.cpp"
 	"src/cstrike/type/CUtlVectorEmbeddedNetworkVar.cpp"
-	"src/cstrike/type/KeyValues.cpp"
 	"src/cstrike/type/KeyValues3.cpp"
 	"src/filesystemfix.cpp"
 	"src/gamedata.cpp"

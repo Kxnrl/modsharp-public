@@ -119,6 +119,9 @@ extern CUserMessageItemPickupDefaultTypeInternal _CUserMessageItemPickup_default
 class CUserMessageLagCompensationError;
 struct CUserMessageLagCompensationErrorDefaultTypeInternal;
 extern CUserMessageLagCompensationErrorDefaultTypeInternal _CUserMessageLagCompensationError_default_instance_;
+class CUserMessageRemoteServerResponse;
+struct CUserMessageRemoteServerResponseDefaultTypeInternal;
+extern CUserMessageRemoteServerResponseDefaultTypeInternal _CUserMessageRemoteServerResponse_default_instance_;
 class CUserMessageRequestDiagnostic;
 struct CUserMessageRequestDiagnosticDefaultTypeInternal;
 extern CUserMessageRequestDiagnosticDefaultTypeInternal _CUserMessageRequestDiagnostic_default_instance_;
@@ -215,6 +218,9 @@ extern CUserMessage_NotifyResponseFound_CriteriaDefaultTypeInternal _CUserMessag
 class CUserMessage_PlayResponseConditional;
 struct CUserMessage_PlayResponseConditionalDefaultTypeInternal;
 extern CUserMessage_PlayResponseConditionalDefaultTypeInternal _CUserMessage_PlayResponseConditional_default_instance_;
+class CUserMessage_RemoteServerCommand;
+struct CUserMessage_RemoteServerCommandDefaultTypeInternal;
+extern CUserMessage_RemoteServerCommandDefaultTypeInternal _CUserMessage_RemoteServerCommand_default_instance_;
 class CUserMessage_UsageReport;
 struct CUserMessage_UsageReportDefaultTypeInternal;
 extern CUserMessage_UsageReportDefaultTypeInternal _CUserMessage_UsageReport_default_instance_;
@@ -393,6 +399,7 @@ template<> ::CUserMessageHudMsg* Arena::CreateMaybeMessage<::CUserMessageHudMsg>
 template<> ::CUserMessageHudText* Arena::CreateMaybeMessage<::CUserMessageHudText>(Arena*);
 template<> ::CUserMessageItemPickup* Arena::CreateMaybeMessage<::CUserMessageItemPickup>(Arena*);
 template<> ::CUserMessageLagCompensationError* Arena::CreateMaybeMessage<::CUserMessageLagCompensationError>(Arena*);
+template<> ::CUserMessageRemoteServerResponse* Arena::CreateMaybeMessage<::CUserMessageRemoteServerResponse>(Arena*);
 template<> ::CUserMessageRequestDiagnostic* Arena::CreateMaybeMessage<::CUserMessageRequestDiagnostic>(Arena*);
 template<> ::CUserMessageRequestDiagnostic_Diagnostic* Arena::CreateMaybeMessage<::CUserMessageRequestDiagnostic_Diagnostic>(Arena*);
 template<> ::CUserMessageRequestDllStatus* Arena::CreateMaybeMessage<::CUserMessageRequestDllStatus>(Arena*);
@@ -425,6 +432,7 @@ template<> ::CUserMessage_Inventory_Response_InventoryDetail* Arena::CreateMaybe
 template<> ::CUserMessage_NotifyResponseFound* Arena::CreateMaybeMessage<::CUserMessage_NotifyResponseFound>(Arena*);
 template<> ::CUserMessage_NotifyResponseFound_Criteria* Arena::CreateMaybeMessage<::CUserMessage_NotifyResponseFound_Criteria>(Arena*);
 template<> ::CUserMessage_PlayResponseConditional* Arena::CreateMaybeMessage<::CUserMessage_PlayResponseConditional>(Arena*);
+template<> ::CUserMessage_RemoteServerCommand* Arena::CreateMaybeMessage<::CUserMessage_RemoteServerCommand>(Arena*);
 template<> ::CUserMessage_UsageReport* Arena::CreateMaybeMessage<::CUserMessage_UsageReport>(Arena*);
 template<> ::CUserMessage_UtilMsg_Response* Arena::CreateMaybeMessage<::CUserMessage_UtilMsg_Response>(Arena*);
 template<> ::CUserMessage_UtilMsg_Response_ItemDetail* Arena::CreateMaybeMessage<::CUserMessage_UtilMsg_Response_ItemDetail>(Arena*);
@@ -478,6 +486,54 @@ template<> ::CUserMsg_ParticleManager_UpdateParticleTransform* Arena::CreateMayb
 template<> ::CUserMsg_ParticleManager_UpdateParticle_OBSOLETE* Arena::CreateMaybeMessage<::CUserMsg_ParticleManager_UpdateParticle_OBSOLETE>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
+enum CUserMessage_RemoteServerCommand_ECommand : int {
+  CUserMessage_RemoteServerCommand_ECommand_ECommandChangeConVar = 1
+};
+bool CUserMessage_RemoteServerCommand_ECommand_IsValid(int value);
+constexpr CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand_ECommand_ECommand_MIN = CUserMessage_RemoteServerCommand_ECommand_ECommandChangeConVar;
+constexpr CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand_ECommand_ECommand_MAX = CUserMessage_RemoteServerCommand_ECommand_ECommandChangeConVar;
+constexpr int CUserMessage_RemoteServerCommand_ECommand_ECommand_ARRAYSIZE = CUserMessage_RemoteServerCommand_ECommand_ECommand_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CUserMessage_RemoteServerCommand_ECommand_descriptor();
+template<typename T>
+inline const std::string& CUserMessage_RemoteServerCommand_ECommand_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CUserMessage_RemoteServerCommand_ECommand>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CUserMessage_RemoteServerCommand_ECommand_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CUserMessage_RemoteServerCommand_ECommand_descriptor(), enum_t_value);
+}
+inline bool CUserMessage_RemoteServerCommand_ECommand_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CUserMessage_RemoteServerCommand_ECommand* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CUserMessage_RemoteServerCommand_ECommand>(
+    CUserMessage_RemoteServerCommand_ECommand_descriptor(), name, value);
+}
+enum CUserMessageRemoteServerResponse_ECommandResult : int {
+  CUserMessageRemoteServerResponse_ECommandResult_EResultSuccess = 1,
+  CUserMessageRemoteServerResponse_ECommandResult_EResultServerDoesntAllow = 2,
+  CUserMessageRemoteServerResponse_ECommandResult_EResultClientNotAuthenticated = 3,
+  CUserMessageRemoteServerResponse_ECommandResult_EResultClientNotAllowed = 4,
+  CUserMessageRemoteServerResponse_ECommandResult_EResultCommandNotAllowed = 5
+};
+bool CUserMessageRemoteServerResponse_ECommandResult_IsValid(int value);
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_MIN = CUserMessageRemoteServerResponse_ECommandResult_EResultSuccess;
+constexpr CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_MAX = CUserMessageRemoteServerResponse_ECommandResult_EResultCommandNotAllowed;
+constexpr int CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_ARRAYSIZE = CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CUserMessageRemoteServerResponse_ECommandResult_descriptor();
+template<typename T>
+inline const std::string& CUserMessageRemoteServerResponse_ECommandResult_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CUserMessageRemoteServerResponse_ECommandResult>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CUserMessageRemoteServerResponse_ECommandResult_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CUserMessageRemoteServerResponse_ECommandResult_descriptor(), enum_t_value);
+}
+inline bool CUserMessageRemoteServerResponse_ECommandResult_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CUserMessageRemoteServerResponse_ECommandResult* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CUserMessageRemoteServerResponse_ECommandResult>(
+    CUserMessageRemoteServerResponse_ECommandResult_descriptor(), name, value);
+}
 enum EBaseUserMessages : int {
   UM_AchievementEvent = 101,
   UM_CurrentTimescale = 104,
@@ -529,6 +585,8 @@ enum EBaseUserMessages : int {
   UM_PlayResponseConditional = 166,
   UM_UserSentBugBug = 167,
   UM_UsageReport = 168,
+  UM_RemoteServerCommand = 169,
+  UM_RemoteServerResponse = 170,
   UM_MAX_BASE = 200
 };
 bool EBaseUserMessages_IsValid(int value);
@@ -23408,6 +23466,470 @@ class CUserMessage_UsageReport /*final*/ :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_usermessages_2eproto;
 };
+// -------------------------------------------------------------------
+
+class CUserMessage_RemoteServerCommand /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessage_RemoteServerCommand) */ {
+ public:
+  inline CUserMessage_RemoteServerCommand() : CUserMessage_RemoteServerCommand(nullptr) {}
+  ~CUserMessage_RemoteServerCommand() override;
+  explicit PROTOBUF_CONSTEXPR CUserMessage_RemoteServerCommand(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMessage_RemoteServerCommand(const CUserMessage_RemoteServerCommand& from);
+  CUserMessage_RemoteServerCommand(CUserMessage_RemoteServerCommand&& from) noexcept
+    : CUserMessage_RemoteServerCommand() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMessage_RemoteServerCommand& operator=(const CUserMessage_RemoteServerCommand& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMessage_RemoteServerCommand& operator=(CUserMessage_RemoteServerCommand&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMessage_RemoteServerCommand& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMessage_RemoteServerCommand* internal_default_instance() {
+    return reinterpret_cast<const CUserMessage_RemoteServerCommand*>(
+               &_CUserMessage_RemoteServerCommand_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    107;
+
+  friend void swap(CUserMessage_RemoteServerCommand& a, CUserMessage_RemoteServerCommand& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMessage_RemoteServerCommand* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMessage_RemoteServerCommand* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMessage_RemoteServerCommand* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMessage_RemoteServerCommand>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMessage_RemoteServerCommand& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMessage_RemoteServerCommand& from) {
+    CUserMessage_RemoteServerCommand::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMessage_RemoteServerCommand* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMessage_RemoteServerCommand";
+  }
+  protected:
+  explicit CUserMessage_RemoteServerCommand(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CUserMessage_RemoteServerCommand_ECommand ECommand;
+  static constexpr ECommand ECommandChangeConVar =
+    CUserMessage_RemoteServerCommand_ECommand_ECommandChangeConVar;
+  static inline bool ECommand_IsValid(int value) {
+    return CUserMessage_RemoteServerCommand_ECommand_IsValid(value);
+  }
+  static constexpr ECommand ECommand_MIN =
+    CUserMessage_RemoteServerCommand_ECommand_ECommand_MIN;
+  static constexpr ECommand ECommand_MAX =
+    CUserMessage_RemoteServerCommand_ECommand_ECommand_MAX;
+  static constexpr int ECommand_ARRAYSIZE =
+    CUserMessage_RemoteServerCommand_ECommand_ECommand_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  ECommand_descriptor() {
+    return CUserMessage_RemoteServerCommand_ECommand_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& ECommand_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, ECommand>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function ECommand_Name.");
+    return CUserMessage_RemoteServerCommand_ECommand_Name(enum_t_value);
+  }
+  static inline bool ECommand_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      ECommand* value) {
+    return CUserMessage_RemoteServerCommand_ECommand_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kConvarFieldNumber = 2,
+    kValueFieldNumber = 3,
+    kCommandFieldNumber = 1,
+  };
+  // optional string convar = 2;
+  bool has_convar() const;
+  private:
+  bool _internal_has_convar() const;
+  public:
+  void clear_convar();
+  const std::string& convar() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_convar(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_convar();
+  PROTOBUF_NODISCARD std::string* release_convar();
+  void set_allocated_convar(std::string* convar);
+  private:
+  const std::string& _internal_convar() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_convar(const std::string& value);
+  std::string* _internal_mutable_convar();
+  public:
+
+  // optional string value = 3;
+  bool has_value() const;
+  private:
+  bool _internal_has_value() const;
+  public:
+  void clear_value();
+  const std::string& value() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_value(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_value();
+  PROTOBUF_NODISCARD std::string* release_value();
+  void set_allocated_value(std::string* value);
+  private:
+  const std::string& _internal_value() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_value(const std::string& value);
+  std::string* _internal_mutable_value();
+  public:
+
+  // optional .CUserMessage_RemoteServerCommand.ECommand command = 1 [default = ECommandChangeConVar];
+  bool has_command() const;
+  private:
+  bool _internal_has_command() const;
+  public:
+  void clear_command();
+  ::CUserMessage_RemoteServerCommand_ECommand command() const;
+  void set_command(::CUserMessage_RemoteServerCommand_ECommand value);
+  private:
+  ::CUserMessage_RemoteServerCommand_ECommand _internal_command() const;
+  void _internal_set_command(::CUserMessage_RemoteServerCommand_ECommand value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMessage_RemoteServerCommand)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr convar_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr value_;
+    int command_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
+// -------------------------------------------------------------------
+
+class CUserMessageRemoteServerResponse /*final*/ :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CUserMessageRemoteServerResponse) */ {
+ public:
+  inline CUserMessageRemoteServerResponse() : CUserMessageRemoteServerResponse(nullptr) {}
+  ~CUserMessageRemoteServerResponse() override;
+  explicit PROTOBUF_CONSTEXPR CUserMessageRemoteServerResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CUserMessageRemoteServerResponse(const CUserMessageRemoteServerResponse& from);
+  CUserMessageRemoteServerResponse(CUserMessageRemoteServerResponse&& from) noexcept
+    : CUserMessageRemoteServerResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline CUserMessageRemoteServerResponse& operator=(const CUserMessageRemoteServerResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CUserMessageRemoteServerResponse& operator=(CUserMessageRemoteServerResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance);
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CUserMessageRemoteServerResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CUserMessageRemoteServerResponse* internal_default_instance() {
+    return reinterpret_cast<const CUserMessageRemoteServerResponse*>(
+               &_CUserMessageRemoteServerResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    108;
+
+  friend void swap(CUserMessageRemoteServerResponse& a, CUserMessageRemoteServerResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CUserMessageRemoteServerResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CUserMessageRemoteServerResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CUserMessageRemoteServerResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CUserMessageRemoteServerResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const CUserMessageRemoteServerResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const CUserMessageRemoteServerResponse& from) {
+    CUserMessageRemoteServerResponse::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(CUserMessageRemoteServerResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "CUserMessageRemoteServerResponse";
+  }
+  protected:
+  explicit CUserMessageRemoteServerResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef CUserMessageRemoteServerResponse_ECommandResult ECommandResult;
+  static constexpr ECommandResult EResultSuccess =
+    CUserMessageRemoteServerResponse_ECommandResult_EResultSuccess;
+  static constexpr ECommandResult EResultServerDoesntAllow =
+    CUserMessageRemoteServerResponse_ECommandResult_EResultServerDoesntAllow;
+  static constexpr ECommandResult EResultClientNotAuthenticated =
+    CUserMessageRemoteServerResponse_ECommandResult_EResultClientNotAuthenticated;
+  static constexpr ECommandResult EResultClientNotAllowed =
+    CUserMessageRemoteServerResponse_ECommandResult_EResultClientNotAllowed;
+  static constexpr ECommandResult EResultCommandNotAllowed =
+    CUserMessageRemoteServerResponse_ECommandResult_EResultCommandNotAllowed;
+  static inline bool ECommandResult_IsValid(int value) {
+    return CUserMessageRemoteServerResponse_ECommandResult_IsValid(value);
+  }
+  static constexpr ECommandResult ECommandResult_MIN =
+    CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_MIN;
+  static constexpr ECommandResult ECommandResult_MAX =
+    CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_MAX;
+  static constexpr int ECommandResult_ARRAYSIZE =
+    CUserMessageRemoteServerResponse_ECommandResult_ECommandResult_ARRAYSIZE;
+  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
+  ECommandResult_descriptor() {
+    return CUserMessageRemoteServerResponse_ECommandResult_descriptor();
+  }
+  template<typename T>
+  static inline const std::string& ECommandResult_Name(T enum_t_value) {
+    static_assert(::std::is_same<T, ECommandResult>::value ||
+      ::std::is_integral<T>::value,
+      "Incorrect type passed to function ECommandResult_Name.");
+    return CUserMessageRemoteServerResponse_ECommandResult_Name(enum_t_value);
+  }
+  static inline bool ECommandResult_Parse(::PROTOBUF_NAMESPACE_ID::ConstStringParam name,
+      ECommandResult* value) {
+    return CUserMessageRemoteServerResponse_ECommandResult_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kConvarFieldNumber = 2,
+    kResultsFieldNumber = 3,
+    kCommandResultFieldNumber = 1,
+  };
+  // optional string convar = 2;
+  bool has_convar() const;
+  private:
+  bool _internal_has_convar() const;
+  public:
+  void clear_convar();
+  const std::string& convar() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_convar(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_convar();
+  PROTOBUF_NODISCARD std::string* release_convar();
+  void set_allocated_convar(std::string* convar);
+  private:
+  const std::string& _internal_convar() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_convar(const std::string& value);
+  std::string* _internal_mutable_convar();
+  public:
+
+  // optional string results = 3;
+  bool has_results() const;
+  private:
+  bool _internal_has_results() const;
+  public:
+  void clear_results();
+  const std::string& results() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_results(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_results();
+  PROTOBUF_NODISCARD std::string* release_results();
+  void set_allocated_results(std::string* results);
+  private:
+  const std::string& _internal_results() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_results(const std::string& value);
+  std::string* _internal_mutable_results();
+  public:
+
+  // optional .CUserMessageRemoteServerResponse.ECommandResult command_result = 1 [default = EResultSuccess];
+  bool has_command_result() const;
+  private:
+  bool _internal_has_command_result() const;
+  public:
+  void clear_command_result();
+  ::CUserMessageRemoteServerResponse_ECommandResult command_result() const;
+  void set_command_result(::CUserMessageRemoteServerResponse_ECommandResult value);
+  private:
+  ::CUserMessageRemoteServerResponse_ECommandResult _internal_command_result() const;
+  void _internal_set_command_result(::CUserMessageRemoteServerResponse_ECommandResult value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:CUserMessageRemoteServerResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr convar_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr results_;
+    int command_result_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_usermessages_2eproto;
+};
 // ===================================================================
 
 
@@ -43132,9 +43654,351 @@ inline void CUserMessage_UsageReport::set_allocated_usage(std::string* usage) {
   // @@protoc_insertion_point(field_set_allocated:CUserMessage_UsageReport.usage)
 }
 
+// -------------------------------------------------------------------
+
+// CUserMessage_RemoteServerCommand
+
+// optional .CUserMessage_RemoteServerCommand.ECommand command = 1 [default = ECommandChangeConVar];
+inline bool CUserMessage_RemoteServerCommand::_internal_has_command() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CUserMessage_RemoteServerCommand::has_command() const {
+  return _internal_has_command();
+}
+inline void CUserMessage_RemoteServerCommand::clear_command() {
+  _impl_.command_ = 1;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline ::CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand::_internal_command() const {
+  return static_cast< ::CUserMessage_RemoteServerCommand_ECommand >(_impl_.command_);
+}
+inline ::CUserMessage_RemoteServerCommand_ECommand CUserMessage_RemoteServerCommand::command() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_RemoteServerCommand.command)
+  return _internal_command();
+}
+inline void CUserMessage_RemoteServerCommand::_internal_set_command(::CUserMessage_RemoteServerCommand_ECommand value) {
+  assert(::CUserMessage_RemoteServerCommand_ECommand_IsValid(value));
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.command_ = value;
+}
+inline void CUserMessage_RemoteServerCommand::set_command(::CUserMessage_RemoteServerCommand_ECommand value) {
+  _internal_set_command(value);
+  // @@protoc_insertion_point(field_set:CUserMessage_RemoteServerCommand.command)
+}
+
+// optional string convar = 2;
+inline bool CUserMessage_RemoteServerCommand::_internal_has_convar() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMessage_RemoteServerCommand::has_convar() const {
+  return _internal_has_convar();
+}
+inline void CUserMessage_RemoteServerCommand::clear_convar() {
+  _impl_.convar_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMessage_RemoteServerCommand::convar() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_RemoteServerCommand.convar)
+  return _internal_convar();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_RemoteServerCommand::set_convar(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.convar_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_RemoteServerCommand.convar)
+}
+inline std::string* CUserMessage_RemoteServerCommand::mutable_convar() {
+  std::string* _s = _internal_mutable_convar();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_RemoteServerCommand.convar)
+  return _s;
+}
+inline const std::string& CUserMessage_RemoteServerCommand::_internal_convar() const {
+  return _impl_.convar_.Get();
+}
+inline void CUserMessage_RemoteServerCommand::_internal_set_convar(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.convar_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_RemoteServerCommand::_internal_mutable_convar() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.convar_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_RemoteServerCommand::release_convar() {
+  // @@protoc_insertion_point(field_release:CUserMessage_RemoteServerCommand.convar)
+  if (!_internal_has_convar()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.convar_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.convar_.IsDefault()) {
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_RemoteServerCommand::set_allocated_convar(std::string* convar) {
+  if (convar != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.convar_.SetAllocated(convar, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.convar_.IsDefault()) {
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_RemoteServerCommand.convar)
+}
+
+// optional string value = 3;
+inline bool CUserMessage_RemoteServerCommand::_internal_has_value() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CUserMessage_RemoteServerCommand::has_value() const {
+  return _internal_has_value();
+}
+inline void CUserMessage_RemoteServerCommand::clear_value() {
+  _impl_.value_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CUserMessage_RemoteServerCommand::value() const {
+  // @@protoc_insertion_point(field_get:CUserMessage_RemoteServerCommand.value)
+  return _internal_value();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessage_RemoteServerCommand::set_value(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.value_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessage_RemoteServerCommand.value)
+}
+inline std::string* CUserMessage_RemoteServerCommand::mutable_value() {
+  std::string* _s = _internal_mutable_value();
+  // @@protoc_insertion_point(field_mutable:CUserMessage_RemoteServerCommand.value)
+  return _s;
+}
+inline const std::string& CUserMessage_RemoteServerCommand::_internal_value() const {
+  return _impl_.value_.Get();
+}
+inline void CUserMessage_RemoteServerCommand::_internal_set_value(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.value_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessage_RemoteServerCommand::_internal_mutable_value() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.value_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessage_RemoteServerCommand::release_value() {
+  // @@protoc_insertion_point(field_release:CUserMessage_RemoteServerCommand.value)
+  if (!_internal_has_value()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.value_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.value_.IsDefault()) {
+    _impl_.value_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessage_RemoteServerCommand::set_allocated_value(std::string* value) {
+  if (value != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.value_.SetAllocated(value, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.value_.IsDefault()) {
+    _impl_.value_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessage_RemoteServerCommand.value)
+}
+
+// -------------------------------------------------------------------
+
+// CUserMessageRemoteServerResponse
+
+// optional .CUserMessageRemoteServerResponse.ECommandResult command_result = 1 [default = EResultSuccess];
+inline bool CUserMessageRemoteServerResponse::_internal_has_command_result() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool CUserMessageRemoteServerResponse::has_command_result() const {
+  return _internal_has_command_result();
+}
+inline void CUserMessageRemoteServerResponse::clear_command_result() {
+  _impl_.command_result_ = 1;
+  _impl_._has_bits_[0] &= ~0x00000004u;
+}
+inline ::CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::_internal_command_result() const {
+  return static_cast< ::CUserMessageRemoteServerResponse_ECommandResult >(_impl_.command_result_);
+}
+inline ::CUserMessageRemoteServerResponse_ECommandResult CUserMessageRemoteServerResponse::command_result() const {
+  // @@protoc_insertion_point(field_get:CUserMessageRemoteServerResponse.command_result)
+  return _internal_command_result();
+}
+inline void CUserMessageRemoteServerResponse::_internal_set_command_result(::CUserMessageRemoteServerResponse_ECommandResult value) {
+  assert(::CUserMessageRemoteServerResponse_ECommandResult_IsValid(value));
+  _impl_._has_bits_[0] |= 0x00000004u;
+  _impl_.command_result_ = value;
+}
+inline void CUserMessageRemoteServerResponse::set_command_result(::CUserMessageRemoteServerResponse_ECommandResult value) {
+  _internal_set_command_result(value);
+  // @@protoc_insertion_point(field_set:CUserMessageRemoteServerResponse.command_result)
+}
+
+// optional string convar = 2;
+inline bool CUserMessageRemoteServerResponse::_internal_has_convar() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool CUserMessageRemoteServerResponse::has_convar() const {
+  return _internal_has_convar();
+}
+inline void CUserMessageRemoteServerResponse::clear_convar() {
+  _impl_.convar_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& CUserMessageRemoteServerResponse::convar() const {
+  // @@protoc_insertion_point(field_get:CUserMessageRemoteServerResponse.convar)
+  return _internal_convar();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessageRemoteServerResponse::set_convar(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000001u;
+ _impl_.convar_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessageRemoteServerResponse.convar)
+}
+inline std::string* CUserMessageRemoteServerResponse::mutable_convar() {
+  std::string* _s = _internal_mutable_convar();
+  // @@protoc_insertion_point(field_mutable:CUserMessageRemoteServerResponse.convar)
+  return _s;
+}
+inline const std::string& CUserMessageRemoteServerResponse::_internal_convar() const {
+  return _impl_.convar_.Get();
+}
+inline void CUserMessageRemoteServerResponse::_internal_set_convar(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  _impl_.convar_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessageRemoteServerResponse::_internal_mutable_convar() {
+  _impl_._has_bits_[0] |= 0x00000001u;
+  return _impl_.convar_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessageRemoteServerResponse::release_convar() {
+  // @@protoc_insertion_point(field_release:CUserMessageRemoteServerResponse.convar)
+  if (!_internal_has_convar()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000001u;
+  auto* p = _impl_.convar_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.convar_.IsDefault()) {
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessageRemoteServerResponse::set_allocated_convar(std::string* convar) {
+  if (convar != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000001u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000001u;
+  }
+  _impl_.convar_.SetAllocated(convar, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.convar_.IsDefault()) {
+    _impl_.convar_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessageRemoteServerResponse.convar)
+}
+
+// optional string results = 3;
+inline bool CUserMessageRemoteServerResponse::_internal_has_results() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool CUserMessageRemoteServerResponse::has_results() const {
+  return _internal_has_results();
+}
+inline void CUserMessageRemoteServerResponse::clear_results() {
+  _impl_.results_.ClearToEmpty();
+  _impl_._has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& CUserMessageRemoteServerResponse::results() const {
+  // @@protoc_insertion_point(field_get:CUserMessageRemoteServerResponse.results)
+  return _internal_results();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void CUserMessageRemoteServerResponse::set_results(ArgT0&& arg0, ArgT... args) {
+ _impl_._has_bits_[0] |= 0x00000002u;
+ _impl_.results_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:CUserMessageRemoteServerResponse.results)
+}
+inline std::string* CUserMessageRemoteServerResponse::mutable_results() {
+  std::string* _s = _internal_mutable_results();
+  // @@protoc_insertion_point(field_mutable:CUserMessageRemoteServerResponse.results)
+  return _s;
+}
+inline const std::string& CUserMessageRemoteServerResponse::_internal_results() const {
+  return _impl_.results_.Get();
+}
+inline void CUserMessageRemoteServerResponse::_internal_set_results(const std::string& value) {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  _impl_.results_.Set(value, GetArenaForAllocation());
+}
+inline std::string* CUserMessageRemoteServerResponse::_internal_mutable_results() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  return _impl_.results_.Mutable(GetArenaForAllocation());
+}
+inline std::string* CUserMessageRemoteServerResponse::release_results() {
+  // @@protoc_insertion_point(field_release:CUserMessageRemoteServerResponse.results)
+  if (!_internal_has_results()) {
+    return nullptr;
+  }
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  auto* p = _impl_.results_.Release();
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.results_.IsDefault()) {
+    _impl_.results_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  return p;
+}
+inline void CUserMessageRemoteServerResponse::set_allocated_results(std::string* results) {
+  if (results != nullptr) {
+    _impl_._has_bits_[0] |= 0x00000002u;
+  } else {
+    _impl_._has_bits_[0] &= ~0x00000002u;
+  }
+  _impl_.results_.SetAllocated(results, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.results_.IsDefault()) {
+    _impl_.results_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:CUserMessageRemoteServerResponse.results)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -43353,6 +44217,16 @@ inline void CUserMessage_UsageReport::set_allocated_usage(std::string* usage) {
 
 PROTOBUF_NAMESPACE_OPEN
 
+template <> struct is_proto_enum< ::CUserMessage_RemoteServerCommand_ECommand> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::CUserMessage_RemoteServerCommand_ECommand>() {
+  return ::CUserMessage_RemoteServerCommand_ECommand_descriptor();
+}
+template <> struct is_proto_enum< ::CUserMessageRemoteServerResponse_ECommandResult> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::CUserMessageRemoteServerResponse_ECommandResult>() {
+  return ::CUserMessageRemoteServerResponse_ECommandResult_descriptor();
+}
 template <> struct is_proto_enum< ::EBaseUserMessages> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::EBaseUserMessages>() {

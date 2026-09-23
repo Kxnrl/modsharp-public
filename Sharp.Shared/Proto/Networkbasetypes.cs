@@ -33,93 +33,99 @@ public static partial class NetworkbasetypesReflection {
           "aXRpb24YASABKAsyCy5DTXNnVmVjdG9yEg0KBXNjYWxlGAIgASgCEiQKC29y",
           "aWVudGF0aW9uGAMgASgLMg8uQ01zZ1F1YXRlcm5pb246BMDkHQEiPAoIQ01z",
           "Z1JHQkESCQoBchgBIAEoBRIJCgFnGAIgASgFEgkKAWIYAyABKAUSCQoBYRgE",
-          "IAEoBToEwOQdASJxCg5DTXNnUGxheWVySW5mbxIMCgRuYW1lGAEgASgJEgwK",
-          "BHh1aWQYAiABKAYSDgoGdXNlcmlkGAMgASgFEg8KB3N0ZWFtaWQYBCABKAYS",
-          "EgoKZmFrZXBsYXllchgFIAEoCBIOCgZpc2hsdHYYBiABKAgiLQoKQ0VudGl0",
-          "eU1zZxIfCg10YXJnZXRfZW50aXR5GAEgASgNOggxNjc3NzIxNSJSCgpDTXNn",
-          "X0NWYXJzEh8KBWN2YXJzGAEgAygLMhAuQ01zZ19DVmFycy5DVmFyGiMKBENW",
-          "YXISDAoEbmFtZRgBIAEoCRINCgV2YWx1ZRgCIAEoCSINCgtDTkVUTXNnX05P",
-          "UCInChdDTkVUTXNnX1NwbGl0U2NyZWVuVXNlchIMCgRzbG90GAEgASgFIs8C",
-          "CgxDTkVUTXNnX1RpY2sSDAoEdGljaxgBIAEoDRIcChRob3N0X2NvbXB1dGF0",
-          "aW9udGltZRgEIAEoDRIqCiJob3N0X2NvbXB1dGF0aW9udGltZV9zdGRfZGV2",
-          "aWF0aW9uGAUgASgNEhgKEGxlZ2FjeV9ob3N0X2xvc3MYByABKA0SIQoZaG9z",
-          "dF91bmZpbHRlcmVkX2ZyYW1ldGltZRgIIAEoDRIZChFobHR2X3JlcGxheV9m",
-          "bGFncxgJIAEoDRIaChJleHBlY3RlZF9sb25nX3RpY2sYCiABKA0SIQoZZXhw",
-          "ZWN0ZWRfbG9uZ190aWNrX3JlYXNvbhgLIAEoCRIiChpob3N0X2ZyYW1lX2Ry",
-          "b3BwZWRfcGN0X3gxMBgMIAEoDRIsCiRob3N0X2ZyYW1lX2lycmVndWxhcl9h",
-          "cnJpdmFsX3BjdF94MTAYDSABKA0iPQoRQ05FVE1zZ19TdHJpbmdDbWQSDwoH",
-          "Y29tbWFuZBgBIAEoCRIXCg9wcmVkaWN0aW9uX3N5bmMYAiABKA0iOAoRQ05F",
-          "VE1zZ19TZXRDb25WYXISHAoHY29udmFycxgBIAEoCzILLkNNc2dfQ1ZhcnM6",
-          "BYC1GIAgIrwBChNDTkVUTXNnX1NpZ25vblN0YXRlEjYKDHNpZ25vbl9zdGF0",
-          "ZRgBIAEoDjIOLlNpZ25vblN0YXRlX3Q6EFNJR05PTlNUQVRFX05PTkUSEwoL",
-          "c3Bhd25fY291bnQYAiABKA0SGgoSbnVtX3NlcnZlcl9wbGF5ZXJzGAMgASgN",
-          "EhoKEnBsYXllcnNfbmV0d29ya2lkcxgEIAMoCRIQCghtYXBfbmFtZRgFIAEo",
-          "CRIOCgZhZGRvbnMYBiABKAki/AEKEUNTVkNNc2dfR2FtZUV2ZW50EhIKCmV2",
-          "ZW50X25hbWUYASABKAkSDwoHZXZlbnRpZBgCIAEoBRImCgRrZXlzGAMgAygL",
-          "MhguQ1NWQ01zZ19HYW1lRXZlbnQua2V5X3QamQEKBWtleV90EgwKBHR5cGUY",
-          "ASABKAUSEgoKdmFsX3N0cmluZxgCIAEoCRIRCgl2YWxfZmxvYXQYAyABKAIS",
-          "EAoIdmFsX2xvbmcYBCABKAUSEQoJdmFsX3Nob3J0GAUgASgFEhAKCHZhbF9i",
-          "eXRlGAYgASgFEhAKCHZhbF9ib29sGAcgASgIEhIKCnZhbF91aW50NjQYCCAB",
-          "KAQihQEKFkNTVkNNc2dMaXN0X0dhbWVFdmVudHMSLwoGZXZlbnRzGAEgAygL",
-          "Mh8uQ1NWQ01zZ0xpc3RfR2FtZUV2ZW50cy5ldmVudF90GjoKB2V2ZW50X3QS",
-          "DAoEdGljaxgBIAEoBRIhCgVldmVudBgCIAEoCzISLkNTVkNNc2dfR2FtZUV2",
-          "ZW50IrMEChdDTkVUTXNnX1NwYXduR3JvdXBfTG9hZBIRCgl3b3JsZG5hbWUY",
-          "ASABKAkSFgoOZW50aXR5bHVtcG5hbWUYAiABKAkSGAoQZW50aXR5ZmlsdGVy",
-          "bmFtZRgDIAEoCRIYChBzcGF3bmdyb3VwaGFuZGxlGAQgASgNEh0KFXNwYXdu",
-          "Z3JvdXBvd25lcmhhbmRsZRgFIAEoDRIlChB3b3JsZF9vZmZzZXRfcG9zGAYg",
-          "ASgLMgsuQ01zZ1ZlY3RvchInChJ3b3JsZF9vZmZzZXRfYW5nbGUYByABKAsy",
-          "Cy5DTXNnUUFuZ2xlEhoKEnNwYXduZ3JvdXBtYW5pZmVzdBgIIAEoDBINCgVm",
-          "bGFncxgJIAEoDRIRCgl0aWNrY291bnQYCiABKAUSGgoSbWFuaWZlc3RpbmNv",
-          "bXBsZXRlGAsgASgIEhYKDmxvY2FsbmFtZWZpeHVwGAwgASgJEhcKD3BhcmVu",
-          "dG5hbWVmaXh1cBgNIAEoCRIcChRtYW5pZmVzdGxvYWRwcmlvcml0eRgOIAEo",
-          "BRIUCgx3b3JsZGdyb3VwaWQYDyABKA0SGAoQY3JlYXRpb25zZXF1ZW5jZRgQ",
-          "IAEoDRIYChBzYXZlZ2FtZWZpbGVuYW1lGBEgASgJEh4KFnNwYXduZ3JvdXBw",
-          "YXJlbnRoYW5kbGUYEiABKA0SFwoPbGV2ZWx0cmFuc2l0aW9uGBMgASgIEhYK",
-          "DndvcmxkZ3JvdXBuYW1lGBQgASgJOgaAtRiAgAgifAohQ05FVE1zZ19TcGF3",
-          "bkdyb3VwX01hbmlmZXN0VXBkYXRlEhgKEHNwYXduZ3JvdXBoYW5kbGUYASAB",
-          "KA0SGgoSc3Bhd25ncm91cG1hbmlmZXN0GAIgASgMEhoKEm1hbmlmZXN0aW5j",
-          "b21wbGV0ZRgDIAEoCDoFgLUYgBAiawoiQ05FVE1zZ19TcGF3bkdyb3VwX1Nl",
-          "dENyZWF0aW9uVGljaxIYChBzcGF3bmdyb3VwaGFuZGxlGAEgASgNEhEKCXRp",
-          "Y2tjb3VudBgCIAEoBRIYChBjcmVhdGlvbnNlcXVlbmNlGAMgASgNIlcKGUNO",
-          "RVRNc2dfU3Bhd25Hcm91cF9VbmxvYWQSGAoQc3Bhd25ncm91cGhhbmRsZRgB",
-          "IAEoDRINCgVmbGFncxgCIAEoDRIRCgl0aWNrY291bnQYAyABKAUiPAogQ05F",
-          "VE1zZ19TcGF3bkdyb3VwX0xvYWRDb21wbGV0ZWQSGAoQc3Bhd25ncm91cGhh",
-          "bmRsZRgBIAEoDSLNAwogQ1NWQ01zZ19HYW1lU2Vzc2lvbkNvbmZpZ3VyYXRp",
-          "b24SFgoOaXNfbXVsdGlwbGF5ZXIYASABKAgSFwoPaXNfbG9hZHNhdmVnYW1l",
-          "GAIgASgIEhkKEWlzX2JhY2tncm91bmRfbWFwGAMgASgIEhMKC2lzX2hlYWRs",
-          "ZXNzGAQgASgIEhgKEG1pbl9jbGllbnRfbGltaXQYBSABKA0SGAoQbWF4X2Ns",
-          "aWVudF9saW1pdBgGIAEoDRITCgttYXhfY2xpZW50cxgHIAEoDRIVCg10aWNr",
-          "X2ludGVydmFsGAggASgHEhAKCGhvc3RuYW1lGAkgASgJEhQKDHNhdmVnYW1l",
-          "bmFtZRgKIAEoCRISCgpzMV9tYXBuYW1lGAsgASgJEhAKCGdhbWVtb2RlGAwg",
-          "ASgJEhkKEXNlcnZlcl9pcF9hZGRyZXNzGA0gASgJEgwKBGRhdGEYDiABKAwS",
-          "FAoMaXNfbG9jYWxvbmx5GA8gASgIEhcKD25vX3N0ZWFtX3NlcnZlchgTIAEo",
-          "CBIVCg1pc190cmFuc2l0aW9uGBAgASgIEhUKDXByZXZpb3VzbGV2ZWwYESAB",
-          "KAkSFAoMbGFuZG1hcmtuYW1lGBIgASgJIrIBChRDTkVUTXNnX0RlYnVnT3Zl",
-          "cmxheRINCgVldHlwZRgBIAEoBRIcCgd2ZWN0b3JzGAIgAygLMgsuQ01zZ1Zl",
-          "Y3RvchIZCgZjb2xvcnMYAyADKAsyCS5DTXNnUkdCQRISCgpkaW1lbnNpb25z",
-          "GAQgAygCEg0KBXRpbWVzGAUgAygCEg0KBWJvb2xzGAYgAygIEg8KB3VpbnQ2",
-          "NHMYByADKAQSDwoHc3RyaW5ncxgIIAMoCSrUAQoNU2lnbm9uU3RhdGVfdBIU",
-          "ChBTSUdOT05TVEFURV9OT05FEAASGQoVU0lHTk9OU1RBVEVfQ0hBTExFTkdF",
-          "EAESGQoVU0lHTk9OU1RBVEVfQ09OTkVDVEVEEAISEwoPU0lHTk9OU1RBVEVf",
-          "TkVXEAMSGAoUU0lHTk9OU1RBVEVfUFJFU1BBV04QBBIVChFTSUdOT05TVEFU",
-          "RV9TUEFXThAFEhQKEFNJR05PTlNUQVRFX0ZVTEwQBhIbChdTSUdOT05TVEFU",
-          "RV9DSEFOR0VMRVZFTBAHKssCCgxORVRfTWVzc2FnZXMSCwoHbmV0X05PUBAA",
-          "EhkKFW5ldF9EaXNjb25uZWN0X0xlZ2FjeRABEhcKE25ldF9TcGxpdFNjcmVl",
-          "blVzZXIQAxIMCghuZXRfVGljaxAEEhEKDW5ldF9TdHJpbmdDbWQQBRIRCg1u",
-          "ZXRfU2V0Q29uVmFyEAYSEwoPbmV0X1NpZ25vblN0YXRlEAcSFwoTbmV0X1Nw",
-          "YXduR3JvdXBfTG9hZBAIEiEKHW5ldF9TcGF3bkdyb3VwX01hbmlmZXN0VXBk",
-          "YXRlEAkSIgoebmV0X1NwYXduR3JvdXBfU2V0Q3JlYXRpb25UaWNrEAsSGQoV",
-          "bmV0X1NwYXduR3JvdXBfVW5sb2FkEAwSIAocbmV0X1NwYXduR3JvdXBfTG9h",
-          "ZENvbXBsZXRlZBANEhQKEG5ldF9EZWJ1Z092ZXJsYXkQDyrMAgoRU3Bhd25H",
-          "cm91cEZsYWdzX3QSJwojU1BBV05fR1JPVVBfTE9BRF9FTlRJVElFU19GUk9N",
-          "X1NBVkUQARIjCh9TUEFXTl9HUk9VUF9ET05UX1NQQVdOX0VOVElUSUVTEAIS",
-          "IQodU1BBV05fR1JPVVBfU1lOQ0hST05PVVNfU1BBV04QBBImCiJTUEFXTl9H",
-          "Uk9VUF9JU19JTklUSUFMX1NQQVdOX0dST1VQEAgSKwonU1BBV05fR1JPVVBf",
-          "Q1JFQVRFX0NMSUVOVF9PTkxZX0VOVElUSUVTEBASIgoeU1BBV05fR1JPVVBf",
-          "QkxPQ0tfVU5USUxfTE9BREVEEEASJAofU1BBV05fR1JPVVBfTE9BRF9TVFJF",
-          "QU1JTkdfREFUQRCAARInCiJTUEFXTl9HUk9VUF9DUkVBVEVfTkVXX1NDRU5F",
-          "X1dPUkxEEIACOj0KEm1heGltdW1fc2l6ZV9ieXRlcxIfLmdvb2dsZS5wcm90",
-          "b2J1Zi5NZXNzYWdlT3B0aW9ucxjQhgMgASgF"));
+          "IAEoBToEwOQdASKcAQoOQ01zZ1BsYXllckluZm8SDAoEbmFtZRgBIAEoCRIM",
+          "CgR4dWlkGAIgASgGEg4KBnVzZXJpZBgDIAEoBRIPCgdzdGVhbWlkGAQgASgG",
+          "EhIKCmZha2VwbGF5ZXIYBSABKAgSDgoGaXNobHR2GAYgASgIEhMKC2NsYW5f",
+          "bWVtYmVyGAkgASgIEhQKDGNsYW5fb2ZmaWNlchgKIAEoCCItCgpDRW50aXR5",
+          "TXNnEh8KDXRhcmdldF9lbnRpdHkYASABKA06CDE2Nzc3MjE1IlIKCkNNc2df",
+          "Q1ZhcnMSHwoFY3ZhcnMYASADKAsyEC5DTXNnX0NWYXJzLkNWYXIaIwoEQ1Zh",
+          "chIMCgRuYW1lGAEgASgJEg0KBXZhbHVlGAIgASgJIg0KC0NORVRNc2dfTk9Q",
+          "IicKF0NORVRNc2dfU3BsaXRTY3JlZW5Vc2VyEgwKBHNsb3QYASABKAUizwIK",
+          "DENORVRNc2dfVGljaxIMCgR0aWNrGAEgASgNEhwKFGhvc3RfY29tcHV0YXRp",
+          "b250aW1lGAQgASgNEioKImhvc3RfY29tcHV0YXRpb250aW1lX3N0ZF9kZXZp",
+          "YXRpb24YBSABKA0SGAoQbGVnYWN5X2hvc3RfbG9zcxgHIAEoDRIhChlob3N0",
+          "X3VuZmlsdGVyZWRfZnJhbWV0aW1lGAggASgNEhkKEWhsdHZfcmVwbGF5X2Zs",
+          "YWdzGAkgASgNEhoKEmV4cGVjdGVkX2xvbmdfdGljaxgKIAEoDRIhChlleHBl",
+          "Y3RlZF9sb25nX3RpY2tfcmVhc29uGAsgASgJEiIKGmhvc3RfZnJhbWVfZHJv",
+          "cHBlZF9wY3RfeDEwGAwgASgNEiwKJGhvc3RfZnJhbWVfaXJyZWd1bGFyX2Fy",
+          "cml2YWxfcGN0X3gxMBgNIAEoDSI9ChFDTkVUTXNnX1N0cmluZ0NtZBIPCgdj",
+          "b21tYW5kGAEgASgJEhcKD3ByZWRpY3Rpb25fc3luYxgCIAEoDSI4ChFDTkVU",
+          "TXNnX1NldENvblZhchIcCgdjb252YXJzGAEgASgLMgsuQ01zZ19DVmFyczoF",
+          "gLUYgCAivAEKE0NORVRNc2dfU2lnbm9uU3RhdGUSNgoMc2lnbm9uX3N0YXRl",
+          "GAEgASgOMg4uU2lnbm9uU3RhdGVfdDoQU0lHTk9OU1RBVEVfTk9ORRITCgtz",
+          "cGF3bl9jb3VudBgCIAEoDRIaChJudW1fc2VydmVyX3BsYXllcnMYAyABKA0S",
+          "GgoScGxheWVyc19uZXR3b3JraWRzGAQgAygJEhAKCG1hcF9uYW1lGAUgASgJ",
+          "Eg4KBmFkZG9ucxgGIAEoCSL8AQoRQ1NWQ01zZ19HYW1lRXZlbnQSEgoKZXZl",
+          "bnRfbmFtZRgBIAEoCRIPCgdldmVudGlkGAIgASgFEiYKBGtleXMYAyADKAsy",
+          "GC5DU1ZDTXNnX0dhbWVFdmVudC5rZXlfdBqZAQoFa2V5X3QSDAoEdHlwZRgB",
+          "IAEoBRISCgp2YWxfc3RyaW5nGAIgASgJEhEKCXZhbF9mbG9hdBgDIAEoAhIQ",
+          "Cgh2YWxfbG9uZxgEIAEoBRIRCgl2YWxfc2hvcnQYBSABKAUSEAoIdmFsX2J5",
+          "dGUYBiABKAUSEAoIdmFsX2Jvb2wYByABKAgSEgoKdmFsX3VpbnQ2NBgIIAEo",
+          "BCKFAQoWQ1NWQ01zZ0xpc3RfR2FtZUV2ZW50cxIvCgZldmVudHMYASADKAsy",
+          "Hy5DU1ZDTXNnTGlzdF9HYW1lRXZlbnRzLmV2ZW50X3QaOgoHZXZlbnRfdBIM",
+          "CgR0aWNrGAEgASgFEiEKBWV2ZW50GAIgASgLMhIuQ1NWQ01zZ19HYW1lRXZl",
+          "bnQiswQKF0NORVRNc2dfU3Bhd25Hcm91cF9Mb2FkEhEKCXdvcmxkbmFtZRgB",
+          "IAEoCRIWCg5lbnRpdHlsdW1wbmFtZRgCIAEoCRIYChBlbnRpdHlmaWx0ZXJu",
+          "YW1lGAMgASgJEhgKEHNwYXduZ3JvdXBoYW5kbGUYBCABKA0SHQoVc3Bhd25n",
+          "cm91cG93bmVyaGFuZGxlGAUgASgNEiUKEHdvcmxkX29mZnNldF9wb3MYBiAB",
+          "KAsyCy5DTXNnVmVjdG9yEicKEndvcmxkX29mZnNldF9hbmdsZRgHIAEoCzIL",
+          "LkNNc2dRQW5nbGUSGgoSc3Bhd25ncm91cG1hbmlmZXN0GAggASgMEg0KBWZs",
+          "YWdzGAkgASgNEhEKCXRpY2tjb3VudBgKIAEoBRIaChJtYW5pZmVzdGluY29t",
+          "cGxldGUYCyABKAgSFgoObG9jYWxuYW1lZml4dXAYDCABKAkSFwoPcGFyZW50",
+          "bmFtZWZpeHVwGA0gASgJEhwKFG1hbmlmZXN0bG9hZHByaW9yaXR5GA4gASgF",
+          "EhQKDHdvcmxkZ3JvdXBpZBgPIAEoDRIYChBjcmVhdGlvbnNlcXVlbmNlGBAg",
+          "ASgNEhgKEHNhdmVnYW1lZmlsZW5hbWUYESABKAkSHgoWc3Bhd25ncm91cHBh",
+          "cmVudGhhbmRsZRgSIAEoDRIXCg9sZXZlbHRyYW5zaXRpb24YEyABKAgSFgoO",
+          "d29ybGRncm91cG5hbWUYFCABKAk6BoC1GICACCJ8CiFDTkVUTXNnX1NwYXdu",
+          "R3JvdXBfTWFuaWZlc3RVcGRhdGUSGAoQc3Bhd25ncm91cGhhbmRsZRgBIAEo",
+          "DRIaChJzcGF3bmdyb3VwbWFuaWZlc3QYAiABKAwSGgoSbWFuaWZlc3RpbmNv",
+          "bXBsZXRlGAMgASgIOgWAtRiAECJrCiJDTkVUTXNnX1NwYXduR3JvdXBfU2V0",
+          "Q3JlYXRpb25UaWNrEhgKEHNwYXduZ3JvdXBoYW5kbGUYASABKA0SEQoJdGlj",
+          "a2NvdW50GAIgASgFEhgKEGNyZWF0aW9uc2VxdWVuY2UYAyABKA0iVwoZQ05F",
+          "VE1zZ19TcGF3bkdyb3VwX1VubG9hZBIYChBzcGF3bmdyb3VwaGFuZGxlGAEg",
+          "ASgNEg0KBWZsYWdzGAIgASgNEhEKCXRpY2tjb3VudBgDIAEoBSI8CiBDTkVU",
+          "TXNnX1NwYXduR3JvdXBfTG9hZENvbXBsZXRlZBIYChBzcGF3bmdyb3VwaGFu",
+          "ZGxlGAEgASgNIo0BChxRdWFudGl6ZWRGbG9hdEVuY29kZXJBbGlhc190EgwK",
+          "BG5hbWUYASABKAkSEQoJYml0X2NvdW50GAIgASgFEhQKDGVuY29kZV9mbGFn",
+          "cxgDIAEoBRIRCgltaW5fdmFsdWUYBCABKAISEQoJbWF4X3ZhbHVlGAUgASgC",
+          "EhAKCHZhbGlkYXRlGAYgASgIIqgECiBDU1ZDTXNnX0dhbWVTZXNzaW9uQ29u",
+          "ZmlndXJhdGlvbhIWCg5pc19tdWx0aXBsYXllchgBIAEoCBIXCg9pc19sb2Fk",
+          "c2F2ZWdhbWUYAiABKAgSGQoRaXNfYmFja2dyb3VuZF9tYXAYAyABKAgSEwoL",
+          "aXNfaGVhZGxlc3MYBCABKAgSGAoQbWluX2NsaWVudF9saW1pdBgFIAEoDRIY",
+          "ChBtYXhfY2xpZW50X2xpbWl0GAYgASgNEhMKC21heF9jbGllbnRzGAcgASgN",
+          "EhUKDXRpY2tfaW50ZXJ2YWwYCCABKAcSEAoIaG9zdG5hbWUYCSABKAkSFAoM",
+          "c2F2ZWdhbWVuYW1lGAogASgJEhIKCnMxX21hcG5hbWUYCyABKAkSEAoIZ2Ft",
+          "ZW1vZGUYDCABKAkSGQoRc2VydmVyX2lwX2FkZHJlc3MYDSABKAkSDAoEZGF0",
+          "YRgOIAEoDBIUCgxpc19sb2NhbG9ubHkYDyABKAgSFwoPbm9fc3RlYW1fc2Vy",
+          "dmVyGBMgASgIEhUKDWlzX3RyYW5zaXRpb24YECABKAgSFQoNcHJldmlvdXNs",
+          "ZXZlbBgRIAEoCRIUCgxsYW5kbWFya25hbWUYEiABKAkSRgofcXVhbnRpemVk",
+          "X2Zsb2F0X2VuY29kZXJfYWxpYXNlcxgUIAMoCzIdLlF1YW50aXplZEZsb2F0",
+          "RW5jb2RlckFsaWFzX3QSEQoJbWF4X2Nvb3JkGBUgASgCIrIBChRDTkVUTXNn",
+          "X0RlYnVnT3ZlcmxheRINCgVldHlwZRgBIAEoBRIcCgd2ZWN0b3JzGAIgAygL",
+          "MgsuQ01zZ1ZlY3RvchIZCgZjb2xvcnMYAyADKAsyCS5DTXNnUkdCQRISCgpk",
+          "aW1lbnNpb25zGAQgAygCEg0KBXRpbWVzGAUgAygCEg0KBWJvb2xzGAYgAygI",
+          "Eg8KB3VpbnQ2NHMYByADKAQSDwoHc3RyaW5ncxgIIAMoCSrUAQoNU2lnbm9u",
+          "U3RhdGVfdBIUChBTSUdOT05TVEFURV9OT05FEAASGQoVU0lHTk9OU1RBVEVf",
+          "Q0hBTExFTkdFEAESGQoVU0lHTk9OU1RBVEVfQ09OTkVDVEVEEAISEwoPU0lH",
+          "Tk9OU1RBVEVfTkVXEAMSGAoUU0lHTk9OU1RBVEVfUFJFU1BBV04QBBIVChFT",
+          "SUdOT05TVEFURV9TUEFXThAFEhQKEFNJR05PTlNUQVRFX0ZVTEwQBhIbChdT",
+          "SUdOT05TVEFURV9DSEFOR0VMRVZFTBAHKssCCgxORVRfTWVzc2FnZXMSCwoH",
+          "bmV0X05PUBAAEhkKFW5ldF9EaXNjb25uZWN0X0xlZ2FjeRABEhcKE25ldF9T",
+          "cGxpdFNjcmVlblVzZXIQAxIMCghuZXRfVGljaxAEEhEKDW5ldF9TdHJpbmdD",
+          "bWQQBRIRCg1uZXRfU2V0Q29uVmFyEAYSEwoPbmV0X1NpZ25vblN0YXRlEAcS",
+          "FwoTbmV0X1NwYXduR3JvdXBfTG9hZBAIEiEKHW5ldF9TcGF3bkdyb3VwX01h",
+          "bmlmZXN0VXBkYXRlEAkSIgoebmV0X1NwYXduR3JvdXBfU2V0Q3JlYXRpb25U",
+          "aWNrEAsSGQoVbmV0X1NwYXduR3JvdXBfVW5sb2FkEAwSIAocbmV0X1NwYXdu",
+          "R3JvdXBfTG9hZENvbXBsZXRlZBANEhQKEG5ldF9EZWJ1Z092ZXJsYXkQDyrM",
+          "AgoRU3Bhd25Hcm91cEZsYWdzX3QSJwojU1BBV05fR1JPVVBfTE9BRF9FTlRJ",
+          "VElFU19GUk9NX1NBVkUQARIjCh9TUEFXTl9HUk9VUF9ET05UX1NQQVdOX0VO",
+          "VElUSUVTEAISIQodU1BBV05fR1JPVVBfU1lOQ0hST05PVVNfU1BBV04QBBIm",
+          "CiJTUEFXTl9HUk9VUF9JU19JTklUSUFMX1NQQVdOX0dST1VQEAgSKwonU1BB",
+          "V05fR1JPVVBfQ1JFQVRFX0NMSUVOVF9PTkxZX0VOVElUSUVTEBASIgoeU1BB",
+          "V05fR1JPVVBfQkxPQ0tfVU5USUxfTE9BREVEEEASJAofU1BBV05fR1JPVVBf",
+          "TE9BRF9TVFJFQU1JTkdfREFUQRCAARInCiJTUEFXTl9HUk9VUF9DUkVBVEVf",
+          "TkVXX1NDRU5FX1dPUkxEEIACOj0KEm1heGltdW1fc2l6ZV9ieXRlcxIfLmdv",
+          "b2dsZS5wcm90b2J1Zi5NZXNzYWdlT3B0aW9ucxjQhgMgASgF"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::ValveextensionsReflection.Descriptor, global::Google.Protobuf.Reflection.DescriptorReflection.Descriptor, global::NetworkConnectionReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SignonState_t), typeof(global::NET_Messages), typeof(global::SpawnGroupFlags_t), }, new pb::Extension[] { NetworkbasetypesExtensions.MaximumSizeBytes }, new pbr::GeneratedClrTypeInfo[] {
@@ -129,7 +135,7 @@ public static partial class NetworkbasetypesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgQuaternion), global::CMsgQuaternion.Parser, new[]{ "X", "Y", "Z", "W" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgTransform), global::CMsgTransform.Parser, new[]{ "Position", "Scale", "Orientation" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgRGBA), global::CMsgRGBA.Parser, new[]{ "R", "G", "B", "A" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlayerInfo), global::CMsgPlayerInfo.Parser, new[]{ "Name", "Xuid", "Userid", "Steamid", "Fakeplayer", "Ishltv" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgPlayerInfo), global::CMsgPlayerInfo.Parser, new[]{ "Name", "Xuid", "Userid", "Steamid", "Fakeplayer", "Ishltv", "ClanMember", "ClanOfficer" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CEntityMsg), global::CEntityMsg.Parser, new[]{ "TargetEntity" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsg_CVars), global::CMsg_CVars.Parser, new[]{ "Cvars" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsg_CVars.Types.CVar), global::CMsg_CVars.Types.CVar.Parser, new[]{ "Name", "Value" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CNETMsg_NOP), global::CNETMsg_NOP.Parser, null, null, null, null, null),
@@ -145,7 +151,8 @@ public static partial class NetworkbasetypesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CNETMsg_SpawnGroup_SetCreationTick), global::CNETMsg_SpawnGroup_SetCreationTick.Parser, new[]{ "Spawngrouphandle", "Tickcount", "Creationsequence" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CNETMsg_SpawnGroup_Unload), global::CNETMsg_SpawnGroup_Unload.Parser, new[]{ "Spawngrouphandle", "Flags", "Tickcount" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CNETMsg_SpawnGroup_LoadCompleted), global::CNETMsg_SpawnGroup_LoadCompleted.Parser, new[]{ "Spawngrouphandle" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_GameSessionConfiguration), global::CSVCMsg_GameSessionConfiguration.Parser, new[]{ "IsMultiplayer", "IsLoadsavegame", "IsBackgroundMap", "IsHeadless", "MinClientLimit", "MaxClientLimit", "MaxClients", "TickInterval", "Hostname", "Savegamename", "S1Mapname", "Gamemode", "ServerIpAddress", "Data", "IsLocalonly", "NoSteamServer", "IsTransition", "Previouslevel", "Landmarkname" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::QuantizedFloatEncoderAlias_t), global::QuantizedFloatEncoderAlias_t.Parser, new[]{ "Name", "BitCount", "EncodeFlags", "MinValue", "MaxValue", "Validate" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_GameSessionConfiguration), global::CSVCMsg_GameSessionConfiguration.Parser, new[]{ "IsMultiplayer", "IsLoadsavegame", "IsBackgroundMap", "IsHeadless", "MinClientLimit", "MaxClientLimit", "MaxClients", "TickInterval", "Hostname", "Savegamename", "S1Mapname", "Gamemode", "ServerIpAddress", "Data", "IsLocalonly", "NoSteamServer", "IsTransition", "Previouslevel", "Landmarkname", "QuantizedFloatEncoderAliases", "MaxCoord" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CNETMsg_DebugOverlay), global::CNETMsg_DebugOverlay.Parser, new[]{ "Etype", "Vectors", "Colors", "Dimensions", "Times", "Bools", "Uint64S", "Strings" }, null, null, null, null)
         }));
   }
@@ -2194,6 +2201,8 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
     steamid_ = other.steamid_;
     fakeplayer_ = other.fakeplayer_;
     ishltv_ = other.ishltv_;
+    clanMember_ = other.clanMember_;
+    clanOfficer_ = other.clanOfficer_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -2364,6 +2373,60 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
     _hasBits0 &= ~16;
   }
 
+  /// <summary>Field number for the "clan_member" field.</summary>
+  public const int ClanMemberFieldNumber = 9;
+  private readonly static bool ClanMemberDefaultValue = false;
+
+  private bool clanMember_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool ClanMember {
+    get { if ((_hasBits0 & 32) != 0) { return clanMember_; } else { return ClanMemberDefaultValue; } }
+    set {
+      _hasBits0 |= 32;
+      clanMember_ = value;
+    }
+  }
+  /// <summary>Gets whether the "clan_member" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasClanMember {
+    get { return (_hasBits0 & 32) != 0; }
+  }
+  /// <summary>Clears the value of the "clan_member" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearClanMember() {
+    _hasBits0 &= ~32;
+  }
+
+  /// <summary>Field number for the "clan_officer" field.</summary>
+  public const int ClanOfficerFieldNumber = 10;
+  private readonly static bool ClanOfficerDefaultValue = false;
+
+  private bool clanOfficer_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool ClanOfficer {
+    get { if ((_hasBits0 & 64) != 0) { return clanOfficer_; } else { return ClanOfficerDefaultValue; } }
+    set {
+      _hasBits0 |= 64;
+      clanOfficer_ = value;
+    }
+  }
+  /// <summary>Gets whether the "clan_officer" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasClanOfficer {
+    get { return (_hasBits0 & 64) != 0; }
+  }
+  /// <summary>Clears the value of the "clan_officer" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearClanOfficer() {
+    _hasBits0 &= ~64;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -2385,6 +2448,8 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
     if (Steamid != other.Steamid) return false;
     if (Fakeplayer != other.Fakeplayer) return false;
     if (Ishltv != other.Ishltv) return false;
+    if (ClanMember != other.ClanMember) return false;
+    if (ClanOfficer != other.ClanOfficer) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -2398,6 +2463,8 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
     if (HasSteamid) hash ^= Steamid.GetHashCode();
     if (HasFakeplayer) hash ^= Fakeplayer.GetHashCode();
     if (HasIshltv) hash ^= Ishltv.GetHashCode();
+    if (HasClanMember) hash ^= ClanMember.GetHashCode();
+    if (HasClanOfficer) hash ^= ClanOfficer.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -2440,6 +2507,14 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
       output.WriteRawTag(48);
       output.WriteBool(Ishltv);
     }
+    if (HasClanMember) {
+      output.WriteRawTag(72);
+      output.WriteBool(ClanMember);
+    }
+    if (HasClanOfficer) {
+      output.WriteRawTag(80);
+      output.WriteBool(ClanOfficer);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -2474,6 +2549,14 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
       output.WriteRawTag(48);
       output.WriteBool(Ishltv);
     }
+    if (HasClanMember) {
+      output.WriteRawTag(72);
+      output.WriteBool(ClanMember);
+    }
+    if (HasClanOfficer) {
+      output.WriteRawTag(80);
+      output.WriteBool(ClanOfficer);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -2500,6 +2583,12 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
       size += 1 + 1;
     }
     if (HasIshltv) {
+      size += 1 + 1;
+    }
+    if (HasClanMember) {
+      size += 1 + 1;
+    }
+    if (HasClanOfficer) {
       size += 1 + 1;
     }
     if (_unknownFields != null) {
@@ -2531,6 +2620,12 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
     }
     if (other.HasIshltv) {
       Ishltv = other.Ishltv;
+    }
+    if (other.HasClanMember) {
+      ClanMember = other.ClanMember;
+    }
+    if (other.HasClanOfficer) {
+      ClanOfficer = other.ClanOfficer;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -2571,6 +2666,14 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
           Ishltv = input.ReadBool();
           break;
         }
+        case 72: {
+          ClanMember = input.ReadBool();
+          break;
+        }
+        case 80: {
+          ClanOfficer = input.ReadBool();
+          break;
+        }
       }
     }
   #endif
@@ -2608,6 +2711,14 @@ public sealed partial class CMsgPlayerInfo : pb::IMessage<CMsgPlayerInfo>
         }
         case 48: {
           Ishltv = input.ReadBool();
+          break;
+        }
+        case 72: {
+          ClanMember = input.ReadBool();
+          break;
+        }
+        case 80: {
+          ClanOfficer = input.ReadBool();
           break;
         }
       }
@@ -8794,6 +8905,471 @@ public sealed partial class CNETMsg_SpawnGroup_LoadCompleted : pb::IMessage<CNET
 
 }
 
+public sealed partial class QuantizedFloatEncoderAlias_t : pb::IMessage<QuantizedFloatEncoderAlias_t>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<QuantizedFloatEncoderAlias_t> _parser = new pb::MessageParser<QuantizedFloatEncoderAlias_t>(() => new QuantizedFloatEncoderAlias_t());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<QuantizedFloatEncoderAlias_t> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::NetworkbasetypesReflection.Descriptor.MessageTypes[22]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public QuantizedFloatEncoderAlias_t() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public QuantizedFloatEncoderAlias_t(QuantizedFloatEncoderAlias_t other) : this() {
+    _hasBits0 = other._hasBits0;
+    name_ = other.name_;
+    bitCount_ = other.bitCount_;
+    encodeFlags_ = other.encodeFlags_;
+    minValue_ = other.minValue_;
+    maxValue_ = other.maxValue_;
+    validate_ = other.validate_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public QuantizedFloatEncoderAlias_t Clone() {
+    return new QuantizedFloatEncoderAlias_t(this);
+  }
+
+  /// <summary>Field number for the "name" field.</summary>
+  public const int NameFieldNumber = 1;
+  private readonly static string NameDefaultValue = "";
+
+  private string name_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public string Name {
+    get { return name_ ?? NameDefaultValue; }
+    set {
+      name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "name" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasName {
+    get { return name_ != null; }
+  }
+  /// <summary>Clears the value of the "name" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearName() {
+    name_ = null;
+  }
+
+  /// <summary>Field number for the "bit_count" field.</summary>
+  public const int BitCountFieldNumber = 2;
+  private readonly static int BitCountDefaultValue = 0;
+
+  private int bitCount_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int BitCount {
+    get { if ((_hasBits0 & 1) != 0) { return bitCount_; } else { return BitCountDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      bitCount_ = value;
+    }
+  }
+  /// <summary>Gets whether the "bit_count" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasBitCount {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "bit_count" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearBitCount() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "encode_flags" field.</summary>
+  public const int EncodeFlagsFieldNumber = 3;
+  private readonly static int EncodeFlagsDefaultValue = 0;
+
+  private int encodeFlags_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int EncodeFlags {
+    get { if ((_hasBits0 & 2) != 0) { return encodeFlags_; } else { return EncodeFlagsDefaultValue; } }
+    set {
+      _hasBits0 |= 2;
+      encodeFlags_ = value;
+    }
+  }
+  /// <summary>Gets whether the "encode_flags" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasEncodeFlags {
+    get { return (_hasBits0 & 2) != 0; }
+  }
+  /// <summary>Clears the value of the "encode_flags" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearEncodeFlags() {
+    _hasBits0 &= ~2;
+  }
+
+  /// <summary>Field number for the "min_value" field.</summary>
+  public const int MinValueFieldNumber = 4;
+  private readonly static float MinValueDefaultValue = 0F;
+
+  private float minValue_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float MinValue {
+    get { if ((_hasBits0 & 4) != 0) { return minValue_; } else { return MinValueDefaultValue; } }
+    set {
+      _hasBits0 |= 4;
+      minValue_ = value;
+    }
+  }
+  /// <summary>Gets whether the "min_value" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMinValue {
+    get { return (_hasBits0 & 4) != 0; }
+  }
+  /// <summary>Clears the value of the "min_value" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMinValue() {
+    _hasBits0 &= ~4;
+  }
+
+  /// <summary>Field number for the "max_value" field.</summary>
+  public const int MaxValueFieldNumber = 5;
+  private readonly static float MaxValueDefaultValue = 0F;
+
+  private float maxValue_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float MaxValue {
+    get { if ((_hasBits0 & 8) != 0) { return maxValue_; } else { return MaxValueDefaultValue; } }
+    set {
+      _hasBits0 |= 8;
+      maxValue_ = value;
+    }
+  }
+  /// <summary>Gets whether the "max_value" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMaxValue {
+    get { return (_hasBits0 & 8) != 0; }
+  }
+  /// <summary>Clears the value of the "max_value" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMaxValue() {
+    _hasBits0 &= ~8;
+  }
+
+  /// <summary>Field number for the "validate" field.</summary>
+  public const int ValidateFieldNumber = 6;
+  private readonly static bool ValidateDefaultValue = false;
+
+  private bool validate_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Validate {
+    get { if ((_hasBits0 & 16) != 0) { return validate_; } else { return ValidateDefaultValue; } }
+    set {
+      _hasBits0 |= 16;
+      validate_ = value;
+    }
+  }
+  /// <summary>Gets whether the "validate" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasValidate {
+    get { return (_hasBits0 & 16) != 0; }
+  }
+  /// <summary>Clears the value of the "validate" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearValidate() {
+    _hasBits0 &= ~16;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as QuantizedFloatEncoderAlias_t);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(QuantizedFloatEncoderAlias_t other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Name != other.Name) return false;
+    if (BitCount != other.BitCount) return false;
+    if (EncodeFlags != other.EncodeFlags) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinValue, other.MinValue)) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxValue, other.MaxValue)) return false;
+    if (Validate != other.Validate) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasName) hash ^= Name.GetHashCode();
+    if (HasBitCount) hash ^= BitCount.GetHashCode();
+    if (HasEncodeFlags) hash ^= EncodeFlags.GetHashCode();
+    if (HasMinValue) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinValue);
+    if (HasMaxValue) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxValue);
+    if (HasValidate) hash ^= Validate.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasName) {
+      output.WriteRawTag(10);
+      output.WriteString(Name);
+    }
+    if (HasBitCount) {
+      output.WriteRawTag(16);
+      output.WriteInt32(BitCount);
+    }
+    if (HasEncodeFlags) {
+      output.WriteRawTag(24);
+      output.WriteInt32(EncodeFlags);
+    }
+    if (HasMinValue) {
+      output.WriteRawTag(37);
+      output.WriteFloat(MinValue);
+    }
+    if (HasMaxValue) {
+      output.WriteRawTag(45);
+      output.WriteFloat(MaxValue);
+    }
+    if (HasValidate) {
+      output.WriteRawTag(48);
+      output.WriteBool(Validate);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasName) {
+      output.WriteRawTag(10);
+      output.WriteString(Name);
+    }
+    if (HasBitCount) {
+      output.WriteRawTag(16);
+      output.WriteInt32(BitCount);
+    }
+    if (HasEncodeFlags) {
+      output.WriteRawTag(24);
+      output.WriteInt32(EncodeFlags);
+    }
+    if (HasMinValue) {
+      output.WriteRawTag(37);
+      output.WriteFloat(MinValue);
+    }
+    if (HasMaxValue) {
+      output.WriteRawTag(45);
+      output.WriteFloat(MaxValue);
+    }
+    if (HasValidate) {
+      output.WriteRawTag(48);
+      output.WriteBool(Validate);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasName) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+    }
+    if (HasBitCount) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(BitCount);
+    }
+    if (HasEncodeFlags) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(EncodeFlags);
+    }
+    if (HasMinValue) {
+      size += 1 + 4;
+    }
+    if (HasMaxValue) {
+      size += 1 + 4;
+    }
+    if (HasValidate) {
+      size += 1 + 1;
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(QuantizedFloatEncoderAlias_t other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasName) {
+      Name = other.Name;
+    }
+    if (other.HasBitCount) {
+      BitCount = other.BitCount;
+    }
+    if (other.HasEncodeFlags) {
+      EncodeFlags = other.EncodeFlags;
+    }
+    if (other.HasMinValue) {
+      MinValue = other.MinValue;
+    }
+    if (other.HasMaxValue) {
+      MaxValue = other.MaxValue;
+    }
+    if (other.HasValidate) {
+      Validate = other.Validate;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 10: {
+          Name = input.ReadString();
+          break;
+        }
+        case 16: {
+          BitCount = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          EncodeFlags = input.ReadInt32();
+          break;
+        }
+        case 37: {
+          MinValue = input.ReadFloat();
+          break;
+        }
+        case 45: {
+          MaxValue = input.ReadFloat();
+          break;
+        }
+        case 48: {
+          Validate = input.ReadBool();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 10: {
+          Name = input.ReadString();
+          break;
+        }
+        case 16: {
+          BitCount = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          EncodeFlags = input.ReadInt32();
+          break;
+        }
+        case 37: {
+          MinValue = input.ReadFloat();
+          break;
+        }
+        case 45: {
+          MaxValue = input.ReadFloat();
+          break;
+        }
+        case 48: {
+          Validate = input.ReadBool();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
 public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVCMsg_GameSessionConfiguration>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     , pb::IBufferMessage
@@ -8809,7 +9385,7 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetworkbasetypesReflection.Descriptor.MessageTypes[22]; }
+    get { return global::NetworkbasetypesReflection.Descriptor.MessageTypes[23]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8849,6 +9425,8 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     isTransition_ = other.isTransition_;
     previouslevel_ = other.previouslevel_;
     landmarkname_ = other.landmarkname_;
+    quantizedFloatEncoderAliases_ = other.quantizedFloatEncoderAliases_.Clone();
+    maxCoord_ = other.maxCoord_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -9363,6 +9941,44 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     landmarkname_ = null;
   }
 
+  /// <summary>Field number for the "quantized_float_encoder_aliases" field.</summary>
+  public const int QuantizedFloatEncoderAliasesFieldNumber = 20;
+  private static readonly pb::FieldCodec<global::QuantizedFloatEncoderAlias_t> _repeated_quantizedFloatEncoderAliases_codec
+      = pb::FieldCodec.ForMessage(162, global::QuantizedFloatEncoderAlias_t.Parser);
+  private readonly pbc::RepeatedField<global::QuantizedFloatEncoderAlias_t> quantizedFloatEncoderAliases_ = new pbc::RepeatedField<global::QuantizedFloatEncoderAlias_t>();
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public pbc::RepeatedField<global::QuantizedFloatEncoderAlias_t> QuantizedFloatEncoderAliases {
+    get { return quantizedFloatEncoderAliases_; }
+  }
+
+  /// <summary>Field number for the "max_coord" field.</summary>
+  public const int MaxCoordFieldNumber = 21;
+  private readonly static float MaxCoordDefaultValue = 0F;
+
+  private float maxCoord_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public float MaxCoord {
+    get { if ((_hasBits0 & 2048) != 0) { return maxCoord_; } else { return MaxCoordDefaultValue; } }
+    set {
+      _hasBits0 |= 2048;
+      maxCoord_ = value;
+    }
+  }
+  /// <summary>Gets whether the "max_coord" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasMaxCoord {
+    get { return (_hasBits0 & 2048) != 0; }
+  }
+  /// <summary>Clears the value of the "max_coord" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearMaxCoord() {
+    _hasBits0 &= ~2048;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -9397,6 +10013,8 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     if (IsTransition != other.IsTransition) return false;
     if (Previouslevel != other.Previouslevel) return false;
     if (Landmarkname != other.Landmarkname) return false;
+    if(!quantizedFloatEncoderAliases_.Equals(other.quantizedFloatEncoderAliases_)) return false;
+    if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxCoord, other.MaxCoord)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -9423,6 +10041,8 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     if (HasIsTransition) hash ^= IsTransition.GetHashCode();
     if (HasPreviouslevel) hash ^= Previouslevel.GetHashCode();
     if (HasLandmarkname) hash ^= Landmarkname.GetHashCode();
+    hash ^= quantizedFloatEncoderAliases_.GetHashCode();
+    if (HasMaxCoord) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxCoord);
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -9517,6 +10137,11 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
       output.WriteRawTag(152, 1);
       output.WriteBool(NoSteamServer);
     }
+    quantizedFloatEncoderAliases_.WriteTo(output, _repeated_quantizedFloatEncoderAliases_codec);
+    if (HasMaxCoord) {
+      output.WriteRawTag(173, 1);
+      output.WriteFloat(MaxCoord);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -9603,6 +10228,11 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
       output.WriteRawTag(152, 1);
       output.WriteBool(NoSteamServer);
     }
+    quantizedFloatEncoderAliases_.WriteTo(ref output, _repeated_quantizedFloatEncoderAliases_codec);
+    if (HasMaxCoord) {
+      output.WriteRawTag(173, 1);
+      output.WriteFloat(MaxCoord);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -9669,6 +10299,10 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     }
     if (HasLandmarkname) {
       size += 2 + pb::CodedOutputStream.ComputeStringSize(Landmarkname);
+    }
+    size += quantizedFloatEncoderAliases_.CalculateSize(_repeated_quantizedFloatEncoderAliases_codec);
+    if (HasMaxCoord) {
+      size += 2 + 4;
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -9738,6 +10372,10 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
     }
     if (other.HasLandmarkname) {
       Landmarkname = other.Landmarkname;
+    }
+    quantizedFloatEncoderAliases_.Add(other.quantizedFloatEncoderAliases_);
+    if (other.HasMaxCoord) {
+      MaxCoord = other.MaxCoord;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -9828,6 +10466,14 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
         }
         case 152: {
           NoSteamServer = input.ReadBool();
+          break;
+        }
+        case 162: {
+          quantizedFloatEncoderAliases_.AddEntriesFrom(input, _repeated_quantizedFloatEncoderAliases_codec);
+          break;
+        }
+        case 173: {
+          MaxCoord = input.ReadFloat();
           break;
         }
       }
@@ -9921,6 +10567,14 @@ public sealed partial class CSVCMsg_GameSessionConfiguration : pb::IMessage<CSVC
           NoSteamServer = input.ReadBool();
           break;
         }
+        case 162: {
+          quantizedFloatEncoderAliases_.AddEntriesFrom(ref input, _repeated_quantizedFloatEncoderAliases_codec);
+          break;
+        }
+        case 173: {
+          MaxCoord = input.ReadFloat();
+          break;
+        }
       }
     }
   }
@@ -9943,7 +10597,7 @@ public sealed partial class CNETMsg_DebugOverlay : pb::IMessage<CNETMsg_DebugOve
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetworkbasetypesReflection.Descriptor.MessageTypes[23]; }
+    get { return global::NetworkbasetypesReflection.Descriptor.MessageTypes[24]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

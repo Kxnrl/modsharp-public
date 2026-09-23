@@ -255,9 +255,9 @@ BeginMemberHookScope(CCSGOVScriptGameSystem)
 
 BeginMemberHookScope(IScriptVM)
 {
-    DeclareMemberDetourHook(CreateVM, bool, (IScriptVM * pScriptVM))
+    DeclareMemberDetourHook(CreateVM, bool, (IScriptVM * pScriptVM, bool bLoadDebugLibrary))
     {
-        const auto value = CreateVM(pScriptVM);
+        const auto value = CreateVM(pScriptVM, bLoadDebugLibrary);
 
         if (value)
         {

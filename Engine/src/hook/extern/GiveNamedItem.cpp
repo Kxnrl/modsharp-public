@@ -295,6 +295,56 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
 static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity);
+static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon);
+
+static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
+{
+    if (!pEntityArgument)
+        return nullptr;
+
+    const auto pHandle = *reinterpret_cast<const CBaseHandle* const*>(static_cast<const char*>(pEntityArgument) + 8);
+    if (!pHandle || !pHandle->IsValid())
+        return nullptr;
+
+    const auto pEntity = g_pGameEntitySystem->FindEntityByEHandle<CGamePlayerEquip*>(*pHandle);
+    if (!pEntity)
+        return nullptr;
+
+    const auto pszClassname = pEntity->GetClassname();
+    if (!pszClassname || strcasecmp(pszClassname, "game_player_equip") != 0)
+        return nullptr;
+
+    return pEntity;
+}
+
+static const char* ResolvePulseWeapon(const void* pEntityArgument)
+{
+    const auto ppszWeapon = *reinterpret_cast<const char* const* const*>(static_cast<const char*>(pEntityArgument) + 0x10);
+    return ppszWeapon ? *ppszWeapon : nullptr;
+}
+
+static CCSPlayerPawn* ResolvePulsePlayer(const void* pContext)
+{
+    if (!pContext)
+        return nullptr;
+
+    const auto pValue = *reinterpret_cast<void* const*>(static_cast<const char*>(pContext) + 0x10);
+    if (!pValue)
+        return nullptr;
+
+    const auto pVTable = *reinterpret_cast<void* const* const*>(pValue);
+    if (!pVTable)
+        return nullptr;
+
+    using Getter = void* (*)(void*);
+    const auto pActivator = reinterpret_cast<CBaseEntity*>(reinterpret_cast<Getter>(pVTable[0])(pValue));
+    reinterpret_cast<Getter>(pVTable[1])(pValue);
+    if (!pActivator || !pActivator->IsPlayerPawn())
+        return nullptr;
+
+    const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pActivator);
+    return pPlayer->IsPlayer() && pPlayer->IsAlive() ? pPlayer : nullptr;
+}
 
 BeginMemberHookScope(CGamePlayerEquip)
 {
@@ -371,88 +421,32 @@ BeginMemberHookScope(CGamePlayerEquip)
         Touch(pEntity, pOther);
     }
 
-    DeclareMemberDetourHook(InputTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, InputData_t * pInput))
+    // The Pulse AllPlayers callback still calls this two-argument game function.
+    DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void* pInput))
     {
-        auto           handle  = false;
+        bool           handled = false;
         CCSPlayerPawn* pPlayer = nullptr;
-        while ((pPlayer = (g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player"))) != nullptr)
+        while ((pPlayer = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player")) != nullptr)
         {
-            if (!pPlayer->IsPlayerPawn())
-                continue;
-
-            if (!pPlayer->IsAlive())
-                continue;
-
-            if (EquipPlayerItem(pPlayer, pEntity))
-                handle = true;
+            if (pPlayer->IsPlayerPawn() && pPlayer->IsPlayer() && pPlayer->IsAlive())
+                handled |= EquipPlayerItem(pPlayer, pEntity);
         }
-
-        if (handle)
-            return;
-
-        InputTriggerForAllPlayers(pEntity, pInput);
+        if (!handled)
+            PulseTriggerForAllPlayers(pEntity, pInput);
     }
 
-    DeclareMemberDetourHook(InputTriggerForActivatedPlayer, void, (CGamePlayerEquip * pEntity, InputData_t * pInput))
+    DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void* pArg1, void* pArg2, void* pArg3, void* pContext, void* pEntityArgument))
     {
-        if (!pInput->pActivator || !pInput->pActivator->IsPlayerPawn())
-            return;
+        const auto pEntity = ResolvePulsePlayerEquip(pEntityArgument);
+        if (!pEntity)
+            return PulseTriggerForActivatedPlayer(pArg1, pArg2, pArg3, pContext, pEntityArgument);
 
-        const auto pszWeapon = pInput->value.AutoCastString();
-        if (!pszWeapon || strnlen(pszWeapon, 5) <= 4) // 'weapon_' or 'item_'
+        if (const auto pPlayer = ResolvePulsePlayer(pContext))
         {
-            // Fallback to default use
-            EquipPlayerItem(reinterpret_cast<CBasePlayerPawn*>(pInput->pActivator), pEntity);
-            return;
+            if (TriggerForPlayer(pEntity, pPlayer, ResolvePulseWeapon(pEntityArgument)))
+                return 0;
         }
-
-        const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pInput->pActivator);
-
-        const auto pController = pPlayer->GetController<CCSPlayerController*>();
-        if (!pController)
-            return;
-
-        const auto data = s_WeaponMap.find(pszWeapon);
-        if (data == s_WeaponMap.end())
-            return;
-
-        const auto flags = pEntity->GetSpawnFlags();
-
-        if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
-        {
-            pPlayer->RemoveAllItems(true);
-        }
-        else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
-        {
-            // 手雷就不收
-            if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_GRENADES && data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
-            {
-                CBaseWeapon* pWeapon = nullptr;
-                while ((pWeapon = pPlayer->GetWeaponBySlot(data->second.m_eSlot)) != nullptr)
-                {
-                    pPlayer->RemovePlayerItem(pWeapon);
-                }
-            }
-        }
-
-        if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
-        {
-            const auto team = pPlayer->GetTeam();
-            if (data->second.m_iTeamNum != team)
-            {
-                pPlayer->TransientChangeTeam(data->second.m_iTeamNum);
-                pPlayer->GiveNamedItem(pszWeapon);
-                pPlayer->TransientChangeTeam(team);
-            }
-            else
-            {
-                pPlayer->GiveNamedItem(pszWeapon);
-            }
-        }
-        else
-        {
-            pPlayer->GiveNamedItem(pszWeapon);
-        }
+        return PulseTriggerForActivatedPlayer(pArg1, pArg2, pArg3, pContext, pEntityArgument);
     }
 }
 
@@ -586,6 +580,59 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
         {
             WARN("game_player_equip: GiveNamedItem with unknown type '%s'\n", name.c_str());
         }
+    }
+
+    return true;
+}
+
+static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon)
+{
+    if (!pszWeapon || strnlen(pszWeapon, 5) <= 4 || strcasecmp(pszWeapon, "(null)") == 0) // 'weapon_' or 'item_'
+        return EquipPlayerItem(pPlayer, pEntity);
+
+    const auto pController = pPlayer->GetController<CCSPlayerController*>();
+    if (!pController)
+        return true;
+
+    const auto data = s_WeaponMap.find(pszWeapon);
+    if (data == s_WeaponMap.end())
+        return true;
+
+    const auto flags = pEntity->GetSpawnFlags();
+
+    if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
+    {
+        pPlayer->RemoveAllItems(true);
+    }
+    else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
+    {
+        if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_GRENADES && data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
+        {
+            CBaseWeapon* pWeapon = nullptr;
+            while ((pWeapon = pPlayer->GetWeaponBySlot(data->second.m_eSlot)) != nullptr)
+            {
+                pPlayer->RemovePlayerItem(pWeapon);
+            }
+        }
+    }
+
+    if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
+    {
+        const auto team = pPlayer->GetTeam();
+        if (data->second.m_iTeamNum != team)
+        {
+            pPlayer->TransientChangeTeam(data->second.m_iTeamNum);
+            pPlayer->GiveNamedItem(pszWeapon);
+            pPlayer->TransientChangeTeam(team);
+        }
+        else
+        {
+            pPlayer->GiveNamedItem(pszWeapon);
+        }
+    }
+    else
+    {
+        pPlayer->GiveNamedItem(pszWeapon);
     }
 
     return true;
@@ -758,8 +805,8 @@ void InstallGiveNamedItemHooks()
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
     VHOOK(CGamePlayerEquip, Precache, server, {.gamedata = "CBaseEntity::Precache"});
-    HOOK(CGamePlayerEquip, InputTriggerForAllPlayers, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForAllPlayers")});
-    HOOK(CGamePlayerEquip, InputTriggerForActivatedPlayer, {.address = schemas::FindDataMapInputFunc("CGamePlayerEquip", "InputTriggerForActivatedPlayer")});
+    HOOK(CGamePlayerEquip, PulseTriggerForAllPlayers, {.address = g_pGameData->GetAddress<void*>("CGamePlayerEquip::TriggerForAllPlayers")});
+    HOOK(CGamePlayerEquip, PulseTriggerForActivatedPlayer);
 
     VHOOK(CGamePlayerEquip, Use, server, {.gamedata = "CBaseEntity::Use"});
     VHOOK(CGamePlayerEquip, Touch, server, {.gamedata = "CBaseEntity::Touch"});
