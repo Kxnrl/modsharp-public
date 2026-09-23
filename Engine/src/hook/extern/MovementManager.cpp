@@ -437,8 +437,8 @@ static CAddress FindCPlayerMovementService_RunCommand()
     auto vfuncs = svr_mod->GetVFunctionsFromVTable("CPlayer_MovementServices");
     if (vfuncs.empty())
     {
-        FatalError("No VFuncs found for CPlayer_MovementServices??");
-        return {};
+        WARN("No VFuncs found for CPlayer_MovementServices; falling back to gamedata.");
+        return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
     }
 
     uintptr_t thread_id_address{};
@@ -450,14 +450,25 @@ static CAddress FindCPlayerMovementService_RunCommand()
 
     if (thread_id_address == 0) [[unlikely]]
     {
-        FatalError("Failed to get GetCurrentThreadId address");
+        WARN("Failed to resolve thread ID function; falling back to gamedata.");
+        return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
     }
 
     // 'zorf'
     constexpr uint32_t frozen_hex = 0x7A6F7266;
+    const auto frozen_string = svr_mod->FindString("frozen", true, true);
 
+    std::vector<uintptr_t> zorf_candidates;
+    std::vector<uintptr_t> frozen_candidates;
     std::vector<uintptr_t> candidate_only_call;
-    std::vector<uintptr_t> candidate_only_mov;
+    std::vector<uintptr_t> candidate_only_marker;
+
+    auto add_candidate = [](std::vector<uintptr_t>& candidates, uintptr_t vfunc) {
+        for (auto candidate : candidates)
+            if (candidate == vfunc)
+                return;
+        candidates.push_back(vfunc);
+    };
 
     for (uintptr_t vfunc : vfuncs)
     {
@@ -466,80 +477,99 @@ static CAddress FindCPlayerMovementService_RunCommand()
             continue;
 
         bool found_call{};
-        bool found_mov{};
+        bool found_zorf{};
+        bool found_frozen{};
 
         ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-            // .text:0000000180B800D6 FF 15 D4 D1 99 00                                               call    cs:GetCurrentThreadId; windows
-            // .text:000000000158D932 E8 19 12 3F FF                                                  call    _ThreadGetCurrentId; linux
-
-            // .text:000000000158D8C7 C7 40 18 66 72 6F 7A                                            mov     dword ptr [rax+18h], 7A6F7266h; linux
-            // .text:0000000180B7FFDF 8B 05 EF 1F B7 00                                               mov     eax, cs:dword_1816F1FD4; windows (66 72 6F 7A dword_1816F1FD4 dd 'zorf' )
-            // if these two conditions meet it means this function address is what we are looking for
-
-            if (found_call && found_mov)
+            if (found_call && found_zorf && found_frozen)
                 return true;
 
-            if (!found_call)
+            if (!found_call && instr.mnemonic == ZYDIS_MNEMONIC_CALL
+                && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
             {
-                if (instr.mnemonic == ZYDIS_MNEMONIC_CALL && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
-                {
-                    found_call = true;
-                    return false;
-                }
+                found_call = true;
+                return false;
             }
 
-            if (!found_mov)
+            if (!found_frozen && frozen_string.IsValid()
+                && instr.mnemonic == ZYDIS_MNEMONIC_LEA
+                && instr.operand_count_visible == 2
+                && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                && ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == frozen_string.GetPtr())
             {
-                if (instr.mnemonic == ZYDIS_MNEMONIC_MOV)
+                found_frozen = true;
+                return false;
+            }
+
+            if (!found_zorf && instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2)
+            {
+                if ((instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) != 0
+                    && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
                 {
-                    if ((instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) != 0
-                        && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+                    auto abs = ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip);
+                    if (abs != 0 && *reinterpret_cast<uint32_t*>(abs) == frozen_hex)
                     {
-                        auto abs = ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip);
-                        if (abs != 0 && *reinterpret_cast<uint32_t*>(abs) == frozen_hex)
-                        {
-                            found_mov = true;
-                            return false;
-                        }
-                    }
-                    else if (operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && operands[1].imm.value.u == frozen_hex)
-                    {
-                        found_mov = true;
+                        found_zorf = true;
                         return false;
                     }
+                }
+                else if (operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && operands[1].imm.value.u == frozen_hex)
+                {
+                    found_zorf = true;
+                    return false;
                 }
             }
 
             return false;
         });
 
-        if (found_mov && found_call)
-        {
-            FLOG("Found CPlayer_MovementServices::RunCommand at server+0x%llx", vfunc - svr_mod->Base());
-            return vfunc;
-        }
-
         if (found_call)
-            candidate_only_call.push_back(vfunc);
-        else if (found_mov)
-            candidate_only_mov.push_back(vfunc);
+        {
+            if (found_zorf)
+                add_candidate(zorf_candidates, vfunc);
+            if (found_frozen)
+                add_candidate(frozen_candidates, vfunc);
+            if (!found_zorf && !found_frozen)
+                add_candidate(candidate_only_call, vfunc);
+        }
+        else if (found_zorf || found_frozen)
+            add_candidate(candidate_only_marker, vfunc);
+    }
+
+    const bool marker_conflict = frozen_candidates.size() == 1 && zorf_candidates.size() == 1
+                   && frozen_candidates.front() != zorf_candidates.front();
+    if (!marker_conflict && frozen_candidates.size() == 1)
+    {
+        auto vfunc = frozen_candidates.front();
+        FLOG("Found CPlayer_MovementServices::RunCommand using frozen string at server+0x%llx", vfunc - svr_mod->Base());
+        return vfunc;
+    }
+    if (!marker_conflict && zorf_candidates.size() == 1)
+    {
+        auto vfunc = zorf_candidates.front();
+        FLOG("Found CPlayer_MovementServices::RunCommand using zorf at server+0x%llx", vfunc - svr_mod->Base());
+        return vfunc;
     }
 
     std::string diag = std::format(
         "Failed to find CPlayer_MovementServices::RunCommand by scanning virtual functions."
-        "\n  Scanned {} vfuncs from CPlayer_MovementServices vtable.",
-        vfuncs.size());
+        "\n  Scanned {} vfuncs from CPlayer_MovementServices vtable."
+        "\n  'zorf' candidates: {}.",
+        vfuncs.size(), zorf_candidates.size());
+    diag += std::format("\n  'frozen' string candidates: {}.", frozen_candidates.size());
+    if (marker_conflict)
+        diag += "\n  The two markers point to different functions.";
 
-    if (!candidate_only_mov.empty())
+    if (!candidate_only_marker.empty())
     {
-        diag += std::format("\n  -> Found 'zorf' (MOV) without ThreadID call in {} function(s):", candidate_only_mov.size());
-        for (auto fn : candidate_only_mov)
+        diag += std::format("\n  -> Found RunCommand marker without ThreadID call in {} function(s):", candidate_only_marker.size());
+        for (auto fn : candidate_only_marker)
             diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
     }
 
     if (!candidate_only_call.empty())
     {
-        diag += std::format("\n  -> Found ThreadID (CALL) without 'zorf' mov in {} function(s):", candidate_only_call.size());
+        diag += std::format("\n  -> Found ThreadID (CALL) without RunCommand marker in {} function(s):", candidate_only_call.size());
         for (auto fn : candidate_only_call)
             diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
     }
