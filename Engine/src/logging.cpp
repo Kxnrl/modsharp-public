@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -27,8 +27,14 @@
 #include "cstrike/interface/ICommandLine.h"
 
 // crt
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
 #include <cstdarg>
+#include <cstdint>
+#include <cstdio>
 #include <cstring>
+#include <deque>
 #include <filesystem>
 #include <mutex>
 #include <string>
@@ -66,6 +72,11 @@ static FILE* OpenLogFile(const char* fileName)
 void CreateLogging()
 {
     EnsureLogDirectory();
+}
+
+void ShutdownLogging()
+{
+    g_AsyncLogWriter.Shutdown();
 }
 
 void WriteTextToFile(const char* path, const char* text)
@@ -155,6 +166,8 @@ void FatalError(const char* message, ...)
         fflush(logFile);
         fclose(logFile);
     }
+
+    WriteLogLineSync(FATAL_LOG_PATH, BuildLogLine(timestamp, "Fatal Error", nullptr, text));
 
 #ifdef PLATFORM_WINDOWS
     if (IsDebuggerPresent())
@@ -325,9 +338,3 @@ void LogFuncInfo(const char* function, const char* message, ...)
             fprintf(logFile, "[%s] | Information | %s %s\n", timestamp, function, g_pLoggerMapName.c_str());
         else
             fprintf(logFile, "[%s] | Information | %s\n", timestamp, function);
-
-        fprintf(logFile, "%s\n\n", text);
-        fflush(logFile);
-        fclose(logFile);
-    }
-}
