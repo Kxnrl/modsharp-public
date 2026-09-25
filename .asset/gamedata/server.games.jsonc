@@ -150,7 +150,7 @@
     "CBaseModelEntity::SetBodyGroupByName": {
       "library": "server",
       "linux": "55 48 89 E5 41 55 49 89 F5 41 54 41 89 D4 53 48 89 FB 48 83 EC ? E8 ? ? ? ? 48 85 C0 74 ? 48 89 C7 4C 89 EE E8 ? ? ? ? 85 C0 79 ? 48 83 C4 ? 5B 41 5C 41 5D 5D C3 66 0F 1F 44 00 ? 48 83 C4 ? 44 89 E2 48 89 DF 5B 89 C6 41 5C 41 5D 5D E9 ? ? ? ? CC",
-      "windows": "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC ? 41 8B F8 48 8B F2 48 8B D9 E8 83 4D 86 FF 48 85 C0"
+      "windows": "48 89 5C 24 08 48 89 74 24 10 57 48 83 EC ? 41 8B F8 48 8B F2 48 8B D9 E8 ? ? ? ? 48 85 C0 74 ? 48 8B D6 48 8B C8 E8 ? ? ? ? 85 C0 78 ? 44 8B C7 8B D0 48 8B CB E8 ? ? ? ? 48 8B 5C 24 30 48 8B 74 24 38 48 83 C4 20 5F C3 CC CC 48 89"
     },
     "CBaseModelEntity::SetCollisionBounds": {
       "library": "server",
@@ -496,14 +496,14 @@
     "CCSScript::ScriptStackPop": {
       "on_demand": true,
       "library": "server",
-      "linux": "83 2D 19 DB D5 01 ?",
-      "windows": "FF 0D 1A A1 D8 01"
+      "linux": "83 2D ? ? ? ? 01 C3 CC CC CC CC CC CC CC CC",
+      "windows": "FF 0D ? ? ? ? C3 CC CC CC CC CC CC CC CC CC 40 53 48 83 EC 20 48 8B 01"
     },
     "CCSScript::ScriptStackPush": {
       "on_demand": true,
       "library": "server",
-      "linux": "55 48 89 E5 41 56 41 55 49 89 FD 8B 3D 5F DC D5 01",
-      "windows": "48 89 6C 24 18 56 48 83 EC ? 48 63 05 4F DF D8 01"
+      "linux": "55 48 89 E5 41 56 41 55 49 89 FD 8B 3D ? ? ? ? 41 54 53 48 63 1D ? ? ? ? 39 FB 74 ? 48 8B 05 ? ? ? ? 89 DA 83 C2 01 89 15 ? ? ? ? 4C 89 2C D8 5B 41 5C 41 5D 41 5E 5D C3 66 90 8B 35 ? ? ? ? 81 FE FF FF FF 3F 0F 87 ? ? ? ? 81 FF FF FF FF 7F 0F 84 ? ? ? ? 44 8D 77 01 81 E6 FF FF FF 3F B9 08 00 00 00 44 89 F2 E8 ? ? ? ? 41 89 C4 41 39 C6 7F ? 48 63 0D ? ? ? ? 49 63 D4 31 F6 48 C1 E2 03 48 8B 3D ? ? ? ? 48 C1 E1 03 81 3D ? ? ? ? FF FF FF 3F 40 0F 96 C6 E8 ? ? ? ? 8B 15 ? ? ? ? 48 89 05 ? ? ? ? 81 FA FF FF FF 3F 76 ? 81 E2 FF FF FF 3F 89 15 ? ? ? ? 8B 15 ? ? ? ? 44 89 25 ? ? ? ? E9 ? ? ? ? 66 90 43 8D 04 26",
+      "windows": "48 89 6C 24 18 56 48 83 EC 20 48 63 05 ? ? ? ? 48 8B E9 8B 0D ? ? ? ? 48 8B F0 3B C1 0F 85 ? ? ? ? 8B 15 ? ? ? ? 0F BA E2 1E 0F 82 ? ? ? ? 48 89 5C 24 30 48 89 7C 24 38 81 F9 FE FF FF 7F 7E ? BA 01 00 00 00 FF 15 ? ? ? ? 8B 15 ? ? ? ? 8B 0D ? ? ? ? 8D 79 01 81 E2 FF FF FF 3F 44 8B C7 41 B9 08 00 00 00 FF 15 ? ? ? ? 8B D8 3B C7 7D ? 85 C0 75 ? 83 FF FF 7F ? BB FF FF FF FF EB ? 0F 1F 40 00 8D 04 3B 99 2B C2 D1 F8 8B D8 3B C7 7C ? 4C 63 0D ? ? ? ? 48 8B 0D ? ? ? ? 49 C1 E1 03 F7 05 ? ? ? ? 00 00 00 C0 4C 63 C3 0F 94 C2 49 C1 E0 03 FF 15 ? ? ? ? 8B 0D ? ? ? ? 48 8B D0 48 8B 7C 24 38 48 89 05 ? ? ? ? F7 C1 00 00 00 C0 74 ? 81 E1 FF FF FF 3F 89 0D ? ? ? ? 8B 05 ? ? ? ? 89 1D ? ? ? ? 48 8B 5C 24 30 EB ? 48 8B 15 ? ? ? ? FF C0 89 05 ? ? ? ? 48 89 2C F2 48 8B 6C 24 40 48 83 C4 20 5E C3 CC CC CC CC CC CC CC CC CC CC CC CC C2 00 00 CC"
     },
     "CEntityIdentity::AcceptInput": {
       "library": "server",
