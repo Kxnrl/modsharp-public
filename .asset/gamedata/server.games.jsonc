@@ -307,11 +307,11 @@
       "windows": "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ?",
       "refs": {
         "strings": [
-          "item_kevlar [ptr]",
-          "weapon_taser [ptr]"
+          "weapon_incgrenade"
         ],
         "vtables": [
-          "CCSWeaponBase [typeinfo]"
+          "CCSWeaponBase [typeinfo]",
+          "CBasePlayerWeapon [typeinfo]"
         ]
       }
     },
