@@ -52,7 +52,7 @@ inline bool IsVolatileRegister(ZydisRegister reg)
     case ZYDIS_REGISTER_R10:
     case ZYDIS_REGISTER_R11: return true;
 
-#ifdef PLATFORM_LINUX
+#ifdef PLATFORM_POSIX
     case ZYDIS_REGISTER_RDI:
     case ZYDIS_REGISTER_RSI: return true;
 #endif
