@@ -581,6 +581,10 @@ internal class ClientManager : ICoreClientManager
         {
             _commandHooks.Remove(command);
         }
+        else
+        {
+            _commandHooks[command] = callbacks;
+        }
     }
 
     public void InstallCommandListener(string rawCommand, IClientManager.DelegateClientCommand callback)
@@ -619,6 +623,10 @@ internal class ClientManager : ICoreClientManager
         if (callbacks is null)
         {
             _commandListeners.Remove(command);
+        }
+        else
+        {
+            _commandListeners[command] = callbacks;
         }
     }
 
