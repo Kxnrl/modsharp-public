@@ -606,7 +606,10 @@ void* GetDotnetFunctionPointer(const char* typeName, const char* method)
         typeName, method,
 #endif
         UNMANAGEDCALLERSONLY_METHOD, nullptr, &pFunc);
-    assert(rc == 0 && pFunc != nullptr && "Failure: load_assembly_and_get_function_pointer()");
+    if (rc != 0 || pFunc == nullptr)
+    {
+        FatalError("Failed to get %s::%s from Sharp.Core.dll (rc = 0x%08x)", typeName, method, static_cast<uint32_t>(rc));
+    }
     return pFunc;
 }
 
@@ -627,12 +630,12 @@ bool coreclr::Init(const char* baseDir)
 
     if (!LoadHostFxr())
     {
-        assert(false && "Failure: LoadHostFxr()");
+        FatalError("Failed to load hostfxr.");
     }
 
     if (!std::filesystem::exists(dir))
     {
-        assert(false && "Failure: directory not found.");
+        FatalError("Failed to find directory %s", dir.generic_string().c_str());
     }
 
     const auto abs = std::filesystem::absolute(dir);
@@ -649,7 +652,10 @@ bool coreclr::Init(const char* baseDir)
 #endif
     );
 
-    assert(load_assembly_and_get_function_pointer != nullptr && "Failure: get_dotnet_load_assembly()");
+    if (load_assembly_and_get_function_pointer == nullptr)
+    {
+        FatalError("Failed to initialize .NET runtime from %s", str.c_str());
+    }
 
     return true;
 }
