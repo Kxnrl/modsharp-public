@@ -317,6 +317,46 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
             auto refs = module_ptr->GetReferenceRange(ptr_to_cvar);
             if (!refs.empty())
                 merged_refs.insert(merged_refs.end(), refs.begin(), refs.end());
+
+            for (const auto& ref : module_ptr->GetReferenceRange(ptr_to_cvar - sizeof(void*)))
+            {
+                constexpr int MAX_FOLLOWING_INSTRUCTIONS = 4;
+
+                ZydisDecodedInstruction inst;
+                ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
+
+                if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ref.source_ip), 15, &inst, operands)))
+                    continue;
+
+                if (inst.mnemonic != ZYDIS_MNEMONIC_LEA || inst.operand_count_visible != 2 || operands[0].type != ZYDIS_OPERAND_TYPE_REGISTER || operands[0].size != 64
+                    || operands[1].type != ZYDIS_OPERAND_TYPE_MEMORY || operands[1].mem.base != ZYDIS_REGISTER_RIP)
+                    continue;
+
+                const auto lea_reg = operands[0].reg.value;
+                auto       current = ref.source_ip + inst.length;
+
+                for (int i = 0; i < MAX_FOLLOWING_INSTRUCTIONS; i++)
+                {
+                    if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(current), 15, &inst, operands)))
+                        break;
+
+                    auto& op_dest = operands[0];
+                    auto& op_src  = operands[1];
+
+                    if (inst.mnemonic == ZYDIS_MNEMONIC_MOV && inst.operand_count_visible == 2 && op_dest.type == ZYDIS_OPERAND_TYPE_REGISTER && op_dest.size == 64
+                        && op_src.type == ZYDIS_OPERAND_TYPE_MEMORY && op_src.mem.base == lea_reg && op_src.mem.index == ZYDIS_REGISTER_NONE
+                        && op_src.mem.disp.value == 8)
+                    {
+                        merged_refs.push_back(ref);
+                        break;
+                    }
+
+                    if (inst.operand_count_visible >= 1 && op_dest.type == ZYDIS_OPERAND_TYPE_REGISTER && ZydisUtility::GetBaseRegister(op_dest.reg.value) == lea_reg)
+                        break;
+
+                    current += inst.length;
+                }
+            }
         }
 
         if (add_handle)
