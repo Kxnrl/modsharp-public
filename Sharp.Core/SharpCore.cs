@@ -996,7 +996,7 @@ internal partial class SharpCore : ISharpCore
     public unsafe IGameSystem? FindGameSystemByName(string name)
     {
         var pName = stackalloc byte[256];
-        Utf8.FromUtf16(name, new Span<byte>(pName, 256), out _, out var bytesWritten);
+        Utf8.FromUtf16(name, new Span<byte>(pName, 255), out _, out var bytesWritten);
         pName[bytesWritten] = 0;
 
         var factory = (CGameSystemFactory*) Game.GetGameSystemFactory();
