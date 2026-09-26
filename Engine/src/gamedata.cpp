@@ -670,6 +670,8 @@ static CAddress GetVScriptFunction(const std::string& name)
     };
 
     auto string_address = modules::server->FindString(name, false, true);
+    if (!string_address.IsValid())
+        return {};
 
     final_address = try_find_match(string_address);
 
