@@ -48,10 +48,11 @@ struct Pattern
 
     static Pattern FromHexString(std::string_view input)
     {
-        if (input.empty()) [[unlikely]]
-            throw;
-
         Pattern p{};
+
+        if (input.empty()) [[unlikely]]
+            return p;
+
         p._elements.reserve(input.size() / 3 + 1);
 
         static constexpr auto hex_char_to_byte = [](char c) -> int8_t {
@@ -86,6 +87,10 @@ struct Pattern
                                         [](const Element& e) { return e.mask != 0; });
 
         p._elements.erase(rit.base(), p._elements.end());
+
+        const auto first = std::ranges::find_if(p._elements, [](const Element& e) { return e.mask != 0; });
+        p._leading       = static_cast<std::size_t>(first - p._elements.begin());
+        p._elements.erase(p._elements.begin(), first);
         return p;
     }
 
@@ -104,6 +109,11 @@ struct Pattern
     [[nodiscard]] const std::vector<Element>& bytes() const
     {
         return _elements;
+    }
+
+    [[nodiscard]] std::size_t leading() const
+    {
+        return _leading;
     }
 
     bool is_match(const uint8_t* data) const
@@ -137,6 +147,7 @@ struct Pattern
 
 private:
     std::vector<Element> _elements{};
+    std::size_t          _leading{};
 };
 
 class InstructionSet
@@ -683,8 +694,11 @@ static std::optional<std::size_t> FindPatternSSE(uint8_t* data, std::size_t size
     const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternSSEImpl(data, size, pattern,
-                       [&result, base](CAddress match) {
-                           result = match.GetPtr() - base;
+                       [&result, base, leading = pattern.leading()](CAddress match) {
+                           const auto offset = match.GetPtr() - base;
+                           if (offset < leading)
+                               return detail::SearchAction::Continue;
+                           result = offset - leading;
                            return detail::SearchAction::Stop;
                        });
     return result;
@@ -698,8 +712,10 @@ static std::vector<CAddress> FindPatternMultiSSE(uint8_t* data, std::size_t size
     const auto base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternSSEImpl(data, size, pattern,
-                       [&results, base](CAddress match) {
-                           results.emplace_back(match - base);
+                       [&results, base, leading = pattern.leading()](CAddress match) {
+                           const auto offset = match.GetPtr() - base;
+                           if (offset >= leading)
+                               results.emplace_back(offset - leading);
                            return detail::SearchAction::Continue;
                        });
     return results;
@@ -712,8 +728,11 @@ static std::optional<std::size_t> FindPatternAVX2(uint8_t* data, std::size_t siz
     const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternAvx2Impl(data, size, pattern,
-                        [&result, base](CAddress match) {
-                            result = match.GetPtr() - base;
+                        [&result, base, leading = pattern.leading()](CAddress match) {
+                            const auto offset = match.GetPtr() - base;
+                            if (offset < leading)
+                                return detail::SearchAction::Continue;
+                            result = offset - leading;
                             return detail::SearchAction::Stop;
                         });
     return result;
@@ -728,8 +747,10 @@ static std::vector<CAddress> FindPatternMultiAVX2(uint8_t* data, std::size_t siz
     const auto base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternAvx2Impl(data, size, pattern,
-                        [&results, base](CAddress match) {
-                            results.emplace_back(match - base);
+                        [&results, base, leading = pattern.leading()](CAddress match) {
+                            const auto offset = match.GetPtr() - base;
+                            if (offset >= leading)
+                                results.emplace_back(offset - leading);
                             return detail::SearchAction::Continue;
                         });
     return results;
@@ -943,6 +964,8 @@ ATTRIBUTE_AVX2 static void FindValueAVX2Impl(std::uintptr_t data, std::size_t si
 std::optional<std::size_t> scan::FindPattern(uint8_t* data, std::size_t size, std::string_view pattern) noexcept
 {
     auto pat = Pattern::FromHexString(pattern);
+    if (pat.bytes().empty()) [[unlikely]]
+        return {};
 
     if (s_InstructionSet.SupportAvx2())
         return detail::FindPatternAVX2(data, size, pat);
@@ -953,6 +976,8 @@ std::optional<std::size_t> scan::FindPattern(uint8_t* data, std::size_t size, st
 std::vector<CAddress> scan::FindPatternMulti(uint8_t* data, std::size_t size, std::string_view pattern) noexcept
 {
     auto pat = Pattern::FromHexString(pattern);
+    if (pat.bytes().empty()) [[unlikely]]
+        return {};
 
     if (s_InstructionSet.SupportAvx2())
         return detail::FindPatternMultiAVX2(data, size, pat);
