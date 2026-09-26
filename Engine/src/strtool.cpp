@@ -105,6 +105,9 @@ size_t StrCopy(char* dst, size_t size, const char* src)
 
 size_t StrCopyFast(char* dst, size_t size, const char* src)
 {
+    if (size == 0)
+        return 0;
+
     const auto textLength = strnlen(src, size - 1);
     const auto copyLength = textLength < size ? textLength : size - 1;
     memcpy(dst, src, copyLength);
