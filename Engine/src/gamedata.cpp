@@ -1540,7 +1540,7 @@ void GameData::Unregister(const char* name)
     char error[256];
     if (!Unregister(name, error, sizeof(error)))
     {
-        FatalError(error);
+        FatalError("%s", error);
     }
 }
 
