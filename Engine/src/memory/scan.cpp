@@ -439,14 +439,14 @@ ATTRIBUTE_AVX2 static void FindDataAvx2Impl(uint8_t* data, std::size_t size, con
     }
 }
 
-static CAddress FindDataSSE(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+static std::optional<std::size_t> FindDataSSE(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
 {
-    CAddress   result{};
-    const auto base = reinterpret_cast<uintptr_t>(data);
+    std::optional<std::size_t> result{};
+    const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindDataSSEImpl(data, size, needle, needle_size,
                     [&result, base](CAddress match) {
-                        result = match - base;
+                        result = match.GetPtr() - base;
                         return detail::SearchAction::Stop;
                     });
     return result;
@@ -469,14 +469,14 @@ static std::vector<CAddress> FindDataMultiSSE(uint8_t* data, std::size_t size, c
 
 ATTRIBUTE_AVX2
 
-static CAddress FindDataAVX2(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
+static std::optional<std::size_t> FindDataAVX2(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size)
 {
-    CAddress   result{};
-    const auto base = reinterpret_cast<uintptr_t>(data);
+    std::optional<std::size_t> result{};
+    const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindDataAvx2Impl(data, size, needle, needle_size,
                      [&result, base](CAddress match) {
-                         result = match - base;
+                         result = match.GetPtr() - base;
                          return detail::SearchAction::Stop;
                      });
     return result;
@@ -677,14 +677,14 @@ ATTRIBUTE_AVX2 static void FindPatternAvx2Impl(uint8_t* data, std::size_t size, 
     }
 }
 
-static CAddress FindPatternSSE(uint8_t* data, std::size_t size, const Pattern& pattern)
+static std::optional<std::size_t> FindPatternSSE(uint8_t* data, std::size_t size, const Pattern& pattern)
 {
-    CAddress   result{};
-    const auto base = reinterpret_cast<uintptr_t>(data);
+    std::optional<std::size_t> result{};
+    const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternSSEImpl(data, size, pattern,
                        [&result, base](CAddress match) {
-                           result = match - base;
+                           result = match.GetPtr() - base;
                            return detail::SearchAction::Stop;
                        });
     return result;
@@ -706,14 +706,14 @@ static std::vector<CAddress> FindPatternMultiSSE(uint8_t* data, std::size_t size
 }
 
 ATTRIBUTE_AVX2
-static CAddress FindPatternAVX2(uint8_t* data, std::size_t size, const Pattern& pattern)
+static std::optional<std::size_t> FindPatternAVX2(uint8_t* data, std::size_t size, const Pattern& pattern)
 {
-    CAddress   result{};
-    const auto base = reinterpret_cast<uintptr_t>(data);
+    std::optional<std::size_t> result{};
+    const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternAvx2Impl(data, size, pattern,
                         [&result, base](CAddress match) {
-                            result = match - base;
+                            result = match.GetPtr() - base;
                             return detail::SearchAction::Stop;
                         });
     return result;
@@ -940,7 +940,7 @@ ATTRIBUTE_AVX2 static void FindValueAVX2Impl(std::uintptr_t data, std::size_t si
 }
 } // namespace detail
 
-CAddress scan::FindPattern(uint8_t* data, std::size_t size, std::string_view pattern) noexcept
+std::optional<std::size_t> scan::FindPattern(uint8_t* data, std::size_t size, std::string_view pattern) noexcept
 {
     auto pat = Pattern::FromHexString(pattern);
 
@@ -960,7 +960,7 @@ std::vector<CAddress> scan::FindPatternMulti(uint8_t* data, std::size_t size, st
     return detail::FindPatternMultiSSE(data, size, pat);
 }
 
-CAddress scan::FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated, bool exact) noexcept
+std::optional<std::size_t> scan::FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated, bool exact) noexcept
 {
     const uint8_t* needle      = zero_terminated ? reinterpret_cast<const uint8_t*>(str.c_str()) : reinterpret_cast<const uint8_t*>(str.data());
     std::size_t    needle_size = zero_terminated ? str.size() + 1 : str.size();
@@ -970,8 +970,8 @@ CAddress scan::FindStr(uint8_t* data, std::size_t size, const std::string& str, 
         return FindData(data, size, needle, needle_size);
     }
 
-    CAddress   result{};
-    const auto base = reinterpret_cast<uintptr_t>(data);
+    std::optional<std::size_t> result{};
+    const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     auto callback = [&result, base, data](CAddress match) {
         auto offset = match.GetPtr() - base;
@@ -995,11 +995,11 @@ CAddress scan::FindStr(uint8_t* data, std::size_t size, const std::string& str, 
     return result;
 }
 
-CAddress scan::FindPtr(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept
+std::optional<std::size_t> scan::FindPtr(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept
 {
-    CAddress result{};
-    auto     callback = [&result](CAddress address) {
-        result = address;
+    std::optional<std::size_t> result{};
+    auto                       callback = [&result](CAddress address) {
+        result = address.GetPtr();
         return detail::SearchAction::Stop;
     };
 
@@ -1075,7 +1075,7 @@ std::vector<CAddress> scan::FindPtrs(std::uintptr_t data, std::size_t size, std:
     return result;
 }
 
-CAddress scan::FindData(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept
+std::optional<std::size_t> scan::FindData(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size) noexcept
 {
     if (s_InstructionSet.SupportAvx2()) return detail::FindDataAVX2(data, size, needle, needle_size);
 
