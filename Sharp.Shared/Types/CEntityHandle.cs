@@ -111,7 +111,7 @@ public readonly struct CEntityHandle<T> :
             return 0xFFFFFF;
         }
 
-        return (_value & 0x7FFF) | (((_value >> 15) & 0x3FF) << 14);
+        return (_value & 0x3FFF) | (((_value >> 15) & 0x3FF) << 14);
     }
 
     /// <summary>
