@@ -507,7 +507,7 @@ static bool TransmitManagerSetEntityBlock(EntityIndex_t index, bool val)
 
 static bool TransmitManagerGetTempEntState(BlockTE_t type, PlayerSlot_t slot, bool state)
 {
-    if (type > BT_Count || type < 0)
+    if (type >= BT_Count || type < 0 || slot >= CS_MAX_PLAYERS)
         return false;
 
     RLOCK;
@@ -517,7 +517,7 @@ static bool TransmitManagerGetTempEntState(BlockTE_t type, PlayerSlot_t slot, bo
 
 static void TransmitManagerSetTempEntState(BlockTE_t type, PlayerSlot_t slot, bool state)
 {
-    if (type > BT_Count || type < 0)
+    if (type >= BT_Count || type < 0 || slot >= CS_MAX_PLAYERS)
         return;
 
     WLOCK;
