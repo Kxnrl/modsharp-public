@@ -255,8 +255,9 @@ BeginMemberHookScope(CNetworkGameServer)
 
         VPROF_MS_HOOK();
 
-        CUtlBuffer      buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
-        const SteamId_t steamId = *(SteamId_t*)(buffer.PeekGet(sizeof(SteamId_t), 0));
+        CUtlBuffer  buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
+        const auto* pSteamId = static_cast<const SteamId_t*>(buffer.PeekGet(sizeof(SteamId_t), 0));
+        const auto  steamId  = pSteamId ? *pSteamId : 0;
 
         // 无法获取SteamId直接拒绝连接
         if (steamId == 0 || (steamId & 0xFFFFFFFF) == 0) [[unlikely]]
