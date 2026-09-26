@@ -306,12 +306,8 @@
       "linux": "55 48 89 E5 41 57 41 56 49 89 F6 41 55 41 54 49 89 CC 53 48 89 FB 48 83 EC ? 4C 8B 6F ? 89 55 ? 4D 85 ED",
       "windows": "44 89 44 24 18 48 89 54 24 10 48 89 4C 24 08 55 53 56 57 41 54 41 55 41 56 41 57 48 8B EC 48 83 EC ?",
       "refs": {
-        "strings": [
-          "weapon_incgrenade"
-        ],
-        "vtables": [
-          "CCSWeaponBase [typeinfo]",
-          "CBasePlayerWeapon [typeinfo]"
+        "cvars": [
+          "mp_buy_allow_guns"
         ]
       }
     },
