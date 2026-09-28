@@ -51,6 +51,7 @@ public:
     SCHEMA_FIELD(bool, m_bLagCompensation)
 
     SCHEMA_FIELD_MANUAL(CCSPlayerController, m_szClan, CUtlSymbolLarge)
+    SCHEMA_FIELD_MANUAL(CCSPlayerController, m_unClanId32bit, uint32_t)
 
 private:
     [[nodiscard]] CBasePlayerPawn* GetPawnInternal();
@@ -88,6 +89,7 @@ public:
 
     void SwitchTeam(CStrikeTeam_t team);
     void SetClanTag(const char* tag);
+    void ResetClanTag();
     void ClientPrint(HudPrint_t dest, const char* name, const char* param1 = nullptr, const char* param2 = nullptr, const char* param3 = nullptr, const char* param4 = nullptr);
     void ClientPrintF(HudPrint_t dest, const char* message, ...);
 
@@ -100,6 +102,9 @@ public:
     }
 
     [[nodiscard]] static CBasePlayerController* FindBySlot(PlayerSlot_t slot);
+
+    static void EnforceClanTags();
+    static void ClearClanTagState(PlayerSlot_t slot);
 };
 
 class CCSPlayerController_InventoryServices;

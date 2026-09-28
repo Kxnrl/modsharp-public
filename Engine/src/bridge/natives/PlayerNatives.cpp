@@ -68,6 +68,11 @@ static void ControllerSetClanTag(CBasePlayerController* pController, const char*
     pController->SetClanTag(tag);
 }
 
+static void ControllerResetClanTag(CBasePlayerController* pController)
+{
+    pController->ResetClanTag();
+}
+
 static CEconItemView* ControllerGetItemInLoadoutFromInventory(CCSPlayerController* pController, CStrikeTeam_t team, int32_t itemSlot)
 {
     return pController->GetItemInLoadoutFromInventory(team, itemSlot);
@@ -219,6 +224,7 @@ void Init()
     bridge::CreateNative("Player.ControllerSwitchTeam", reinterpret_cast<void*>(ControllerSwitchTeam));
     bridge::CreateNative("Player.ControllerFindBySlot", reinterpret_cast<void*>(ControllerFindBySlot));
     bridge::CreateNative("Player.ControllerSetClanTag", reinterpret_cast<void*>(ControllerSetClanTag));
+    bridge::CreateNative("Player.ControllerResetClanTag", reinterpret_cast<void*>(ControllerResetClanTag));
     bridge::CreateNative("Player.ControllerEmitSoundClient", reinterpret_cast<void*>(ControllerEmitSoundClient));
     bridge::CreateNative("Player.ControllerGetItemInLoadoutFromInventory", reinterpret_cast<void*>(ControllerGetItemInLoadoutFromInventory));
     bridge::CreateNative("Player.ControllerCheckPawn", reinterpret_cast<void*>(ControllerCheckPawn));

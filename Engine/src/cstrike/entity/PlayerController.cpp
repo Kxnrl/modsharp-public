@@ -32,6 +32,7 @@
 #include "cstrike/type/EmitSound.h"
 
 #include <cstdarg>
+#include <string>
 
 CBasePlayerController* CBasePlayerController::FindBySlot(PlayerSlot_t slot)
 {
@@ -64,10 +65,87 @@ void CBasePlayerController::SwitchTeam(CStrikeTeam_t team)
     address::server::CBasePlayerController_SwitchSteam(this, team);
 }
 
+struct ClanTagState
+{
+    bool        active;
+    std::string tag;
+    uint32_t    gameClanId;
+    std::string gameTag;
+};
+static ClanTagState s_ClanTag[CS_MAX_PLAYERS];
+
+static void ApplyClan(CBasePlayerController* pController, uint32_t clanId, const std::string& tag)
+{
+    if (pController->m_unClanId32bit() != clanId)
+        pController->m_unClanId32bit(clanId);
+    if (tag != pController->m_szClan().Get())
+        pController->m_szClan(g_pGameEntitySystem->AllocPooledString(tag.c_str()));
+}
+
+static uint32_t OverrideClanId(const std::string& tag)
+{
+    return tag.empty() ? 0 : 1;
+}
+
 void CBasePlayerController::SetClanTag(const char* tag)
 {
-    const auto& clan = g_pGameEntitySystem->AllocPooledString(tag);
-    m_szClan(clan);
+    auto& state = s_ClanTag[GetPlayerSlot()];
+    if (!state.active)
+    {
+        state.gameClanId = m_unClanId32bit();
+        state.gameTag    = m_szClan().Get();
+        state.active     = true;
+    }
+    state.tag = tag ? tag : "";
+    ApplyClan(this, OverrideClanId(state.tag), state.tag);
+}
+
+void CBasePlayerController::ResetClanTag()
+{
+    auto& state = s_ClanTag[GetPlayerSlot()];
+    if (!state.active)
+        return;
+    state.active = false;
+    ApplyClan(this, state.gameClanId, state.gameTag);
+}
+
+void CBasePlayerController::EnforceClanTags()
+{
+    if (!g_pGameEntitySystem)
+        return;
+
+    for (PlayerSlot_t i = 0; i < CS_MAX_PLAYERS; i++)
+    {
+        auto& state = s_ClanTag[i];
+        if (!state.active)
+            continue;
+
+        const auto pController = FindBySlot(i);
+        if (!pController)
+            continue;
+
+        const auto clanId = OverrideClanId(state.tag);
+        const auto curId  = pController->m_unClanId32bit();
+        const auto curTag = pController->m_szClan().Get();
+        if (curId == clanId && state.tag == curTag)
+            continue;
+
+        state.gameClanId = curId;
+        state.gameTag    = curTag;
+        ApplyClan(pController, clanId, state.tag);
+    }
+}
+
+void CBasePlayerController::ClearClanTagState(PlayerSlot_t slot)
+{
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    if (g_pGameEntitySystem)
+        if (const auto pController = FindBySlot(slot))
+            pController->ResetClanTag();
+
+    s_ClanTag[slot] = {};
 }
 
 void CBasePlayerController::ClientPrint(HudPrint_t dest, const char* name, const char* param1, const char* param2, const char* param3, const char* param4)
