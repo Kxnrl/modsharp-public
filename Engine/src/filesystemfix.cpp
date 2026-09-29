@@ -49,9 +49,9 @@ void FixFileSystem()
         "SHADER_SOURCE_MOD",
         "SHADER_SOURCE_ROOT"};
 
-    const auto enableDualAddon = CommandLine()->HasParam("-dual_addon");
-    auto       hasReplaceValue = false;
-    auto       assetsPath      = std::string();
+    const auto enableMultiAddon = CommandLine()->HasParam("-dual_addon") || CommandLine()->HasParam("-extra_addons");
+    auto       hasReplaceValue  = false;
+    auto       assetsPath       = std::string();
 
 #ifdef ASSERT_FS_LOG
     g_pFullFileSystem->PrintSearchPaths();
@@ -97,7 +97,7 @@ void FixFileSystem()
             {
                 g_pFullFileSystem->RemoveSearchPath(searchPath.Get(), pathId);
 
-                if (enableDualAddon)
+                if (enableMultiAddon)
                 {
                     if (strcasecmp(pathId, "game") == 0)
                     {
