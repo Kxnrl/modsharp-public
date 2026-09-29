@@ -308,6 +308,10 @@
       "refs": {
         "cvars": [
           "mp_buy_allow_guns"
+        ],
+        "vtables": [
+          "CCSWeaponBase [typeinfo]",
+          "CBasePlayerWeapon [typeinfo]"
         ]
       }
     },
