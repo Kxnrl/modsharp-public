@@ -142,11 +142,8 @@ CAddress CModule::FindPattern(std::string_view pattern) const
 
         const auto& data = segment.data;
 
-        if (auto result = scan::FindPattern(const_cast<uint8_t*>(data.data()), data.size(), pattern))
-        {
-            if (result > 0)
-                return segment.address + result;
-        }
+        if (const auto result = scan::FindPattern(const_cast<uint8_t*>(data.data()), data.size(), pattern))
+            return segment.address + *result;
     }
 
     return {};
@@ -170,11 +167,8 @@ CAddress CModule::FindString(const std::string& str, bool read_only, bool exact)
         if (read_only && (segment.flags & FLAG_W) != 0)
             continue;
 
-        if (auto result = scan::FindStr(reinterpret_cast<uint8_t*>(segment.address), segment.size, str, true, exact))
-        {
-            if (result > 0)
-                return segment.address + result;
-        }
+        if (const auto result = scan::FindStr(reinterpret_cast<uint8_t*>(segment.address), segment.size, str, true, exact))
+            return segment.address + *result;
     }
 
     return {};
@@ -190,11 +184,8 @@ CAddress CModule::FindData(const uint8_t* needle, std::size_t needle_size, bool 
         if (read_only && (segment.flags & FLAG_W) != 0)
             continue;
 
-        if (auto result = scan::FindData(reinterpret_cast<uint8_t*>(segment.address), segment.size, needle, needle_size))
-        {
-            if (result > 0)
-                return segment.address + result;
-        }
+        if (const auto result = scan::FindData(reinterpret_cast<uint8_t*>(segment.address), segment.size, needle, needle_size))
+            return segment.address + *result;
     }
 
     return {};
@@ -209,9 +200,8 @@ CAddress CModule::FindPtr(uintptr_t ptr) const
         if ((flags & FLAG_X) != 0)
             continue;
 
-        auto res = scan::FindPtr(segment.address, segment.size, ptr);
-        if (res > 0)
-            return res + segment.address;
+        if (const auto res = scan::FindPtr(segment.address, segment.size, ptr))
+            return *res + segment.address;
     }
 
     return {};
