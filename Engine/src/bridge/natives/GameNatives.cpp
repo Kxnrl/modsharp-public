@@ -243,13 +243,21 @@ static void* GetMapGroupMapList(const char* mapGroup)
 
 static NativeSpan<uint8_t> FindResourceDataBlockInfo(const char* filePath, const char* pathId)
 {
-    const auto buffer = ReadGameFile(filePath, pathId);
-    if (buffer.empty())
+    static std::vector<uint8_t> s_buffer;
+    s_buffer = ReadGameFile(filePath, pathId);
+    if (s_buffer.empty())
         return NativeSpan<uint8_t>{nullptr, 0};
 
     CResourceBlockInfo output{};
-    if (Resource_FindBlockInfo(reinterpret_cast<const ResourceFileHeader_t*>(buffer.data()), g_ResourceBlockId_Data, output))
+    if (Resource_FindBlockInfo(reinterpret_cast<const ResourceFileHeader_t*>(s_buffer.data()), g_ResourceBlockId_Data, output))
+    {
+        const auto* begin = reinterpret_cast<const uint8_t*>(output.m_pBlockData);
+        if (begin == nullptr || output.m_nSize <= 0 || begin < s_buffer.data()
+            || static_cast<std::size_t>(begin - s_buffer.data()) + output.m_nSize > s_buffer.size())
+            return NativeSpan<uint8_t>{nullptr, 0};
+
         return NativeSpan{reinterpret_cast<uint8_t*>(output.m_pBlockData), output.m_nSize};
+    }
 
     return NativeSpan<uint8_t>{nullptr, 0};
 }
