@@ -271,4 +271,6 @@ void ModSharp_Shutdown()
     coreclr::Shutdown();
 
     HookManager::Uninstall();
+
+    ShutdownLogging();
 }

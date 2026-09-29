@@ -70,6 +70,10 @@ public static class Bootstrap
         ShutdownMonitor.Shutdown();
         StringPool.Shutdown();
         Console.WriteLine("MS: Shutdown Bootstrap!");
+
+        // Drain the async sink buffers before the process exits,
+        // otherwise the tail of Trace/Debug/Info/Warn logs is lost.
+        Log.CloseAndFlush();
     }
 
 #endregion
@@ -514,19 +518,26 @@ public static class Bootstrap
                                                                                     rollingInterval: RollingInterval.Day,
                                                                                     outputTemplate: fileTemplate,
                                                                                     shared: true)))
+                                  // Info/Warn are written from the game thread in hot paths (spawn/kill/frame),
+                                  // so they use the async sink like Trace/Debug: a synchronous File sink
+                                  // performs a write+flush syscall per event on the calling thread.
                                   .WriteTo.Logger(lc => lc.Filter
                                                           .ByIncludingOnly(e => e.Level is LogEventLevel.Information)
-                                                          .WriteTo.File(Path.Combine(logsDir, "Info..log"),
-                                                                        rollingInterval: RollingInterval.Day,
-                                                                        outputTemplate: fileTemplate,
-                                                                        shared: false))
+                                                          .WriteTo.Async(a =>
+                                                                             a.File(Path.Combine(logsDir, "Info..log"),
+                                                                                    rollingInterval: RollingInterval.Day,
+                                                                                    outputTemplate: fileTemplate,
+                                                                                    shared: false)))
                                   .WriteTo.Logger(lc => lc
                                                         .Filter
                                                         .ByIncludingOnly(e => e.Level is LogEventLevel.Warning)
-                                                        .WriteTo.File(Path.Combine(logsDir, "Warn..log"),
-                                                                      rollingInterval: RollingInterval.Day,
-                                                                      outputTemplate: fileTemplate,
-                                                                      shared: false))
+                                                        .WriteTo.Async(a =>
+                                                                           a.File(Path.Combine(logsDir, "Warn..log"),
+                                                                                  rollingInterval: RollingInterval.Day,
+                                                                                  outputTemplate: fileTemplate,
+                                                                                  shared: false)))
+                                  // Error stays synchronous on purpose: error events are rare (no frame-time
+                                  // pressure) and must reach the disk even if the process dies right after.
                                   .WriteTo.Logger(lc => lc
                                                         .Filter
                                                         .ByIncludingOnly(e => e.Level >= LogEventLevel.Error)
