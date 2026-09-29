@@ -320,7 +320,7 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
 
             for (const auto& ref : module_ptr->GetReferenceRange(ptr_to_cvar - sizeof(void*)))
             {
-                constexpr int MAX_FOLLOWING_INSTRUCTIONS = 4;
+                constexpr int MAX_FOLLOWING_INSTRUCTIONS = 16;
 
                 ZydisDecodedInstruction inst;
                 ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
