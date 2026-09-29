@@ -87,10 +87,6 @@ struct Pattern
                                         [](const Element& e) { return e.mask != 0; });
 
         p._elements.erase(rit.base(), p._elements.end());
-
-        const auto first = std::ranges::find_if(p._elements, [](const Element& e) { return e.mask != 0; });
-        p._leading       = static_cast<std::size_t>(first - p._elements.begin());
-        p._elements.erase(p._elements.begin(), first);
         return p;
     }
 
@@ -109,11 +105,6 @@ struct Pattern
     [[nodiscard]] const std::vector<Element>& bytes() const
     {
         return _elements;
-    }
-
-    [[nodiscard]] std::size_t leading() const
-    {
-        return _leading;
     }
 
     bool is_match(const uint8_t* data) const
@@ -147,7 +138,6 @@ struct Pattern
 
 private:
     std::vector<Element> _elements{};
-    std::size_t          _leading{};
 };
 
 class InstructionSet
@@ -694,11 +684,8 @@ static std::optional<std::size_t> FindPatternSSE(uint8_t* data, std::size_t size
     const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternSSEImpl(data, size, pattern,
-                       [&result, base, leading = pattern.leading()](CAddress match) {
-                           const auto offset = match.GetPtr() - base;
-                           if (offset < leading)
-                               return detail::SearchAction::Continue;
-                           result = offset - leading;
+                       [&result, base](CAddress match) {
+                           result = match.GetPtr() - base;
                            return detail::SearchAction::Stop;
                        });
     return result;
@@ -712,10 +699,8 @@ static std::vector<CAddress> FindPatternMultiSSE(uint8_t* data, std::size_t size
     const auto base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternSSEImpl(data, size, pattern,
-                       [&results, base, leading = pattern.leading()](CAddress match) {
-                           const auto offset = match.GetPtr() - base;
-                           if (offset >= leading)
-                               results.emplace_back(offset - leading);
+                       [&results, base](CAddress match) {
+                           results.emplace_back(match - base);
                            return detail::SearchAction::Continue;
                        });
     return results;
@@ -728,11 +713,8 @@ static std::optional<std::size_t> FindPatternAVX2(uint8_t* data, std::size_t siz
     const auto                 base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternAvx2Impl(data, size, pattern,
-                        [&result, base, leading = pattern.leading()](CAddress match) {
-                            const auto offset = match.GetPtr() - base;
-                            if (offset < leading)
-                                return detail::SearchAction::Continue;
-                            result = offset - leading;
+                        [&result, base](CAddress match) {
+                            result = match.GetPtr() - base;
                             return detail::SearchAction::Stop;
                         });
     return result;
@@ -747,10 +729,8 @@ static std::vector<CAddress> FindPatternMultiAVX2(uint8_t* data, std::size_t siz
     const auto base = reinterpret_cast<uintptr_t>(data);
 
     FindPatternAvx2Impl(data, size, pattern,
-                        [&results, base, leading = pattern.leading()](CAddress match) {
-                            const auto offset = match.GetPtr() - base;
-                            if (offset >= leading)
-                                results.emplace_back(offset - leading);
+                        [&results, base](CAddress match) {
+                            results.emplace_back(match - base);
                             return detail::SearchAction::Continue;
                         });
     return results;
