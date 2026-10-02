@@ -433,8 +433,8 @@ BeginMemberHookScope(CServerSideClient)
         return CLCMsg_CmdKeyValues(pClient, pMessage);
     }
 
-    constexpr uint32_t max_message_rate             = 192;
-    constexpr uint64_t max_decoded_bytes_per_second = 262144;
+    constexpr uint32_t max_message_rate             = 256;
+    constexpr uint64_t max_decoded_bytes_per_second = 65536;
     constexpr uint64_t max_message_bytes            = 16384;
     constexpr uint32_t max_packet_offsets           = 64;
     constexpr uint32_t max_packets_per_second       = 1024;
