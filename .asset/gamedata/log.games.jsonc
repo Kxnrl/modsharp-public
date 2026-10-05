@@ -2,7 +2,7 @@
   "Addresses": {
     "LogDirect": {
       "library": "tier0",
-      "linux": "55 49 89 FA 48 89 E5 41 57 41 56 41 89 D6",
+      "linux": "55 89 D0 49 89 FA 89 F7 48 89 E5 41 57 41 56 41 55 41 54 53 48 81 EC ? ? ? ? 89 95 ? ? ? ? 31 D2 89 B5",
       "windows": "4C 89 4C 24 20 44 89 44 24 18 89 54 24 10 55",
       "refs": {
         "strings": [

@@ -43,6 +43,7 @@ internal class ConVarManager : ICoreConVarManager
     private readonly Dictionary<nint /* ConVar Ptr */, IConVarManager.DelegateConVarChange?>                    _conVarHooks;
     private readonly Dictionary<long /* ConCommandHandle */, Func<IGameClient?, StringCommand, ECommandAction>> _commands;
     private readonly Dictionary<long /* ConCommandHandle */, Func<StringCommand, ECommandAction>>               _serverCommands;
+    private readonly Dictionary<long /* ConCommandHandle */, string>                                            _commandNames;
 
     public ConVarManager(ILogger<ConVarManager> logger, ICoreAssemblyManager assemblyManager)
     {
@@ -51,6 +52,7 @@ internal class ConVarManager : ICoreConVarManager
         _conVarHooks     = new Dictionary<nint, IConVarManager.DelegateConVarChange?>();
         _commands        = new Dictionary<long, Func<IGameClient?, StringCommand, ECommandAction>>();
         _serverCommands  = new Dictionary<long, Func<StringCommand, ECommandAction>>();
+        _commandNames    = new Dictionary<long, string>();
 
         Forward.OnConVarChanged     += OnConVarChanged;
         Forward.OnConCommandTrigger += OnConCommandTrigger;
@@ -116,6 +118,7 @@ internal class ConVarManager : ICoreConVarManager
             if (cleaned is null)
             {
                 commands.Remove(handle);
+                ReleaseCommandIfDrained(handle);
             }
             else
             {
@@ -440,6 +443,8 @@ internal class ConVarManager : ICoreConVarManager
             throw new InvalidOperationException($"Failed to create console command <{name}>");
         }
 
+        _commandNames[handle] = name;
+
         if (_commands.ContainsKey(handle))
         {
             _commands[handle] += fn;
@@ -472,6 +477,8 @@ internal class ConVarManager : ICoreConVarManager
             throw new InvalidOperationException($"Failed to create server command <{name}>");
         }
 
+        _commandNames[handle] = name;
+
         if (_serverCommands.ContainsKey(handle))
         {
             _serverCommands[handle] += fn;
@@ -482,6 +489,68 @@ internal class ConVarManager : ICoreConVarManager
         }
     }
 
+    // engine command is released automatically once its callbacks drain
     public bool ReleaseCommand(string name)
-        => Native.ReleaseCommand(name);
+        => false;
+
+    public void ReleaseConsoleCommandCallback(string name, Func<IGameClient?, StringCommand, ECommandAction> fn)
+    {
+        var handle = Native.FindSharpCommandHandle(name);
+
+        if (!_commands.TryGetValue(handle, out var cb))
+        {
+            _logger.LogWarning("Release rejected, console command <{name}> is not registered!", name);
+
+            return;
+        }
+
+        cb -= fn;
+
+        if (cb is null)
+        {
+            _commands.Remove(handle);
+            ReleaseCommandIfDrained(handle);
+        }
+        else
+        {
+            _commands[handle] = cb;
+        }
+    }
+
+    public void ReleaseServerCommandCallback(string name, Func<StringCommand, ECommandAction> fn)
+    {
+        var handle = Native.FindSharpCommandHandle(name);
+
+        if (!_serverCommands.TryGetValue(handle, out var cb))
+        {
+            _logger.LogWarning("Release rejected, server command <{name}> is not registered!", name);
+
+            return;
+        }
+
+        cb -= fn;
+
+        if (cb is null)
+        {
+            _serverCommands.Remove(handle);
+            ReleaseCommandIfDrained(handle);
+        }
+        else
+        {
+            _serverCommands[handle] = cb;
+        }
+    }
+
+    private void ReleaseCommandIfDrained(long handle)
+    {
+        if (_commands.ContainsKey(handle) || _serverCommands.ContainsKey(handle))
+        {
+            return;
+        }
+
+        if (_commandNames.Remove(handle, out var name))
+        {
+            Native.ReleaseCommand(name);
+        }
+    }
 }

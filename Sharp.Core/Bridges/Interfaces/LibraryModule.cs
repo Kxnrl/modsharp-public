@@ -23,8 +23,10 @@ using System.Runtime.InteropServices;
 using Sharp.Core.CStrike;
 using Sharp.Generator;
 using Sharp.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 using Sharp.Shared.Types.Tier;
+using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.Bridges.Interfaces;
 
@@ -39,6 +41,37 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
         public CUtlString DemangledName { get; set; }
         public nint       Address       { get; set; }
         public ulong      Offset        { get; set; }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct RuntimeExportInfo
+    {
+        public CUtlString RawName   { get; set; }
+        public CUtlString Signature { get; set; }
+        public nint       Address   { get; set; }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct RuntimeModuleInfo
+    {
+        public nint  BaseAddress { get; set; }
+        public nuint Size        { get; set; }
+        public nint  Name        { get; set; }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct RuntimeSegmentInfo
+    {
+        public nint         Address { get; set; }
+        public nuint        Size    { get; set; }
+        public MemoryAccess Access  { get; set; }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct RuntimeFunctionInfo
+    {
+        public nint Start { get; set; }
+        public nint End   { get; set; }
     }
 
     public partial nint FindPatternEx(string svPattern, nint startAddress = 0);
@@ -73,16 +106,124 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
     public partial nint FindStringExactEx(string str);
 
-#endregion
+    public partial bool FindExportFunctionsEx(string name, CUtlLeanVectorBase<RuntimeExportInfo, int>* results);
+
+    public partial void GetModuleInfoEx(RuntimeModuleInfo* info);
+
+    public partial bool FindPtrsEx(nint ptr, CUtlLeanVectorBase<nint, int>* results);
+
+    public partial nint FindStringWithOptionsEx(string str, bool readOnly, bool exact);
+
+    public partial bool GetVFunctionsEx(string tableName, CUtlLeanVectorBase<nint, int>* results);
+
+    public partial bool GetSegmentsEx(CUtlLeanVectorBase<RuntimeSegmentInfo, int>* results);
+
+    public partial nint GetTypeInfoFromNameEx(string name);
+
+    public partial bool GetFunctionEntriesEx(CUtlLeanVectorBase<RuntimeFunctionInfo, int>* results);
+
+    public partial nint FindVirtualTableByNameEx(string tableName, bool decorated = false);
+
+    #endregion
+
+    public nint BaseAddress
+    {
+        get
+        {
+            RuntimeModuleInfo info = default;
+            GetModuleInfoEx(&info);
+            return info.BaseAddress;
+        }
+    }
+
+    public nuint ImageSize
+    {
+        get
+        {
+            RuntimeModuleInfo info = default;
+            GetModuleInfoEx(&info);
+            return info.Size;
+        }
+    }
+
+    public string ModuleName
+    {
+        get
+        {
+            RuntimeModuleInfo info = default;
+            GetModuleInfoEx(&info);
+            return NativeString.ReadString(info.Name);
+        }
+    }
 
     public nint FindPattern(string pattern, nint startAddress = 0)
-        => FindPatternEx(pattern);
+    {
+        if (startAddress == 0)
+        {
+            return FindPatternEx(pattern);
+        }
+
+        foreach (var result in FindPatternMulti(pattern))
+        {
+            if ((nuint) result >= (nuint) startAddress)
+            {
+                return result;
+            }
+        }
+
+        return 0;
+    }
 
     public nint GetVirtualTableByName(string tableName, bool decorated = false)
         => GetVTableByNameEx(tableName, decorated);
 
+    public bool TryGetVirtualTableByName(string tableName, out nint address, bool decorated = false)
+    {
+        address = FindVirtualTableByNameEx(tableName, decorated);
+        return address != 0;
+    }
+
+    public nint GetExportFunction(string exportName)
+        => GetFunctionByNameEx(exportName);
+
+    [Obsolete("Use GetExportFunction instead.")]
     public nint GetFunctionByName(string functionName)
-        => GetFunctionByNameEx(functionName);
+        => GetExportFunction(functionName);
+
+    public NativeFunctionInfo[] FindExportFunctions(string exportName)
+    {
+        using var vector = new CUtlLeanVectorBase<RuntimeExportInfo, int>();
+
+        if (!FindExportFunctionsEx(exportName, &vector))
+        {
+            return [];
+        }
+
+        var results = new NativeFunctionInfo[vector.Count];
+
+        try
+        {
+            for (var i = 0; i < vector.Count; i++)
+            {
+                ref var current = ref vector[i];
+                results[i] = new NativeFunctionInfo
+                {
+                    RawName = current.RawName.Get(), Signature = current.Signature.Get(), Address = current.Address,
+                };
+            }
+        }
+        finally
+        {
+            for (var i = 0; i < vector.Count; i++)
+            {
+                ref var current = ref vector[i];
+                current.RawName.Dispose();
+                current.Signature.Dispose();
+            }
+        }
+
+        return results;
+    }
 
     public nint FindPatternExactly(string pattern)
     {
@@ -117,13 +258,44 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
     }
 
     public nint FindString(string str)
-        => FindStringEx(str);
+        => FindString(str, false, false);
 
     public nint FindStringExact(string str)
-        => FindStringExactEx(str);
+        => FindString(str, false, true);
+
+    public nint FindString(string str, bool readOnly, bool exact)
+        => FindStringWithOptionsEx(str, readOnly, exact);
 
     public nint FindPtr(nint ptr)
         => FindPtrEx(ptr);
+
+    public nint[] FindPointers(nint ptr)
+    {
+        using var vector = new CUtlLeanVectorBase<nint, int>();
+
+        if (!FindPtrsEx(ptr, &vector))
+        {
+            return [];
+        }
+
+        var results = new nint[vector.Count];
+        vector.AsReadOnlySpan().CopyTo(results);
+        return results;
+    }
+
+    public nint[] GetVirtualFunctions(string tableName)
+    {
+        using var vector = new CUtlLeanVectorBase<nint, int>();
+
+        if (!GetVFunctionsEx(tableName, &vector))
+        {
+            return [];
+        }
+
+        var results = new nint[vector.Count];
+        vector.AsReadOnlySpan().CopyTo(results);
+        return results;
+    }
 
     public VirtualTableInfo[] FindVirtualTablesPartial(string str)
     {
@@ -191,7 +363,12 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
             if (!FindAllFunctionsFromStringsRefsEx(&strVector, &resultVector) || resultVector.Count == 0)
             {
-                throw new Exception($"No function entries found.");
+                throw new InvalidOperationException("No function entries found.");
+            }
+
+            if (resultVector.Count != 1)
+            {
+                throw new InvalidOperationException($"Found {resultVector.Count} matching function entries.");
             }
 
             return *resultVector.Base();
@@ -278,7 +455,12 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
         if (!FindAllFunctionsFromPointersRefsEx(&ptrVector, &resultVector) || resultVector.Count == 0)
         {
-            throw new Exception("No result was found for pointer.");
+            throw new InvalidOperationException("No result was found for pointer.");
+        }
+
+        if (resultVector.Count != 1)
+        {
+            throw new InvalidOperationException($"Found {resultVector.Count} matching function entries.");
         }
 
         return *resultVector.Base();
@@ -338,5 +520,52 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
         {
             return GetFunctionRangeEx(middle, pStart, pEnd);
         }
+    }
+
+    public ModuleSegmentInfo[] GetSegments()
+    {
+        using var vector = new CUtlLeanVectorBase<RuntimeSegmentInfo, int>();
+
+        if (!GetSegmentsEx(&vector))
+        {
+            return [];
+        }
+
+        var results = new ModuleSegmentInfo[vector.Count];
+        for (var i = 0; i < vector.Count; ++i)
+        {
+            ref var segment = ref vector[i];
+            results[i] = new ModuleSegmentInfo
+            {
+                Address = segment.Address, Size = segment.Size, Access = segment.Access,
+            };
+        }
+
+        return results;
+    }
+
+    public bool TryGetTypeInfo(string typeName, out nint typeInfo)
+    {
+        typeInfo = GetTypeInfoFromNameEx(typeName);
+        return typeInfo != 0;
+    }
+
+    public NativeFunctionRange[] GetKnownFunctionRanges()
+    {
+        using var vector = new CUtlLeanVectorBase<RuntimeFunctionInfo, int>();
+
+        if (!GetFunctionEntriesEx(&vector))
+        {
+            return [];
+        }
+
+        var results = new NativeFunctionRange[vector.Count];
+        for (var i = 0; i < vector.Count; ++i)
+        {
+            ref var function = ref vector[i];
+            results[i] = new NativeFunctionRange { Start = function.Start, End = function.End };
+        }
+
+        return results;
     }
 }

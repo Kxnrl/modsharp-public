@@ -23,6 +23,7 @@
 #include "global.h"
 
 #include "cstrike/interface/INetwork.h"
+#include "cstrike/interface/IProtobufBinding.h"
 
 #include <google/protobuf/message.h>
 
@@ -118,6 +119,16 @@ class CSharpNetworkDataWrapper : public CNetMessage, public CSharpNetworkData
         return new CSharpNetworkDataWrapper(this->GetData(), this->GetSize(), this->GetNetMessage());
     }
 
+    int GetType() const override
+    {
+        return this->GetNetMessage()->GetNetMessageInfo()->m_MessageId;
+    }
+
+    const char* GetName() const override
+    {
+        return this->GetNetMessage()->GetNetMessageInfo()->m_pBinding->GetName();
+    }
+
 public:
     CSharpNetworkDataWrapper(void* data, int size, INetworkMessageInternal* message) :
         CSharpNetworkData(data, size, message)
@@ -134,7 +145,7 @@ public:
 
     const char*       GetUnscopedName() override { return m_pSerializable->GetUnscopedName(); }
     NetMessageInfo_t* GetNetMessageInfo() override { return m_pSerializable->GetNetMessageInfo(); }
-    void              SetMessageId(unsigned short nMessageId) override { m_pSerializable->SetMessageId(nMessageId); }
+    void              SetMessageId(int nMessageId) override { m_pSerializable->SetMessageId(nMessageId); }
     void              AddCategoryMask(int nMask, bool unk) override { m_pSerializable->AddCategoryMask(nMask, unk); }
     void              SwitchMode(NetworkValidationMode_t nMode) override { m_pSerializable->SwitchMode(nMode); }
     CNetMessage*      AllocateMessage() override

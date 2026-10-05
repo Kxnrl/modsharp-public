@@ -599,6 +599,7 @@ public static class Bootstrap
         services.AddSingleton<ICoreParticleManager, ParticleManager>();
         services.AddSingleton<ICoreAddonManager, AddonManager>();
         services.AddSingleton<ICoreScriptManager, ScriptManager>();
+        services.AddSingleton<ICorePanoramaManager, PanoramaManager>();
         services.AddSingleton<ISharedManager, SharedManager>();
     }
 
@@ -620,6 +621,7 @@ public static class Bootstrap
         services.GetRequiredService<ICoreParticleManager>();
         services.GetRequiredService<ICoreAddonManager>();
         services.GetRequiredService<ICoreScriptManager>();
+        services.GetRequiredService<ICorePanoramaManager>();
 
         services.GetRequiredService<ExceptionHandler>().Start();
         services.GetRequiredService<ISharpCore>().InitMainThread();

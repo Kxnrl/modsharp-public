@@ -517,6 +517,7 @@ public interface ISchemaManager
     /// </summary>
     /// <param name="classname">The schema classname. e.g. CPointServerCommand</param>
     /// <param name="fieldName">The input function name, e.g. InputCommand </param>
-    /// <returns>the function address, 0 if not found</returns>
+    /// <returns>Always 0 since the 2026-09-23 update, CS2 datamaps no longer carry input functions</returns>
+    [Obsolete("CS2 datamaps no longer carry input functions since the 2026-09-23 update, this always returns 0")]
     nint GetDataMapInputFunc(string classname, string fieldName);
 }

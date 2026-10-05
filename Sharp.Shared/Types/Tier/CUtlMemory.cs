@@ -167,7 +167,7 @@ public unsafe struct CUtlMemory<T> : IDisposable
         }
 
         _memory = (T*) MemoryAllocator.VectorMemory_Alloc(_memory,
-                                                          IsExternallyAllocated,
+                                                          !IsExternallyAllocated,
                                                           num             * Unsafe.SizeOf<T>(),
                                                           AllocationCount * Unsafe.SizeOf<T>());
 
@@ -223,7 +223,7 @@ public unsafe struct CUtlMemory<T> : IDisposable
         }*/
 
         _memory = (T*) MemoryAllocator.VectorMemory_Alloc(_memory,
-                                                          IsExternallyAllocated,
+                                                          !IsExternallyAllocated,
                                                           nNewAllocationCount * Unsafe.SizeOf<T>(),
                                                           _allocationCount    * Unsafe.SizeOf<T>());
 

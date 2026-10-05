@@ -96,6 +96,11 @@ static uint64_t g_iFlagsToRemove = (FCVAR_HIDDEN | FCVAR_DEVELOPMENTONLY);
 
 ConCommandHandle ConVarManager::CreateSharpConsoleCommand(const char* pName, const char* pHelpString, int64_t flags)
 {
+    if (const auto it = m_CreatedCommandStrHandles.find(pName); it != m_CreatedCommandStrHandles.end())
+    {
+        return it->second;
+    }
+
     auto cb = new SharpCommandCallback();
 
     ConCommandCreation_t creation;
@@ -134,20 +139,40 @@ ConCommandHandle ConVarManager::CreateSharpConsoleCommand(const char* pName, con
 
 bool ConVarManager::ReleaseCommand(const char* name)
 {
-    if (!m_CreatedCommandStrHandles.contains(name))
+    const std::string key(name);
+
+    if (!m_CreatedCommandStrHandles.contains(key))
     {
         return false;
     }
 
-    icvar->UnregisterConCommand(m_CreatedCommandStrHandles[name]);
-    m_CreatedCommandStrHandles.erase(name);
+    icvar->UnregisterConCommand(m_CreatedCommandStrHandles[key]);
+    m_CreatedCommandStrHandles.erase(key);
 
-    if (m_CreatedSharpCommandCallbacks.contains(name))
+    if (m_CreatedSharpCommandCallbacks.contains(key))
     {
-        const auto cb = m_CreatedSharpCommandCallbacks[name];
+        const auto cb = m_CreatedSharpCommandCallbacks[key];
         delete cb;
-        m_CreatedSharpCommandCallbacks.erase(name);
+        m_CreatedSharpCommandCallbacks.erase(key);
     }
 
     return true;
+}
+
+ConCommandHandle ConVarManager::FindGameCommandHandle(const char* name) const noexcept
+{
+    const auto pCommand = icvar->FindConCommandIterator(name);
+    if (!pCommand)
+        return {};
+
+    return pCommand->GetRef()->handle;
+}
+
+ConCommandHandle ConVarManager::FindSharpCommandHandle(const char* name) const noexcept
+{
+    const auto& handle = m_CreatedCommandStrHandles.find(name);
+    if (handle == m_CreatedCommandStrHandles.end())
+        return {};
+
+    return handle->second;
 }

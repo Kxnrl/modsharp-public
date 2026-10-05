@@ -127,7 +127,9 @@ PROTOBUF_CONSTEXPR CMsgPlayerInfo::CMsgPlayerInfo(
   , /*decltype(_impl_.steamid_)*/uint64_t{0u}
   , /*decltype(_impl_.userid_)*/0
   , /*decltype(_impl_.fakeplayer_)*/false
-  , /*decltype(_impl_.ishltv_)*/false} {}
+  , /*decltype(_impl_.ishltv_)*/false
+  , /*decltype(_impl_.clan_member_)*/false
+  , /*decltype(_impl_.clan_officer_)*/false} {}
 struct CMsgPlayerInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CMsgPlayerInfoDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -435,10 +437,30 @@ struct CNETMsg_SpawnGroup_LoadCompletedDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CNETMsg_SpawnGroup_LoadCompletedDefaultTypeInternal _CNETMsg_SpawnGroup_LoadCompleted_default_instance_;
+PROTOBUF_CONSTEXPR QuantizedFloatEncoderAlias_t::QuantizedFloatEncoderAlias_t(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_._has_bits_)*/{}
+  , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.bit_count_)*/0
+  , /*decltype(_impl_.encode_flags_)*/0
+  , /*decltype(_impl_.min_value_)*/0
+  , /*decltype(_impl_.max_value_)*/0
+  , /*decltype(_impl_.validate_)*/false} {}
+struct QuantizedFloatEncoderAlias_tDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR QuantizedFloatEncoderAlias_tDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~QuantizedFloatEncoderAlias_tDefaultTypeInternal() {}
+  union {
+    QuantizedFloatEncoderAlias_t _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 QuantizedFloatEncoderAlias_tDefaultTypeInternal _QuantizedFloatEncoderAlias_t_default_instance_;
 PROTOBUF_CONSTEXPR CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfiguration(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}
+  , /*decltype(_impl_.quantized_float_encoder_aliases_)*/{}
   , /*decltype(_impl_.hostname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.savegamename_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.s1_mapname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
@@ -457,7 +479,8 @@ PROTOBUF_CONSTEXPR CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfigur
   , /*decltype(_impl_.tick_interval_)*/0u
   , /*decltype(_impl_.is_localonly_)*/false
   , /*decltype(_impl_.no_steam_server_)*/false
-  , /*decltype(_impl_.is_transition_)*/false} {}
+  , /*decltype(_impl_.is_transition_)*/false
+  , /*decltype(_impl_.max_coord_)*/0} {}
 struct CSVCMsg_GameSessionConfigurationDefaultTypeInternal {
   PROTOBUF_CONSTEXPR CSVCMsg_GameSessionConfigurationDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -488,7 +511,7 @@ struct CNETMsg_DebugOverlayDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CNETMsg_DebugOverlayDefaultTypeInternal _CNETMsg_DebugOverlay_default_instance_;
-static ::_pb::Metadata file_level_metadata_networkbasetypes_2eproto[27];
+static ::_pb::Metadata file_level_metadata_networkbasetypes_2eproto[28];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_networkbasetypes_2eproto[3];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_networkbasetypes_2eproto = nullptr;
 
@@ -581,12 +604,16 @@ const uint32_t TableStruct_networkbasetypes_2eproto::offsets[] PROTOBUF_SECTION_
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerInfo, _impl_.steamid_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerInfo, _impl_.fakeplayer_),
   PROTOBUF_FIELD_OFFSET(::CMsgPlayerInfo, _impl_.ishltv_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlayerInfo, _impl_.clan_member_),
+  PROTOBUF_FIELD_OFFSET(::CMsgPlayerInfo, _impl_.clan_officer_),
   0,
   1,
   3,
   2,
   4,
   5,
+  6,
+  7,
   PROTOBUF_FIELD_OFFSET(::CEntityMsg, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CEntityMsg, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -829,6 +856,24 @@ const uint32_t TableStruct_networkbasetypes_2eproto::offsets[] PROTOBUF_SECTION_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::CNETMsg_SpawnGroup_LoadCompleted, _impl_.spawngrouphandle_),
   0,
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_._has_bits_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.name_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.bit_count_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.encode_flags_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.min_value_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.max_value_),
+  PROTOBUF_FIELD_OFFSET(::QuantizedFloatEncoderAlias_t, _impl_.validate_),
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -854,6 +899,8 @@ const uint32_t TableStruct_networkbasetypes_2eproto::offsets[] PROTOBUF_SECTION_
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_.is_transition_),
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_.previouslevel_),
   PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_.landmarkname_),
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_.quantized_float_encoder_aliases_),
+  PROTOBUF_FIELD_OFFSET(::CSVCMsg_GameSessionConfiguration, _impl_.max_coord_),
   8,
   9,
   10,
@@ -873,6 +920,8 @@ const uint32_t TableStruct_networkbasetypes_2eproto::offsets[] PROTOBUF_SECTION_
   18,
   6,
   7,
+  ~0u,
+  19,
   PROTOBUF_FIELD_OFFSET(::CNETMsg_DebugOverlay, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CNETMsg_DebugOverlay, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -903,27 +952,28 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 36, 46, -1, sizeof(::CMsgQuaternion)},
   { 50, 59, -1, sizeof(::CMsgTransform)},
   { 62, 72, -1, sizeof(::CMsgRGBA)},
-  { 76, 88, -1, sizeof(::CMsgPlayerInfo)},
-  { 94, 101, -1, sizeof(::CEntityMsg)},
-  { 102, 110, -1, sizeof(::CMsg_CVars_CVar)},
-  { 112, -1, -1, sizeof(::CMsg_CVars)},
-  { 119, -1, -1, sizeof(::CNETMsg_NOP)},
-  { 125, 132, -1, sizeof(::CNETMsg_SplitScreenUser)},
-  { 133, 149, -1, sizeof(::CNETMsg_Tick)},
-  { 159, 167, -1, sizeof(::CNETMsg_StringCmd)},
-  { 169, 176, -1, sizeof(::CNETMsg_SetConVar)},
-  { 177, 189, -1, sizeof(::CNETMsg_SignonState)},
-  { 195, 209, -1, sizeof(::CSVCMsg_GameEvent_key_t)},
-  { 217, 226, -1, sizeof(::CSVCMsg_GameEvent)},
-  { 229, 237, -1, sizeof(::CSVCMsgList_GameEvents_event_t)},
-  { 239, -1, -1, sizeof(::CSVCMsgList_GameEvents)},
-  { 246, 272, -1, sizeof(::CNETMsg_SpawnGroup_Load)},
-  { 292, 301, -1, sizeof(::CNETMsg_SpawnGroup_ManifestUpdate)},
-  { 304, 313, -1, sizeof(::CNETMsg_SpawnGroup_SetCreationTick)},
-  { 316, 325, -1, sizeof(::CNETMsg_SpawnGroup_Unload)},
-  { 328, 335, -1, sizeof(::CNETMsg_SpawnGroup_LoadCompleted)},
-  { 336, 361, -1, sizeof(::CSVCMsg_GameSessionConfiguration)},
-  { 380, 394, -1, sizeof(::CNETMsg_DebugOverlay)},
+  { 76, 90, -1, sizeof(::CMsgPlayerInfo)},
+  { 98, 105, -1, sizeof(::CEntityMsg)},
+  { 106, 114, -1, sizeof(::CMsg_CVars_CVar)},
+  { 116, -1, -1, sizeof(::CMsg_CVars)},
+  { 123, -1, -1, sizeof(::CNETMsg_NOP)},
+  { 129, 136, -1, sizeof(::CNETMsg_SplitScreenUser)},
+  { 137, 153, -1, sizeof(::CNETMsg_Tick)},
+  { 163, 171, -1, sizeof(::CNETMsg_StringCmd)},
+  { 173, 180, -1, sizeof(::CNETMsg_SetConVar)},
+  { 181, 193, -1, sizeof(::CNETMsg_SignonState)},
+  { 199, 213, -1, sizeof(::CSVCMsg_GameEvent_key_t)},
+  { 221, 230, -1, sizeof(::CSVCMsg_GameEvent)},
+  { 233, 241, -1, sizeof(::CSVCMsgList_GameEvents_event_t)},
+  { 243, -1, -1, sizeof(::CSVCMsgList_GameEvents)},
+  { 250, 276, -1, sizeof(::CNETMsg_SpawnGroup_Load)},
+  { 296, 305, -1, sizeof(::CNETMsg_SpawnGroup_ManifestUpdate)},
+  { 308, 317, -1, sizeof(::CNETMsg_SpawnGroup_SetCreationTick)},
+  { 320, 329, -1, sizeof(::CNETMsg_SpawnGroup_Unload)},
+  { 332, 339, -1, sizeof(::CNETMsg_SpawnGroup_LoadCompleted)},
+  { 340, 352, -1, sizeof(::QuantizedFloatEncoderAlias_t)},
+  { 358, 385, -1, sizeof(::CSVCMsg_GameSessionConfiguration)},
+  { 406, 420, -1, sizeof(::CNETMsg_DebugOverlay)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -952,6 +1002,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CNETMsg_SpawnGroup_SetCreationTick_default_instance_._instance,
   &::_CNETMsg_SpawnGroup_Unload_default_instance_._instance,
   &::_CNETMsg_SpawnGroup_LoadCompleted_default_instance_._instance,
+  &::_QuantizedFloatEncoderAlias_t_default_instance_._instance,
   &::_CSVCMsg_GameSessionConfiguration_default_instance_._instance,
   &::_CNETMsg_DebugOverlay_default_instance_._instance,
 };
@@ -969,104 +1020,111 @@ const char descriptor_table_protodef_networkbasetypes_2eproto[] PROTOBUF_SECTION
   "ition\030\001 \001(\0132\013.CMsgVector\022\r\n\005scale\030\002 \001(\002\022"
   "$\n\013orientation\030\003 \001(\0132\017.CMsgQuaternion:\004\300"
   "\344\035\001\"<\n\010CMsgRGBA\022\t\n\001r\030\001 \001(\005\022\t\n\001g\030\002 \001(\005\022\t\n"
-  "\001b\030\003 \001(\005\022\t\n\001a\030\004 \001(\005:\004\300\344\035\001\"q\n\016CMsgPlayerI"
-  "nfo\022\014\n\004name\030\001 \001(\t\022\014\n\004xuid\030\002 \001(\006\022\016\n\006useri"
-  "d\030\003 \001(\005\022\017\n\007steamid\030\004 \001(\006\022\022\n\nfakeplayer\030\005"
-  " \001(\010\022\016\n\006ishltv\030\006 \001(\010\"-\n\nCEntityMsg\022\037\n\rta"
-  "rget_entity\030\001 \001(\r:\01016777215\"R\n\nCMsg_CVar"
-  "s\022\037\n\005cvars\030\001 \003(\0132\020.CMsg_CVars.CVar\032#\n\004CV"
-  "ar\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"\r\n\013CNETM"
-  "sg_NOP\"\'\n\027CNETMsg_SplitScreenUser\022\014\n\004slo"
-  "t\030\001 \001(\005\"\317\002\n\014CNETMsg_Tick\022\014\n\004tick\030\001 \001(\r\022\034"
-  "\n\024host_computationtime\030\004 \001(\r\022*\n\"host_com"
-  "putationtime_std_deviation\030\005 \001(\r\022\030\n\020lega"
-  "cy_host_loss\030\007 \001(\r\022!\n\031host_unfiltered_fr"
-  "ametime\030\010 \001(\r\022\031\n\021hltv_replay_flags\030\t \001(\r"
-  "\022\032\n\022expected_long_tick\030\n \001(\r\022!\n\031expected"
-  "_long_tick_reason\030\013 \001(\t\022\"\n\032host_frame_dr"
-  "opped_pct_x10\030\014 \001(\r\022,\n$host_frame_irregu"
-  "lar_arrival_pct_x10\030\r \001(\r\"=\n\021CNETMsg_Str"
-  "ingCmd\022\017\n\007command\030\001 \001(\t\022\027\n\017prediction_sy"
-  "nc\030\002 \001(\r\"8\n\021CNETMsg_SetConVar\022\034\n\007convars"
-  "\030\001 \001(\0132\013.CMsg_CVars:\005\200\265\030\200 \"\274\001\n\023CNETMsg_S"
-  "ignonState\0226\n\014signon_state\030\001 \001(\0162\016.Signo"
-  "nState_t:\020SIGNONSTATE_NONE\022\023\n\013spawn_coun"
-  "t\030\002 \001(\r\022\032\n\022num_server_players\030\003 \001(\r\022\032\n\022p"
-  "layers_networkids\030\004 \003(\t\022\020\n\010map_name\030\005 \001("
-  "\t\022\016\n\006addons\030\006 \001(\t\"\374\001\n\021CSVCMsg_GameEvent\022"
-  "\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022&\n\004"
-  "keys\030\003 \003(\0132\030.CSVCMsg_GameEvent.key_t\032\231\001\n"
-  "\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002 \001(\t"
-  "\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001(\005\022\021\n"
-  "\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020\n\010va"
-  "l_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\205\001\n\026CSV"
-  "CMsgList_GameEvents\022/\n\006events\030\001 \003(\0132\037.CS"
-  "VCMsgList_GameEvents.event_t\032:\n\007event_t\022"
-  "\014\n\004tick\030\001 \001(\005\022!\n\005event\030\002 \001(\0132\022.CSVCMsg_G"
-  "ameEvent\"\263\004\n\027CNETMsg_SpawnGroup_Load\022\021\n\t"
-  "worldname\030\001 \001(\t\022\026\n\016entitylumpname\030\002 \001(\t\022"
-  "\030\n\020entityfiltername\030\003 \001(\t\022\030\n\020spawngrouph"
-  "andle\030\004 \001(\r\022\035\n\025spawngroupownerhandle\030\005 \001"
-  "(\r\022%\n\020world_offset_pos\030\006 \001(\0132\013.CMsgVecto"
-  "r\022\'\n\022world_offset_angle\030\007 \001(\0132\013.CMsgQAng"
-  "le\022\032\n\022spawngroupmanifest\030\010 \001(\014\022\r\n\005flags\030"
-  "\t \001(\r\022\021\n\ttickcount\030\n \001(\005\022\032\n\022manifestinco"
-  "mplete\030\013 \001(\010\022\026\n\016localnamefixup\030\014 \001(\t\022\027\n\017"
-  "parentnamefixup\030\r \001(\t\022\034\n\024manifestloadpri"
-  "ority\030\016 \001(\005\022\024\n\014worldgroupid\030\017 \001(\r\022\030\n\020cre"
-  "ationsequence\030\020 \001(\r\022\030\n\020savegamefilename\030"
-  "\021 \001(\t\022\036\n\026spawngroupparenthandle\030\022 \001(\r\022\027\n"
-  "\017leveltransition\030\023 \001(\010\022\026\n\016worldgroupname"
-  "\030\024 \001(\t:\006\200\265\030\200\200\010\"|\n!CNETMsg_SpawnGroup_Man"
-  "ifestUpdate\022\030\n\020spawngrouphandle\030\001 \001(\r\022\032\n"
-  "\022spawngroupmanifest\030\002 \001(\014\022\032\n\022manifestinc"
-  "omplete\030\003 \001(\010:\005\200\265\030\200\020\"k\n\"CNETMsg_SpawnGro"
-  "up_SetCreationTick\022\030\n\020spawngrouphandle\030\001"
-  " \001(\r\022\021\n\ttickcount\030\002 \001(\005\022\030\n\020creationseque"
-  "nce\030\003 \001(\r\"W\n\031CNETMsg_SpawnGroup_Unload\022\030"
-  "\n\020spawngrouphandle\030\001 \001(\r\022\r\n\005flags\030\002 \001(\r\022"
-  "\021\n\ttickcount\030\003 \001(\005\"<\n CNETMsg_SpawnGroup"
-  "_LoadCompleted\022\030\n\020spawngrouphandle\030\001 \001(\r"
-  "\"\315\003\n CSVCMsg_GameSessionConfiguration\022\026\n"
-  "\016is_multiplayer\030\001 \001(\010\022\027\n\017is_loadsavegame"
-  "\030\002 \001(\010\022\031\n\021is_background_map\030\003 \001(\010\022\023\n\013is_"
-  "headless\030\004 \001(\010\022\030\n\020min_client_limit\030\005 \001(\r"
-  "\022\030\n\020max_client_limit\030\006 \001(\r\022\023\n\013max_client"
-  "s\030\007 \001(\r\022\025\n\rtick_interval\030\010 \001(\007\022\020\n\010hostna"
-  "me\030\t \001(\t\022\024\n\014savegamename\030\n \001(\t\022\022\n\ns1_map"
-  "name\030\013 \001(\t\022\020\n\010gamemode\030\014 \001(\t\022\031\n\021server_i"
-  "p_address\030\r \001(\t\022\014\n\004data\030\016 \001(\014\022\024\n\014is_loca"
-  "lonly\030\017 \001(\010\022\027\n\017no_steam_server\030\023 \001(\010\022\025\n\r"
-  "is_transition\030\020 \001(\010\022\025\n\rpreviouslevel\030\021 \001"
-  "(\t\022\024\n\014landmarkname\030\022 \001(\t\"\262\001\n\024CNETMsg_Deb"
-  "ugOverlay\022\r\n\005etype\030\001 \001(\005\022\034\n\007vectors\030\002 \003("
-  "\0132\013.CMsgVector\022\031\n\006colors\030\003 \003(\0132\t.CMsgRGB"
-  "A\022\022\n\ndimensions\030\004 \003(\002\022\r\n\005times\030\005 \003(\002\022\r\n\005"
-  "bools\030\006 \003(\010\022\017\n\007uint64s\030\007 \003(\004\022\017\n\007strings\030"
-  "\010 \003(\t*\324\001\n\rSignonState_t\022\024\n\020SIGNONSTATE_N"
-  "ONE\020\000\022\031\n\025SIGNONSTATE_CHALLENGE\020\001\022\031\n\025SIGN"
-  "ONSTATE_CONNECTED\020\002\022\023\n\017SIGNONSTATE_NEW\020\003"
-  "\022\030\n\024SIGNONSTATE_PRESPAWN\020\004\022\025\n\021SIGNONSTAT"
-  "E_SPAWN\020\005\022\024\n\020SIGNONSTATE_FULL\020\006\022\033\n\027SIGNO"
-  "NSTATE_CHANGELEVEL\020\007*\313\002\n\014NET_Messages\022\013\n"
-  "\007net_NOP\020\000\022\031\n\025net_Disconnect_Legacy\020\001\022\027\n"
-  "\023net_SplitScreenUser\020\003\022\014\n\010net_Tick\020\004\022\021\n\r"
-  "net_StringCmd\020\005\022\021\n\rnet_SetConVar\020\006\022\023\n\017ne"
-  "t_SignonState\020\007\022\027\n\023net_SpawnGroup_Load\020\010"
-  "\022!\n\035net_SpawnGroup_ManifestUpdate\020\t\022\"\n\036n"
-  "et_SpawnGroup_SetCreationTick\020\013\022\031\n\025net_S"
-  "pawnGroup_Unload\020\014\022 \n\034net_SpawnGroup_Loa"
-  "dCompleted\020\r\022\024\n\020net_DebugOverlay\020\017*\314\002\n\021S"
-  "pawnGroupFlags_t\022\'\n#SPAWN_GROUP_LOAD_ENT"
-  "ITIES_FROM_SAVE\020\001\022#\n\037SPAWN_GROUP_DONT_SP"
-  "AWN_ENTITIES\020\002\022!\n\035SPAWN_GROUP_SYNCHRONOU"
-  "S_SPAWN\020\004\022&\n\"SPAWN_GROUP_IS_INITIAL_SPAW"
-  "N_GROUP\020\010\022+\n\'SPAWN_GROUP_CREATE_CLIENT_O"
-  "NLY_ENTITIES\020\020\022\"\n\036SPAWN_GROUP_BLOCK_UNTI"
-  "L_LOADED\020@\022$\n\037SPAWN_GROUP_LOAD_STREAMING"
-  "_DATA\020\200\001\022\'\n\"SPAWN_GROUP_CREATE_NEW_SCENE"
-  "_WORLD\020\200\002:=\n\022maximum_size_bytes\022\037.google"
-  ".protobuf.MessageOptions\030\320\206\003 \001(\005"
+  "\001b\030\003 \001(\005\022\t\n\001a\030\004 \001(\005:\004\300\344\035\001\"\234\001\n\016CMsgPlayer"
+  "Info\022\014\n\004name\030\001 \001(\t\022\014\n\004xuid\030\002 \001(\006\022\016\n\006user"
+  "id\030\003 \001(\005\022\017\n\007steamid\030\004 \001(\006\022\022\n\nfakeplayer\030"
+  "\005 \001(\010\022\016\n\006ishltv\030\006 \001(\010\022\023\n\013clan_member\030\t \001"
+  "(\010\022\024\n\014clan_officer\030\n \001(\010\"-\n\nCEntityMsg\022\037"
+  "\n\rtarget_entity\030\001 \001(\r:\01016777215\"R\n\nCMsg_"
+  "CVars\022\037\n\005cvars\030\001 \003(\0132\020.CMsg_CVars.CVar\032#"
+  "\n\004CVar\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"\r\n\013C"
+  "NETMsg_NOP\"\'\n\027CNETMsg_SplitScreenUser\022\014\n"
+  "\004slot\030\001 \001(\005\"\317\002\n\014CNETMsg_Tick\022\014\n\004tick\030\001 \001"
+  "(\r\022\034\n\024host_computationtime\030\004 \001(\r\022*\n\"host"
+  "_computationtime_std_deviation\030\005 \001(\r\022\030\n\020"
+  "legacy_host_loss\030\007 \001(\r\022!\n\031host_unfiltere"
+  "d_frametime\030\010 \001(\r\022\031\n\021hltv_replay_flags\030\t"
+  " \001(\r\022\032\n\022expected_long_tick\030\n \001(\r\022!\n\031expe"
+  "cted_long_tick_reason\030\013 \001(\t\022\"\n\032host_fram"
+  "e_dropped_pct_x10\030\014 \001(\r\022,\n$host_frame_ir"
+  "regular_arrival_pct_x10\030\r \001(\r\"=\n\021CNETMsg"
+  "_StringCmd\022\017\n\007command\030\001 \001(\t\022\027\n\017predictio"
+  "n_sync\030\002 \001(\r\"8\n\021CNETMsg_SetConVar\022\034\n\007con"
+  "vars\030\001 \001(\0132\013.CMsg_CVars:\005\200\265\030\200 \"\274\001\n\023CNETM"
+  "sg_SignonState\0226\n\014signon_state\030\001 \001(\0162\016.S"
+  "ignonState_t:\020SIGNONSTATE_NONE\022\023\n\013spawn_"
+  "count\030\002 \001(\r\022\032\n\022num_server_players\030\003 \001(\r\022"
+  "\032\n\022players_networkids\030\004 \003(\t\022\020\n\010map_name\030"
+  "\005 \001(\t\022\016\n\006addons\030\006 \001(\t\"\374\001\n\021CSVCMsg_GameEv"
+  "ent\022\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005"
+  "\022&\n\004keys\030\003 \003(\0132\030.CSVCMsg_GameEvent.key_t"
+  "\032\231\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002"
+  " \001(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001("
+  "\005\022\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020"
+  "\n\010val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\205\001\n"
+  "\026CSVCMsgList_GameEvents\022/\n\006events\030\001 \003(\0132"
+  "\037.CSVCMsgList_GameEvents.event_t\032:\n\007even"
+  "t_t\022\014\n\004tick\030\001 \001(\005\022!\n\005event\030\002 \001(\0132\022.CSVCM"
+  "sg_GameEvent\"\263\004\n\027CNETMsg_SpawnGroup_Load"
+  "\022\021\n\tworldname\030\001 \001(\t\022\026\n\016entitylumpname\030\002 "
+  "\001(\t\022\030\n\020entityfiltername\030\003 \001(\t\022\030\n\020spawngr"
+  "ouphandle\030\004 \001(\r\022\035\n\025spawngroupownerhandle"
+  "\030\005 \001(\r\022%\n\020world_offset_pos\030\006 \001(\0132\013.CMsgV"
+  "ector\022\'\n\022world_offset_angle\030\007 \001(\0132\013.CMsg"
+  "QAngle\022\032\n\022spawngroupmanifest\030\010 \001(\014\022\r\n\005fl"
+  "ags\030\t \001(\r\022\021\n\ttickcount\030\n \001(\005\022\032\n\022manifest"
+  "incomplete\030\013 \001(\010\022\026\n\016localnamefixup\030\014 \001(\t"
+  "\022\027\n\017parentnamefixup\030\r \001(\t\022\034\n\024manifestloa"
+  "dpriority\030\016 \001(\005\022\024\n\014worldgroupid\030\017 \001(\r\022\030\n"
+  "\020creationsequence\030\020 \001(\r\022\030\n\020savegamefilen"
+  "ame\030\021 \001(\t\022\036\n\026spawngroupparenthandle\030\022 \001("
+  "\r\022\027\n\017leveltransition\030\023 \001(\010\022\026\n\016worldgroup"
+  "name\030\024 \001(\t:\006\200\265\030\200\200\010\"|\n!CNETMsg_SpawnGroup"
+  "_ManifestUpdate\022\030\n\020spawngrouphandle\030\001 \001("
+  "\r\022\032\n\022spawngroupmanifest\030\002 \001(\014\022\032\n\022manifes"
+  "tincomplete\030\003 \001(\010:\005\200\265\030\200\020\"k\n\"CNETMsg_Spaw"
+  "nGroup_SetCreationTick\022\030\n\020spawngrouphand"
+  "le\030\001 \001(\r\022\021\n\ttickcount\030\002 \001(\005\022\030\n\020creations"
+  "equence\030\003 \001(\r\"W\n\031CNETMsg_SpawnGroup_Unlo"
+  "ad\022\030\n\020spawngrouphandle\030\001 \001(\r\022\r\n\005flags\030\002 "
+  "\001(\r\022\021\n\ttickcount\030\003 \001(\005\"<\n CNETMsg_SpawnG"
+  "roup_LoadCompleted\022\030\n\020spawngrouphandle\030\001"
+  " \001(\r\"\215\001\n\034QuantizedFloatEncoderAlias_t\022\014\n"
+  "\004name\030\001 \001(\t\022\021\n\tbit_count\030\002 \001(\005\022\024\n\014encode"
+  "_flags\030\003 \001(\005\022\021\n\tmin_value\030\004 \001(\002\022\021\n\tmax_v"
+  "alue\030\005 \001(\002\022\020\n\010validate\030\006 \001(\010\"\250\004\n CSVCMsg"
+  "_GameSessionConfiguration\022\026\n\016is_multipla"
+  "yer\030\001 \001(\010\022\027\n\017is_loadsavegame\030\002 \001(\010\022\031\n\021is"
+  "_background_map\030\003 \001(\010\022\023\n\013is_headless\030\004 \001"
+  "(\010\022\030\n\020min_client_limit\030\005 \001(\r\022\030\n\020max_clie"
+  "nt_limit\030\006 \001(\r\022\023\n\013max_clients\030\007 \001(\r\022\025\n\rt"
+  "ick_interval\030\010 \001(\007\022\020\n\010hostname\030\t \001(\t\022\024\n\014"
+  "savegamename\030\n \001(\t\022\022\n\ns1_mapname\030\013 \001(\t\022\020"
+  "\n\010gamemode\030\014 \001(\t\022\031\n\021server_ip_address\030\r "
+  "\001(\t\022\014\n\004data\030\016 \001(\014\022\024\n\014is_localonly\030\017 \001(\010\022"
+  "\027\n\017no_steam_server\030\023 \001(\010\022\025\n\ris_transitio"
+  "n\030\020 \001(\010\022\025\n\rpreviouslevel\030\021 \001(\t\022\024\n\014landma"
+  "rkname\030\022 \001(\t\022F\n\037quantized_float_encoder_"
+  "aliases\030\024 \003(\0132\035.QuantizedFloatEncoderAli"
+  "as_t\022\021\n\tmax_coord\030\025 \001(\002\"\262\001\n\024CNETMsg_Debu"
+  "gOverlay\022\r\n\005etype\030\001 \001(\005\022\034\n\007vectors\030\002 \003(\013"
+  "2\013.CMsgVector\022\031\n\006colors\030\003 \003(\0132\t.CMsgRGBA"
+  "\022\022\n\ndimensions\030\004 \003(\002\022\r\n\005times\030\005 \003(\002\022\r\n\005b"
+  "ools\030\006 \003(\010\022\017\n\007uint64s\030\007 \003(\004\022\017\n\007strings\030\010"
+  " \003(\t*\324\001\n\rSignonState_t\022\024\n\020SIGNONSTATE_NO"
+  "NE\020\000\022\031\n\025SIGNONSTATE_CHALLENGE\020\001\022\031\n\025SIGNO"
+  "NSTATE_CONNECTED\020\002\022\023\n\017SIGNONSTATE_NEW\020\003\022"
+  "\030\n\024SIGNONSTATE_PRESPAWN\020\004\022\025\n\021SIGNONSTATE"
+  "_SPAWN\020\005\022\024\n\020SIGNONSTATE_FULL\020\006\022\033\n\027SIGNON"
+  "STATE_CHANGELEVEL\020\007*\313\002\n\014NET_Messages\022\013\n\007"
+  "net_NOP\020\000\022\031\n\025net_Disconnect_Legacy\020\001\022\027\n\023"
+  "net_SplitScreenUser\020\003\022\014\n\010net_Tick\020\004\022\021\n\rn"
+  "et_StringCmd\020\005\022\021\n\rnet_SetConVar\020\006\022\023\n\017net"
+  "_SignonState\020\007\022\027\n\023net_SpawnGroup_Load\020\010\022"
+  "!\n\035net_SpawnGroup_ManifestUpdate\020\t\022\"\n\036ne"
+  "t_SpawnGroup_SetCreationTick\020\013\022\031\n\025net_Sp"
+  "awnGroup_Unload\020\014\022 \n\034net_SpawnGroup_Load"
+  "Completed\020\r\022\024\n\020net_DebugOverlay\020\017*\314\002\n\021Sp"
+  "awnGroupFlags_t\022\'\n#SPAWN_GROUP_LOAD_ENTI"
+  "TIES_FROM_SAVE\020\001\022#\n\037SPAWN_GROUP_DONT_SPA"
+  "WN_ENTITIES\020\002\022!\n\035SPAWN_GROUP_SYNCHRONOUS"
+  "_SPAWN\020\004\022&\n\"SPAWN_GROUP_IS_INITIAL_SPAWN"
+  "_GROUP\020\010\022+\n\'SPAWN_GROUP_CREATE_CLIENT_ON"
+  "LY_ENTITIES\020\020\022\"\n\036SPAWN_GROUP_BLOCK_UNTIL"
+  "_LOADED\020@\022$\n\037SPAWN_GROUP_LOAD_STREAMING_"
+  "DATA\020\200\001\022\'\n\"SPAWN_GROUP_CREATE_NEW_SCENE_"
+  "WORLD\020\200\002:=\n\022maximum_size_bytes\022\037.google."
+  "protobuf.MessageOptions\030\320\206\003 \001(\005"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_networkbasetypes_2eproto_deps[3] = {
   &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
@@ -1075,9 +1133,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_networkbasetypes_2e
 };
 static ::_pbi::once_flag descriptor_table_networkbasetypes_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_networkbasetypes_2eproto = {
-    false, false, 4392, descriptor_table_protodef_networkbasetypes_2eproto,
+    false, false, 4671, descriptor_table_protodef_networkbasetypes_2eproto,
     "networkbasetypes.proto",
-    &descriptor_table_networkbasetypes_2eproto_once, descriptor_table_networkbasetypes_2eproto_deps, 3, 27,
+    &descriptor_table_networkbasetypes_2eproto_once, descriptor_table_networkbasetypes_2eproto_deps, 3, 28,
     schemas, file_default_instances, TableStruct_networkbasetypes_2eproto::offsets,
     file_level_metadata_networkbasetypes_2eproto, file_level_enum_descriptors_networkbasetypes_2eproto,
     file_level_service_descriptors_networkbasetypes_2eproto,
@@ -2851,6 +2909,12 @@ class CMsgPlayerInfo::_Internal {
   static void set_has_ishltv(HasBits* has_bits) {
     (*has_bits)[0] |= 32u;
   }
+  static void set_has_clan_member(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+  static void set_has_clan_officer(HasBits* has_bits) {
+    (*has_bits)[0] |= 128u;
+  }
 };
 
 CMsgPlayerInfo::CMsgPlayerInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -2870,7 +2934,9 @@ CMsgPlayerInfo::CMsgPlayerInfo(const CMsgPlayerInfo& from)
     , decltype(_impl_.steamid_){}
     , decltype(_impl_.userid_){}
     , decltype(_impl_.fakeplayer_){}
-    , decltype(_impl_.ishltv_){}};
+    , decltype(_impl_.ishltv_){}
+    , decltype(_impl_.clan_member_){}
+    , decltype(_impl_.clan_officer_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.name_.InitDefault();
@@ -2882,8 +2948,8 @@ CMsgPlayerInfo::CMsgPlayerInfo(const CMsgPlayerInfo& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.xuid_, &from._impl_.xuid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.ishltv_) -
-    reinterpret_cast<char*>(&_impl_.xuid_)) + sizeof(_impl_.ishltv_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.clan_officer_) -
+    reinterpret_cast<char*>(&_impl_.xuid_)) + sizeof(_impl_.clan_officer_));
   // @@protoc_insertion_point(copy_constructor:CMsgPlayerInfo)
 }
 
@@ -2900,6 +2966,8 @@ inline void CMsgPlayerInfo::SharedCtor(
     , decltype(_impl_.userid_){0}
     , decltype(_impl_.fakeplayer_){false}
     , decltype(_impl_.ishltv_){false}
+    , decltype(_impl_.clan_member_){false}
+    , decltype(_impl_.clan_officer_){false}
   };
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2935,10 +3003,10 @@ void CMsgPlayerInfo::Clear() {
   if (cached_has_bits & 0x00000001u) {
     _impl_.name_.ClearNonDefaultToEmpty();
   }
-  if (cached_has_bits & 0x0000003eu) {
+  if (cached_has_bits & 0x000000feu) {
     ::memset(&_impl_.xuid_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.ishltv_) -
-        reinterpret_cast<char*>(&_impl_.xuid_)) + sizeof(_impl_.ishltv_));
+        reinterpret_cast<char*>(&_impl_.clan_officer_) -
+        reinterpret_cast<char*>(&_impl_.xuid_)) + sizeof(_impl_.clan_officer_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -3004,6 +3072,24 @@ const char* CMsgPlayerInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
           _Internal::set_has_ishltv(&has_bits);
           _impl_.ishltv_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool clan_member = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _Internal::set_has_clan_member(&has_bits);
+          _impl_.clan_member_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool clan_officer = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
+          _Internal::set_has_clan_officer(&has_bits);
+          _impl_.clan_officer_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3079,6 +3165,18 @@ uint8_t* CMsgPlayerInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(6, this->_internal_ishltv(), target);
   }
 
+  // optional bool clan_member = 9;
+  if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_clan_member(), target);
+  }
+
+  // optional bool clan_officer = 10;
+  if (cached_has_bits & 0x00000080u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(10, this->_internal_clan_officer(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3096,7 +3194,7 @@ size_t CMsgPlayerInfo::ByteSizeLong() const {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x000000ffu) {
     // optional string name = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
@@ -3129,6 +3227,16 @@ size_t CMsgPlayerInfo::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
+    // optional bool clan_member = 9;
+    if (cached_has_bits & 0x00000040u) {
+      total_size += 1 + 1;
+    }
+
+    // optional bool clan_officer = 10;
+    if (cached_has_bits & 0x00000080u) {
+      total_size += 1 + 1;
+    }
+
   }
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
@@ -3149,7 +3257,7 @@ void CMsgPlayerInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   (void) cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
+  if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
       _this->_internal_set_name(from._internal_name());
     }
@@ -3167,6 +3275,12 @@ void CMsgPlayerInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
     }
     if (cached_has_bits & 0x00000020u) {
       _this->_impl_.ishltv_ = from._impl_.ishltv_;
+    }
+    if (cached_has_bits & 0x00000040u) {
+      _this->_impl_.clan_member_ = from._impl_.clan_member_;
+    }
+    if (cached_has_bits & 0x00000080u) {
+      _this->_impl_.clan_officer_ = from._impl_.clan_officer_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -3195,8 +3309,8 @@ void CMsgPlayerInfo::InternalSwap(CMsgPlayerInfo* other) {
       &other->_impl_.name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgPlayerInfo, _impl_.ishltv_)
-      + sizeof(CMsgPlayerInfo::_impl_.ishltv_)
+      PROTOBUF_FIELD_OFFSET(CMsgPlayerInfo, _impl_.clan_officer_)
+      + sizeof(CMsgPlayerInfo::_impl_.clan_officer_)
       - PROTOBUF_FIELD_OFFSET(CMsgPlayerInfo, _impl_.xuid_)>(
           reinterpret_cast<char*>(&_impl_.xuid_),
           reinterpret_cast<char*>(&other->_impl_.xuid_));
@@ -8687,6 +8801,386 @@ void CNETMsg_SpawnGroup_LoadCompleted::InternalSwap(CNETMsg_SpawnGroup_LoadCompl
 
 // ===================================================================
 
+class QuantizedFloatEncoderAlias_t::_Internal {
+ public:
+  using HasBits = decltype(std::declval<QuantizedFloatEncoderAlias_t>()._impl_._has_bits_);
+  static void set_has_name(HasBits* has_bits) {
+    (*has_bits)[0] |= 1u;
+  }
+  static void set_has_bit_count(HasBits* has_bits) {
+    (*has_bits)[0] |= 2u;
+  }
+  static void set_has_encode_flags(HasBits* has_bits) {
+    (*has_bits)[0] |= 4u;
+  }
+  static void set_has_min_value(HasBits* has_bits) {
+    (*has_bits)[0] |= 8u;
+  }
+  static void set_has_max_value(HasBits* has_bits) {
+    (*has_bits)[0] |= 16u;
+  }
+  static void set_has_validate(HasBits* has_bits) {
+    (*has_bits)[0] |= 32u;
+  }
+};
+
+QuantizedFloatEncoderAlias_t::QuantizedFloatEncoderAlias_t(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:QuantizedFloatEncoderAlias_t)
+}
+QuantizedFloatEncoderAlias_t::QuantizedFloatEncoderAlias_t(const QuantizedFloatEncoderAlias_t& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  QuantizedFloatEncoderAlias_t* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){from._impl_._has_bits_}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.bit_count_){}
+    , decltype(_impl_.encode_flags_){}
+    , decltype(_impl_.min_value_){}
+    , decltype(_impl_.max_value_){}
+    , decltype(_impl_.validate_){}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (from._internal_has_name()) {
+    _this->_impl_.name_.Set(from._internal_name(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.bit_count_, &from._impl_.bit_count_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.validate_) -
+    reinterpret_cast<char*>(&_impl_.bit_count_)) + sizeof(_impl_.validate_));
+  // @@protoc_insertion_point(copy_constructor:QuantizedFloatEncoderAlias_t)
+}
+
+inline void QuantizedFloatEncoderAlias_t::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_._has_bits_){}
+    , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.name_){}
+    , decltype(_impl_.bit_count_){0}
+    , decltype(_impl_.encode_flags_){0}
+    , decltype(_impl_.min_value_){0}
+    , decltype(_impl_.max_value_){0}
+    , decltype(_impl_.validate_){false}
+  };
+  _impl_.name_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.name_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+QuantizedFloatEncoderAlias_t::~QuantizedFloatEncoderAlias_t() {
+  // @@protoc_insertion_point(destructor:QuantizedFloatEncoderAlias_t)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void QuantizedFloatEncoderAlias_t::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.name_.Destroy();
+}
+
+void QuantizedFloatEncoderAlias_t::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void QuantizedFloatEncoderAlias_t::Clear() {
+// @@protoc_insertion_point(message_clear_start:QuantizedFloatEncoderAlias_t)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x00000001u) {
+    _impl_.name_.ClearNonDefaultToEmpty();
+  }
+  if (cached_has_bits & 0x0000003eu) {
+    ::memset(&_impl_.bit_count_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.validate_) -
+        reinterpret_cast<char*>(&_impl_.bit_count_)) + sizeof(_impl_.validate_));
+  }
+  _impl_._has_bits_.Clear();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* QuantizedFloatEncoderAlias_t::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  _Internal::HasBits has_bits{};
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // optional string name = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_name();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          #ifndef NDEBUG
+          ::_pbi::VerifyUTF8(str, "QuantizedFloatEncoderAlias_t.name");
+          #endif  // !NDEBUG
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 bit_count = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _Internal::set_has_bit_count(&has_bits);
+          _impl_.bit_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional int32 encode_flags = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _Internal::set_has_encode_flags(&has_bits);
+          _impl_.encode_flags_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float min_value = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 37)) {
+          _Internal::set_has_min_value(&has_bits);
+          _impl_.min_value_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float max_value = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 45)) {
+          _Internal::set_has_max_value(&has_bits);
+          _impl_.max_value_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool validate = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          _Internal::set_has_validate(&has_bits);
+          _impl_.validate_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  _impl_._has_bits_.Or(has_bits);
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* QuantizedFloatEncoderAlias_t::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:QuantizedFloatEncoderAlias_t)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  // optional string name = 1;
+  if (cached_has_bits & 0x00000001u) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
+      "QuantizedFloatEncoderAlias_t.name");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_name(), target);
+  }
+
+  // optional int32 bit_count = 2;
+  if (cached_has_bits & 0x00000002u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_bit_count(), target);
+  }
+
+  // optional int32 encode_flags = 3;
+  if (cached_has_bits & 0x00000004u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_encode_flags(), target);
+  }
+
+  // optional float min_value = 4;
+  if (cached_has_bits & 0x00000008u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(4, this->_internal_min_value(), target);
+  }
+
+  // optional float max_value = 5;
+  if (cached_has_bits & 0x00000010u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(5, this->_internal_max_value(), target);
+  }
+
+  // optional bool validate = 6;
+  if (cached_has_bits & 0x00000020u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(6, this->_internal_validate(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:QuantizedFloatEncoderAlias_t)
+  return target;
+}
+
+size_t QuantizedFloatEncoderAlias_t::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:QuantizedFloatEncoderAlias_t)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  cached_has_bits = _impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000003fu) {
+    // optional string name = 1;
+    if (cached_has_bits & 0x00000001u) {
+      total_size += 1 +
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+          this->_internal_name());
+    }
+
+    // optional int32 bit_count = 2;
+    if (cached_has_bits & 0x00000002u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_bit_count());
+    }
+
+    // optional int32 encode_flags = 3;
+    if (cached_has_bits & 0x00000004u) {
+      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_encode_flags());
+    }
+
+    // optional float min_value = 4;
+    if (cached_has_bits & 0x00000008u) {
+      total_size += 1 + 4;
+    }
+
+    // optional float max_value = 5;
+    if (cached_has_bits & 0x00000010u) {
+      total_size += 1 + 4;
+    }
+
+    // optional bool validate = 6;
+    if (cached_has_bits & 0x00000020u) {
+      total_size += 1 + 1;
+    }
+
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData QuantizedFloatEncoderAlias_t::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    QuantizedFloatEncoderAlias_t::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*QuantizedFloatEncoderAlias_t::GetClassData() const { return &_class_data_; }
+
+
+void QuantizedFloatEncoderAlias_t::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<QuantizedFloatEncoderAlias_t*>(&to_msg);
+  auto& from = static_cast<const QuantizedFloatEncoderAlias_t&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:QuantizedFloatEncoderAlias_t)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  cached_has_bits = from._impl_._has_bits_[0];
+  if (cached_has_bits & 0x0000003fu) {
+    if (cached_has_bits & 0x00000001u) {
+      _this->_internal_set_name(from._internal_name());
+    }
+    if (cached_has_bits & 0x00000002u) {
+      _this->_impl_.bit_count_ = from._impl_.bit_count_;
+    }
+    if (cached_has_bits & 0x00000004u) {
+      _this->_impl_.encode_flags_ = from._impl_.encode_flags_;
+    }
+    if (cached_has_bits & 0x00000008u) {
+      _this->_impl_.min_value_ = from._impl_.min_value_;
+    }
+    if (cached_has_bits & 0x00000010u) {
+      _this->_impl_.max_value_ = from._impl_.max_value_;
+    }
+    if (cached_has_bits & 0x00000020u) {
+      _this->_impl_.validate_ = from._impl_.validate_;
+    }
+    _this->_impl_._has_bits_[0] |= cached_has_bits;
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void QuantizedFloatEncoderAlias_t::CopyFrom(const QuantizedFloatEncoderAlias_t& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:QuantizedFloatEncoderAlias_t)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool QuantizedFloatEncoderAlias_t::IsInitialized() const {
+  return true;
+}
+
+void QuantizedFloatEncoderAlias_t::InternalSwap(QuantizedFloatEncoderAlias_t* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.name_, lhs_arena,
+      &other->_impl_.name_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(QuantizedFloatEncoderAlias_t, _impl_.validate_)
+      + sizeof(QuantizedFloatEncoderAlias_t::_impl_.validate_)
+      - PROTOBUF_FIELD_OFFSET(QuantizedFloatEncoderAlias_t, _impl_.bit_count_)>(
+          reinterpret_cast<char*>(&_impl_.bit_count_),
+          reinterpret_cast<char*>(&other->_impl_.bit_count_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata QuantizedFloatEncoderAlias_t::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_networkbasetypes_2eproto_getter, &descriptor_table_networkbasetypes_2eproto_once,
+      file_level_metadata_networkbasetypes_2eproto[25]);
+}
+
+// ===================================================================
+
 class CSVCMsg_GameSessionConfiguration::_Internal {
  public:
   using HasBits = decltype(std::declval<CSVCMsg_GameSessionConfiguration>()._impl_._has_bits_);
@@ -8747,6 +9241,9 @@ class CSVCMsg_GameSessionConfiguration::_Internal {
   static void set_has_landmarkname(HasBits* has_bits) {
     (*has_bits)[0] |= 128u;
   }
+  static void set_has_max_coord(HasBits* has_bits) {
+    (*has_bits)[0] |= 524288u;
+  }
 };
 
 CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfiguration(::PROTOBUF_NAMESPACE_ID::Arena* arena,
@@ -8761,6 +9258,7 @@ CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfiguration(const CSVCMsg
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){from._impl_._has_bits_}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.quantized_float_encoder_aliases_){from._impl_.quantized_float_encoder_aliases_}
     , decltype(_impl_.hostname_){}
     , decltype(_impl_.savegamename_){}
     , decltype(_impl_.s1_mapname_){}
@@ -8779,7 +9277,8 @@ CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfiguration(const CSVCMsg
     , decltype(_impl_.tick_interval_){}
     , decltype(_impl_.is_localonly_){}
     , decltype(_impl_.no_steam_server_){}
-    , decltype(_impl_.is_transition_){}};
+    , decltype(_impl_.is_transition_){}
+    , decltype(_impl_.max_coord_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   _impl_.hostname_.InitDefault();
@@ -8847,8 +9346,8 @@ CSVCMsg_GameSessionConfiguration::CSVCMsg_GameSessionConfiguration(const CSVCMsg
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.is_multiplayer_, &from._impl_.is_multiplayer_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.is_transition_) -
-    reinterpret_cast<char*>(&_impl_.is_multiplayer_)) + sizeof(_impl_.is_transition_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.max_coord_) -
+    reinterpret_cast<char*>(&_impl_.is_multiplayer_)) + sizeof(_impl_.max_coord_));
   // @@protoc_insertion_point(copy_constructor:CSVCMsg_GameSessionConfiguration)
 }
 
@@ -8859,6 +9358,7 @@ inline void CSVCMsg_GameSessionConfiguration::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_._has_bits_){}
     , /*decltype(_impl_._cached_size_)*/{}
+    , decltype(_impl_.quantized_float_encoder_aliases_){arena}
     , decltype(_impl_.hostname_){}
     , decltype(_impl_.savegamename_){}
     , decltype(_impl_.s1_mapname_){}
@@ -8878,6 +9378,7 @@ inline void CSVCMsg_GameSessionConfiguration::SharedCtor(
     , decltype(_impl_.is_localonly_){false}
     , decltype(_impl_.no_steam_server_){false}
     , decltype(_impl_.is_transition_){false}
+    , decltype(_impl_.max_coord_){0}
   };
   _impl_.hostname_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -8924,6 +9425,7 @@ CSVCMsg_GameSessionConfiguration::~CSVCMsg_GameSessionConfiguration() {
 
 inline void CSVCMsg_GameSessionConfiguration::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.quantized_float_encoder_aliases_.~RepeatedPtrField();
   _impl_.hostname_.Destroy();
   _impl_.savegamename_.Destroy();
   _impl_.s1_mapname_.Destroy();
@@ -8944,6 +9446,7 @@ void CSVCMsg_GameSessionConfiguration::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _impl_.quantized_float_encoder_aliases_.Clear();
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
@@ -8976,10 +9479,10 @@ void CSVCMsg_GameSessionConfiguration::Clear() {
         reinterpret_cast<char*>(&_impl_.tick_interval_) -
         reinterpret_cast<char*>(&_impl_.is_multiplayer_)) + sizeof(_impl_.tick_interval_));
   }
-  if (cached_has_bits & 0x00070000u) {
+  if (cached_has_bits & 0x000f0000u) {
     ::memset(&_impl_.is_localonly_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.is_transition_) -
-        reinterpret_cast<char*>(&_impl_.is_localonly_)) + sizeof(_impl_.is_transition_));
+        reinterpret_cast<char*>(&_impl_.max_coord_) -
+        reinterpret_cast<char*>(&_impl_.is_localonly_)) + sizeof(_impl_.max_coord_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -9184,6 +9687,28 @@ const char* CSVCMsg_GameSessionConfiguration::_InternalParse(const char* ptr, ::
         } else
           goto handle_unusual;
         continue;
+      // repeated .QuantizedFloatEncoderAlias_t quantized_float_encoder_aliases = 20;
+      case 20:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 162)) {
+          ptr -= 2;
+          do {
+            ptr += 2;
+            ptr = ctx->ParseMessage(_internal_add_quantized_float_encoder_aliases(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<162>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // optional float max_coord = 21;
+      case 21:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 173)) {
+          _Internal::set_has_max_coord(&has_bits);
+          _impl_.max_coord_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -9357,6 +9882,20 @@ uint8_t* CSVCMsg_GameSessionConfiguration::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(19, this->_internal_no_steam_server(), target);
   }
 
+  // repeated .QuantizedFloatEncoderAlias_t quantized_float_encoder_aliases = 20;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_quantized_float_encoder_aliases_size()); i < n; i++) {
+    const auto& repfield = this->_internal_quantized_float_encoder_aliases(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(20, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // optional float max_coord = 21;
+  if (cached_has_bits & 0x00080000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(21, this->_internal_max_coord(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -9372,6 +9911,13 @@ size_t CSVCMsg_GameSessionConfiguration::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // repeated .QuantizedFloatEncoderAlias_t quantized_float_encoder_aliases = 20;
+  total_size += 2UL * this->_internal_quantized_float_encoder_aliases_size();
+  for (const auto& msg : this->_impl_.quantized_float_encoder_aliases_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
 
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x000000ffu) {
@@ -9474,7 +10020,7 @@ size_t CSVCMsg_GameSessionConfiguration::ByteSizeLong() const {
     }
 
   }
-  if (cached_has_bits & 0x00070000u) {
+  if (cached_has_bits & 0x000f0000u) {
     // optional bool is_localonly = 15;
     if (cached_has_bits & 0x00010000u) {
       total_size += 1 + 1;
@@ -9488,6 +10034,11 @@ size_t CSVCMsg_GameSessionConfiguration::ByteSizeLong() const {
     // optional bool is_transition = 16;
     if (cached_has_bits & 0x00040000u) {
       total_size += 2 + 1;
+    }
+
+    // optional float max_coord = 21;
+    if (cached_has_bits & 0x00080000u) {
+      total_size += 2 + 4;
     }
 
   }
@@ -9509,6 +10060,7 @@ void CSVCMsg_GameSessionConfiguration::MergeImpl(::PROTOBUF_NAMESPACE_ID::Messag
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  _this->_impl_.quantized_float_encoder_aliases_.MergeFrom(from._impl_.quantized_float_encoder_aliases_);
   cached_has_bits = from._impl_._has_bits_[0];
   if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
@@ -9563,7 +10115,7 @@ void CSVCMsg_GameSessionConfiguration::MergeImpl(::PROTOBUF_NAMESPACE_ID::Messag
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00070000u) {
+  if (cached_has_bits & 0x000f0000u) {
     if (cached_has_bits & 0x00010000u) {
       _this->_impl_.is_localonly_ = from._impl_.is_localonly_;
     }
@@ -9572,6 +10124,9 @@ void CSVCMsg_GameSessionConfiguration::MergeImpl(::PROTOBUF_NAMESPACE_ID::Messag
     }
     if (cached_has_bits & 0x00040000u) {
       _this->_impl_.is_transition_ = from._impl_.is_transition_;
+    }
+    if (cached_has_bits & 0x00080000u) {
+      _this->_impl_.max_coord_ = from._impl_.max_coord_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
@@ -9595,6 +10150,7 @@ void CSVCMsg_GameSessionConfiguration::InternalSwap(CSVCMsg_GameSessionConfigura
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  _impl_.quantized_float_encoder_aliases_.InternalSwap(&other->_impl_.quantized_float_encoder_aliases_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.hostname_, lhs_arena,
       &other->_impl_.hostname_, rhs_arena
@@ -9628,8 +10184,8 @@ void CSVCMsg_GameSessionConfiguration::InternalSwap(CSVCMsg_GameSessionConfigura
       &other->_impl_.landmarkname_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CSVCMsg_GameSessionConfiguration, _impl_.is_transition_)
-      + sizeof(CSVCMsg_GameSessionConfiguration::_impl_.is_transition_)
+      PROTOBUF_FIELD_OFFSET(CSVCMsg_GameSessionConfiguration, _impl_.max_coord_)
+      + sizeof(CSVCMsg_GameSessionConfiguration::_impl_.max_coord_)
       - PROTOBUF_FIELD_OFFSET(CSVCMsg_GameSessionConfiguration, _impl_.is_multiplayer_)>(
           reinterpret_cast<char*>(&_impl_.is_multiplayer_),
           reinterpret_cast<char*>(&other->_impl_.is_multiplayer_));
@@ -9638,7 +10194,7 @@ void CSVCMsg_GameSessionConfiguration::InternalSwap(CSVCMsg_GameSessionConfigura
 ::PROTOBUF_NAMESPACE_ID::Metadata CSVCMsg_GameSessionConfiguration::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_networkbasetypes_2eproto_getter, &descriptor_table_networkbasetypes_2eproto_once,
-      file_level_metadata_networkbasetypes_2eproto[25]);
+      file_level_metadata_networkbasetypes_2eproto[26]);
 }
 
 // ===================================================================
@@ -10086,7 +10642,7 @@ void CNETMsg_DebugOverlay::InternalSwap(CNETMsg_DebugOverlay* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata CNETMsg_DebugOverlay::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_networkbasetypes_2eproto_getter, &descriptor_table_networkbasetypes_2eproto_once,
-      file_level_metadata_networkbasetypes_2eproto[26]);
+      file_level_metadata_networkbasetypes_2eproto[27]);
 }
 PROTOBUF_ATTRIBUTE_INIT_PRIORITY2 ::PROTOBUF_NAMESPACE_ID::internal::ExtensionIdentifier< ::PROTOBUF_NAMESPACE_ID::MessageOptions,
     ::PROTOBUF_NAMESPACE_ID::internal::PrimitiveTypeTraits< int32_t >, 5, false>
@@ -10193,6 +10749,10 @@ Arena::CreateMaybeMessage< ::CNETMsg_SpawnGroup_Unload >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::CNETMsg_SpawnGroup_LoadCompleted*
 Arena::CreateMaybeMessage< ::CNETMsg_SpawnGroup_LoadCompleted >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CNETMsg_SpawnGroup_LoadCompleted >(arena);
+}
+template<> PROTOBUF_NOINLINE ::QuantizedFloatEncoderAlias_t*
+Arena::CreateMaybeMessage< ::QuantizedFloatEncoderAlias_t >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::QuantizedFloatEncoderAlias_t >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CSVCMsg_GameSessionConfiguration*
 Arena::CreateMaybeMessage< ::CSVCMsg_GameSessionConfiguration >(Arena* arena) {

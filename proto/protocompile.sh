@@ -32,6 +32,9 @@ pushd temp
     valveextensions.proto \
     steammessages_gc.proto
 
+find ../../Engine/src/proto -type f -name '*.pb.h' -exec \
+    sed -i -E 's/^(class .*) final :/\1 \/\*final\*\/ :/' {} +
+
 popd
 
 rm -rf temp

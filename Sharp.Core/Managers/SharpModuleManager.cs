@@ -58,6 +58,7 @@ internal class SharpModuleManager : ICoreSharpModuleManager
     private readonly List<ModSharpModule>              _modules;
     private readonly Dictionary<string, SharpLibrary>  _libraries;
     private readonly Dictionary<string, DynamicNative> _natives;
+    private readonly long[]                            _lastModulesPrintTick;
 
     public SharpModuleManager(ILogger<SharpModuleManager> logger,
         IShutdownMonitor                                  shutdownMonitor,
@@ -70,9 +71,10 @@ internal class SharpModuleManager : ICoreSharpModuleManager
         _sharedManager = sharedManager;
         _configuration = configuration;
 
-        _modules   = [];
-        _libraries = new Dictionary<string, SharpLibrary>(StringComparer.OrdinalIgnoreCase);
-        _natives   = new Dictionary<string, DynamicNative>(StringComparer.OrdinalIgnoreCase);
+        _modules              = [];
+        _libraries            = new Dictionary<string, SharpLibrary>(StringComparer.OrdinalIgnoreCase);
+        _natives              = new Dictionary<string, DynamicNative>(StringComparer.OrdinalIgnoreCase);
+        _lastModulesPrintTick = new long[64];
 
         Bridges.Forwards.Game.OnStartupServerPre       += OnStartupServer;
         Bridges.Forwards.Core.OnModSharpModulesCommand += OnModSharpModulesCommand;
@@ -147,21 +149,21 @@ internal class SharpModuleManager : ICoreSharpModuleManager
 
     private void OnModSharpModulesCommand(GameClient? client)
     {
-        var builder = new StringBuilder();
-
-        builder.Append("  ModSharp Modules:\n");
-
-        var result = 0;
-
-        for (var i = 0; i < _modules.Count; i++)
+        // server
+        if (client is null)
         {
-            var index   = i + 1;
-            var module  = _modules[i];
-            var version = module.DisplayVersion;
+            var builder = new StringBuilder();
 
-            if (client is null)
+            builder.Append("  ModSharp Modules:\n");
+
+            var total = 0;
+
+            for (var i = 0; i < _modules.Count; i++)
             {
-                builder.Append($"    #{index,-2} {module.Name}\n");
+                var module  = _modules[i];
+                var version = module.DisplayVersion;
+
+                builder.Append($"    #{i + 1,-2} {module.Name}\n");
 
                 builder.Append($"      module : {module.DisplayName}\n");
                 builder.Append($"      version: {version.Major}.{version.Minor}.{version.Build}\n");
@@ -172,36 +174,60 @@ internal class SharpModuleManager : ICoreSharpModuleManager
                 }
 
                 builder.Append($"      state  : {module.State.ToString()}\n");
-                result++;
+                total++;
             }
-            else if (module.State is ModuleLoadState.Running)
+
+            if (total == 0)
             {
-                builder.Append($"    #{index,-2} {module.DisplayName}");
-                builder.Append($" ({version.Major}.{version.Minor}.{version.Build})");
-
-                if (module.DisplayAuthor is { } author)
-                {
-                    builder.Append($" by {author}");
-                }
-
-                builder.Append('\n');
-                result++;
+                builder.Append("    No modules found.\n");
             }
-        }
 
-        if (result == 0)
-        {
-            builder.Append("    No modules found.\n");
-        }
-
-        if (client is null)
-        {
             Console.WriteLine(builder.ToString());
+
+            return;
         }
-        else
+
+        // anti spam
+        const long modulesCommandCooldownMs = 5000;
+
+        var slot = client.Slot.AsPrimitive();
+        var now  = Environment.TickCount64;
+
+        if (now - _lastModulesPrintTick[slot] < modulesCommandCooldownMs)
         {
-            var receiver = new RecipientFilter(client.Slot);
-            NetMessageHelper.PrintChannelFilter(receiver, HudPrintChannel.Console, builder.ToString());
+            return;
+        }
+
+        _lastModulesPrintTick[slot] = now;
+
+        var receiver = new RecipientFilter(client.Slot);
+
+        NetMessageHelper.PrintChannelFilter(receiver, HudPrintChannel.Console, "  ModSharp Modules:\n");
+
+        var shown = 0;
+
+        for (var i = 0; i < _modules.Count; i++)
+        {
+            var module = _modules[i];
+
+            if (module.State is not ModuleLoadState.Running)
+            {
+                continue;
+            }
+
+            var version = module.DisplayVersion;
+            var author  = module.DisplayAuthor is { } a ? $" by {a}" : string.Empty;
+
+            NetMessageHelper.PrintChannelFilter(receiver,
+                                                HudPrintChannel.Console,
+                                                $"    #{shown + 1,-2} {module.DisplayName} ({version.Major}.{version.Minor}.{version.Build}){author}\n");
+
+            shown++;
+        }
+
+        if (shown == 0)
+        {
+            NetMessageHelper.PrintChannelFilter(receiver, HudPrintChannel.Console, "    No modules found.\n");
         }
     }
 

@@ -50,6 +50,11 @@ static CConVarBaseData* ms_fix_server_query_players = nullptr;
 
 static std::unordered_map<uint64_t, int32_t> s_bBannedSteamIds;
 
+void BanSteamIdInternal(uint64_t steamId, int32_t reason)
+{
+    s_bBannedSteamIds[steamId] = reason;
+}
+
 #define ENGINE_HOOK_ASSERT
 // #define CONNECT_HOOK_ASSERT
 
@@ -133,6 +138,9 @@ BeginMemberHookScope(CNetworkGameServer)
         // earliest available for get this shit
         sv        = pServer;
         gpGlobals = pServer->GetGlobalVars();
+
+        // clear ban cache
+        s_bBannedSteamIds.clear();
 
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"

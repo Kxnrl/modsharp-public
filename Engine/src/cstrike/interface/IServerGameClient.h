@@ -179,10 +179,7 @@ public:
     virtual void  GetBugReportInfo(void* buf)                                        = 0; // 26
     virtual void  ClientVoice(PlayerSlot_t nSlot)                                    = 0; // 27
 
-    /* Null Sub */
-    virtual void NetworkIDValidated(const char* pszName, const char* pszNetworkId) = 0; // 28
-
-    virtual void ClientCommandKeyValues(PlayerSlot_t nSlot, /* KeyValues*/ void* pKeyValues) = 0; // 29
+    virtual void ClientCommandKeyValues(PlayerSlot_t nSlot, /* KeyValues*/ void* pKeyValues) = 0; // 28
 
 public:
     enum offset_t
@@ -194,8 +191,9 @@ public:
         eClientFullyConnect, // put in game ( Hltv / Replay 之类的不触发 )
         eClientDisconnect,
         eClientCommand,
+        eClientStringTableChanged,
         eClientSettingsChanged,
-        eUnknown19,
+        eUnknown20,
         eProcessUserCommands,
         eIsPlayerControllerExistsBySlot,
         eIsPlayerAlive,
@@ -203,7 +201,6 @@ public:
         eGetClientEyePosition,
         eGetBugReportInfo,
         eClientVoice,
-        eNetworkIDValidated,
         eClientCommandKeyValues
     };
 };

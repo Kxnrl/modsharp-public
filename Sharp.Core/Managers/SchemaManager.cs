@@ -18,6 +18,7 @@
  */
 
 using System;
+using Microsoft.Extensions.Logging;
 using Sharp.Core.CStrike;
 using Sharp.Core.Helpers;
 using Sharp.Shared;
@@ -32,6 +33,11 @@ internal interface ICoreSchemaManager : ISchemaManager;
 
 internal class SchemaManager : ICoreSchemaManager
 {
+    private readonly ILogger<SchemaManager> _logger;
+
+    public SchemaManager(ILogger<SchemaManager> logger)
+        => _logger = logger;
+
     public SchemaField GetSchemaField(string classname, string field)
         => SchemaSystem.GetSchemaField(classname, field);
 
@@ -284,5 +290,16 @@ internal class SchemaManager : ICoreSchemaManager
         => SchemaSystem.NetVarStateChanged(nativeObject.GetAbsPtr(), schemaClass, schemaField, extraOffset, isStruct);
 
     public nint GetDataMapInputFunc(string classname, string fieldName)
-        => SchemaSystem.GetDataMapInputFunc(classname, fieldName);
+    {
+        var func = SchemaSystem.GetDataMapInputFunc(classname, fieldName);
+
+        if (func == nint.Zero)
+        {
+            _logger.LogWarning("DataMap input function {classname}::{field} not found, CS2 datamaps no longer carry input functions since the 2026-09-23 update",
+                               classname,
+                               fieldName);
+        }
+
+        return func;
+    }
 }

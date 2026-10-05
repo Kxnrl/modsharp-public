@@ -91,6 +91,24 @@ public:
         return m_Parts.m_Serial;
     }
 
+    [[nodiscard]] uint32_t GetPackedValue() const
+    {
+        if (!IsValid())
+            return 0xFFFFFF;
+
+        return (value & 0x7FFF) | (((value >> 15) & 0x3FF) << 14);
+    }
+
+    [[nodiscard]] static CBaseHandle FromPackedValue(uint32_t packed)
+    {
+        if (packed == 0xFFFFFF)
+            return {};
+
+        const auto index  = packed & 0x3FFF;
+        const auto serial = (packed >> 14) & 0x3FF;
+        return CBaseHandle(index | (serial << 15));
+    }
+
     bool operator==(const CBaseHandle& other) const
     {
         return value == other.value;

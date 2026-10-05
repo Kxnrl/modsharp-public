@@ -59,4 +59,6 @@ public interface ISharedSystem
     IAddonManager GetAddonManager();
 
     IScriptManager GetScriptManager();
+
+    IPanoramaManager GetPanoramaManager();
 }

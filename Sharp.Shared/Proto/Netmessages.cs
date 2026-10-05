@@ -142,138 +142,149 @@ public static partial class NetmessagesReflection {
           "X3ZhcmludF9iaXRjb3VudHMYCiABKAg6BoC1GICgBiJnChlDU1ZDTXNnX1Vw",
           "ZGF0ZVN0cmluZ1RhYmxlEhAKCHRhYmxlX2lkGAEgASgFEhsKE251bV9jaGFu",
           "Z2VkX2VudHJpZXMYAiABKAUSEwoLc3RyaW5nX2RhdGEYAyABKAw6BoC1GICA",
-          "ECLAAQoRQ1NWQ01zZ19Wb2ljZURhdGESHgoFYXVkaW8YASABKAsyDy5DTXNn",
+          "ECLQAQoRQ1NWQ01zZ19Wb2ljZURhdGESHgoFYXVkaW8YASABKAsyDy5DTXNn",
           "Vm9pY2VBdWRpbxIdChFjbGllbnRfZGVwcmVjYXRlZBgCIAEoBToCLTESEQoJ",
           "cHJveGltaXR5GAMgASgIEgwKBHh1aWQYBCABKAYSFAoMYXVkaWJsZV9tYXNr",
           "GAUgASgFEgwKBHRpY2sYBiABKA0SEwoLcGFzc3Rocm91Z2gYByABKAUSEgoG",
-          "ZW50aXR5GAggASgFOgItMSJLChZDU1ZDTXNnX1BhY2tldFJlbGlhYmxlEgwK",
-          "BHRpY2sYASABKAUSFAoMbWVzc2FnZXNzaXplGAIgASgFEg0KBXN0YXRlGAMg",
-          "ASgIIlQKFkNTVkNNc2dfRnVsbEZyYW1lU3BsaXQSDAoEdGljaxgBIAEoBRIP",
-          "CgdzZWN0aW9uGAIgASgFEg0KBXRvdGFsGAMgASgFEgwKBGRhdGEYBCABKAwi",
-          "VQoSQ1NWQ01zZ19ITFRWU3RhdHVzEg4KBm1hc3RlchgBIAEoCRIPCgdjbGll",
-          "bnRzGAIgASgFEg0KBXNsb3RzGAMgASgFEg8KB3Byb3hpZXMYBCABKAUiKQoV",
-          "Q1NWQ01zZ19TZXJ2ZXJTdGVhbUlEEhAKCHN0ZWFtX2lkGAEgASgEIiQKFENT",
-          "VkNNc2dfQ21kS2V5VmFsdWVzEgwKBGRhdGEYASABKAwiOwoZQ1NWQ01zZ19S",
-          "Y29uU2VydmVyRGV0YWlscxINCgV0b2tlbhgBIAEoDBIPCgdkZXRhaWxzGAIg",
-          "ASgJIjsKDkNNc2dJUENBZGRyZXNzEhUKDWNvbXB1dGVyX2d1aWQYASABKAYS",
-          "EgoKcHJvY2Vzc19pZBgCIAEoDSKkAQoOQ01zZ1NlcnZlclBlZXISFwoLcGxh",
-          "eWVyX3Nsb3QYASABKAU6Ai0xEg8KB3N0ZWFtaWQYAiABKAYSHAoDaXBjGAMg",
-          "ASgLMg8uQ01zZ0lQQ0FkZHJlc3MSFQoNdGhleV9oZWFyX3lvdRgEIAEoCBIV",
-          "Cg15b3VfaGVhcl90aGVtGAUgASgIEhwKFGlzX2xpc3RlbnNlcnZlcl9ob3N0",
-          "GAYgASgIIjEKEENTVkNNc2dfUGVlckxpc3QSHQoEcGVlchgBIAMoCzIPLkNN",
-          "c2dTZXJ2ZXJQZWVyIk4KHENTVkNNc2dfQ2xlYXJBbGxTdHJpbmdUYWJsZXMS",
-          "DwoHbWFwbmFtZRgBIAEoCRIdChVjcmVhdGVfdGFibGVzX3NraXBwZWQYAyAB",
-          "KAgi8wMKH1Byb3RvRmxhdHRlbmVkU2VyaWFsaXplckZpZWxkX3QSFAoMdmFy",
-          "X3R5cGVfc3ltGAEgASgFEhQKDHZhcl9uYW1lX3N5bRgCIAEoBRIRCgliaXRf",
-          "Y291bnQYAyABKAUSEQoJbG93X3ZhbHVlGAQgASgCEhIKCmhpZ2hfdmFsdWUY",
-          "BSABKAISFAoMZW5jb2RlX2ZsYWdzGAYgASgFEiEKGWZpZWxkX3NlcmlhbGl6",
-          "ZXJfbmFtZV9zeW0YByABKAUSIAoYZmllbGRfc2VyaWFsaXplcl92ZXJzaW9u",
-          "GAggASgFEhUKDXNlbmRfbm9kZV9zeW0YCSABKAUSFwoPdmFyX2VuY29kZXJf",
-          "c3ltGAogASgFEk8KEXBvbHltb3JwaGljX3R5cGVzGAsgAygLMjQuUHJvdG9G",
-          "bGF0dGVuZWRTZXJpYWxpemVyRmllbGRfdC5wb2x5bW9ycGhpY19maWVsZF90",
-          "EhoKEnZhcl9zZXJpYWxpemVyX3N5bRgMIAEoBRpyChNwb2x5bW9ycGhpY19m",
-          "aWVsZF90Ei0KJXBvbHltb3JwaGljX2ZpZWxkX3NlcmlhbGl6ZXJfbmFtZV9z",
-          "eW0YASABKAUSLAokcG9seW1vcnBoaWNfZmllbGRfc2VyaWFsaXplcl92ZXJz",
-          "aW9uGAIgASgFImsKGlByb3RvRmxhdHRlbmVkU2VyaWFsaXplcl90EhsKE3Nl",
-          "cmlhbGl6ZXJfbmFtZV9zeW0YASABKAUSGgoSc2VyaWFsaXplcl92ZXJzaW9u",
-          "GAIgASgFEhQKDGZpZWxkc19pbmRleBgDIAMoBSKYAQobQ1NWQ01zZ19GbGF0",
-          "dGVuZWRTZXJpYWxpemVyEjAKC3NlcmlhbGl6ZXJzGAEgAygLMhsuUHJvdG9G",
-          "bGF0dGVuZWRTZXJpYWxpemVyX3QSDwoHc3ltYm9scxgCIAMoCRIwCgZmaWVs",
-          "ZHMYAyADKAsyIC5Qcm90b0ZsYXR0ZW5lZFNlcmlhbGl6ZXJGaWVsZF90OgSA",
-          "tRgAIiEKEUNTVkNNc2dfU3RvcFNvdW5kEgwKBGd1aWQYASABKAcieQoeQ0Jp",
-          "ZGlyTXNnX1JlYnJvYWRjYXN0R2FtZUV2ZW50EhQKDHBvc3R0b3NlcnZlchgB",
-          "IAEoCBIPCgdidWZ0eXBlGAIgASgFEhYKDmNsaWVudGJpdGNvdW50GAMgASgN",
-          "EhgKEHJlY2VpdmluZ2NsaWVudHMYBCABKAQiMgobQ0JpZGlyTXNnX1JlYnJv",
-          "YWRjYXN0U291cmNlEhMKC2V2ZW50c291cmNlGAEgASgFIpoBChlDQmlkaXJN",
-          "c2dfUHJlZGljdGlvbkV2ZW50EhAKCGV2ZW50X2lkGAEgASgNEhIKCmV2ZW50",
-          "X2RhdGEYAiABKAwSEQoJc3luY190eXBlGAMgASgNEhcKD3N5bmNfdmFsX3Vp",
-          "bnQzMhgEIAEoDSIrCglFU3luY1R5cGUSCwoHU1RfVGljaxAAEhEKDVNUX1Vz",
-          "ZXJDbWROdW0QASLFBgoWQ01zZ1NlcnZlck5ldHdvcmtTdGF0cxIRCglkZWRp",
-          "Y2F0ZWQYASABKAgSEQoJY3B1X3VzYWdlGAIgASgFEhYKDm1lbW9yeV91c2Vk",
-          "X21iGAMgASgFEhYKDm1lbW9yeV9mcmVlX21iGAQgASgFEg4KBnVwdGltZRgF",
-          "IAEoBRITCgtzcGF3bl9jb3VudBgGIAEoBRITCgtudW1fY2xpZW50cxgIIAEo",
-          "BRIQCghudW1fYm90cxgJIAEoBRIWCg5udW1fc3BlY3RhdG9ycxgKIAEoBRIV",
-          "Cg1udW1fdHZfcmVsYXlzGAsgASgFEgsKA2ZwcxgMIAEoAhIrCgVwb3J0cxgR",
-          "IAMoCzIcLkNNc2dTZXJ2ZXJOZXR3b3JrU3RhdHMuUG9ydBITCgthdmdfcGlu",
-          "Z19tcxgSIAEoAhIeChZhdmdfZW5naW5lX2xhdGVuY3lfb3V0GBMgASgCEhcK",
-          "D2F2Z19wYWNrZXRzX291dBgUIAEoAhIWCg5hdmdfcGFja2V0c19pbhgVIAEo",
-          "AhIUCgxhdmdfbG9zc19vdXQYFiABKAISEwoLYXZnX2xvc3NfaW4YFyABKAIS",
-          "FAoMYXZnX2RhdGFfb3V0GBggASgCEhMKC2F2Z19kYXRhX2luGBkgASgCEhUK",
-          "DXRvdGFsX2RhdGFfaW4YGiABKAQSGAoQdG90YWxfcGFja2V0c19pbhgbIAEo",
-          "BBIWCg50b3RhbF9kYXRhX291dBgcIAEoBBIZChF0b3RhbF9wYWNrZXRzX291",
-          "dBgdIAEoBBIvCgdwbGF5ZXJzGB4gAygLMh4uQ01zZ1NlcnZlck5ldHdvcmtT",
-          "dGF0cy5QbGF5ZXIaIgoEUG9ydBIMCgRwb3J0GAEgASgFEgwKBG5hbWUYAiAB",
-          "KAkaqgEKBlBsYXllchIPCgdzdGVhbWlkGAEgASgEEhMKC3JlbW90ZV9hZGRy",
-          "GAIgASgJEhMKC3BpbmdfYXZnX21zGAQgASgFEhcKD3BhY2tldF9sb3NzX3Bj",
-          "dBgFIAEoAhIOCgZpc19ib3QYBiABKAgSDwoHbG9zc19pbhgHIAEoAhIQCghs",
-          "b3NzX291dBgIIAEoAhIZChFlbmdpbmVfbGF0ZW5jeV9tcxgJIAEoBSLaAQoS",
-          "Q1NWQ01zZ19IbHR2UmVwbGF5Eg0KBWRlbGF5GAEgASgFEhoKDnByaW1hcnlf",
-          "dGFyZ2V0GAIgASgFOgItMRIWCg5yZXBsYXlfc3RvcF9hdBgDIAEoBRIXCg9y",
-          "ZXBsYXlfc3RhcnRfYXQYBCABKAUSHQoVcmVwbGF5X3Nsb3dkb3duX2JlZ2lu",
-          "GAUgASgFEhsKE3JlcGxheV9zbG93ZG93bl9lbmQYBiABKAUSHAoUcmVwbGF5",
-          "X3Nsb3dkb3duX3JhdGUYByABKAISDgoGcmVhc29uGAggASgFIoUBChJDQ0xD",
-          "TXNnX0hsdHZSZXBsYXkSDwoHcmVxdWVzdBgBIAEoBRIXCg9zbG93ZG93bl9s",
-          "ZW5ndGgYAiABKAISFQoNc2xvd2Rvd25fcmF0ZRgDIAEoAhIaCg5wcmltYXJ5",
-          "X3RhcmdldBgEIAEoBToCLTESEgoKZXZlbnRfdGltZRgFIAEoAiIoChlDU1ZD",
-          "TXNnX0Jyb2FkY2FzdF9Db21tYW5kEgsKA2NtZBgBIAEoCSLvAQodQ0NMQ01z",
-          "Z19IbHR2Rml4dXBPcGVyYXRvclRpY2sSDAoEdGljaxgBIAEoBRISCgpwcm9w",
-          "c19kYXRhGAIgASgMEhsKBm9yaWdpbhgDIAEoCzILLkNNc2dWZWN0b3ISHwoK",
-          "ZXllX2FuZ2xlcxgEIAEoCzILLkNNc2dRQW5nbGUSFQoNb2JzZXJ2ZXJfbW9k",
-          "ZRgFIAEoBRIcChRjYW1lcmFtYW5fc2NvcmVib2FyZBgGIAEoCBIXCg9vYnNl",
-          "cnZlcl90YXJnZXQYByABKAUSIAoLdmlld19vZmZzZXQYCCABKAsyCy5DTXNn",
-          "VmVjdG9yIk8KH0NTVkNNc2dfSGx0dkZpeHVwT3BlcmF0b3JTdGF0dXMSDAoE",
-          "bW9kZRgBIAEoDRIeChZvdmVycmlkZV9vcGVyYXRvcl9uYW1lGAIgASgJIpUB",
-          "ChFDTXNnU2VydmVyVXNlckNtZBIMCgRkYXRhGAEgASgMEhIKCmNtZF9udW1i",
-          "ZXIYAiABKAUSFwoLcGxheWVyX3Nsb3QYAyABKAU6Ai0xEhwKFHNlcnZlcl90",
-          "aWNrX2V4ZWN1dGVkGAQgASgFEhMKC2NsaWVudF90aWNrGAUgASgFEhIKCmRl",
-          "bHRhX2RhdGEYBiABKAwiPAoUQ1NWQ01zZ19Vc2VyQ29tbWFuZHMSJAoIY29t",
-          "bWFuZHMYASADKAsyEi5DTXNnU2VydmVyVXNlckNtZCJZChhDU1ZDTXNnX05l",
-          "eHRNc2dQcmVkaWN0ZWQSJAoYcHJlZGljdGVkX2J5X3BsYXllcl9zbG90GAEg",
-          "ASgFOgItMRIXCg9tZXNzYWdlX3R5cGVfaWQYAiABKA0qywIKDENMQ19NZXNz",
-          "YWdlcxISCg5jbGNfQ2xpZW50SW5mbxAUEgwKCGNsY19Nb3ZlEBUSEQoNY2xj",
-          "X1ZvaWNlRGF0YRAWEhMKD2NsY19CYXNlbGluZUFjaxAXEhgKFGNsY19SZXNw",
-          "b25kQ3ZhclZhbHVlEBkSFwoTY2xjX0xvYWRpbmdQcm9ncmVzcxAbEhoKFmNs",
-          "Y19TcGxpdFBsYXllckNvbm5lY3QQHBIdChljbGNfU3BsaXRQbGF5ZXJEaXNj",
-          "b25uZWN0EB4SFAoQY2xjX1NlcnZlclN0YXR1cxAfEhQKEGNsY19SZXF1ZXN0",
-          "UGF1c2UQIRIUChBjbGNfQ21kS2V5VmFsdWVzECISGQoVY2xjX1Jjb25TZXJ2",
-          "ZXJEZXRhaWxzECMSEgoOY2xjX0hsdHZSZXBsYXkQJBISCg5jbGNfRGlhZ25v",
-          "c3RpYxAlKrEFCgxTVkNfTWVzc2FnZXMSEgoOc3ZjX1NlcnZlckluZm8QKBIb",
-          "ChdzdmNfRmxhdHRlbmVkU2VyaWFsaXplchApEhEKDXN2Y19DbGFzc0luZm8Q",
-          "KhIQCgxzdmNfU2V0UGF1c2UQKxIZChVzdmNfQ3JlYXRlU3RyaW5nVGFibGUQ",
-          "LBIZChVzdmNfVXBkYXRlU3RyaW5nVGFibGUQLRIRCg1zdmNfVm9pY2VJbml0",
-          "EC4SEQoNc3ZjX1ZvaWNlRGF0YRAvEg0KCXN2Y19QcmludBAwEg4KCnN2Y19T",
-          "b3VuZHMQMRIPCgtzdmNfU2V0VmlldxAyEhwKGHN2Y19DbGVhckFsbFN0cmlu",
-          "Z1RhYmxlcxAzEhQKEHN2Y19DbWRLZXlWYWx1ZXMQNBIQCgxzdmNfQlNQRGVj",
-          "YWwQNRITCg9zdmNfU3BsaXRTY3JlZW4QNhIWChJzdmNfUGFja2V0RW50aXRp",
-          "ZXMQNxIQCgxzdmNfUHJlZmV0Y2gQOBIMCghzdmNfTWVudRA5EhQKEHN2Y19H",
-          "ZXRDdmFyVmFsdWUQOhIRCg1zdmNfU3RvcFNvdW5kEDsSEAoMc3ZjX1BlZXJM",
-          "aXN0EDwSFgoSc3ZjX1BhY2tldFJlbGlhYmxlED0SEgoOc3ZjX0hMVFZTdGF0",
-          "dXMQPhIVChFzdmNfU2VydmVyU3RlYW1JRBA/EhYKEnN2Y19GdWxsRnJhbWVT",
-          "cGxpdBBGEhkKFXN2Y19SY29uU2VydmVyRGV0YWlscxBHEhMKD3N2Y19Vc2Vy",
-          "TWVzc2FnZRBIEhkKFXN2Y19Ccm9hZGNhc3RfQ29tbWFuZBBKEh8KG3N2Y19I",
-          "bHR2Rml4dXBPcGVyYXRvclN0YXR1cxBLEhAKDHN2Y19Vc2VyQ21kcxBMEhgK",
-          "FHN2Y19OZXh0TXNnUHJlZGljdGVkEE0qZwoRVm9pY2VEYXRhRm9ybWF0X3QS",
-          "GgoWVk9JQ0VEQVRBX0ZPUk1BVF9TVEVBTRAAEhsKF1ZPSUNFREFUQV9GT1JN",
-          "QVRfRU5HSU5FEAESGQoVVk9JQ0VEQVRBX0ZPUk1BVF9PUFVTEAIqQgoOUmVx",
-          "dWVzdFBhdXNlX3QSDAoIUlBfUEFVU0UQABIOCgpSUF9VTlBBVVNFEAESEgoO",
-          "UlBfVE9HR0xFUEFVU0UQAiodCgxQcmVmZXRjaFR5cGUSDQoJUEZUX1NPVU5E",
-          "EAAqVgoXRVNwbGl0U2NyZWVuTWVzc2FnZVR5cGUSGwoXTVNHX1NQTElUU0NS",
-          "RUVOX0FERFVTRVIQABIeChpNU0dfU1BMSVRTQ1JFRU5fUkVNT1ZFVVNFUhAB",
-          "KrMBChVFUXVlcnlDdmFyVmFsdWVTdGF0dXMSJQohZVF1ZXJ5Q3ZhclZhbHVl",
-          "U3RhdHVzX1ZhbHVlSW50YWN0EAASJgoiZVF1ZXJ5Q3ZhclZhbHVlU3RhdHVz",
-          "X0N2YXJOb3RGb3VuZBABEiIKHmVRdWVyeUN2YXJWYWx1ZVN0YXR1c19Ob3RB",
-          "Q3ZhchACEicKI2VRdWVyeUN2YXJWYWx1ZVN0YXR1c19DdmFyUHJvdGVjdGVk",
-          "EAMqaAoLRElBTE9HX1RZUEUSDgoKRElBTE9HX01TRxAAEg8KC0RJQUxPR19N",
-          "RU5VEAESDwoLRElBTE9HX1RFWFQQAhIQCgxESUFMT0dfRU5UUlkQAxIVChFE",
-          "SUFMT0dfQVNLQ09OTkVDVBAEKisKGVNWQ19NZXNzYWdlc19Mb3dGcmVxdWVu",
-          "Y3kSDgoJc3ZjX2R1bW15ENgEKoQBChZCaWRpcmVjdGlvbmFsX01lc3NhZ2Vz",
-          "EhsKF2JpX1JlYnJvYWRjYXN0R2FtZUV2ZW50EBASGAoUYmlfUmVicm9hZGNh",
-          "c3RTb3VyY2UQERIbChdiaV9HYW1lRXZlbnRfREVQUkVDQVRFRBASEhYKEmJp",
-          "X1ByZWRpY3Rpb25FdmVudBATKqEBChFSZXBsYXlFdmVudFR5cGVfdBIXChNS",
-          "RVBMQVlfRVZFTlRfQ0FOQ0VMEAASFgoSUkVQTEFZX0VWRU5UX0RFQVRIEAES",
-          "GAoUUkVQTEFZX0VWRU5UX0dFTkVSSUMQAhInCiNSRVBMQVlfRVZFTlRfU1RV",
-          "Q0tfTkVFRF9GVUxMX1VQREFURRADEhgKFFJFUExBWV9FVkVOVF9WSUNUT1JZ",
-          "EAQ="));
+          "ZW50aXR5GAggASgFOgItMRIOCgZjYXN0ZXIYCSABKAgiPAoVQ1NWQ01zZ19F",
+          "bmNyeXB0ZWREYXRhEhEKCWVuY3J5cHRlZBgBIAEoDBIQCghrZXlfdHlwZRgC",
+          "IAEoBSJLChZDU1ZDTXNnX1BhY2tldFJlbGlhYmxlEgwKBHRpY2sYASABKAUS",
+          "FAoMbWVzc2FnZXNzaXplGAIgASgFEg0KBXN0YXRlGAMgASgIIlQKFkNTVkNN",
+          "c2dfRnVsbEZyYW1lU3BsaXQSDAoEdGljaxgBIAEoBRIPCgdzZWN0aW9uGAIg",
+          "ASgFEg0KBXRvdGFsGAMgASgFEgwKBGRhdGEYBCABKAwiVQoSQ1NWQ01zZ19I",
+          "TFRWU3RhdHVzEg4KBm1hc3RlchgBIAEoCRIPCgdjbGllbnRzGAIgASgFEg0K",
+          "BXNsb3RzGAMgASgFEg8KB3Byb3hpZXMYBCABKAUiKQoVQ1NWQ01zZ19TZXJ2",
+          "ZXJTdGVhbUlEEhAKCHN0ZWFtX2lkGAEgASgEIiQKFENTVkNNc2dfQ21kS2V5",
+          "VmFsdWVzEgwKBGRhdGEYASABKAwiOwoZQ1NWQ01zZ19SY29uU2VydmVyRGV0",
+          "YWlscxINCgV0b2tlbhgBIAEoDBIPCgdkZXRhaWxzGAIgASgJIjsKDkNNc2dJ",
+          "UENBZGRyZXNzEhUKDWNvbXB1dGVyX2d1aWQYASABKAYSEgoKcHJvY2Vzc19p",
+          "ZBgCIAEoDSKkAQoOQ01zZ1NlcnZlclBlZXISFwoLcGxheWVyX3Nsb3QYASAB",
+          "KAU6Ai0xEg8KB3N0ZWFtaWQYAiABKAYSHAoDaXBjGAMgASgLMg8uQ01zZ0lQ",
+          "Q0FkZHJlc3MSFQoNdGhleV9oZWFyX3lvdRgEIAEoCBIVCg15b3VfaGVhcl90",
+          "aGVtGAUgASgIEhwKFGlzX2xpc3RlbnNlcnZlcl9ob3N0GAYgASgIIjEKEENT",
+          "VkNNc2dfUGVlckxpc3QSHQoEcGVlchgBIAMoCzIPLkNNc2dTZXJ2ZXJQZWVy",
+          "Ik4KHENTVkNNc2dfQ2xlYXJBbGxTdHJpbmdUYWJsZXMSDwoHbWFwbmFtZRgB",
+          "IAEoCRIdChVjcmVhdGVfdGFibGVzX3NraXBwZWQYAyABKAgi6wQKH1Byb3Rv",
+          "RmxhdHRlbmVkU2VyaWFsaXplckZpZWxkX3QSFAoMdmFyX3R5cGVfc3ltGAEg",
+          "ASgFEhQKDHZhcl9uYW1lX3N5bRgCIAEoBRIRCgliaXRfY291bnQYAyABKAUS",
+          "EQoJbG93X3ZhbHVlGAQgASgCEhIKCmhpZ2hfdmFsdWUYBSABKAISFAoMZW5j",
+          "b2RlX2ZsYWdzGAYgASgFEiEKGWZpZWxkX3NlcmlhbGl6ZXJfbmFtZV9zeW0Y",
+          "ByABKAUSIAoYZmllbGRfc2VyaWFsaXplcl92ZXJzaW9uGAggASgFEhUKDXNl",
+          "bmRfbm9kZV9zeW0YCSABKAUSFwoPdmFyX2VuY29kZXJfc3ltGAogASgFEk8K",
+          "EXBvbHltb3JwaGljX3R5cGVzGAsgAygLMjQuUHJvdG9GbGF0dGVuZWRTZXJp",
+          "YWxpemVyRmllbGRfdC5wb2x5bW9ycGhpY19maWVsZF90EhoKEnZhcl9zZXJp",
+          "YWxpemVyX3N5bRgMIAEoBRJJCg12YXJfZW51bV9pbmZvGA0gASgLMjIuUHJv",
+          "dG9GbGF0dGVuZWRTZXJpYWxpemVyRmllbGRfdC5wcm90b19lbnVtX2luZm9f",
+          "dBpyChNwb2x5bW9ycGhpY19maWVsZF90Ei0KJXBvbHltb3JwaGljX2ZpZWxk",
+          "X3NlcmlhbGl6ZXJfbmFtZV9zeW0YASABKAUSLAokcG9seW1vcnBoaWNfZmll",
+          "bGRfc2VyaWFsaXplcl92ZXJzaW9uGAIgASgFGisKEXByb3RvX2VudW1faW5m",
+          "b190EhYKDmlzX3NpZ25lZF9lbnVtGAEgASgIImsKGlByb3RvRmxhdHRlbmVk",
+          "U2VyaWFsaXplcl90EhsKE3NlcmlhbGl6ZXJfbmFtZV9zeW0YASABKAUSGgoS",
+          "c2VyaWFsaXplcl92ZXJzaW9uGAIgASgFEhQKDGZpZWxkc19pbmRleBgDIAMo",
+          "BSLIAQoWUHJvdG9Db29yZFNpemVQYXJhbXNfdBIaChJjb29yZF9pbnRlZ2Vy",
+          "X2JpdHMYASABKAUSHQoVY29vcmRfZnJhY3Rpb25hbF9iaXRzGAIgASgFEh0K",
+          "FWNvb3JkX2ludGVnZXJfYml0c19tcBgDIAEoBRIgChhjb29yZF9mcmFjdGlv",
+          "bmFsX2JpdHNfbXAYBCABKAUSHgoWbm9ybWFsX2ZyYWN0aW9uYWxfYml0cxgF",
+          "IAEoBRISCgphbmdsZV9iaXRzGAYgASgFIswBChtDU1ZDTXNnX0ZsYXR0ZW5l",
+          "ZFNlcmlhbGl6ZXISMAoLc2VyaWFsaXplcnMYASADKAsyGy5Qcm90b0ZsYXR0",
+          "ZW5lZFNlcmlhbGl6ZXJfdBIPCgdzeW1ib2xzGAIgAygJEjAKBmZpZWxkcxgD",
+          "IAMoCzIgLlByb3RvRmxhdHRlbmVkU2VyaWFsaXplckZpZWxkX3QSMgoRY29v",
+          "cmRfc2l6ZV9wYXJhbXMYBCABKAsyFy5Qcm90b0Nvb3JkU2l6ZVBhcmFtc190",
+          "OgSAtRgAIiEKEUNTVkNNc2dfU3RvcFNvdW5kEgwKBGd1aWQYASABKAcieQoe",
+          "Q0JpZGlyTXNnX1JlYnJvYWRjYXN0R2FtZUV2ZW50EhQKDHBvc3R0b3NlcnZl",
+          "chgBIAEoCBIPCgdidWZ0eXBlGAIgASgFEhYKDmNsaWVudGJpdGNvdW50GAMg",
+          "ASgNEhgKEHJlY2VpdmluZ2NsaWVudHMYBCABKAQiMgobQ0JpZGlyTXNnX1Jl",
+          "YnJvYWRjYXN0U291cmNlEhMKC2V2ZW50c291cmNlGAEgASgFIpoBChlDQmlk",
+          "aXJNc2dfUHJlZGljdGlvbkV2ZW50EhAKCGV2ZW50X2lkGAEgASgNEhIKCmV2",
+          "ZW50X2RhdGEYAiABKAwSEQoJc3luY190eXBlGAMgASgNEhcKD3N5bmNfdmFs",
+          "X3VpbnQzMhgEIAEoDSIrCglFU3luY1R5cGUSCwoHU1RfVGljaxAAEhEKDVNU",
+          "X1VzZXJDbWROdW0QASLFBgoWQ01zZ1NlcnZlck5ldHdvcmtTdGF0cxIRCglk",
+          "ZWRpY2F0ZWQYASABKAgSEQoJY3B1X3VzYWdlGAIgASgFEhYKDm1lbW9yeV91",
+          "c2VkX21iGAMgASgFEhYKDm1lbW9yeV9mcmVlX21iGAQgASgFEg4KBnVwdGlt",
+          "ZRgFIAEoBRITCgtzcGF3bl9jb3VudBgGIAEoBRITCgtudW1fY2xpZW50cxgI",
+          "IAEoBRIQCghudW1fYm90cxgJIAEoBRIWCg5udW1fc3BlY3RhdG9ycxgKIAEo",
+          "BRIVCg1udW1fdHZfcmVsYXlzGAsgASgFEgsKA2ZwcxgMIAEoAhIrCgVwb3J0",
+          "cxgRIAMoCzIcLkNNc2dTZXJ2ZXJOZXR3b3JrU3RhdHMuUG9ydBITCgthdmdf",
+          "cGluZ19tcxgSIAEoAhIeChZhdmdfZW5naW5lX2xhdGVuY3lfb3V0GBMgASgC",
+          "EhcKD2F2Z19wYWNrZXRzX291dBgUIAEoAhIWCg5hdmdfcGFja2V0c19pbhgV",
+          "IAEoAhIUCgxhdmdfbG9zc19vdXQYFiABKAISEwoLYXZnX2xvc3NfaW4YFyAB",
+          "KAISFAoMYXZnX2RhdGFfb3V0GBggASgCEhMKC2F2Z19kYXRhX2luGBkgASgC",
+          "EhUKDXRvdGFsX2RhdGFfaW4YGiABKAQSGAoQdG90YWxfcGFja2V0c19pbhgb",
+          "IAEoBBIWCg50b3RhbF9kYXRhX291dBgcIAEoBBIZChF0b3RhbF9wYWNrZXRz",
+          "X291dBgdIAEoBBIvCgdwbGF5ZXJzGB4gAygLMh4uQ01zZ1NlcnZlck5ldHdv",
+          "cmtTdGF0cy5QbGF5ZXIaIgoEUG9ydBIMCgRwb3J0GAEgASgFEgwKBG5hbWUY",
+          "AiABKAkaqgEKBlBsYXllchIPCgdzdGVhbWlkGAEgASgEEhMKC3JlbW90ZV9h",
+          "ZGRyGAIgASgJEhMKC3BpbmdfYXZnX21zGAQgASgFEhcKD3BhY2tldF9sb3Nz",
+          "X3BjdBgFIAEoAhIOCgZpc19ib3QYBiABKAgSDwoHbG9zc19pbhgHIAEoAhIQ",
+          "Cghsb3NzX291dBgIIAEoAhIZChFlbmdpbmVfbGF0ZW5jeV9tcxgJIAEoBSLa",
+          "AQoSQ1NWQ01zZ19IbHR2UmVwbGF5Eg0KBWRlbGF5GAEgASgFEhoKDnByaW1h",
+          "cnlfdGFyZ2V0GAIgASgFOgItMRIWCg5yZXBsYXlfc3RvcF9hdBgDIAEoBRIX",
+          "Cg9yZXBsYXlfc3RhcnRfYXQYBCABKAUSHQoVcmVwbGF5X3Nsb3dkb3duX2Jl",
+          "Z2luGAUgASgFEhsKE3JlcGxheV9zbG93ZG93bl9lbmQYBiABKAUSHAoUcmVw",
+          "bGF5X3Nsb3dkb3duX3JhdGUYByABKAISDgoGcmVhc29uGAggASgFIoUBChJD",
+          "Q0xDTXNnX0hsdHZSZXBsYXkSDwoHcmVxdWVzdBgBIAEoBRIXCg9zbG93ZG93",
+          "bl9sZW5ndGgYAiABKAISFQoNc2xvd2Rvd25fcmF0ZRgDIAEoAhIaCg5wcmlt",
+          "YXJ5X3RhcmdldBgEIAEoBToCLTESEgoKZXZlbnRfdGltZRgFIAEoAiIoChlD",
+          "U1ZDTXNnX0Jyb2FkY2FzdF9Db21tYW5kEgsKA2NtZBgBIAEoCSLvAQodQ0NM",
+          "Q01zZ19IbHR2Rml4dXBPcGVyYXRvclRpY2sSDAoEdGljaxgBIAEoBRISCgpw",
+          "cm9wc19kYXRhGAIgASgMEhsKBm9yaWdpbhgDIAEoCzILLkNNc2dWZWN0b3IS",
+          "HwoKZXllX2FuZ2xlcxgEIAEoCzILLkNNc2dRQW5nbGUSFQoNb2JzZXJ2ZXJf",
+          "bW9kZRgFIAEoBRIcChRjYW1lcmFtYW5fc2NvcmVib2FyZBgGIAEoCBIXCg9v",
+          "YnNlcnZlcl90YXJnZXQYByABKAUSIAoLdmlld19vZmZzZXQYCCABKAsyCy5D",
+          "TXNnVmVjdG9yIk8KH0NTVkNNc2dfSGx0dkZpeHVwT3BlcmF0b3JTdGF0dXMS",
+          "DAoEbW9kZRgBIAEoDRIeChZvdmVycmlkZV9vcGVyYXRvcl9uYW1lGAIgASgJ",
+          "Iq4BChFDTXNnU2VydmVyVXNlckNtZBIMCgRkYXRhGAEgASgMEhIKCmNtZF9u",
+          "dW1iZXIYAiABKAUSFwoLcGxheWVyX3Nsb3QYAyABKAU6Ai0xEhwKFHNlcnZl",
+          "cl90aWNrX2V4ZWN1dGVkGAQgASgFEhMKC2NsaWVudF90aWNrGAUgASgFEhIK",
+          "CmRlbHRhX2RhdGEYBiABKAwSFwoPZGVsdGFfcHJvY2Vzc2VkGAcgASgIIjwK",
+          "FENTVkNNc2dfVXNlckNvbW1hbmRzEiQKCGNvbW1hbmRzGAEgAygLMhIuQ01z",
+          "Z1NlcnZlclVzZXJDbWQiWQoYQ1NWQ01zZ19OZXh0TXNnUHJlZGljdGVkEiQK",
+          "GHByZWRpY3RlZF9ieV9wbGF5ZXJfc2xvdBgBIAEoBToCLTESFwoPbWVzc2Fn",
+          "ZV90eXBlX2lkGAIgASgNKssCCgxDTENfTWVzc2FnZXMSEgoOY2xjX0NsaWVu",
+          "dEluZm8QFBIMCghjbGNfTW92ZRAVEhEKDWNsY19Wb2ljZURhdGEQFhITCg9j",
+          "bGNfQmFzZWxpbmVBY2sQFxIYChRjbGNfUmVzcG9uZEN2YXJWYWx1ZRAZEhcK",
+          "E2NsY19Mb2FkaW5nUHJvZ3Jlc3MQGxIaChZjbGNfU3BsaXRQbGF5ZXJDb25u",
+          "ZWN0EBwSHQoZY2xjX1NwbGl0UGxheWVyRGlzY29ubmVjdBAeEhQKEGNsY19T",
+          "ZXJ2ZXJTdGF0dXMQHxIUChBjbGNfUmVxdWVzdFBhdXNlECESFAoQY2xjX0Nt",
+          "ZEtleVZhbHVlcxAiEhkKFWNsY19SY29uU2VydmVyRGV0YWlscxAjEhIKDmNs",
+          "Y19IbHR2UmVwbGF5ECQSEgoOY2xjX0RpYWdub3N0aWMQJSrIBQoMU1ZDX01l",
+          "c3NhZ2VzEhIKDnN2Y19TZXJ2ZXJJbmZvECgSGwoXc3ZjX0ZsYXR0ZW5lZFNl",
+          "cmlhbGl6ZXIQKRIRCg1zdmNfQ2xhc3NJbmZvECoSEAoMc3ZjX1NldFBhdXNl",
+          "ECsSGQoVc3ZjX0NyZWF0ZVN0cmluZ1RhYmxlECwSGQoVc3ZjX1VwZGF0ZVN0",
+          "cmluZ1RhYmxlEC0SEQoNc3ZjX1ZvaWNlSW5pdBAuEhEKDXN2Y19Wb2ljZURh",
+          "dGEQLxINCglzdmNfUHJpbnQQMBIOCgpzdmNfU291bmRzEDESDwoLc3ZjX1Nl",
+          "dFZpZXcQMhIcChhzdmNfQ2xlYXJBbGxTdHJpbmdUYWJsZXMQMxIUChBzdmNf",
+          "Q21kS2V5VmFsdWVzEDQSEAoMc3ZjX0JTUERlY2FsEDUSEwoPc3ZjX1NwbGl0",
+          "U2NyZWVuEDYSFgoSc3ZjX1BhY2tldEVudGl0aWVzEDcSEAoMc3ZjX1ByZWZl",
+          "dGNoEDgSDAoIc3ZjX01lbnUQORIUChBzdmNfR2V0Q3ZhclZhbHVlEDoSEQoN",
+          "c3ZjX1N0b3BTb3VuZBA7EhAKDHN2Y19QZWVyTGlzdBA8EhYKEnN2Y19QYWNr",
+          "ZXRSZWxpYWJsZRA9EhIKDnN2Y19ITFRWU3RhdHVzED4SFQoRc3ZjX1NlcnZl",
+          "clN0ZWFtSUQQPxIWChJzdmNfRnVsbEZyYW1lU3BsaXQQRhIZChVzdmNfUmNv",
+          "blNlcnZlckRldGFpbHMQRxITCg9zdmNfVXNlck1lc3NhZ2UQSBIZChVzdmNf",
+          "QnJvYWRjYXN0X0NvbW1hbmQQShIfChtzdmNfSGx0dkZpeHVwT3BlcmF0b3JT",
+          "dGF0dXMQSxIQCgxzdmNfVXNlckNtZHMQTBIYChRzdmNfTmV4dE1zZ1ByZWRp",
+          "Y3RlZBBNEhUKEXN2Y19FbmNyeXB0ZWREYXRhEE4qZwoRVm9pY2VEYXRhRm9y",
+          "bWF0X3QSGgoWVk9JQ0VEQVRBX0ZPUk1BVF9TVEVBTRAAEhsKF1ZPSUNFREFU",
+          "QV9GT1JNQVRfRU5HSU5FEAESGQoVVk9JQ0VEQVRBX0ZPUk1BVF9PUFVTEAIq",
+          "QgoOUmVxdWVzdFBhdXNlX3QSDAoIUlBfUEFVU0UQABIOCgpSUF9VTlBBVVNF",
+          "EAESEgoOUlBfVE9HR0xFUEFVU0UQAiodCgxQcmVmZXRjaFR5cGUSDQoJUEZU",
+          "X1NPVU5EEAAqVgoXRVNwbGl0U2NyZWVuTWVzc2FnZVR5cGUSGwoXTVNHX1NQ",
+          "TElUU0NSRUVOX0FERFVTRVIQABIeChpNU0dfU1BMSVRTQ1JFRU5fUkVNT1ZF",
+          "VVNFUhABKrMBChVFUXVlcnlDdmFyVmFsdWVTdGF0dXMSJQohZVF1ZXJ5Q3Zh",
+          "clZhbHVlU3RhdHVzX1ZhbHVlSW50YWN0EAASJgoiZVF1ZXJ5Q3ZhclZhbHVl",
+          "U3RhdHVzX0N2YXJOb3RGb3VuZBABEiIKHmVRdWVyeUN2YXJWYWx1ZVN0YXR1",
+          "c19Ob3RBQ3ZhchACEicKI2VRdWVyeUN2YXJWYWx1ZVN0YXR1c19DdmFyUHJv",
+          "dGVjdGVkEAMqaAoLRElBTE9HX1RZUEUSDgoKRElBTE9HX01TRxAAEg8KC0RJ",
+          "QUxPR19NRU5VEAESDwoLRElBTE9HX1RFWFQQAhIQCgxESUFMT0dfRU5UUlkQ",
+          "AxIVChFESUFMT0dfQVNLQ09OTkVDVBAEKisKGVNWQ19NZXNzYWdlc19Mb3dG",
+          "cmVxdWVuY3kSDgoJc3ZjX2R1bW15ENgEKoQBChZCaWRpcmVjdGlvbmFsX01l",
+          "c3NhZ2VzEhsKF2JpX1JlYnJvYWRjYXN0R2FtZUV2ZW50EBASGAoUYmlfUmVi",
+          "cm9hZGNhc3RTb3VyY2UQERIbChdiaV9HYW1lRXZlbnRfREVQUkVDQVRFRBAS",
+          "EhYKEmJpX1ByZWRpY3Rpb25FdmVudBATKqEBChFSZXBsYXlFdmVudFR5cGVf",
+          "dBIXChNSRVBMQVlfRVZFTlRfQ0FOQ0VMEAASFgoSUkVQTEFZX0VWRU5UX0RF",
+          "QVRIEAESGAoUUkVQTEFZX0VWRU5UX0dFTkVSSUMQAhInCiNSRVBMQVlfRVZF",
+          "TlRfU1RVQ0tfTkVFRF9GVUxMX1VQREFURRADEhgKFFJFUExBWV9FVkVOVF9W",
+          "SUNUT1JZEAQ="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::NetworkbasetypesReflection.Descriptor, global::Source2SteamStatsReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::CLC_Messages), typeof(global::SVC_Messages), typeof(global::VoiceDataFormat_t), typeof(global::RequestPause_t), typeof(global::PrefetchType), typeof(global::ESplitScreenMessageType), typeof(global::EQueryCvarValueStatus), typeof(global::DIALOG_TYPE), typeof(global::SVC_Messages_LowFrequency), typeof(global::Bidirectional_Messages), typeof(global::ReplayEventType_t), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -316,7 +327,8 @@ public static partial class NetmessagesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_TempEntities), global::CSVCMsg_TempEntities.Parser, new[]{ "Reliable", "NumEntries", "EntityData" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_CreateStringTable), global::CSVCMsg_CreateStringTable.Parser, new[]{ "Name", "NumEntries", "UserDataFixedSize", "UserDataSize", "UserDataSizeBits", "Flags", "StringData", "UncompressedSize", "DataCompressed", "UsingVarintBitcounts" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_UpdateStringTable), global::CSVCMsg_UpdateStringTable.Parser, new[]{ "TableId", "NumChangedEntries", "StringData" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_VoiceData), global::CSVCMsg_VoiceData.Parser, new[]{ "Audio", "ClientDeprecated", "Proximity", "Xuid", "AudibleMask", "Tick", "Passthrough", "Entity" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_VoiceData), global::CSVCMsg_VoiceData.Parser, new[]{ "Audio", "ClientDeprecated", "Proximity", "Xuid", "AudibleMask", "Tick", "Passthrough", "Entity", "Caster" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_EncryptedData), global::CSVCMsg_EncryptedData.Parser, new[]{ "Encrypted", "KeyType" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_PacketReliable), global::CSVCMsg_PacketReliable.Parser, new[]{ "Tick", "Messagessize", "State" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_FullFrameSplit), global::CSVCMsg_FullFrameSplit.Parser, new[]{ "Tick", "Section", "Total", "Data" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_HLTVStatus), global::CSVCMsg_HLTVStatus.Parser, new[]{ "Master", "Clients", "Slots", "Proxies" }, null, null, null, null),
@@ -327,9 +339,11 @@ public static partial class NetmessagesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgServerPeer), global::CMsgServerPeer.Parser, new[]{ "PlayerSlot", "Steamid", "Ipc", "TheyHearYou", "YouHearThem", "IsListenserverHost" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_PeerList), global::CSVCMsg_PeerList.Parser, new[]{ "Peer" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_ClearAllStringTables), global::CSVCMsg_ClearAllStringTables.Parser, new[]{ "Mapname", "CreateTablesSkipped" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializerField_t), global::ProtoFlattenedSerializerField_t.Parser, new[]{ "VarTypeSym", "VarNameSym", "BitCount", "LowValue", "HighValue", "EncodeFlags", "FieldSerializerNameSym", "FieldSerializerVersion", "SendNodeSym", "VarEncoderSym", "PolymorphicTypes", "VarSerializerSym" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializerField_t.Types.polymorphic_field_t), global::ProtoFlattenedSerializerField_t.Types.polymorphic_field_t.Parser, new[]{ "PolymorphicFieldSerializerNameSym", "PolymorphicFieldSerializerVersion" }, null, null, null, null)}),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializerField_t), global::ProtoFlattenedSerializerField_t.Parser, new[]{ "VarTypeSym", "VarNameSym", "BitCount", "LowValue", "HighValue", "EncodeFlags", "FieldSerializerNameSym", "FieldSerializerVersion", "SendNodeSym", "VarEncoderSym", "PolymorphicTypes", "VarSerializerSym", "VarEnumInfo" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializerField_t.Types.polymorphic_field_t), global::ProtoFlattenedSerializerField_t.Types.polymorphic_field_t.Parser, new[]{ "PolymorphicFieldSerializerNameSym", "PolymorphicFieldSerializerVersion" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t), global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t.Parser, new[]{ "IsSignedEnum" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::ProtoFlattenedSerializer_t), global::ProtoFlattenedSerializer_t.Parser, new[]{ "SerializerNameSym", "SerializerVersion", "FieldsIndex" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_FlattenedSerializer), global::CSVCMsg_FlattenedSerializer.Parser, new[]{ "Serializers", "Symbols", "Fields" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ProtoCoordSizeParams_t), global::ProtoCoordSizeParams_t.Parser, new[]{ "CoordIntegerBits", "CoordFractionalBits", "CoordIntegerBitsMp", "CoordFractionalBitsMp", "NormalFractionalBits", "AngleBits" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_FlattenedSerializer), global::CSVCMsg_FlattenedSerializer.Parser, new[]{ "Serializers", "Symbols", "Fields", "CoordSizeParams" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_StopSound), global::CSVCMsg_StopSound.Parser, new[]{ "Guid" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CBidirMsg_RebroadcastGameEvent), global::CBidirMsg_RebroadcastGameEvent.Parser, new[]{ "Posttoserver", "Buftype", "Clientbitcount", "Receivingclients" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CBidirMsg_RebroadcastSource), global::CBidirMsg_RebroadcastSource.Parser, new[]{ "Eventsource" }, null, null, null, null),
@@ -341,7 +355,7 @@ public static partial class NetmessagesReflection {
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_Broadcast_Command), global::CSVCMsg_Broadcast_Command.Parser, new[]{ "Cmd" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CCLCMsg_HltvFixupOperatorTick), global::CCLCMsg_HltvFixupOperatorTick.Parser, new[]{ "Tick", "PropsData", "Origin", "EyeAngles", "ObserverMode", "CameramanScoreboard", "ObserverTarget", "ViewOffset" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_HltvFixupOperatorStatus), global::CSVCMsg_HltvFixupOperatorStatus.Parser, new[]{ "Mode", "OverrideOperatorName" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgServerUserCmd), global::CMsgServerUserCmd.Parser, new[]{ "Data", "CmdNumber", "PlayerSlot", "ServerTickExecuted", "ClientTick", "DeltaData" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgServerUserCmd), global::CMsgServerUserCmd.Parser, new[]{ "Data", "CmdNumber", "PlayerSlot", "ServerTickExecuted", "ClientTick", "DeltaData", "DeltaProcessed" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_UserCommands), global::CSVCMsg_UserCommands.Parser, new[]{ "Commands" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSVCMsg_NextMsgPredicted), global::CSVCMsg_NextMsgPredicted.Parser, new[]{ "PredictedByPlayerSlot", "MessageTypeId" }, null, null, null, null)
         }));
@@ -399,6 +413,7 @@ public enum SVC_Messages {
   [pbr::OriginalName("svc_HltvFixupOperatorStatus")] SvcHltvFixupOperatorStatus = 75,
   [pbr::OriginalName("svc_UserCmds")] SvcUserCmds = 76,
   [pbr::OriginalName("svc_NextMsgPredicted")] SvcNextMsgPredicted = 77,
+  [pbr::OriginalName("svc_EncryptedData")] SvcEncryptedData = 78,
 }
 
 public enum VoiceDataFormat_t {
@@ -15789,6 +15804,7 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     tick_ = other.tick_;
     passthrough_ = other.passthrough_;
     entity_ = other.entity_;
+    caster_ = other.caster_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -15999,6 +16015,33 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     _hasBits0 &= ~64;
   }
 
+  /// <summary>Field number for the "caster" field.</summary>
+  public const int CasterFieldNumber = 9;
+  private readonly static bool CasterDefaultValue = false;
+
+  private bool caster_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Caster {
+    get { if ((_hasBits0 & 128) != 0) { return caster_; } else { return CasterDefaultValue; } }
+    set {
+      _hasBits0 |= 128;
+      caster_ = value;
+    }
+  }
+  /// <summary>Gets whether the "caster" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCaster {
+    get { return (_hasBits0 & 128) != 0; }
+  }
+  /// <summary>Clears the value of the "caster" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCaster() {
+    _hasBits0 &= ~128;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -16022,6 +16065,7 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     if (Tick != other.Tick) return false;
     if (Passthrough != other.Passthrough) return false;
     if (Entity != other.Entity) return false;
+    if (Caster != other.Caster) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -16037,6 +16081,7 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     if (HasTick) hash ^= Tick.GetHashCode();
     if (HasPassthrough) hash ^= Passthrough.GetHashCode();
     if (HasEntity) hash ^= Entity.GetHashCode();
+    if (HasCaster) hash ^= Caster.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -16087,6 +16132,10 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
       output.WriteRawTag(64);
       output.WriteInt32(Entity);
     }
+    if (HasCaster) {
+      output.WriteRawTag(72);
+      output.WriteBool(Caster);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -16129,6 +16178,10 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
       output.WriteRawTag(64);
       output.WriteInt32(Entity);
     }
+    if (HasCaster) {
+      output.WriteRawTag(72);
+      output.WriteBool(Caster);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -16162,6 +16215,9 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     }
     if (HasEntity) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(Entity);
+    }
+    if (HasCaster) {
+      size += 1 + 1;
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -16201,6 +16257,9 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
     }
     if (other.HasEntity) {
       Entity = other.Entity;
+    }
+    if (other.HasCaster) {
+      Caster = other.Caster;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -16250,6 +16309,10 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
         }
         case 64: {
           Entity = input.ReadInt32();
+          break;
+        }
+        case 72: {
+          Caster = input.ReadBool();
           break;
         }
       }
@@ -16302,6 +16365,267 @@ public sealed partial class CSVCMsg_VoiceData : pb::IMessage<CSVCMsg_VoiceData>
           Entity = input.ReadInt32();
           break;
         }
+        case 72: {
+          Caster = input.ReadBool();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
+public sealed partial class CSVCMsg_EncryptedData : pb::IMessage<CSVCMsg_EncryptedData>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<CSVCMsg_EncryptedData> _parser = new pb::MessageParser<CSVCMsg_EncryptedData>(() => new CSVCMsg_EncryptedData());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<CSVCMsg_EncryptedData> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[37]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CSVCMsg_EncryptedData() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CSVCMsg_EncryptedData(CSVCMsg_EncryptedData other) : this() {
+    _hasBits0 = other._hasBits0;
+    encrypted_ = other.encrypted_;
+    keyType_ = other.keyType_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public CSVCMsg_EncryptedData Clone() {
+    return new CSVCMsg_EncryptedData(this);
+  }
+
+  /// <summary>Field number for the "encrypted" field.</summary>
+  public const int EncryptedFieldNumber = 1;
+  private readonly static pb::ByteString EncryptedDefaultValue = pb::ByteString.Empty;
+
+  private pb::ByteString encrypted_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public pb::ByteString Encrypted {
+    get { return encrypted_ ?? EncryptedDefaultValue; }
+    set {
+      encrypted_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+  /// <summary>Gets whether the "encrypted" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasEncrypted {
+    get { return encrypted_ != null; }
+  }
+  /// <summary>Clears the value of the "encrypted" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearEncrypted() {
+    encrypted_ = null;
+  }
+
+  /// <summary>Field number for the "key_type" field.</summary>
+  public const int KeyTypeFieldNumber = 2;
+  private readonly static int KeyTypeDefaultValue = 0;
+
+  private int keyType_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int KeyType {
+    get { if ((_hasBits0 & 1) != 0) { return keyType_; } else { return KeyTypeDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      keyType_ = value;
+    }
+  }
+  /// <summary>Gets whether the "key_type" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasKeyType {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "key_type" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearKeyType() {
+    _hasBits0 &= ~1;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as CSVCMsg_EncryptedData);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(CSVCMsg_EncryptedData other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Encrypted != other.Encrypted) return false;
+    if (KeyType != other.KeyType) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasEncrypted) hash ^= Encrypted.GetHashCode();
+    if (HasKeyType) hash ^= KeyType.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasEncrypted) {
+      output.WriteRawTag(10);
+      output.WriteBytes(Encrypted);
+    }
+    if (HasKeyType) {
+      output.WriteRawTag(16);
+      output.WriteInt32(KeyType);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasEncrypted) {
+      output.WriteRawTag(10);
+      output.WriteBytes(Encrypted);
+    }
+    if (HasKeyType) {
+      output.WriteRawTag(16);
+      output.WriteInt32(KeyType);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasEncrypted) {
+      size += 1 + pb::CodedOutputStream.ComputeBytesSize(Encrypted);
+    }
+    if (HasKeyType) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(KeyType);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(CSVCMsg_EncryptedData other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasEncrypted) {
+      Encrypted = other.Encrypted;
+    }
+    if (other.HasKeyType) {
+      KeyType = other.KeyType;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 10: {
+          Encrypted = input.ReadBytes();
+          break;
+        }
+        case 16: {
+          KeyType = input.ReadInt32();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 10: {
+          Encrypted = input.ReadBytes();
+          break;
+        }
+        case 16: {
+          KeyType = input.ReadInt32();
+          break;
+        }
       }
     }
   }
@@ -16324,7 +16648,7 @@ public sealed partial class CSVCMsg_PacketReliable : pb::IMessage<CSVCMsg_Packet
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[37]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[38]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16634,7 +16958,7 @@ public sealed partial class CSVCMsg_FullFrameSplit : pb::IMessage<CSVCMsg_FullFr
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[38]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[39]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -16995,7 +17319,7 @@ public sealed partial class CSVCMsg_HLTVStatus : pb::IMessage<CSVCMsg_HLTVStatus
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[39]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[40]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17356,7 +17680,7 @@ public sealed partial class CSVCMsg_ServerSteamID : pb::IMessage<CSVCMsg_ServerS
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[40]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[41]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17561,7 +17885,7 @@ public sealed partial class CSVCMsg_CmdKeyValues : pb::IMessage<CSVCMsg_CmdKeyVa
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[41]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[42]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -17764,7 +18088,7 @@ public sealed partial class CSVCMsg_RconServerDetails : pb::IMessage<CSVCMsg_Rco
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[42]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[43]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18019,7 +18343,7 @@ public sealed partial class CMsgIPCAddress : pb::IMessage<CMsgIPCAddress>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[43]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[44]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18277,7 +18601,7 @@ public sealed partial class CMsgServerPeer : pb::IMessage<CMsgServerPeer>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[44]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[45]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18736,7 +19060,7 @@ public sealed partial class CSVCMsg_PeerList : pb::IMessage<CSVCMsg_PeerList>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[45]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[46]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -18915,7 +19239,7 @@ public sealed partial class CSVCMsg_ClearAllStringTables : pb::IMessage<CSVCMsg_
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[46]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[47]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19172,7 +19496,7 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[47]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[48]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19205,6 +19529,7 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     varEncoderSym_ = other.varEncoderSym_;
     polymorphicTypes_ = other.polymorphicTypes_.Clone();
     varSerializerSym_ = other.varSerializerSym_;
+    varEnumInfo_ = other.varEnumInfo_ != null ? other.varEnumInfo_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -19522,6 +19847,18 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     _hasBits0 &= ~1024;
   }
 
+  /// <summary>Field number for the "var_enum_info" field.</summary>
+  public const int VarEnumInfoFieldNumber = 13;
+  private global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t varEnumInfo_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t VarEnumInfo {
+    get { return varEnumInfo_; }
+    set {
+      varEnumInfo_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -19549,6 +19886,7 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     if (VarEncoderSym != other.VarEncoderSym) return false;
     if(!polymorphicTypes_.Equals(other.polymorphicTypes_)) return false;
     if (VarSerializerSym != other.VarSerializerSym) return false;
+    if (!object.Equals(VarEnumInfo, other.VarEnumInfo)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -19568,6 +19906,7 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     if (HasVarEncoderSym) hash ^= VarEncoderSym.GetHashCode();
     hash ^= polymorphicTypes_.GetHashCode();
     if (HasVarSerializerSym) hash ^= VarSerializerSym.GetHashCode();
+    if (varEnumInfo_ != null) hash ^= VarEnumInfo.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -19631,6 +19970,10 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
       output.WriteRawTag(96);
       output.WriteInt32(VarSerializerSym);
     }
+    if (varEnumInfo_ != null) {
+      output.WriteRawTag(106);
+      output.WriteMessage(VarEnumInfo);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -19686,6 +20029,10 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
       output.WriteRawTag(96);
       output.WriteInt32(VarSerializerSym);
     }
+    if (varEnumInfo_ != null) {
+      output.WriteRawTag(106);
+      output.WriteMessage(VarEnumInfo);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -19729,6 +20076,9 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     size += polymorphicTypes_.CalculateSize(_repeated_polymorphicTypes_codec);
     if (HasVarSerializerSym) {
       size += 1 + pb::CodedOutputStream.ComputeInt32Size(VarSerializerSym);
+    }
+    if (varEnumInfo_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(VarEnumInfo);
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -19775,6 +20125,12 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
     polymorphicTypes_.Add(other.polymorphicTypes_);
     if (other.HasVarSerializerSym) {
       VarSerializerSym = other.VarSerializerSym;
+    }
+    if (other.varEnumInfo_ != null) {
+      if (varEnumInfo_ == null) {
+        VarEnumInfo = new global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t();
+      }
+      VarEnumInfo.MergeFrom(other.VarEnumInfo);
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -19839,6 +20195,13 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
           VarSerializerSym = input.ReadInt32();
           break;
         }
+        case 106: {
+          if (varEnumInfo_ == null) {
+            VarEnumInfo = new global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t();
+          }
+          input.ReadMessage(VarEnumInfo);
+          break;
+        }
       }
     }
   #endif
@@ -19900,6 +20263,13 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
         }
         case 96: {
           VarSerializerSym = input.ReadInt32();
+          break;
+        }
+        case 106: {
+          if (varEnumInfo_ == null) {
+            VarEnumInfo = new global::ProtoFlattenedSerializerField_t.Types.proto_enum_info_t();
+          }
+          input.ReadMessage(VarEnumInfo);
           break;
         }
       }
@@ -20170,6 +20540,212 @@ public sealed partial class ProtoFlattenedSerializerField_t : pb::IMessage<Proto
 
     }
 
+    public sealed partial class proto_enum_info_t : pb::IMessage<proto_enum_info_t>
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        , pb::IBufferMessage
+    #endif
+    {
+      private static readonly pb::MessageParser<proto_enum_info_t> _parser = new pb::MessageParser<proto_enum_info_t>(() => new proto_enum_info_t());
+      private pb::UnknownFieldSet _unknownFields;
+      private int _hasBits0;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public static pb::MessageParser<proto_enum_info_t> Parser { get { return _parser; } }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public static pbr::MessageDescriptor Descriptor {
+        get { return global::ProtoFlattenedSerializerField_t.Descriptor.NestedTypes[1]; }
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      pbr::MessageDescriptor pb::IMessage.Descriptor {
+        get { return Descriptor; }
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public proto_enum_info_t() {
+        OnConstruction();
+      }
+
+      partial void OnConstruction();
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public proto_enum_info_t(proto_enum_info_t other) : this() {
+        _hasBits0 = other._hasBits0;
+        isSignedEnum_ = other.isSignedEnum_;
+        _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public proto_enum_info_t Clone() {
+        return new proto_enum_info_t(this);
+      }
+
+      /// <summary>Field number for the "is_signed_enum" field.</summary>
+      public const int IsSignedEnumFieldNumber = 1;
+      private readonly static bool IsSignedEnumDefaultValue = false;
+
+      private bool isSignedEnum_;
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool IsSignedEnum {
+        get { if ((_hasBits0 & 1) != 0) { return isSignedEnum_; } else { return IsSignedEnumDefaultValue; } }
+        set {
+          _hasBits0 |= 1;
+          isSignedEnum_ = value;
+        }
+      }
+      /// <summary>Gets whether the "is_signed_enum" field is set</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool HasIsSignedEnum {
+        get { return (_hasBits0 & 1) != 0; }
+      }
+      /// <summary>Clears the value of the "is_signed_enum" field</summary>
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void ClearIsSignedEnum() {
+        _hasBits0 &= ~1;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override bool Equals(object other) {
+        return Equals(other as proto_enum_info_t);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public bool Equals(proto_enum_info_t other) {
+        if (ReferenceEquals(other, null)) {
+          return false;
+        }
+        if (ReferenceEquals(other, this)) {
+          return true;
+        }
+        if (IsSignedEnum != other.IsSignedEnum) return false;
+        return Equals(_unknownFields, other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override int GetHashCode() {
+        int hash = 1;
+        if (HasIsSignedEnum) hash ^= IsSignedEnum.GetHashCode();
+        if (_unknownFields != null) {
+          hash ^= _unknownFields.GetHashCode();
+        }
+        return hash;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public override string ToString() {
+        return pb::JsonFormatter.ToDiagnosticString(this);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void WriteTo(pb::CodedOutputStream output) {
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        output.WriteRawMessage(this);
+      #else
+        if (HasIsSignedEnum) {
+          output.WriteRawTag(8);
+          output.WriteBool(IsSignedEnum);
+        }
+        if (_unknownFields != null) {
+          _unknownFields.WriteTo(output);
+        }
+      #endif
+      }
+
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+        if (HasIsSignedEnum) {
+          output.WriteRawTag(8);
+          output.WriteBool(IsSignedEnum);
+        }
+        if (_unknownFields != null) {
+          _unknownFields.WriteTo(ref output);
+        }
+      }
+      #endif
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public int CalculateSize() {
+        int size = 0;
+        if (HasIsSignedEnum) {
+          size += 1 + 1;
+        }
+        if (_unknownFields != null) {
+          size += _unknownFields.CalculateSize();
+        }
+        return size;
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void MergeFrom(proto_enum_info_t other) {
+        if (other == null) {
+          return;
+        }
+        if (other.HasIsSignedEnum) {
+          IsSignedEnum = other.IsSignedEnum;
+        }
+        _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+      }
+
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      public void MergeFrom(pb::CodedInputStream input) {
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        input.ReadRawMessage(this);
+      #else
+        uint tag;
+        while ((tag = input.ReadTag()) != 0) {
+          switch(tag) {
+            default:
+              _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+              break;
+            case 8: {
+              IsSignedEnum = input.ReadBool();
+              break;
+            }
+          }
+        }
+      #endif
+      }
+
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+      [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+      void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+        uint tag;
+        while ((tag = input.ReadTag()) != 0) {
+          switch(tag) {
+            default:
+              _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+              break;
+            case 8: {
+              IsSignedEnum = input.ReadBool();
+              break;
+            }
+          }
+        }
+      }
+      #endif
+
+    }
+
   }
   #endregion
 
@@ -20190,7 +20766,7 @@ public sealed partial class ProtoFlattenedSerializer_t : pb::IMessage<ProtoFlatt
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[48]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[49]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20461,6 +21037,472 @@ public sealed partial class ProtoFlattenedSerializer_t : pb::IMessage<ProtoFlatt
 
 }
 
+public sealed partial class ProtoCoordSizeParams_t : pb::IMessage<ProtoCoordSizeParams_t>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    , pb::IBufferMessage
+#endif
+{
+  private static readonly pb::MessageParser<ProtoCoordSizeParams_t> _parser = new pb::MessageParser<ProtoCoordSizeParams_t>(() => new ProtoCoordSizeParams_t());
+  private pb::UnknownFieldSet _unknownFields;
+  private int _hasBits0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pb::MessageParser<ProtoCoordSizeParams_t> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[50]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public ProtoCoordSizeParams_t() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public ProtoCoordSizeParams_t(ProtoCoordSizeParams_t other) : this() {
+    _hasBits0 = other._hasBits0;
+    coordIntegerBits_ = other.coordIntegerBits_;
+    coordFractionalBits_ = other.coordFractionalBits_;
+    coordIntegerBitsMp_ = other.coordIntegerBitsMp_;
+    coordFractionalBitsMp_ = other.coordFractionalBitsMp_;
+    normalFractionalBits_ = other.normalFractionalBits_;
+    angleBits_ = other.angleBits_;
+    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public ProtoCoordSizeParams_t Clone() {
+    return new ProtoCoordSizeParams_t(this);
+  }
+
+  /// <summary>Field number for the "coord_integer_bits" field.</summary>
+  public const int CoordIntegerBitsFieldNumber = 1;
+  private readonly static int CoordIntegerBitsDefaultValue = 0;
+
+  private int coordIntegerBits_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CoordIntegerBits {
+    get { if ((_hasBits0 & 1) != 0) { return coordIntegerBits_; } else { return CoordIntegerBitsDefaultValue; } }
+    set {
+      _hasBits0 |= 1;
+      coordIntegerBits_ = value;
+    }
+  }
+  /// <summary>Gets whether the "coord_integer_bits" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCoordIntegerBits {
+    get { return (_hasBits0 & 1) != 0; }
+  }
+  /// <summary>Clears the value of the "coord_integer_bits" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCoordIntegerBits() {
+    _hasBits0 &= ~1;
+  }
+
+  /// <summary>Field number for the "coord_fractional_bits" field.</summary>
+  public const int CoordFractionalBitsFieldNumber = 2;
+  private readonly static int CoordFractionalBitsDefaultValue = 0;
+
+  private int coordFractionalBits_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CoordFractionalBits {
+    get { if ((_hasBits0 & 2) != 0) { return coordFractionalBits_; } else { return CoordFractionalBitsDefaultValue; } }
+    set {
+      _hasBits0 |= 2;
+      coordFractionalBits_ = value;
+    }
+  }
+  /// <summary>Gets whether the "coord_fractional_bits" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCoordFractionalBits {
+    get { return (_hasBits0 & 2) != 0; }
+  }
+  /// <summary>Clears the value of the "coord_fractional_bits" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCoordFractionalBits() {
+    _hasBits0 &= ~2;
+  }
+
+  /// <summary>Field number for the "coord_integer_bits_mp" field.</summary>
+  public const int CoordIntegerBitsMpFieldNumber = 3;
+  private readonly static int CoordIntegerBitsMpDefaultValue = 0;
+
+  private int coordIntegerBitsMp_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CoordIntegerBitsMp {
+    get { if ((_hasBits0 & 4) != 0) { return coordIntegerBitsMp_; } else { return CoordIntegerBitsMpDefaultValue; } }
+    set {
+      _hasBits0 |= 4;
+      coordIntegerBitsMp_ = value;
+    }
+  }
+  /// <summary>Gets whether the "coord_integer_bits_mp" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCoordIntegerBitsMp {
+    get { return (_hasBits0 & 4) != 0; }
+  }
+  /// <summary>Clears the value of the "coord_integer_bits_mp" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCoordIntegerBitsMp() {
+    _hasBits0 &= ~4;
+  }
+
+  /// <summary>Field number for the "coord_fractional_bits_mp" field.</summary>
+  public const int CoordFractionalBitsMpFieldNumber = 4;
+  private readonly static int CoordFractionalBitsMpDefaultValue = 0;
+
+  private int coordFractionalBitsMp_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CoordFractionalBitsMp {
+    get { if ((_hasBits0 & 8) != 0) { return coordFractionalBitsMp_; } else { return CoordFractionalBitsMpDefaultValue; } }
+    set {
+      _hasBits0 |= 8;
+      coordFractionalBitsMp_ = value;
+    }
+  }
+  /// <summary>Gets whether the "coord_fractional_bits_mp" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasCoordFractionalBitsMp {
+    get { return (_hasBits0 & 8) != 0; }
+  }
+  /// <summary>Clears the value of the "coord_fractional_bits_mp" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearCoordFractionalBitsMp() {
+    _hasBits0 &= ~8;
+  }
+
+  /// <summary>Field number for the "normal_fractional_bits" field.</summary>
+  public const int NormalFractionalBitsFieldNumber = 5;
+  private readonly static int NormalFractionalBitsDefaultValue = 0;
+
+  private int normalFractionalBits_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int NormalFractionalBits {
+    get { if ((_hasBits0 & 16) != 0) { return normalFractionalBits_; } else { return NormalFractionalBitsDefaultValue; } }
+    set {
+      _hasBits0 |= 16;
+      normalFractionalBits_ = value;
+    }
+  }
+  /// <summary>Gets whether the "normal_fractional_bits" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNormalFractionalBits {
+    get { return (_hasBits0 & 16) != 0; }
+  }
+  /// <summary>Clears the value of the "normal_fractional_bits" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNormalFractionalBits() {
+    _hasBits0 &= ~16;
+  }
+
+  /// <summary>Field number for the "angle_bits" field.</summary>
+  public const int AngleBitsFieldNumber = 6;
+  private readonly static int AngleBitsDefaultValue = 0;
+
+  private int angleBits_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int AngleBits {
+    get { if ((_hasBits0 & 32) != 0) { return angleBits_; } else { return AngleBitsDefaultValue; } }
+    set {
+      _hasBits0 |= 32;
+      angleBits_ = value;
+    }
+  }
+  /// <summary>Gets whether the "angle_bits" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasAngleBits {
+    get { return (_hasBits0 & 32) != 0; }
+  }
+  /// <summary>Clears the value of the "angle_bits" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearAngleBits() {
+    _hasBits0 &= ~32;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override bool Equals(object other) {
+    return Equals(other as ProtoCoordSizeParams_t);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool Equals(ProtoCoordSizeParams_t other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (CoordIntegerBits != other.CoordIntegerBits) return false;
+    if (CoordFractionalBits != other.CoordFractionalBits) return false;
+    if (CoordIntegerBitsMp != other.CoordIntegerBitsMp) return false;
+    if (CoordFractionalBitsMp != other.CoordFractionalBitsMp) return false;
+    if (NormalFractionalBits != other.NormalFractionalBits) return false;
+    if (AngleBits != other.AngleBits) return false;
+    return Equals(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (HasCoordIntegerBits) hash ^= CoordIntegerBits.GetHashCode();
+    if (HasCoordFractionalBits) hash ^= CoordFractionalBits.GetHashCode();
+    if (HasCoordIntegerBitsMp) hash ^= CoordIntegerBitsMp.GetHashCode();
+    if (HasCoordFractionalBitsMp) hash ^= CoordFractionalBitsMp.GetHashCode();
+    if (HasNormalFractionalBits) hash ^= NormalFractionalBits.GetHashCode();
+    if (HasAngleBits) hash ^= AngleBits.GetHashCode();
+    if (_unknownFields != null) {
+      hash ^= _unknownFields.GetHashCode();
+    }
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void WriteTo(pb::CodedOutputStream output) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    output.WriteRawMessage(this);
+  #else
+    if (HasCoordIntegerBits) {
+      output.WriteRawTag(8);
+      output.WriteInt32(CoordIntegerBits);
+    }
+    if (HasCoordFractionalBits) {
+      output.WriteRawTag(16);
+      output.WriteInt32(CoordFractionalBits);
+    }
+    if (HasCoordIntegerBitsMp) {
+      output.WriteRawTag(24);
+      output.WriteInt32(CoordIntegerBitsMp);
+    }
+    if (HasCoordFractionalBitsMp) {
+      output.WriteRawTag(32);
+      output.WriteInt32(CoordFractionalBitsMp);
+    }
+    if (HasNormalFractionalBits) {
+      output.WriteRawTag(40);
+      output.WriteInt32(NormalFractionalBits);
+    }
+    if (HasAngleBits) {
+      output.WriteRawTag(48);
+      output.WriteInt32(AngleBits);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(output);
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+    if (HasCoordIntegerBits) {
+      output.WriteRawTag(8);
+      output.WriteInt32(CoordIntegerBits);
+    }
+    if (HasCoordFractionalBits) {
+      output.WriteRawTag(16);
+      output.WriteInt32(CoordFractionalBits);
+    }
+    if (HasCoordIntegerBitsMp) {
+      output.WriteRawTag(24);
+      output.WriteInt32(CoordIntegerBitsMp);
+    }
+    if (HasCoordFractionalBitsMp) {
+      output.WriteRawTag(32);
+      output.WriteInt32(CoordFractionalBitsMp);
+    }
+    if (HasNormalFractionalBits) {
+      output.WriteRawTag(40);
+      output.WriteInt32(NormalFractionalBits);
+    }
+    if (HasAngleBits) {
+      output.WriteRawTag(48);
+      output.WriteInt32(AngleBits);
+    }
+    if (_unknownFields != null) {
+      _unknownFields.WriteTo(ref output);
+    }
+  }
+  #endif
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public int CalculateSize() {
+    int size = 0;
+    if (HasCoordIntegerBits) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(CoordIntegerBits);
+    }
+    if (HasCoordFractionalBits) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(CoordFractionalBits);
+    }
+    if (HasCoordIntegerBitsMp) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(CoordIntegerBitsMp);
+    }
+    if (HasCoordFractionalBitsMp) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(CoordFractionalBitsMp);
+    }
+    if (HasNormalFractionalBits) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(NormalFractionalBits);
+    }
+    if (HasAngleBits) {
+      size += 1 + pb::CodedOutputStream.ComputeInt32Size(AngleBits);
+    }
+    if (_unknownFields != null) {
+      size += _unknownFields.CalculateSize();
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(ProtoCoordSizeParams_t other) {
+    if (other == null) {
+      return;
+    }
+    if (other.HasCoordIntegerBits) {
+      CoordIntegerBits = other.CoordIntegerBits;
+    }
+    if (other.HasCoordFractionalBits) {
+      CoordFractionalBits = other.CoordFractionalBits;
+    }
+    if (other.HasCoordIntegerBitsMp) {
+      CoordIntegerBitsMp = other.CoordIntegerBitsMp;
+    }
+    if (other.HasCoordFractionalBitsMp) {
+      CoordFractionalBitsMp = other.CoordFractionalBitsMp;
+    }
+    if (other.HasNormalFractionalBits) {
+      NormalFractionalBits = other.NormalFractionalBits;
+    }
+    if (other.HasAngleBits) {
+      AngleBits = other.AngleBits;
+    }
+    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void MergeFrom(pb::CodedInputStream input) {
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    input.ReadRawMessage(this);
+  #else
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+          break;
+        case 8: {
+          CoordIntegerBits = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          CoordFractionalBits = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          CoordIntegerBitsMp = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          CoordFractionalBitsMp = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          NormalFractionalBits = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          AngleBits = input.ReadInt32();
+          break;
+        }
+      }
+    }
+  #endif
+  }
+
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+          break;
+        case 8: {
+          CoordIntegerBits = input.ReadInt32();
+          break;
+        }
+        case 16: {
+          CoordFractionalBits = input.ReadInt32();
+          break;
+        }
+        case 24: {
+          CoordIntegerBitsMp = input.ReadInt32();
+          break;
+        }
+        case 32: {
+          CoordFractionalBitsMp = input.ReadInt32();
+          break;
+        }
+        case 40: {
+          NormalFractionalBits = input.ReadInt32();
+          break;
+        }
+        case 48: {
+          AngleBits = input.ReadInt32();
+          break;
+        }
+      }
+    }
+  }
+  #endif
+
+}
+
 public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_FlattenedSerializer>
 #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     , pb::IBufferMessage
@@ -20475,7 +21517,7 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[49]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[51]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20498,6 +21540,7 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     serializers_ = other.serializers_.Clone();
     symbols_ = other.symbols_.Clone();
     fields_ = other.fields_.Clone();
+    coordSizeParams_ = other.coordSizeParams_ != null ? other.coordSizeParams_.Clone() : null;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -20540,6 +21583,18 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     get { return fields_; }
   }
 
+  /// <summary>Field number for the "coord_size_params" field.</summary>
+  public const int CoordSizeParamsFieldNumber = 4;
+  private global::ProtoCoordSizeParams_t coordSizeParams_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public global::ProtoCoordSizeParams_t CoordSizeParams {
+    get { return coordSizeParams_; }
+    set {
+      coordSizeParams_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -20558,6 +21613,7 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     if(!serializers_.Equals(other.serializers_)) return false;
     if(!symbols_.Equals(other.symbols_)) return false;
     if(!fields_.Equals(other.fields_)) return false;
+    if (!object.Equals(CoordSizeParams, other.CoordSizeParams)) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -20568,6 +21624,7 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     hash ^= serializers_.GetHashCode();
     hash ^= symbols_.GetHashCode();
     hash ^= fields_.GetHashCode();
+    if (coordSizeParams_ != null) hash ^= CoordSizeParams.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -20589,6 +21646,10 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     serializers_.WriteTo(output, _repeated_serializers_codec);
     symbols_.WriteTo(output, _repeated_symbols_codec);
     fields_.WriteTo(output, _repeated_fields_codec);
+    if (coordSizeParams_ != null) {
+      output.WriteRawTag(34);
+      output.WriteMessage(CoordSizeParams);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -20602,6 +21663,10 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     serializers_.WriteTo(ref output, _repeated_serializers_codec);
     symbols_.WriteTo(ref output, _repeated_symbols_codec);
     fields_.WriteTo(ref output, _repeated_fields_codec);
+    if (coordSizeParams_ != null) {
+      output.WriteRawTag(34);
+      output.WriteMessage(CoordSizeParams);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -20615,6 +21680,9 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     size += serializers_.CalculateSize(_repeated_serializers_codec);
     size += symbols_.CalculateSize(_repeated_symbols_codec);
     size += fields_.CalculateSize(_repeated_fields_codec);
+    if (coordSizeParams_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(CoordSizeParams);
+    }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
     }
@@ -20630,6 +21698,12 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
     serializers_.Add(other.serializers_);
     symbols_.Add(other.symbols_);
     fields_.Add(other.fields_);
+    if (other.coordSizeParams_ != null) {
+      if (coordSizeParams_ == null) {
+        CoordSizeParams = new global::ProtoCoordSizeParams_t();
+      }
+      CoordSizeParams.MergeFrom(other.CoordSizeParams);
+    }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
 
@@ -20655,6 +21729,13 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
         }
         case 26: {
           fields_.AddEntriesFrom(input, _repeated_fields_codec);
+          break;
+        }
+        case 34: {
+          if (coordSizeParams_ == null) {
+            CoordSizeParams = new global::ProtoCoordSizeParams_t();
+          }
+          input.ReadMessage(CoordSizeParams);
           break;
         }
       }
@@ -20684,6 +21765,13 @@ public sealed partial class CSVCMsg_FlattenedSerializer : pb::IMessage<CSVCMsg_F
           fields_.AddEntriesFrom(ref input, _repeated_fields_codec);
           break;
         }
+        case 34: {
+          if (coordSizeParams_ == null) {
+            CoordSizeParams = new global::ProtoCoordSizeParams_t();
+          }
+          input.ReadMessage(CoordSizeParams);
+          break;
+        }
       }
     }
   }
@@ -20706,7 +21794,7 @@ public sealed partial class CSVCMsg_StopSound : pb::IMessage<CSVCMsg_StopSound>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[50]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[52]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -20912,7 +22000,7 @@ public sealed partial class CBidirMsg_RebroadcastGameEvent : pb::IMessage<CBidir
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[51]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[53]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21274,7 +22362,7 @@ public sealed partial class CBidirMsg_RebroadcastSource : pb::IMessage<CBidirMsg
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[52]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[54]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21480,7 +22568,7 @@ public sealed partial class CBidirMsg_PredictionEvent : pb::IMessage<CBidirMsg_P
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[53]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[55]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21854,7 +22942,7 @@ public sealed partial class CMsgServerNetworkStats : pb::IMessage<CMsgServerNetw
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[54]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[56]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -24090,7 +25178,7 @@ public sealed partial class CSVCMsg_HltvReplay : pb::IMessage<CSVCMsg_HltvReplay
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[55]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[57]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -24660,7 +25748,7 @@ public sealed partial class CCLCMsg_HltvReplay : pb::IMessage<CCLCMsg_HltvReplay
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[56]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[58]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -25073,7 +26161,7 @@ public sealed partial class CSVCMsg_Broadcast_Command : pb::IMessage<CSVCMsg_Bro
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[57]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[59]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -25277,7 +26365,7 @@ public sealed partial class CCLCMsg_HltvFixupOperatorTick : pb::IMessage<CCLCMsg
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[58]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[60]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -25828,7 +26916,7 @@ public sealed partial class CSVCMsg_HltvFixupOperatorStatus : pb::IMessage<CSVCM
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[59]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[61]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -26085,7 +27173,7 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[60]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[62]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -26112,6 +27200,7 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     serverTickExecuted_ = other.serverTickExecuted_;
     clientTick_ = other.clientTick_;
     deltaData_ = other.deltaData_;
+    deltaProcessed_ = other.deltaProcessed_;
     _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
   }
 
@@ -26281,6 +27370,33 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     deltaData_ = null;
   }
 
+  /// <summary>Field number for the "delta_processed" field.</summary>
+  public const int DeltaProcessedFieldNumber = 7;
+  private readonly static bool DeltaProcessedDefaultValue = false;
+
+  private bool deltaProcessed_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool DeltaProcessed {
+    get { if ((_hasBits0 & 16) != 0) { return deltaProcessed_; } else { return DeltaProcessedDefaultValue; } }
+    set {
+      _hasBits0 |= 16;
+      deltaProcessed_ = value;
+    }
+  }
+  /// <summary>Gets whether the "delta_processed" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasDeltaProcessed {
+    get { return (_hasBits0 & 16) != 0; }
+  }
+  /// <summary>Clears the value of the "delta_processed" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearDeltaProcessed() {
+    _hasBits0 &= ~16;
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public override bool Equals(object other) {
@@ -26302,6 +27418,7 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     if (ServerTickExecuted != other.ServerTickExecuted) return false;
     if (ClientTick != other.ClientTick) return false;
     if (DeltaData != other.DeltaData) return false;
+    if (DeltaProcessed != other.DeltaProcessed) return false;
     return Equals(_unknownFields, other._unknownFields);
   }
 
@@ -26315,6 +27432,7 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     if (HasServerTickExecuted) hash ^= ServerTickExecuted.GetHashCode();
     if (HasClientTick) hash ^= ClientTick.GetHashCode();
     if (HasDeltaData) hash ^= DeltaData.GetHashCode();
+    if (HasDeltaProcessed) hash ^= DeltaProcessed.GetHashCode();
     if (_unknownFields != null) {
       hash ^= _unknownFields.GetHashCode();
     }
@@ -26357,6 +27475,10 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
       output.WriteRawTag(50);
       output.WriteBytes(DeltaData);
     }
+    if (HasDeltaProcessed) {
+      output.WriteRawTag(56);
+      output.WriteBool(DeltaProcessed);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(output);
     }
@@ -26391,6 +27513,10 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
       output.WriteRawTag(50);
       output.WriteBytes(DeltaData);
     }
+    if (HasDeltaProcessed) {
+      output.WriteRawTag(56);
+      output.WriteBool(DeltaProcessed);
+    }
     if (_unknownFields != null) {
       _unknownFields.WriteTo(ref output);
     }
@@ -26418,6 +27544,9 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     }
     if (HasDeltaData) {
       size += 1 + pb::CodedOutputStream.ComputeBytesSize(DeltaData);
+    }
+    if (HasDeltaProcessed) {
+      size += 1 + 1;
     }
     if (_unknownFields != null) {
       size += _unknownFields.CalculateSize();
@@ -26448,6 +27577,9 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
     }
     if (other.HasDeltaData) {
       DeltaData = other.DeltaData;
+    }
+    if (other.HasDeltaProcessed) {
+      DeltaProcessed = other.DeltaProcessed;
     }
     _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
   }
@@ -26486,6 +27618,10 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
         }
         case 50: {
           DeltaData = input.ReadBytes();
+          break;
+        }
+        case 56: {
+          DeltaProcessed = input.ReadBool();
           break;
         }
       }
@@ -26527,6 +27663,10 @@ public sealed partial class CMsgServerUserCmd : pb::IMessage<CMsgServerUserCmd>
           DeltaData = input.ReadBytes();
           break;
         }
+        case 56: {
+          DeltaProcessed = input.ReadBool();
+          break;
+        }
       }
     }
   }
@@ -26548,7 +27688,7 @@ public sealed partial class CSVCMsg_UserCommands : pb::IMessage<CSVCMsg_UserComm
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[61]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[63]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -26727,7 +27867,7 @@ public sealed partial class CSVCMsg_NextMsgPredicted : pb::IMessage<CSVCMsg_Next
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pbr::MessageDescriptor Descriptor {
-    get { return global::NetmessagesReflection.Descriptor.MessageTypes[62]; }
+    get { return global::NetmessagesReflection.Descriptor.MessageTypes[64]; }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

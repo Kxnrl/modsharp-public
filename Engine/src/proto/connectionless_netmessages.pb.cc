@@ -139,29 +139,31 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_connectionless_5fnetmessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n connectionless_netmessages.proto\032\021netm"
-  "essages.proto\"I\n\034C2S_CONNECT_SameProcess"
-  "Check\022\034\n\024localhost_process_id\030\001 \001(\004\022\013\n\003k"
-  "ey\030\002 \001(\004\"\321\002\n\023C2S_CONNECT_Message\022\024\n\014host"
-  "_version\030\001 \001(\r\022\025\n\rauth_protocol\030\002 \001(\r\022\030\n"
-  "\020challenge_number\030\003 \001(\r\022\032\n\022reservation_c"
-  "ookie\030\004 \001(\006\022\024\n\014low_violence\030\005 \001(\010\022\032\n\022enc"
-  "rypted_password\030\006 \001(\014\0221\n\014splitplayers\030\007 "
-  "\003(\0132\033.CCLCMsg_SplitPlayerConnect\022\022\n\nauth"
-  "_steam\030\010 \001(\014\022\031\n\021challenge_context\030\t \001(\t\022"
-  "C\n\034localhost_same_process_check\030\n \001(\0132\035."
-  "C2S_CONNECT_SameProcessCheck\"q\n\026C2S_CONN"
-  "ECTION_Message\022\022\n\naddon_name\030\001 \001(\t\022C\n\034lo"
-  "calhost_same_process_check\030\002 \001(\0132\035.C2S_C"
-  "ONNECT_SameProcessCheck"
+  "essages.proto\032\026networkbasetypes.proto\"I\n"
+  "\034C2S_CONNECT_SameProcessCheck\022\034\n\024localho"
+  "st_process_id\030\001 \001(\004\022\013\n\003key\030\002 \001(\004\"\330\002\n\023C2S"
+  "_CONNECT_Message\022\024\n\014host_version\030\001 \001(\r\022\025"
+  "\n\rauth_protocol\030\002 \001(\r\022\030\n\020challenge_numbe"
+  "r\030\003 \001(\r\022\032\n\022reservation_cookie\030\004 \001(\006\022\024\n\014l"
+  "ow_violence\030\005 \001(\010\022\032\n\022encrypted_password\030"
+  "\006 \001(\014\0221\n\014splitplayers\030\007 \003(\0132\033.CCLCMsg_Sp"
+  "litPlayerConnect\022\022\n\nauth_steam\030\010 \001(\014\022\031\n\021"
+  "challenge_context\030\t \001(\t\022C\n\034localhost_sam"
+  "e_process_check\030\n \001(\0132\035.C2S_CONNECT_Same"
+  "ProcessCheck:\005\200\265\030\340\022\"q\n\026C2S_CONNECTION_Me"
+  "ssage\022\022\n\naddon_name\030\001 \001(\t\022C\n\034localhost_s"
+  "ame_process_check\030\002 \001(\0132\035.C2S_CONNECT_Sa"
+  "meProcessCheck"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_connectionless_5fnetmessages_2eproto_deps[1] = {
+static const ::_pbi::DescriptorTable* const descriptor_table_connectionless_5fnetmessages_2eproto_deps[2] = {
   &::descriptor_table_netmessages_2eproto,
+  &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_connectionless_5fnetmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_connectionless_5fnetmessages_2eproto = {
-    false, false, 583, descriptor_table_protodef_connectionless_5fnetmessages_2eproto,
+    false, false, 614, descriptor_table_protodef_connectionless_5fnetmessages_2eproto,
     "connectionless_netmessages.proto",
-    &descriptor_table_connectionless_5fnetmessages_2eproto_once, descriptor_table_connectionless_5fnetmessages_2eproto_deps, 1, 3,
+    &descriptor_table_connectionless_5fnetmessages_2eproto_once, descriptor_table_connectionless_5fnetmessages_2eproto_deps, 2, 3,
     schemas, file_default_instances, TableStruct_connectionless_5fnetmessages_2eproto::offsets,
     file_level_metadata_connectionless_5fnetmessages_2eproto, file_level_enum_descriptors_connectionless_5fnetmessages_2eproto,
     file_level_service_descriptors_connectionless_5fnetmessages_2eproto,

@@ -44,6 +44,8 @@
 #include <Zydis.h>
 #include <safetyhook.hpp>
 
+#include <format>
+
 // #define LOG_FIX_TICKCOUNT
 
 volatile float g_flReplaceMaxSpeed;
@@ -428,9 +430,160 @@ static void PatchJumpInWaterVelocityZ()
     WARN("Found pattern for JumpInWaterVelocityZ but failed to validate and patch the instruction.");
 }
 
+static CAddress FindCPlayerMovementService_RunCommand()
+{
+    auto svr_mod = modules::server;
+
+    auto vfuncs = svr_mod->GetVFunctionsFromVTable("CPlayer_MovementServices");
+    if (vfuncs.empty())
+    {
+        WARN("No VFuncs found for CPlayer_MovementServices; falling back to gamedata.");
+        return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
+    }
+
+    uintptr_t thread_id_address{};
+#ifdef PLATFORM_WINDOWS
+    thread_id_address = reinterpret_cast<uintptr_t>(GetProcAddress(GetModuleHandleA("kernel32.dll"), "GetCurrentThreadId"));
+#else
+    thread_id_address = modules::tier0->GetExportByName("ThreadGetCurrentId");
+#endif
+
+    if (thread_id_address == 0) [[unlikely]]
+    {
+        WARN("Failed to resolve thread ID function; falling back to gamedata.");
+        return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
+    }
+
+    // 'zorf'
+    constexpr uint32_t frozen_hex = 0x7A6F7266;
+    const auto frozen_string = svr_mod->FindString("frozen", true, true);
+
+    std::vector<uintptr_t> zorf_candidates;
+    std::vector<uintptr_t> frozen_candidates;
+    std::vector<uintptr_t> candidate_only_call;
+    std::vector<uintptr_t> candidate_only_marker;
+
+    auto add_candidate = [](std::vector<uintptr_t>& candidates, uintptr_t vfunc) {
+        for (auto candidate : candidates)
+            if (candidate == vfunc)
+                return;
+        candidates.push_back(vfunc);
+    };
+
+    for (uintptr_t vfunc : vfuncs)
+    {
+        auto range = svr_mod->GetFunctionRange(vfunc);
+        if (range == nullptr)
+            continue;
+
+        bool found_call{};
+        bool found_zorf{};
+        bool found_frozen{};
+
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+            if (found_call && found_zorf && found_frozen)
+                return true;
+
+            if (!found_call && instr.mnemonic == ZYDIS_MNEMONIC_CALL
+                && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
+            {
+                found_call = true;
+                return false;
+            }
+
+            if (!found_frozen && frozen_string.IsValid()
+                && instr.mnemonic == ZYDIS_MNEMONIC_LEA
+                && instr.operand_count_visible == 2
+                && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY
+                && ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip) == frozen_string.GetPtr())
+            {
+                found_frozen = true;
+                return false;
+            }
+
+            if (!found_zorf && instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2)
+            {
+                if ((instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE) != 0
+                    && operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+                {
+                    auto abs = ZydisUtility::GetAbsoluteAddress(instr, operands[1], ip);
+                    if (abs != 0 && *reinterpret_cast<uint32_t*>(abs) == frozen_hex)
+                    {
+                        found_zorf = true;
+                        return false;
+                    }
+                }
+                else if (operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE && operands[1].imm.value.u == frozen_hex)
+                {
+                    found_zorf = true;
+                    return false;
+                }
+            }
+
+            return false;
+        });
+
+        if (found_call)
+        {
+            if (found_zorf)
+                add_candidate(zorf_candidates, vfunc);
+            if (found_frozen)
+                add_candidate(frozen_candidates, vfunc);
+            if (!found_zorf && !found_frozen)
+                add_candidate(candidate_only_call, vfunc);
+        }
+        else if (found_zorf || found_frozen)
+            add_candidate(candidate_only_marker, vfunc);
+    }
+
+    const bool marker_conflict = frozen_candidates.size() == 1 && zorf_candidates.size() == 1
+                   && frozen_candidates.front() != zorf_candidates.front();
+    if (!marker_conflict && frozen_candidates.size() == 1)
+    {
+        auto vfunc = frozen_candidates.front();
+        FLOG("Found CPlayer_MovementServices::RunCommand using frozen string at server+0x%llx", vfunc - svr_mod->Base());
+        return vfunc;
+    }
+    if (!marker_conflict && zorf_candidates.size() == 1)
+    {
+        auto vfunc = zorf_candidates.front();
+        FLOG("Found CPlayer_MovementServices::RunCommand using zorf at server+0x%llx", vfunc - svr_mod->Base());
+        return vfunc;
+    }
+
+    std::string diag = std::format(
+        "Failed to find CPlayer_MovementServices::RunCommand by scanning virtual functions."
+        "\n  Scanned {} vfuncs from CPlayer_MovementServices vtable."
+        "\n  'zorf' candidates: {}.",
+        vfuncs.size(), zorf_candidates.size());
+    diag += std::format("\n  'frozen' string candidates: {}.", frozen_candidates.size());
+    if (marker_conflict)
+        diag += "\n  The two markers point to different functions.";
+
+    if (!candidate_only_marker.empty())
+    {
+        diag += std::format("\n  -> Found RunCommand marker without ThreadID call in {} function(s):", candidate_only_marker.size());
+        for (auto fn : candidate_only_marker)
+            diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
+    }
+
+    if (!candidate_only_call.empty())
+    {
+        diag += std::format("\n  -> Found ThreadID (CALL) without RunCommand marker in {} function(s):", candidate_only_call.size());
+        for (auto fn : candidate_only_call)
+            diag += std::format("\n       server+0x{:x}", fn - svr_mod->Base());
+    }
+
+    diag += "\n  Falling back to gamedata...";
+
+    WARN("%s", diag.c_str());
+
+    return g_pGameData->GetAddress<void*>("CPlayer_MovementServices::RunCommand");
+}
+
 void InstallMovementHook()
 {
-    HOOK(CPlayer_MovementServices, RunCommand);
+    HOOK(CPlayer_MovementServices, RunCommand, {.address = FindCPlayerMovementService_RunCommand()});
 
     HOOK(CCSPlayer_MovementServices, WalkMove);
     HOOK(CCSPlayer_MovementServices, Accelerate);

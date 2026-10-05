@@ -477,6 +477,9 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
     internal static unsafe CEntityHandle<IBaseEntity> GetHandle(nint pEntity)
         => GetIdentity(pEntity)->Handle;
 
+    internal static unsafe uint GetHandleValue(nint pEntity)
+        => GetIdentity(pEntity)->Handle.GetValue();
+
     internal static unsafe bool IsMarkedForDelete(nint pEntity)
         => (GetIdentity(pEntity)->Flags & EntityFlagsKillMe) != 0;
 

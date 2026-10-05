@@ -25,6 +25,12 @@ namespace Sharp.Shared;
 
 public interface ILibraryModule
 {
+    nint BaseAddress { get; }
+
+    nuint ImageSize { get; }
+
+    string ModuleName { get; }
+
     /// <summary>
     ///     Find function address by IDA pattern (non-unique) <br />
     ///     <remarks>This method is typically used for iterating through addresses</remarks>
@@ -40,9 +46,25 @@ public interface ILibraryModule
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
     /// <summary>
+    /// </summary>
+    /// <param name="tableName">The name of the vtable, for example: "CCSPlayerPawn"</param>
+    /// <param name="address">The address of given vtable, would be 0 if it doesn't exist</param>
+    /// <param name="decorated">If true, will treat <paramref name="tableName" /> as the mangled (symbol) name</param>
+    /// <returns>True if found</returns>
+    bool TryGetVirtualTableByName(string tableName, out nint address, bool decorated = false);
+
+    /// <summary>
     ///     Get exported function address (similar to GetProcAddress or dlsym).
     /// </summary>
-    /// <param name="functionName">The name of the exported function</param>
+    /// <param name="exportName">The name of the exported function</param>
+    nint GetExportFunction(string exportName);
+
+    /// <summary>
+    ///     Find exported functions whose names match the supplied name.
+    /// </summary>
+    NativeFunctionInfo[] FindExportFunctions(string exportName);
+
+    [Obsolete("Use GetExportFunction instead.")]
     nint GetFunctionByName(string functionName);
 
     /// <summary>
@@ -81,10 +103,34 @@ public interface ILibraryModule
     nint FindStringExact(string str);
 
     /// <summary>
-    ///     Find the address in memory that contains a pointer to the specific value provided.
+    ///     Find address of the given string in the module's data section.
+    /// </summary>
+    /// <param name="str">The string literal to search for</param>
+    /// <param name="readOnly">Should scan the readonly data sections?</param>
+    /// <param name="exact">
+    ///     Should match the exact string? (e.g., searching for "Error" will match a standalone "Error", but
+    ///     will skip over "FatalError")
+    /// </param>
+    nint FindString(string str, bool readOnly, bool exact);
+
+    /// <summary>
+    ///     Find the address in current module's memory that contains a pointer to the specific value provided.
     /// </summary>
     /// <param name="ptr">The value/address to search for within the module's memory space</param>
     nint FindPtr(nint ptr);
+
+    /// <summary>
+    ///     Find the addresses in current module's memory that contains a pointer to the specific value provided.
+    /// </summary>
+    /// <param name="ptr">The value/address to search for within the module's memory space</param>
+    nint[] FindPointers(nint ptr);
+
+    /// <summary>
+    ///     Get the list of virtual function addresses of the given <paramref name="tableName" />
+    /// </summary>
+    /// <param name="tableName">The name of the vtable, for example: "CCSPlayerPawn"</param>
+    /// <returns></returns>
+    nint[] GetVirtualFunctions(string tableName);
 
     /// <summary>
     ///     Finds virtual tables that contain the specified partial string in their type descriptor or name.
@@ -117,7 +163,7 @@ public interface ILibraryModule
     /// <summary>
     ///     Finds the start address of a function that references the specific string literal.
     /// </summary>
-    /// <param name="str">The string literal to look for references to.</param>
+    /// <param name="strs">The string literals to look for references to.</param>
     /// <returns>The function address, or throws/returns 0 if not found.</returns>
     nint FindFunction(ReadOnlySpan<string> strs);
 
@@ -178,4 +224,10 @@ public interface ILibraryModule
     /// <param name="end">The resolved end address of the function.</param>
     /// <returns>True if the function identification was successful.</returns>
     bool GetFunctionRange(nint middle, out nint start, out nint end);
+
+    ModuleSegmentInfo[] GetSegments();
+
+    bool TryGetTypeInfo(string typeName, out nint typeInfo);
+
+    NativeFunctionRange[] GetKnownFunctionRanges();
 }

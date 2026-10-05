@@ -194,13 +194,13 @@ internal sealed class CommandRegistry : ICommandRegistry
 
         foreach (var info in _genericCommands)
         {
-            _conVarManager.ReleaseCommand(info.AddPrefixCommand);
+            _conVarManager.ReleaseServerCommandCallback(info.AddPrefixCommand, info.OnServerCommand);
             _clientManager.RemoveCommandCallback(info.StripPrefixCommand, info.OnClientCommand);
         }
 
         foreach (var info in _consoleCommands)
         {
-            _conVarManager.ReleaseCommand(info.AddPrefix ? info.AddPrefixCommand : info.Command);
+            _conVarManager.ReleaseConsoleCommandCallback(info.AddPrefix ? info.AddPrefixCommand : info.Command, info.OnConsoleCommand);
         }
 
         foreach (var info in _hookCommands)

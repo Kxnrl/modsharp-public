@@ -60,6 +60,7 @@ set(modsharp_SOURCES
 	"src/cstrike/entity/CBaseEntity.cpp"
 	"src/cstrike/entity/CBaseModelEntity.cpp"
 	"src/cstrike/entity/CBaseWeapon.cpp"
+	"src/cstrike/entity/CCSCustomHudLayout.cpp"
 	"src/cstrike/entity/CTriggerPush.cpp"
 	"src/cstrike/entity/PlayerController.cpp"
 	"src/cstrike/entity/PlayerPawn.cpp"
@@ -81,10 +82,11 @@ set(modsharp_SOURCES
 	"src/cstrike/type/CEntityInstance.cpp"
 	"src/cstrike/type/CEntityKeyValues.cpp"
 	"src/cstrike/type/CNetworkGameServer.cpp"
+	"src/cstrike/type/CNetworkUtlVectorBase.cpp"
 	"src/cstrike/type/CRecipientFilter.cpp"
 	"src/cstrike/type/CServerSideClient.cpp"
 	"src/cstrike/type/CUtlString.cpp"
-	"src/cstrike/type/KeyValues.cpp"
+	"src/cstrike/type/CUtlVectorEmbeddedNetworkVar.cpp"
 	"src/cstrike/type/KeyValues3.cpp"
 	"src/filesystemfix.cpp"
 	"src/gamedata.cpp"
@@ -142,6 +144,7 @@ set(modsharp_SOURCES
 	"src/steamproxy.cpp"
 	"src/steamworks.cpp"
 	"src/strtool.cpp"
+	"src/symbol_name.cpp"
 	"src/v8proxy.cpp"
 	"vendors/safetyhook/safetyhook.cpp"
 	"vendors/zydis/Zydis.c"
@@ -281,6 +284,7 @@ endif()
 if(WIN32) # windows
 	target_link_libraries(modsharp PUBLIC
 		psapi
+		dbghelp
 		tier0
 		v8
 	)
@@ -291,6 +295,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		libtier0.so
 		protobuf
 		libsteam_api.so
+		dl
+		pthread
+		m
 		v8
 	)
 endif()
@@ -303,9 +310,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 	target_link_options(modsharp PUBLIC
 		-fuse-ld=mold
 		-static-libgcc
-		-Wl,-Bstatic
-		-lstdc++
-		-Wl,-Bdynamic
+		-static-libstdc++
 	)
 endif()
 

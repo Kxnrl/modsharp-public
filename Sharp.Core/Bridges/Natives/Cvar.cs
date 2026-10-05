@@ -17,7 +17,6 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using System;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
 
@@ -25,11 +24,11 @@ namespace Sharp.Core.Bridges.Natives;
 
 public static unsafe partial class Cvar
 {
-    public static partial bool InstallChangeHook(IntPtr cvar);
+    public static partial bool InstallChangeHook(nint cvar);
 
-    public static partial bool RemoveChangeHook(IntPtr ptr);
+    public static partial bool RemoveChangeHook(nint ptr);
 
-    public static partial IntPtr FindConVar(string name, bool useIterator);
+    public static partial nint FindConVar(string name, bool useIterator);
 
     public static partial nint CreateConVar(string name,
         ConVarVariantValue*                        defaultValue,
@@ -50,6 +49,10 @@ public static unsafe partial class Cvar
         ConVarFlags                                 flags);
 
     public static partial bool ReleaseCommand(string name);
+
+    public static partial long FindGameCommandHandle(string name);
+
+    public static partial long FindSharpCommandHandle(string name);
 
     public static partial void ReplicateToClient(nint cvar, string value, nint client);
 }
