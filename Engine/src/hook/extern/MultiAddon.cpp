@@ -630,7 +630,7 @@ BeginStaticHookScope(ReplyConnection)
 
 BeginStaticHookScope(ScriptGetAddon)
 {
-    // VScript GetAddon() must keep returning the workshop map id, not our comma separated list
+    // level resource loading takes the first id of the addon list as the map's addon, keep it the workshop map
     DeclareStaticDetourHook(ScriptGetAddon, uint64_t, ())
     {
         if (!IsActive() || s_CurrentWorkshopMap.empty())
