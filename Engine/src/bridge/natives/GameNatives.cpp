@@ -306,9 +306,19 @@ static void AddonResetClientCache(SteamId_t steamId)
     AddonHooks::ResetClientCache(steamId);
 }
 
-static bool AddonRefreshClient(SteamId_t steamId)
+static bool AddonRefreshClient(SteamId_t steamId, bool resetCache)
 {
-    return AddonHooks::RefreshClient(steamId);
+    return AddonHooks::RefreshClient(steamId, resetCache);
+}
+
+static bool AddonUpdateAddon(uint64_t fileId)
+{
+    return AddonHooks::UpdateAddon(fileId);
+}
+
+static void AddonSetOptions(float clientTimeout, float connectionTimeout, float cacheDuration, bool debug)
+{
+    AddonHooks::SetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
 }
 
 static void AddonSetClientQueryEnabled(bool enabled)
@@ -378,6 +388,8 @@ void Init()
     bridge::CreateNative("Game.AddonSetAddons", reinterpret_cast<void*>(AddonSetAddons));
     bridge::CreateNative("Game.AddonResetClientCache", reinterpret_cast<void*>(AddonResetClientCache));
     bridge::CreateNative("Game.AddonRefreshClient", reinterpret_cast<void*>(AddonRefreshClient));
+    bridge::CreateNative("Game.AddonUpdateAddon", reinterpret_cast<void*>(AddonUpdateAddon));
+    bridge::CreateNative("Game.AddonSetOptions", reinterpret_cast<void*>(AddonSetOptions));
     bridge::CreateNative("Game.AddonSetClientQueryEnabled", reinterpret_cast<void*>(AddonSetClientQueryEnabled));
 
     bridge::CreateNative("Game.AddWorkshopMap", reinterpret_cast<void*>(AddWorkshopMap));

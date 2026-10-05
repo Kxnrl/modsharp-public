@@ -70,8 +70,14 @@ void SetClientQueryEnabled(bool enabled);
 
 void ResetClientCache(SteamId_t steamId);
 
-// Resend the addons to an in-game client so it reloads / downloads them again (it will reconnect).
-bool RefreshClient(SteamId_t steamId);
+// Resend the addons to an in-game client (it will reconnect).
+// resetCache resends every addon, otherwise only the ones it does not have yet.
+bool RefreshClient(SteamId_t steamId, bool resetCache);
+
+// Force a workshop download (update), remounting the addon if it was mounted.
+bool UpdateAddon(uint64_t fileId);
+
+void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 } // namespace AddonHooks
 
 void InstallAddonHooks();

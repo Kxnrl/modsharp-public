@@ -46,6 +46,7 @@
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/IProtobufBinding.h"
+#include "cstrike/interface/IServerGameClient.h"
 #include "cstrike/type/CBufferString.h"
 #include "cstrike/type/CHostState.h"
 #include "cstrike/type/CNetworkGameServer.h"
@@ -64,31 +65,39 @@
 #include <unordered_map>
 #include <vector>
 
-// #define MULTI_ADDON_ASSERT
+// The MAM-style operator surface (ConVars, commands, disconnect message blocking) lives in
+// the ExtraAddonManager SharpModule on top of IAddonManager / IAddonListener.
 
-// TODO(SharpModule): the MAM-style operator surface below was dropped from core on purpose.
-// Re-implement it as a SharpModule on top of IAddonManager / IAddonListener when needed:
-//  - ConVars: ms_extra_addons, ms_client_extra_addons, timeout / cache tuning, debug logging
-//  - Commands: add/remove (client) addon, download addon, print search paths
-//  - Blocking "loop shutdown" disconnect chat spam (doable via OnPostEventAbstract)
-//  - Forced re-download of installed addons (workshop update)
+constexpr int    MAX_CLIENT_ADDONS = 64;
+constexpr size_t ADDON_PATH_LENGTH = 260;
 
-constexpr double MULTI_ADDON_TIMEOUT        = 10;
-constexpr double MULTI_ADDON_CACHE_DURATION = 600;
-constexpr int    MAX_CLIENT_ADDONS          = 64;
-constexpr size_t ADDON_PATH_LENGTH          = 260;
+// tuned through IAddonManager.SetOptions
+static double s_flClientTimeout     = 10;  // seconds allowed between reconnects for the next addon
+static double s_flConnectionTimeout = 0;   // seconds allowed to accept the first addon, 0 disables
+static double s_flCacheDuration     = 600; // keep downloaded addons per client, 0 forever, < 0 disabled
+static bool   s_bDebug              = false;
 
 struct MultiAddonClientInfo_t
 {
     double                   lastActiveTime {};
+    double                   connectionStartTime {};
+    bool                     connecting {};
     std::vector<std::string> addons; // per-client addons from IAddonListener, refreshed on every ReplyConnection
     std::vector<std::string> downloadedAddons;
     std::string              currentPendingAddon;
 };
 
+struct MultiAddonDownload_t
+{
+    uint64_t fileId;
+    bool     reloadMap; // reload once every reloadMap download finishes
+    bool     remount;   // was mounted before an update, mount it again once done
+};
+
 static std::unordered_map<SteamId_t, MultiAddonClientInfo_t> s_ClientInfos;
 static std::vector<std::string>                              s_MountedAddons;
-static std::deque<uint64_t>                                  s_DownloadQueue;
+static std::deque<MultiAddonDownload_t>                      s_DownloadQueue;
+static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
 static bool                                                  s_IsOfficialWorkshopMap = false;
 
@@ -200,19 +209,25 @@ static void ReloadMap()
     engine->ServerCommand(cmd);
 }
 
-static void DownloadAddon(uint64_t fileId)
+static bool IsDownloading(uint64_t fileId)
 {
-    if (std::ranges::find(s_DownloadQueue, fileId) != s_DownloadQueue.end())
-        return;
+    return std::ranges::any_of(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
+}
+
+static bool DownloadAddon(uint64_t fileId, bool reloadMap, bool remount)
+{
+    if (IsDownloading(fileId))
+        return true;
 
     if (!g_pSteamApiProxy->DownloadItem(fileId, false))
     {
         LogInfo("[MultiAddon] Failed to start download for %llu", fileId);
-        return;
+        return false;
     }
 
-    s_DownloadQueue.push_back(fileId);
+    s_DownloadQueue.push_back({fileId, reloadMap, remount});
     LogInfo("[MultiAddon] Download started for %llu", fileId);
+    return true;
 }
 
 static void PrintDownloadProgress()
@@ -220,7 +235,7 @@ static void PrintDownloadProgress()
     if (s_DownloadQueue.empty() || !HasUGC())
         return;
 
-    const auto fileId = s_DownloadQueue.front();
+    const auto fileId = s_DownloadQueue.front().fileId;
 
     uint64_t downloaded = 0, total = 0;
     if (!g_pSteamApiProxy->GetItemDownloadInfo(fileId, &downloaded, &total) || total == 0)
@@ -253,7 +268,7 @@ static bool MountAddon(const char* pszAddon)
     if (!(state & k_EItemStateInstalled))
     {
         LogInfo("[MultiAddon] %s is not installed, queuing a download", pszAddon);
-        DownloadAddon(fileId);
+        DownloadAddon(fileId, true, false);
         return false;
     }
 
@@ -277,6 +292,19 @@ static bool MountAddon(const char* pszAddon)
     s_MountedAddons.emplace_back(pszAddon);
 
     LogInfo("[MultiAddon] Mounted addon %s -> %s", pszAddon, path);
+    return true;
+}
+
+static bool UnmountAddon(const std::string& addon)
+{
+    const auto it = std::ranges::find(s_MountedAddons, addon);
+    if (it == s_MountedAddons.end())
+        return false;
+
+    char path[ADDON_PATH_LENGTH];
+    BuildAddonPath(addon.c_str(), path, sizeof(path), true);
+    g_pFullFileSystem->RemoveSearchPath(path, "GAME");
+    s_MountedAddons.erase(it);
     return true;
 }
 
@@ -315,10 +343,11 @@ static void RefreshAddons(bool reloadMap)
 
 void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
 {
-    const auto it = std::ranges::find(s_DownloadQueue, fileId);
+    const auto it = std::ranges::find_if(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
     if (it == s_DownloadQueue.end())
         return; // not our download
 
+    const auto entry = *it;
     s_DownloadQueue.erase(it);
 
     if (eResult == k_EResultOK)
@@ -326,12 +355,46 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
     else
         LogInfo("[MultiAddon] Addon %llu download failed (%d)", fileId, eResult);
 
+    if (entry.remount)
+        MountAddon(std::to_string(fileId).c_str());
+
     // reload once every queued download has finished so the new addons get mounted
-    if (s_DownloadQueue.empty())
+    if (entry.reloadMap && std::ranges::none_of(s_DownloadQueue, [](const auto& e) { return e.reloadMap; }))
     {
         LogInfo("[MultiAddon] All downloads complete, reloading map");
         ReloadMap();
     }
+}
+
+bool MultiAddonUpdateAddon(uint64_t fileId)
+{
+    if (!HasUGC() || fileId == 0)
+        return false;
+
+    if (IsDownloading(fileId))
+        return true;
+
+    // the engine keeps a mounted vpk open, on Windows that locks it and the update fails
+    // with k_EResultLockingFailed, so unmount first and mount again once the download finishes
+    const auto addon   = std::to_string(fileId);
+    const auto remount = UnmountAddon(addon);
+
+    if (!DownloadAddon(fileId, false, remount))
+    {
+        if (remount)
+            MountAddon(addon.c_str());
+        return false;
+    }
+
+    return true;
+}
+
+void MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
+{
+    s_flClientTimeout     = clientTimeout;
+    s_flConnectionTimeout = connectionTimeout;
+    s_flCacheDuration     = cacheDuration;
+    s_bDebug              = debug;
 }
 
 void MultiAddonOnSteamApiActivated()
@@ -351,15 +414,41 @@ void MultiAddonResetClientCache(SteamId_t steamId)
         s_ClientInfos.erase(steamId);
 }
 
-std::string MultiAddonPrepareRefresh(SteamId_t steamId)
+static void QueryClientAddons(SteamId_t steamId, MultiAddonClientInfo_t& info)
+{
+    uint64_t        buffer[MAX_CLIENT_ADDONS];
+    NativeFixedSpan span(buffer, 0, MAX_CLIENT_ADDONS);
+    forwards::OnClientQueryAddons->Invoke(steamId, &span);
+
+    info.addons.clear();
+    for (int i = 0; i < std::min(span.m_nCount, MAX_CLIENT_ADDONS); i++)
+    {
+        if (buffer[i] > 0)
+            info.addons.push_back(std::to_string(buffer[i]));
+    }
+}
+
+std::string MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache)
 {
     auto& info = s_ClientInfos[steamId];
-    info.currentPendingAddon.clear();
-    info.downloadedAddons.clear();
 
-    // the client is in game, so it already has the map
-    if (!s_CurrentWorkshopMap.empty())
-        info.downloadedAddons.push_back(s_CurrentWorkshopMap);
+    if (resetCache)
+    {
+        info.currentPendingAddon.clear();
+        info.downloadedAddons.clear();
+
+        // the client is in game, so it already has the map
+        if (!s_CurrentWorkshopMap.empty())
+            info.downloadedAddons.push_back(s_CurrentWorkshopMap);
+    }
+    else if (!info.currentPendingAddon.empty())
+    {
+        // still downloading, it receives the rest after the pending one anyway
+        return {};
+    }
+
+    // pick up addons the listeners added since the client connected
+    QueryClientAddons(steamId, info);
 
     const auto remaining = GetRemainingAddons(steamId);
     return remaining.empty() ? std::string() : remaining[0];
@@ -380,10 +469,11 @@ public:
         if (!IsActive())
             return;
 
-#ifdef MULTI_ADDON_ASSERT
-        LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=%s",
-            pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
-#endif
+        if (s_bDebug)
+        {
+            LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=%s",
+                pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
+        }
 
         if (auto kv = pRequest->m_pKV; kv != nullptr)
         {
@@ -425,9 +515,8 @@ public:
         auto& info          = s_ClientInfos[steamId];
         info.lastActiveTime = Plat_FloatTime();
 
-#ifdef MULTI_ADDON_ASSERT
-        LOG("SignonState -> Steam=%llu State=%d Addons=[%s]", steamId, pData->signon_state(), pData->addons().c_str());
-#endif
+        if (s_bDebug)
+            LOG("SignonState -> Steam=%llu State=%d Addons=[%s]", steamId, pData->signon_state(), pData->addons().c_str());
 
         if (pData->signon_state() == SIGNONSTATE_CHANGELEVEL)
         {
@@ -470,23 +559,39 @@ BeginStaticHookScope(ReplyConnection)
         if (steamId == 0)
             return ReplyConnection(pServer, pClient);
 
-        auto& info          = s_ClientInfos[steamId];
-        info.lastActiveTime = Plat_FloatTime();
+        auto&      info = s_ClientInfos[steamId];
+        const auto now  = Plat_FloatTime();
 
-        uint64_t        buffer[MAX_CLIENT_ADDONS];
-        NativeFixedSpan span(buffer, 0, MAX_CLIENT_ADDONS);
-        forwards::OnClientQueryAddons->Invoke(steamId, &span);
-
-        info.addons.clear();
-        for (int i = 0; i < std::min(span.m_nCount, MAX_CLIENT_ADDONS); i++)
+        if (s_flCacheDuration > 0 && (now - info.lastActiveTime) > s_flCacheDuration)
         {
-            if (buffer[i] > 0)
-                info.addons.push_back(std::to_string(buffer[i]));
+            if (s_bDebug)
+                LOG("ReplyConnection -> %llu has not connected for a while, clearing the cache", steamId);
+
+            info.currentPendingAddon.clear();
+            info.downloadedAddons.clear();
         }
+        info.lastActiveTime = now;
+
+        QueryClientAddons(steamId, info);
 
         const auto allAddons = GetClientAddons(steamId);
         if (allAddons.empty())
+        {
+            info.currentPendingAddon.clear();
             return ReplyConnection(pServer, pClient);
+        }
+
+        if (!info.connecting)
+        {
+            info.connecting          = true;
+            info.connectionStartTime = now;
+        }
+        else if (s_flConnectionTimeout > 0 && (now - info.connectionStartTime) > s_flConnectionTimeout)
+        {
+            // kicking right now crashes on Windows, defer to the next frame
+            s_TimedOutClients.push_back(steamId);
+            return;
+        }
 
         for (const auto& addon : allAddons)
         {
@@ -514,9 +619,8 @@ BeginStaticHookScope(ReplyConnection)
 
         pServer->SetAddonName(StringJoin(clientAddons, ",").c_str());
 
-#ifdef MULTI_ADDON_ASSERT
-        LOG("ReplyConnection -> Steam=%llu Addons=[%s] (original=[%s])", steamId, pServer->GetAddonName(), originalAddons.c_str());
-#endif
+        if (s_bDebug)
+            LOG("ReplyConnection -> Steam=%llu Addons=[%s] (original=[%s])", steamId, pServer->GetAddonName(), originalAddons.c_str());
 
         ReplyConnection(pServer, pClient);
 
@@ -545,19 +649,22 @@ static void OnClientConnectPre(PlayerSlot_t /*slot*/, const char* /*name*/, Stea
     auto&      info = s_ClientInfos[steamId];
     const auto now  = Plat_FloatTime();
 
-    if ((now - info.lastActiveTime) > MULTI_ADDON_CACHE_DURATION)
-    {
-        info.currentPendingAddon.clear();
-        info.downloadedAddons.clear();
-    }
+    info.connecting = false;
 
     // reconnected within the timeout -> the pending addon was downloaded
     if (!info.currentPendingAddon.empty())
     {
-        if ((now - info.lastActiveTime) < MULTI_ADDON_TIMEOUT
-            && std::ranges::find(info.downloadedAddons, info.currentPendingAddon) == info.downloadedAddons.end())
+        if ((now - info.lastActiveTime) < s_flClientTimeout)
         {
-            info.downloadedAddons.push_back(info.currentPendingAddon);
+            if (std::ranges::find(info.downloadedAddons, info.currentPendingAddon) == info.downloadedAddons.end())
+                info.downloadedAddons.push_back(info.currentPendingAddon);
+
+            if (s_bDebug)
+                LOG("ClientConnect -> %llu connected within the interval with the pending addon %s", steamId, info.currentPendingAddon.c_str());
+        }
+        else if (s_bDebug)
+        {
+            LOG("ClientConnect -> %llu reconnected after the timeout, %s is not marked as downloaded", steamId, info.currentPendingAddon.c_str());
         }
         info.currentPendingAddon.clear();
     }
@@ -570,7 +677,9 @@ static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, co
     if (steamId == 0 || !IsActive())
         return;
 
-    s_ClientInfos[steamId].lastActiveTime = Plat_FloatTime();
+    auto& info          = s_ClientInfos[steamId];
+    info.lastActiveTime = Plat_FloatTime();
+    info.connecting     = false;
 }
 
 static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId)
@@ -578,13 +687,33 @@ static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, St
     if (steamId == 0 || !IsActive())
         return;
 
-    s_ClientInfos[steamId].currentPendingAddon.clear();
+    auto& info = s_ClientInfos[steamId];
+    info.currentPendingAddon.clear();
+
+    // without a cache the client goes through the download flow again on the next connect
+    if (s_flCacheDuration < 0)
+        info.downloadedAddons.clear();
 }
 
 static void OnGameFrame(bool /*sim*/, bool /*first*/, bool /*last*/)
 {
     if (!sv || !IsActive())
         return;
+
+    if (!s_TimedOutClients.empty())
+    {
+        const auto pClients = sv->GetClients();
+        for (auto i = pClients->Count() - 1; i >= 0; i--)
+        {
+            const auto pClient = pClients->Element(i);
+            if (!pClient || std::ranges::find(s_TimedOutClients, pClient->GetSteamId()) == s_TimedOutClients.end())
+                continue;
+
+            engine->KickClient(pClient->GetSlot(), "Required Workshop addon download was not accepted in time", IServerGameClient::NETWORK_DISCONNECT_TIMEDOUT);
+            s_ClientInfos[pClient->GetSteamId()].connecting = false;
+        }
+        s_TimedOutClients.clear();
+    }
 
     static double s_flNextUpdate = 0;
     const auto    flTime         = Plat_FloatTime();

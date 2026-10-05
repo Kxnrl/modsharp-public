@@ -48,7 +48,9 @@ extern AddonHooks::IAddonStrategy* InstallDualMountAddonHooks();
 extern AddonHooks::IAddonStrategy* InstallMultiAddonHooks();
 extern void                        DualMountAddonResetClientCache(SteamId_t steamId);
 extern void                        MultiAddonResetClientCache(SteamId_t steamId);
-extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId);
+extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache);
+extern bool                        MultiAddonUpdateAddon(uint64_t fileId);
+extern void                        MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 
 namespace
 {
@@ -159,7 +161,17 @@ void ResetClientCache(SteamId_t steamId)
     MultiAddonResetClientCache(steamId);
 }
 
-bool RefreshClient(SteamId_t steamId)
+bool UpdateAddon(uint64_t fileId)
+{
+    return MultiAddonUpdateAddon(fileId);
+}
+
+void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
+{
+    MultiAddonSetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
+}
+
+bool RefreshClient(SteamId_t steamId, bool resetCache)
 {
     if (!sv || !gpGlobals || !engine || !g_pNetworkMessages || steamId == 0)
         return false;
@@ -187,7 +199,7 @@ bool RefreshClient(SteamId_t steamId)
     if (s_Mode == Mode::Dual)
         addon = std::to_string(GetDualAddonId());
     else if (s_Mode == Mode::Multi)
-        addon = MultiAddonPrepareRefresh(steamId);
+        addon = MultiAddonPrepareRefresh(steamId, resetCache);
 
     if (addon.empty())
         return false;

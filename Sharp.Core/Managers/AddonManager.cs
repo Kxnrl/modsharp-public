@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
+using Sharp.Shared.Types;
 using Sharp.Shared.Types.Runtime;
 using Sharp.Shared.Units;
 
@@ -66,8 +67,14 @@ internal class AddonManager : ICoreAddonManager
     public void ResetClientCache(SteamID steamId = default)
         => Game.AddonResetClientCache(steamId);
 
-    public bool RefreshClient(SteamID steamId)
-        => Game.AddonRefreshClient(steamId);
+    public bool RefreshClient(SteamID steamId, bool resetCache = true)
+        => Game.AddonRefreshClient(steamId, resetCache);
+
+    public bool UpdateAddon(ulong addon)
+        => Game.AddonUpdateAddon(addon);
+
+    public void SetOptions(AddonOptions options)
+        => Game.AddonSetOptions(options.ClientTimeout, options.ConnectionTimeout, options.CacheDuration, options.Debug);
 
     public void InstallAddonListener(IAddonListener listener)
     {

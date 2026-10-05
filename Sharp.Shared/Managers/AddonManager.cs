@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using Sharp.Shared.Listeners;
+using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
 namespace Sharp.Shared.Managers;
@@ -47,11 +48,25 @@ public interface IAddonManager
     void ResetClientCache(SteamID steamId = default);
 
     /// <summary>
-    ///     Resend the addons to an in-game client so it reloads / downloads them again, the client will reconnect. <br />
-    ///     Useful when a client failed to receive them. Can not force Steam to verify broken local files.
+    ///     Resend the addons to an in-game client, the client will reconnect. <br />
+    ///     <paramref name="resetCache" /> resends every addon (e.g. it failed to receive them),
+    ///     otherwise only the addons it does not have yet (e.g. just added by an <see cref="IAddonListener" />). <br />
+    ///     Can not force Steam to verify broken local files.
     /// </summary>
-    /// <returns>false when the client is not in game or there is nothing to send</returns>
-    bool RefreshClient(SteamID steamId);
+    /// <returns>false when the client is not in game, still downloading, or there is nothing to send</returns>
+    bool RefreshClient(SteamID steamId, bool resetCache = true);
+
+    /// <summary>
+    ///     Force a workshop download (update) of an addon on the server. <br />
+    ///     An addon mounted by the MultiAddon flow is unmounted during the download and mounted again afterwards
+    ///     (Windows locks mounted files). Addons mounted by the engine (workshop map, DualAddon) are not.
+    /// </summary>
+    bool UpdateAddon(ulong addon);
+
+    /// <summary>
+    ///     Tune the MultiAddon flow
+    /// </summary>
+    void SetOptions(AddonOptions options);
 
     /// <summary>
     ///     Add <see cref="IAddonListener" /> to listen for events
