@@ -1554,17 +1554,21 @@ internal partial class SharpCore : ISharpCore
 #region Dual Addon
 
     public void DualAddonPurgeCheck()
-        => Game.DualAddonPurgeCheck();
+        => Game.AddonResetClientCache(0);
 
     public void DualAddonOverrideCheck(SteamID steamId, double time)
         => Game.DualAddonOverrideCheck(steamId, time);
 
     public ulong GetDualAddonId()
-        => Game.DualAddonGetPublishFileId();
-
-    public bool SetDualAddonId(ulong publishFileId)
     {
-        var success = Game.DualAddonSetPublishFileId(publishFileId);
+        var addons = Game.AddonGetAddons();
+
+        return addons.Length > 0 ? addons[0] : 0;
+    }
+
+    public unsafe bool SetDualAddonId(ulong publishFileId)
+    {
+        var success = Game.AddonSetAddons(&publishFileId, publishFileId > 0 ? 1 : 0);
 
         if (success)
         {

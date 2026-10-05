@@ -18,9 +18,13 @@
  */
 
 using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
+using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
+using Sharp.Shared.Types.Runtime;
 using Sharp.Shared.Units;
 
 namespace Sharp.Core.Managers;
@@ -29,77 +33,117 @@ internal interface ICoreAddonManager : IAddonManager;
 
 internal class AddonManager : ICoreAddonManager
 {
-    private static string[] SplitAddonCsv(nint csvPtr)
+    private readonly ILogger<AddonManager> _logger;
+    private readonly ICoreAssemblyManager  _assemblyManager;
+    private readonly List<IAddonListener>  _listeners;
+    private readonly List<ulong>           _queryBuffer;
+
+    public AddonManager(ILogger<AddonManager> logger, ICoreAssemblyManager assemblyManager)
     {
-        var csv = Marshal.PtrToStringUTF8(csvPtr);
-        if (string.IsNullOrEmpty(csv))
-            return Array.Empty<string>();
-        return csv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        _logger          = logger;
+        _assemblyManager = assemblyManager;
+        _listeners       = [];
+        _queryBuffer     = [];
+
+        _assemblyManager.RegisterUnloadCleanup(ClearLeakedRegistrations);
+
+        Bridges.Forwards.Client.OnClientQueryAddons += OnClientQueryAddons;
     }
 
-    public void DualAddonPurgeCheck()
-        => Game.DualAddonPurgeCheck();
+    public IReadOnlyList<ulong> GetAddons()
+        => Game.AddonGetAddons().AsSpan().ToArray();
 
-    public void DualAddonOverrideCheck(SteamID steamId, double time)
-        => Game.DualAddonOverrideCheck(steamId, time);
-
-    public ulong[] ExtraAddonGetIds()
+    public unsafe bool SetAddons(IReadOnlyList<ulong> addons)
     {
-        var span = Game.ExtraAddonGetIds();
-        return span.AsSpan().ToArray();
+        var array = addons.ToArray();
+
+        fixed (ulong* ptr = array)
+        {
+            return Game.AddonSetAddons(ptr, array.Length);
+        }
     }
 
-    public string[] ExtraAddonGetServerAddons()
-        => SplitAddonCsv(Game.ExtraAddonGetServerAddons());
+    public void ResetClientCache(SteamID steamId = default)
+        => Game.AddonResetClientCache(steamId);
 
-    public string[] ExtraAddonGetGlobalClientAddons()
-        => SplitAddonCsv(Game.ExtraAddonGetGlobalClientAddons());
+    public bool RefreshClient(SteamID steamId)
+        => Game.AddonRefreshClient(steamId);
 
-    public string[] ExtraAddonGetMountedAddons()
-        => SplitAddonCsv(Game.ExtraAddonGetMountedAddons());
+    public void InstallAddonListener(IAddonListener listener)
+    {
+        if (_assemblyManager.IsAssemblyUnloaded(listener.GetType().Assembly))
+        {
+            _logger.LogError("Install rejected, module already unloaded!\n{stackTrace}", Environment.StackTrace);
 
-    public string[] ExtraAddonGetClientAddons(SteamID steamId)
-        => SplitAddonCsv(Game.ExtraAddonGetClientAddons(steamId));
+            return;
+        }
 
-    public string? ExtraAddonGetCurrentWorkshopMap()
-        => Marshal.PtrToStringUTF8(Game.ExtraAddonGetCurrentWorkshopMap());
+        if (listener.ListenerVersion != IAddonListener.ApiVersion)
+        {
+            throw new InvalidOperationException("Your listener api version mismatch");
+        }
 
-    public bool ExtraAddonAddAddon(string addon, bool refresh = false)
-        => Game.ExtraAddonAddAddon(addon, refresh);
+        if (_listeners.Contains(listener))
+        {
+            _logger.LogError("You are already install listener!\n{stackTrace}", Environment.StackTrace);
 
-    public bool ExtraAddonRemoveAddon(string addon, bool refresh = false)
-        => Game.ExtraAddonRemoveAddon(addon, refresh);
+            return;
+        }
 
-    public void ExtraAddonClearAddons()
-        => Game.ExtraAddonClearAddons();
+        _listeners.Add(listener);
+        _listeners.Sort((x, y) => y.ListenerPriority.CompareTo(x.ListenerPriority));
+        Game.AddonSetClientQueryEnabled(true);
+    }
 
-    public void ExtraAddonRefreshAddons(bool reloadMap = false)
-        => Game.ExtraAddonRefreshAddons(reloadMap);
+    public void RemoveAddonListener(IAddonListener listener)
+    {
+        if (!_listeners.Remove(listener))
+        {
+            _logger.LogError("You have not install listener yet!\n{stackTrace}", Environment.StackTrace);
 
-    public void ExtraAddonReloadMap()
-        => Game.ExtraAddonReloadMap();
+            return;
+        }
 
-    public bool ExtraAddonMount(string addon, bool addToTail = false)
-        => Game.ExtraAddonMount(addon, addToTail);
+        Game.AddonSetClientQueryEnabled(_listeners.Count > 0);
+    }
 
-    public bool ExtraAddonUnmount(string addon)
-        => Game.ExtraAddonUnmount(addon);
+    private void ClearLeakedRegistrations()
+    {
+        _assemblyManager.ClearLeakedListeners(_listeners, "AddonListener");
+        Game.AddonSetClientQueryEnabled(_listeners.Count > 0);
+    }
 
-    public bool ExtraAddonIsMounted(string addon, bool checkWorkshopMap = false)
-        => Game.ExtraAddonIsMounted(addon, checkWorkshopMap);
+    private void OnClientQueryAddons(SteamID steamId, ref NativeFixedSpan<ulong> addons)
+    {
+        _queryBuffer.Clear();
 
-    public void ExtraAddonAddClientAddon(string addon, SteamID steamId = default, bool refresh = false)
-        => Game.ExtraAddonAddClientAddon(addon, steamId, refresh);
+        for (var i = 0; i < _listeners.Count; i++)
+        {
+            try
+            {
+                _listeners[i].OnClientQueryAddons(steamId, _queryBuffer);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e,
+                                 "An error occurred while calling listener<{s}> {name}",
+                                 nameof(OnClientQueryAddons),
+                                 _listeners[i].GetType().Name);
+            }
+        }
 
-    public void ExtraAddonRemoveClientAddon(string addon, SteamID steamId = default)
-        => Game.ExtraAddonRemoveClientAddon(addon, steamId);
+        if (_queryBuffer.Count > addons.Length)
+        {
+            _logger.LogWarning("Too many client addons for {steamId}, only the first {max} are delivered", steamId, addons.Length);
+        }
 
-    public void ExtraAddonClearClientAddons(SteamID steamId = default)
-        => Game.ExtraAddonClearClientAddons(steamId);
+        var count = Math.Min(_queryBuffer.Count, addons.Length);
 
-    public bool ExtraAddonDownload(string addon, bool important = false, bool force = false)
-        => Game.ExtraAddonDownload(addon, important, force);
+        for (var i = 0; i < count; i++)
+        {
+            addons[i] = _queryBuffer[i];
+        }
 
-    public bool ExtraAddonHasUGCConnection()
-        => Game.ExtraAddonHasUGCConnection();
+        addons.Count = count;
+    }
 }

@@ -24,14 +24,10 @@
 #include "sdkproxy.h"
 #include "steamproxy.h"
 
-#include "cstrike/interface/ICommandLine.h"
-
 #include <steamworks/steam_api.h>
 #include <steamworks/steam_gameserver.h>
 
-#include <cstdlib>
-
-// #define DOWNLOAD_DUAL_ADDON_UGC
+extern void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult);
 
 class CallbackListener
 {
@@ -62,28 +58,9 @@ static CSteamGameServerAPIContext g_SteamGameServerAPIContext;
 static ISteamApiProxy             g_SteamApiProxy;
 static CallbackListener*          g_pCallbackListener   = nullptr;
 ISteamApiProxy*                   g_pSteamApiProxy      = &g_SteamApiProxy;
-uint64_t                          g_unDualAddonId       = 0;
-bool                              g_bDualAddonAvailable = false;
-
-extern "C" void ExtraAddon_OnSteamDownloadItemResult(uint64_t fileId, int eResult);
 
 void InitApiContext()
 {
-    static bool initDualAddonId = false;
-    if (!initDualAddonId && CommandLine()->HasParam("-dual_addon"))
-    {
-        if (const auto pszValue = CommandLine()->ParamValue("-dual_addon", nullptr))
-        {
-            if (uint64_t ugcId; (ugcId = strtoull(pszValue, nullptr, 10)) > 0)
-            {
-                g_unDualAddonId = ugcId;
-                LOG("Load dual addon = %llu", ugcId);
-            }
-        }
-
-        initDualAddonId = true;
-    }
-
     g_SteamGameServerAPIContext.Init();
 
     g_pCallbackListener = new CallbackListener;
@@ -103,29 +80,6 @@ void DestroyApiContext()
     g_SteamGameServerAPIContext.Clear();
 }
 
-uint64_t GetDualAddonId()
-{
-#ifdef DOWNLOAD_DUAL_ADDON_UGC
-    return g_unDualAddonId > 0 && g_bDualAddonAvailable ? g_unDualAddonId : 0;
-#else
-    return g_unDualAddonId;
-#endif
-}
-
-bool SetDualAddonId(uint64_t publishId)
-{
-    if (!CommandLine()->HasParam("-dual_addon"))
-        return false;
-
-    const auto old  = g_unDualAddonId;
-    g_unDualAddonId = publishId;
-
-    if (old != publishId)
-        LOG("Dual AddonId changed to %llu from %llu", publishId, old);
-
-    return true;
-}
-
 void CallbackListener::OnGroupStatusResult(GSClientGroupStatus_t* pParam)
 {
     const auto steamId = static_cast<SteamId_t>(pParam->m_SteamIDUser.ConvertToUint64());
@@ -139,16 +93,6 @@ void CallbackListener::OnGroupStatusResult(GSClientGroupStatus_t* pParam)
 void CallbackListener::OnSteamServersConnected(SteamServersConnected_t* pParam)
 {
     forwards::OnSteamServersConnected->Invoke();
-
-#ifdef DOWNLOAD_DUAL_ADDON_UGC
-    if (g_unDualAddonId > 0)
-    {
-        if (g_SteamGameServerAPIContext.SteamUGC()->DownloadItem(static_cast<PublishedFileId_t>(g_unDualAddonId), true))
-            LOG("Downloading dual addon %llu", g_unDualAddonId);
-        else
-            WARN("Failed to download dual addon %llu", g_unDualAddonId);
-    }
-#endif
 }
 
 void CallbackListener::OnSteamServersDisconnected(SteamServersDisconnected_t* pParam)
@@ -165,26 +109,7 @@ void CallbackListener::OnDownloadItemResult(DownloadItemResult_t* pParam)
 {
     const auto id = static_cast<uint64_t>(pParam->m_nPublishedFileId);
 
-#ifdef DOWNLOAD_DUAL_ADDON_UGC
-    if (id == g_unDualAddonId)
-    {
-        if (pParam->m_eResult == k_EResultOK)
-        {
-            LogInfo("Downloaded dual addon %llu", g_unDualAddonId);
-            g_bDualAddonAvailable = true;
-        }
-        else
-        {
-            LogError("Failed to download dual addon %llu", g_unDualAddonId);
-        }
-    }
-    else
-    {
-        LogInfo("Downloaded addon %llu", id);
-    }
-#endif
-
-    ExtraAddon_OnSteamDownloadItemResult(id, pParam->m_eResult);
+    MultiAddonOnDownloadItemResult(id, pParam->m_eResult);
 
     forwards::OnDownloadItemResult->Invoke(id, pParam->m_eResult);
 }
@@ -192,18 +117,6 @@ void CallbackListener::OnDownloadItemResult(DownloadItemResult_t* pParam)
 void CallbackListener::OnItemInstalled(ItemInstalled_t* pParam)
 {
     const auto id = static_cast<uint64_t>(pParam->m_nPublishedFileId);
-
-#ifdef DOWNLOAD_DUAL_ADDON_UGC
-    if (id == g_unDualAddonId)
-    {
-        LogInfo("OnItemInstalled -> dual addon %llu\n", g_unDualAddonId);
-        g_bDualAddonAvailable = true;
-    }
-    else
-    {
-        LogInfo("OnItemInstalled addon %llu", id);
-    }
-#endif
 
     forwards::OnItemInstalled->Invoke(id);
 }

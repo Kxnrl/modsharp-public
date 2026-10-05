@@ -83,8 +83,8 @@
 
 - name: Workshop Addons
   items:
-    - name: Extra Addon
-      href: extra-addon.md
+    - name: IAddonManager
+      href: addon-manager.md
 
 - name: FirstParty Modules
   items:

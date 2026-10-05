@@ -19,31 +19,78 @@
 
 #include "hook/extern/AddonHooks.h"
 
+#include "gamedata.h"
 #include "global.h"
 #include "hook/installer.h"
 #include "hook/network.h"
+#include "logging.h"
+#include "sdkproxy.h"
+#include "strtool.h"
 
+#include "cstrike/interface/ICommandLine.h"
+#include "cstrike/interface/IEngineServer.h"
+#include "cstrike/interface/IMemAlloc.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/IProtobufBinding.h"
+#include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CHostState.h"
+#include "cstrike/type/CNetworkGameServer.h"
+#include "cstrike/type/CServerSideClient.h"
 
 #include <proto/networkbasetypes.pb.h>
 
 #include <safetyhook.hpp>
 
+#include <string>
+
+extern AddonHooks::IAddonStrategy* InstallDualMountAddonHooks();
+extern AddonHooks::IAddonStrategy* InstallMultiAddonHooks();
+extern void                        DualMountAddonResetClientCache(SteamId_t steamId);
+extern void                        MultiAddonResetClientCache(SteamId_t steamId);
+extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId);
+
 namespace
 {
-constexpr int32_t                NET_MESSAGE_ID_SIGNON = 7;
-AddonHooks::IAddonStrategy*      s_pStrategy           = nullptr;
+constexpr int32_t           NET_MESSAGE_ID_SIGNON = 7;
+bool                        s_bEnabled            = false;
+bool                        s_bClientQuery        = false;
+std::vector<uint64_t>       s_Addons;
+std::vector<uint64_t>       s_ActiveAddons;
+AddonHooks::Mode            s_Mode   = AddonHooks::Mode::None;
+AddonHooks::IAddonStrategy* s_pDual  = nullptr;
+AddonHooks::IAddonStrategy* s_pMulti = nullptr;
+
+AddonHooks::IAddonStrategy* GetStrategy()
+{
+    switch (s_Mode)
+    {
+    case AddonHooks::Mode::Dual:
+        return s_pDual;
+    case AddonHooks::Mode::Multi:
+        return s_pMulti;
+    default:
+        return nullptr;
+    }
+}
 } // namespace
 
 BeginStaticHookScope(HostStateRequest)
 {
     DeclareStaticDetourHook(HostStateRequest, void, (void* a1, CHostStateRequest* pRequest))
     {
-        if (s_pStrategy)
-            s_pStrategy->OnHostStateRequestPre(a1, pRequest);
+        s_ActiveAddons = s_Addons;
+
+        if (s_ActiveAddons.size() >= 2 || s_bClientQuery)
+            s_Mode = AddonHooks::Mode::Multi;
+        else if (s_ActiveAddons.size() == 1)
+            s_Mode = AddonHooks::Mode::Dual;
+        else
+            s_Mode = AddonHooks::Mode::None;
+
+        // both strategies reset their per-map state here, so always notify them
+        s_pDual->OnHostStateRequestPre(a1, pRequest);
+        s_pMulti->OnHostStateRequestPre(a1, pRequest);
 
         HostStateRequest(a1, pRequest);
     }
@@ -53,11 +100,11 @@ BeginMemberHookScope(INetChannel)
 {
     DeclareMemberDetourHook(SendNetMessage, bool, (INetChannel * pNetChannel, CNetMessagePB<CNETMsg_SignonState> * pData, int a4))
     {
-        if (!s_bBypassNetMessageHook && s_pStrategy)
+        if (const auto pStrategy = GetStrategy(); !s_bBypassNetMessageHook && pStrategy)
         {
             const auto pInfo = pData->GetNetMessage()->GetNetMessageInfo();
             if (pInfo->m_MessageId == NET_MESSAGE_ID_SIGNON)
-                s_pStrategy->OnSignonStateNetMessagePre(pNetChannel, pData);
+                pStrategy->OnSignonStateNetMessagePre(pNetChannel, pData);
         }
 
         return SendNetMessage(pNetChannel, pData, a4);
@@ -66,10 +113,140 @@ BeginMemberHookScope(INetChannel)
 
 namespace AddonHooks
 {
-void Install(IAddonStrategy* strategy)
+bool IsEnabled()
 {
-    s_pStrategy = strategy;
+    return s_bEnabled;
+}
+
+const std::vector<uint64_t>& GetAddons()
+{
+    return s_Addons;
+}
+
+bool SetAddons(std::vector<uint64_t> addons)
+{
+    if (!s_bEnabled)
+        return false;
+
+    std::erase(addons, 0);
+    s_Addons = std::move(addons);
+    return true;
+}
+
+const std::vector<uint64_t>& GetActiveAddons()
+{
+    return s_ActiveAddons;
+}
+
+Mode GetMode()
+{
+    return s_Mode;
+}
+
+uint64_t GetDualAddonId()
+{
+    return s_Mode == Mode::Dual ? s_ActiveAddons[0] : 0;
+}
+
+void SetClientQueryEnabled(bool enabled)
+{
+    s_bClientQuery = enabled;
+}
+
+void ResetClientCache(SteamId_t steamId)
+{
+    DualMountAddonResetClientCache(steamId);
+    MultiAddonResetClientCache(steamId);
+}
+
+bool RefreshClient(SteamId_t steamId)
+{
+    if (!sv || !gpGlobals || !engine || !g_pNetworkMessages || steamId == 0)
+        return false;
+
+    const auto pClients = sv->GetClients();
+    if (!pClients)
+        return false;
+
+    CServerSideClient* pTarget = nullptr;
+    for (int i = 0; i < pClients->Count(); i++)
+    {
+        const auto pClient = pClients->Element(i);
+        if (pClient && !pClient->IsFakeClient() && pClient->GetSteamId() == steamId)
+        {
+            pTarget = pClient;
+            break;
+        }
+    }
+
+    // a client already at SIGNONSTATE_CHANGELEVEL gets kicked by "Received signon X when at Y"
+    if (!pTarget || !pTarget->IsInGame() || !pTarget->GetNetChannel())
+        return false;
+
+    std::string addon;
+    if (s_Mode == Mode::Dual)
+        addon = std::to_string(GetDualAddonId());
+    else if (s_Mode == Mode::Multi)
+        addon = MultiAddonPrepareRefresh(steamId);
+
+    if (addon.empty())
+        return false;
+
+    const auto pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SignonState");
+    if (!pNetMsg)
+        return false;
+
+    using SendFn_t = bool (*)(INetChannel*, CNetMessage*, NetChannelBufType_t);
+    static auto pSendCall = g_pGameData->GetAddress<SendFn_t>("INetChannel::SendNetMessage");
+    if (!pSendCall)
+        return false;
+
+    const auto pData   = pNetMsg->AllocateMessage();
+    const auto pSignon = pData->ToPB<CNETMsg_SignonState>();
+    pSignon->set_spawn_count(gpGlobals->nServerCount);
+    pSignon->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+    pSignon->set_addons(addon);
+    pSignon->set_num_server_players(pClients->Count());
+    for (int i = 0; i < pClients->Count(); i++)
+    {
+        const auto pClient = pClients->Element(i);
+        if (!pClient)
+            continue;
+        if (const auto netId = engine->GetPlayerNetworkIDString(pClient->GetSlot()))
+            pSignon->add_players_networkids(netId);
+    }
+
+    // goes through our SendNetMessage detour, so the Multi strategy records the pending addon
+    pSendCall(pTarget->GetNetChannel(), pData, BUF_RELIABLE);
+    g_pMemAlloc->Free(pData);
+
+    LOG("RefreshClient -> %llu addon=%s", steamId, addon.c_str());
+    return true;
+}
+} // namespace AddonHooks
+
+void InstallAddonHooks()
+{
+    if (!CommandLine()->HasParam("-dual_addon"))
+        return;
+
+    s_bEnabled = true;
+
+    if (const auto pszValue = CommandLine()->ParamValue("-dual_addon", nullptr))
+    {
+        for (const auto& token : StringSplit(pszValue, ","))
+        {
+            if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0)
+            {
+                s_Addons.push_back(id);
+                LOG("Load dual addon = %llu", id);
+            }
+        }
+    }
+
+    s_pDual  = InstallDualMountAddonHooks();
+    s_pMulti = InstallMultiAddonHooks();
+
     SHOOK(HostStateRequest);
     HOOK(INetChannel, SendNetMessage);
 }
-} // namespace AddonHooks

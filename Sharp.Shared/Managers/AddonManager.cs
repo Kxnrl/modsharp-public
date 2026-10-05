@@ -17,98 +17,49 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Collections.Generic;
+using Sharp.Shared.Listeners;
 using Sharp.Shared.Units;
 
 namespace Sharp.Shared.Managers;
 
+/// <summary>
+///     Workshop addons delivered alongside the map. <br />
+///     Requires the <c>-dual_addon</c> launch parameter (e.g. <c>-dual_addon 123</c> or <c>-dual_addon 123,456</c>). <br />
+///     1 addon uses the DualAddon flow, 2+ addons (or an installed <see cref="IAddonListener" />) use the MultiAddon flow.
+/// </summary>
 public interface IAddonManager
 {
-#region Dual Addon
+    /// <summary>
+    ///     Server addons applied on the next map change (seeded from <c>-dual_addon</c>)
+    /// </summary>
+    IReadOnlyList<ulong> GetAddons();
 
     /// <summary>
-    ///     Clear dual addon cache
+    ///     Replace the server addons. Takes effect on the next map change, changing the map is up to the caller.
     /// </summary>
-    void DualAddonPurgeCheck();
+    /// <returns>false when <c>-dual_addon</c> is not specified</returns>
+    bool SetAddons(IReadOnlyList<ulong> addons);
 
     /// <summary>
-    ///     Override cache for a player
+    ///     Forget which addons a client already downloaded, <c>default</c> resets every client
     /// </summary>
-    void DualAddonOverrideCheck(SteamID steamId, double time);
-
-#endregion
-
-#region Extra Addon
+    void ResetClientCache(SteamID steamId = default);
 
     /// <summary>
-    ///     Get the workshop IDs of the current server-side extra addons list (m_ExtraAddons).
-    ///     Initially seeded from the <c>-extra_addons</c> command line parameter, but can be modified at runtime
-    ///     via <see cref="ExtraAddonAddAddon"/> / <see cref="ExtraAddonRemoveAddon"/>.
+    ///     Resend the addons to an in-game client so it reloads / downloads them again, the client will reconnect. <br />
+    ///     Useful when a client failed to receive them. Can not force Steam to verify broken local files.
     /// </summary>
-    ulong[] ExtraAddonGetIds();
-
-    /// <summary>Server-side extra addons (mounted on the server filesystem).</summary>
-    string[] ExtraAddonGetServerAddons();
-
-    /// <summary>Workshop IDs that every client is told to download (download-only, not mounted server-side).</summary>
-    string[] ExtraAddonGetGlobalClientAddons();
-
-    /// <summary>Addons currently mounted via the filesystem search path.</summary>
-    string[] ExtraAddonGetMountedAddons();
+    /// <returns>false when the client is not in game or there is nothing to send</returns>
+    bool RefreshClient(SteamID steamId);
 
     /// <summary>
-    ///     Full ordered addon list a particular client should load: workshop map + server-mounted + global client + per-steamid.
-    ///     Pass <c>0</c> to omit the per-steamid layer.
+    ///     Add <see cref="IAddonListener" /> to listen for events
     /// </summary>
-    string[] ExtraAddonGetClientAddons(SteamID steamId);
-
-    /// <summary>The workshop map ID currently associated with the running map (empty when on a Valve map).</summary>
-    string? ExtraAddonGetCurrentWorkshopMap();
-
-    /// <summary>Add a workshop ID to the server-side extra addons list. Optionally remounts and reloads.</summary>
-    bool ExtraAddonAddAddon(string addon, bool refresh = false);
-
-    /// <summary>Remove a workshop ID from the server-side extra addons list. Optionally remounts and reloads.</summary>
-    bool ExtraAddonRemoveAddon(string addon, bool refresh = false);
-
-    /// <summary>Clear the server-side extra addons list and unmount everything.</summary>
-    void ExtraAddonClearAddons();
-
-    /// <summary>Re-mount all server-side extra addons. Optionally reloads the map afterwards.</summary>
-    void ExtraAddonRefreshAddons(bool reloadMap = false);
-
-    /// <summary>Reload the current map (using changelevel or host_workshop_map as appropriate).</summary>
-    void ExtraAddonReloadMap();
-
-    /// <summary>Mount an addon's VPK on the server filesystem (low-level; usually you want AddAddon).</summary>
-    bool ExtraAddonMount(string addon, bool addToTail = false);
-
-    /// <summary>Unmount an addon's VPK from the server filesystem.</summary>
-    bool ExtraAddonUnmount(string addon);
-
-    /// <summary>True when the addon is mounted server-side. Pass <c>checkWorkshopMap=true</c> to also count the active workshop map.</summary>
-    bool ExtraAddonIsMounted(string addon, bool checkWorkshopMap = false);
+    void InstallAddonListener(IAddonListener listener);
 
     /// <summary>
-    ///     Add a workshop ID to the addons delivered to clients.
-    ///     Pass <c>steamId=0</c> to add to the global list (every client downloads it),
-    ///     otherwise the addon is delivered only to that specific client.
+    ///     Remove <see cref="IAddonListener" />
     /// </summary>
-    void ExtraAddonAddClientAddon(string addon, SteamID steamId = default, bool refresh = false);
-
-    /// <summary>Remove an addon from the global or per-steamid client list.</summary>
-    void ExtraAddonRemoveClientAddon(string addon, SteamID steamId = default);
-
-    /// <summary>Clear the global or per-steamid client addons list.</summary>
-    void ExtraAddonClearClientAddons(SteamID steamId = default);
-
-    /// <summary>
-    ///     Manually queue a Steam UGC download.
-    ///     <paramref name="important"/> = true triggers a map reload after the download completes.
-    /// </summary>
-    bool ExtraAddonDownload(string addon, bool important = false, bool force = false);
-
-    /// <summary>True when SteamUGC is available (Steam API connected).</summary>
-    bool ExtraAddonHasUGCConnection();
-
-#endregion
+    void RemoveAddonListener(IAddonListener listener);
 }

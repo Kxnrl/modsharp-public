@@ -25,7 +25,6 @@
 #include "logging.h"
 #include "netmessage.h"
 #include "sdkproxy.h"
-#include "steamworks.h"
 
 #include "CoreCLR/NativeSpan.h"
 #include "CoreCLR/RuntimeProtobufMessage.h"
@@ -42,12 +41,9 @@
 #include "cstrike/type/CTrace.h"
 #include "cstrike/type/ResourceSystem.h"
 
-#include "hook/extern/ExtraAddon.h"
-#include "steamproxy.h"
-#include "strtool.h"
+#include "hook/extern/AddonHooks.h"
 
 extern void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time);
-extern void DualMountAddonPurgeClientCheck();
 
 namespace google::protobuf
 {
@@ -289,134 +285,35 @@ static CCSWeaponBaseVData* FindWeaponVDataByName(const char* name)
     return address::server::FindWeaponVDataByName(1, name);
 }
 
-static void DualAddonPurgeCheck()
-{
-    ::DualMountAddonPurgeClientCheck();
-}
-
 static void DualAddonOverrideCheck(SteamId_t steamId, double time)
 {
     ::DualMountAddonOverrideClientCheck(steamId, time);
 }
 
-static uint64_t DualAddonGetPublishFileId()
+static NativeSpan<uint64_t> AddonGetAddons()
 {
-    return ::GetDualAddonId();
+    const auto& addons = AddonHooks::GetAddons();
+    return NativeSpan(const_cast<uint64_t*>(addons.data()), static_cast<int>(addons.size()));
 }
 
-static bool DualAddonSetPublishFileId(uint64_t publishFileId)
+static bool AddonSetAddons(const uint64_t* pAddons, int count)
 {
-    return ::SetDualAddonId(publishFileId);
+    return AddonHooks::SetAddons(std::vector(pAddons, pAddons + count));
 }
 
-static NativeSpan<uint64_t> ExtraAddonGetIds()
+static void AddonResetClientCache(SteamId_t steamId)
 {
-    static std::vector<uint64_t> s_idCache;
-    s_idCache.clear();
-    for (const auto& a : ExtraAddon::GetServerAddons())
-    {
-        if (const auto id = strtoull(a.c_str(), nullptr, 10); id > 0)
-            s_idCache.push_back(id);
-    }
-    return NativeSpan<uint64_t>(s_idCache.data(), static_cast<int>(s_idCache.size()));
+    AddonHooks::ResetClientCache(steamId);
 }
 
-static const char* ExtraAddonGetServerAddons()
+static bool AddonRefreshClient(SteamId_t steamId)
 {
-    static std::string s_buffer;
-    s_buffer = StringJoin(ExtraAddon::GetServerAddons(), ",");
-    return s_buffer.c_str();
+    return AddonHooks::RefreshClient(steamId);
 }
 
-static const char* ExtraAddonGetGlobalClientAddons()
+static void AddonSetClientQueryEnabled(bool enabled)
 {
-    static std::string s_buffer;
-    s_buffer = StringJoin(ExtraAddon::GetGlobalClientAddons(), ",");
-    return s_buffer.c_str();
-}
-
-static const char* ExtraAddonGetMountedAddons()
-{
-    static std::string s_buffer;
-    s_buffer = StringJoin(ExtraAddon::GetMountedAddons(), ",");
-    return s_buffer.c_str();
-}
-
-static const char* ExtraAddonGetClientAddons(SteamId_t steamId)
-{
-    static std::string s_buffer;
-    s_buffer = StringJoin(ExtraAddon::GetClientAddons(steamId), ",");
-    return s_buffer.c_str();
-}
-
-static const char* ExtraAddonGetCurrentWorkshopMap()
-{
-    return ExtraAddon::GetCurrentWorkshopMap().c_str();
-}
-
-static bool ExtraAddonAddAddon(const char* addon, bool refresh)
-{
-    return ExtraAddon::AddAddon(addon, refresh);
-}
-
-static bool ExtraAddonRemoveAddon(const char* addon, bool refresh)
-{
-    return ExtraAddon::RemoveAddon(addon, refresh);
-}
-
-static void ExtraAddonClearAddons()
-{
-    ExtraAddon::ClearAddons();
-}
-
-static void ExtraAddonRefreshAddons(bool reloadMap)
-{
-    ExtraAddon::RefreshAddons(reloadMap);
-}
-
-static void ExtraAddonReloadMap()
-{
-    ExtraAddon::ReloadMap();
-}
-
-static bool ExtraAddonMount(const char* addon, bool addToTail)
-{
-    return ExtraAddon::MountAddon(addon, addToTail);
-}
-
-static bool ExtraAddonUnmount(const char* addon)
-{
-    return ExtraAddon::UnmountAddon(addon);
-}
-
-static bool ExtraAddonIsMounted(const char* addon, bool checkWorkshopMap)
-{
-    return ExtraAddon::IsAddonMounted(addon, checkWorkshopMap);
-}
-
-static void ExtraAddonAddClientAddon(const char* addon, SteamId_t steamId, bool refresh)
-{
-    ExtraAddon::AddClientAddon(addon, steamId, refresh);
-}
-
-static void ExtraAddonRemoveClientAddon(const char* addon, SteamId_t steamId)
-{
-    ExtraAddon::RemoveClientAddon(addon, steamId);
-}
-
-static void ExtraAddonClearClientAddons(SteamId_t steamId)
-{
-    ExtraAddon::ClearClientAddons(steamId);
-}
-
-static bool ExtraAddonDownload(const char* addon, bool important, bool force)
-{
-    return ExtraAddon::DownloadAddon(addon, important, force);
-}
-
-static bool ExtraAddonHasUGCConnection()
-{
-    return g_pSteamApiProxy && g_pSteamApiProxy->GetSteamUGC() != nullptr;
+    AddonHooks::SetClientQueryEnabled(enabled);
 }
 
 static bool AddWorkshopMap(uint64_t sharedFileId, const char* mapName, const char* path)
@@ -476,30 +373,12 @@ void Init()
 
     bridge::CreateNative("Game.GetGameSystemFactory", reinterpret_cast<void*>(GetGameSystemFactory));
 
-    bridge::CreateNative("Game.DualAddonPurgeCheck", reinterpret_cast<void*>(DualAddonPurgeCheck));
     bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));
-    bridge::CreateNative("Game.DualAddonGetPublishFileId", reinterpret_cast<void*>(DualAddonGetPublishFileId));
-    bridge::CreateNative("Game.DualAddonSetPublishFileId", reinterpret_cast<void*>(DualAddonSetPublishFileId));
-
-    bridge::CreateNative("Game.ExtraAddonGetIds", reinterpret_cast<void*>(ExtraAddonGetIds));
-    bridge::CreateNative("Game.ExtraAddonGetServerAddons", reinterpret_cast<void*>(ExtraAddonGetServerAddons));
-    bridge::CreateNative("Game.ExtraAddonGetGlobalClientAddons", reinterpret_cast<void*>(ExtraAddonGetGlobalClientAddons));
-    bridge::CreateNative("Game.ExtraAddonGetMountedAddons", reinterpret_cast<void*>(ExtraAddonGetMountedAddons));
-    bridge::CreateNative("Game.ExtraAddonGetClientAddons", reinterpret_cast<void*>(ExtraAddonGetClientAddons));
-    bridge::CreateNative("Game.ExtraAddonGetCurrentWorkshopMap", reinterpret_cast<void*>(ExtraAddonGetCurrentWorkshopMap));
-    bridge::CreateNative("Game.ExtraAddonAddAddon", reinterpret_cast<void*>(ExtraAddonAddAddon));
-    bridge::CreateNative("Game.ExtraAddonRemoveAddon", reinterpret_cast<void*>(ExtraAddonRemoveAddon));
-    bridge::CreateNative("Game.ExtraAddonClearAddons", reinterpret_cast<void*>(ExtraAddonClearAddons));
-    bridge::CreateNative("Game.ExtraAddonRefreshAddons", reinterpret_cast<void*>(ExtraAddonRefreshAddons));
-    bridge::CreateNative("Game.ExtraAddonReloadMap", reinterpret_cast<void*>(ExtraAddonReloadMap));
-    bridge::CreateNative("Game.ExtraAddonMount", reinterpret_cast<void*>(ExtraAddonMount));
-    bridge::CreateNative("Game.ExtraAddonUnmount", reinterpret_cast<void*>(ExtraAddonUnmount));
-    bridge::CreateNative("Game.ExtraAddonIsMounted", reinterpret_cast<void*>(ExtraAddonIsMounted));
-    bridge::CreateNative("Game.ExtraAddonAddClientAddon", reinterpret_cast<void*>(ExtraAddonAddClientAddon));
-    bridge::CreateNative("Game.ExtraAddonRemoveClientAddon", reinterpret_cast<void*>(ExtraAddonRemoveClientAddon));
-    bridge::CreateNative("Game.ExtraAddonClearClientAddons", reinterpret_cast<void*>(ExtraAddonClearClientAddons));
-    bridge::CreateNative("Game.ExtraAddonDownload", reinterpret_cast<void*>(ExtraAddonDownload));
-    bridge::CreateNative("Game.ExtraAddonHasUGCConnection", reinterpret_cast<void*>(ExtraAddonHasUGCConnection));
+    bridge::CreateNative("Game.AddonGetAddons", reinterpret_cast<void*>(AddonGetAddons));
+    bridge::CreateNative("Game.AddonSetAddons", reinterpret_cast<void*>(AddonSetAddons));
+    bridge::CreateNative("Game.AddonResetClientCache", reinterpret_cast<void*>(AddonResetClientCache));
+    bridge::CreateNative("Game.AddonRefreshClient", reinterpret_cast<void*>(AddonRefreshClient));
+    bridge::CreateNative("Game.AddonSetClientQueryEnabled", reinterpret_cast<void*>(AddonSetClientQueryEnabled));
 
     bridge::CreateNative("Game.AddWorkshopMap", reinterpret_cast<void*>(AddWorkshopMap));
     bridge::CreateNative("Game.WorkshopMapExists", reinterpret_cast<void*>(WorkshopMapExists));

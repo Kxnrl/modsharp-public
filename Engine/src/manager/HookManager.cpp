@@ -19,11 +19,6 @@
 
 #include "manager/HookManager.h"
 
-#include "logging.h"
-#include "sdkproxy.h"
-
-#include "cstrike/interface/ICommandLine.h"
-
 #include <array>
 #include <safetyhook.hpp>
 
@@ -256,8 +251,7 @@ void HookManager::Install()
     extern void InstallTransmitHook();
     extern void InstallDamageManagerHooks();
     extern void InstallValveConsoleLog();
-    extern void InstallDualMountAddonHooks();
-    extern void InstallExtraAddonHooks();
+    extern void InstallAddonHooks();
     extern void InstallCSScriptHooks();
 
     InstallValveConsoleLog();
@@ -274,18 +268,7 @@ void HookManager::Install()
     InstallMovementHook();
     InstallTransmitHook();
     InstallDamageManagerHooks();
-
-    const auto bHasDualAddon  = CommandLine()->HasParam("-dual_addon");
-    const auto bHasExtraAddon = CommandLine()->HasParam("-extra_addons");
-    if (bHasDualAddon && bHasExtraAddon)
-    {
-        FatalError("MS: -dual_addon and -extra_addons are mutually exclusive. Specify only one.");
-    }
-    if (bHasExtraAddon)
-        InstallExtraAddonHooks();
-    else
-        InstallDualMountAddonHooks();
-
+    InstallAddonHooks();
     InstallSoundHooks();
     InstallCSScriptHooks();
 }

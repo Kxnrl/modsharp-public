@@ -23,7 +23,6 @@
 #include "global.h"
 #include "hook/installer.h"
 #include "logging.h"
-#include "hook/extern/ExtraAddon.h"
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "module.h"
@@ -48,6 +47,8 @@
 
 static bool             s_bPatchVScriptVM;
 static CConVarBaseData* ms_fix_spawngroups_leak = nullptr;
+
+extern void MultiAddonOnSteamApiActivated();
 
 BeginMemberHookScope(CSource2Server)
 {
@@ -86,7 +87,7 @@ BeginMemberHookScope(CSource2Server)
 
         GameServerSteamAPIActivated(pServer);
         InitApiContext();
-        ExtraAddon::OnSteamApiActivated();
+        MultiAddonOnSteamApiActivated();
     }
 
     DeclareVirtualHook(GameServerSteamAPIDeactivated, void, (CSource2Server * pServer))

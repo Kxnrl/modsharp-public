@@ -25,7 +25,6 @@
 #include "manager/ConVarManager.h"
 #include "manager/HookManager.h"
 #include "sdkproxy.h"
-#include "steamworks.h"
 #include "strtool.h"
 
 #include "cstrike/interface/IFileSystem.h"
@@ -102,7 +101,7 @@ public:
         s_bReconnectionRequired = false;
         s_CurrentWorkshopMap.clear();
 
-        const auto addonId = GetDualAddonId();
+        const auto addonId = AddonHooks::GetDualAddonId();
         if (addonId == 0)
             return;
 
@@ -194,7 +193,7 @@ public:
         LOG("SignonState State=%d Addons=[%s]", pData->signon_state(), pData->addons().c_str());
 #endif
 
-        const auto addonId = GetDualAddonId();
+        const auto addonId = AddonHooks::GetDualAddonId();
         if (addonId == 0)
             return;
 
@@ -236,7 +235,7 @@ static void OnClientConnectPre(PlayerSlot_t slot, const char* name, SteamId_t st
     if (bot)
         return;
 
-    if (GetDualAddonId() == 0)
+    if (AddonHooks::GetDualAddonId() == 0)
         return;
 
     const auto pClient = sv->GetClientSafety(slot);
@@ -281,7 +280,7 @@ static void OnClientConnectPre(PlayerSlot_t slot, const char* name, SteamId_t st
     }
 }
 
-void InstallDualMountAddonHooks()
+AddonHooks::IAddonStrategy* InstallDualMountAddonHooks()
 {
     g_pHookManager->Hook_ClientConnect(HookType_Pre, OnClientConnectPre);
 
@@ -311,7 +310,7 @@ void InstallDualMountAddonHooks()
         }
     });
 
-    AddonHooks::Install(&s_DualMountAddonStrategy);
+    return &s_DualMountAddonStrategy;
 }
 
 void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)
@@ -319,8 +318,15 @@ void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)
     s_BypassCheckingTime[steamId] = time;
 }
 
-void DualMountAddonPurgeClientCheck()
+void DualMountAddonResetClientCache(SteamId_t steamId)
 {
-    s_BypassCheckingTime.clear();
-    s_PendingMountClient.clear();
+    if (steamId == 0)
+    {
+        s_BypassCheckingTime.clear();
+        s_PendingMountClient.clear();
+        return;
+    }
+
+    s_BypassCheckingTime.erase(steamId);
+    s_PendingMountClient.erase(steamId);
 }

@@ -20,6 +20,11 @@
 #ifndef MS_HOOK_EXTERN_ADDONHOOKS_H
 #define MS_HOOK_EXTERN_ADDONHOOKS_H
 
+#include "definitions.h"
+
+#include <cstdint>
+#include <vector>
+
 struct CHostStateRequest;
 class INetChannel;
 class CNETMsg_SignonState;
@@ -28,6 +33,13 @@ class CNetMessagePB;
 
 namespace AddonHooks
 {
+enum class Mode
+{
+    None,
+    Dual,  // exactly 1 addon: DualMountAddon flow
+    Multi, // 2+ addons or per-client addons: MultiAddon flow
+};
+
 class IAddonStrategy
 {
 public:
@@ -41,7 +53,27 @@ public:
     virtual void OnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData) = 0;
 };
 
-void Install(IAddonStrategy* strategy);
+// Enabled by the -dual_addon command line parameter.
+bool IsEnabled();
+
+// Addon list applied on the next map change.
+const std::vector<uint64_t>& GetAddons();
+bool                         SetAddons(std::vector<uint64_t> addons);
+
+// Addon list and mode latched at the last HostStateRequest.
+const std::vector<uint64_t>& GetActiveAddons();
+Mode                         GetMode();
+uint64_t                     GetDualAddonId();
+
+// Whether managed listeners want to be queried for per-client addons (forces Multi mode).
+void SetClientQueryEnabled(bool enabled);
+
+void ResetClientCache(SteamId_t steamId);
+
+// Resend the addons to an in-game client so it reloads / downloads them again (it will reconnect).
+bool RefreshClient(SteamId_t steamId);
 } // namespace AddonHooks
+
+void InstallAddonHooks();
 
 #endif

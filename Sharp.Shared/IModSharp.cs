@@ -501,21 +501,25 @@ public interface IModSharp
     /// <summary>
     ///     Clear dual addon cache
     /// </summary>
+    [Obsolete("Use IAddonManager instead")]
     void DualAddonPurgeCheck();
 
     /// <summary>
     ///     Override cache for a player
     /// </summary>
+    [Obsolete("Use IAddonManager instead")]
     void DualAddonOverrideCheck(SteamID steamId, double time);
 
     /// <summary>
     ///     Get dual addon publish file id
     /// </summary>
+    [Obsolete("Use IAddonManager instead")]
     ulong GetDualAddonId();
 
     /// <summary>
     ///     Set dual addon publish file id
     /// </summary>
+    [Obsolete("Use IAddonManager instead")]
     bool SetDualAddonId(ulong publishFileId);
 
 #endregion

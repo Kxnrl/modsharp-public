@@ -127,51 +127,17 @@ public static unsafe partial class Game
 
     public static partial nint FindWeaponVDataByName(string name);
 
-    public static partial void DualAddonPurgeCheck();
-
     public static partial void DualAddonOverrideCheck(ulong steamId, double time);
 
-    public static partial ulong DualAddonGetPublishFileId();
+    public static partial NativeSpan<ulong> AddonGetAddons();
 
-    public static partial bool DualAddonSetPublishFileId(ulong publishFileId);
+    public static partial bool AddonSetAddons(ulong* addons, int count);
 
-    public static partial NativeSpan<ulong> ExtraAddonGetIds();
+    public static partial void AddonResetClientCache(ulong steamId);
 
-    public static partial nint ExtraAddonGetServerAddons();
+    public static partial bool AddonRefreshClient(ulong steamId);
 
-    public static partial nint ExtraAddonGetGlobalClientAddons();
-
-    public static partial nint ExtraAddonGetMountedAddons();
-
-    public static partial nint ExtraAddonGetClientAddons(ulong steamId);
-
-    public static partial nint ExtraAddonGetCurrentWorkshopMap();
-
-    public static partial bool ExtraAddonAddAddon(string addon, bool refresh);
-
-    public static partial bool ExtraAddonRemoveAddon(string addon, bool refresh);
-
-    public static partial void ExtraAddonClearAddons();
-
-    public static partial void ExtraAddonRefreshAddons(bool reloadMap);
-
-    public static partial void ExtraAddonReloadMap();
-
-    public static partial bool ExtraAddonMount(string addon, bool addToTail);
-
-    public static partial bool ExtraAddonUnmount(string addon);
-
-    public static partial bool ExtraAddonIsMounted(string addon, bool checkWorkshopMap);
-
-    public static partial void ExtraAddonAddClientAddon(string addon, ulong steamId, bool refresh);
-
-    public static partial void ExtraAddonRemoveClientAddon(string addon, ulong steamId);
-
-    public static partial void ExtraAddonClearClientAddons(ulong steamId);
-
-    public static partial bool ExtraAddonDownload(string addon, bool important, bool force);
-
-    public static partial bool ExtraAddonHasUGCConnection();
+    public static partial void AddonSetClientQueryEnabled(bool enabled);
 
     public static partial bool AddWorkshopMap(ulong sharedFileId, string name, string path);
 
