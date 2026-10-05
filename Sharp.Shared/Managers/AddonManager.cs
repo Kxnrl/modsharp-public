@@ -64,6 +64,12 @@ public interface IAddonManager
     bool UpdateAddon(ulong addon);
 
     /// <summary>
+    ///     Reload the current map. A workshop map uses <c>ds_workshop_changelevel</c> when the server already has it
+    ///     (no update check), otherwise <c>host_workshop_map</c>.
+    /// </summary>
+    void ReloadMap();
+
+    /// <summary>
     ///     Tune the MultiAddon flow
     /// </summary>
     void SetOptions(AddonOptions options);

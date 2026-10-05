@@ -43,6 +43,7 @@ Missing addons are downloaded on the server automatically and the map is reloade
 | `ResetClientCache(steamId)` | Forget what a client (or everyone with `default`) already downloaded. |
 | `RefreshClient(steamId, resetCache)` | Resend the addons to an in-game client (it reconnects). `resetCache: true` resends everything when it failed to receive them, `false` only sends what it does not have yet. |
 | `UpdateAddon(id)` | Force a workshop update, remounting the addon around it (Windows locks mounted files). |
+| `ReloadMap()` | Reload the current map. Workshop maps use `ds_workshop_changelevel` when the server already has them, otherwise `host_workshop_map`. |
 | `SetOptions(options)` | Timeouts, client cache and debug logging of the MultiAddon flow. |
 | `InstallAddonListener(listener)` | Deliver extra addons to specific clients through `IAddonListener.OnClientQueryAddons`. |
 

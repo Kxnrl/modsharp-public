@@ -313,6 +313,11 @@ AddonHooks::IAddonStrategy* InstallDualMountAddonHooks()
     return &s_DualMountAddonStrategy;
 }
 
+const std::string& DualMountAddonGetWorkshopMap()
+{
+    return s_CurrentWorkshopMap;
+}
+
 void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)
 {
     s_BypassCheckingTime[steamId] = time;

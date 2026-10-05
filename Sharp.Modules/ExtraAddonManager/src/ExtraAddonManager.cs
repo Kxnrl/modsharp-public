@@ -264,21 +264,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
     }
 
     public void ReloadMap()
-    {
-        var modSharp = _sharedSystem.GetModSharp();
-        var mapName  = modSharp.GetGlobals().MapName;
-
-        if (string.IsNullOrWhiteSpace(mapName))
-        {
-            return;
-        }
-
-        // same idea as AddonManager by Nuko: workshop maps must be reloaded through the workshop
-        var isWorkshopMap = modSharp.ListWorkshopMaps()
-                                    .Any(x => string.Equals(x.Name, mapName, StringComparison.OrdinalIgnoreCase));
-
-        modSharp.ServerCommand(isWorkshopMap ? $"ds_workshop_changelevel {mapName}" : $"changelevel {mapName}");
-    }
+        => _sharedSystem.GetAddonManager().ReloadMap();
 
     public IReadOnlyList<ulong> GetClientAddons(SteamID steamId = default)
     {

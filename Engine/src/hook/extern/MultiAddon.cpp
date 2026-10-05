@@ -65,9 +65,6 @@
 #include <unordered_map>
 #include <vector>
 
-// The MAM-style operator surface (ConVars, commands, disconnect message blocking) lives in
-// the ExtraAddonManager SharpModule on top of IAddonManager / IAddonListener.
-
 constexpr int    MAX_CLIENT_ADDONS = 64;
 constexpr size_t ADDON_PATH_LENGTH = 260;
 
@@ -173,10 +170,6 @@ static CServerSideClient* GetClientByNetChannel(const INetChannel* pNetChan)
     return nullptr;
 }
 
-// ============================================================================
-// Mount / download
-// ============================================================================
-
 static void BuildAddonPath(const char* pszAddon, char* buf, size_t len, bool bLegacy)
 {
     static CFixedBufferString<ADDON_PATH_LENGTH> s_WorkingDir;
@@ -189,24 +182,6 @@ static void BuildAddonPath(const char* pszAddon, char* buf, size_t len, bool bLe
 
     snprintf(buf, len, "%ssteamapps/workshop/content/730/%s/%s%s.vpk",
              s_WorkingDir.Get(), pszAddon, pszAddon, bLegacy ? "" : "_dir");
-}
-
-static void ReloadMap()
-{
-    if (!sv)
-        return;
-
-    const char* mapName = sv->GetMapName();
-    if (!mapName || !*mapName)
-        return;
-
-    char cmd[ADDON_PATH_LENGTH];
-    if (s_CurrentWorkshopMap.empty() || g_pFullFileSystem->IsDirectory(s_CurrentWorkshopMap.c_str(), "OFFICIAL_ADDONS"))
-        snprintf(cmd, sizeof(cmd), "changelevel %s", mapName);
-    else
-        snprintf(cmd, sizeof(cmd), "host_workshop_map %s", s_CurrentWorkshopMap.c_str());
-
-    engine->ServerCommand(cmd);
 }
 
 static bool IsDownloading(uint64_t fileId)
@@ -338,7 +313,7 @@ static void RefreshAddons(bool reloadMap)
             s_MountedAddons.size(), addons.size(), StringJoin(s_MountedAddons, ", ").c_str());
 
     if (allMounted && reloadMap)
-        ReloadMap();
+        AddonHooks::ReloadMap();
 }
 
 void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
@@ -362,7 +337,7 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
     if (entry.reloadMap && std::ranges::none_of(s_DownloadQueue, [](const auto& e) { return e.reloadMap; }))
     {
         LogInfo("[MultiAddon] All downloads complete, reloading map");
-        ReloadMap();
+        AddonHooks::ReloadMap();
     }
 }
 
@@ -404,6 +379,11 @@ void MultiAddonOnSteamApiActivated()
 
     LogInfo("[MultiAddon] Steam API activated, refreshing addons");
     RefreshAddons(true);
+}
+
+const std::string& MultiAddonGetWorkshopMap()
+{
+    return s_CurrentWorkshopMap;
 }
 
 void MultiAddonResetClientCache(SteamId_t steamId)
@@ -453,10 +433,6 @@ std::string MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache)
     const auto remaining = GetRemainingAddons(steamId);
     return remaining.empty() ? std::string() : remaining[0];
 }
-
-// ============================================================================
-// Hooks
-// ============================================================================
 
 class MultiAddonStrategy : public AddonHooks::IAddonStrategy
 {

@@ -316,6 +316,11 @@ static bool AddonUpdateAddon(uint64_t fileId)
     return AddonHooks::UpdateAddon(fileId);
 }
 
+static void AddonReloadMap()
+{
+    AddonHooks::ReloadMap();
+}
+
 static void AddonSetOptions(float clientTimeout, float connectionTimeout, float cacheDuration, bool debug)
 {
     AddonHooks::SetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
@@ -389,6 +394,7 @@ void Init()
     bridge::CreateNative("Game.AddonResetClientCache", reinterpret_cast<void*>(AddonResetClientCache));
     bridge::CreateNative("Game.AddonRefreshClient", reinterpret_cast<void*>(AddonRefreshClient));
     bridge::CreateNative("Game.AddonUpdateAddon", reinterpret_cast<void*>(AddonUpdateAddon));
+    bridge::CreateNative("Game.AddonReloadMap", reinterpret_cast<void*>(AddonReloadMap));
     bridge::CreateNative("Game.AddonSetOptions", reinterpret_cast<void*>(AddonSetOptions));
     bridge::CreateNative("Game.AddonSetClientQueryEnabled", reinterpret_cast<void*>(AddonSetClientQueryEnabled));
 

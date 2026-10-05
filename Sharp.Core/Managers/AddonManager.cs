@@ -73,6 +73,9 @@ internal class AddonManager : ICoreAddonManager
     public bool UpdateAddon(ulong addon)
         => Game.AddonUpdateAddon(addon);
 
+    public void ReloadMap()
+        => Game.AddonReloadMap();
+
     public void SetOptions(AddonOptions options)
         => Game.AddonSetOptions(options.ClientTimeout, options.ConnectionTimeout, options.CacheDuration, options.Debug);
 

@@ -78,6 +78,9 @@ bool RefreshClient(SteamId_t steamId, bool resetCache);
 bool UpdateAddon(uint64_t fileId);
 
 void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
+
+// Reload the current map, through host_workshop_map when it is a workshop map.
+void ReloadMap();
 } // namespace AddonHooks
 
 void InstallAddonHooks();

@@ -43,6 +43,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 | `ResetClientCache(steamId)` | 清除某个客户端（`default` 为全部）的已下载缓存。 |
 | `RefreshClient(steamId, resetCache)` | 向游戏中的客户端重新发送插件（客户端会重连）。`resetCache: true` 用于未收到插件时全部重发，`false` 只发送尚未拥有的插件。 |
 | `UpdateAddon(id)` | 强制更新工坊插件，期间会卸载并重新挂载（Windows 会锁定已挂载文件）。 |
+| `ReloadMap()` | 重载当前地图。服务器已有的工坊地图使用 `ds_workshop_changelevel`，否则使用 `host_workshop_map`。 |
 | `SetOptions(options)` | MultiAddon 流程的超时、客户端缓存与调试日志。 |
 | `InstallAddonListener(listener)` | 通过 `IAddonListener.OnClientQueryAddons` 向指定客户端额外分发插件。 |
 

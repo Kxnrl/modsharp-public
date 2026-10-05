@@ -139,6 +139,8 @@ public static unsafe partial class Game
 
     public static partial bool AddonUpdateAddon(ulong fileId);
 
+    public static partial void AddonReloadMap();
+
     public static partial void AddonSetOptions(float clientTimeout, float connectionTimeout, float cacheDuration, bool debug);
 
     public static partial void AddonSetClientQueryEnabled(bool enabled);

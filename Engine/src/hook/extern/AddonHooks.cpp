@@ -27,6 +27,7 @@
 #include "sdkproxy.h"
 #include "strtool.h"
 
+#include "cstrike/interface/CDedicatedServerWorkshopManager.h"
 #include "cstrike/interface/ICommandLine.h"
 #include "cstrike/interface/IEngineServer.h"
 #include "cstrike/interface/IMemAlloc.h"
@@ -51,6 +52,8 @@ extern void                        MultiAddonResetClientCache(SteamId_t steamId)
 extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache);
 extern bool                        MultiAddonUpdateAddon(uint64_t fileId);
 extern void                        MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
+extern const std::string&          DualMountAddonGetWorkshopMap();
+extern const std::string&          MultiAddonGetWorkshopMap();
 
 namespace
 {
@@ -169,6 +172,43 @@ bool UpdateAddon(uint64_t fileId)
 void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
 {
     MultiAddonSetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
+}
+
+void ReloadMap()
+{
+    if (!sv || !engine)
+        return;
+
+    const char* mapName = sv->GetMapName();
+    if (!mapName || !*mapName)
+        return;
+
+    static const std::string empty;
+    const auto& workshopMap = s_Mode == Mode::Dual ? DualMountAddonGetWorkshopMap() : s_Mode == Mode::Multi ? MultiAddonGetWorkshopMap() : empty;
+
+    // official community maps are tracked by name and load through a plain changelevel
+    if (workshopMap.empty() || !StrIsNumber(workshopMap))
+    {
+        engine->ServerCommand(FString("changelevel %s", mapName));
+        return;
+    }
+
+    // ds_workshop_changelevel skips the update check but only reaches maps the server already has,
+    // host_workshop_map works for any workshop map
+    const auto fileId = strtoull(workshopMap.c_str(), nullptr, 10);
+
+    CUtlVector<WorkshopMap_t> maps;
+    g_pServerWorkshopManager->ListWorkshopMaps(&maps);
+    for (int i = 0; i < maps.Count(); i++)
+    {
+        if (maps[i].m_nPublishFileId == fileId && maps[i].m_pName && *maps[i].m_pName)
+        {
+            engine->ServerCommand(FString("ds_workshop_changelevel %s", maps[i].m_pName));
+            return;
+        }
+    }
+
+    engine->ServerCommand(FString("host_workshop_map %s", workshopMap.c_str()));
 }
 
 bool RefreshClient(SteamId_t steamId, bool resetCache)
