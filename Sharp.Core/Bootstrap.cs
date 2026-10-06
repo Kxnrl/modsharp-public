@@ -54,6 +54,8 @@ public static class Bootstrap
 {
     private static readonly ShutdownMonitor ShutdownMonitor = new ();
 
+    private static LogCaptureSink? _logCapture;
+
 #region Unmanaged Caller
 
     [UnmanagedCallersOnly]
@@ -396,6 +398,8 @@ public static class Bootstrap
                 ValidateOnBuild = true, ValidateScopes = true,
             });
 
+            _logCapture?.Arm(serviceProvider.GetRequiredService<ICoreLibraryModuleManager>().Tier0);
+
             ap.Stop();
 
             if (benchmark)
@@ -487,6 +491,10 @@ public static class Bootstrap
             }
         }
 
+        var logCapture = new LogCaptureSink(consoleTemplate);
+
+        _logCapture = logCapture;
+
         var loggerConfiguration = new LoggerConfiguration()
                                   .Destructure.ByTransforming<SteamID>(x => x.DestructureTransform())
                                   .Destructure.ByTransforming<EntityIndex>(x => x.AsPrimitive())
@@ -500,6 +508,9 @@ public static class Bootstrap
                                                         .WriteTo.Console(theme: AnsiConsoleTheme.Code,
                                                                          outputTemplate: consoleTemplate,
                                                                          applyThemeToRedirectedOutput: false))
+                                  .WriteTo.Logger(lc => lc
+                                                        .Filter.ByIncludingOnly(e => e.Level >= LogEventLevel.Warning)
+                                                        .WriteTo.Sink(logCapture))
                                   .WriteTo.Logger(lc => lc.Filter
                                                           .ByIncludingOnly(e => e.Level is LogEventLevel.Verbose)
                                                           .WriteTo.Async(a =>
