@@ -8,13 +8,36 @@ jobs:
   discord-webhook:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
       - name: GitHub Releases to Discord
-        uses: SethCohen/github-releases-to-discord@v1
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          color: "2327791"
-          # content: "@everyone"
-          reduce_headings: false
+        shell: bash
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          set -euo pipefail
+          PAYLOAD="$RUNNER_TEMP/discord.json"
+
+          jq '
+            def repo: "https://github\\.com/[\\w.-]+/[\\w.-]+";
+            .release | {
+              embeds: [{
+                title: (if (.name // "") == "" then .tag_name else .name end),
+                url: .html_url,
+                color: 2327791,
+                description: ((.body // "")
+                  | gsub("\r"; "")
+                  | gsub("<!--[\\s\\S]*?-->"; "")
+                  | gsub("(?<![\\w/@\\[])@(?<n>[A-Za-z0-9](?:-?[A-Za-z0-9]){0,38})(?![\\w/-])"; "[@\(.n)](https://github.com/\(.n))")
+                  | gsub("(?<!\\()(?<u>" + repo + "/commit/(?<s>[0-9a-f]{7})[0-9a-f]*)"; "[\(.s)](\(.u))")
+                  | gsub("(?<!\\()(?<u>" + repo + "/pull/(?<n>\\d+))"; "[PR #\(.n)](\(.u))")
+                  | gsub("(?<!\\()(?<u>" + repo + "/issues/(?<n>\\d+))"; "[Issue #\(.n)](\(.u))")
+                  | gsub("(?<!\\()(?<u>" + repo + "/compare/(?<a>\\S+?)\\.\\.\\.(?<b>[^\\s)]+))"; "[\(.a)...\(.b)](\(.u))")
+                  | sub("^\\s+"; "") | sub("\\s+$"; "")
+                  | if length > 4096 then .[0:4095] + "…" else . end)
+              }]
+            }' "$GITHUB_EVENT_PATH" > "$PAYLOAD"
+
+          cat "$PAYLOAD"
+          curl --fail-with-body -sS \
+            -H 'Content-Type: application/json' \
+            --data-binary "@$PAYLOAD" \
+            "$WEBHOOK_URL?wait=true"
