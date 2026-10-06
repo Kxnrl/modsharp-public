@@ -1711,7 +1711,8 @@ internal partial class SharpCore : ISharpCore
     {
         // Stop timer only current map
 
-        var timers = _timers.Where(x => x.Value.Flags.HasFlag(GameTimerFlags.StopOnMapEnd))
+        var timers = _timers.Where(x => x.Value.Flags.HasFlag(GameTimerFlags.StopOnMapEnd)
+                                        || x.Value.Flags.HasFlag(GameTimerFlags.StopOnRoundEnd))
                             .Select(x => x.Key)
                             .ToArray();
 
