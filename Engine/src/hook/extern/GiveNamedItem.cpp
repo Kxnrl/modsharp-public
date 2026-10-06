@@ -21,7 +21,6 @@
 #include "bridge/forwards/forward.h"
 #include "global.h"
 #include "hook/installer.h"
-#include "manager/HookManager.h"
 #include "memory/zydis_utility.h"
 #include "module.h"
 #include "sdkproxy.h"
@@ -33,18 +32,19 @@
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/interface/ISchemaSystem.h"
+#include "cstrike/schema.h"
 #include "cstrike/type/CEconItemView.h"
-#include "cstrike/type/CEntityKeyValues.h"
-#include "cstrike/type/CEntityPrecacheContext.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
+#include "cstrike/type/CUtlString.h"
+#include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/Variant.h"
 
 #include <Zydis.h>
 #include <safetyhook.hpp>
 
 #include <algorithm>
-#include <ranges>
 #include <unordered_map>
 
 #define FIX_PLAYER_EQUIP_MANUALLY
@@ -56,89 +56,88 @@ struct WeaponInfo_t
     int32_t       m_iItemDefinitionIndex;
     CStrikeTeam_t m_iTeamNum;
     GearSlot_t    m_eSlot;
+    int32_t       m_nSlotPosition;
 
-    WeaponInfo_t(int32_t index, CStrikeTeam_t team, GearSlot_t slot) :
-        m_iItemDefinitionIndex(index), m_iTeamNum(team), m_eSlot(slot) {}
+    WeaponInfo_t(int32_t index, CStrikeTeam_t team, GearSlot_t slot, int32_t position) :
+        m_iItemDefinitionIndex(index), m_iTeamNum(team), m_eSlot(slot), m_nSlotPosition(position) {}
 
-    WeaponInfo_t(int32_t index, uint8_t team, GearSlot_t slot) :
-        m_iItemDefinitionIndex(index), m_iTeamNum(static_cast<CStrikeTeam_t>(team)), m_eSlot(slot) {}
+    WeaponInfo_t(int32_t index, uint8_t team, GearSlot_t slot, int32_t position) :
+        m_iItemDefinitionIndex(index), m_iTeamNum(static_cast<CStrikeTeam_t>(team)), m_eSlot(slot), m_nSlotPosition(position) {}
 };
 
-static std::unordered_map<uint32_t, std::vector<std::string>> s_gamePlayerEquipMap;
-
 static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
-    {"weapon_deagle",                {1, 0, GearSlot_t::GEAR_SLOT_PISTOL}   },
-    {"weapon_elite",                 {2, 0, GearSlot_t::GEAR_SLOT_PISTOL}   },
-    {"weapon_fiveseven",             {3, 3, GearSlot_t::GEAR_SLOT_PISTOL}   },
-    {"weapon_glock",                 {4, 2, GearSlot_t::GEAR_SLOT_PISTOL}   },
-    {"weapon_ak47",                  {7, 2, GearSlot_t::GEAR_SLOT_RIFLE}    },
-    {"weapon_aug",                   {8, 3, GearSlot_t::GEAR_SLOT_RIFLE}    },
-    {"weapon_awp",                   {9, 0, GearSlot_t::GEAR_SLOT_RIFLE}    },
-    {"weapon_famas",                 {10, 3, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_g3sg1",                 {11, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_galilar",               {13, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_m249",                  {14, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_m4a1",                  {16, 3, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_mac10",                 {17, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_p90",                   {19, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_mp5sd",                 {23, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_ump45",                 {24, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_xm1014",                {25, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_bizon",                 {26, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_mag7",                  {27, 3, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_negev",                 {28, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_sawedoff",              {29, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_tec9",                  {30, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_taser",                 {31, 0, GearSlot_t::GEAR_SLOT_KNIFE}   },
-    {"weapon_hkp2000",               {32, 3, GearSlot_t::GEAR_SLOT_PISTOL}  },
-    {"weapon_mp7",                   {33, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_mp9",                   {34, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_nova",                  {35, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_p250",                  {36, 0, GearSlot_t::GEAR_SLOT_PISTOL}  },
-    {"weapon_scar20",                {38, 3, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_sg556",                 {39, 2, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_ssg08",                 {40, 0, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_knifegg",               {41, 0, GearSlot_t::GEAR_SLOT_KNIFE}   },
-    {"weapon_knife",                 {42, 0, GearSlot_t::GEAR_SLOT_KNIFE}   },
-    {"weapon_flashbang",             {43, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_hegrenade",             {44, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_smokegrenade",          {45, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_molotov",               {46, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_decoy",                 {47, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_incgrenade",            {48, 0, GearSlot_t::GEAR_SLOT_GRENADES}},
-    {"weapon_c4",                    {49, 0, GearSlot_t::GEAR_SLOT_C4}      },
-    {"weapon_knife_t",               {59, 0, GearSlot_t::GEAR_SLOT_KNIFE}   },
-    {"weapon_m4a1_silencer",         {60, 3, GearSlot_t::GEAR_SLOT_RIFLE}   },
-    {"weapon_usp_silencer",          {61, 3, GearSlot_t::GEAR_SLOT_PISTOL}  },
-    {"weapon_cz75a",                 {63, 0, GearSlot_t::GEAR_SLOT_PISTOL}  },
-    {"weapon_revolver",              {64, 0, GearSlot_t::GEAR_SLOT_PISTOL}  },
-    {"weapon_bayonet",               {500, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_css",             {503, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_flip",            {505, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_gut",             {506, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_karambit",        {507, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_m9_bayonet",      {508, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_tactical",        {509, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_falchion",        {512, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_survival_bowie",  {514, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_butterfly",       {515, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_push",            {516, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_cord",            {517, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_canis",           {518, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_ursus",           {519, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_gypsy_jackknife", {520, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_outdoor",         {521, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_stiletto",        {522, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_widowmaker",      {523, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_skeleton",        {525, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
-    {"weapon_knife_kukri",           {526, 0, GearSlot_t::GEAR_SLOT_KNIFE}  },
+    {"weapon_deagle",                {1, 0, GearSlot_t::GEAR_SLOT_PISTOL, 0}   },
+    {"weapon_elite",                 {2, 0, GearSlot_t::GEAR_SLOT_PISTOL, 0}   },
+    {"weapon_fiveseven",             {3, 3, GearSlot_t::GEAR_SLOT_PISTOL, 0}   },
+    {"weapon_glock",                 {4, 2, GearSlot_t::GEAR_SLOT_PISTOL, 0}   },
+    {"weapon_ak47",                  {7, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}    },
+    {"weapon_aug",                   {8, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}    },
+    {"weapon_awp",                   {9, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}    },
+    {"weapon_famas",                 {10, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_g3sg1",                 {11, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_galilar",               {13, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_m249",                  {14, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_m4a1",                  {16, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_mac10",                 {17, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_p90",                   {19, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_mp5sd",                 {23, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_ump45",                 {24, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_xm1014",                {25, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_bizon",                 {26, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_mag7",                  {27, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_negev",                 {28, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_sawedoff",              {29, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_tec9",                  {30, 2, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_taser",                 {31, 0, GearSlot_t::GEAR_SLOT_KNIFE, 1}   },
+    {"weapon_hkp2000",               {32, 3, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_mp7",                   {33, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_mp9",                   {34, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_nova",                  {35, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_p250",                  {36, 0, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_scar20",                {38, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_sg556",                 {39, 2, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_ssg08",                 {40, 0, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_knifegg",               {41, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}   },
+    {"weapon_knife",                 {42, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}   },
+    {"weapon_flashbang",             {43, 0, GearSlot_t::GEAR_SLOT_GRENADES, 1}},
+    {"weapon_hegrenade",             {44, 0, GearSlot_t::GEAR_SLOT_GRENADES, 0}},
+    {"weapon_smokegrenade",          {45, 0, GearSlot_t::GEAR_SLOT_GRENADES, 2}},
+    {"weapon_molotov",               {46, 0, GearSlot_t::GEAR_SLOT_GRENADES, 4}},
+    {"weapon_decoy",                 {47, 0, GearSlot_t::GEAR_SLOT_GRENADES, 3}},
+    {"weapon_incgrenade",            {48, 0, GearSlot_t::GEAR_SLOT_GRENADES, 4}},
+    {"weapon_c4",                    {49, 0, GearSlot_t::GEAR_SLOT_C4, 0}      },
+    {"weapon_knife_t",               {59, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}   },
+    {"weapon_m4a1_silencer",         {60, 3, GearSlot_t::GEAR_SLOT_RIFLE, 0}   },
+    {"weapon_usp_silencer",          {61, 3, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_cz75a",                 {63, 0, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_revolver",              {64, 0, GearSlot_t::GEAR_SLOT_PISTOL, 0}  },
+    {"weapon_bayonet",               {500, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_css",             {503, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_flip",            {505, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_gut",             {506, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_karambit",        {507, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_m9_bayonet",      {508, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_tactical",        {509, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_falchion",        {512, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_survival_bowie",  {514, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_butterfly",       {515, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_push",            {516, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_cord",            {517, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_canis",           {518, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_ursus",           {519, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_gypsy_jackknife", {520, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_outdoor",         {521, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_stiletto",        {522, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_widowmaker",      {523, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_skeleton",        {525, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
+    {"weapon_knife_kukri",           {526, 0, GearSlot_t::GEAR_SLOT_KNIFE, 0}  },
 
     // Gears
-    {"item_kevlar",                  {0, 0, GearSlot_t::GEAR_SLOT_INVALID}  },
-    {"item_assaultsuit",             {0, 0, GearSlot_t::GEAR_SLOT_INVALID}  },
-    {"item_defuser",                 {0, 0, GearSlot_t::GEAR_SLOT_INVALID}  },
-    {"ammo_50ae",                    {0, 0, GearSlot_t::GEAR_SLOT_INVALID}  },
-    /*{"item_heavyassaultsuit",        {0, 0, GearSlot_t::GEAR_SLOT_INVALID}  },*/
+    {"item_kevlar",                  {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },
+    {"item_assaultsuit",             {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },
+    {"item_defuser",                 {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },
+    {"ammo_50ae",                    {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },
+    /*{"item_heavyassaultsuit",        {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },*/
 };
 
 static volatile bool s_bGiveNamedItemIgnoredCEconItemView = false;
@@ -294,8 +293,31 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
-static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity);
-static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon);
+static int32_t s_nPlayerEquipWeaponsOffset = 0;
+
+static void EquipPlayerItem(CCSPlayerPawn* pPlayer, CGamePlayerEquip* pEntity);
+static void TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon);
+
+static int32_t ResolvePlayerEquipWeaponsOffset()
+{
+    const auto pClass = schemas::FindClassInfo("CGamePlayerEquip");
+    AssertPtr(pClass);
+
+    const auto pBases    = pClass->GetBaseClassSize() == 1 ? pClass->GetBaseClasses() : nullptr;
+    const auto pBase     = pBases && pBases->m_nOffset == 0 ? pBases->m_pClass : nullptr;
+    const auto pszBase   = pBase ? pBase->GetName() : "";
+    const auto nBaseSize = pBase ? pBase->GetSize() : 0;
+
+    if (strcmp(pszBase, "CRulePointEntity") != 0
+        || pClass->GetFieldsSize() != 0
+        || pClass->GetSize() - nBaseSize != static_cast<int32_t>(sizeof(CUtlVector<CUtlString>)))
+    {
+        FatalError("ResolvePlayerEquipWeaponsOffset: unexpected CGamePlayerEquip layout: bases=%d base='%s' fields=%d size=%d base_size=%d",
+                   pClass->GetBaseClassSize(), pszBase, pClass->GetFieldsSize(), pClass->GetSize(), nBaseSize);
+    }
+
+    return nBaseSize;
+}
 
 static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
 {
@@ -336,7 +358,7 @@ static CCSPlayerPawn* ResolvePulsePlayer(const void* pContext)
     if (!pVTable)
         return nullptr;
 
-    using Getter = void* (*)(void*);
+    using Getter          = void* (*)(void*);
     const auto pActivator = reinterpret_cast<CBaseEntity*>(reinterpret_cast<Getter>(pVTable[0])(pValue));
     reinterpret_cast<Getter>(pVTable[1])(pValue);
     if (!pActivator || !pActivator->IsPlayerPawn())
@@ -348,35 +370,6 @@ static CCSPlayerPawn* ResolvePulsePlayer(const void* pContext)
 
 BeginMemberHookScope(CGamePlayerEquip)
 {
-    DeclareVirtualHook(Precache, void, (CGamePlayerEquip * pEntity, const CEntityPrecacheContext* pContext))
-    {
-        const auto pHammerId = pContext->m_pKeyValues->FindKeyValues("hammerUniqueId");
-        if (!pHammerId)
-            return Precache(pEntity, pContext);
-
-        const auto kv = pContext->m_pKeyValues;
-
-        auto list = std::vector<std::string>();
-
-        for (auto i = 0; i < CGamePlayerEquip::MAX_EQUIPMENTS_SIZE; i++)
-        {
-            char key[32];
-            snprintf(key, sizeof(key), "weapon%d", i);
-            const auto val = kv->GetString(key);
-            if (val && strlen(val) > 1)
-            {
-                list.emplace_back(val);
-            }
-        }
-
-        const auto hEntity = MurmurHash2Lowercase(pHammerId->GetString(), MURMURHASH_SEED);
-
-        if (!list.empty())
-            s_gamePlayerEquipMap[hEntity] = list;
-
-        Precache(pEntity, pContext);
-    }
-
     DeclareVirtualHook(Use, void, (CGamePlayerEquip * pEntity, int64_t* params))
     {
 #    ifdef HOOK_EXTERN_GIVENAMEDITEM_ASSERT
@@ -391,10 +384,12 @@ BeginMemberHookScope(CGamePlayerEquip)
         if (!pCaller || !pCaller->IsPlayerPawn())
             return;
 
-        if (EquipPlayerItem(reinterpret_cast<CBasePlayerPawn*>(pCaller), pEntity))
+        const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pCaller);
+
+        if (!pPlayer->IsPlayer() || !pPlayer->IsAlive())
             return;
 
-        Use(pEntity, params);
+        EquipPlayerItem(pPlayer, pEntity);
     }
 
     DeclareVirtualHook(Touch, void, (CGamePlayerEquip * pEntity, CBaseEntity * pOther))
@@ -406,59 +401,73 @@ BeginMemberHookScope(CGamePlayerEquip)
              "pOther", pOther);
 #    endif
 
-        if (!pOther)
+        if (!pOther || !pOther->IsPlayerPawn())
             return;
 
         if (pEntity->m_spawnflags() & CGamePlayerEquip::SF_PLAYEREQUIP_USEONLY)
             return;
 
-        if (!pOther->IsPlayerPawn())
+        const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pOther);
+
+        if (!pPlayer->IsPlayer() || !pPlayer->IsAlive())
             return;
 
-        if (EquipPlayerItem(reinterpret_cast<CBasePlayerPawn*>(pOther), pEntity))
-            return;
-
-        Touch(pEntity, pOther);
+        EquipPlayerItem(pPlayer, pEntity);
     }
 
     // The Pulse AllPlayers callback still calls this two-argument game function.
-    DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void* pInput))
+    DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void*))
     {
-        bool           handled = false;
         CCSPlayerPawn* pPlayer = nullptr;
         while ((pPlayer = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player")) != nullptr)
         {
             if (pPlayer->IsPlayerPawn() && pPlayer->IsPlayer() && pPlayer->IsAlive())
-                handled |= EquipPlayerItem(pPlayer, pEntity);
+                TriggerForPlayer(pEntity, pPlayer, nullptr);
         }
-        if (!handled)
-            PulseTriggerForAllPlayers(pEntity, pInput);
     }
 
-    DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void* pArg1, void* pArg2, void* pArg3, void* pContext, void* pEntityArgument))
+    DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void*, void*, void*, void* pContext, void* pEntityArgument))
     {
         const auto pEntity = ResolvePulsePlayerEquip(pEntityArgument);
         if (!pEntity)
-            return PulseTriggerForActivatedPlayer(pArg1, pArg2, pArg3, pContext, pEntityArgument);
+            return -2;
 
         if (const auto pPlayer = ResolvePulsePlayer(pContext))
-        {
-            if (TriggerForPlayer(pEntity, pPlayer, ResolvePulseWeapon(pEntityArgument)))
-                return 0;
-        }
-        return PulseTriggerForActivatedPlayer(pArg1, pArg2, pArg3, pContext, pEntityArgument);
+            TriggerForPlayer(pEntity, pPlayer, ResolvePulseWeapon(pEntityArgument));
+        return 0;
     }
+}
+
+static void StripSameSlotWeapons(CCSPlayerPawn* pPlayer, const WeaponInfo_t& info)
+{
+    if (info.m_eSlot == GearSlot_t::GEAR_SLOT_INVALID)
+        return;
+
+    CBaseWeapon* pWeapon = nullptr;
+    while ((pWeapon = pPlayer->GetWeaponBySlot(info.m_eSlot, info.m_nSlotPosition)) != nullptr)
+    {
+        if (info.m_eSlot == GearSlot_t::GEAR_SLOT_GRENADES)
+        {
+            if (const auto ammoType = pWeapon->GetVData()->m_nPrimaryAmmoType(); ammoType >= 0 && ammoType < MAX_AMMO_TYPES)
+                pPlayer->m_pWeaponServices()->SetAmmo(ammoType, 0);
+        }
+
+        pPlayer->RemovePlayerItem(pWeapon);
+    }
+}
+
+static void GiveGrenade(CCSPlayerPawn* pPlayer, const char* pszName)
+{
+    const auto pGrenade = pPlayer->GiveNamedItem(pszName);
+    if (pGrenade && !pGrenade->IsMarkedForDeletion() && pGrenade->GetOwner() != pPlayer)
+        pGrenade->Kill();
 }
 
 // NOTE game_player_equip does not work in CStrike 2
 // Now We impl that manually
 // 这里全部照着CSGO的实现写!
-static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
+static void EquipPlayerItem(CCSPlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
 {
-    const auto pController = pPlayer->GetController<CCSPlayerController*>();
-    if (!pController)
-        return false;
-
     const auto flags = pEntity->GetSpawnFlags();
 
     if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_STRIPFIRST)
@@ -466,22 +475,16 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
         pPlayer->RemoveAllItems(true);
     }
 
-    const auto pszHammerId = pEntity->GetHammerId();
-    if (!pszHammerId || !pszHammerId[0])
-        return false;
-
-    const auto key = MurmurHash2Lowercase(pszHammerId, MURMURHASH_SEED);
-    const auto map = s_gamePlayerEquipMap.find(key);
-    if (map == s_gamePlayerEquipMap.end())
-    {
-        // WARN("CGamePlayerEquip (%d.%s) is missing weapons!\n", pEntity->GetEntityIndex(), pName);
-        return false;
-    }
+    const auto pWeapons = reinterpret_cast<const CUtlVector<CUtlString>*>(reinterpret_cast<uintptr_t>(pEntity) + s_nPlayerEquipWeaponsOffset);
 
     const auto team = pPlayer->GetTeam();
 
-    for (const auto& name : map->second)
+    for (const auto& weapon : *pWeapons)
     {
+        const auto name = LowercaseString(weapon.Get());
+        if (name.empty())
+            continue;
+
         if (strcasecmp(name.c_str(), "ammo_50ae") == 0)
         {
             // HACK FIX for ammo_50AE
@@ -514,46 +517,14 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
             {
                 if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
                 {
-                    // 手雷就不重复发了
-                    if (data->second.m_eSlot == GearSlot_t::GEAR_SLOT_GRENADES)
-                    {
-                        auto alreadyHas = false;
-                        if (const auto m_hMyWeapons = pPlayer->m_pWeaponServices()->m_hMyWeapons())
-                        {
-                            auto index = m_hMyWeapons->Count() - 1;
-                            for (; index >= 0; index--)
-                            {
-                                if (const auto hWeapon = m_hMyWeapons->Element(index); hWeapon.IsValid())
-                                {
-                                    if (const auto pWeapon = reinterpret_cast<CBaseWeapon*>(g_pGameEntitySystem->FindEntityByEHandle(hWeapon)))
-                                    {
-                                        if (strcasecmp(pWeapon->GetClassname(), name.c_str()) == 0)
-                                        {
-                                            alreadyHas = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if (alreadyHas)
-                        {
-                            continue;
-                        }
-                    }
-                    // 其他的还是一律先strip
-                    else
-                    {
-                        CBaseWeapon* pWeapon = nullptr;
-                        while ((pWeapon = pPlayer->GetWeaponBySlot(data->second.m_eSlot)) != nullptr)
-                        {
-                            pPlayer->RemovePlayerItem(pWeapon);
-                        }
-                    }
+                    StripSameSlotWeapons(pPlayer, data->second);
                 }
 
-                if (data->second.m_iTeamNum != TEAM_UNASSIGNED)
+                if (data->second.m_eSlot == GearSlot_t::GEAR_SLOT_GRENADES)
+                {
+                    GiveGrenade(pPlayer, name.c_str());
+                }
+                else if (data->second.m_iTeamNum != TEAM_UNASSIGNED)
                 {
                     if (data->second.m_iTeamNum != team)
                     {
@@ -581,22 +552,20 @@ static bool EquipPlayerItem(CBasePlayerPawn* pPlayer, CGamePlayerEquip* pEntity)
             WARN("game_player_equip: GiveNamedItem with unknown type '%s'\n", name.c_str());
         }
     }
-
-    return true;
 }
 
-static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon)
+static void TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, const char* pszWeapon)
 {
     if (!pszWeapon || strnlen(pszWeapon, 5) <= 4 || strcasecmp(pszWeapon, "(null)") == 0) // 'weapon_' or 'item_'
-        return EquipPlayerItem(pPlayer, pEntity);
+    {
+        EquipPlayerItem(pPlayer, pEntity);
+        return;
+    }
 
-    const auto pController = pPlayer->GetController<CCSPlayerController*>();
-    if (!pController)
-        return true;
-
-    const auto data = s_WeaponMap.find(pszWeapon);
+    const auto name = LowercaseString(pszWeapon);
+    const auto data = s_WeaponMap.find(name);
     if (data == s_WeaponMap.end())
-        return true;
+        return;
 
     const auto flags = pEntity->GetSpawnFlags();
 
@@ -606,84 +575,32 @@ static bool TriggerForPlayer(CGamePlayerEquip* pEntity, CCSPlayerPawn* pPlayer, 
     }
     else if (flags & CGamePlayerEquip::SF_PLAYEREQUIP_ONLYSTRIPSAME)
     {
-        if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_GRENADES && data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
-        {
-            CBaseWeapon* pWeapon = nullptr;
-            while ((pWeapon = pPlayer->GetWeaponBySlot(data->second.m_eSlot)) != nullptr)
-            {
-                pPlayer->RemovePlayerItem(pWeapon);
-            }
-        }
+        StripSameSlotWeapons(pPlayer, data->second);
     }
 
-    if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
+    if (data->second.m_eSlot == GearSlot_t::GEAR_SLOT_GRENADES)
+    {
+        GiveGrenade(pPlayer, name.c_str());
+    }
+    else if (data->second.m_eSlot != GearSlot_t::GEAR_SLOT_INVALID)
     {
         const auto team = pPlayer->GetTeam();
-        if (data->second.m_iTeamNum != team)
+        if (data->second.m_iTeamNum != TEAM_UNASSIGNED && data->second.m_iTeamNum != team)
         {
             pPlayer->TransientChangeTeam(data->second.m_iTeamNum);
-            pPlayer->GiveNamedItem(pszWeapon);
+            pPlayer->GiveNamedItem(name.c_str());
             pPlayer->TransientChangeTeam(team);
         }
         else
         {
-            pPlayer->GiveNamedItem(pszWeapon);
+            pPlayer->GiveNamedItem(name.c_str());
         }
     }
     else
     {
-        pPlayer->GiveNamedItem(pszWeapon);
+        pPlayer->GiveNamedItem(name.c_str());
     }
-
-    return true;
 }
-
-#endif
-
-#ifdef FIX_WEAPON_ECON
-class LocalEntityListener : public IEntityListener
-{
-    void OnEntitySpawned(CBaseEntity* pEntity) override
-    {
-        if (strncasecmp(pEntity->GetClassname(), "weapon_", 7) == 0)
-        {
-            const auto pWeapon  = reinterpret_cast<CEconEntity*>(pEntity);
-            const auto pManager = pWeapon->GetAttributeManager();
-            if (!pManager)
-                return;
-
-            const auto pItem = pManager->GetItem();
-            if (!pItem)
-                return;
-
-            if (pItem->m_bInitialized())
-                return;
-
-            const auto data = s_WeaponMap.find(pEntity->GetClassname());
-            if (data == s_WeaponMap.end())
-                FatalError("Invalid Weapon Classname: %s", pEntity->GetClassname());
-
-            if (data->second.m_iItemDefinitionIndex == 0)
-                return;
-
-            static auto pHammerId = *entList->AllocPooledString("this is map created weapon!");
-            static auto nOffset   = schemas::GetOffset("CBaseEntity", "m_sUniqueHammerID");
-
-            const auto m_sUniqueHammerID = reinterpret_cast<CUtlString*>(reinterpret_cast<uintptr_t>(pEntity) + nOffset);
-            m_sUniqueHammerID->Set(pHammerId);
-
-            pItem->m_bInitialized(true);
-            pItem->m_iItemDefinitionIndex(data->second.m_iItemDefinitionIndex);
-
-            WARN("Fix Weapon %d.%s CEconEntity!", pEntity->GetEntityIndex(), pEntity->GetClassname());
-        }
-    }
-
-    void OnEntityCreated(CBaseEntity* pEntity) override {}
-    void OnEntityDeleted(CBaseEntity* pEntity) override {}
-
-    void OnEntityFollowed(CBaseEntity* pEntity, CBaseEntity* pOwner) override {}
-} static s_EntityListener;
 
 #endif
 
@@ -804,23 +721,12 @@ void InstallGiveNamedItemHooks()
 
 #ifdef FIX_PLAYER_EQUIP_MANUALLY
 
-    VHOOK(CGamePlayerEquip, Precache, server, {.gamedata = "CBaseEntity::Precache"});
+    s_nPlayerEquipWeaponsOffset = ResolvePlayerEquipWeaponsOffset();
+
     HOOK(CGamePlayerEquip, PulseTriggerForAllPlayers, {.address = g_pGameData->GetAddress<void*>("CGamePlayerEquip::TriggerForAllPlayers")});
     HOOK(CGamePlayerEquip, PulseTriggerForActivatedPlayer);
 
     VHOOK(CGamePlayerEquip, Use, server, {.gamedata = "CBaseEntity::Use"});
     VHOOK(CGamePlayerEquip, Touch, server, {.gamedata = "CBaseEntity::Touch"});
-
-    g_pHookManager->Hook_GameShutdown(HookType_Post, [] {
-        for (auto& val : s_gamePlayerEquipMap | std::views::values)
-        {
-            val.clear();
-        }
-        s_gamePlayerEquipMap.clear();
-    });
-#endif
-
-#ifdef FIX_WEAPON_ECON
-    entList->AddListenerEntity(&s_EntityListener);
 #endif
 }

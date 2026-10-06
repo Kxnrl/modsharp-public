@@ -136,6 +136,11 @@ struct SchemaClassInfoData_t
         return m_pFields;
     }
 
+    int32_t GetSize() const
+    {
+        return m_nSize;
+    }
+
     SchemaClassInfoData_t* GetParent() const
     {
         if (!m_BaseClasses)

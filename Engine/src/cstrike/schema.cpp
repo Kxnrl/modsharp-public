@@ -164,6 +164,8 @@ static CUtlVector<SchemaClass_t*>          g_SchemaList;
 static SchemaKeyValueMap_t                 g_SchemaMap{};
 static std::unordered_map<uint64_t, void*> g_DataMapInputFuncMap{};
 
+static std::unordered_map<std::string, const SchemaClassInfoData_t*> g_ClassInfoMap{};
+
 struct CNetworkSerializerFieldInfo
 {
     uint32_t   m_nHash;          // 0x00  field name hash
@@ -347,6 +349,16 @@ int32_t schemas::GetClassSize(const char* className)
     }
 
     return 0;
+}
+
+const SchemaClassInfoData_t* schemas::FindClassInfo(const char* className)
+{
+    if (const auto it = g_ClassInfoMap.find(className); it != g_ClassInfoMap.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
 }
 
 int32_t schemas::FindChainOffset(const char* className)
@@ -669,6 +681,8 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
         {
             continue;
         }
+
+        g_ClassInfoMap.try_emplace(class_info->GetName(), class_info);
 
         auto* schema_class = new SchemaClass_t();
         schema_class->name = class_info->GetName();
