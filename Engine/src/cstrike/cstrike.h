@@ -94,14 +94,14 @@ public:
     [[nodiscard]] uint32_t GetPackedValue() const
     {
         if (!IsValid())
-            return 0xFFFFFF;
+            return INVALID_PACKED_HANDLE;
 
         return (value & 0x7FFF) | (((value >> 15) & 0x3FF) << 14);
     }
 
     [[nodiscard]] static CBaseHandle FromPackedValue(uint32_t packed)
     {
-        if (packed == 0xFFFFFF)
+        if (packed == INVALID_PACKED_HANDLE)
             return {};
 
         const auto index  = packed & 0x3FFF;
