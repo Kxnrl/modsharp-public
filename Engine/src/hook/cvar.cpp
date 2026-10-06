@@ -187,6 +187,11 @@ static void SetConVarValue(CConVarBaseData* pConVar, CVValue_t* value)
     g_ConVarManager.SetValue(pConVar, value);
 }
 
+static bool SetConVarValueString(CConVarBaseData* pConVar, const char* value)
+{
+    return g_ConVarManager.SetValueString(pConVar, value);
+}
+
 static void SetConVarMinBound(CConVarBaseData* pConVar, CVValue_t* value)
 {
     g_ConVarManager.SetMin(pConVar, value);
@@ -236,6 +241,7 @@ void Init()
     bridge::CreateNative("Cvar.CreateConVar", reinterpret_cast<void*>(CreateConVar));
     bridge::CreateNative("Cvar.CreateCommand", reinterpret_cast<void*>(CreateCommand));
     bridge::CreateNative("Cvar.SetValue", reinterpret_cast<void*>(SetConVarValue));
+    bridge::CreateNative("Cvar.SetValueString", reinterpret_cast<void*>(SetConVarValueString));
     bridge::CreateNative("Cvar.SetMinBound", reinterpret_cast<void*>(SetConVarMinBound));
     bridge::CreateNative("Cvar.SetMaxBound", reinterpret_cast<void*>(SetConVarMaxBound));
     bridge::CreateNative("Cvar.ReleaseCommand", reinterpret_cast<void*>(ReleaseCommand));

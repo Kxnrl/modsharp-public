@@ -1005,13 +1005,26 @@ internal partial class SharpCore : ISharpCore
         {
             if (NativeString.CStringCmp(factory->m_pszName.Value, pName) == 0)
             {
-                return GameSystem.Create(factory->m_pInstance);
+                return GameSystem.Create(GetGameSystemInstance(factory));
             }
 
             factory = factory->m_pNext;
         }
 
         return null;
+    }
+
+    private static unsafe nint GetGameSystemInstance(CGameSystemFactory* factory)
+    {
+        var index          = CoreGameData.Core.GetVFuncIndex("IGameSystemFactory::IsReallocating");
+        var isReallocating = ((delegate* unmanaged<CGameSystemFactory*, byte>) (*(nint**) factory)[index])(factory) != 0;
+
+        if (!isReallocating)
+        {
+            return factory->m_pInstance;
+        }
+
+        return factory->m_pInstance == nint.Zero ? nint.Zero : *(nint*) factory->m_pInstance;
     }
 
     public IntPtr FindValveInterface(string module, string name)

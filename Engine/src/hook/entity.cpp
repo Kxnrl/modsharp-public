@@ -1709,20 +1709,19 @@ static bool CustomInput_ModifySpeed(const CEntityIdentity* pInstance, const char
 
 static bool CustomInput_SetMessage(const CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue)
 {
+    const auto pEntity = reinterpret_cast<CEnvHudHint*>(pInstance->GetBaseEntity());
+
+    if (strcasecmp(pEntity->GetClassname(), "env_hudhint") != 0)
+        return false;
+
     if (const auto param = pValue->AutoCastString())
     {
-        const auto pEntity = reinterpret_cast<CEnvHudHint*>(pInstance->GetBaseEntity());
-        if (strcasecmp(pEntity->GetClassname(), "env_hudhint") == 0)
+        const auto& message = g_pGameEntitySystem->AllocPooledString(param);
+        pEntity->m_iszMessage(message);
+
+        if (ms_entity_io_verbose_logging->GetValue<bool>())
         {
-            const auto& message = g_pGameEntitySystem->AllocPooledString(param);
-            pEntity->m_iszMessage(message);
-
-            if (ms_entity_io_verbose_logging->GetValue<bool>())
-            {
-                LOG("Set HudMessage to %s for %s", message.Get(), pInstance->GetName());
-            }
-
-            return true;
+            LOG("Set HudMessage to %s for %s", message.Get(), pInstance->GetName());
         }
     }
     else
@@ -1730,8 +1729,7 @@ static bool CustomInput_SetMessage(const CEntityIdentity* pInstance, const char*
         InputError();
     }
 
-    // probably handle to other entity
-    return false;
+    return true;
 }
 
 struct CaseInsensitiveHash

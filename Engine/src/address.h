@@ -193,7 +193,7 @@ using CGameEntitySystem_RemoveListenerEntity_t      = void (*)(CGameEntitySystem
 using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, void*, void*);
 using ScriptRegisterConVar_t                        = void* (*)(void*, const char*, const char*, const char*, int);
 using ScriptRegisterConCommand_t                    = void (*)(void*, const char*, void*, const char*, int);
-using ScriptSetConVarString_t                       = void (*)(BaseConVar* convar, int64_t, const char*);
+using ScriptSetConVarString_t                       = bool (*)(BaseConVar* convar, int64_t, const char*);
 using ScriptSetConVarNumber_t                       = void (*)(BaseConVar* convar, int32_t value, int32_t value2);
 #ifdef PLATFORM_WINDOWS
 using ScriptSetConVarDouble_t = void (*)(BaseConVar* convar, float value);

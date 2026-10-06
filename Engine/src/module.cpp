@@ -231,6 +231,8 @@ std::vector<CAddress> CModule::FindPtrs(std::uintptr_t ptr) const
 
 CAddress CModule::FindInterface(std::string_view name) const
 {
+    AssertPtr(_createInterFaceFn);
+
     return reinterpret_cast<CreateInterface_t>(_createInterFaceFn)(name.data(), nullptr);
 }
 

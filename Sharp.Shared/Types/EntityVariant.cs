@@ -69,7 +69,7 @@ public ref struct EntityVariant
             return string.Empty;
         }
 
-        var ptr = *(sbyte**) _pValue;
+        var ptr = (sbyte*) _pValue;
 
         return Utils.ReadString(ptr);
     }

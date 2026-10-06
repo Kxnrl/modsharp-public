@@ -611,80 +611,86 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_gameevents_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\020gameevents.proto\032\026networkbasetypes.pro"
-  "to\"G\n\034CMsgVDebugGameSessionIDEvent\022\020\n\010cl"
-  "ientid\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\233\003\n\023"
-  "CMsgPlaceDecalEvent\022\035\n\010position\030\001 \001(\0132\013."
-  "CMsgVector\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022"
-  "\032\n\005saxis\030\003 \001(\0132\013.CMsgVector\022\021\n\tboneindex"
-  "\030\004 \001(\005\022\025\n\rtriangleindex\030\r \001(\005\022\r\n\005flags\030\005"
-  " \001(\r\022\r\n\005color\030\006 \001(\007\022\023\n\013random_seed\030\007 \001(\005"
-  "\022\030\n\020decal_group_name\030\010 \001(\r\022\025\n\rsize_overr"
-  "ide\030\t \001(\002\022\036\n\014entityhandle\030\n \001(\r:\0101677721"
-  "5\022\023\n\013material_id\030\013 \001(\004\022\025\n\rsequence_name\030"
-  "\014 \001(\r\022)\n\024position_objectspace\030\016 \001(\0132\013.CM"
-  "sgVector\022\'\n\022normal_objectspace\030\017 \001(\0132\013.C"
-  "MsgVector\"1\n\031CMsgClearWorldDecalsEvent\022\024"
-  "\n\014flagstoclear\030\001 \001(\r\"2\n\032CMsgClearEntityD"
-  "ecalsEvent\022\024\n\014flagstoclear\030\001 \001(\r\"U\n\035CMsg"
-  "ClearDecalsForEntityEvent\022\024\n\014flagstoclea"
-  "r\030\001 \001(\r\022\036\n\014entityhandle\030\002 \001(\r:\01016777215\""
-  "\364\001\n\036CMsgSource1LegacyGameEventList\022A\n\013de"
-  "scriptors\030\001 \003(\0132,.CMsgSource1LegacyGameE"
-  "ventList.descriptor_t\032#\n\005key_t\022\014\n\004type\030\001"
-  " \001(\005\022\014\n\004name\030\002 \001(\t\032b\n\014descriptor_t\022\017\n\007ev"
-  "entid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\0223\n\004keys\030\003 \003(\0132"
-  "%.CMsgSource1LegacyGameEventList.key_t:\006"
-  "\200\265\030\200\200\002\"K\n\035CMsgSource1LegacyListenEvents\022"
-  "\022\n\nplayerslot\030\001 \001(\005\022\026\n\016eventarraybits\030\002 "
-  "\003(\r\"\270\002\n\032CMsgSource1LegacyGameEvent\022\022\n\nev"
-  "ent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004keys\030"
-  "\003 \003(\0132!.CMsgSource1LegacyGameEvent.key_t"
-  "\022\023\n\013server_tick\030\004 \001(\005\022\023\n\013passthrough\030\005 \001"
-  "(\005\032\231\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string"
-  "\030\002 \001(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 "
-  "\001(\005\022\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005"
-  "\022\020\n\010val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\244"
-  "\001\n\026CMsgSosStartSoundEvent\022\027\n\017soundevent_"
-  "guid\030\001 \001(\005\022\027\n\017soundevent_hash\030\002 \001(\007\022\037\n\023s"
-  "ource_entity_index\030\003 \001(\005:\002-1\022\014\n\004seed\030\004 \001"
-  "(\005\022\025\n\rpacked_params\030\005 \001(\014\022\022\n\nstart_time\030"
-  "\006 \001(\002\"0\n\025CMsgSosStopSoundEvent\022\027\n\017sounde"
-  "vent_guid\030\001 \001(\005\"U\n\031CMsgSosStopSoundEvent"
-  "Hash\022\027\n\017soundevent_hash\030\001 \001(\007\022\037\n\023source_"
-  "entity_index\030\002 \001(\005:\002-1\"L\n\032CMsgSosSetSoun"
-  "dEventParams\022\027\n\017soundevent_guid\030\001 \001(\005\022\025\n"
-  "\rpacked_params\030\005 \001(\014\"I\n\034CMsgSosSetLibrar"
-  "yStackFields\022\022\n\nstack_hash\030\001 \001(\007\022\025\n\rpack"
-  "ed_fields\030\005 \001(\014\"\235\001\n\031CMsgClothStiffenAnim"
-  "Event\022\037\n\023source_entity_index\030\001 \001(\005:\002-1\022\027"
-  "\n\017vertex_set_hash\030\002 \001(\005\022\021\n\tintensity\030\003 \001"
-  "(\002\022\016\n\006length\030\004 \001(\002\022\020\n\010speed_in\030\005 \001(\002\022\021\n\t"
-  "speed_out\030\006 \001(\002\"\237\001\n\030CMsgClothEffectAnimE"
-  "vent\022\037\n\023source_entity_index\030\001 \001(\005:\002-1\022\030\n"
-  "\020effect_name_hash\030\002 \001(\005\022\021\n\toperation\030\003 \001"
-  "(\005\022\r\n\005flags\030\004 \001(\005\022\014\n\004tags\030\005 \001(\t\022\030\n\003pte\030\006"
-  " \001(\0132\013.CMsgVector*\352\003\n\017EBaseGameEvents\022 \n"
-  "\033GE_VDebugGameSessionIDEvent\020\310\001\022\027\n\022GE_Pl"
-  "aceDecalEvent\020\311\001\022\035\n\030GE_ClearWorldDecalsE"
-  "vent\020\312\001\022\036\n\031GE_ClearEntityDecalsEvent\020\313\001\022"
-  "!\n\034GE_ClearDecalsForEntityEvent\020\314\001\022\"\n\035GE"
-  "_Source1LegacyGameEventList\020\315\001\022!\n\034GE_Sou"
-  "rce1LegacyListenEvents\020\316\001\022\036\n\031GE_Source1L"
-  "egacyGameEvent\020\317\001\022\032\n\025GE_SosStartSoundEve"
-  "nt\020\320\001\022\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031GE_S"
-  "osSetSoundEventParams\020\322\001\022 \n\033GE_SosSetLib"
-  "raryStackFields\020\323\001\022\035\n\030GE_SosStopSoundEve"
-  "ntHash\020\324\001\022\035\n\030GE_ClothStiffenAnimEvent\020\325\001"
-  "\022\034\n\027GE_ClothEffectAnimEvent\020\326\001"
+  "to\032 google/protobuf/descriptor.proto\"G\n\034"
+  "CMsgVDebugGameSessionIDEvent\022\020\n\010clientid"
+  "\030\001 \001(\005\022\025\n\rgamesessionid\030\002 \001(\t\"\301\003\n\023CMsgPl"
+  "aceDecalEvent\022\035\n\010position\030\001 \001(\0132\013.CMsgVe"
+  "ctor\022\033\n\006normal\030\002 \001(\0132\013.CMsgVector\022\032\n\005sax"
+  "is\030\003 \001(\0132\013.CMsgVector\022\021\n\tboneindex\030\004 \001(\005"
+  "\022\025\n\rtriangleindex\030\r \001(\005\022\r\n\005flags\030\005 \001(\r\022\r"
+  "\n\005color\030\006 \001(\007\022\023\n\013random_seed\030\007 \001(\005\022\030\n\020de"
+  "cal_group_name\030\010 \001(\r\022\025\n\rsize_override\030\t "
+  "\001(\002\022D\n\014entityhandle\030\n \001(\r:\01016777215B$\242\001\026"
+  "CEHandleNetworkableInt\252\001\01016777215\022\023\n\013mat"
+  "erial_id\030\013 \001(\004\022\025\n\rsequence_name\030\014 \001(\r\022)\n"
+  "\024position_objectspace\030\016 \001(\0132\013.CMsgVector"
+  "\022\'\n\022normal_objectspace\030\017 \001(\0132\013.CMsgVecto"
+  "r\"1\n\031CMsgClearWorldDecalsEvent\022\024\n\014flagst"
+  "oclear\030\001 \001(\r\"2\n\032CMsgClearEntityDecalsEve"
+  "nt\022\024\n\014flagstoclear\030\001 \001(\r\"{\n\035CMsgClearDec"
+  "alsForEntityEvent\022\024\n\014flagstoclear\030\001 \001(\r\022"
+  "D\n\014entityhandle\030\002 \001(\r:\01016777215B$\242\001\026CEHa"
+  "ndleNetworkableInt\252\001\01016777215\"\364\001\n\036CMsgSo"
+  "urce1LegacyGameEventList\022A\n\013descriptors\030"
+  "\001 \003(\0132,.CMsgSource1LegacyGameEventList.d"
+  "escriptor_t\032#\n\005key_t\022\014\n\004type\030\001 \001(\005\022\014\n\004na"
+  "me\030\002 \001(\t\032b\n\014descriptor_t\022\017\n\007eventid\030\001 \001("
+  "\005\022\014\n\004name\030\002 \001(\t\0223\n\004keys\030\003 \003(\0132%.CMsgSour"
+  "ce1LegacyGameEventList.key_t:\006\200\265\030\200\200\002\"K\n\035"
+  "CMsgSource1LegacyListenEvents\022\022\n\nplayers"
+  "lot\030\001 \001(\005\022\026\n\016eventarraybits\030\002 \003(\r\"\270\002\n\032CM"
+  "sgSource1LegacyGameEvent\022\022\n\nevent_name\030\001"
+  " \001(\t\022\017\n\007eventid\030\002 \001(\005\022/\n\004keys\030\003 \003(\0132!.CM"
+  "sgSource1LegacyGameEvent.key_t\022\023\n\013server"
+  "_tick\030\004 \001(\005\022\023\n\013passthrough\030\005 \001(\005\032\231\001\n\005key"
+  "_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002 \001(\t\022\021\n\t"
+  "val_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001(\005\022\021\n\tval"
+  "_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020\n\010val_bo"
+  "ol\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\272\001\n\026CMsgSos"
+  "StartSoundEvent\022\027\n\017soundevent_guid\030\001 \001(\005"
+  "\022\027\n\017soundevent_hash\030\002 \001(\007\0225\n\023source_enti"
+  "ty_index\030\003 \001(\005:\002-1B\024\242\001\014CEntityIndex\252\001\002-1"
+  "\022\014\n\004seed\030\004 \001(\005\022\025\n\rpacked_params\030\005 \001(\014\022\022\n"
+  "\nstart_time\030\006 \001(\002\"0\n\025CMsgSosStopSoundEve"
+  "nt\022\027\n\017soundevent_guid\030\001 \001(\005\"k\n\031CMsgSosSt"
+  "opSoundEventHash\022\027\n\017soundevent_hash\030\001 \001("
+  "\007\0225\n\023source_entity_index\030\002 \001(\005:\002-1B\024\242\001\014C"
+  "EntityIndex\252\001\002-1\"L\n\032CMsgSosSetSoundEvent"
+  "Params\022\027\n\017soundevent_guid\030\001 \001(\005\022\025\n\rpacke"
+  "d_params\030\005 \001(\014\"I\n\034CMsgSosSetLibraryStack"
+  "Fields\022\022\n\nstack_hash\030\001 \001(\007\022\025\n\rpacked_fie"
+  "lds\030\005 \001(\014\"\263\001\n\031CMsgClothStiffenAnimEvent\022"
+  "5\n\023source_entity_index\030\001 \001(\005:\002-1B\024\242\001\014CEn"
+  "tityIndex\252\001\002-1\022\027\n\017vertex_set_hash\030\002 \001(\005\022"
+  "\021\n\tintensity\030\003 \001(\002\022\016\n\006length\030\004 \001(\002\022\020\n\010sp"
+  "eed_in\030\005 \001(\002\022\021\n\tspeed_out\030\006 \001(\002\"\265\001\n\030CMsg"
+  "ClothEffectAnimEvent\0225\n\023source_entity_in"
+  "dex\030\001 \001(\005:\002-1B\024\242\001\014CEntityIndex\252\001\002-1\022\030\n\020e"
+  "ffect_name_hash\030\002 \001(\005\022\021\n\toperation\030\003 \001(\005"
+  "\022\r\n\005flags\030\004 \001(\005\022\014\n\004tags\030\005 \001(\t\022\030\n\003pte\030\006 \001"
+  "(\0132\013.CMsgVector*\352\003\n\017EBaseGameEvents\022 \n\033G"
+  "E_VDebugGameSessionIDEvent\020\310\001\022\027\n\022GE_Plac"
+  "eDecalEvent\020\311\001\022\035\n\030GE_ClearWorldDecalsEve"
+  "nt\020\312\001\022\036\n\031GE_ClearEntityDecalsEvent\020\313\001\022!\n"
+  "\034GE_ClearDecalsForEntityEvent\020\314\001\022\"\n\035GE_S"
+  "ource1LegacyGameEventList\020\315\001\022!\n\034GE_Sourc"
+  "e1LegacyListenEvents\020\316\001\022\036\n\031GE_Source1Leg"
+  "acyGameEvent\020\317\001\022\032\n\025GE_SosStartSoundEvent"
+  "\020\320\001\022\031\n\024GE_SosStopSoundEvent\020\321\001\022\036\n\031GE_Sos"
+  "SetSoundEventParams\020\322\001\022 \n\033GE_SosSetLibra"
+  "ryStackFields\020\323\001\022\035\n\030GE_SosStopSoundEvent"
+  "Hash\020\324\001\022\035\n\030GE_ClothStiffenAnimEvent\020\325\001\022\034"
+  "\n\027GE_ClothEffectAnimEvent\020\326\001"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_gameevents_2eproto_deps[1] = {
+static const ::_pbi::DescriptorTable* const descriptor_table_gameevents_2eproto_deps[2] = {
+  &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_gameevents_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_gameevents_2eproto = {
-    false, false, 2630, descriptor_table_protodef_gameevents_2eproto,
+    false, false, 2828, descriptor_table_protodef_gameevents_2eproto,
     "gameevents.proto",
-    &descriptor_table_gameevents_2eproto_once, descriptor_table_gameevents_2eproto_deps, 1, 18,
+    &descriptor_table_gameevents_2eproto_once, descriptor_table_gameevents_2eproto_deps, 2, 18,
     schemas, file_default_instances, TableStruct_gameevents_2eproto::offsets,
     file_level_metadata_gameevents_2eproto, file_level_enum_descriptors_gameevents_2eproto,
     file_level_service_descriptors_gameevents_2eproto,
@@ -1303,7 +1309,7 @@ const char* CMsgPlaceDecalEvent::_InternalParse(const char* ptr, ::_pbi::ParseCo
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entityhandle = 10 [default = 16777215];
+      // optional uint32 entityhandle = 10 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 10:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
           _Internal::set_has_entityhandle(&has_bits);
@@ -1443,7 +1449,7 @@ uint8_t* CMsgPlaceDecalEvent::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(9, this->_internal_size_override(), target);
   }
 
-  // optional uint32 entityhandle = 10 [default = 16777215];
+  // optional uint32 entityhandle = 10 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(10, this->_internal_entityhandle(), target);
@@ -1581,7 +1587,7 @@ size_t CMsgPlaceDecalEvent::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_triangleindex());
     }
 
-    // optional uint32 entityhandle = 10 [default = 16777215];
+    // optional uint32 entityhandle = 10 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00004000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandle());
     }
@@ -2172,7 +2178,7 @@ const char* CMsgClearDecalsForEntityEvent::_InternalParse(const char* ptr, ::_pb
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entityhandle = 2 [default = 16777215];
+      // optional uint32 entityhandle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_entityhandle(&has_bits);
@@ -2218,7 +2224,7 @@ uint8_t* CMsgClearDecalsForEntityEvent::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_flagstoclear(), target);
   }
 
-  // optional uint32 entityhandle = 2 [default = 16777215];
+  // optional uint32 entityhandle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_entityhandle(), target);
@@ -2247,7 +2253,7 @@ size_t CMsgClearDecalsForEntityEvent::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_flagstoclear());
     }
 
-    // optional uint32 entityhandle = 2 [default = 16777215];
+    // optional uint32 entityhandle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entityhandle());
     }
@@ -4206,7 +4212,7 @@ const char* CMsgSosStartSoundEvent::_InternalParse(const char* ptr, ::_pbi::Pars
         } else
           goto handle_unusual;
         continue;
-      // optional int32 source_entity_index = 3 [default = -1];
+      // optional int32 source_entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_source_entity_index(&has_bits);
@@ -4285,7 +4291,7 @@ uint8_t* CMsgSosStartSoundEvent::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(2, this->_internal_soundevent_hash(), target);
   }
 
-  // optional int32 source_entity_index = 3 [default = -1];
+  // optional int32 source_entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_source_entity_index(), target);
@@ -4354,7 +4360,7 @@ size_t CMsgSosStartSoundEvent::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional int32 source_entity_index = 3 [default = -1];
+    // optional int32 source_entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_source_entity_index());
     }
@@ -4725,7 +4731,7 @@ const char* CMsgSosStopSoundEventHash::_InternalParse(const char* ptr, ::_pbi::P
         } else
           goto handle_unusual;
         continue;
-      // optional int32 source_entity_index = 2 [default = -1];
+      // optional int32 source_entity_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_source_entity_index(&has_bits);
@@ -4771,7 +4777,7 @@ uint8_t* CMsgSosStopSoundEventHash::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFixed32ToArray(1, this->_internal_soundevent_hash(), target);
   }
 
-  // optional int32 source_entity_index = 2 [default = -1];
+  // optional int32 source_entity_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_source_entity_index(), target);
@@ -4800,7 +4806,7 @@ size_t CMsgSosStopSoundEventHash::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional int32 source_entity_index = 2 [default = -1];
+    // optional int32 source_entity_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_source_entity_index());
     }
@@ -5470,7 +5476,7 @@ const char* CMsgClothStiffenAnimEvent::_InternalParse(const char* ptr, ::_pbi::P
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 source_entity_index = 1 [default = -1];
+      // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_source_entity_index(&has_bits);
@@ -5555,7 +5561,7 @@ uint8_t* CMsgClothStiffenAnimEvent::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 source_entity_index = 1 [default = -1];
+  // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_source_entity_index(), target);
@@ -5634,7 +5640,7 @@ size_t CMsgClothStiffenAnimEvent::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional int32 source_entity_index = 1 [default = -1];
+    // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_source_entity_index());
     }
@@ -5856,7 +5862,7 @@ const char* CMsgClothEffectAnimEvent::_InternalParse(const char* ptr, ::_pbi::Pa
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 source_entity_index = 1 [default = -1];
+      // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_source_entity_index(&has_bits);
@@ -5943,7 +5949,7 @@ uint8_t* CMsgClothEffectAnimEvent::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 source_entity_index = 1 [default = -1];
+  // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_source_entity_index(), target);
@@ -6031,7 +6037,7 @@ size_t CMsgClothEffectAnimEvent::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_flags());
     }
 
-    // optional int32 source_entity_index = 1 [default = -1];
+    // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_source_entity_index());
     }

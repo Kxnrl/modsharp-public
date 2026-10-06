@@ -267,7 +267,7 @@ private:
     uintptr_t            _base_address{};
     std::size_t          _size{};
     std::string          _module_name{};
-    void*                _createInterFaceFn;
+    void*                _createInterFaceFn{};
 
     std::unordered_map<std::string, uintptr_t>            _cached_vtables{};
     std::unordered_map<std::string, std::vector<uintptr_t>> _vtable_functions{};

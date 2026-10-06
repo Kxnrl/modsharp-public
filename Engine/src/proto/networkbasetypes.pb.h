@@ -1838,7 +1838,7 @@ class CEntityMsg /*final*/ :
   enum : int {
     kTargetEntityFieldNumber = 1,
   };
-  // optional uint32 target_entity = 1 [default = 16777215];
+  // optional uint32 target_entity = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_target_entity() const;
   private:
   bool _internal_has_target_entity() const;
@@ -4617,7 +4617,7 @@ class CNETMsg_SpawnGroup_Load /*final*/ :
   void _internal_set_manifestloadpriority(int32_t value);
   public:
 
-  // optional uint32 worldgroupid = 15;
+  // optional uint32 worldgroupid = 15 [boxed_type = "WorldGroupId_t"];
   bool has_worldgroupid() const;
   private:
   bool _internal_has_worldgroupid() const;
@@ -7509,7 +7509,7 @@ inline void CMsgPlayerInfo::set_clan_officer(bool value) {
 
 // CEntityMsg
 
-// optional uint32 target_entity = 1 [default = 16777215];
+// optional uint32 target_entity = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CEntityMsg::_internal_has_target_entity() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -9909,7 +9909,7 @@ inline void CNETMsg_SpawnGroup_Load::set_manifestloadpriority(int32_t value) {
   // @@protoc_insertion_point(field_set:CNETMsg_SpawnGroup_Load.manifestloadpriority)
 }
 
-// optional uint32 worldgroupid = 15;
+// optional uint32 worldgroupid = 15 [boxed_type = "WorldGroupId_t"];
 inline bool CNETMsg_SpawnGroup_Load::_internal_has_worldgroupid() const {
   bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;

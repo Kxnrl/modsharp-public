@@ -138,7 +138,7 @@ BeginMemberHookScope(CGameRulesGameSystem)
 
         forwards::OnGamePostInit->Invoke();
 
-        g_pSpawnGroupMgr = *static_cast<IGameSpawnGroupMgr**>(FindGameSystemByName("SpawnGroupManagerGameSystem"));
+        g_pSpawnGroupMgr = static_cast<IGameSpawnGroupMgr*>(FindGameSystemByName("SpawnGroupManagerGameSystem"));
         AssertPtr(g_pSpawnGroupMgr);
     }
 

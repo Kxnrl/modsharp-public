@@ -54,7 +54,7 @@ internal partial class AttributeContainer : SchemaObject, IAttributeContainer
 #endregion
 
     public override string GetSchemaClassname()
-        => "AttributeContainer";
+        => "CAttributeContainer";
 }
 
 internal partial class EconItemView : SchemaObject, IEconItemView

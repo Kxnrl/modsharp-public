@@ -32,6 +32,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_cs_5fgameevents_2eproto
@@ -254,7 +255,7 @@ class CMsgTEPlayerAnimEvent /*final*/ :
   void _internal_set_data(int32_t value);
   public:
 
-  // optional fixed32 player = 1 [default = 16777215];
+  // optional fixed32 player = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_player() const;
   private:
   bool _internal_has_player() const;
@@ -416,7 +417,7 @@ class CMsgTERadioIcon /*final*/ :
   enum : int {
     kPlayerFieldNumber = 1,
   };
-  // optional fixed32 player = 1 [default = 16777215];
+  // optional fixed32 player = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_player() const;
   private:
   bool _internal_has_player() const;
@@ -1094,7 +1095,7 @@ class CMsgTEFireBullets /*final*/ :
   void _internal_set_player_scoped(bool value);
   public:
 
-  // optional int32 tick = 19;
+  // optional int32 tick = 19 [boxed_type = "GameTick_t"];
   bool has_tick() const;
   private:
   bool _internal_has_tick() const;
@@ -1107,7 +1108,7 @@ class CMsgTEFireBullets /*final*/ :
   void _internal_set_tick(int32_t value);
   public:
 
-  // optional uint32 weapon_id = 3 [default = 16777215];
+  // optional uint32 weapon_id = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_weapon_id() const;
   private:
   bool _internal_has_weapon_id() const;
@@ -1120,7 +1121,7 @@ class CMsgTEFireBullets /*final*/ :
   void _internal_set_weapon_id(uint32_t value);
   public:
 
-  // optional fixed32 player = 6 [default = 16777215];
+  // optional fixed32 player = 6 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_player() const;
   private:
   bool _internal_has_player() const;
@@ -1388,7 +1389,7 @@ class CMsgPlayerBulletHit /*final*/ :
   void _internal_set_through_smoke(bool value);
   public:
 
-  // optional int32 attacker_slot = 1 [default = -1];
+  // optional int32 attacker_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_attacker_slot() const;
   private:
   bool _internal_has_attacker_slot() const;
@@ -1401,7 +1402,7 @@ class CMsgPlayerBulletHit /*final*/ :
   void _internal_set_attacker_slot(int32_t value);
   public:
 
-  // optional int32 victim_slot = 2 [default = -1];
+  // optional int32 victim_slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_victim_slot() const;
   private:
   bool _internal_has_victim_slot() const;
@@ -1447,7 +1448,7 @@ class CMsgPlayerBulletHit /*final*/ :
 #endif  // __GNUC__
 // CMsgTEPlayerAnimEvent
 
-// optional fixed32 player = 1 [default = 16777215];
+// optional fixed32 player = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgTEPlayerAnimEvent::_internal_has_player() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -1535,7 +1536,7 @@ inline void CMsgTEPlayerAnimEvent::set_data(int32_t value) {
 
 // CMsgTERadioIcon
 
-// optional fixed32 player = 1 [default = 16777215];
+// optional fixed32 player = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgTERadioIcon::_internal_has_player() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -2028,7 +2029,7 @@ inline void CMsgTEFireBullets::set_allocated_angles(::CMsgQAngle* angles) {
   // @@protoc_insertion_point(field_set_allocated:CMsgTEFireBullets.angles)
 }
 
-// optional uint32 weapon_id = 3 [default = 16777215];
+// optional uint32 weapon_id = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgTEFireBullets::_internal_has_weapon_id() const {
   bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
@@ -2112,7 +2113,7 @@ inline void CMsgTEFireBullets::set_seed(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgTEFireBullets.seed)
 }
 
-// optional fixed32 player = 6 [default = 16777215];
+// optional fixed32 player = 6 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgTEFireBullets::_internal_has_player() const {
   bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
   return value;
@@ -2507,7 +2508,7 @@ inline void CMsgTEFireBullets::set_player_scoped(bool value) {
   // @@protoc_insertion_point(field_set:CMsgTEFireBullets.player_scoped)
 }
 
-// optional int32 tick = 19;
+// optional int32 tick = 19 [boxed_type = "GameTick_t"];
 inline bool CMsgTEFireBullets::_internal_has_tick() const {
   bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
@@ -2629,7 +2630,7 @@ inline void CMsgTEFireBullets::set_allocated_extra(::CMsgTEFireBullets_Extra* ex
 
 // CMsgPlayerBulletHit
 
-// optional int32 attacker_slot = 1 [default = -1];
+// optional int32 attacker_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CMsgPlayerBulletHit::_internal_has_attacker_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
@@ -2657,7 +2658,7 @@ inline void CMsgPlayerBulletHit::set_attacker_slot(int32_t value) {
   // @@protoc_insertion_point(field_set:CMsgPlayerBulletHit.attacker_slot)
 }
 
-// optional int32 victim_slot = 2 [default = -1];
+// optional int32 victim_slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CMsgPlayerBulletHit::_internal_has_victim_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;

@@ -164,14 +164,11 @@ public:
     [[nodiscard]] bool        Bool() const { return (fieldType == FieldType_t::FIELD_BOOLEAN) ? bVal : false; }
     [[nodiscard]] float       Float() const { return (fieldType == FieldType_t::FIELD_FLOAT32) ? flVal : 0; }
     [[nodiscard]] const char* CString() const { return (fieldType == FieldType_t::FIELD_CSTRING) ? iszVal : nullptr; }
-    [[nodiscard]] const char* String() const { return (fieldType == FieldType_t::FIELD_STRING) ? (pVal ? *reinterpret_cast<char**>(pVal) : nullptr) : nullptr; }
+    [[nodiscard]] const char* String() const { return (fieldType == FieldType_t::FIELD_STRING) ? iszVal : nullptr; }
     [[nodiscard]] const char* AutoString() const
     {
-        if (fieldType == FieldType_t::FIELD_CSTRING)
+        if (fieldType == FieldType_t::FIELD_CSTRING || fieldType == FieldType_t::FIELD_STRING || fieldType == FieldType_t::FIELD_GLOBALSYMBOL)
             return iszVal;
-
-        if (fieldType == FieldType_t::FIELD_STRING || fieldType == FieldType_t::FIELD_GLOBALSYMBOL)
-            return pVal ? *reinterpret_cast<const char**>(pVal) : nullptr;
 
         return nullptr;
     }

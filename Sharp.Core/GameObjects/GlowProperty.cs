@@ -68,6 +68,4 @@ internal partial class GlowProperty : EntityObject, IGlowProperty
 
     public override string GetSchemaClassname()
         => "CGlowProperty";
-
-    protected override int StructNscIndex => 4;
 }

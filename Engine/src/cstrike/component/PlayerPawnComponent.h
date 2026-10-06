@@ -101,8 +101,6 @@ public:
 class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 {
     DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid)
-public:
-    SCHEMA_FIELD(bool, m_bDucked)
 };
 
 class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
@@ -110,6 +108,7 @@ class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
     DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices)
 
 public:
+    SCHEMA_FIELD(bool, m_bDucked)
     SCHEMA_FIELD(float, m_flDuckSpeed)
 };
 

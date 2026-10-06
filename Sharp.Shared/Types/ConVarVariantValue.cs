@@ -57,7 +57,7 @@ public struct ConVarVariantValue
     private nint _szValue; // const char*
 
     [FieldOffset(0)]
-    private Color _clrValue;
+    private Color32 _clrValue;
 
     [FieldOffset(0)]
     private Vector2D _vec2Value;
@@ -99,6 +99,9 @@ public struct ConVarVariantValue
         => _szValue = value;
 
     public ConVarVariantValue(Color value)
+        => _clrValue = new Color32(value.R, value.G, value.B, 255);
+
+    public ConVarVariantValue(Color32 value)
         => _clrValue = value;
 
     public ConVarVariantValue(Vector2D value)
@@ -167,6 +170,12 @@ public struct ConVarVariantValue
     public string AsString => _szValue.ReadStringUtf8(0);
 
     public Color AsColor
+    {
+        get => new (_clrValue.R, _clrValue.G, _clrValue.B);
+        set => _clrValue = new Color32(value.R, value.G, value.B, 255);
+    }
+
+    public Color32 AsColor32
     {
         get => _clrValue;
         set => _clrValue = value;

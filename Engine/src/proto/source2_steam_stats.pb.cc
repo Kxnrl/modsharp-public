@@ -104,6 +104,14 @@ PROTOBUF_CONSTEXPR CMsgSource2NetworkFlowQuality::CMsgSource2NetworkFlowQuality(
   , /*decltype(_impl_.bytes_total_reliable_)*/uint64_t{0u}
   , /*decltype(_impl_.bytes_total_voice_)*/uint64_t{0u}
   , /*decltype(_impl_.bytes_sec_p99_)*/0u
+  , /*decltype(_impl_.netframes_size_uncompressed_p50_)*/0u
+  , /*decltype(_impl_.netframes_size_uncompressed_p95_)*/0u
+  , /*decltype(_impl_.netframes_size_uncompressed_p99_)*/0u
+  , /*decltype(_impl_.netframes_size_uncompressed_max_)*/0u
+  , /*decltype(_impl_.netframes_msgs_p50_)*/0u
+  , /*decltype(_impl_.netframes_msgs_p95_)*/0u
+  , /*decltype(_impl_.netframes_msgs_p99_)*/0u
+  , /*decltype(_impl_.netframes_msgs_max_)*/0u
   , /*decltype(_impl_.enginemsgs_total_)*/0u
   , /*decltype(_impl_.enginemsgs_sec_p95_)*/0u
   , /*decltype(_impl_.enginemsgs_sec_p99_)*/0u
@@ -504,6 +512,14 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_exceeds_mtu_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_p95_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_uncompressed_p50_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_uncompressed_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_uncompressed_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_size_uncompressed_max_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_msgs_p50_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_msgs_p95_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_msgs_p99_),
+  PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.netframes_msgs_max_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.ticks_total_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.ticks_good_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2NetworkFlowQuality, _impl_.ticks_good_almost_late_),
@@ -551,14 +567,6 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   4,
   2,
   5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
   14,
   15,
   16,
@@ -568,6 +576,14 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   20,
   21,
   22,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
   23,
   24,
   25,
@@ -601,6 +617,14 @@ const uint32_t TableStruct_source2_5fsteam_5fstats_2eproto::offsets[] PROTOBUF_S
   53,
   54,
   55,
+  56,
+  57,
+  58,
+  59,
+  60,
+  61,
+  62,
+  63,
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PerfIntervalSample_Tag, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgSource2PerfIntervalSample_Tag, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -804,19 +828,19 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 0, 20, -1, sizeof(::CMsgSource2SystemSpecs)},
   { 34, 58, -1, sizeof(::CMsgSource2VProfLiteReportItem)},
   { 76, 85, -1, sizeof(::CMsgSource2VProfLiteReport)},
-  { 88, 150, -1, sizeof(::CMsgSource2NetworkFlowQuality)},
-  { 206, 214, -1, sizeof(::CMsgSource2PerfIntervalSample_Tag)},
-  { 216, 228, -1, sizeof(::CMsgSource2PerfIntervalSample)},
-  { 234, 247, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification_Client)},
-  { 254, 267, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
-  { 274, 282, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
-  { 284, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
-  { 291, 317, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
-  { 337, 345, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
-  { 347, 359, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
-  { 365, 374, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
-  { 377, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
-  { 384, 397, -1, sizeof(::CUserMessage_UserSentBugBug)},
+  { 88, 158, -1, sizeof(::CMsgSource2NetworkFlowQuality)},
+  { 222, 230, -1, sizeof(::CMsgSource2PerfIntervalSample_Tag)},
+  { 232, 244, -1, sizeof(::CMsgSource2PerfIntervalSample)},
+  { 250, 263, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification_Client)},
+  { 270, 283, -1, sizeof(::CSource2Metrics_MatchPerfSummary_Notification)},
+  { 290, 298, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_FieldDef)},
+  { 300, -1, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList_SteamIDList)},
+  { 307, 333, -1, sizeof(::CMsgSource2PlayStatsPackedRecordList)},
+  { 353, 361, -1, sizeof(::CSource2Metrics_RecordPlayStats_Notification)},
+  { 363, 375, -1, sizeof(::CSource2Metrics_FetchMapData_Request)},
+  { 381, 390, -1, sizeof(::CSource2Metrics_FetchMapData_Response_MapData)},
+  { 393, -1, -1, sizeof(::CSource2Metrics_FetchMapData_Response)},
+  { 400, 413, -1, sizeof(::CUserMessage_UserSentBugBug)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -866,7 +890,7 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   "rce2VProfLiteReport\022.\n\005total\030\001 \001(\0132\037.CMs"
   "gSource2VProfLiteReportItem\022.\n\005items\030\002 \003"
   "(\0132\037.CMsgSource2VProfLiteReportItem\022\030\n\020d"
-  "iscarded_frames\030\003 \001(\r\"\260\014\n\035CMsgSource2Net"
+  "iscarded_frames\030\003 \001(\r\"\304\016\n\035CMsgSource2Net"
   "workFlowQuality\022\020\n\010duration\030\001 \001(\r\022\023\n\013byt"
   "es_total\030\005 \001(\004\022\034\n\024bytes_total_reliable\030\006"
   " \001(\004\022\031\n\021bytes_total_voice\030\007 \001(\004\022\025\n\rbytes"
@@ -877,111 +901,118 @@ const char descriptor_table_protodef_source2_5fsteam_5fstats_2eproto[] PROTOBUF_
   "opped\030\037 \001(\r\022\034\n\024netframes_outoforder\030  \001("
   "\r\022\"\n\032netframes_size_exceeds_mtu\030\" \001(\r\022\032\n"
   "\022netframes_size_p95\030# \001(\r\022\032\n\022netframes_s"
-  "ize_p99\030$ \001(\r\022\023\n\013ticks_total\030( \001(\r\022\022\n\nti"
-  "cks_good\030) \001(\r\022\036\n\026ticks_good_almost_late"
-  "\030* \001(\r\022\033\n\023ticks_fixed_dropped\030+ \001(\r\022\030\n\020t"
-  "icks_fixed_late\030, \001(\r\022\031\n\021ticks_bad_dropp"
-  "ed\030- \001(\r\022\026\n\016ticks_bad_late\030. \001(\r\022\027\n\017tick"
-  "s_bad_other\030/ \001(\r\022#\n\033tick_missrate_sampl"
-  "es_total\0302 \001(\r\022%\n\035tick_missrate_samples_"
-  "perfect\0303 \001(\r\022(\n tick_missrate_samples_p"
-  "erfectnet\0304 \001(\r\022 \n\030tick_missratenet_p75_"
-  "x10\0305 \001(\r\022 \n\030tick_missratenet_p95_x10\0306 "
-  "\001(\r\022 \n\030tick_missratenet_p99_x10\0307 \001(\r\022\025\n"
-  "\rrecvmargin_p1\030= \001(\021\022\025\n\rrecvmargin_p5\030> "
-  "\001(\021\022\026\n\016recvmargin_p25\030\? \001(\021\022\026\n\016recvmargi"
-  "n_p50\030@ \001(\021\022\026\n\016recvmargin_p75\030A \001(\021\022\026\n\016r"
-  "ecvmargin_p95\030B \001(\021\022\033\n\023netframe_jitter_p"
-  "50\030F \001(\r\022\033\n\023netframe_jitter_p99\030G \001(\r\022\037\n"
-  "\027interval_peakjitter_p50\030H \001(\r\022\037\n\027interv"
-  "al_peakjitter_p95\030I \001(\r\022&\n\036packet_misdel"
-  "ivery_rate_p50_x4\030J \001(\r\022&\n\036packet_misdel"
-  "ivery_rate_p95_x4\030K \001(\r\022\023\n\013net_ping_p5\030P"
-  " \001(\r\022\024\n\014net_ping_p50\030Q \001(\r\022\024\n\014net_ping_p"
-  "95\030R \001(\r\022\030\n\020msgproc_usec_p50\030Z \001(\r\022\030\n\020ms"
-  "gproc_usec_p95\030[ \001(\r\022\030\n\020msgproc_usec_p99"
-  "\030\\ \001(\r\022\030\n\020msgproc_usec_max\030] \001(\r\022\034\n\024msgp"
-  "roc_usec_avg_p50\030^ \001(\r\022\034\n\024msgproc_usec_a"
-  "vg_p95\030_ \001(\r\022\034\n\024msgproc_usec_avg_p99\030` \001"
-  "(\r\022\034\n\024msgproc_usec_avg_max\030a \001(\r\022\026\n\016queu"
-  "edmsgs_p50\030d \001(\r\022\026\n\016queuedmsgs_p95\030e \001(\r"
-  "\022\026\n\016queuedmsgs_p99\030f \001(\r\022\026\n\016queuedmsgs_m"
-  "ax\030g \001(\r\"\373\001\n\035CMsgSource2PerfIntervalSamp"
-  "le\022\031\n\021frame_time_max_ms\030\001 \001(\002\022\031\n\021frame_t"
-  "ime_avg_ms\030\002 \001(\002\022\031\n\021frame_time_min_ms\030\003 "
-  "\001(\002\022\023\n\013frame_count\030\004 \001(\005\022\033\n\023frame_time_t"
-  "otal_ms\030\005 \001(\002\0220\n\004tags\030\006 \003(\0132\".CMsgSource"
-  "2PerfIntervalSample.Tag\032%\n\003Tag\022\013\n\003tag\030\001 "
-  "\001(\t\022\021\n\tmax_value\030\002 \001(\r\"\273\004\n-CSource2Metri"
-  "cs_MatchPerfSummary_Notification\022\r\n\005appi"
-  "d\030\001 \001(\r\022\021\n\tgame_mode\030\002 \001(\t\022\027\n\017server_bui"
-  "ld_id\030\003 \001(\r\022\024\n\014server_popid\030\004 \001(\007\0223\n\016ser"
-  "ver_profile\030\n \001(\0132\033.CMsgSource2VProfLite"
-  "Report\022F\n\007clients\030\013 \003(\01325.CSource2Metric"
-  "s_MatchPerfSummary_Notification.Client\022\013"
-  "\n\003map\030\024 \001(\t\032\256\002\n\006Client\022-\n\014system_specs\030\001"
-  " \001(\0132\027.CMsgSource2SystemSpecs\022,\n\007profile"
-  "\030\002 \001(\0132\033.CMsgSource2VProfLiteReport\022\020\n\010b"
-  "uild_id\030\003 \001(\r\0227\n\017downstream_flow\030\004 \001(\0132\036"
-  ".CMsgSource2NetworkFlowQuality\0225\n\rupstre"
-  "am_flow\030\005 \001(\0132\036.CMsgSource2NetworkFlowQu"
-  "ality\022\017\n\007steamid\030\n \001(\006\0224\n\014perf_samples\030\013"
-  " \003(\0132\036.CMsgSource2PerfIntervalSample\"\225\006\n"
-  "$CMsgSource2PlayStatsPackedRecordList\022\023\n"
-  "\013record_name\030\001 \001(\t\022B\n\nfield_defs\030\002 \003(\0132."
-  ".CMsgSource2PlayStatsPackedRecordList.Fi"
-  "eldDef\022\024\n\014record_count\030\003 \001(\r\022\027\n\013uint64_v"
-  "als\030\004 \003(\004B\002\020\001\022\027\n\013uint32_vals\030\005 \003(\rB\002\020\001\022\027"
-  "\n\013uint16_vals\030\006 \003(\rB\002\020\001\022\026\n\nuint8_vals\030\007 "
-  "\003(\rB\002\020\001\022\026\n\nint64_vals\030\010 \003(\003B\002\020\001\022\026\n\nint32"
-  "_vals\030\t \003(\005B\002\020\001\022\026\n\nint16_vals\030\n \003(\005B\002\020\001\022"
-  "\025\n\tint8_vals\030\013 \003(\005B\002\020\001\022\030\n\014float64_vals\030\014"
-  " \003(\001B\002\020\001\022\030\n\014float32_vals\030\r \003(\002B\002\020\001\022\025\n\tbo"
-  "ol_vals\030\016 \003(\010B\002\020\001\022\023\n\013string_vals\030\017 \003(\t\022#"
-  "\n\033low_cardinality_string_vals\030\020 \003(\t\022\034\n\020u"
-  "tcdatetime_vals\030\021 \003(\007B\002\020\001\022#\n\027steamidtrus"
-  "tbucket_vals\030\022 \003(\006B\002\020\001\022K\n\020trustbucket_va"
-  "ls\030\023 \003(\01321.CMsgSource2PlayStatsPackedRec"
-  "ordList.SteamIDList\022\030\n\014steamid_vals\030\024 \003("
-  "\004B\002\020\001\032i\n\010FieldDef\022\022\n\nfield_name\030\001 \001(\t\022I\n"
-  "\nfield_type\030\002 \001(\0162\033.ESource2PlayStatsFie"
-  "ldType:\030Source2PlayStats_Invalid\032\"\n\013Stea"
-  "mIDList\022\023\n\007steamid\030\001 \003(\006B\002\020\001\"z\n,CSource2"
-  "Metrics_RecordPlayStats_Notification\022;\n\014"
-  "record_types\030\001 \003(\0132%.CMsgSource2PlayStat"
-  "sPackedRecordList\022\r\n\005appid\030\002 \001(\r\"\217\001\n$CSo"
-  "urce2Metrics_FetchMapData_Request\022\r\n\005app"
-  "id\030\001 \001(\r\022\020\n\010map_name\030\002 \001(\t\022\021\n\tgame_type\030"
-  "\003 \001(\r\022\021\n\tgame_mode\030\004 \001(\r\022\r\n\005param\030\005 \001(\t\022"
-  "\021\n\ttime_span\030\006 \001(\r\"\235\001\n%CSource2Metrics_F"
-  "etchMapData_Response\022\?\n\007results\030\001 \003(\0132.."
-  "CSource2Metrics_FetchMapData_Response.Ma"
-  "pData\0323\n\007MapData\022\014\n\004name\030\001 \001(\t\022\014\n\004type\030\002"
-  " \001(\t\022\014\n\004data\030\003 \001(\t\"\306\001\n\033CUserMessage_User"
-  "SentBugBug\022\024\n\014command_line\030\001 \001(\t\022\024\n\014auto"
-  "exec_cfg\030\002 \001(\t\022-\n\014system_specs\030\003 \001(\0132\027.C"
-  "MsgSource2SystemSpecs\022\020\n\010build_id\030\004 \001(\r\022"
-  "\021\n\tosversion\030\005 \001(\005\022\024\n\014command_logs\030\006 \001(\t"
-  "\022\021\n\tbugbug_no\030\007 \001(\005*\320\004\n\032ESource2PlayStat"
-  "sFieldType\022\034\n\030Source2PlayStats_Invalid\020\000"
-  "\022\033\n\027Source2PlayStats_UInt64\020\001\022\033\n\027Source2"
-  "PlayStats_UInt32\020\002\022\033\n\027Source2PlayStats_U"
-  "Int16\020\003\022\032\n\026Source2PlayStats_UInt8\020\004\022\032\n\026S"
-  "ource2PlayStats_Int64\020\005\022\032\n\026Source2PlaySt"
-  "ats_Int32\020\006\022\032\n\026Source2PlayStats_Int16\020\007\022"
-  "\031\n\025Source2PlayStats_Int8\020\010\022\034\n\030Source2Pla"
-  "yStats_Float64\020\t\022\034\n\030Source2PlayStats_Flo"
-  "at32\020\n\022\031\n\025Source2PlayStats_Bool\020\013\022\033\n\027Sou"
-  "rce2PlayStats_String\020\014\022)\n%Source2PlaySta"
-  "ts_LowCardinalityString\020\r\022 \n\034Source2Play"
-  "Stats_UTCDateTime\020\016\022\'\n#Source2PlayStats_"
-  "SteamIDTrustBucket\020\017\022*\n&Source2PlayStats"
-  "_SteamIDTrustBucketMin\020\020\022\034\n\030Source2PlayS"
-  "tats_SteamID\020\021"
+  "ize_p99\030$ \001(\r\022\'\n\037netframes_size_uncompre"
+  "ssed_p50\030\014 \001(\r\022\'\n\037netframes_size_uncompr"
+  "essed_p95\030\r \001(\r\022\'\n\037netframes_size_uncomp"
+  "ressed_p99\030\016 \001(\r\022\'\n\037netframes_size_uncom"
+  "pressed_max\030\017 \001(\r\022\032\n\022netframes_msgs_p50\030"
+  "\020 \001(\r\022\032\n\022netframes_msgs_p95\030\021 \001(\r\022\032\n\022net"
+  "frames_msgs_p99\030\022 \001(\r\022\032\n\022netframes_msgs_"
+  "max\030\023 \001(\r\022\023\n\013ticks_total\030( \001(\r\022\022\n\nticks_"
+  "good\030) \001(\r\022\036\n\026ticks_good_almost_late\030* \001"
+  "(\r\022\033\n\023ticks_fixed_dropped\030+ \001(\r\022\030\n\020ticks"
+  "_fixed_late\030, \001(\r\022\031\n\021ticks_bad_dropped\030-"
+  " \001(\r\022\026\n\016ticks_bad_late\030. \001(\r\022\027\n\017ticks_ba"
+  "d_other\030/ \001(\r\022#\n\033tick_missrate_samples_t"
+  "otal\0302 \001(\r\022%\n\035tick_missrate_samples_perf"
+  "ect\0303 \001(\r\022(\n tick_missrate_samples_perfe"
+  "ctnet\0304 \001(\r\022 \n\030tick_missratenet_p75_x10\030"
+  "5 \001(\r\022 \n\030tick_missratenet_p95_x10\0306 \001(\r\022"
+  " \n\030tick_missratenet_p99_x10\0307 \001(\r\022\025\n\rrec"
+  "vmargin_p1\030= \001(\021\022\025\n\rrecvmargin_p5\030> \001(\021\022"
+  "\026\n\016recvmargin_p25\030\? \001(\021\022\026\n\016recvmargin_p5"
+  "0\030@ \001(\021\022\026\n\016recvmargin_p75\030A \001(\021\022\026\n\016recvm"
+  "argin_p95\030B \001(\021\022\033\n\023netframe_jitter_p50\030F"
+  " \001(\r\022\033\n\023netframe_jitter_p99\030G \001(\r\022\037\n\027int"
+  "erval_peakjitter_p50\030H \001(\r\022\037\n\027interval_p"
+  "eakjitter_p95\030I \001(\r\022&\n\036packet_misdeliver"
+  "y_rate_p50_x4\030J \001(\r\022&\n\036packet_misdeliver"
+  "y_rate_p95_x4\030K \001(\r\022\023\n\013net_ping_p5\030P \001(\r"
+  "\022\024\n\014net_ping_p50\030Q \001(\r\022\024\n\014net_ping_p95\030R"
+  " \001(\r\022\030\n\020msgproc_usec_p50\030Z \001(\r\022\030\n\020msgpro"
+  "c_usec_p95\030[ \001(\r\022\030\n\020msgproc_usec_p99\030\\ \001"
+  "(\r\022\030\n\020msgproc_usec_max\030] \001(\r\022\034\n\024msgproc_"
+  "usec_avg_p50\030^ \001(\r\022\034\n\024msgproc_usec_avg_p"
+  "95\030_ \001(\r\022\034\n\024msgproc_usec_avg_p99\030` \001(\r\022\034"
+  "\n\024msgproc_usec_avg_max\030a \001(\r\022\026\n\016queuedms"
+  "gs_p50\030d \001(\r\022\026\n\016queuedmsgs_p95\030e \001(\r\022\026\n\016"
+  "queuedmsgs_p99\030f \001(\r\022\026\n\016queuedmsgs_max\030g"
+  " \001(\r\"\373\001\n\035CMsgSource2PerfIntervalSample\022\031"
+  "\n\021frame_time_max_ms\030\001 \001(\002\022\031\n\021frame_time_"
+  "avg_ms\030\002 \001(\002\022\031\n\021frame_time_min_ms\030\003 \001(\002\022"
+  "\023\n\013frame_count\030\004 \001(\005\022\033\n\023frame_time_total"
+  "_ms\030\005 \001(\002\0220\n\004tags\030\006 \003(\0132\".CMsgSource2Per"
+  "fIntervalSample.Tag\032%\n\003Tag\022\013\n\003tag\030\001 \001(\t\022"
+  "\021\n\tmax_value\030\002 \001(\r\"\273\004\n-CSource2Metrics_M"
+  "atchPerfSummary_Notification\022\r\n\005appid\030\001 "
+  "\001(\r\022\021\n\tgame_mode\030\002 \001(\t\022\027\n\017server_build_i"
+  "d\030\003 \001(\r\022\024\n\014server_popid\030\004 \001(\007\0223\n\016server_"
+  "profile\030\n \001(\0132\033.CMsgSource2VProfLiteRepo"
+  "rt\022F\n\007clients\030\013 \003(\01325.CSource2Metrics_Ma"
+  "tchPerfSummary_Notification.Client\022\013\n\003ma"
+  "p\030\024 \001(\t\032\256\002\n\006Client\022-\n\014system_specs\030\001 \001(\013"
+  "2\027.CMsgSource2SystemSpecs\022,\n\007profile\030\002 \001"
+  "(\0132\033.CMsgSource2VProfLiteReport\022\020\n\010build"
+  "_id\030\003 \001(\r\0227\n\017downstream_flow\030\004 \001(\0132\036.CMs"
+  "gSource2NetworkFlowQuality\0225\n\rupstream_f"
+  "low\030\005 \001(\0132\036.CMsgSource2NetworkFlowQualit"
+  "y\022\017\n\007steamid\030\n \001(\006\0224\n\014perf_samples\030\013 \003(\013"
+  "2\036.CMsgSource2PerfIntervalSample\"\225\006\n$CMs"
+  "gSource2PlayStatsPackedRecordList\022\023\n\013rec"
+  "ord_name\030\001 \001(\t\022B\n\nfield_defs\030\002 \003(\0132..CMs"
+  "gSource2PlayStatsPackedRecordList.FieldD"
+  "ef\022\024\n\014record_count\030\003 \001(\r\022\027\n\013uint64_vals\030"
+  "\004 \003(\004B\002\020\001\022\027\n\013uint32_vals\030\005 \003(\rB\002\020\001\022\027\n\013ui"
+  "nt16_vals\030\006 \003(\rB\002\020\001\022\026\n\nuint8_vals\030\007 \003(\rB"
+  "\002\020\001\022\026\n\nint64_vals\030\010 \003(\003B\002\020\001\022\026\n\nint32_val"
+  "s\030\t \003(\005B\002\020\001\022\026\n\nint16_vals\030\n \003(\005B\002\020\001\022\025\n\ti"
+  "nt8_vals\030\013 \003(\005B\002\020\001\022\030\n\014float64_vals\030\014 \003(\001"
+  "B\002\020\001\022\030\n\014float32_vals\030\r \003(\002B\002\020\001\022\025\n\tbool_v"
+  "als\030\016 \003(\010B\002\020\001\022\023\n\013string_vals\030\017 \003(\t\022#\n\033lo"
+  "w_cardinality_string_vals\030\020 \003(\t\022\034\n\020utcda"
+  "tetime_vals\030\021 \003(\007B\002\020\001\022#\n\027steamidtrustbuc"
+  "ket_vals\030\022 \003(\006B\002\020\001\022K\n\020trustbucket_vals\030\023"
+  " \003(\01321.CMsgSource2PlayStatsPackedRecordL"
+  "ist.SteamIDList\022\030\n\014steamid_vals\030\024 \003(\004B\002\020"
+  "\001\032i\n\010FieldDef\022\022\n\nfield_name\030\001 \001(\t\022I\n\nfie"
+  "ld_type\030\002 \001(\0162\033.ESource2PlayStatsFieldTy"
+  "pe:\030Source2PlayStats_Invalid\032\"\n\013SteamIDL"
+  "ist\022\023\n\007steamid\030\001 \003(\006B\002\020\001\"z\n,CSource2Metr"
+  "ics_RecordPlayStats_Notification\022;\n\014reco"
+  "rd_types\030\001 \003(\0132%.CMsgSource2PlayStatsPac"
+  "kedRecordList\022\r\n\005appid\030\002 \001(\r\"\217\001\n$CSource"
+  "2Metrics_FetchMapData_Request\022\r\n\005appid\030\001"
+  " \001(\r\022\020\n\010map_name\030\002 \001(\t\022\021\n\tgame_type\030\003 \001("
+  "\r\022\021\n\tgame_mode\030\004 \001(\r\022\r\n\005param\030\005 \001(\t\022\021\n\tt"
+  "ime_span\030\006 \001(\r\"\235\001\n%CSource2Metrics_Fetch"
+  "MapData_Response\022\?\n\007results\030\001 \003(\0132..CSou"
+  "rce2Metrics_FetchMapData_Response.MapDat"
+  "a\0323\n\007MapData\022\014\n\004name\030\001 \001(\t\022\014\n\004type\030\002 \001(\t"
+  "\022\014\n\004data\030\003 \001(\t\"\306\001\n\033CUserMessage_UserSent"
+  "BugBug\022\024\n\014command_line\030\001 \001(\t\022\024\n\014autoexec"
+  "_cfg\030\002 \001(\t\022-\n\014system_specs\030\003 \001(\0132\027.CMsgS"
+  "ource2SystemSpecs\022\020\n\010build_id\030\004 \001(\r\022\021\n\to"
+  "sversion\030\005 \001(\005\022\024\n\014command_logs\030\006 \001(\t\022\021\n\t"
+  "bugbug_no\030\007 \001(\005*\320\004\n\032ESource2PlayStatsFie"
+  "ldType\022\034\n\030Source2PlayStats_Invalid\020\000\022\033\n\027"
+  "Source2PlayStats_UInt64\020\001\022\033\n\027Source2Play"
+  "Stats_UInt32\020\002\022\033\n\027Source2PlayStats_UInt1"
+  "6\020\003\022\032\n\026Source2PlayStats_UInt8\020\004\022\032\n\026Sourc"
+  "e2PlayStats_Int64\020\005\022\032\n\026Source2PlayStats_"
+  "Int32\020\006\022\032\n\026Source2PlayStats_Int16\020\007\022\031\n\025S"
+  "ource2PlayStats_Int8\020\010\022\034\n\030Source2PlaySta"
+  "ts_Float64\020\t\022\034\n\030Source2PlayStats_Float32"
+  "\020\n\022\031\n\025Source2PlayStats_Bool\020\013\022\033\n\027Source2"
+  "PlayStats_String\020\014\022)\n%Source2PlayStats_L"
+  "owCardinalityString\020\r\022 \n\034Source2PlayStat"
+  "s_UTCDateTime\020\016\022\'\n#Source2PlayStats_Stea"
+  "mIDTrustBucket\020\017\022*\n&Source2PlayStats_Ste"
+  "amIDTrustBucketMin\020\020\022\034\n\030Source2PlayStats"
+  "_SteamID\020\021"
   ;
 static ::_pbi::once_flag descriptor_table_source2_5fsteam_5fstats_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_source2_5fsteam_5fstats_2eproto = {
-    false, false, 5534, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
+    false, false, 5810, descriptor_table_protodef_source2_5fsteam_5fstats_2eproto,
     "source2_steam_stats.proto",
     &descriptor_table_source2_5fsteam_5fstats_2eproto_once, nullptr, 0, 16,
     schemas, file_default_instances, TableStruct_source2_5fsteam_5fstats_2eproto::offsets,
@@ -2807,154 +2838,178 @@ class CMsgSource2NetworkFlowQuality::_Internal {
     (*has_bits)[0] |= 32u;
   }
   static void set_has_enginemsgs_total(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
-  }
-  static void set_has_enginemsgs_sec_p95(HasBits* has_bits) {
-    (*has_bits)[0] |= 128u;
-  }
-  static void set_has_enginemsgs_sec_p99(HasBits* has_bits) {
-    (*has_bits)[0] |= 256u;
-  }
-  static void set_has_netframes_total(HasBits* has_bits) {
-    (*has_bits)[0] |= 512u;
-  }
-  static void set_has_netframes_dropped(HasBits* has_bits) {
-    (*has_bits)[0] |= 1024u;
-  }
-  static void set_has_netframes_outoforder(HasBits* has_bits) {
-    (*has_bits)[0] |= 2048u;
-  }
-  static void set_has_netframes_size_exceeds_mtu(HasBits* has_bits) {
-    (*has_bits)[0] |= 4096u;
-  }
-  static void set_has_netframes_size_p95(HasBits* has_bits) {
-    (*has_bits)[0] |= 8192u;
-  }
-  static void set_has_netframes_size_p99(HasBits* has_bits) {
     (*has_bits)[0] |= 16384u;
   }
-  static void set_has_ticks_total(HasBits* has_bits) {
+  static void set_has_enginemsgs_sec_p95(HasBits* has_bits) {
     (*has_bits)[0] |= 32768u;
   }
-  static void set_has_ticks_good(HasBits* has_bits) {
+  static void set_has_enginemsgs_sec_p99(HasBits* has_bits) {
     (*has_bits)[0] |= 65536u;
   }
-  static void set_has_ticks_good_almost_late(HasBits* has_bits) {
+  static void set_has_netframes_total(HasBits* has_bits) {
     (*has_bits)[0] |= 131072u;
   }
-  static void set_has_ticks_fixed_dropped(HasBits* has_bits) {
+  static void set_has_netframes_dropped(HasBits* has_bits) {
     (*has_bits)[0] |= 262144u;
   }
-  static void set_has_ticks_fixed_late(HasBits* has_bits) {
+  static void set_has_netframes_outoforder(HasBits* has_bits) {
     (*has_bits)[0] |= 524288u;
   }
-  static void set_has_ticks_bad_dropped(HasBits* has_bits) {
+  static void set_has_netframes_size_exceeds_mtu(HasBits* has_bits) {
     (*has_bits)[0] |= 1048576u;
   }
-  static void set_has_ticks_bad_late(HasBits* has_bits) {
+  static void set_has_netframes_size_p95(HasBits* has_bits) {
     (*has_bits)[0] |= 2097152u;
   }
-  static void set_has_ticks_bad_other(HasBits* has_bits) {
+  static void set_has_netframes_size_p99(HasBits* has_bits) {
     (*has_bits)[0] |= 4194304u;
   }
-  static void set_has_tick_missrate_samples_total(HasBits* has_bits) {
+  static void set_has_netframes_size_uncompressed_p50(HasBits* has_bits) {
+    (*has_bits)[0] |= 64u;
+  }
+  static void set_has_netframes_size_uncompressed_p95(HasBits* has_bits) {
+    (*has_bits)[0] |= 128u;
+  }
+  static void set_has_netframes_size_uncompressed_p99(HasBits* has_bits) {
+    (*has_bits)[0] |= 256u;
+  }
+  static void set_has_netframes_size_uncompressed_max(HasBits* has_bits) {
+    (*has_bits)[0] |= 512u;
+  }
+  static void set_has_netframes_msgs_p50(HasBits* has_bits) {
+    (*has_bits)[0] |= 1024u;
+  }
+  static void set_has_netframes_msgs_p95(HasBits* has_bits) {
+    (*has_bits)[0] |= 2048u;
+  }
+  static void set_has_netframes_msgs_p99(HasBits* has_bits) {
+    (*has_bits)[0] |= 4096u;
+  }
+  static void set_has_netframes_msgs_max(HasBits* has_bits) {
+    (*has_bits)[0] |= 8192u;
+  }
+  static void set_has_ticks_total(HasBits* has_bits) {
     (*has_bits)[0] |= 8388608u;
   }
-  static void set_has_tick_missrate_samples_perfect(HasBits* has_bits) {
+  static void set_has_ticks_good(HasBits* has_bits) {
     (*has_bits)[0] |= 16777216u;
   }
-  static void set_has_tick_missrate_samples_perfectnet(HasBits* has_bits) {
+  static void set_has_ticks_good_almost_late(HasBits* has_bits) {
     (*has_bits)[0] |= 33554432u;
   }
-  static void set_has_tick_missratenet_p75_x10(HasBits* has_bits) {
+  static void set_has_ticks_fixed_dropped(HasBits* has_bits) {
     (*has_bits)[0] |= 67108864u;
   }
-  static void set_has_tick_missratenet_p95_x10(HasBits* has_bits) {
+  static void set_has_ticks_fixed_late(HasBits* has_bits) {
     (*has_bits)[0] |= 134217728u;
   }
-  static void set_has_tick_missratenet_p99_x10(HasBits* has_bits) {
+  static void set_has_ticks_bad_dropped(HasBits* has_bits) {
     (*has_bits)[0] |= 268435456u;
   }
-  static void set_has_recvmargin_p1(HasBits* has_bits) {
+  static void set_has_ticks_bad_late(HasBits* has_bits) {
     (*has_bits)[0] |= 536870912u;
   }
-  static void set_has_recvmargin_p5(HasBits* has_bits) {
+  static void set_has_ticks_bad_other(HasBits* has_bits) {
     (*has_bits)[0] |= 1073741824u;
   }
-  static void set_has_recvmargin_p25(HasBits* has_bits) {
+  static void set_has_tick_missrate_samples_total(HasBits* has_bits) {
     (*has_bits)[0] |= 2147483648u;
   }
-  static void set_has_recvmargin_p50(HasBits* has_bits) {
+  static void set_has_tick_missrate_samples_perfect(HasBits* has_bits) {
     (*has_bits)[1] |= 1u;
   }
-  static void set_has_recvmargin_p75(HasBits* has_bits) {
+  static void set_has_tick_missrate_samples_perfectnet(HasBits* has_bits) {
     (*has_bits)[1] |= 2u;
   }
-  static void set_has_recvmargin_p95(HasBits* has_bits) {
+  static void set_has_tick_missratenet_p75_x10(HasBits* has_bits) {
     (*has_bits)[1] |= 4u;
   }
-  static void set_has_netframe_jitter_p50(HasBits* has_bits) {
+  static void set_has_tick_missratenet_p95_x10(HasBits* has_bits) {
     (*has_bits)[1] |= 8u;
   }
-  static void set_has_netframe_jitter_p99(HasBits* has_bits) {
+  static void set_has_tick_missratenet_p99_x10(HasBits* has_bits) {
     (*has_bits)[1] |= 16u;
   }
-  static void set_has_interval_peakjitter_p50(HasBits* has_bits) {
+  static void set_has_recvmargin_p1(HasBits* has_bits) {
     (*has_bits)[1] |= 32u;
   }
-  static void set_has_interval_peakjitter_p95(HasBits* has_bits) {
+  static void set_has_recvmargin_p5(HasBits* has_bits) {
     (*has_bits)[1] |= 64u;
   }
-  static void set_has_packet_misdelivery_rate_p50_x4(HasBits* has_bits) {
+  static void set_has_recvmargin_p25(HasBits* has_bits) {
     (*has_bits)[1] |= 128u;
   }
-  static void set_has_packet_misdelivery_rate_p95_x4(HasBits* has_bits) {
+  static void set_has_recvmargin_p50(HasBits* has_bits) {
     (*has_bits)[1] |= 256u;
   }
-  static void set_has_net_ping_p5(HasBits* has_bits) {
+  static void set_has_recvmargin_p75(HasBits* has_bits) {
     (*has_bits)[1] |= 512u;
   }
-  static void set_has_net_ping_p50(HasBits* has_bits) {
+  static void set_has_recvmargin_p95(HasBits* has_bits) {
     (*has_bits)[1] |= 1024u;
   }
-  static void set_has_net_ping_p95(HasBits* has_bits) {
+  static void set_has_netframe_jitter_p50(HasBits* has_bits) {
     (*has_bits)[1] |= 2048u;
   }
-  static void set_has_msgproc_usec_p50(HasBits* has_bits) {
+  static void set_has_netframe_jitter_p99(HasBits* has_bits) {
     (*has_bits)[1] |= 4096u;
   }
-  static void set_has_msgproc_usec_p95(HasBits* has_bits) {
+  static void set_has_interval_peakjitter_p50(HasBits* has_bits) {
     (*has_bits)[1] |= 8192u;
   }
-  static void set_has_msgproc_usec_p99(HasBits* has_bits) {
+  static void set_has_interval_peakjitter_p95(HasBits* has_bits) {
     (*has_bits)[1] |= 16384u;
   }
-  static void set_has_msgproc_usec_max(HasBits* has_bits) {
+  static void set_has_packet_misdelivery_rate_p50_x4(HasBits* has_bits) {
     (*has_bits)[1] |= 32768u;
   }
-  static void set_has_msgproc_usec_avg_p50(HasBits* has_bits) {
+  static void set_has_packet_misdelivery_rate_p95_x4(HasBits* has_bits) {
     (*has_bits)[1] |= 65536u;
   }
-  static void set_has_msgproc_usec_avg_p95(HasBits* has_bits) {
+  static void set_has_net_ping_p5(HasBits* has_bits) {
     (*has_bits)[1] |= 131072u;
   }
-  static void set_has_msgproc_usec_avg_p99(HasBits* has_bits) {
+  static void set_has_net_ping_p50(HasBits* has_bits) {
     (*has_bits)[1] |= 262144u;
   }
-  static void set_has_msgproc_usec_avg_max(HasBits* has_bits) {
+  static void set_has_net_ping_p95(HasBits* has_bits) {
     (*has_bits)[1] |= 524288u;
   }
-  static void set_has_queuedmsgs_p50(HasBits* has_bits) {
+  static void set_has_msgproc_usec_p50(HasBits* has_bits) {
     (*has_bits)[1] |= 1048576u;
   }
-  static void set_has_queuedmsgs_p95(HasBits* has_bits) {
+  static void set_has_msgproc_usec_p95(HasBits* has_bits) {
     (*has_bits)[1] |= 2097152u;
   }
-  static void set_has_queuedmsgs_p99(HasBits* has_bits) {
+  static void set_has_msgproc_usec_p99(HasBits* has_bits) {
     (*has_bits)[1] |= 4194304u;
   }
-  static void set_has_queuedmsgs_max(HasBits* has_bits) {
+  static void set_has_msgproc_usec_max(HasBits* has_bits) {
     (*has_bits)[1] |= 8388608u;
+  }
+  static void set_has_msgproc_usec_avg_p50(HasBits* has_bits) {
+    (*has_bits)[1] |= 16777216u;
+  }
+  static void set_has_msgproc_usec_avg_p95(HasBits* has_bits) {
+    (*has_bits)[1] |= 33554432u;
+  }
+  static void set_has_msgproc_usec_avg_p99(HasBits* has_bits) {
+    (*has_bits)[1] |= 67108864u;
+  }
+  static void set_has_msgproc_usec_avg_max(HasBits* has_bits) {
+    (*has_bits)[1] |= 134217728u;
+  }
+  static void set_has_queuedmsgs_p50(HasBits* has_bits) {
+    (*has_bits)[1] |= 268435456u;
+  }
+  static void set_has_queuedmsgs_p95(HasBits* has_bits) {
+    (*has_bits)[1] |= 536870912u;
+  }
+  static void set_has_queuedmsgs_p99(HasBits* has_bits) {
+    (*has_bits)[1] |= 1073741824u;
+  }
+  static void set_has_queuedmsgs_max(HasBits* has_bits) {
+    (*has_bits)[1] |= 2147483648u;
   }
 };
 
@@ -2976,6 +3031,14 @@ CMsgSource2NetworkFlowQuality::CMsgSource2NetworkFlowQuality(const CMsgSource2Ne
     , decltype(_impl_.bytes_total_reliable_){}
     , decltype(_impl_.bytes_total_voice_){}
     , decltype(_impl_.bytes_sec_p99_){}
+    , decltype(_impl_.netframes_size_uncompressed_p50_){}
+    , decltype(_impl_.netframes_size_uncompressed_p95_){}
+    , decltype(_impl_.netframes_size_uncompressed_p99_){}
+    , decltype(_impl_.netframes_size_uncompressed_max_){}
+    , decltype(_impl_.netframes_msgs_p50_){}
+    , decltype(_impl_.netframes_msgs_p95_){}
+    , decltype(_impl_.netframes_msgs_p99_){}
+    , decltype(_impl_.netframes_msgs_max_){}
     , decltype(_impl_.enginemsgs_total_){}
     , decltype(_impl_.enginemsgs_sec_p95_){}
     , decltype(_impl_.enginemsgs_sec_p99_){}
@@ -3047,6 +3110,14 @@ inline void CMsgSource2NetworkFlowQuality::SharedCtor(
     , decltype(_impl_.bytes_total_reliable_){uint64_t{0u}}
     , decltype(_impl_.bytes_total_voice_){uint64_t{0u}}
     , decltype(_impl_.bytes_sec_p99_){0u}
+    , decltype(_impl_.netframes_size_uncompressed_p50_){0u}
+    , decltype(_impl_.netframes_size_uncompressed_p95_){0u}
+    , decltype(_impl_.netframes_size_uncompressed_p99_){0u}
+    , decltype(_impl_.netframes_size_uncompressed_max_){0u}
+    , decltype(_impl_.netframes_msgs_p50_){0u}
+    , decltype(_impl_.netframes_msgs_p95_){0u}
+    , decltype(_impl_.netframes_msgs_p99_){0u}
+    , decltype(_impl_.netframes_msgs_max_){0u}
     , decltype(_impl_.enginemsgs_total_){0u}
     , decltype(_impl_.enginemsgs_sec_p95_){0u}
     , decltype(_impl_.enginemsgs_sec_p99_){0u}
@@ -3126,36 +3197,41 @@ void CMsgSource2NetworkFlowQuality::Clear() {
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x000000ffu) {
     ::memset(&_impl_.bytes_total_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.enginemsgs_sec_p95_) -
-        reinterpret_cast<char*>(&_impl_.bytes_total_)) + sizeof(_impl_.enginemsgs_sec_p95_));
+        reinterpret_cast<char*>(&_impl_.netframes_size_uncompressed_p95_) -
+        reinterpret_cast<char*>(&_impl_.bytes_total_)) + sizeof(_impl_.netframes_size_uncompressed_p95_));
   }
   if (cached_has_bits & 0x0000ff00u) {
+    ::memset(&_impl_.netframes_size_uncompressed_p99_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.enginemsgs_sec_p95_) -
+        reinterpret_cast<char*>(&_impl_.netframes_size_uncompressed_p99_)) + sizeof(_impl_.enginemsgs_sec_p95_));
+  }
+  if (cached_has_bits & 0x00ff0000u) {
     ::memset(&_impl_.enginemsgs_sec_p99_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.ticks_total_) -
         reinterpret_cast<char*>(&_impl_.enginemsgs_sec_p99_)) + sizeof(_impl_.ticks_total_));
   }
-  if (cached_has_bits & 0x00ff0000u) {
+  if (cached_has_bits & 0xff000000u) {
     ::memset(&_impl_.ticks_good_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.tick_missrate_samples_total_) -
         reinterpret_cast<char*>(&_impl_.ticks_good_)) + sizeof(_impl_.tick_missrate_samples_total_));
   }
-  if (cached_has_bits & 0xff000000u) {
+  cached_has_bits = _impl_._has_bits_[1];
+  if (cached_has_bits & 0x000000ffu) {
     ::memset(&_impl_.tick_missrate_samples_perfect_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.recvmargin_p25_) -
         reinterpret_cast<char*>(&_impl_.tick_missrate_samples_perfect_)) + sizeof(_impl_.recvmargin_p25_));
   }
-  cached_has_bits = _impl_._has_bits_[1];
-  if (cached_has_bits & 0x000000ffu) {
+  if (cached_has_bits & 0x0000ff00u) {
     ::memset(&_impl_.recvmargin_p50_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.packet_misdelivery_rate_p50_x4_) -
         reinterpret_cast<char*>(&_impl_.recvmargin_p50_)) + sizeof(_impl_.packet_misdelivery_rate_p50_x4_));
   }
-  if (cached_has_bits & 0x0000ff00u) {
+  if (cached_has_bits & 0x00ff0000u) {
     ::memset(&_impl_.packet_misdelivery_rate_p95_x4_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.msgproc_usec_max_) -
         reinterpret_cast<char*>(&_impl_.packet_misdelivery_rate_p95_x4_)) + sizeof(_impl_.msgproc_usec_max_));
   }
-  if (cached_has_bits & 0x00ff0000u) {
+  if (cached_has_bits & 0xff000000u) {
     ::memset(&_impl_.msgproc_usec_avg_p50_, 0, static_cast<size_t>(
         reinterpret_cast<char*>(&_impl_.queuedmsgs_max_) -
         reinterpret_cast<char*>(&_impl_.msgproc_usec_avg_p50_)) + sizeof(_impl_.queuedmsgs_max_));
@@ -3220,6 +3296,78 @@ const char* CMsgSource2NetworkFlowQuality::_InternalParse(const char* ptr, ::_pb
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
           _Internal::set_has_bytes_sec_p99(&_impl_._has_bits_);
           _impl_.bytes_sec_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_size_uncompressed_p50 = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+          _Internal::set_has_netframes_size_uncompressed_p50(&_impl_._has_bits_);
+          _impl_.netframes_size_uncompressed_p50_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_size_uncompressed_p95 = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+          _Internal::set_has_netframes_size_uncompressed_p95(&_impl_._has_bits_);
+          _impl_.netframes_size_uncompressed_p95_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_size_uncompressed_p99 = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
+          _Internal::set_has_netframes_size_uncompressed_p99(&_impl_._has_bits_);
+          _impl_.netframes_size_uncompressed_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_size_uncompressed_max = 15;
+      case 15:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 120)) {
+          _Internal::set_has_netframes_size_uncompressed_max(&_impl_._has_bits_);
+          _impl_.netframes_size_uncompressed_max_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_msgs_p50 = 16;
+      case 16:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 128)) {
+          _Internal::set_has_netframes_msgs_p50(&_impl_._has_bits_);
+          _impl_.netframes_msgs_p50_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_msgs_p95 = 17;
+      case 17:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 136)) {
+          _Internal::set_has_netframes_msgs_p95(&_impl_._has_bits_);
+          _impl_.netframes_msgs_p95_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_msgs_p99 = 18;
+      case 18:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 144)) {
+          _Internal::set_has_netframes_msgs_p99(&_impl_._has_bits_);
+          _impl_.netframes_msgs_p99_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional uint32 netframes_msgs_max = 19;
+      case 19:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 152)) {
+          _Internal::set_has_netframes_msgs_max(&_impl_._has_bits_);
+          _impl_.netframes_msgs_max_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3740,303 +3888,351 @@ uint8_t* CMsgSource2NetworkFlowQuality::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(11, this->_internal_bytes_sec_p99(), target);
   }
 
-  // optional uint32 enginemsgs_total = 20;
+  // optional uint32 netframes_size_uncompressed_p50 = 12;
   if (cached_has_bits & 0x00000040u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(12, this->_internal_netframes_size_uncompressed_p50(), target);
+  }
+
+  // optional uint32 netframes_size_uncompressed_p95 = 13;
+  if (cached_has_bits & 0x00000080u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(13, this->_internal_netframes_size_uncompressed_p95(), target);
+  }
+
+  // optional uint32 netframes_size_uncompressed_p99 = 14;
+  if (cached_has_bits & 0x00000100u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(14, this->_internal_netframes_size_uncompressed_p99(), target);
+  }
+
+  // optional uint32 netframes_size_uncompressed_max = 15;
+  if (cached_has_bits & 0x00000200u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(15, this->_internal_netframes_size_uncompressed_max(), target);
+  }
+
+  // optional uint32 netframes_msgs_p50 = 16;
+  if (cached_has_bits & 0x00000400u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(16, this->_internal_netframes_msgs_p50(), target);
+  }
+
+  // optional uint32 netframes_msgs_p95 = 17;
+  if (cached_has_bits & 0x00000800u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(17, this->_internal_netframes_msgs_p95(), target);
+  }
+
+  // optional uint32 netframes_msgs_p99 = 18;
+  if (cached_has_bits & 0x00001000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(18, this->_internal_netframes_msgs_p99(), target);
+  }
+
+  // optional uint32 netframes_msgs_max = 19;
+  if (cached_has_bits & 0x00002000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(19, this->_internal_netframes_msgs_max(), target);
+  }
+
+  // optional uint32 enginemsgs_total = 20;
+  if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(20, this->_internal_enginemsgs_total(), target);
   }
 
   // optional uint32 enginemsgs_sec_p95 = 21;
-  if (cached_has_bits & 0x00000080u) {
+  if (cached_has_bits & 0x00008000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(21, this->_internal_enginemsgs_sec_p95(), target);
   }
 
   // optional uint32 enginemsgs_sec_p99 = 22;
-  if (cached_has_bits & 0x00000100u) {
+  if (cached_has_bits & 0x00010000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(22, this->_internal_enginemsgs_sec_p99(), target);
   }
 
   // optional uint32 netframes_total = 30;
-  if (cached_has_bits & 0x00000200u) {
+  if (cached_has_bits & 0x00020000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(30, this->_internal_netframes_total(), target);
   }
 
   // optional uint32 netframes_dropped = 31;
-  if (cached_has_bits & 0x00000400u) {
+  if (cached_has_bits & 0x00040000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(31, this->_internal_netframes_dropped(), target);
   }
 
   // optional uint32 netframes_outoforder = 32;
-  if (cached_has_bits & 0x00000800u) {
+  if (cached_has_bits & 0x00080000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(32, this->_internal_netframes_outoforder(), target);
   }
 
   // optional uint32 netframes_size_exceeds_mtu = 34;
-  if (cached_has_bits & 0x00001000u) {
+  if (cached_has_bits & 0x00100000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(34, this->_internal_netframes_size_exceeds_mtu(), target);
   }
 
   // optional uint32 netframes_size_p95 = 35;
-  if (cached_has_bits & 0x00002000u) {
+  if (cached_has_bits & 0x00200000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(35, this->_internal_netframes_size_p95(), target);
   }
 
   // optional uint32 netframes_size_p99 = 36;
-  if (cached_has_bits & 0x00004000u) {
+  if (cached_has_bits & 0x00400000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(36, this->_internal_netframes_size_p99(), target);
   }
 
   // optional uint32 ticks_total = 40;
-  if (cached_has_bits & 0x00008000u) {
+  if (cached_has_bits & 0x00800000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(40, this->_internal_ticks_total(), target);
   }
 
   // optional uint32 ticks_good = 41;
-  if (cached_has_bits & 0x00010000u) {
+  if (cached_has_bits & 0x01000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(41, this->_internal_ticks_good(), target);
   }
 
   // optional uint32 ticks_good_almost_late = 42;
-  if (cached_has_bits & 0x00020000u) {
+  if (cached_has_bits & 0x02000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(42, this->_internal_ticks_good_almost_late(), target);
   }
 
   // optional uint32 ticks_fixed_dropped = 43;
-  if (cached_has_bits & 0x00040000u) {
+  if (cached_has_bits & 0x04000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(43, this->_internal_ticks_fixed_dropped(), target);
   }
 
   // optional uint32 ticks_fixed_late = 44;
-  if (cached_has_bits & 0x00080000u) {
+  if (cached_has_bits & 0x08000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(44, this->_internal_ticks_fixed_late(), target);
   }
 
   // optional uint32 ticks_bad_dropped = 45;
-  if (cached_has_bits & 0x00100000u) {
+  if (cached_has_bits & 0x10000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(45, this->_internal_ticks_bad_dropped(), target);
   }
 
   // optional uint32 ticks_bad_late = 46;
-  if (cached_has_bits & 0x00200000u) {
+  if (cached_has_bits & 0x20000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(46, this->_internal_ticks_bad_late(), target);
   }
 
   // optional uint32 ticks_bad_other = 47;
-  if (cached_has_bits & 0x00400000u) {
+  if (cached_has_bits & 0x40000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(47, this->_internal_ticks_bad_other(), target);
   }
 
   // optional uint32 tick_missrate_samples_total = 50;
-  if (cached_has_bits & 0x00800000u) {
+  if (cached_has_bits & 0x80000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(50, this->_internal_tick_missrate_samples_total(), target);
   }
 
+  cached_has_bits = _impl_._has_bits_[1];
   // optional uint32 tick_missrate_samples_perfect = 51;
-  if (cached_has_bits & 0x01000000u) {
+  if (cached_has_bits & 0x00000001u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(51, this->_internal_tick_missrate_samples_perfect(), target);
   }
 
   // optional uint32 tick_missrate_samples_perfectnet = 52;
-  if (cached_has_bits & 0x02000000u) {
+  if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(52, this->_internal_tick_missrate_samples_perfectnet(), target);
   }
 
   // optional uint32 tick_missratenet_p75_x10 = 53;
-  if (cached_has_bits & 0x04000000u) {
+  if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(53, this->_internal_tick_missratenet_p75_x10(), target);
   }
 
   // optional uint32 tick_missratenet_p95_x10 = 54;
-  if (cached_has_bits & 0x08000000u) {
+  if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(54, this->_internal_tick_missratenet_p95_x10(), target);
   }
 
   // optional uint32 tick_missratenet_p99_x10 = 55;
-  if (cached_has_bits & 0x10000000u) {
+  if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(55, this->_internal_tick_missratenet_p99_x10(), target);
   }
 
   // optional sint32 recvmargin_p1 = 61;
-  if (cached_has_bits & 0x20000000u) {
+  if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(61, this->_internal_recvmargin_p1(), target);
   }
 
   // optional sint32 recvmargin_p5 = 62;
-  if (cached_has_bits & 0x40000000u) {
+  if (cached_has_bits & 0x00000040u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(62, this->_internal_recvmargin_p5(), target);
   }
 
   // optional sint32 recvmargin_p25 = 63;
-  if (cached_has_bits & 0x80000000u) {
+  if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(63, this->_internal_recvmargin_p25(), target);
   }
 
-  cached_has_bits = _impl_._has_bits_[1];
   // optional sint32 recvmargin_p50 = 64;
-  if (cached_has_bits & 0x00000001u) {
+  if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(64, this->_internal_recvmargin_p50(), target);
   }
 
   // optional sint32 recvmargin_p75 = 65;
-  if (cached_has_bits & 0x00000002u) {
+  if (cached_has_bits & 0x00000200u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(65, this->_internal_recvmargin_p75(), target);
   }
 
   // optional sint32 recvmargin_p95 = 66;
-  if (cached_has_bits & 0x00000004u) {
+  if (cached_has_bits & 0x00000400u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteSInt32ToArray(66, this->_internal_recvmargin_p95(), target);
   }
 
   // optional uint32 netframe_jitter_p50 = 70;
-  if (cached_has_bits & 0x00000008u) {
+  if (cached_has_bits & 0x00000800u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(70, this->_internal_netframe_jitter_p50(), target);
   }
 
   // optional uint32 netframe_jitter_p99 = 71;
-  if (cached_has_bits & 0x00000010u) {
+  if (cached_has_bits & 0x00001000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(71, this->_internal_netframe_jitter_p99(), target);
   }
 
   // optional uint32 interval_peakjitter_p50 = 72;
-  if (cached_has_bits & 0x00000020u) {
+  if (cached_has_bits & 0x00002000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(72, this->_internal_interval_peakjitter_p50(), target);
   }
 
   // optional uint32 interval_peakjitter_p95 = 73;
-  if (cached_has_bits & 0x00000040u) {
+  if (cached_has_bits & 0x00004000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(73, this->_internal_interval_peakjitter_p95(), target);
   }
 
   // optional uint32 packet_misdelivery_rate_p50_x4 = 74;
-  if (cached_has_bits & 0x00000080u) {
+  if (cached_has_bits & 0x00008000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(74, this->_internal_packet_misdelivery_rate_p50_x4(), target);
   }
 
   // optional uint32 packet_misdelivery_rate_p95_x4 = 75;
-  if (cached_has_bits & 0x00000100u) {
+  if (cached_has_bits & 0x00010000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(75, this->_internal_packet_misdelivery_rate_p95_x4(), target);
   }
 
   // optional uint32 net_ping_p5 = 80;
-  if (cached_has_bits & 0x00000200u) {
+  if (cached_has_bits & 0x00020000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(80, this->_internal_net_ping_p5(), target);
   }
 
   // optional uint32 net_ping_p50 = 81;
-  if (cached_has_bits & 0x00000400u) {
+  if (cached_has_bits & 0x00040000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(81, this->_internal_net_ping_p50(), target);
   }
 
   // optional uint32 net_ping_p95 = 82;
-  if (cached_has_bits & 0x00000800u) {
+  if (cached_has_bits & 0x00080000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(82, this->_internal_net_ping_p95(), target);
   }
 
   // optional uint32 msgproc_usec_p50 = 90;
-  if (cached_has_bits & 0x00001000u) {
+  if (cached_has_bits & 0x00100000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(90, this->_internal_msgproc_usec_p50(), target);
   }
 
   // optional uint32 msgproc_usec_p95 = 91;
-  if (cached_has_bits & 0x00002000u) {
+  if (cached_has_bits & 0x00200000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(91, this->_internal_msgproc_usec_p95(), target);
   }
 
   // optional uint32 msgproc_usec_p99 = 92;
-  if (cached_has_bits & 0x00004000u) {
+  if (cached_has_bits & 0x00400000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(92, this->_internal_msgproc_usec_p99(), target);
   }
 
   // optional uint32 msgproc_usec_max = 93;
-  if (cached_has_bits & 0x00008000u) {
+  if (cached_has_bits & 0x00800000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(93, this->_internal_msgproc_usec_max(), target);
   }
 
   // optional uint32 msgproc_usec_avg_p50 = 94;
-  if (cached_has_bits & 0x00010000u) {
+  if (cached_has_bits & 0x01000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(94, this->_internal_msgproc_usec_avg_p50(), target);
   }
 
   // optional uint32 msgproc_usec_avg_p95 = 95;
-  if (cached_has_bits & 0x00020000u) {
+  if (cached_has_bits & 0x02000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(95, this->_internal_msgproc_usec_avg_p95(), target);
   }
 
   // optional uint32 msgproc_usec_avg_p99 = 96;
-  if (cached_has_bits & 0x00040000u) {
+  if (cached_has_bits & 0x04000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(96, this->_internal_msgproc_usec_avg_p99(), target);
   }
 
   // optional uint32 msgproc_usec_avg_max = 97;
-  if (cached_has_bits & 0x00080000u) {
+  if (cached_has_bits & 0x08000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(97, this->_internal_msgproc_usec_avg_max(), target);
   }
 
   // optional uint32 queuedmsgs_p50 = 100;
-  if (cached_has_bits & 0x00100000u) {
+  if (cached_has_bits & 0x10000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(100, this->_internal_queuedmsgs_p50(), target);
   }
 
   // optional uint32 queuedmsgs_p95 = 101;
-  if (cached_has_bits & 0x00200000u) {
+  if (cached_has_bits & 0x20000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(101, this->_internal_queuedmsgs_p95(), target);
   }
 
   // optional uint32 queuedmsgs_p99 = 102;
-  if (cached_has_bits & 0x00400000u) {
+  if (cached_has_bits & 0x40000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(102, this->_internal_queuedmsgs_p99(), target);
   }
 
   // optional uint32 queuedmsgs_max = 103;
-  if (cached_has_bits & 0x00800000u) {
+  if (cached_has_bits & 0x80000000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(103, this->_internal_queuedmsgs_max(), target);
   }
@@ -4089,364 +4285,414 @@ size_t CMsgSource2NetworkFlowQuality::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_bytes_sec_p99());
     }
 
-    // optional uint32 enginemsgs_total = 20;
+    // optional uint32 netframes_size_uncompressed_p50 = 12;
     if (cached_has_bits & 0x00000040u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_netframes_size_uncompressed_p50());
+    }
+
+    // optional uint32 netframes_size_uncompressed_p95 = 13;
+    if (cached_has_bits & 0x00000080u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_netframes_size_uncompressed_p95());
+    }
+
+  }
+  if (cached_has_bits & 0x0000ff00u) {
+    // optional uint32 netframes_size_uncompressed_p99 = 14;
+    if (cached_has_bits & 0x00000100u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_netframes_size_uncompressed_p99());
+    }
+
+    // optional uint32 netframes_size_uncompressed_max = 15;
+    if (cached_has_bits & 0x00000200u) {
+      total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_netframes_size_uncompressed_max());
+    }
+
+    // optional uint32 netframes_msgs_p50 = 16;
+    if (cached_has_bits & 0x00000400u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_netframes_msgs_p50());
+    }
+
+    // optional uint32 netframes_msgs_p95 = 17;
+    if (cached_has_bits & 0x00000800u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_netframes_msgs_p95());
+    }
+
+    // optional uint32 netframes_msgs_p99 = 18;
+    if (cached_has_bits & 0x00001000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_netframes_msgs_p99());
+    }
+
+    // optional uint32 netframes_msgs_max = 19;
+    if (cached_has_bits & 0x00002000u) {
+      total_size += 2 +
+        ::_pbi::WireFormatLite::UInt32Size(
+          this->_internal_netframes_msgs_max());
+    }
+
+    // optional uint32 enginemsgs_total = 20;
+    if (cached_has_bits & 0x00004000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_enginemsgs_total());
     }
 
     // optional uint32 enginemsgs_sec_p95 = 21;
-    if (cached_has_bits & 0x00000080u) {
+    if (cached_has_bits & 0x00008000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_enginemsgs_sec_p95());
     }
 
   }
-  if (cached_has_bits & 0x0000ff00u) {
+  if (cached_has_bits & 0x00ff0000u) {
     // optional uint32 enginemsgs_sec_p99 = 22;
-    if (cached_has_bits & 0x00000100u) {
+    if (cached_has_bits & 0x00010000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_enginemsgs_sec_p99());
     }
 
     // optional uint32 netframes_total = 30;
-    if (cached_has_bits & 0x00000200u) {
+    if (cached_has_bits & 0x00020000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_total());
     }
 
     // optional uint32 netframes_dropped = 31;
-    if (cached_has_bits & 0x00000400u) {
+    if (cached_has_bits & 0x00040000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_dropped());
     }
 
     // optional uint32 netframes_outoforder = 32;
-    if (cached_has_bits & 0x00000800u) {
+    if (cached_has_bits & 0x00080000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_outoforder());
     }
 
     // optional uint32 netframes_size_exceeds_mtu = 34;
-    if (cached_has_bits & 0x00001000u) {
+    if (cached_has_bits & 0x00100000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_size_exceeds_mtu());
     }
 
     // optional uint32 netframes_size_p95 = 35;
-    if (cached_has_bits & 0x00002000u) {
+    if (cached_has_bits & 0x00200000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_size_p95());
     }
 
     // optional uint32 netframes_size_p99 = 36;
-    if (cached_has_bits & 0x00004000u) {
+    if (cached_has_bits & 0x00400000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframes_size_p99());
     }
 
     // optional uint32 ticks_total = 40;
-    if (cached_has_bits & 0x00008000u) {
+    if (cached_has_bits & 0x00800000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_total());
     }
 
   }
-  if (cached_has_bits & 0x00ff0000u) {
+  if (cached_has_bits & 0xff000000u) {
     // optional uint32 ticks_good = 41;
-    if (cached_has_bits & 0x00010000u) {
+    if (cached_has_bits & 0x01000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_good());
     }
 
     // optional uint32 ticks_good_almost_late = 42;
-    if (cached_has_bits & 0x00020000u) {
+    if (cached_has_bits & 0x02000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_good_almost_late());
     }
 
     // optional uint32 ticks_fixed_dropped = 43;
-    if (cached_has_bits & 0x00040000u) {
+    if (cached_has_bits & 0x04000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_fixed_dropped());
     }
 
     // optional uint32 ticks_fixed_late = 44;
-    if (cached_has_bits & 0x00080000u) {
+    if (cached_has_bits & 0x08000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_fixed_late());
     }
 
     // optional uint32 ticks_bad_dropped = 45;
-    if (cached_has_bits & 0x00100000u) {
+    if (cached_has_bits & 0x10000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_bad_dropped());
     }
 
     // optional uint32 ticks_bad_late = 46;
-    if (cached_has_bits & 0x00200000u) {
+    if (cached_has_bits & 0x20000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_bad_late());
     }
 
     // optional uint32 ticks_bad_other = 47;
-    if (cached_has_bits & 0x00400000u) {
+    if (cached_has_bits & 0x40000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_ticks_bad_other());
     }
 
     // optional uint32 tick_missrate_samples_total = 50;
-    if (cached_has_bits & 0x00800000u) {
+    if (cached_has_bits & 0x80000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missrate_samples_total());
     }
 
   }
-  if (cached_has_bits & 0xff000000u) {
+  cached_has_bits = _impl_._has_bits_[1];
+  if (cached_has_bits & 0x000000ffu) {
     // optional uint32 tick_missrate_samples_perfect = 51;
-    if (cached_has_bits & 0x01000000u) {
+    if (cached_has_bits & 0x00000001u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missrate_samples_perfect());
     }
 
     // optional uint32 tick_missrate_samples_perfectnet = 52;
-    if (cached_has_bits & 0x02000000u) {
+    if (cached_has_bits & 0x00000002u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missrate_samples_perfectnet());
     }
 
     // optional uint32 tick_missratenet_p75_x10 = 53;
-    if (cached_has_bits & 0x04000000u) {
+    if (cached_has_bits & 0x00000004u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missratenet_p75_x10());
     }
 
     // optional uint32 tick_missratenet_p95_x10 = 54;
-    if (cached_has_bits & 0x08000000u) {
+    if (cached_has_bits & 0x00000008u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missratenet_p95_x10());
     }
 
     // optional uint32 tick_missratenet_p99_x10 = 55;
-    if (cached_has_bits & 0x10000000u) {
+    if (cached_has_bits & 0x00000010u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_tick_missratenet_p99_x10());
     }
 
     // optional sint32 recvmargin_p1 = 61;
-    if (cached_has_bits & 0x20000000u) {
+    if (cached_has_bits & 0x00000020u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p1());
     }
 
     // optional sint32 recvmargin_p5 = 62;
-    if (cached_has_bits & 0x40000000u) {
+    if (cached_has_bits & 0x00000040u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p5());
     }
 
     // optional sint32 recvmargin_p25 = 63;
-    if (cached_has_bits & 0x80000000u) {
+    if (cached_has_bits & 0x00000080u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p25());
     }
 
   }
-  cached_has_bits = _impl_._has_bits_[1];
-  if (cached_has_bits & 0x000000ffu) {
+  if (cached_has_bits & 0x0000ff00u) {
     // optional sint32 recvmargin_p50 = 64;
-    if (cached_has_bits & 0x00000001u) {
+    if (cached_has_bits & 0x00000100u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p50());
     }
 
     // optional sint32 recvmargin_p75 = 65;
-    if (cached_has_bits & 0x00000002u) {
+    if (cached_has_bits & 0x00000200u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p75());
     }
 
     // optional sint32 recvmargin_p95 = 66;
-    if (cached_has_bits & 0x00000004u) {
+    if (cached_has_bits & 0x00000400u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::SInt32Size(
           this->_internal_recvmargin_p95());
     }
 
     // optional uint32 netframe_jitter_p50 = 70;
-    if (cached_has_bits & 0x00000008u) {
+    if (cached_has_bits & 0x00000800u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframe_jitter_p50());
     }
 
     // optional uint32 netframe_jitter_p99 = 71;
-    if (cached_has_bits & 0x00000010u) {
+    if (cached_has_bits & 0x00001000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_netframe_jitter_p99());
     }
 
     // optional uint32 interval_peakjitter_p50 = 72;
-    if (cached_has_bits & 0x00000020u) {
+    if (cached_has_bits & 0x00002000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_interval_peakjitter_p50());
     }
 
     // optional uint32 interval_peakjitter_p95 = 73;
-    if (cached_has_bits & 0x00000040u) {
+    if (cached_has_bits & 0x00004000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_interval_peakjitter_p95());
     }
 
     // optional uint32 packet_misdelivery_rate_p50_x4 = 74;
-    if (cached_has_bits & 0x00000080u) {
+    if (cached_has_bits & 0x00008000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_packet_misdelivery_rate_p50_x4());
     }
 
   }
-  if (cached_has_bits & 0x0000ff00u) {
+  if (cached_has_bits & 0x00ff0000u) {
     // optional uint32 packet_misdelivery_rate_p95_x4 = 75;
-    if (cached_has_bits & 0x00000100u) {
+    if (cached_has_bits & 0x00010000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_packet_misdelivery_rate_p95_x4());
     }
 
     // optional uint32 net_ping_p5 = 80;
-    if (cached_has_bits & 0x00000200u) {
+    if (cached_has_bits & 0x00020000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_net_ping_p5());
     }
 
     // optional uint32 net_ping_p50 = 81;
-    if (cached_has_bits & 0x00000400u) {
+    if (cached_has_bits & 0x00040000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_net_ping_p50());
     }
 
     // optional uint32 net_ping_p95 = 82;
-    if (cached_has_bits & 0x00000800u) {
+    if (cached_has_bits & 0x00080000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_net_ping_p95());
     }
 
     // optional uint32 msgproc_usec_p50 = 90;
-    if (cached_has_bits & 0x00001000u) {
+    if (cached_has_bits & 0x00100000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_p50());
     }
 
     // optional uint32 msgproc_usec_p95 = 91;
-    if (cached_has_bits & 0x00002000u) {
+    if (cached_has_bits & 0x00200000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_p95());
     }
 
     // optional uint32 msgproc_usec_p99 = 92;
-    if (cached_has_bits & 0x00004000u) {
+    if (cached_has_bits & 0x00400000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_p99());
     }
 
     // optional uint32 msgproc_usec_max = 93;
-    if (cached_has_bits & 0x00008000u) {
+    if (cached_has_bits & 0x00800000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_max());
     }
 
   }
-  if (cached_has_bits & 0x00ff0000u) {
+  if (cached_has_bits & 0xff000000u) {
     // optional uint32 msgproc_usec_avg_p50 = 94;
-    if (cached_has_bits & 0x00010000u) {
+    if (cached_has_bits & 0x01000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_avg_p50());
     }
 
     // optional uint32 msgproc_usec_avg_p95 = 95;
-    if (cached_has_bits & 0x00020000u) {
+    if (cached_has_bits & 0x02000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_avg_p95());
     }
 
     // optional uint32 msgproc_usec_avg_p99 = 96;
-    if (cached_has_bits & 0x00040000u) {
+    if (cached_has_bits & 0x04000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_avg_p99());
     }
 
     // optional uint32 msgproc_usec_avg_max = 97;
-    if (cached_has_bits & 0x00080000u) {
+    if (cached_has_bits & 0x08000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_msgproc_usec_avg_max());
     }
 
     // optional uint32 queuedmsgs_p50 = 100;
-    if (cached_has_bits & 0x00100000u) {
+    if (cached_has_bits & 0x10000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_queuedmsgs_p50());
     }
 
     // optional uint32 queuedmsgs_p95 = 101;
-    if (cached_has_bits & 0x00200000u) {
+    if (cached_has_bits & 0x20000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_queuedmsgs_p95());
     }
 
     // optional uint32 queuedmsgs_p99 = 102;
-    if (cached_has_bits & 0x00400000u) {
+    if (cached_has_bits & 0x40000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_queuedmsgs_p99());
     }
 
     // optional uint32 queuedmsgs_max = 103;
-    if (cached_has_bits & 0x00800000u) {
+    if (cached_has_bits & 0x80000000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
           this->_internal_queuedmsgs_max());
@@ -4492,172 +4738,199 @@ void CMsgSource2NetworkFlowQuality::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& 
       _this->_impl_.bytes_sec_p99_ = from._impl_.bytes_sec_p99_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.enginemsgs_total_ = from._impl_.enginemsgs_total_;
+      _this->_impl_.netframes_size_uncompressed_p50_ = from._impl_.netframes_size_uncompressed_p50_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.enginemsgs_sec_p95_ = from._impl_.enginemsgs_sec_p95_;
+      _this->_impl_.netframes_size_uncompressed_p95_ = from._impl_.netframes_size_uncompressed_p95_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   if (cached_has_bits & 0x0000ff00u) {
     if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.enginemsgs_sec_p99_ = from._impl_.enginemsgs_sec_p99_;
+      _this->_impl_.netframes_size_uncompressed_p99_ = from._impl_.netframes_size_uncompressed_p99_;
     }
     if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.netframes_total_ = from._impl_.netframes_total_;
+      _this->_impl_.netframes_size_uncompressed_max_ = from._impl_.netframes_size_uncompressed_max_;
     }
     if (cached_has_bits & 0x00000400u) {
-      _this->_impl_.netframes_dropped_ = from._impl_.netframes_dropped_;
+      _this->_impl_.netframes_msgs_p50_ = from._impl_.netframes_msgs_p50_;
     }
     if (cached_has_bits & 0x00000800u) {
-      _this->_impl_.netframes_outoforder_ = from._impl_.netframes_outoforder_;
+      _this->_impl_.netframes_msgs_p95_ = from._impl_.netframes_msgs_p95_;
     }
     if (cached_has_bits & 0x00001000u) {
-      _this->_impl_.netframes_size_exceeds_mtu_ = from._impl_.netframes_size_exceeds_mtu_;
+      _this->_impl_.netframes_msgs_p99_ = from._impl_.netframes_msgs_p99_;
     }
     if (cached_has_bits & 0x00002000u) {
-      _this->_impl_.netframes_size_p95_ = from._impl_.netframes_size_p95_;
+      _this->_impl_.netframes_msgs_max_ = from._impl_.netframes_msgs_max_;
     }
     if (cached_has_bits & 0x00004000u) {
-      _this->_impl_.netframes_size_p99_ = from._impl_.netframes_size_p99_;
+      _this->_impl_.enginemsgs_total_ = from._impl_.enginemsgs_total_;
     }
     if (cached_has_bits & 0x00008000u) {
-      _this->_impl_.ticks_total_ = from._impl_.ticks_total_;
+      _this->_impl_.enginemsgs_sec_p95_ = from._impl_.enginemsgs_sec_p95_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   if (cached_has_bits & 0x00ff0000u) {
     if (cached_has_bits & 0x00010000u) {
-      _this->_impl_.ticks_good_ = from._impl_.ticks_good_;
+      _this->_impl_.enginemsgs_sec_p99_ = from._impl_.enginemsgs_sec_p99_;
     }
     if (cached_has_bits & 0x00020000u) {
-      _this->_impl_.ticks_good_almost_late_ = from._impl_.ticks_good_almost_late_;
+      _this->_impl_.netframes_total_ = from._impl_.netframes_total_;
     }
     if (cached_has_bits & 0x00040000u) {
-      _this->_impl_.ticks_fixed_dropped_ = from._impl_.ticks_fixed_dropped_;
+      _this->_impl_.netframes_dropped_ = from._impl_.netframes_dropped_;
     }
     if (cached_has_bits & 0x00080000u) {
-      _this->_impl_.ticks_fixed_late_ = from._impl_.ticks_fixed_late_;
+      _this->_impl_.netframes_outoforder_ = from._impl_.netframes_outoforder_;
     }
     if (cached_has_bits & 0x00100000u) {
-      _this->_impl_.ticks_bad_dropped_ = from._impl_.ticks_bad_dropped_;
+      _this->_impl_.netframes_size_exceeds_mtu_ = from._impl_.netframes_size_exceeds_mtu_;
     }
     if (cached_has_bits & 0x00200000u) {
-      _this->_impl_.ticks_bad_late_ = from._impl_.ticks_bad_late_;
+      _this->_impl_.netframes_size_p95_ = from._impl_.netframes_size_p95_;
     }
     if (cached_has_bits & 0x00400000u) {
-      _this->_impl_.ticks_bad_other_ = from._impl_.ticks_bad_other_;
+      _this->_impl_.netframes_size_p99_ = from._impl_.netframes_size_p99_;
     }
     if (cached_has_bits & 0x00800000u) {
-      _this->_impl_.tick_missrate_samples_total_ = from._impl_.tick_missrate_samples_total_;
+      _this->_impl_.ticks_total_ = from._impl_.ticks_total_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   if (cached_has_bits & 0xff000000u) {
     if (cached_has_bits & 0x01000000u) {
-      _this->_impl_.tick_missrate_samples_perfect_ = from._impl_.tick_missrate_samples_perfect_;
+      _this->_impl_.ticks_good_ = from._impl_.ticks_good_;
     }
     if (cached_has_bits & 0x02000000u) {
-      _this->_impl_.tick_missrate_samples_perfectnet_ = from._impl_.tick_missrate_samples_perfectnet_;
+      _this->_impl_.ticks_good_almost_late_ = from._impl_.ticks_good_almost_late_;
     }
     if (cached_has_bits & 0x04000000u) {
-      _this->_impl_.tick_missratenet_p75_x10_ = from._impl_.tick_missratenet_p75_x10_;
+      _this->_impl_.ticks_fixed_dropped_ = from._impl_.ticks_fixed_dropped_;
     }
     if (cached_has_bits & 0x08000000u) {
-      _this->_impl_.tick_missratenet_p95_x10_ = from._impl_.tick_missratenet_p95_x10_;
+      _this->_impl_.ticks_fixed_late_ = from._impl_.ticks_fixed_late_;
     }
     if (cached_has_bits & 0x10000000u) {
-      _this->_impl_.tick_missratenet_p99_x10_ = from._impl_.tick_missratenet_p99_x10_;
+      _this->_impl_.ticks_bad_dropped_ = from._impl_.ticks_bad_dropped_;
     }
     if (cached_has_bits & 0x20000000u) {
-      _this->_impl_.recvmargin_p1_ = from._impl_.recvmargin_p1_;
+      _this->_impl_.ticks_bad_late_ = from._impl_.ticks_bad_late_;
     }
     if (cached_has_bits & 0x40000000u) {
-      _this->_impl_.recvmargin_p5_ = from._impl_.recvmargin_p5_;
+      _this->_impl_.ticks_bad_other_ = from._impl_.ticks_bad_other_;
     }
     if (cached_has_bits & 0x80000000u) {
-      _this->_impl_.recvmargin_p25_ = from._impl_.recvmargin_p25_;
+      _this->_impl_.tick_missrate_samples_total_ = from._impl_.tick_missrate_samples_total_;
     }
     _this->_impl_._has_bits_[0] |= cached_has_bits;
   }
   cached_has_bits = from._impl_._has_bits_[1];
   if (cached_has_bits & 0x000000ffu) {
     if (cached_has_bits & 0x00000001u) {
-      _this->_impl_.recvmargin_p50_ = from._impl_.recvmargin_p50_;
+      _this->_impl_.tick_missrate_samples_perfect_ = from._impl_.tick_missrate_samples_perfect_;
     }
     if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.recvmargin_p75_ = from._impl_.recvmargin_p75_;
+      _this->_impl_.tick_missrate_samples_perfectnet_ = from._impl_.tick_missrate_samples_perfectnet_;
     }
     if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.recvmargin_p95_ = from._impl_.recvmargin_p95_;
+      _this->_impl_.tick_missratenet_p75_x10_ = from._impl_.tick_missratenet_p75_x10_;
     }
     if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.netframe_jitter_p50_ = from._impl_.netframe_jitter_p50_;
+      _this->_impl_.tick_missratenet_p95_x10_ = from._impl_.tick_missratenet_p95_x10_;
     }
     if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.netframe_jitter_p99_ = from._impl_.netframe_jitter_p99_;
+      _this->_impl_.tick_missratenet_p99_x10_ = from._impl_.tick_missratenet_p99_x10_;
     }
     if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.interval_peakjitter_p50_ = from._impl_.interval_peakjitter_p50_;
+      _this->_impl_.recvmargin_p1_ = from._impl_.recvmargin_p1_;
     }
     if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.interval_peakjitter_p95_ = from._impl_.interval_peakjitter_p95_;
+      _this->_impl_.recvmargin_p5_ = from._impl_.recvmargin_p5_;
     }
     if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.packet_misdelivery_rate_p50_x4_ = from._impl_.packet_misdelivery_rate_p50_x4_;
+      _this->_impl_.recvmargin_p25_ = from._impl_.recvmargin_p25_;
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
   if (cached_has_bits & 0x0000ff00u) {
     if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.packet_misdelivery_rate_p95_x4_ = from._impl_.packet_misdelivery_rate_p95_x4_;
+      _this->_impl_.recvmargin_p50_ = from._impl_.recvmargin_p50_;
     }
     if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.net_ping_p5_ = from._impl_.net_ping_p5_;
+      _this->_impl_.recvmargin_p75_ = from._impl_.recvmargin_p75_;
     }
     if (cached_has_bits & 0x00000400u) {
-      _this->_impl_.net_ping_p50_ = from._impl_.net_ping_p50_;
+      _this->_impl_.recvmargin_p95_ = from._impl_.recvmargin_p95_;
     }
     if (cached_has_bits & 0x00000800u) {
-      _this->_impl_.net_ping_p95_ = from._impl_.net_ping_p95_;
+      _this->_impl_.netframe_jitter_p50_ = from._impl_.netframe_jitter_p50_;
     }
     if (cached_has_bits & 0x00001000u) {
-      _this->_impl_.msgproc_usec_p50_ = from._impl_.msgproc_usec_p50_;
+      _this->_impl_.netframe_jitter_p99_ = from._impl_.netframe_jitter_p99_;
     }
     if (cached_has_bits & 0x00002000u) {
-      _this->_impl_.msgproc_usec_p95_ = from._impl_.msgproc_usec_p95_;
+      _this->_impl_.interval_peakjitter_p50_ = from._impl_.interval_peakjitter_p50_;
     }
     if (cached_has_bits & 0x00004000u) {
-      _this->_impl_.msgproc_usec_p99_ = from._impl_.msgproc_usec_p99_;
+      _this->_impl_.interval_peakjitter_p95_ = from._impl_.interval_peakjitter_p95_;
     }
     if (cached_has_bits & 0x00008000u) {
-      _this->_impl_.msgproc_usec_max_ = from._impl_.msgproc_usec_max_;
+      _this->_impl_.packet_misdelivery_rate_p50_x4_ = from._impl_.packet_misdelivery_rate_p50_x4_;
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
   if (cached_has_bits & 0x00ff0000u) {
     if (cached_has_bits & 0x00010000u) {
-      _this->_impl_.msgproc_usec_avg_p50_ = from._impl_.msgproc_usec_avg_p50_;
+      _this->_impl_.packet_misdelivery_rate_p95_x4_ = from._impl_.packet_misdelivery_rate_p95_x4_;
     }
     if (cached_has_bits & 0x00020000u) {
-      _this->_impl_.msgproc_usec_avg_p95_ = from._impl_.msgproc_usec_avg_p95_;
+      _this->_impl_.net_ping_p5_ = from._impl_.net_ping_p5_;
     }
     if (cached_has_bits & 0x00040000u) {
-      _this->_impl_.msgproc_usec_avg_p99_ = from._impl_.msgproc_usec_avg_p99_;
+      _this->_impl_.net_ping_p50_ = from._impl_.net_ping_p50_;
     }
     if (cached_has_bits & 0x00080000u) {
-      _this->_impl_.msgproc_usec_avg_max_ = from._impl_.msgproc_usec_avg_max_;
+      _this->_impl_.net_ping_p95_ = from._impl_.net_ping_p95_;
     }
     if (cached_has_bits & 0x00100000u) {
-      _this->_impl_.queuedmsgs_p50_ = from._impl_.queuedmsgs_p50_;
+      _this->_impl_.msgproc_usec_p50_ = from._impl_.msgproc_usec_p50_;
     }
     if (cached_has_bits & 0x00200000u) {
-      _this->_impl_.queuedmsgs_p95_ = from._impl_.queuedmsgs_p95_;
+      _this->_impl_.msgproc_usec_p95_ = from._impl_.msgproc_usec_p95_;
     }
     if (cached_has_bits & 0x00400000u) {
-      _this->_impl_.queuedmsgs_p99_ = from._impl_.queuedmsgs_p99_;
+      _this->_impl_.msgproc_usec_p99_ = from._impl_.msgproc_usec_p99_;
     }
     if (cached_has_bits & 0x00800000u) {
+      _this->_impl_.msgproc_usec_max_ = from._impl_.msgproc_usec_max_;
+    }
+    _this->_impl_._has_bits_[1] |= cached_has_bits;
+  }
+  if (cached_has_bits & 0xff000000u) {
+    if (cached_has_bits & 0x01000000u) {
+      _this->_impl_.msgproc_usec_avg_p50_ = from._impl_.msgproc_usec_avg_p50_;
+    }
+    if (cached_has_bits & 0x02000000u) {
+      _this->_impl_.msgproc_usec_avg_p95_ = from._impl_.msgproc_usec_avg_p95_;
+    }
+    if (cached_has_bits & 0x04000000u) {
+      _this->_impl_.msgproc_usec_avg_p99_ = from._impl_.msgproc_usec_avg_p99_;
+    }
+    if (cached_has_bits & 0x08000000u) {
+      _this->_impl_.msgproc_usec_avg_max_ = from._impl_.msgproc_usec_avg_max_;
+    }
+    if (cached_has_bits & 0x10000000u) {
+      _this->_impl_.queuedmsgs_p50_ = from._impl_.queuedmsgs_p50_;
+    }
+    if (cached_has_bits & 0x20000000u) {
+      _this->_impl_.queuedmsgs_p95_ = from._impl_.queuedmsgs_p95_;
+    }
+    if (cached_has_bits & 0x40000000u) {
+      _this->_impl_.queuedmsgs_p99_ = from._impl_.queuedmsgs_p99_;
+    }
+    if (cached_has_bits & 0x80000000u) {
       _this->_impl_.queuedmsgs_max_ = from._impl_.queuedmsgs_max_;
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;

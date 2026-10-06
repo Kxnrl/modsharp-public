@@ -29,7 +29,7 @@ namespace Sharp.Core.Types;
 public readonly unsafe struct EntityKeyValuesVariantValue
 {
     [FieldOffset(0)]
-    private readonly EntityKeyValuesVariantType _type;
+    private readonly ulong _type;
 
     [FieldOffset(8)]
     private readonly bool _bValue; // bool
@@ -63,37 +63,37 @@ public readonly unsafe struct EntityKeyValuesVariantValue
 
     private EntityKeyValuesVariantValue(bool v)
     {
-        _type   = EntityKeyValuesVariantType.Bool;
+        _type   = (ulong) EntityKeyValuesVariantType.Bool;
         _bValue = v;
     }
 
     private EntityKeyValuesVariantValue(int v)
     {
-        _type   = EntityKeyValuesVariantType.Int32;
+        _type   = (ulong) EntityKeyValuesVariantType.Int32;
         _iValue = v;
     }
 
     private EntityKeyValuesVariantValue(float v)
     {
-        _type    = EntityKeyValuesVariantType.Float;
+        _type    = (ulong) EntityKeyValuesVariantType.Float;
         _flValue = v;
     }
 
     private EntityKeyValuesVariantValue(string v)
     {
-        _type    = EntityKeyValuesVariantType.String;
+        _type    = (ulong) EntityKeyValuesVariantType.String;
         _szValue = StringPool.Instance.AllocPooledString(v);
     }
 
     private EntityKeyValuesVariantValue(nint v)
     {
-        _type   = EntityKeyValuesVariantType.Pointer;
+        _type   = (ulong) EntityKeyValuesVariantType.Pointer;
         _pValue = v;
     }
 
     private EntityKeyValuesVariantValue(ulong v)
     {
-        _type     = EntityKeyValuesVariantType.UInt64;
+        _type     = (ulong) EntityKeyValuesVariantType.UInt64;
         _u64Value = v;
     }
 }
