@@ -27,19 +27,15 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 
 ## 分发流程
 
-每次换图时自动选择：
-
-| 插件 | 流程 |
-|---|---|
-| 1 个服务端插件 | **DualAddon**：久经考验的单插件流程，仅在工坊地图上生效。 |
-| 2 个以上服务端插件，或存在任意客户端插件 | **MultiAddon**：基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager)，客户端每缺一个插件重连一次，官方地图同样可用。 |
-
-客户端每次重连只能接收一个插件，所以 2 个以上的插件必须使用 MultiAddon 流程。
+模块始终使用基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager) 的 **MultiAddon** 流程：
+客户端每缺一个插件重连一次，工坊地图与官方地图均可用。
 服务端缺少的插件会自动下载，下载完成后重新加载地图。
 
-> [!TIP]
-> MultiAddon 流程默认在每次换图时重新发送插件。
-> 设置 `ms_cache_clients_with_addons 1` 后，已下载插件的客户端将跳过重连，行为与 DualAddon 流程相近。
+已拥有插件的客户端在换图和重进时会跳过重连（`ms_cache_clients_with_addons`，默认开启）。
+
+> [!NOTE]
+> 未安装模块时，已弃用的 `-dual_addon` 保持原有行为：
+> 1 个插件使用旧的 **DualAddon** 流程（仅工坊地图），2 个以上使用 MultiAddon 流程。
 
 ## 仅服务端文件（`sharp/assets`）
 
@@ -59,7 +55,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 | `ms_addon_mount_download` | `false` | 每次地图开始时重新下载（更新）服务端插件。 |
 | `ms_extra_addons_timeout` | `10` | 下载下一个插件时允许的重连间隔（秒）。 |
 | `ms_addon_connection_timeout` | `30` | 接收第一个插件的超时时间（秒），超时踢出，0 为禁用。 |
-| `ms_cache_clients_with_addons` | `false` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
+| `ms_cache_clients_with_addons` | `true` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
 | `ms_cache_clients_duration` | `0` | 记住的时长（秒），0 为永久。 |
 | `ms_addon_debug` | `false` | 输出下载流程的详细调试信息。 |
 

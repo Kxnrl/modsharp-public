@@ -37,7 +37,6 @@ public sealed class AddonManagerExample : IModSharpModule
         addons.AddAddon(123123123123);
 
         // deliver an extra addon to one client only, refresh sends it right away if the client is in game.
-        // client addons switch to the MultiAddon flow on the next map change.
         addons.AddClientAddon(123123123789, new SteamID(76561198000000000UL), refresh: true);
     }
 

@@ -72,7 +72,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     private IConVar? _cvCacheDuration;
     private IConVar? _cvDebug;
     private bool     _syncingConVar;
-    private bool     _listening;
 
     public AddonManager(ISharedSystem sharedSystem,
         string                             dllPath,
@@ -96,7 +95,9 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         _addons.AddRange(ReadConfig("AddonManager:Addons").Where(x => !_addons.Contains(x)).ToArray());
         _globalClientAddons.AddRange(ReadConfig("AddonManager:ClientAddons"));
         ApplyAddons(false, false);
-        UpdateClientQuery();
+
+        // being queried always selects the MultiAddon flow, even for a single addon
+        _sharedSystem.GetAddonManager().InstallAddonListener(this);
 
         var conVars = _sharedSystem.GetConVarManager();
 
@@ -124,8 +125,9 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
                                                     30f,
                                                     "How long until clients are timed out while downloading the first required addon (usually the current map), 0 disables");
 
+        // on by default (unlike MAM) so map changes do not reconnect clients that already have the addons
         _cvCacheClients = conVars.CreateConVar("ms_cache_clients_with_addons",
-                                               false,
+                                               true,
                                                "Whether to cache clients addon download list, this will prevent reconnects on mapchange/rejoin");
 
         _cvCacheDuration = conVars.CreateConVar("ms_cache_clients_duration",
@@ -221,10 +223,7 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         conVars.ReleaseServerCommandCallback("ms_reload_map",          OnCommandReloadMap);
 
         _sharedSystem.GetClientManager().RemoveCommandCallback("addon_refresh", OnClientCommandRefresh);
-        if (_listening)
-        {
-            _sharedSystem.GetAddonManager().RemoveAddonListener(this);
-        }
+        _sharedSystem.GetAddonManager().RemoveAddonListener(this);
 
         _sharedSystem.GetAddonManager().SetOptions(new AddonOptions());
         _sharedSystem.GetEventManager().RemoveEventListener(this);
@@ -298,7 +297,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         }
 
         list.Add(addon);
-        UpdateClientQuery();
 
         if (steamId == default)
         {
@@ -317,7 +315,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     public bool RemoveClientAddon(ulong addon, SteamID steamId = default)
     {
         var removed = GetClientAddonList(steamId).Remove(addon);
-        UpdateClientQuery();
 
         if (removed && steamId == default)
         {
@@ -332,13 +329,11 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         if (steamId != default)
         {
             _clientAddons.Remove(steamId);
-            UpdateClientQuery();
 
             return;
         }
 
         _globalClientAddons.Clear();
-        UpdateClientQuery();
         SyncConVar(_cvClientExtraAddons, _globalClientAddons);
     }
 
@@ -523,7 +518,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
 
         _globalClientAddons.Clear();
         _globalClientAddons.AddRange(ParseAddons(conVar.GetString()));
-        UpdateClientQuery();
     }
 
     private void ApplyAddons(bool reloadMap, bool syncConVar = true)
@@ -594,29 +588,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
                                                   _cvConnectionTimeout?.GetFloat() ?? 30,
                                                   cacheDuration,
                                                   _cvDebug?.GetBool() ?? false));
-    }
-
-    // being queried forces the MultiAddon flow, so only listen while there are client addons:
-    // a single server addon then keeps the DualAddon flow. The flow is picked on the next map change.
-    private void UpdateClientQuery()
-    {
-        var want = _globalClientAddons.Count > 0 || _clientAddons.Values.Any(x => x.Count > 0);
-
-        if (want == _listening)
-        {
-            return;
-        }
-
-        _listening = want;
-
-        if (want)
-        {
-            _sharedSystem.GetAddonManager().InstallAddonListener(this);
-        }
-        else
-        {
-            _sharedSystem.GetAddonManager().RemoveAddonListener(this);
-        }
     }
 
     private IEnumerable<ulong> ReadConfig(string key)

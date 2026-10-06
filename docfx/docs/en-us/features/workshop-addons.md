@@ -27,19 +27,15 @@ The addons can also be changed at runtime through the ConVars / commands below o
 
 ## Delivery flow
 
-The flow is picked automatically on every map change:
-
-| Addons | Flow |
-|---|---|
-| 1 server addon | **DualAddon**: the battle-tested single addon flow. Only works on workshop maps. |
-| 2+ server addons, or any client addon | **MultiAddon**: based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager). Clients reconnect once per addon they still need. Works on Valve maps too. |
-
-Clients can not take more than one addon per reconnect, so 2+ addons always need the MultiAddon flow.
+The module always uses the **MultiAddon** flow, based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager):
+clients reconnect once per addon they still need, on workshop and Valve maps alike.
 Missing addons are downloaded on the server automatically and the map is reloaded once they finish.
 
-> [!TIP]
-> By default the MultiAddon flow sends the addons again on every map change.
-> Set `ms_cache_clients_with_addons 1` to skip the reconnects for clients that already have them, like the DualAddon flow.
+Clients that already have the addons skip the reconnects on map changes and rejoins (`ms_cache_clients_with_addons`, on by default).
+
+> [!NOTE]
+> Without the module, the deprecated `-dual_addon` keeps its previous behavior:
+> 1 addon uses the legacy **DualAddon** flow (workshop maps only), 2+ addons use the MultiAddon flow.
 
 ## Server-only files (`sharp/assets`)
 
@@ -60,7 +56,7 @@ while the server neither mounts nor downloads it.
 | `ms_addon_mount_download` | `false` | Re-download (update) server addons on every map start. |
 | `ms_extra_addons_timeout` | `10` | Seconds allowed between reconnects for the next addon. |
 | `ms_addon_connection_timeout` | `30` | Seconds allowed to accept the first addon before being kicked, 0 disables. |
-| `ms_cache_clients_with_addons` | `false` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
+| `ms_cache_clients_with_addons` | `true` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
 | `ms_cache_clients_duration` | `0` | How long to remember them in seconds, 0 forever. |
 | `ms_addon_debug` | `false` | Print verbose information about the download flow. |
 
