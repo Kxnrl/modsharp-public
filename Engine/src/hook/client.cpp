@@ -64,6 +64,7 @@ constexpr int32_t NET_MESSAGE_ID_VOICE = 47;
 static CConVarBaseData* ms_log_chat              = nullptr;
 static CConVarBaseData* ms_chat_block_whitespace = nullptr;
 static CConVarBaseData* ms_fix_voice_chat        = nullptr;
+static CConVarBaseData* ms_voice_lag_should_kick = nullptr;
 static uint64_t         s_RandomSeed;
 static uint64_t         s_PlayerSeed[CS_MAX_PLAYERS];
 
@@ -432,8 +433,8 @@ BeginMemberHookScope(CServerSideClient)
         return CLCMsg_CmdKeyValues(pClient, pMessage);
     }
 
-    constexpr uint32_t max_message_rate             = 192;
-    constexpr uint64_t max_decoded_bytes_per_second = 262144;
+    constexpr uint32_t max_message_rate             = 256;
+    constexpr uint64_t max_decoded_bytes_per_second = 65536;
     constexpr uint64_t max_message_bytes            = 16384;
     constexpr uint32_t max_packet_offsets           = 64;
     constexpr uint32_t max_packets_per_second       = 1024;
@@ -502,7 +503,8 @@ BeginMemberHookScope(CServerSideClient)
 
     static void RejectVoiceMessage(const CServerSideClient* pClient, const double now)
     {
-        BanSteamIdInternal(pClient->GetSteamId(), 13);
+        if (ms_voice_lag_should_kick->GetValue<bool>())
+            BanSteamIdInternal(pClient->GetSteamId(), 13);
 
         auto& state = s_VoiceMessageRateState[pClient->GetSlot()];
         if (state.lastLogTime < 0.0 || now < state.lastLogTime || now - state.lastLogTime >= 1.0)
@@ -563,7 +565,7 @@ BeginMemberHookScope(CServerSideClient)
             RejectVoiceMessage(pClient, now);
 
             // kicked
-            return false;
+            return ms_voice_lag_should_kick->GetValue<bool>() ? false : true;
         }
 
         const auto action = forwards::OnClientSpeakPre->Invoke(pClient, xuid, sectionNumber, voiceDataPtr, voiceDataSize);
@@ -818,21 +820,24 @@ void InstallClientHooks()
     });
 
     g_pHookManager->Hook_ClientConnect(HookType_Post, [](PlayerSlot_t slot, const char*, SteamId_t, bool) {
-        if (slot >= CS_MAX_PLAYERS) return;
+        if (slot >= CS_MAX_PLAYERS)
+            return;
         CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
         CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
         s_PlayerSeed[slot] = s_RandomSeed;
         s_RandomSeed += 66;
     });
 
-    g_pHookManager->Hook_ClientDisconnect(HookType_Post, [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
-        CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
-        CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
-    });
+    g_pHookManager->Hook_ClientDisconnect(HookType_Post,
+                                          [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
+                                              CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
+                                              CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
+                                          });
 
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);
     ms_chat_block_whitespace = g_ConVarManager.CreateConVar("ms_chat_block_whitespace", true, "Block whitespace messages.", FCVAR_RELEASE);
     ms_fix_voice_chat        = g_ConVarManager.CreateConVar("ms_fix_voice_chat", true, "Fix voice chat.", FCVAR_RELEASE);
+    ms_voice_lag_should_kick = g_ConVarManager.CreateConVar("ms_voice_lag_should_kick", false, "Whether to kick the player if attempt to lag the server is detected. True - kick, False - drop the packet", FCVAR_RELEASE);
 }
 
 void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommandString)

@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Shared.CStrike;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
@@ -37,6 +38,8 @@ public interface IConVar : INativeObject
     /// <summary>
     ///     Default value
     /// </summary>
+    /// <exception cref="NotSupportedException">The type is not bool, integer, floating point, string or color</exception>
+    /// <exception cref="InvalidOperationException">The ConVar has no default value</exception>
     string DefaultValue { get; }
 
     /// <summary>
@@ -80,8 +83,10 @@ public interface IConVar : INativeObject
 
     void Set(float value);
 
+    /// <exception cref="ArgumentException">The string cannot be parsed as the ConVar's type</exception>
     void Set(string value);
 
+    /// <exception cref="NotSupportedException">The type is Float64 or a vector type (Vector2 / Vector3 / Vector4 / QAngle / VectorWS)</exception>
     void Set(ConVarVariantValue value);
 
     bool SetMinBound(ConVarVariantValue value);
@@ -105,6 +110,7 @@ public interface IConVar : INativeObject
     ///     Returns the ConVar value as a string.
     /// </summary>
     /// <returns>The string representation of the current value.</returns>
+    /// <exception cref="NotSupportedException">The type is not bool, integer, floating point, string or color</exception>
     string GetString();
 
     /// <summary>

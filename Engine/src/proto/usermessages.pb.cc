@@ -3564,496 +3564,514 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_usermessages_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\022usermessages.proto\032\026networkbasetypes.p"
-  "roto\"3\n\034CUserMessageAchievementEvent\022\023\n\013"
-  "achievement\030\001 \001(\r\"s\n#CUserMessageCloseCa"
-  "ptionPlaceholder\022\016\n\006string\030\001 \001(\t\022\020\n\010dura"
-  "tion\030\002 \001(\002\022\023\n\013from_player\030\003 \001(\010\022\025\n\tent_i"
-  "ndex\030\004 \001(\005:\002-1\"/\n\034CUserMessageCurrentTim"
-  "escale\022\017\n\007current\030\001 \001(\002\"y\n\034CUserMessageD"
-  "esiredTimescale\022\017\n\007desired\030\001 \001(\002\022\024\n\014acce"
-  "leration\030\002 \001(\002\022\024\n\014minblendrate\030\003 \001(\002\022\034\n\024"
-  "blenddeltamultiplier\030\004 \001(\002\"U\n\020CUserMessa"
-  "geFade\022\020\n\010duration\030\001 \001(\r\022\021\n\thold_time\030\002 "
-  "\001(\r\022\r\n\005flags\030\003 \001(\r\022\r\n\005color\030\004 \001(\007\"\\\n\021CUs"
-  "erMessageShake\022\017\n\007command\030\001 \001(\r\022\021\n\tampli"
-  "tude\030\002 \001(\002\022\021\n\tfrequency\030\003 \001(\002\022\020\n\010duratio"
-  "n\030\004 \001(\002\"Y\n\024CUserMessageShakeDir\022!\n\005shake"
-  "\030\001 \001(\0132\022.CUserMessageShake\022\036\n\tdirection\030"
-  "\002 \001(\0132\013.CMsgVector\"a\n\026CUserMessageWaterS"
-  "hake\022\017\n\007command\030\001 \001(\r\022\021\n\tamplitude\030\002 \001(\002"
-  "\022\021\n\tfrequency\030\003 \001(\002\022\020\n\010duration\030\004 \001(\002\"z\n"
-  "\026CUserMessageScreenTilt\022\017\n\007command\030\001 \001(\r"
-  "\022\023\n\013ease_in_out\030\002 \001(\010\022\032\n\005angle\030\003 \001(\0132\013.C"
-  "MsgVector\022\020\n\010duration\030\004 \001(\002\022\014\n\004time\030\005 \001("
-  "\002\"_\n\023CUserMessageSayText\022\027\n\013playerindex\030"
-  "\001 \001(\005:\002-1\022\014\n\004text\030\002 \001(\t\022\014\n\004chat\030\003 \001(\010\022\023\n"
-  "\013textallchat\030\004 \001(\010\"\247\001\n\024CUserMessageSayTe"
-  "xt2\022\027\n\013entityindex\030\001 \001(\005:\002-1\022\014\n\004chat\030\002 \001"
-  "(\010\022\023\n\013messagename\030\003 \001(\t\022\016\n\006param1\030\004 \001(\t\022"
-  "\016\n\006param2\030\005 \001(\t\022\016\n\006param3\030\006 \001(\t\022\016\n\006param"
-  "4\030\007 \001(\t\022\023\n\013textallchat\030\010 \001(\010\"|\n\022CUserMes"
-  "sageHudMsg\022\017\n\007channel\030\001 \001(\r\022\t\n\001x\030\002 \001(\002\022\t"
-  "\n\001y\030\003 \001(\002\022\016\n\006color1\030\004 \001(\007\022\016\n\006color2\030\005 \001("
-  "\007\022\016\n\006effect\030\006 \001(\r\022\017\n\007message\030\013 \001(\t\"&\n\023CU"
-  "serMessageHudText\022\017\n\007message\030\001 \001(\t\"2\n\023CU"
-  "serMessageTextMsg\022\014\n\004dest\030\001 \001(\r\022\r\n\005param"
-  "\030\002 \003(\t\"\027\n\025CUserMessageGameTitle\"\026\n\024CUser"
-  "MessageResetHUD\"8\n\025CUserMessageSendAudio"
-  "\022\021\n\tsoundname\030\001 \001(\t\022\014\n\004stop\030\002 \001(\010\"n\n\032CUs"
-  "erMessageAudioParameter\022\026\n\016parameter_typ"
-  "e\030\001 \001(\r\022\026\n\016name_hash_code\030\002 \001(\r\022\r\n\005value"
-  "\030\003 \001(\002\022\021\n\tint_value\030\004 \001(\r\"W\n\025CUserMessag"
-  "eVoiceMask\022\027\n\017gamerules_masks\030\001 \003(\r\022\021\n\tb"
-  "an_masks\030\002 \003(\r\022\022\n\nmod_enable\030\003 \001(\010\"\032\n\030CU"
-  "serMessageRequestState\"@\n\022CUserMessageRu"
-  "mble\022\r\n\005index\030\001 \001(\005\022\014\n\004data\030\002 \001(\005\022\r\n\005fla"
-  "gs\030\003 \001(\005\"K\n\032CUserMessageSayTextChannel\022\016"
-  "\n\006player\030\001 \001(\005\022\017\n\007channel\030\002 \001(\005\022\014\n\004text\030"
-  "\003 \001(\t\"\226\001\n\027CUserMessageColoredText\022\r\n\005col"
-  "or\030\001 \001(\r\022\014\n\004text\030\002 \001(\t\022\r\n\005reset\030\003 \001(\010\022\037\n"
-  "\023context_player_slot\030\004 \001(\005:\002-1\022\025\n\rcontex"
-  "t_value\030\005 \001(\005\022\027\n\017context_team_id\030\006 \001(\005\"*"
-  "\n\026CUserMessageItemPickup\022\020\n\010itemname\030\001 \001"
-  "(\t\")\n\026CUserMessageAmmoDenied\022\017\n\007ammo_id\030"
-  "\001 \001(\r\"e\n\024CUserMessageShowMenu\022\022\n\nvalidsl"
-  "ots\030\001 \001(\r\022\023\n\013displaytime\030\002 \001(\r\022\020\n\010needmo"
-  "re\030\003 \001(\010\022\022\n\nmenustring\030\004 \001(\t\"V\n\026CUserMes"
-  "sageCreditsMsg\022\'\n\010rolltype\030\001 \001(\0162\n.eRoll"
-  "Type:\tROLL_NONE\022\023\n\013logo_length\030\002 \001(\002\";\n\030"
-  "CEntityMessagePlayJingle\022\037\n\nentity_msg\030\001"
-  " \001(\0132\013.CEntityMsg\"T\n\033CEntityMessageScree"
-  "nOverlay\022\024\n\014start_effect\030\001 \001(\010\022\037\n\nentity"
-  "_msg\030\002 \001(\0132\013.CEntityMsg\"]\n\034CEntityMessag"
-  "ePropagateForce\022\034\n\007impulse\030\001 \001(\0132\013.CMsgV"
-  "ector\022\037\n\nentity_msg\030\002 \001(\0132\013.CEntityMsg\"\275"
-  "\001\n\025CEntityMessageDoSpark\022\033\n\006origin\030\001 \001(\013"
-  "2\013.CMsgVector\022\027\n\013entityindex\030\002 \001(\005:\002-1\022\016"
-  "\n\006radius\030\003 \001(\002\022\r\n\005color\030\004 \001(\007\022\r\n\005beams\030\005"
-  " \001(\r\022\r\n\005thick\030\006 \001(\002\022\020\n\010duration\030\007 \001(\002\022\037\n"
-  "\nentity_msg\030\010 \001(\0132\013.CEntityMsg\"g\n\026CEntit"
-  "yMessageFixAngle\022\020\n\010relative\030\001 \001(\010\022\032\n\005an"
-  "gle\030\002 \001(\0132\013.CMsgQAngle\022\037\n\nentity_msg\030\003 \001"
-  "(\0132\013.CEntityMsg\"\361\001\n\034CUserMessageCameraTr"
-  "ansition\022\023\n\013camera_type\030\001 \001(\r\022\020\n\010duratio"
-  "n\030\002 \001(\002\022O\n\022params_data_driven\030\003 \001(\01323.CU"
-  "serMessageCameraTransition.Transition_Da"
-  "taDriven\032Y\n\025Transition_DataDriven\022\020\n\010fil"
-  "ename\030\001 \001(\t\022\034\n\020attach_ent_index\030\002 \001(\005:\002-"
-  "1\022\020\n\010duration\030\003 \001(\002\"\241\?\n\030CUserMsg_Particl"
-  "eManager\022C\n\004type\030\001 \001(\0162\021.PARTICLE_MESSAG"
-  "E:\"GAME_PARTICLE_MANAGER_EVENT_CREATE\022\r\n"
-  "\005index\030\002 \001(\r\022N\n\026release_particle_index\030\003"
-  " \001(\0132..CUserMsg_ParticleManager.ReleaseP"
-  "articleIndex\022A\n\017create_particle\030\004 \001(\0132(."
-  "CUserMsg_ParticleManager.CreateParticle\022"
-  "C\n\020destroy_particle\030\005 \001(\0132).CUserMsg_Par"
-  "ticleManager.DestroyParticle\022V\n\032destroy_"
-  "particle_involving\030\006 \001(\01322.CUserMsg_Part"
-  "icleManager.DestroyParticleInvolving\022J\n\017"
-  "update_particle\030\007 \001(\01321.CUserMsg_Particl"
-  "eManager.UpdateParticle_OBSOLETE\022Q\n\023upda"
-  "te_particle_fwd\030\010 \001(\01324.CUserMsg_Particl"
-  "eManager.UpdateParticleFwd_OBSOLETE\022W\n\026u"
-  "pdate_particle_orient\030\t \001(\01327.CUserMsg_P"
-  "articleManager.UpdateParticleOrient_OBSO"
-  "LETE\022R\n\030update_particle_fallback\030\n \001(\01320"
-  ".CUserMsg_ParticleManager.UpdateParticle"
-  "Fallback\022N\n\026update_particle_offset\030\013 \001(\013"
-  "2..CUserMsg_ParticleManager.UpdatePartic"
-  "leOffset\022H\n\023update_particle_ent\030\014 \001(\0132+."
-  "CUserMsg_ParticleManager.UpdateParticleE"
-  "nt\022W\n\033update_particle_should_draw\030\016 \001(\0132"
-  "2.CUserMsg_ParticleManager.UpdateParticl"
-  "eShouldDraw\022U\n\032update_particle_set_froze"
-  "n\030\017 \001(\01321.CUserMsg_ParticleManager.Updat"
-  "eParticleSetFrozen\022_\n\037change_control_poi"
-  "nt_attachment\030\020 \001(\01326.CUserMsg_ParticleM"
-  "anager.ChangeControlPointAttachment\022N\n\026u"
-  "pdate_entity_position\030\021 \001(\0132..CUserMsg_P"
-  "articleManager.UpdateEntityPosition\022W\n\033s"
-  "et_particle_fow_properties\030\022 \001(\01322.CUser"
-  "Msg_ParticleManager.SetParticleFoWProper"
-  "ties\022D\n\021set_particle_text\030\023 \001(\0132).CUserM"
-  "sg_ParticleManager.SetParticleText\022Z\n\035se"
-  "t_particle_should_check_fow\030\024 \001(\01323.CUse"
-  "rMsg_ParticleManager.SetParticleShouldCh"
-  "eckFoW\022O\n\027set_control_point_model\030\025 \001(\0132"
-  "..CUserMsg_ParticleManager.SetControlPoi"
-  "ntModel\022U\n\032set_control_point_snapshot\030\026 "
-  "\001(\01321.CUserMsg_ParticleManager.SetContro"
-  "lPointSnapshot\022L\n\025set_texture_attribute\030"
-  "\027 \001(\0132-.CUserMsg_ParticleManager.SetText"
-  "ureAttribute\022Z\n\035set_scene_object_generic"
-  "_flag\030\030 \001(\01323.CUserMsg_ParticleManager.S"
-  "etSceneObjectGenericFlag\022]\n\037set_scene_ob"
-  "ject_tint_and_desat\030\031 \001(\01324.CUserMsg_Par"
-  "ticleManager.SetSceneObjectTintAndDesat\022"
-  "N\n\026destroy_particle_named\030\032 \001(\0132..CUserM"
-  "sg_ParticleManager.DestroyParticleNamed\022"
-  "K\n\025particle_skip_to_time\030\033 \001(\0132,.CUserMs"
-  "g_ParticleManager.ParticleSkipToTime\022H\n\023"
-  "particle_can_freeze\030\034 \001(\0132+.CUserMsg_Par"
-  "ticleManager.ParticleCanFreeze\022W\n\027set_na"
-  "med_value_context\030\035 \001(\01326.CUserMsg_Parti"
-  "cleManager.SetParticleNamedValueContext\022"
-  "T\n\031update_particle_transform\030\036 \001(\01321.CUs"
-  "erMsg_ParticleManager.UpdateParticleTran"
-  "sform\022g\n#particle_freeze_transition_over"
-  "ride\030\037 \001(\0132:.CUserMsg_ParticleManager.Pa"
-  "rticleFreezeTransitionOverride\022T\n\031freeze"
-  "_particle_involving\030  \001(\01321.CUserMsg_Par"
-  "ticleManager.FreezeParticleInvolving\022]\n\036"
-  "add_modellist_override_element\030! \001(\01325.C"
-  "UserMsg_ParticleManager.AddModellistOver"
-  "rideElement\022R\n\030clear_modellist_override\030"
-  "\" \001(\01320.CUserMsg_ParticleManager.ClearMo"
-  "dellistOverride\022F\n\022create_physics_sim\030# "
-  "\001(\0132*.CUserMsg_ParticleManager.CreatePhy"
-  "sicsSim\022H\n\023destroy_physics_sim\030$ \001(\0132+.C"
-  "UserMsg_ParticleManager.DestroyPhysicsSi"
-  "m\0225\n\tset_vdata\030% \001(\0132\".CUserMsg_Particle"
-  "Manager.SetVData\022L\n\025set_material_overrid"
-  "e\030& \001(\0132-.CUserMsg_ParticleManager.SetMa"
-  "terialOverride\0221\n\007add_fan\030\' \001(\0132 .CUserM"
-  "sg_ParticleManager.AddFan\0227\n\nupdate_fan\030"
-  "( \001(\0132#.CUserMsg_ParticleManager.UpdateF"
-  "an\022W\n\033set_particle_cluster_growth\030) \001(\0132"
-  "2.CUserMsg_ParticleManager.SetParticleCl"
-  "usterGrowth\0227\n\nremove_fan\030* \001(\0132#.CUserM"
-  "sg_ParticleManager.RemoveFan\022D\n\021create_s"
-  "moke_grid\030+ \001(\0132).CUserMsg_ParticleManag"
-  "er.CreateSmokeGrid\022J\n\024set_override_textu"
-  "re\030, \001(\0132,.CUserMsg_ParticleManager.SetO"
-  "verrideTexture\032\026\n\024ReleaseParticleIndex\032\276"
-  "\002\n\016CreateParticle\022\033\n\023particle_name_index"
-  "\030\001 \001(\006\022\023\n\013attach_type\030\002 \001(\005\022\037\n\rentity_ha"
-  "ndle\030\003 \001(\r:\01016777215\022-\n\033entity_handle_fo"
-  "r_modifiers\030\004 \001(\r:\01016777215\022\035\n\025apply_voi"
-  "ce_ban_rules\030\005 \001(\010\022\025\n\rteam_behavior\030\006 \001("
-  "\005\022#\n\033control_point_configuration\030\007 \001(\t\022\017"
-  "\n\007cluster\030\010 \001(\010\022\023\n\013endcap_time\030\t \001(\002\022)\n\024"
-  "aggregation_position\030\n \001(\0132\013.CMsgVector\032"
-  ".\n\017DestroyParticle\022\033\n\023destroy_immediatel"
-  "y\030\001 \001(\010\032X\n\030DestroyParticleInvolving\022\033\n\023d"
-  "estroy_immediately\030\001 \001(\010\022\037\n\rentity_handl"
-  "e\030\003 \001(\r:\01016777215\032\206\001\n\024DestroyParticleNam"
-  "ed\022\033\n\023particle_name_index\030\001 \001(\006\022\037\n\rentit"
-  "y_handle\030\002 \001(\r:\01016777215\022\033\n\023destroy_imme"
-  "diately\030\003 \001(\010\022\023\n\013play_endcap\030\004 \001(\010\032O\n\027Up"
-  "dateParticle_OBSOLETE\022\025\n\rcontrol_point\030\001"
-  " \001(\005\022\035\n\010position\030\002 \001(\0132\013.CMsgVector\032Q\n\032U"
-  "pdateParticleFwd_OBSOLETE\022\025\n\rcontrol_poi"
-  "nt\030\001 \001(\005\022\034\n\007forward\030\002 \001(\0132\013.CMsgVector\032\257"
-  "\001\n\035UpdateParticleOrient_OBSOLETE\022\025\n\rcont"
-  "rol_point\030\001 \001(\005\022\034\n\007forward\030\002 \001(\0132\013.CMsgV"
-  "ector\022%\n\020deprecated_right\030\003 \001(\0132\013.CMsgVe"
-  "ctor\022\027\n\002up\030\004 \001(\0132\013.CMsgVector\022\031\n\004left\030\005 "
-  "\001(\0132\013.CMsgVector\032\225\001\n\027UpdateParticleTrans"
-  "form\022\025\n\rcontrol_point\030\001 \001(\005\022\035\n\010position\030"
-  "\002 \001(\0132\013.CMsgVector\022$\n\013orientation\030\003 \001(\0132"
-  "\017.CMsgQuaternion\022\036\n\026interpolation_interv"
-  "al\030\004 \001(\002\032N\n\026UpdateParticleFallback\022\025\n\rco"
-  "ntrol_point\030\001 \001(\005\022\035\n\010position\030\002 \001(\0132\013.CM"
-  "sgVector\032t\n\024UpdateParticleOffset\022\025\n\rcont"
-  "rol_point\030\001 \001(\005\022\"\n\rorigin_offset\030\002 \001(\0132\013"
-  ".CMsgVector\022!\n\014angle_offset\030\003 \001(\0132\013.CMsg"
-  "QAngle\032\201\002\n\021UpdateParticleEnt\022\025\n\rcontrol_"
-  "point\030\001 \001(\005\022\037\n\rentity_handle\030\002 \001(\r:\0101677"
-  "7215\022\023\n\013attach_type\030\003 \001(\005\022\022\n\nattachment\030"
-  "\004 \001(\005\022&\n\021fallback_position\030\005 \001(\0132\013.CMsgV"
-  "ector\022\031\n\021include_wearables\030\006 \001(\010\022$\n\017offs"
-  "et_position\030\007 \001(\0132\013.CMsgVector\022\"\n\roffset"
-  "_angles\030\010 \001(\0132\013.CMsgQAngle\032J\n\027UpdatePart"
-  "icleSetFrozen\022\022\n\nset_frozen\030\001 \001(\010\022\033\n\023tra"
-  "nsition_duration\030\002 \001(\002\032/\n\030UpdateParticle"
-  "ShouldDraw\022\023\n\013should_draw\030\001 \001(\010\032o\n\034Chang"
-  "eControlPointAttachment\022\026\n\016attachment_ol"
-  "d\030\001 \001(\005\022\026\n\016attachment_new\030\002 \001(\005\022\037\n\rentit"
-  "y_handle\030\003 \001(\r:\01016777215\032V\n\024UpdateEntity"
-  "Position\022\037\n\rentity_handle\030\001 \001(\r:\0101677721"
-  "5\022\035\n\010position\030\002 \001(\0132\013.CMsgVector\032e\n\030SetP"
-  "articleFoWProperties\022\031\n\021fow_control_poin"
-  "t\030\001 \001(\005\022\032\n\022fow_control_point2\030\002 \001(\005\022\022\n\nf"
-  "ow_radius\030\003 \001(\002\032.\n\031SetParticleShouldChec"
-  "kFoW\022\021\n\tcheck_fow\030\001 \001(\010\032A\n\024SetControlPoi"
-  "ntModel\022\025\n\rcontrol_point\030\001 \001(\005\022\022\n\nmodel_"
-  "name\030\002 \001(\t\032G\n\027SetControlPointSnapshot\022\025\n"
-  "\rcontrol_point\030\001 \001(\005\022\025\n\rsnapshot_name\030\002 "
-  "\001(\t\0321\n\017SetParticleText\022\014\n\004text\030\001 \001(\t\022\020\n\010"
-  "localize\030\002 \001(\010\032C\n\023SetTextureAttribute\022\026\n"
-  "\016attribute_name\030\001 \001(\t\022\024\n\014texture_name\030\002 "
-  "\001(\t\032*\n\022SetOverrideTexture\022\024\n\014texture_nam"
-  "e\030\001 \001(\t\032/\n\031SetSceneObjectGenericFlag\022\022\n\n"
-  "flag_value\030\001 \001(\010\0329\n\032SetSceneObjectTintAn"
-  "dDesat\022\014\n\004tint\030\001 \001(\007\022\r\n\005desat\030\002 \001(\002\032*\n\022P"
-  "articleSkipToTime\022\024\n\014skip_to_time\030\001 \001(\002\032"
-  "\'\n\021ParticleCanFreeze\022\022\n\ncan_freeze\030\001 \001(\010"
-  "\032F\n ParticleFreezeTransitionOverride\022\"\n\032"
-  "freeze_transition_override\030\001 \001(\002\032k\n\027Free"
-  "zeParticleInvolving\022\022\n\nset_frozen\030\001 \001(\010\022"
-  "\033\n\023transition_duration\030\002 \001(\002\022\037\n\rentity_h"
-  "andle\030\003 \001(\r:\01016777215\032]\n\033AddModellistOve"
-  "rrideElement\022\022\n\nmodel_name\030\001 \001(\t\022\031\n\021spaw"
-  "n_probability\030\002 \001(\002\022\017\n\007groupid\030\003 \001(\r\032)\n\026"
-  "ClearModellistOverride\022\017\n\007groupid\030\001 \001(\r\032"
-  "\350\005\n\034SetParticleNamedValueContext\022^\n\014floa"
-  "t_values\030\001 \003(\0132H.CUserMsg_ParticleManage"
-  "r.SetParticleNamedValueContext.FloatCont"
-  "extValue\022`\n\rvector_values\030\002 \003(\0132I.CUserM"
-  "sg_ParticleManager.SetParticleNamedValue"
-  "Context.VectorContextValue\022f\n\020transform_"
-  "values\030\003 \003(\0132L.CUserMsg_ParticleManager."
-  "SetParticleNamedValueContext.TransformCo"
-  "ntextValue\022]\n\016ehandle_values\030\004 \003(\0132E.CUs"
-  "erMsg_ParticleManager.SetParticleNamedVa"
-  "lueContext.EHandleContext\032;\n\021FloatContex"
-  "tValue\022\027\n\017value_name_hash\030\001 \001(\r\022\r\n\005value"
-  "\030\002 \001(\002\032I\n\022VectorContextValue\022\027\n\017value_na"
-  "me_hash\030\001 \001(\r\022\032\n\005value\030\002 \001(\0132\013.CMsgVecto"
-  "r\032o\n\025TransformContextValue\022\027\n\017value_name"
-  "_hash\030\001 \001(\r\022\033\n\006angles\030\002 \001(\0132\013.CMsgQAngle"
-  "\022 \n\013translation\030\003 \001(\0132\013.CMsgVector\032F\n\016EH"
-  "andleContext\022\027\n\017value_name_hash\030\001 \001(\r\022\033\n"
-  "\tent_index\030\002 \001(\r:\01016777215\032l\n\020CreatePhys"
-  "icsSim\022\027\n\017prop_group_name\030\001 \001(\t\022#\n\033use_h"
-  "igh_quality_simulation\030\002 \001(\010\022\032\n\022max_part"
-  "icle_count\030\003 \001(\r\032\023\n\021DestroyPhysicsSim\032%\n"
-  "\017CreateSmokeGrid\022\022\n\nvdata_name\030\001 \001(\t\032\036\n\010"
-  "SetVData\022\022\n\nvdata_name\030\001 \001(\t\032F\n\023SetMater"
-  "ialOverride\022\025\n\rmaterial_name\030\001 \001(\t\022\030\n\020in"
-  "clude_children\030\002 \001(\010\032\343\003\n\006AddFan\022\016\n\006activ"
-  "e\030\001 \001(\010\022 \n\013bounds_mins\030\002 \001(\0132\013.CMsgVecto"
-  "r\022 \n\013bounds_maxs\030\003 \001(\0132\013.CMsgVector\022\037\n\nf"
-  "an_origin\030\004 \001(\0132\013.CMsgVector\022&\n\021fan_orig"
-  "in_offset\030\005 \001(\0132\013.CMsgVector\022\"\n\rfan_dire"
-  "ction\030\006 \001(\0132\013.CMsgVector\022\r\n\005force\030\007 \001(\002\022"
-  "\027\n\017fan_force_curve\030\010 \001(\t\022\017\n\007falloff\030\t \001("
-  "\010\022\032\n\022pull_towards_point\030\n \001(\010\022\026\n\016curve_m"
-  "in_dist\030\013 \001(\002\022\026\n\016curve_max_dist\030\014 \001(\002\022\020\n"
-  "\010fan_type\030\r \001(\r\022\031\n\021cone_start_radius\030\016 \001"
-  "(\002\022\027\n\017cone_end_radius\030\017 \001(\002\022\023\n\013cone_leng"
-  "th\030\020 \001(\002\022\037\n\rentity_handle\030\021 \001(\r:\0101677721"
-  "5\022\027\n\017attachment_name\030\022 \001(\t\032\344\001\n\tUpdateFan"
-  "\022\016\n\006active\030\001 \001(\010\022\037\n\nfan_origin\030\002 \001(\0132\013.C"
-  "MsgVector\022&\n\021fan_origin_offset\030\003 \001(\0132\013.C"
-  "MsgVector\022\"\n\rfan_direction\030\004 \001(\0132\013.CMsgV"
-  "ector\022\026\n\016fan_ramp_ratio\030\007 \001(\002\022 \n\013bounds_"
-  "mins\030\005 \001(\0132\013.CMsgVector\022 \n\013bounds_maxs\030\006"
-  " \001(\0132\013.CMsgVector\032\013\n\tRemoveFan\032I\n\030SetPar"
-  "ticleClusterGrowth\022\020\n\010duration\030\001 \001(\002\022\033\n\006"
-  "origin\030\002 \001(\0132\013.CMsgVector*\005\010d\020\312\001:\005\200\265\030\200 \""
-  "%\n\021CUserMsg_HudError\022\020\n\010order_id\030\001 \001(\005\"<"
-  "\n\030CUserMsg_CustomGameEvent\022\022\n\nevent_name"
-  "\030\001 \001(\t\022\014\n\004data\030\002 \001(\014\"\177\n\037CUserMessageHapt"
-  "icsManagerPulse\022\017\n\007hand_id\030\001 \001(\005\022\030\n\020effe"
-  "ct_amplitude\030\002 \001(\002\022\030\n\020effect_frequency\030\003"
-  " \001(\002\022\027\n\017effect_duration\030\004 \001(\002\"h\n CUserMe"
-  "ssageHapticsManagerEffect\022\017\n\007hand_id\030\001 \001"
-  "(\005\022\035\n\025effect_name_hash_code\030\002 \001(\r\022\024\n\014eff"
-  "ect_scale\030\003 \001(\002\"E\n\037CUserMessageAnimState"
-  "GraphState\022\024\n\014entity_index\030\001 \001(\005\022\014\n\004data"
-  "\030\002 \001(\014\"_\n\034CUserMessageUpdateCssClasses\022\032"
-  "\n\022target_world_panel\030\001 \001(\005\022\023\n\013css_classe"
-  "s\030\002 \001(\t\022\016\n\006is_add\030\003 \001(\010\"1\n\033CUserMessageS"
-  "erverFrameTime\022\022\n\nframe_time\030\001 \001(\002\"4\n CU"
-  "serMessageLagCompensationError\022\020\n\010distan"
-  "ce\030\001 \001(\002\"G\n\034CUserMessageRequestDllStatus"
-  "\022\022\n\ndll_action\030\001 \001(\t\022\023\n\013full_report\030\002 \001("
-  "\010\"j\n\035CUserMessageRequestUtilAction\022\r\n\005ut"
-  "il1\030\002 \001(\005\022\r\n\005util2\030\003 \001(\005\022\r\n\005util3\030\004 \001(\005\022"
-  "\r\n\005util4\030\005 \001(\005\022\r\n\005util5\030\006 \001(\005\"\370\002\n\035CUserM"
-  "essage_UtilMsg_Response\022\013\n\003crc\030\001 \001(\007\022\022\n\n"
-  "item_count\030\002 \001(\005\022\014\n\004crc2\030\003 \001(\007\022\023\n\013item_c"
-  "ount2\030\004 \001(\005\022\020\n\010crc_part\030\005 \003(\005\022\021\n\tcrc_par"
-  "t2\030\006 \003(\005\022\030\n\020client_timestamp\030\007 \001(\005\022\020\n\010pl"
-  "atform\030\010 \001(\005\022>\n\013itemdetails\030\t \003(\0132).CUse"
-  "rMessage_UtilMsg_Response.ItemDetail\022\021\n\t"
-  "itemgroup\030\n \001(\005\022\023\n\013total_count\030\013 \001(\005\022\024\n\014"
-  "total_count2\030\014 \001(\005\032D\n\nItemDetail\022\r\n\005inde"
-  "x\030\001 \001(\005\022\014\n\004hash\030\002 \001(\005\022\013\n\003crc\030\003 \001(\005\022\014\n\004na"
-  "me\030\004 \001(\t\"\241\003\n\026CUserMessage_DllStatus\022\023\n\013f"
-  "ile_report\030\001 \001(\t\022\024\n\014command_line\030\002 \001(\t\022\023"
-  "\n\013total_files\030\003 \001(\r\022\022\n\nprocess_id\030\004 \001(\r\022"
-  "\021\n\tosversion\030\005 \001(\005\022\023\n\013client_time\030\006 \001(\004\022"
-  "9\n\013diagnostics\030\007 \003(\0132$.CUserMessage_DllS"
-  "tatus.CVDiagnostic\0220\n\007modules\030\010 \003(\0132\037.CU"
-  "serMessage_DllStatus.CModule\032Q\n\014CVDiagno"
-  "stic\022\n\n\002id\030\001 \001(\r\022\020\n\010extended\030\002 \001(\r\022\r\n\005va"
-  "lue\030\003 \001(\004\022\024\n\014string_value\030\004 \001(\t\032K\n\007CModu"
-  "le\022\021\n\tbase_addr\030\001 \001(\004\022\014\n\004name\030\002 \001(\t\022\014\n\004s"
-  "ize\030\003 \001(\r\022\021\n\ttimestamp\030\004 \001(\r\"R\n\034CUserMes"
-  "sageRequestInventory\022\021\n\tinventory\030\001 \001(\005\022"
-  "\016\n\006offset\030\002 \001(\005\022\017\n\007options\030\003 \001(\005\"\367\004\n\037CUs"
-  "erMessage_Inventory_Response\022\013\n\003crc\030\001 \001("
-  "\007\022\022\n\nitem_count\030\002 \001(\005\022\021\n\tosversion\030\005 \001(\005"
-  "\022\021\n\tperf_time\030\006 \001(\005\022\030\n\020client_timestamp\030"
-  "\007 \001(\005\022\020\n\010platform\030\010 \001(\005\022E\n\013inventories\030\t"
-  " \003(\01320.CUserMessage_Inventory_Response.I"
-  "nventoryDetail\022F\n\014inventories2\030\n \003(\01320.C"
-  "UserMessage_Inventory_Response.Inventory"
-  "Detail\022F\n\014inventories3\030\016 \003(\01320.CUserMess"
-  "age_Inventory_Response.InventoryDetail\022\020"
-  "\n\010inv_type\030\013 \001(\005\022\025\n\rbuild_version\030\014 \001(\005\022"
-  "\020\n\010instance\030\r \001(\005\022\022\n\nstart_time\030\017 \001(\003\032\272\001"
-  "\n\017InventoryDetail\022\r\n\005index\030\001 \001(\005\022\017\n\007prim"
-  "ary\030\002 \001(\003\022\016\n\006offset\030\003 \001(\003\022\r\n\005first\030\004 \001(\003"
-  "\022\014\n\004base\030\005 \001(\003\022\014\n\004name\030\006 \001(\t\022\021\n\tbase_nam"
-  "e\030\007 \001(\t\022\023\n\013base_detail\030\010 \001(\005\022\021\n\tbase_tim"
-  "e\030\t \001(\005\022\021\n\tbase_hash\030\n \001(\005\"\270\002\n\035CUserMess"
-  "ageRequestDiagnostic\022>\n\013diagnostics\030\001 \003("
-  "\0132).CUserMessageRequestDiagnostic.Diagno"
-  "stic\032\326\001\n\nDiagnostic\022\r\n\005index\030\001 \001(\005\022\016\n\006of"
-  "fset\030\002 \001(\003\022\r\n\005param\030\003 \001(\005\022\016\n\006length\030\004 \001("
-  "\005\022\014\n\004type\030\005 \001(\005\022\014\n\004base\030\006 \001(\003\022\r\n\005range\030\007"
-  " \001(\003\022\016\n\006extent\030\010 \001(\003\022\016\n\006detail\030\t \001(\003\022\014\n\004"
-  "name\030\n \001(\t\022\r\n\005alias\030\013 \001(\t\022\021\n\tvardetail\030\014"
-  " \001(\014\022\017\n\007context\030\r \001(\005\"\300\003\n CUserMessage_D"
-  "iagnostic_Response\022A\n\013diagnostics\030\001 \003(\0132"
-  ",.CUserMessage_Diagnostic_Response.Diagn"
-  "ostic\022\025\n\rbuild_version\030\002 \001(\005\022\020\n\010instance"
-  "\030\003 \001(\005\022\022\n\nstart_time\030\004 \001(\003\022\021\n\tosversion\030"
-  "\005 \001(\005\022\020\n\010platform\030\006 \001(\005\032\366\001\n\nDiagnostic\022\r"
-  "\n\005index\030\001 \001(\005\022\016\n\006offset\030\002 \001(\003\022\r\n\005param\030\003"
-  " \001(\005\022\016\n\006length\030\004 \001(\005\022\016\n\006detail\030\005 \001(\014\022\014\n\004"
-  "base\030\006 \001(\003\022\r\n\005range\030\007 \001(\003\022\014\n\004type\030\010 \001(\005\022"
-  "\014\n\004name\030\n \001(\t\022\r\n\005alias\030\013 \001(\t\022\016\n\006backup\030\014"
-  " \001(\014\022\017\n\007context\030\r \001(\005\022\017\n\007control\030\016 \001(\003\022\017"
-  "\n\007augment\030\017 \001(\003\022\017\n\007placebo\030\020 \001(\003\"l\n\032CUse"
-  "rMessage_ExtraUserData\022\014\n\004item\030\001 \001(\005\022\016\n\006"
-  "value1\030\002 \001(\003\022\016\n\006value2\030\003 \001(\003\022\017\n\007detail1\030"
-  "\004 \003(\014\022\017\n\007detail2\030\005 \003(\014\"\313\003\n CUserMessage_"
-  "NotifyResponseFound\022\025\n\tent_index\030\001 \001(\005:\002"
-  "-1\022\021\n\trule_name\030\002 \001(\t\022\026\n\016response_value\030"
-  "\003 \001(\t\022\030\n\020response_concept\030\004 \001(\t\022<\n\010crite"
-  "ria\030\005 \003(\0132*.CUserMessage_NotifyResponseF"
-  "ound.Criteria\022\036\n\022int_criteria_names\030\006 \003("
-  "\rB\002\020\001\022\037\n\023int_criteria_values\030\007 \003(\005B\002\020\001\022 "
-  "\n\024float_criteria_names\030\010 \003(\rB\002\020\001\022\035\n\025floa"
-  "t_criteria_values\030\t \003(\002\022!\n\025symbol_criter"
-  "ia_names\030\n \003(\rB\002\020\001\022\"\n\026symbol_criteria_va"
-  "lues\030\013 \003(\rB\002\020\001\022\024\n\014speak_result\030\014 \001(\005\032.\n\010"
-  "Criteria\022\023\n\013name_symbol\030\001 \001(\r\022\r\n\005value\030\002"
-  " \001(\t\"\257\001\n$CUserMessage_PlayResponseCondit"
-  "ional\022\025\n\tent_index\030\001 \001(\005:\002-1\022\024\n\014player_s"
-  "lots\030\002 \003(\005\022\020\n\010response\030\003 \001(\t\022\037\n\nent_orig"
-  "in\030\004 \001(\0132\013.CMsgVector\022\021\n\tpre_delay\030\005 \001(\002"
-  "\022\024\n\014mix_priority\030\006 \001(\005\")\n\030CUserMessage_U"
-  "sageReport\022\r\n\005usage\030\001 \001(\t\"\272\001\n CUserMessa"
-  "ge_RemoteServerCommand\022Q\n\007command\030\001 \001(\0162"
-  "*.CUserMessage_RemoteServerCommand.EComm"
-  "and:\024ECommandChangeConVar\022\016\n\006convar\030\002 \001("
-  "\t\022\r\n\005value\030\003 \001(\t\"$\n\010ECommand\022\030\n\024ECommand"
-  "ChangeConVar\020\001\"\300\002\n CUserMessageRemoteSer"
-  "verResponse\022X\n\016command_result\030\001 \001(\01620.CU"
-  "serMessageRemoteServerResponse.ECommandR"
-  "esult:\016EResultSuccess\022\016\n\006convar\030\002 \001(\t\022\017\n"
-  "\007results\030\003 \001(\t\"\240\001\n\016ECommandResult\022\022\n\016ERe"
-  "sultSuccess\020\001\022\034\n\030EResultServerDoesntAllo"
-  "w\020\002\022!\n\035EResultClientNotAuthenticated\020\003\022\033"
-  "\n\027EResultClientNotAllowed\020\004\022\034\n\030EResultCo"
-  "mmandNotAllowed\020\005*\311\t\n\021EBaseUserMessages\022"
-  "\027\n\023UM_AchievementEvent\020e\022\027\n\023UM_CurrentTi"
-  "mescale\020h\022\027\n\023UM_DesiredTimescale\020i\022\013\n\007UM"
-  "_Fade\020j\022\020\n\014UM_GameTitle\020k\022\r\n\tUM_HudMsg\020n"
-  "\022\016\n\nUM_HudText\020o\022\022\n\016UM_ColoredText\020q\022\023\n\017"
-  "UM_RequestState\020r\022\017\n\013UM_ResetHUD\020s\022\r\n\tUM"
-  "_Rumble\020t\022\016\n\nUM_SayText\020u\022\017\n\013UM_SayText2"
-  "\020v\022\025\n\021UM_SayTextChannel\020w\022\014\n\010UM_Shake\020x\022"
-  "\017\n\013UM_ShakeDir\020y\022\021\n\rUM_WaterShake\020z\022\016\n\nU"
-  "M_TextMsg\020|\022\021\n\rUM_ScreenTilt\020}\022\021\n\014UM_Voi"
-  "ceMask\020\200\001\022\021\n\014UM_SendAudio\020\202\001\022\022\n\rUM_ItemP"
-  "ickup\020\203\001\022\022\n\rUM_AmmoDenied\020\204\001\022\020\n\013UM_ShowM"
-  "enu\020\206\001\022\022\n\rUM_CreditsMsg\020\207\001\022\037\n\032UM_CloseCa"
-  "ptionPlaceholder\020\216\001\022\030\n\023UM_CameraTransiti"
-  "on\020\217\001\022\026\n\021UM_AudioParameter\020\220\001\022\027\n\022UM_Part"
-  "icleManager\020\221\001\022\020\n\013UM_HudError\020\222\001\022\027\n\022UM_C"
-  "ustomGameEvent\020\224\001\022\027\n\022UM_AnimGraphUpdate\020"
-  "\225\001\022\033\n\026UM_HapticsManagerPulse\020\226\001\022\034\n\027UM_Ha"
-  "pticsManagerEffect\020\227\001\022\030\n\023UM_UpdateCssCla"
-  "sses\020\231\001\022\027\n\022UM_ServerFrameTime\020\232\001\022\034\n\027UM_L"
-  "agCompensationError\020\233\001\022\030\n\023UM_RequestDllS"
-  "tatus\020\234\001\022\031\n\024UM_RequestUtilAction\020\235\001\022\032\n\025U"
-  "M_UtilActionResponse\020\236\001\022\031\n\024UM_DllStatusR"
-  "esponse\020\237\001\022\030\n\023UM_RequestInventory\020\240\001\022\031\n\024"
-  "UM_InventoryResponse\020\241\001\022\031\n\024UM_RequestDia"
-  "gnostic\020\242\001\022\032\n\025UM_DiagnosticResponse\020\243\001\022\025"
-  "\n\020UM_ExtraUserData\020\244\001\022\033\n\026UM_NotifyRespon"
-  "seFound\020\245\001\022\037\n\032UM_PlayResponseConditional"
-  "\020\246\001\022\026\n\021UM_UserSentBugBug\020\247\001\022\023\n\016UM_UsageR"
-  "eport\020\250\001\022\033\n\026UM_RemoteServerCommand\020\251\001\022\034\n"
-  "\027UM_RemoteServerResponse\020\252\001\022\020\n\013UM_MAX_BA"
-  "SE\020\310\001*{\n\023EBaseEntityMessages\022\022\n\rEM_PlayJ"
-  "ingle\020\210\001\022\025\n\020EM_ScreenOverlay\020\211\001\022\026\n\021EM_Pr"
-  "opagateForce\020\213\001\022\017\n\nEM_DoSpark\020\214\001\022\020\n\013EM_F"
-  "ixAngle\020\215\001*o\n\teRollType\022\026\n\tROLL_NONE\020\377\377\377"
-  "\377\377\377\377\377\377\001\022\016\n\nROLL_STATS\020\000\022\020\n\014ROLL_CREDITS\020"
-  "\001\022\027\n\023ROLL_LATE_JOIN_LOGO\020\002\022\017\n\013ROLL_OUTTR"
-  "O\020\003*\323\020\n\020PARTICLE_MESSAGE\022&\n\"GAME_PARTICL"
-  "E_MANAGER_EVENT_CREATE\020\000\022&\n\"GAME_PARTICL"
-  "E_MANAGER_EVENT_UPDATE\020\001\022.\n*GAME_PARTICL"
-  "E_MANAGER_EVENT_UPDATE_FORWARD\020\002\0222\n.GAME"
-  "_PARTICLE_MANAGER_EVENT_UPDATE_ORIENTATI"
-  "ON\020\003\022/\n+GAME_PARTICLE_MANAGER_EVENT_UPDA"
-  "TE_FALLBACK\020\004\022*\n&GAME_PARTICLE_MANAGER_E"
-  "VENT_UPDATE_ENT\020\005\022-\n)GAME_PARTICLE_MANAG"
-  "ER_EVENT_UPDATE_OFFSET\020\006\022\'\n#GAME_PARTICL"
-  "E_MANAGER_EVENT_DESTROY\020\007\0221\n-GAME_PARTIC"
-  "LE_MANAGER_EVENT_DESTROY_INVOLVING\020\010\022\'\n#"
-  "GAME_PARTICLE_MANAGER_EVENT_RELEASE\020\t\022\'\n"
-  "#GAME_PARTICLE_MANAGER_EVENT_LATENCY\020\n\022+"
-  "\n\'GAME_PARTICLE_MANAGER_EVENT_SHOULD_DRA"
-  "W\020\013\022&\n\"GAME_PARTICLE_MANAGER_EVENT_FROZE"
-  "N\020\014\022\?\n;GAME_PARTICLE_MANAGER_EVENT_CHANG"
-  "E_CONTROL_POINT_ATTACHMENT\020\r\0226\n2GAME_PAR"
-  "TICLE_MANAGER_EVENT_UPDATE_ENTITY_POSITI"
-  "ON\020\016\0222\n.GAME_PARTICLE_MANAGER_EVENT_SET_"
-  "FOW_PROPERTIES\020\017\022(\n$GAME_PARTICLE_MANAGE"
-  "R_EVENT_SET_TEXT\020\020\0224\n0GAME_PARTICLE_MANA"
-  "GER_EVENT_SET_SHOULD_CHECK_FOW\020\021\0227\n3GAME"
-  "_PARTICLE_MANAGER_EVENT_SET_CONTROL_POIN"
-  "T_MODEL\020\022\022:\n6GAME_PARTICLE_MANAGER_EVENT"
-  "_SET_CONTROL_POINT_SNAPSHOT\020\023\0225\n1GAME_PA"
-  "RTICLE_MANAGER_EVENT_SET_TEXTURE_ATTRIBU"
-  "TE\020\024\022=\n9GAME_PARTICLE_MANAGER_EVENT_SET_"
-  "SCENE_OBJECT_GENERIC_FLAG\020\025\022\?\n;GAME_PART"
-  "ICLE_MANAGER_EVENT_SET_SCENE_OBJECT_TINT"
-  "_AND_DESAT\020\026\022-\n)GAME_PARTICLE_MANAGER_EV"
-  "ENT_DESTROY_NAMED\020\027\022,\n(GAME_PARTICLE_MAN"
-  "AGER_EVENT_SKIP_TO_TIME\020\030\022*\n&GAME_PARTIC"
-  "LE_MANAGER_EVENT_CAN_FREEZE\020\031\0227\n3GAME_PA"
-  "RTICLE_MANAGER_EVENT_SET_NAMED_VALUE_CON"
-  "TEXT\020\032\0220\n,GAME_PARTICLE_MANAGER_EVENT_UP"
-  "DATE_TRANSFORM\020\033\022:\n6GAME_PARTICLE_MANAGE"
-  "R_EVENT_FREEZE_TRANSITION_OVERRIDE\020\034\0220\n,"
-  "GAME_PARTICLE_MANAGER_EVENT_FREEZE_INVOL"
-  "VING\020\035\022>\n:GAME_PARTICLE_MANAGER_EVENT_AD"
-  "D_MODELLIST_OVERRIDE_ELEMENT\020\036\0228\n4GAME_P"
-  "ARTICLE_MANAGER_EVENT_CLEAR_MODELLIST_OV"
-  "ERRIDE\020\037\0222\n.GAME_PARTICLE_MANAGER_EVENT_"
-  "CREATE_PHYSICS_SIM\020 \0223\n/GAME_PARTICLE_MA"
-  "NAGER_EVENT_DESTROY_PHYSICS_SIM\020!\022)\n%GAM"
-  "E_PARTICLE_MANAGER_EVENT_SET_VDATA\020\"\0225\n1"
-  "GAME_PARTICLE_MANAGER_EVENT_SET_MATERIAL"
-  "_OVERRIDE\020#\022\'\n#GAME_PARTICLE_MANAGER_EVE"
-  "NT_ADD_FAN\020$\022*\n&GAME_PARTICLE_MANAGER_EV"
-  "ENT_UPDATE_FAN\020%\0222\n.GAME_PARTICLE_MANAGE"
-  "R_EVENT_SET_CLUSTER_GROWTH\020&\022*\n&GAME_PAR"
-  "TICLE_MANAGER_EVENT_REMOVE_FAN\020\'\0221\n-GAME"
-  "_PARTICLE_MANAGER_EVENT_CREATE_SMOKE_GRI"
-  "D\020(\0224\n0GAME_PARTICLE_MANAGER_EVENT_SET_O"
-  "VERRIDE_TEXTURE\020)*t\n\020EHapticPulseType\022\036\n"
-  "\032VR_HAND_HAPTIC_PULSE_LIGHT\020\000\022\037\n\033VR_HAND"
-  "_HAPTIC_PULSE_MEDIUM\020\001\022\037\n\033VR_HAND_HAPTIC"
-  "_PULSE_STRONG\020\002"
+  "roto\032 google/protobuf/descriptor.proto\"3"
+  "\n\034CUserMessageAchievementEvent\022\023\n\013achiev"
+  "ement\030\001 \001(\r\"\211\001\n#CUserMessageCloseCaption"
+  "Placeholder\022\016\n\006string\030\001 \001(\t\022\020\n\010duration\030"
+  "\002 \001(\002\022\023\n\013from_player\030\003 \001(\010\022+\n\tent_index\030"
+  "\004 \001(\005:\002-1B\024\242\001\014CEntityIndex\252\001\002-1\"/\n\034CUser"
+  "MessageCurrentTimescale\022\017\n\007current\030\001 \001(\002"
+  "\"y\n\034CUserMessageDesiredTimescale\022\017\n\007desi"
+  "red\030\001 \001(\002\022\024\n\014acceleration\030\002 \001(\002\022\024\n\014minbl"
+  "endrate\030\003 \001(\002\022\034\n\024blenddeltamultiplier\030\004 "
+  "\001(\002\"U\n\020CUserMessageFade\022\020\n\010duration\030\001 \001("
+  "\r\022\021\n\thold_time\030\002 \001(\r\022\r\n\005flags\030\003 \001(\r\022\r\n\005c"
+  "olor\030\004 \001(\007\"\\\n\021CUserMessageShake\022\017\n\007comma"
+  "nd\030\001 \001(\r\022\021\n\tamplitude\030\002 \001(\002\022\021\n\tfrequency"
+  "\030\003 \001(\002\022\020\n\010duration\030\004 \001(\002\"Y\n\024CUserMessage"
+  "ShakeDir\022!\n\005shake\030\001 \001(\0132\022.CUserMessageSh"
+  "ake\022\036\n\tdirection\030\002 \001(\0132\013.CMsgVector\"a\n\026C"
+  "UserMessageWaterShake\022\017\n\007command\030\001 \001(\r\022\021"
+  "\n\tamplitude\030\002 \001(\002\022\021\n\tfrequency\030\003 \001(\002\022\020\n\010"
+  "duration\030\004 \001(\002\"z\n\026CUserMessageScreenTilt"
+  "\022\017\n\007command\030\001 \001(\r\022\023\n\013ease_in_out\030\002 \001(\010\022\032"
+  "\n\005angle\030\003 \001(\0132\013.CMsgVector\022\020\n\010duration\030\004"
+  " \001(\002\022\014\n\004time\030\005 \001(\002\"u\n\023CUserMessageSayTex"
+  "t\022-\n\013playerindex\030\001 \001(\005:\002-1B\024\242\001\014CEntityIn"
+  "dex\252\001\002-1\022\014\n\004text\030\002 \001(\t\022\014\n\004chat\030\003 \001(\010\022\023\n\013"
+  "textallchat\030\004 \001(\010\"\275\001\n\024CUserMessageSayTex"
+  "t2\022-\n\013entityindex\030\001 \001(\005:\002-1B\024\242\001\014CEntityI"
+  "ndex\252\001\002-1\022\014\n\004chat\030\002 \001(\010\022\023\n\013messagename\030\003"
+  " \001(\t\022\016\n\006param1\030\004 \001(\t\022\016\n\006param2\030\005 \001(\t\022\016\n\006"
+  "param3\030\006 \001(\t\022\016\n\006param4\030\007 \001(\t\022\023\n\013textallc"
+  "hat\030\010 \001(\010\"|\n\022CUserMessageHudMsg\022\017\n\007chann"
+  "el\030\001 \001(\r\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\016\n\006color1"
+  "\030\004 \001(\007\022\016\n\006color2\030\005 \001(\007\022\016\n\006effect\030\006 \001(\r\022\017"
+  "\n\007message\030\013 \001(\t\"&\n\023CUserMessageHudText\022\017"
+  "\n\007message\030\001 \001(\t\"2\n\023CUserMessageTextMsg\022\014"
+  "\n\004dest\030\001 \001(\r\022\r\n\005param\030\002 \003(\t\"\027\n\025CUserMess"
+  "ageGameTitle\"\026\n\024CUserMessageResetHUD\"8\n\025"
+  "CUserMessageSendAudio\022\021\n\tsoundname\030\001 \001(\t"
+  "\022\014\n\004stop\030\002 \001(\010\"\226\001\n\032CUserMessageAudioPara"
+  "meter\022*\n\016parameter_type\030\001 \001(\rB\022\242\001\017CUtlSt"
+  "ringToken\022*\n\016name_hash_code\030\002 \001(\rB\022\242\001\017CU"
+  "tlStringToken\022\r\n\005value\030\003 \001(\002\022\021\n\tint_valu"
+  "e\030\004 \001(\r\"W\n\025CUserMessageVoiceMask\022\027\n\017game"
+  "rules_masks\030\001 \003(\r\022\021\n\tban_masks\030\002 \003(\r\022\022\n\n"
+  "mod_enable\030\003 \001(\010\"\032\n\030CUserMessageRequestS"
+  "tate\"@\n\022CUserMessageRumble\022\r\n\005index\030\001 \001("
+  "\005\022\014\n\004data\030\002 \001(\005\022\r\n\005flags\030\003 \001(\005\"K\n\032CUserM"
+  "essageSayTextChannel\022\016\n\006player\030\001 \001(\005\022\017\n\007"
+  "channel\030\002 \001(\005\022\014\n\004text\030\003 \001(\t\"\253\001\n\027CUserMes"
+  "sageColoredText\022\r\n\005color\030\001 \001(\r\022\014\n\004text\030\002"
+  " \001(\t\022\r\n\005reset\030\003 \001(\010\0224\n\023context_player_sl"
+  "ot\030\004 \001(\005:\002-1B\023\242\001\013CPlayerSlot\252\001\002-1\022\025\n\rcon"
+  "text_value\030\005 \001(\005\022\027\n\017context_team_id\030\006 \001("
+  "\005\"*\n\026CUserMessageItemPickup\022\020\n\010itemname\030"
+  "\001 \001(\t\")\n\026CUserMessageAmmoDenied\022\017\n\007ammo_"
+  "id\030\001 \001(\r\"e\n\024CUserMessageShowMenu\022\022\n\nvali"
+  "dslots\030\001 \001(\r\022\023\n\013displaytime\030\002 \001(\r\022\020\n\010nee"
+  "dmore\030\003 \001(\010\022\022\n\nmenustring\030\004 \001(\t\"V\n\026CUser"
+  "MessageCreditsMsg\022\'\n\010rolltype\030\001 \001(\0162\n.eR"
+  "ollType:\tROLL_NONE\022\023\n\013logo_length\030\002 \001(\002\""
+  ";\n\030CEntityMessagePlayJingle\022\037\n\nentity_ms"
+  "g\030\001 \001(\0132\013.CEntityMsg\"T\n\033CEntityMessageSc"
+  "reenOverlay\022\024\n\014start_effect\030\001 \001(\010\022\037\n\nent"
+  "ity_msg\030\002 \001(\0132\013.CEntityMsg\"]\n\034CEntityMes"
+  "sagePropagateForce\022\034\n\007impulse\030\001 \001(\0132\013.CM"
+  "sgVector\022\037\n\nentity_msg\030\002 \001(\0132\013.CEntityMs"
+  "g\"\323\001\n\025CEntityMessageDoSpark\022\033\n\006origin\030\001 "
+  "\001(\0132\013.CMsgVector\022-\n\013entityindex\030\002 \001(\005:\002-"
+  "1B\024\242\001\014CEntityIndex\252\001\002-1\022\016\n\006radius\030\003 \001(\002\022"
+  "\r\n\005color\030\004 \001(\007\022\r\n\005beams\030\005 \001(\r\022\r\n\005thick\030\006"
+  " \001(\002\022\020\n\010duration\030\007 \001(\002\022\037\n\nentity_msg\030\010 \001"
+  "(\0132\013.CEntityMsg\"g\n\026CEntityMessageFixAngl"
+  "e\022\020\n\010relative\030\001 \001(\010\022\032\n\005angle\030\002 \001(\0132\013.CMs"
+  "gQAngle\022\037\n\nentity_msg\030\003 \001(\0132\013.CEntityMsg"
+  "\"\207\002\n\034CUserMessageCameraTransition\022\023\n\013cam"
+  "era_type\030\001 \001(\r\022\020\n\010duration\030\002 \001(\002\022O\n\022para"
+  "ms_data_driven\030\003 \001(\01323.CUserMessageCamer"
+  "aTransition.Transition_DataDriven\032o\n\025Tra"
+  "nsition_DataDriven\022\020\n\010filename\030\001 \001(\t\0222\n\020"
+  "attach_ent_index\030\002 \001(\005:\002-1B\024\242\001\014CEntityIn"
+  "dex\252\001\002-1\022\020\n\010duration\030\003 \001(\002\"\237B\n\030CUserMsg_"
+  "ParticleManager\022C\n\004type\030\001 \001(\0162\021.PARTICLE"
+  "_MESSAGE:\"GAME_PARTICLE_MANAGER_EVENT_CR"
+  "EATE\022\r\n\005index\030\002 \001(\r\022N\n\026release_particle_"
+  "index\030\003 \001(\0132..CUserMsg_ParticleManager.R"
+  "eleaseParticleIndex\022A\n\017create_particle\030\004"
+  " \001(\0132(.CUserMsg_ParticleManager.CreatePa"
+  "rticle\022C\n\020destroy_particle\030\005 \001(\0132).CUser"
+  "Msg_ParticleManager.DestroyParticle\022V\n\032d"
+  "estroy_particle_involving\030\006 \001(\01322.CUserM"
+  "sg_ParticleManager.DestroyParticleInvolv"
+  "ing\022J\n\017update_particle\030\007 \001(\01321.CUserMsg_"
+  "ParticleManager.UpdateParticle_OBSOLETE\022"
+  "Q\n\023update_particle_fwd\030\010 \001(\01324.CUserMsg_"
+  "ParticleManager.UpdateParticleFwd_OBSOLE"
+  "TE\022W\n\026update_particle_orient\030\t \001(\01327.CUs"
+  "erMsg_ParticleManager.UpdateParticleOrie"
+  "nt_OBSOLETE\022R\n\030update_particle_fallback\030"
+  "\n \001(\01320.CUserMsg_ParticleManager.UpdateP"
+  "articleFallback\022N\n\026update_particle_offse"
+  "t\030\013 \001(\0132..CUserMsg_ParticleManager.Updat"
+  "eParticleOffset\022H\n\023update_particle_ent\030\014"
+  " \001(\0132+.CUserMsg_ParticleManager.UpdatePa"
+  "rticleEnt\022W\n\033update_particle_should_draw"
+  "\030\016 \001(\01322.CUserMsg_ParticleManager.Update"
+  "ParticleShouldDraw\022U\n\032update_particle_se"
+  "t_frozen\030\017 \001(\01321.CUserMsg_ParticleManage"
+  "r.UpdateParticleSetFrozen\022_\n\037change_cont"
+  "rol_point_attachment\030\020 \001(\01326.CUserMsg_Pa"
+  "rticleManager.ChangeControlPointAttachme"
+  "nt\022N\n\026update_entity_position\030\021 \001(\0132..CUs"
+  "erMsg_ParticleManager.UpdateEntityPositi"
+  "on\022W\n\033set_particle_fow_properties\030\022 \001(\0132"
+  "2.CUserMsg_ParticleManager.SetParticleFo"
+  "WProperties\022D\n\021set_particle_text\030\023 \001(\0132)"
+  ".CUserMsg_ParticleManager.SetParticleTex"
+  "t\022Z\n\035set_particle_should_check_fow\030\024 \001(\013"
+  "23.CUserMsg_ParticleManager.SetParticleS"
+  "houldCheckFoW\022O\n\027set_control_point_model"
+  "\030\025 \001(\0132..CUserMsg_ParticleManager.SetCon"
+  "trolPointModel\022U\n\032set_control_point_snap"
+  "shot\030\026 \001(\01321.CUserMsg_ParticleManager.Se"
+  "tControlPointSnapshot\022L\n\025set_texture_att"
+  "ribute\030\027 \001(\0132-.CUserMsg_ParticleManager."
+  "SetTextureAttribute\022Z\n\035set_scene_object_"
+  "generic_flag\030\030 \001(\01323.CUserMsg_ParticleMa"
+  "nager.SetSceneObjectGenericFlag\022]\n\037set_s"
+  "cene_object_tint_and_desat\030\031 \001(\01324.CUser"
+  "Msg_ParticleManager.SetSceneObjectTintAn"
+  "dDesat\022N\n\026destroy_particle_named\030\032 \001(\0132."
+  ".CUserMsg_ParticleManager.DestroyParticl"
+  "eNamed\022K\n\025particle_skip_to_time\030\033 \001(\0132,."
+  "CUserMsg_ParticleManager.ParticleSkipToT"
+  "ime\022H\n\023particle_can_freeze\030\034 \001(\0132+.CUser"
+  "Msg_ParticleManager.ParticleCanFreeze\022W\n"
+  "\027set_named_value_context\030\035 \001(\01326.CUserMs"
+  "g_ParticleManager.SetParticleNamedValueC"
+  "ontext\022T\n\031update_particle_transform\030\036 \001("
+  "\01321.CUserMsg_ParticleManager.UpdateParti"
+  "cleTransform\022g\n#particle_freeze_transiti"
+  "on_override\030\037 \001(\0132:.CUserMsg_ParticleMan"
+  "ager.ParticleFreezeTransitionOverride\022T\n"
+  "\031freeze_particle_involving\030  \001(\01321.CUser"
+  "Msg_ParticleManager.FreezeParticleInvolv"
+  "ing\022]\n\036add_modellist_override_element\030! "
+  "\001(\01325.CUserMsg_ParticleManager.AddModell"
+  "istOverrideElement\022R\n\030clear_modellist_ov"
+  "erride\030\" \001(\01320.CUserMsg_ParticleManager."
+  "ClearModellistOverride\022F\n\022create_physics"
+  "_sim\030# \001(\0132*.CUserMsg_ParticleManager.Cr"
+  "eatePhysicsSim\022H\n\023destroy_physics_sim\030$ "
+  "\001(\0132+.CUserMsg_ParticleManager.DestroyPh"
+  "ysicsSim\0225\n\tset_vdata\030% \001(\0132\".CUserMsg_P"
+  "articleManager.SetVData\022L\n\025set_material_"
+  "override\030& \001(\0132-.CUserMsg_ParticleManage"
+  "r.SetMaterialOverride\0221\n\007add_fan\030\' \001(\0132 "
+  ".CUserMsg_ParticleManager.AddFan\0227\n\nupda"
+  "te_fan\030( \001(\0132#.CUserMsg_ParticleManager."
+  "UpdateFan\022W\n\033set_particle_cluster_growth"
+  "\030) \001(\01322.CUserMsg_ParticleManager.SetPar"
+  "ticleClusterGrowth\0227\n\nremove_fan\030* \001(\0132#"
+  ".CUserMsg_ParticleManager.RemoveFan\022D\n\021c"
+  "reate_smoke_grid\030+ \001(\0132).CUserMsg_Partic"
+  "leManager.CreateSmokeGrid\022J\n\024set_overrid"
+  "e_texture\030, \001(\0132,.CUserMsg_ParticleManag"
+  "er.SetOverrideTexture\032\026\n\024ReleaseParticle"
+  "Index\032\212\003\n\016CreateParticle\022\033\n\023particle_nam"
+  "e_index\030\001 \001(\006\022\023\n\013attach_type\030\002 \001(\005\022E\n\ren"
+  "tity_handle\030\003 \001(\r:\01016777215B$\242\001\026CEHandle"
+  "NetworkableInt\252\001\01016777215\022S\n\033entity_hand"
+  "le_for_modifiers\030\004 \001(\r:\01016777215B$\242\001\026CEH"
+  "andleNetworkableInt\252\001\01016777215\022\035\n\025apply_"
+  "voice_ban_rules\030\005 \001(\010\022\025\n\rteam_behavior\030\006"
+  " \001(\005\022#\n\033control_point_configuration\030\007 \001("
+  "\t\022\017\n\007cluster\030\010 \001(\010\022\023\n\013endcap_time\030\t \001(\002\022"
+  ")\n\024aggregation_position\030\n \001(\0132\013.CMsgVect"
+  "or\032.\n\017DestroyParticle\022\033\n\023destroy_immedia"
+  "tely\030\001 \001(\010\032~\n\030DestroyParticleInvolving\022\033"
+  "\n\023destroy_immediately\030\001 \001(\010\022E\n\rentity_ha"
+  "ndle\030\003 \001(\r:\01016777215B$\242\001\026CEHandleNetwork"
+  "ableInt\252\001\01016777215\032\254\001\n\024DestroyParticleNa"
+  "med\022\033\n\023particle_name_index\030\001 \001(\006\022E\n\renti"
+  "ty_handle\030\002 \001(\r:\01016777215B$\242\001\026CEHandleNe"
+  "tworkableInt\252\001\01016777215\022\033\n\023destroy_immed"
+  "iately\030\003 \001(\010\022\023\n\013play_endcap\030\004 \001(\010\032O\n\027Upd"
+  "ateParticle_OBSOLETE\022\025\n\rcontrol_point\030\001 "
+  "\001(\005\022\035\n\010position\030\002 \001(\0132\013.CMsgVector\032Q\n\032Up"
+  "dateParticleFwd_OBSOLETE\022\025\n\rcontrol_poin"
+  "t\030\001 \001(\005\022\034\n\007forward\030\002 \001(\0132\013.CMsgVector\032\257\001"
+  "\n\035UpdateParticleOrient_OBSOLETE\022\025\n\rcontr"
+  "ol_point\030\001 \001(\005\022\034\n\007forward\030\002 \001(\0132\013.CMsgVe"
+  "ctor\022%\n\020deprecated_right\030\003 \001(\0132\013.CMsgVec"
+  "tor\022\027\n\002up\030\004 \001(\0132\013.CMsgVector\022\031\n\004left\030\005 \001"
+  "(\0132\013.CMsgVector\032\225\001\n\027UpdateParticleTransf"
+  "orm\022\025\n\rcontrol_point\030\001 \001(\005\022\035\n\010position\030\002"
+  " \001(\0132\013.CMsgVector\022$\n\013orientation\030\003 \001(\0132\017"
+  ".CMsgQuaternion\022\036\n\026interpolation_interva"
+  "l\030\004 \001(\002\032N\n\026UpdateParticleFallback\022\025\n\rcon"
+  "trol_point\030\001 \001(\005\022\035\n\010position\030\002 \001(\0132\013.CMs"
+  "gVector\032t\n\024UpdateParticleOffset\022\025\n\rcontr"
+  "ol_point\030\001 \001(\005\022\"\n\rorigin_offset\030\002 \001(\0132\013."
+  "CMsgVector\022!\n\014angle_offset\030\003 \001(\0132\013.CMsgQ"
+  "Angle\032\247\002\n\021UpdateParticleEnt\022\025\n\rcontrol_p"
+  "oint\030\001 \001(\005\022E\n\rentity_handle\030\002 \001(\r:\01016777"
+  "215B$\242\001\026CEHandleNetworkableInt\252\001\0101677721"
+  "5\022\023\n\013attach_type\030\003 \001(\005\022\022\n\nattachment\030\004 \001"
+  "(\005\022&\n\021fallback_position\030\005 \001(\0132\013.CMsgVect"
+  "or\022\031\n\021include_wearables\030\006 \001(\010\022$\n\017offset_"
+  "position\030\007 \001(\0132\013.CMsgVector\022\"\n\roffset_an"
+  "gles\030\010 \001(\0132\013.CMsgQAngle\032J\n\027UpdateParticl"
+  "eSetFrozen\022\022\n\nset_frozen\030\001 \001(\010\022\033\n\023transi"
+  "tion_duration\030\002 \001(\002\032/\n\030UpdateParticleSho"
+  "uldDraw\022\023\n\013should_draw\030\001 \001(\010\032\225\001\n\034ChangeC"
+  "ontrolPointAttachment\022\026\n\016attachment_old\030"
+  "\001 \001(\005\022\026\n\016attachment_new\030\002 \001(\005\022E\n\rentity_"
+  "handle\030\003 \001(\r:\01016777215B$\242\001\026CEHandleNetwo"
+  "rkableInt\252\001\01016777215\032|\n\024UpdateEntityPosi"
+  "tion\022E\n\rentity_handle\030\001 \001(\r:\01016777215B$\242"
+  "\001\026CEHandleNetworkableInt\252\001\01016777215\022\035\n\010p"
+  "osition\030\002 \001(\0132\013.CMsgVector\032e\n\030SetParticl"
+  "eFoWProperties\022\031\n\021fow_control_point\030\001 \001("
+  "\005\022\032\n\022fow_control_point2\030\002 \001(\005\022\022\n\nfow_rad"
+  "ius\030\003 \001(\002\032.\n\031SetParticleShouldCheckFoW\022\021"
+  "\n\tcheck_fow\030\001 \001(\010\032A\n\024SetControlPointMode"
+  "l\022\025\n\rcontrol_point\030\001 \001(\005\022\022\n\nmodel_name\030\002"
+  " \001(\t\032G\n\027SetControlPointSnapshot\022\025\n\rcontr"
+  "ol_point\030\001 \001(\005\022\025\n\rsnapshot_name\030\002 \001(\t\0321\n"
+  "\017SetParticleText\022\014\n\004text\030\001 \001(\t\022\020\n\010locali"
+  "ze\030\002 \001(\010\032C\n\023SetTextureAttribute\022\026\n\016attri"
+  "bute_name\030\001 \001(\t\022\024\n\014texture_name\030\002 \001(\t\032*\n"
+  "\022SetOverrideTexture\022\024\n\014texture_name\030\001 \001("
+  "\t\032/\n\031SetSceneObjectGenericFlag\022\022\n\nflag_v"
+  "alue\030\001 \001(\010\0329\n\032SetSceneObjectTintAndDesat"
+  "\022\014\n\004tint\030\001 \001(\007\022\r\n\005desat\030\002 \001(\002\032*\n\022Particl"
+  "eSkipToTime\022\024\n\014skip_to_time\030\001 \001(\002\032\'\n\021Par"
+  "ticleCanFreeze\022\022\n\ncan_freeze\030\001 \001(\010\032F\n Pa"
+  "rticleFreezeTransitionOverride\022\"\n\032freeze"
+  "_transition_override\030\001 \001(\002\032\221\001\n\027FreezePar"
+  "ticleInvolving\022\022\n\nset_frozen\030\001 \001(\010\022\033\n\023tr"
+  "ansition_duration\030\002 \001(\002\022E\n\rentity_handle"
+  "\030\003 \001(\r:\01016777215B$\242\001\026CEHandleNetworkable"
+  "Int\252\001\01016777215\032]\n\033AddModellistOverrideEl"
+  "ement\022\022\n\nmodel_name\030\001 \001(\t\022\031\n\021spawn_proba"
+  "bility\030\002 \001(\002\022\017\n\007groupid\030\003 \001(\r\032)\n\026ClearMo"
+  "dellistOverride\022\017\n\007groupid\030\001 \001(\r\032\216\006\n\034Set"
+  "ParticleNamedValueContext\022^\n\014float_value"
+  "s\030\001 \003(\0132H.CUserMsg_ParticleManager.SetPa"
+  "rticleNamedValueContext.FloatContextValu"
+  "e\022`\n\rvector_values\030\002 \003(\0132I.CUserMsg_Part"
+  "icleManager.SetParticleNamedValueContext"
+  ".VectorContextValue\022f\n\020transform_values\030"
+  "\003 \003(\0132L.CUserMsg_ParticleManager.SetPart"
+  "icleNamedValueContext.TransformContextVa"
+  "lue\022]\n\016ehandle_values\030\004 \003(\0132E.CUserMsg_P"
+  "articleManager.SetParticleNamedValueCont"
+  "ext.EHandleContext\032;\n\021FloatContextValue\022"
+  "\027\n\017value_name_hash\030\001 \001(\r\022\r\n\005value\030\002 \001(\002\032"
+  "I\n\022VectorContextValue\022\027\n\017value_name_hash"
+  "\030\001 \001(\r\022\032\n\005value\030\002 \001(\0132\013.CMsgVector\032o\n\025Tr"
+  "ansformContextValue\022\027\n\017value_name_hash\030\001"
+  " \001(\r\022\033\n\006angles\030\002 \001(\0132\013.CMsgQAngle\022 \n\013tra"
+  "nslation\030\003 \001(\0132\013.CMsgVector\032l\n\016EHandleCo"
+  "ntext\022\027\n\017value_name_hash\030\001 \001(\r\022A\n\tent_in"
+  "dex\030\002 \001(\r:\01016777215B$\242\001\026CEHandleNetworka"
+  "bleInt\252\001\01016777215\032l\n\020CreatePhysicsSim\022\027\n"
+  "\017prop_group_name\030\001 \001(\t\022#\n\033use_high_quali"
+  "ty_simulation\030\002 \001(\010\022\032\n\022max_particle_coun"
+  "t\030\003 \001(\r\032\023\n\021DestroyPhysicsSim\032%\n\017CreateSm"
+  "okeGrid\022\022\n\nvdata_name\030\001 \001(\t\032\036\n\010SetVData\022"
+  "\022\n\nvdata_name\030\001 \001(\t\032F\n\023SetMaterialOverri"
+  "de\022\025\n\rmaterial_name\030\001 \001(\t\022\030\n\020include_chi"
+  "ldren\030\002 \001(\010\032\211\004\n\006AddFan\022\016\n\006active\030\001 \001(\010\022 "
+  "\n\013bounds_mins\030\002 \001(\0132\013.CMsgVector\022 \n\013boun"
+  "ds_maxs\030\003 \001(\0132\013.CMsgVector\022\037\n\nfan_origin"
+  "\030\004 \001(\0132\013.CMsgVector\022&\n\021fan_origin_offset"
+  "\030\005 \001(\0132\013.CMsgVector\022\"\n\rfan_direction\030\006 \001"
+  "(\0132\013.CMsgVector\022\r\n\005force\030\007 \001(\002\022\027\n\017fan_fo"
+  "rce_curve\030\010 \001(\t\022\017\n\007falloff\030\t \001(\010\022\032\n\022pull"
+  "_towards_point\030\n \001(\010\022\026\n\016curve_min_dist\030\013"
+  " \001(\002\022\026\n\016curve_max_dist\030\014 \001(\002\022\020\n\010fan_type"
+  "\030\r \001(\r\022\031\n\021cone_start_radius\030\016 \001(\002\022\027\n\017con"
+  "e_end_radius\030\017 \001(\002\022\023\n\013cone_length\030\020 \001(\002\022"
+  "E\n\rentity_handle\030\021 \001(\r:\01016777215B$\242\001\026CEH"
+  "andleNetworkableInt\252\001\01016777215\022\027\n\017attach"
+  "ment_name\030\022 \001(\t\032\344\001\n\tUpdateFan\022\016\n\006active\030"
+  "\001 \001(\010\022\037\n\nfan_origin\030\002 \001(\0132\013.CMsgVector\022&"
+  "\n\021fan_origin_offset\030\003 \001(\0132\013.CMsgVector\022\""
+  "\n\rfan_direction\030\004 \001(\0132\013.CMsgVector\022\026\n\016fa"
+  "n_ramp_ratio\030\007 \001(\002\022 \n\013bounds_mins\030\005 \001(\0132"
+  "\013.CMsgVector\022 \n\013bounds_maxs\030\006 \001(\0132\013.CMsg"
+  "Vector\032\013\n\tRemoveFan\032I\n\030SetParticleCluste"
+  "rGrowth\022\020\n\010duration\030\001 \001(\002\022\033\n\006origin\030\002 \001("
+  "\0132\013.CMsgVector*\005\010d\020\311\001:\005\200\265\030\200 \"%\n\021CUserMsg"
+  "_HudError\022\020\n\010order_id\030\001 \001(\005\"<\n\030CUserMsg_"
+  "CustomGameEvent\022\022\n\nevent_name\030\001 \001(\t\022\014\n\004d"
+  "ata\030\002 \001(\014\"\177\n\037CUserMessageHapticsManagerP"
+  "ulse\022\017\n\007hand_id\030\001 \001(\005\022\030\n\020effect_amplitud"
+  "e\030\002 \001(\002\022\030\n\020effect_frequency\030\003 \001(\002\022\027\n\017eff"
+  "ect_duration\030\004 \001(\002\"|\n CUserMessageHaptic"
+  "sManagerEffect\022\017\n\007hand_id\030\001 \001(\005\0221\n\025effec"
+  "t_name_hash_code\030\002 \001(\rB\022\242\001\017CUtlStringTok"
+  "en\022\024\n\014effect_scale\030\003 \001(\002\"E\n\037CUserMessage"
+  "AnimStateGraphState\022\024\n\014entity_index\030\001 \001("
+  "\005\022\014\n\004data\030\002 \001(\014\"_\n\034CUserMessageUpdateCss"
+  "Classes\022\032\n\022target_world_panel\030\001 \001(\005\022\023\n\013c"
+  "ss_classes\030\002 \001(\t\022\016\n\006is_add\030\003 \001(\010\"1\n\033CUse"
+  "rMessageServerFrameTime\022\022\n\nframe_time\030\001 "
+  "\001(\002\"4\n CUserMessageLagCompensationError\022"
+  "\020\n\010distance\030\001 \001(\002\"G\n\034CUserMessageRequest"
+  "DllStatus\022\022\n\ndll_action\030\001 \001(\t\022\023\n\013full_re"
+  "port\030\002 \001(\010\"j\n\035CUserMessageRequestUtilAct"
+  "ion\022\r\n\005util1\030\002 \001(\005\022\r\n\005util2\030\003 \001(\005\022\r\n\005uti"
+  "l3\030\004 \001(\005\022\r\n\005util4\030\005 \001(\005\022\r\n\005util5\030\006 \001(\005\"\370"
+  "\002\n\035CUserMessage_UtilMsg_Response\022\013\n\003crc\030"
+  "\001 \001(\007\022\022\n\nitem_count\030\002 \001(\005\022\014\n\004crc2\030\003 \001(\007\022"
+  "\023\n\013item_count2\030\004 \001(\005\022\020\n\010crc_part\030\005 \003(\005\022\021"
+  "\n\tcrc_part2\030\006 \003(\005\022\030\n\020client_timestamp\030\007 "
+  "\001(\005\022\020\n\010platform\030\010 \001(\005\022>\n\013itemdetails\030\t \003"
+  "(\0132).CUserMessage_UtilMsg_Response.ItemD"
+  "etail\022\021\n\titemgroup\030\n \001(\005\022\023\n\013total_count\030"
+  "\013 \001(\005\022\024\n\014total_count2\030\014 \001(\005\032D\n\nItemDetai"
+  "l\022\r\n\005index\030\001 \001(\005\022\014\n\004hash\030\002 \001(\005\022\013\n\003crc\030\003 "
+  "\001(\005\022\014\n\004name\030\004 \001(\t\"\241\003\n\026CUserMessage_DllSt"
+  "atus\022\023\n\013file_report\030\001 \001(\t\022\024\n\014command_lin"
+  "e\030\002 \001(\t\022\023\n\013total_files\030\003 \001(\r\022\022\n\nprocess_"
+  "id\030\004 \001(\r\022\021\n\tosversion\030\005 \001(\005\022\023\n\013client_ti"
+  "me\030\006 \001(\004\0229\n\013diagnostics\030\007 \003(\0132$.CUserMes"
+  "sage_DllStatus.CVDiagnostic\0220\n\007modules\030\010"
+  " \003(\0132\037.CUserMessage_DllStatus.CModule\032Q\n"
+  "\014CVDiagnostic\022\n\n\002id\030\001 \001(\r\022\020\n\010extended\030\002 "
+  "\001(\r\022\r\n\005value\030\003 \001(\004\022\024\n\014string_value\030\004 \001(\t"
+  "\032K\n\007CModule\022\021\n\tbase_addr\030\001 \001(\004\022\014\n\004name\030\002"
+  " \001(\t\022\014\n\004size\030\003 \001(\r\022\021\n\ttimestamp\030\004 \001(\r\"R\n"
+  "\034CUserMessageRequestInventory\022\021\n\tinvento"
+  "ry\030\001 \001(\005\022\016\n\006offset\030\002 \001(\005\022\017\n\007options\030\003 \001("
+  "\005\"\367\004\n\037CUserMessage_Inventory_Response\022\013\n"
+  "\003crc\030\001 \001(\007\022\022\n\nitem_count\030\002 \001(\005\022\021\n\tosvers"
+  "ion\030\005 \001(\005\022\021\n\tperf_time\030\006 \001(\005\022\030\n\020client_t"
+  "imestamp\030\007 \001(\005\022\020\n\010platform\030\010 \001(\005\022E\n\013inve"
+  "ntories\030\t \003(\01320.CUserMessage_Inventory_R"
+  "esponse.InventoryDetail\022F\n\014inventories2\030"
+  "\n \003(\01320.CUserMessage_Inventory_Response."
+  "InventoryDetail\022F\n\014inventories3\030\016 \003(\01320."
+  "CUserMessage_Inventory_Response.Inventor"
+  "yDetail\022\020\n\010inv_type\030\013 \001(\005\022\025\n\rbuild_versi"
+  "on\030\014 \001(\005\022\020\n\010instance\030\r \001(\005\022\022\n\nstart_time"
+  "\030\017 \001(\003\032\272\001\n\017InventoryDetail\022\r\n\005index\030\001 \001("
+  "\005\022\017\n\007primary\030\002 \001(\003\022\016\n\006offset\030\003 \001(\003\022\r\n\005fi"
+  "rst\030\004 \001(\003\022\014\n\004base\030\005 \001(\003\022\014\n\004name\030\006 \001(\t\022\021\n"
+  "\tbase_name\030\007 \001(\t\022\023\n\013base_detail\030\010 \001(\005\022\021\n"
+  "\tbase_time\030\t \001(\005\022\021\n\tbase_hash\030\n \001(\005\"\270\002\n\035"
+  "CUserMessageRequestDiagnostic\022>\n\013diagnos"
+  "tics\030\001 \003(\0132).CUserMessageRequestDiagnost"
+  "ic.Diagnostic\032\326\001\n\nDiagnostic\022\r\n\005index\030\001 "
+  "\001(\005\022\016\n\006offset\030\002 \001(\003\022\r\n\005param\030\003 \001(\005\022\016\n\006le"
+  "ngth\030\004 \001(\005\022\014\n\004type\030\005 \001(\005\022\014\n\004base\030\006 \001(\003\022\r"
+  "\n\005range\030\007 \001(\003\022\016\n\006extent\030\010 \001(\003\022\016\n\006detail\030"
+  "\t \001(\003\022\014\n\004name\030\n \001(\t\022\r\n\005alias\030\013 \001(\t\022\021\n\tva"
+  "rdetail\030\014 \001(\014\022\017\n\007context\030\r \001(\005\"\300\003\n CUser"
+  "Message_Diagnostic_Response\022A\n\013diagnosti"
+  "cs\030\001 \003(\0132,.CUserMessage_Diagnostic_Respo"
+  "nse.Diagnostic\022\025\n\rbuild_version\030\002 \001(\005\022\020\n"
+  "\010instance\030\003 \001(\005\022\022\n\nstart_time\030\004 \001(\003\022\021\n\to"
+  "sversion\030\005 \001(\005\022\020\n\010platform\030\006 \001(\005\032\366\001\n\nDia"
+  "gnostic\022\r\n\005index\030\001 \001(\005\022\016\n\006offset\030\002 \001(\003\022\r"
+  "\n\005param\030\003 \001(\005\022\016\n\006length\030\004 \001(\005\022\016\n\006detail\030"
+  "\005 \001(\014\022\014\n\004base\030\006 \001(\003\022\r\n\005range\030\007 \001(\003\022\014\n\004ty"
+  "pe\030\010 \001(\005\022\014\n\004name\030\n \001(\t\022\r\n\005alias\030\013 \001(\t\022\016\n"
+  "\006backup\030\014 \001(\014\022\017\n\007context\030\r \001(\005\022\017\n\007contro"
+  "l\030\016 \001(\003\022\017\n\007augment\030\017 \001(\003\022\017\n\007placebo\030\020 \001("
+  "\003\"l\n\032CUserMessage_ExtraUserData\022\014\n\004item\030"
+  "\001 \001(\005\022\016\n\006value1\030\002 \001(\003\022\016\n\006value2\030\003 \001(\003\022\017\n"
+  "\007detail1\030\004 \003(\014\022\017\n\007detail2\030\005 \003(\014\"\341\003\n CUse"
+  "rMessage_NotifyResponseFound\022+\n\tent_inde"
+  "x\030\001 \001(\005:\002-1B\024\242\001\014CEntityIndex\252\001\002-1\022\021\n\trul"
+  "e_name\030\002 \001(\t\022\026\n\016response_value\030\003 \001(\t\022\030\n\020"
+  "response_concept\030\004 \001(\t\022<\n\010criteria\030\005 \003(\013"
+  "2*.CUserMessage_NotifyResponseFound.Crit"
+  "eria\022\036\n\022int_criteria_names\030\006 \003(\rB\002\020\001\022\037\n\023"
+  "int_criteria_values\030\007 \003(\005B\002\020\001\022 \n\024float_c"
+  "riteria_names\030\010 \003(\rB\002\020\001\022\035\n\025float_criteri"
+  "a_values\030\t \003(\002\022!\n\025symbol_criteria_names\030"
+  "\n \003(\rB\002\020\001\022\"\n\026symbol_criteria_values\030\013 \003("
+  "\rB\002\020\001\022\024\n\014speak_result\030\014 \001(\005\032.\n\010Criteria\022"
+  "\023\n\013name_symbol\030\001 \001(\r\022\r\n\005value\030\002 \001(\t\"\325\001\n$"
+  "CUserMessage_PlayResponseConditional\022+\n\t"
+  "ent_index\030\001 \001(\005:\002-1B\024\242\001\014CEntityIndex\252\001\002-"
+  "1\022$\n\014player_slots\030\002 \003(\005B\016\242\001\013CPlayerSlot\022"
+  "\020\n\010response\030\003 \001(\t\022\037\n\nent_origin\030\004 \001(\0132\013."
+  "CMsgVector\022\021\n\tpre_delay\030\005 \001(\002\022\024\n\014mix_pri"
+  "ority\030\006 \001(\005\")\n\030CUserMessage_UsageReport\022"
+  "\r\n\005usage\030\001 \001(\t\"\272\001\n CUserMessage_RemoteSe"
+  "rverCommand\022Q\n\007command\030\001 \001(\0162*.CUserMess"
+  "age_RemoteServerCommand.ECommand:\024EComma"
+  "ndChangeConVar\022\016\n\006convar\030\002 \001(\t\022\r\n\005value\030"
+  "\003 \001(\t\"$\n\010ECommand\022\030\n\024ECommandChangeConVa"
+  "r\020\001\"\300\002\n CUserMessageRemoteServerResponse"
+  "\022X\n\016command_result\030\001 \001(\01620.CUserMessageR"
+  "emoteServerResponse.ECommandResult:\016ERes"
+  "ultSuccess\022\016\n\006convar\030\002 \001(\t\022\017\n\007results\030\003 "
+  "\001(\t\"\240\001\n\016ECommandResult\022\022\n\016EResultSuccess"
+  "\020\001\022\034\n\030EResultServerDoesntAllow\020\002\022!\n\035ERes"
+  "ultClientNotAuthenticated\020\003\022\033\n\027EResultCl"
+  "ientNotAllowed\020\004\022\034\n\030EResultCommandNotAll"
+  "owed\020\005*\311\t\n\021EBaseUserMessages\022\027\n\023UM_Achie"
+  "vementEvent\020e\022\027\n\023UM_CurrentTimescale\020h\022\027"
+  "\n\023UM_DesiredTimescale\020i\022\013\n\007UM_Fade\020j\022\020\n\014"
+  "UM_GameTitle\020k\022\r\n\tUM_HudMsg\020n\022\016\n\nUM_HudT"
+  "ext\020o\022\022\n\016UM_ColoredText\020q\022\023\n\017UM_RequestS"
+  "tate\020r\022\017\n\013UM_ResetHUD\020s\022\r\n\tUM_Rumble\020t\022\016"
+  "\n\nUM_SayText\020u\022\017\n\013UM_SayText2\020v\022\025\n\021UM_Sa"
+  "yTextChannel\020w\022\014\n\010UM_Shake\020x\022\017\n\013UM_Shake"
+  "Dir\020y\022\021\n\rUM_WaterShake\020z\022\016\n\nUM_TextMsg\020|"
+  "\022\021\n\rUM_ScreenTilt\020}\022\021\n\014UM_VoiceMask\020\200\001\022\021"
+  "\n\014UM_SendAudio\020\202\001\022\022\n\rUM_ItemPickup\020\203\001\022\022\n"
+  "\rUM_AmmoDenied\020\204\001\022\020\n\013UM_ShowMenu\020\206\001\022\022\n\rU"
+  "M_CreditsMsg\020\207\001\022\037\n\032UM_CloseCaptionPlaceh"
+  "older\020\216\001\022\030\n\023UM_CameraTransition\020\217\001\022\026\n\021UM"
+  "_AudioParameter\020\220\001\022\027\n\022UM_ParticleManager"
+  "\020\221\001\022\020\n\013UM_HudError\020\222\001\022\027\n\022UM_CustomGameEv"
+  "ent\020\224\001\022\027\n\022UM_AnimGraphUpdate\020\225\001\022\033\n\026UM_Ha"
+  "pticsManagerPulse\020\226\001\022\034\n\027UM_HapticsManage"
+  "rEffect\020\227\001\022\030\n\023UM_UpdateCssClasses\020\231\001\022\027\n\022"
+  "UM_ServerFrameTime\020\232\001\022\034\n\027UM_LagCompensat"
+  "ionError\020\233\001\022\030\n\023UM_RequestDllStatus\020\234\001\022\031\n"
+  "\024UM_RequestUtilAction\020\235\001\022\032\n\025UM_UtilActio"
+  "nResponse\020\236\001\022\031\n\024UM_DllStatusResponse\020\237\001\022"
+  "\030\n\023UM_RequestInventory\020\240\001\022\031\n\024UM_Inventor"
+  "yResponse\020\241\001\022\031\n\024UM_RequestDiagnostic\020\242\001\022"
+  "\032\n\025UM_DiagnosticResponse\020\243\001\022\025\n\020UM_ExtraU"
+  "serData\020\244\001\022\033\n\026UM_NotifyResponseFound\020\245\001\022"
+  "\037\n\032UM_PlayResponseConditional\020\246\001\022\026\n\021UM_U"
+  "serSentBugBug\020\247\001\022\023\n\016UM_UsageReport\020\250\001\022\033\n"
+  "\026UM_RemoteServerCommand\020\251\001\022\034\n\027UM_RemoteS"
+  "erverResponse\020\252\001\022\020\n\013UM_MAX_BASE\020\310\001*{\n\023EB"
+  "aseEntityMessages\022\022\n\rEM_PlayJingle\020\210\001\022\025\n"
+  "\020EM_ScreenOverlay\020\211\001\022\026\n\021EM_PropagateForc"
+  "e\020\213\001\022\017\n\nEM_DoSpark\020\214\001\022\020\n\013EM_FixAngle\020\215\001*"
+  "o\n\teRollType\022\026\n\tROLL_NONE\020\377\377\377\377\377\377\377\377\377\001\022\016\n\n"
+  "ROLL_STATS\020\000\022\020\n\014ROLL_CREDITS\020\001\022\027\n\023ROLL_L"
+  "ATE_JOIN_LOGO\020\002\022\017\n\013ROLL_OUTTRO\020\003*\323\020\n\020PAR"
+  "TICLE_MESSAGE\022&\n\"GAME_PARTICLE_MANAGER_E"
+  "VENT_CREATE\020\000\022&\n\"GAME_PARTICLE_MANAGER_E"
+  "VENT_UPDATE\020\001\022.\n*GAME_PARTICLE_MANAGER_E"
+  "VENT_UPDATE_FORWARD\020\002\0222\n.GAME_PARTICLE_M"
+  "ANAGER_EVENT_UPDATE_ORIENTATION\020\003\022/\n+GAM"
+  "E_PARTICLE_MANAGER_EVENT_UPDATE_FALLBACK"
+  "\020\004\022*\n&GAME_PARTICLE_MANAGER_EVENT_UPDATE"
+  "_ENT\020\005\022-\n)GAME_PARTICLE_MANAGER_EVENT_UP"
+  "DATE_OFFSET\020\006\022\'\n#GAME_PARTICLE_MANAGER_E"
+  "VENT_DESTROY\020\007\0221\n-GAME_PARTICLE_MANAGER_"
+  "EVENT_DESTROY_INVOLVING\020\010\022\'\n#GAME_PARTIC"
+  "LE_MANAGER_EVENT_RELEASE\020\t\022\'\n#GAME_PARTI"
+  "CLE_MANAGER_EVENT_LATENCY\020\n\022+\n\'GAME_PART"
+  "ICLE_MANAGER_EVENT_SHOULD_DRAW\020\013\022&\n\"GAME"
+  "_PARTICLE_MANAGER_EVENT_FROZEN\020\014\022\?\n;GAME"
+  "_PARTICLE_MANAGER_EVENT_CHANGE_CONTROL_P"
+  "OINT_ATTACHMENT\020\r\0226\n2GAME_PARTICLE_MANAG"
+  "ER_EVENT_UPDATE_ENTITY_POSITION\020\016\0222\n.GAM"
+  "E_PARTICLE_MANAGER_EVENT_SET_FOW_PROPERT"
+  "IES\020\017\022(\n$GAME_PARTICLE_MANAGER_EVENT_SET"
+  "_TEXT\020\020\0224\n0GAME_PARTICLE_MANAGER_EVENT_S"
+  "ET_SHOULD_CHECK_FOW\020\021\0227\n3GAME_PARTICLE_M"
+  "ANAGER_EVENT_SET_CONTROL_POINT_MODEL\020\022\022:"
+  "\n6GAME_PARTICLE_MANAGER_EVENT_SET_CONTRO"
+  "L_POINT_SNAPSHOT\020\023\0225\n1GAME_PARTICLE_MANA"
+  "GER_EVENT_SET_TEXTURE_ATTRIBUTE\020\024\022=\n9GAM"
+  "E_PARTICLE_MANAGER_EVENT_SET_SCENE_OBJEC"
+  "T_GENERIC_FLAG\020\025\022\?\n;GAME_PARTICLE_MANAGE"
+  "R_EVENT_SET_SCENE_OBJECT_TINT_AND_DESAT\020"
+  "\026\022-\n)GAME_PARTICLE_MANAGER_EVENT_DESTROY"
+  "_NAMED\020\027\022,\n(GAME_PARTICLE_MANAGER_EVENT_"
+  "SKIP_TO_TIME\020\030\022*\n&GAME_PARTICLE_MANAGER_"
+  "EVENT_CAN_FREEZE\020\031\0227\n3GAME_PARTICLE_MANA"
+  "GER_EVENT_SET_NAMED_VALUE_CONTEXT\020\032\0220\n,G"
+  "AME_PARTICLE_MANAGER_EVENT_UPDATE_TRANSF"
+  "ORM\020\033\022:\n6GAME_PARTICLE_MANAGER_EVENT_FRE"
+  "EZE_TRANSITION_OVERRIDE\020\034\0220\n,GAME_PARTIC"
+  "LE_MANAGER_EVENT_FREEZE_INVOLVING\020\035\022>\n:G"
+  "AME_PARTICLE_MANAGER_EVENT_ADD_MODELLIST"
+  "_OVERRIDE_ELEMENT\020\036\0228\n4GAME_PARTICLE_MAN"
+  "AGER_EVENT_CLEAR_MODELLIST_OVERRIDE\020\037\0222\n"
+  ".GAME_PARTICLE_MANAGER_EVENT_CREATE_PHYS"
+  "ICS_SIM\020 \0223\n/GAME_PARTICLE_MANAGER_EVENT"
+  "_DESTROY_PHYSICS_SIM\020!\022)\n%GAME_PARTICLE_"
+  "MANAGER_EVENT_SET_VDATA\020\"\0225\n1GAME_PARTIC"
+  "LE_MANAGER_EVENT_SET_MATERIAL_OVERRIDE\020#"
+  "\022\'\n#GAME_PARTICLE_MANAGER_EVENT_ADD_FAN\020"
+  "$\022*\n&GAME_PARTICLE_MANAGER_EVENT_UPDATE_"
+  "FAN\020%\0222\n.GAME_PARTICLE_MANAGER_EVENT_SET"
+  "_CLUSTER_GROWTH\020&\022*\n&GAME_PARTICLE_MANAG"
+  "ER_EVENT_REMOVE_FAN\020\'\0221\n-GAME_PARTICLE_M"
+  "ANAGER_EVENT_CREATE_SMOKE_GRID\020(\0224\n0GAME"
+  "_PARTICLE_MANAGER_EVENT_SET_OVERRIDE_TEX"
+  "TURE\020)*t\n\020EHapticPulseType\022\036\n\032VR_HAND_HA"
+  "PTIC_PULSE_LIGHT\020\000\022\037\n\033VR_HAND_HAPTIC_PUL"
+  "SE_MEDIUM\020\001\022\037\n\033VR_HAND_HAPTIC_PULSE_STRO"
+  "NG\020\002B\037\222\003\013basetypes.h\222\003\016entityhandle.h"
   ;
-static const ::_pbi::DescriptorTable* const descriptor_table_usermessages_2eproto_deps[1] = {
+static const ::_pbi::DescriptorTable* const descriptor_table_usermessages_2eproto_deps[2] = {
+  &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
   &::descriptor_table_networkbasetypes_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_usermessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_usermessages_2eproto = {
-    false, false, 19255, descriptor_table_protodef_usermessages_2eproto,
+    false, false, 19957, descriptor_table_protodef_usermessages_2eproto,
     "usermessages.proto",
-    &descriptor_table_usermessages_2eproto_once, descriptor_table_usermessages_2eproto_deps, 1, 109,
+    &descriptor_table_usermessages_2eproto_once, descriptor_table_usermessages_2eproto_deps, 2, 109,
     schemas, file_default_instances, TableStruct_usermessages_2eproto::offsets,
     file_level_metadata_usermessages_2eproto, file_level_enum_descriptors_usermessages_2eproto,
     file_level_service_descriptors_usermessages_2eproto,
@@ -4614,7 +4632,7 @@ const char* CUserMessageCloseCaptionPlaceholder::_InternalParse(const char* ptr,
         } else
           goto handle_unusual;
         continue;
-      // optional int32 ent_index = 4 [default = -1];
+      // optional int32 ent_index = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _Internal::set_has_ent_index(&has_bits);
@@ -4676,7 +4694,7 @@ uint8_t* CUserMessageCloseCaptionPlaceholder::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_from_player(), target);
   }
 
-  // optional int32 ent_index = 4 [default = -1];
+  // optional int32 ent_index = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_ent_index(), target);
@@ -4717,7 +4735,7 @@ size_t CUserMessageCloseCaptionPlaceholder::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional int32 ent_index = 4 [default = -1];
+    // optional int32 ent_index = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000008u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_ent_index());
     }
@@ -6878,7 +6896,7 @@ const char* CUserMessageSayText::_InternalParse(const char* ptr, ::_pbi::ParseCo
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 playerindex = 1 [default = -1];
+      // optional int32 playerindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_playerindex(&has_bits);
@@ -6948,7 +6966,7 @@ uint8_t* CUserMessageSayText::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 playerindex = 1 [default = -1];
+  // optional int32 playerindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_playerindex(), target);
@@ -7011,7 +7029,7 @@ size_t CUserMessageSayText::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional int32 playerindex = 1 [default = -1];
+    // optional int32 playerindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000008u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_playerindex());
     }
@@ -7288,7 +7306,7 @@ const char* CUserMessageSayText2::_InternalParse(const char* ptr, ::_pbi::ParseC
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 entityindex = 1 [default = -1];
+      // optional int32 entityindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_entityindex(&has_bits);
@@ -7406,7 +7424,7 @@ uint8_t* CUserMessageSayText2::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 entityindex = 1 [default = -1];
+  // optional int32 entityindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_entityindex(), target);
@@ -7537,7 +7555,7 @@ size_t CUserMessageSayText2::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional int32 entityindex = 1 [default = -1];
+    // optional int32 entityindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_entityindex());
     }
@@ -8938,7 +8956,7 @@ const char* CUserMessageAudioParameter::_InternalParse(const char* ptr, ::_pbi::
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional uint32 parameter_type = 1;
+      // optional uint32 parameter_type = 1 [boxed_type = "CUtlStringToken"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_parameter_type(&has_bits);
@@ -8947,7 +8965,7 @@ const char* CUserMessageAudioParameter::_InternalParse(const char* ptr, ::_pbi::
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 name_hash_code = 2;
+      // optional uint32 name_hash_code = 2 [boxed_type = "CUtlStringToken"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_name_hash_code(&has_bits);
@@ -9005,13 +9023,13 @@ uint8_t* CUserMessageAudioParameter::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional uint32 parameter_type = 1;
+  // optional uint32 parameter_type = 1 [boxed_type = "CUtlStringToken"];
   if (cached_has_bits & 0x00000001u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_parameter_type(), target);
   }
 
-  // optional uint32 name_hash_code = 2;
+  // optional uint32 name_hash_code = 2 [boxed_type = "CUtlStringToken"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_name_hash_code(), target);
@@ -9047,12 +9065,12 @@ size_t CUserMessageAudioParameter::ByteSizeLong() const {
 
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x0000000fu) {
-    // optional uint32 parameter_type = 1;
+    // optional uint32 parameter_type = 1 [boxed_type = "CUtlStringToken"];
     if (cached_has_bits & 0x00000001u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_parameter_type());
     }
 
-    // optional uint32 name_hash_code = 2;
+    // optional uint32 name_hash_code = 2 [boxed_type = "CUtlStringToken"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_name_hash_code());
     }
@@ -10154,7 +10172,7 @@ const char* CUserMessageColoredText::_InternalParse(const char* ptr, ::_pbi::Par
         } else
           goto handle_unusual;
         continue;
-      // optional int32 context_player_slot = 4 [default = -1];
+      // optional int32 context_player_slot = 4 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _Internal::set_has_context_player_slot(&has_bits);
@@ -10234,7 +10252,7 @@ uint8_t* CUserMessageColoredText::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_reset(), target);
   }
 
-  // optional int32 context_player_slot = 4 [default = -1];
+  // optional int32 context_player_slot = 4 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000020u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_context_player_slot(), target);
@@ -10297,7 +10315,7 @@ size_t CUserMessageColoredText::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_context_team_id());
     }
 
-    // optional int32 context_player_slot = 4 [default = -1];
+    // optional int32 context_player_slot = 4 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000020u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_context_player_slot());
     }
@@ -12248,7 +12266,7 @@ const char* CEntityMessageDoSpark::_InternalParse(const char* ptr, ::_pbi::Parse
         } else
           goto handle_unusual;
         continue;
-      // optional int32 entityindex = 2 [default = -1];
+      // optional int32 entityindex = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_entityindex(&has_bits);
@@ -12348,7 +12366,7 @@ uint8_t* CEntityMessageDoSpark::_InternalSerialize(
         _Internal::origin(this).GetCachedSize(), target, stream);
   }
 
-  // optional int32 entityindex = 2 [default = -1];
+  // optional int32 entityindex = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_entityindex(), target);
@@ -12448,7 +12466,7 @@ size_t CEntityMessageDoSpark::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional int32 entityindex = 2 [default = -1];
+    // optional int32 entityindex = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_entityindex());
     }
@@ -12955,7 +12973,7 @@ const char* CUserMessageCameraTransition_Transition_DataDriven::_InternalParse(c
         } else
           goto handle_unusual;
         continue;
-      // optional int32 attach_ent_index = 2 [default = -1];
+      // optional int32 attach_ent_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_attach_ent_index(&has_bits);
@@ -13014,7 +13032,7 @@ uint8_t* CUserMessageCameraTransition_Transition_DataDriven::_InternalSerialize(
         1, this->_internal_filename(), target);
   }
 
-  // optional int32 attach_ent_index = 2 [default = -1];
+  // optional int32 attach_ent_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_attach_ent_index(), target);
@@ -13056,7 +13074,7 @@ size_t CUserMessageCameraTransition_Transition_DataDriven::ByteSizeLong() const 
       total_size += 1 + 4;
     }
 
-    // optional int32 attach_ent_index = 2 [default = -1];
+    // optional int32 attach_ent_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000004u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attach_ent_index());
     }
@@ -13632,7 +13650,7 @@ const char* CUserMsg_ParticleManager_CreateParticle::_InternalParse(const char* 
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 3 [default = 16777215];
+      // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -13641,7 +13659,7 @@ const char* CUserMsg_ParticleManager_CreateParticle::_InternalParse(const char* 
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215];
+      // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           _Internal::set_has_entity_handle_for_modifiers(&has_bits);
@@ -13749,13 +13767,13 @@ uint8_t* CUserMsg_ParticleManager_CreateParticle::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_attach_type(), target);
   }
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000100u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_entity_handle(), target);
   }
 
-  // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215];
+  // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000200u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(4, this->_internal_entity_handle_for_modifiers(), target);
@@ -13866,12 +13884,12 @@ size_t CUserMsg_ParticleManager_CreateParticle::ByteSizeLong() const {
 
   }
   if (cached_has_bits & 0x00000300u) {
-    // optional uint32 entity_handle = 3 [default = 16777215];
+    // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000100u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
 
-    // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215];
+    // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000200u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle_for_modifiers());
     }
@@ -14259,7 +14277,7 @@ const char* CUserMsg_ParticleManager_DestroyParticleInvolving::_InternalParse(co
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 3 [default = 16777215];
+      // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -14305,7 +14323,7 @@ uint8_t* CUserMsg_ParticleManager_DestroyParticleInvolving::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_destroy_immediately(), target);
   }
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_entity_handle(), target);
@@ -14334,7 +14352,7 @@ size_t CUserMsg_ParticleManager_DestroyParticleInvolving::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional uint32 entity_handle = 3 [default = 16777215];
+    // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -14503,7 +14521,7 @@ const char* CUserMsg_ParticleManager_DestroyParticleNamed::_InternalParse(const 
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 2 [default = 16777215];
+      // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -14567,7 +14585,7 @@ uint8_t* CUserMsg_ParticleManager_DestroyParticleNamed::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFixed64ToArray(1, this->_internal_particle_name_index(), target);
   }
 
-  // optional uint32 entity_handle = 2 [default = 16777215];
+  // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000008u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_entity_handle(), target);
@@ -14618,7 +14636,7 @@ size_t CUserMsg_ParticleManager_DestroyParticleNamed::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional uint32 entity_handle = 2 [default = 16777215];
+    // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000008u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -16657,7 +16675,7 @@ const char* CUserMsg_ParticleManager_UpdateParticleEnt::_InternalParse(const cha
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 2 [default = 16777215];
+      // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -16754,7 +16772,7 @@ uint8_t* CUserMsg_ParticleManager_UpdateParticleEnt::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_control_point(), target);
   }
 
-  // optional uint32 entity_handle = 2 [default = 16777215];
+  // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000080u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_entity_handle(), target);
@@ -16858,7 +16876,7 @@ size_t CUserMsg_ParticleManager_UpdateParticleEnt::ByteSizeLong() const {
       total_size += 1 + 1;
     }
 
-    // optional uint32 entity_handle = 2 [default = 16777215];
+    // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000080u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -17485,7 +17503,7 @@ const char* CUserMsg_ParticleManager_ChangeControlPointAttachment::_InternalPars
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 3 [default = 16777215];
+      // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -17537,7 +17555,7 @@ uint8_t* CUserMsg_ParticleManager_ChangeControlPointAttachment::_InternalSeriali
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_attachment_new(), target);
   }
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_entity_handle(), target);
@@ -17571,7 +17589,7 @@ size_t CUserMsg_ParticleManager_ChangeControlPointAttachment::ByteSizeLong() con
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_attachment_new());
     }
 
-    // optional uint32 entity_handle = 3 [default = 16777215];
+    // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000004u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -17741,7 +17759,7 @@ const char* CUserMsg_ParticleManager_UpdateEntityPosition::_InternalParse(const 
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional uint32 entity_handle = 1 [default = 16777215];
+      // optional uint32 entity_handle = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -17789,7 +17807,7 @@ uint8_t* CUserMsg_ParticleManager_UpdateEntityPosition::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional uint32 entity_handle = 1 [default = 16777215];
+  // optional uint32 entity_handle = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_entity_handle(), target);
@@ -17827,7 +17845,7 @@ size_t CUserMsg_ParticleManager_UpdateEntityPosition::ByteSizeLong() const {
           *_impl_.position_);
     }
 
-    // optional uint32 entity_handle = 1 [default = 16777215];
+    // optional uint32 entity_handle = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -20733,7 +20751,7 @@ const char* CUserMsg_ParticleManager_FreezeParticleInvolving::_InternalParse(con
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 3 [default = 16777215];
+      // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -20785,7 +20803,7 @@ uint8_t* CUserMsg_ParticleManager_FreezeParticleInvolving::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(2, this->_internal_transition_duration(), target);
   }
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000004u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_entity_handle(), target);
@@ -20819,7 +20837,7 @@ size_t CUserMsg_ParticleManager_FreezeParticleInvolving::ByteSizeLong() const {
       total_size += 1 + 4;
     }
 
-    // optional uint32 entity_handle = 3 [default = 16777215];
+    // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000004u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_entity_handle());
     }
@@ -22260,7 +22278,7 @@ const char* CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 ent_index = 2 [default = 16777215];
+      // optional uint32 ent_index = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_ent_index(&has_bits);
@@ -22306,7 +22324,7 @@ uint8_t* CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext::_
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_value_name_hash(), target);
   }
 
-  // optional uint32 ent_index = 2 [default = 16777215];
+  // optional uint32 ent_index = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_ent_index(), target);
@@ -22335,7 +22353,7 @@ size_t CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext::Byt
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_value_name_hash());
     }
 
-    // optional uint32 ent_index = 2 [default = 16777215];
+    // optional uint32 ent_index = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_ent_index());
     }
@@ -24150,7 +24168,7 @@ const char* CUserMsg_ParticleManager_AddFan::_InternalParse(const char* ptr, ::_
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 entity_handle = 17 [default = 16777215];
+      // optional uint32 entity_handle = 17 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 17:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 136)) {
           _Internal::set_has_entity_handle(&has_bits);
@@ -24307,7 +24325,7 @@ uint8_t* CUserMsg_ParticleManager_AddFan::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteFloatToArray(16, this->_internal_cone_length(), target);
   }
 
-  // optional uint32 entity_handle = 17 [default = 16777215];
+  // optional uint32 entity_handle = 17 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00020000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(17, this->_internal_entity_handle(), target);
@@ -24444,7 +24462,7 @@ size_t CUserMsg_ParticleManager_AddFan::ByteSizeLong() const {
       total_size += 2 + 4;
     }
 
-    // optional uint32 entity_handle = 17 [default = 16777215];
+    // optional uint32 entity_handle = 17 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
     if (cached_has_bits & 0x00020000u) {
       total_size += 2 +
         ::_pbi::WireFormatLite::UInt32Size(
@@ -26551,7 +26569,7 @@ const char* CUserMsg_ParticleManager::_InternalParse(const char* ptr, ::_pbi::Pa
       ctx->SetLastTag(tag);
       goto message_done;
     }
-    if ((800u <= tag && tag < 1616u)) {
+    if ((800u <= tag && tag < 1608u)) {
       ptr = _impl_._extensions_.ParseField(tag, ptr, internal_default_instance(), &_internal_metadata_, ctx);
       CHK_(ptr != nullptr);
       continue;
@@ -26879,9 +26897,9 @@ uint8_t* CUserMsg_ParticleManager::_InternalSerialize(
         _Internal::set_override_texture(this).GetCachedSize(), target, stream);
   }
 
-  // Extension range [100, 202)
+  // Extension range [100, 201)
   target = _impl_._extensions_._InternalSerialize(
-  internal_default_instance(), 100, 202, target, stream);
+  internal_default_instance(), 100, 201, target, stream);
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -28317,7 +28335,7 @@ const char* CUserMessageHapticsManagerEffect::_InternalParse(const char* ptr, ::
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 effect_name_hash_code = 2;
+      // optional uint32 effect_name_hash_code = 2 [boxed_type = "CUtlStringToken"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _Internal::set_has_effect_name_hash_code(&has_bits);
@@ -28372,7 +28390,7 @@ uint8_t* CUserMessageHapticsManagerEffect::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_hand_id(), target);
   }
 
-  // optional uint32 effect_name_hash_code = 2;
+  // optional uint32 effect_name_hash_code = 2 [boxed_type = "CUtlStringToken"];
   if (cached_has_bits & 0x00000002u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_effect_name_hash_code(), target);
@@ -28407,7 +28425,7 @@ size_t CUserMessageHapticsManagerEffect::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_hand_id());
     }
 
-    // optional uint32 effect_name_hash_code = 2;
+    // optional uint32 effect_name_hash_code = 2 [boxed_type = "CUtlStringToken"];
     if (cached_has_bits & 0x00000002u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_effect_name_hash_code());
     }
@@ -36028,7 +36046,7 @@ const char* CUserMessage_NotifyResponseFound::_InternalParse(const char* ptr, ::
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 ent_index = 1 [default = -1];
+      // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_ent_index(&has_bits);
@@ -36197,7 +36215,7 @@ uint8_t* CUserMessage_NotifyResponseFound::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 ent_index = 1 [default = -1];
+  // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_ent_index(), target);
@@ -36428,7 +36446,7 @@ size_t CUserMessage_NotifyResponseFound::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_speak_result());
     }
 
-    // optional int32 ent_index = 1 [default = -1];
+    // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_ent_index());
     }
@@ -36669,7 +36687,7 @@ const char* CUserMessage_PlayResponseConditional::_InternalParse(const char* ptr
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional int32 ent_index = 1 [default = -1];
+      // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_ent_index(&has_bits);
@@ -36678,7 +36696,7 @@ const char* CUserMessage_PlayResponseConditional::_InternalParse(const char* ptr
         } else
           goto handle_unusual;
         continue;
-      // repeated int32 player_slots = 2;
+      // repeated int32 player_slots = 2 [boxed_type = "CPlayerSlot"];
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           ptr -= 1;
@@ -36763,13 +36781,13 @@ uint8_t* CUserMessage_PlayResponseConditional::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional int32 ent_index = 1 [default = -1];
+  // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   if (cached_has_bits & 0x00000010u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_ent_index(), target);
   }
 
-  // repeated int32 player_slots = 2;
+  // repeated int32 player_slots = 2 [boxed_type = "CPlayerSlot"];
   for (int i = 0, n = this->_internal_player_slots_size(); i < n; i++) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_player_slots(i), target);
@@ -36820,7 +36838,7 @@ size_t CUserMessage_PlayResponseConditional::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated int32 player_slots = 2;
+  // repeated int32 player_slots = 2 [boxed_type = "CPlayerSlot"];
   {
     size_t data_size = ::_pbi::WireFormatLite::
       Int32Size(this->_impl_.player_slots_);
@@ -36855,7 +36873,7 @@ size_t CUserMessage_PlayResponseConditional::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_mix_priority());
     }
 
-    // optional int32 ent_index = 1 [default = -1];
+    // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
     if (cached_has_bits & 0x00000010u) {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_ent_index());
     }

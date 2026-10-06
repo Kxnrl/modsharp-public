@@ -33,6 +33,7 @@
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
 #include "source2_steam_stats.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_netmessages_2eproto
@@ -2596,7 +2597,7 @@ class CCLCMsg_SplitPlayerDisconnect /*final*/ :
   enum : int {
     kSlotFieldNumber = 1,
   };
-  // optional int32 slot = 1;
+  // optional int32 slot = 1 [boxed_type = "CSplitScreenSlot"];
   bool has_slot() const;
   private:
   bool _internal_has_slot() const;
@@ -3911,7 +3912,7 @@ class CSVCMsg_ServerInfo /*final*/ :
   void _internal_set_tick_interval(float value);
   public:
 
-  // optional int32 player_slot = 12 [default = -1];
+  // optional int32 player_slot = 12 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_slot() const;
   private:
   bool _internal_has_player_slot() const;
@@ -5220,7 +5221,7 @@ class CSVCMsg_Sounds_sounddata_t /*final*/ :
   void _internal_set_sound_resource_id(uint64_t value);
   public:
 
-  // optional int32 entity_index = 7 [default = -1];
+  // optional int32 entity_index = 7 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity_index() const;
   private:
   bool _internal_has_entity_index() const;
@@ -5756,7 +5757,7 @@ class CSVCMsg_SetView /*final*/ :
     kEntityIndexFieldNumber = 1,
     kSlotFieldNumber = 2,
   };
-  // optional int32 entity_index = 1 [default = -1];
+  // optional int32 entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity_index() const;
   private:
   bool _internal_has_entity_index() const;
@@ -5769,7 +5770,7 @@ class CSVCMsg_SetView /*final*/ :
   void _internal_set_entity_index(int32_t value);
   public:
 
-  // optional int32 slot = 2 [default = -1];
+  // optional int32 slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_slot() const;
   private:
   bool _internal_has_slot() const;
@@ -6336,7 +6337,7 @@ class CSVCMsg_BSPDecal /*final*/ :
   void _internal_set_low_priority(bool value);
   public:
 
-  // optional int32 entity_index = 3 [default = -1];
+  // optional int32 entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity_index() const;
   private:
   bool _internal_has_entity_index() const;
@@ -6515,7 +6516,7 @@ class CSVCMsg_SplitScreen /*final*/ :
   void _internal_set_type(::ESplitScreenMessageType value);
   public:
 
-  // optional int32 slot = 2;
+  // optional int32 slot = 2 [boxed_type = "CSplitScreenSlot"];
   bool has_slot() const;
   private:
   bool _internal_has_slot() const;
@@ -6528,7 +6529,7 @@ class CSVCMsg_SplitScreen /*final*/ :
   void _internal_set_slot(int32_t value);
   public:
 
-  // optional int32 player_index = 3 [default = -1];
+  // optional int32 player_index = 3 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_index() const;
   private:
   bool _internal_has_player_index() const;
@@ -10152,7 +10153,7 @@ class CSVCMsg_VoiceData /*final*/ :
   void _internal_set_passthrough(int32_t value);
   public:
 
-  // optional int32 client_deprecated = 2 [default = -1];
+  // optional int32 client_deprecated = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_client_deprecated() const;
   private:
   bool _internal_has_client_deprecated() const;
@@ -10165,7 +10166,7 @@ class CSVCMsg_VoiceData /*final*/ :
   void _internal_set_client_deprecated(int32_t value);
   public:
 
-  // optional int32 entity = 8 [default = -1];
+  // optional int32 entity = 8 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity() const;
   private:
   bool _internal_has_entity() const;
@@ -11883,7 +11884,7 @@ class CMsgServerPeer /*final*/ :
   void _internal_set_is_listenserver_host(bool value);
   public:
 
-  // optional int32 player_slot = 1 [default = -1];
+  // optional int32 player_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_slot() const;
   private:
   bool _internal_has_player_slot() const;
@@ -15591,7 +15592,7 @@ class CSVCMsg_HltvReplay /*final*/ :
   void _internal_set_reason(int32_t value);
   public:
 
-  // optional int32 primary_target = 2 [default = -1];
+  // optional int32 primary_target = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_primary_target() const;
   private:
   bool _internal_has_primary_target() const;
@@ -15814,7 +15815,7 @@ class CCLCMsg_HltvReplay /*final*/ :
   void _internal_set_event_time(float value);
   public:
 
-  // optional int32 primary_target = 4 [default = -1];
+  // optional int32 primary_target = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_primary_target() const;
   private:
   bool _internal_has_primary_target() const;
@@ -16702,7 +16703,7 @@ class CMsgServerUserCmd /*final*/ :
   void _internal_set_delta_processed(bool value);
   public:
 
-  // optional int32 player_slot = 3 [default = -1];
+  // optional int32 player_slot = 3 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_slot() const;
   private:
   bool _internal_has_player_slot() const;
@@ -17046,7 +17047,7 @@ class CSVCMsg_NextMsgPredicted /*final*/ :
   void _internal_set_message_type_id(uint32_t value);
   public:
 
-  // optional int32 predicted_by_player_slot = 1 [default = -1];
+  // optional int32 predicted_by_player_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_predicted_by_player_slot() const;
   private:
   bool _internal_has_predicted_by_player_slot() const;
@@ -18247,7 +18248,7 @@ inline void CCLCMsg_SplitPlayerConnect::set_allocated_playername(std::string* pl
 
 // CCLCMsg_SplitPlayerDisconnect
 
-// optional int32 slot = 1;
+// optional int32 slot = 1 [boxed_type = "CSplitScreenSlot"];
 inline bool CCLCMsg_SplitPlayerDisconnect::_internal_has_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -19101,7 +19102,7 @@ inline void CSVCMsg_ServerInfo::set_max_classes(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_ServerInfo.max_classes)
 }
 
-// optional int32 player_slot = 12 [default = -1];
+// optional int32 player_slot = 12 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CSVCMsg_ServerInfo::_internal_has_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;
@@ -20228,7 +20229,7 @@ inline void CSVCMsg_Sounds_sounddata_t::set_sequence_number(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_Sounds.sounddata_t.sequence_number)
 }
 
-// optional int32 entity_index = 7 [default = -1];
+// optional int32 entity_index = 7 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CSVCMsg_Sounds_sounddata_t::_internal_has_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
   return value;
@@ -20729,7 +20730,7 @@ inline void CSVCMsg_Prefetch::set_resource_type(::PrefetchType value) {
 
 // CSVCMsg_SetView
 
-// optional int32 entity_index = 1 [default = -1];
+// optional int32 entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CSVCMsg_SetView::_internal_has_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -20757,7 +20758,7 @@ inline void CSVCMsg_SetView::set_entity_index(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_SetView.entity_index)
 }
 
-// optional int32 slot = 2 [default = -1];
+// optional int32 slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CSVCMsg_SetView::_internal_has_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -21114,7 +21115,7 @@ inline void CSVCMsg_BSPDecal::set_decal_texture_index(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_BSPDecal.decal_texture_index)
 }
 
-// optional int32 entity_index = 3 [default = -1];
+// optional int32 entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CSVCMsg_BSPDecal::_internal_has_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -21231,7 +21232,7 @@ inline void CSVCMsg_SplitScreen::set_type(::ESplitScreenMessageType value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_SplitScreen.type)
 }
 
-// optional int32 slot = 2;
+// optional int32 slot = 2 [boxed_type = "CSplitScreenSlot"];
 inline bool CSVCMsg_SplitScreen::_internal_has_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -21259,7 +21260,7 @@ inline void CSVCMsg_SplitScreen::set_slot(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_SplitScreen.slot)
 }
 
-// optional int32 player_index = 3 [default = -1];
+// optional int32 player_index = 3 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CSVCMsg_SplitScreen::_internal_has_player_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -24272,7 +24273,7 @@ inline void CSVCMsg_VoiceData::set_allocated_audio(::CMsgVoiceAudio* audio) {
   // @@protoc_insertion_point(field_set_allocated:CSVCMsg_VoiceData.audio)
 }
 
-// optional int32 client_deprecated = 2 [default = -1];
+// optional int32 client_deprecated = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CSVCMsg_VoiceData::_internal_has_client_deprecated() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -24440,7 +24441,7 @@ inline void CSVCMsg_VoiceData::set_passthrough(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_VoiceData.passthrough)
 }
 
-// optional int32 entity = 8 [default = -1];
+// optional int32 entity = 8 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CSVCMsg_VoiceData::_internal_has_entity() const {
   bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
@@ -25304,7 +25305,7 @@ inline void CMsgIPCAddress::set_process_id(uint32_t value) {
 
 // CMsgServerPeer
 
-// optional int32 player_slot = 1 [default = -1];
+// optional int32 player_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CMsgServerPeer::_internal_has_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -28204,7 +28205,7 @@ inline void CSVCMsg_HltvReplay::set_delay(int32_t value) {
   // @@protoc_insertion_point(field_set:CSVCMsg_HltvReplay.delay)
 }
 
-// optional int32 primary_target = 2 [default = -1];
+// optional int32 primary_target = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CSVCMsg_HltvReplay::_internal_has_primary_target() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -28488,7 +28489,7 @@ inline void CCLCMsg_HltvReplay::set_slowdown_rate(float value) {
   // @@protoc_insertion_point(field_set:CCLCMsg_HltvReplay.slowdown_rate)
 }
 
-// optional int32 primary_target = 4 [default = -1];
+// optional int32 primary_target = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCLCMsg_HltvReplay::_internal_has_primary_target() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -29261,7 +29262,7 @@ inline void CMsgServerUserCmd::set_cmd_number(int32_t value) {
   // @@protoc_insertion_point(field_set:CMsgServerUserCmd.cmd_number)
 }
 
-// optional int32 player_slot = 3 [default = -1];
+// optional int32 player_slot = 3 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CMsgServerUserCmd::_internal_has_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
@@ -29489,7 +29490,7 @@ CSVCMsg_UserCommands::commands() const {
 
 // CSVCMsg_NextMsgPredicted
 
-// optional int32 predicted_by_player_slot = 1 [default = -1];
+// optional int32 predicted_by_player_slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CSVCMsg_NextMsgPredicted::_internal_has_predicted_by_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;

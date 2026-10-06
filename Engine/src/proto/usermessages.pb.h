@@ -33,6 +33,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_usermessages_2eproto
@@ -1086,7 +1087,7 @@ class CUserMessageCloseCaptionPlaceholder /*final*/ :
   void _internal_set_from_player(bool value);
   public:
 
-  // optional int32 ent_index = 4 [default = -1];
+  // optional int32 ent_index = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_ent_index() const;
   private:
   bool _internal_has_ent_index() const;
@@ -2686,7 +2687,7 @@ class CUserMessageSayText /*final*/ :
   void _internal_set_textallchat(bool value);
   public:
 
-  // optional int32 playerindex = 1 [default = -1];
+  // optional int32 playerindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_playerindex() const;
   private:
   bool _internal_has_playerindex() const;
@@ -2972,7 +2973,7 @@ class CUserMessageSayText2 /*final*/ :
   void _internal_set_textallchat(bool value);
   public:
 
-  // optional int32 entityindex = 1 [default = -1];
+  // optional int32 entityindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entityindex() const;
   private:
   bool _internal_has_entityindex() const;
@@ -4178,7 +4179,7 @@ class CUserMessageAudioParameter /*final*/ :
     kValueFieldNumber = 3,
     kIntValueFieldNumber = 4,
   };
-  // optional uint32 parameter_type = 1;
+  // optional uint32 parameter_type = 1 [boxed_type = "CUtlStringToken"];
   bool has_parameter_type() const;
   private:
   bool _internal_has_parameter_type() const;
@@ -4191,7 +4192,7 @@ class CUserMessageAudioParameter /*final*/ :
   void _internal_set_parameter_type(uint32_t value);
   public:
 
-  // optional uint32 name_hash_code = 2;
+  // optional uint32 name_hash_code = 2 [boxed_type = "CUtlStringToken"];
   bool has_name_hash_code() const;
   private:
   bool _internal_has_name_hash_code() const;
@@ -5173,7 +5174,7 @@ class CUserMessageColoredText /*final*/ :
   void _internal_set_context_team_id(int32_t value);
   public:
 
-  // optional int32 context_player_slot = 4 [default = -1];
+  // optional int32 context_player_slot = 4 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_context_player_slot() const;
   private:
   bool _internal_has_context_player_slot() const;
@@ -6686,7 +6687,7 @@ class CEntityMessageDoSpark /*final*/ :
   void _internal_set_duration(float value);
   public:
 
-  // optional int32 entityindex = 2 [default = -1];
+  // optional int32 entityindex = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entityindex() const;
   private:
   bool _internal_has_entityindex() const;
@@ -7086,7 +7087,7 @@ class CUserMessageCameraTransition_Transition_DataDriven /*final*/ :
   void _internal_set_duration(float value);
   public:
 
-  // optional int32 attach_ent_index = 2 [default = -1];
+  // optional int32 attach_ent_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_attach_ent_index() const;
   private:
   bool _internal_has_attach_ent_index() const;
@@ -7693,7 +7694,7 @@ class CUserMsg_ParticleManager_CreateParticle /*final*/ :
   void _internal_set_endcap_time(float value);
   public:
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -7706,7 +7707,7 @@ class CUserMsg_ParticleManager_CreateParticle /*final*/ :
   void _internal_set_entity_handle(uint32_t value);
   public:
 
-  // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215];
+  // optional uint32 entity_handle_for_modifiers = 4 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle_for_modifiers() const;
   private:
   bool _internal_has_entity_handle_for_modifiers() const;
@@ -8049,7 +8050,7 @@ class CUserMsg_ParticleManager_DestroyParticleInvolving /*final*/ :
   void _internal_set_destroy_immediately(bool value);
   public:
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -8252,7 +8253,7 @@ class CUserMsg_ParticleManager_DestroyParticleNamed /*final*/ :
   void _internal_set_play_endcap(bool value);
   public:
 
-  // optional uint32 entity_handle = 2 [default = 16777215];
+  // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -9723,7 +9724,7 @@ class CUserMsg_ParticleManager_UpdateParticleEnt /*final*/ :
   void _internal_set_include_wearables(bool value);
   public:
 
-  // optional uint32 entity_handle = 2 [default = 16777215];
+  // optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -10253,7 +10254,7 @@ class CUserMsg_ParticleManager_ChangeControlPointAttachment /*final*/ :
   void _internal_set_attachment_new(int32_t value);
   public:
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -10434,7 +10435,7 @@ class CUserMsg_ParticleManager_UpdateEntityPosition /*final*/ :
       ::CMsgVector* position);
   ::CMsgVector* unsafe_arena_release_position();
 
-  // optional uint32 entity_handle = 1 [default = 16777215];
+  // optional uint32 entity_handle = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -12678,7 +12679,7 @@ class CUserMsg_ParticleManager_FreezeParticleInvolving /*final*/ :
   void _internal_set_transition_duration(float value);
   public:
 
-  // optional uint32 entity_handle = 3 [default = 16777215];
+  // optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -13764,7 +13765,7 @@ class CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext /*fin
   void _internal_set_value_name_hash(uint32_t value);
   public:
 
-  // optional uint32 ent_index = 2 [default = 16777215];
+  // optional uint32 ent_index = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_ent_index() const;
   private:
   bool _internal_has_ent_index() const;
@@ -15257,7 +15258,7 @@ class CUserMsg_ParticleManager_AddFan /*final*/ :
   void _internal_set_cone_length(float value);
   public:
 
-  // optional uint32 entity_handle = 17 [default = 16777215];
+  // optional uint32 entity_handle = 17 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity_handle() const;
   private:
   bool _internal_has_entity_handle() const;
@@ -17808,7 +17809,7 @@ class CUserMessageHapticsManagerEffect /*final*/ :
   void _internal_set_hand_id(int32_t value);
   public:
 
-  // optional uint32 effect_name_hash_code = 2;
+  // optional uint32 effect_name_hash_code = 2 [boxed_type = "CUtlStringToken"];
   bool has_effect_name_hash_code() const;
   private:
   bool _internal_has_effect_name_hash_code() const;
@@ -23003,7 +23004,7 @@ class CUserMessage_NotifyResponseFound /*final*/ :
   void _internal_set_speak_result(int32_t value);
   public:
 
-  // optional int32 ent_index = 1 [default = -1];
+  // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_ent_index() const;
   private:
   bool _internal_has_ent_index() const;
@@ -23184,7 +23185,7 @@ class CUserMessage_PlayResponseConditional /*final*/ :
     kMixPriorityFieldNumber = 6,
     kEntIndexFieldNumber = 1,
   };
-  // repeated int32 player_slots = 2;
+  // repeated int32 player_slots = 2 [boxed_type = "CPlayerSlot"];
   int player_slots_size() const;
   private:
   int _internal_player_slots_size() const;
@@ -23268,7 +23269,7 @@ class CUserMessage_PlayResponseConditional /*final*/ :
   void _internal_set_mix_priority(int32_t value);
   public:
 
-  // optional int32 ent_index = 1 [default = -1];
+  // optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_ent_index() const;
   private:
   bool _internal_has_ent_index() const;
@@ -24097,7 +24098,7 @@ inline void CUserMessageCloseCaptionPlaceholder::set_from_player(bool value) {
   // @@protoc_insertion_point(field_set:CUserMessageCloseCaptionPlaceholder.from_player)
 }
 
-// optional int32 ent_index = 4 [default = -1];
+// optional int32 ent_index = 4 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessageCloseCaptionPlaceholder::_internal_has_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
@@ -25009,7 +25010,7 @@ inline void CUserMessageScreenTilt::set_time(float value) {
 
 // CUserMessageSayText
 
-// optional int32 playerindex = 1 [default = -1];
+// optional int32 playerindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessageSayText::_internal_has_playerindex() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
@@ -25165,7 +25166,7 @@ inline void CUserMessageSayText::set_textallchat(bool value) {
 
 // CUserMessageSayText2
 
-// optional int32 entityindex = 1 [default = -1];
+// optional int32 entityindex = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessageSayText2::_internal_has_entityindex() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -26120,7 +26121,7 @@ inline void CUserMessageSendAudio::set_stop(bool value) {
 
 // CUserMessageAudioParameter
 
-// optional uint32 parameter_type = 1;
+// optional uint32 parameter_type = 1 [boxed_type = "CUtlStringToken"];
 inline bool CUserMessageAudioParameter::_internal_has_parameter_type() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -26148,7 +26149,7 @@ inline void CUserMessageAudioParameter::set_parameter_type(uint32_t value) {
   // @@protoc_insertion_point(field_set:CUserMessageAudioParameter.parameter_type)
 }
 
-// optional uint32 name_hash_code = 2;
+// optional uint32 name_hash_code = 2 [boxed_type = "CUtlStringToken"];
 inline bool CUserMessageAudioParameter::_internal_has_name_hash_code() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -26706,7 +26707,7 @@ inline void CUserMessageColoredText::set_reset(bool value) {
   // @@protoc_insertion_point(field_set:CUserMessageColoredText.reset)
 }
 
-// optional int32 context_player_slot = 4 [default = -1];
+// optional int32 context_player_slot = 4 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CUserMessageColoredText::_internal_has_context_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -27590,7 +27591,7 @@ inline void CEntityMessageDoSpark::set_allocated_origin(::CMsgVector* origin) {
   // @@protoc_insertion_point(field_set_allocated:CEntityMessageDoSpark.origin)
 }
 
-// optional int32 entityindex = 2 [default = -1];
+// optional int32 entityindex = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CEntityMessageDoSpark::_internal_has_entityindex() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -28123,7 +28124,7 @@ inline void CUserMessageCameraTransition_Transition_DataDriven::set_allocated_fi
   // @@protoc_insertion_point(field_set_allocated:CUserMessageCameraTransition.Transition_DataDriven.filename)
 }
 
-// optional int32 attach_ent_index = 2 [default = -1];
+// optional int32 attach_ent_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessageCameraTransition_Transition_DataDriven::_internal_has_attach_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -28393,7 +28394,7 @@ inline void CUserMsg_ParticleManager_CreateParticle::set_attach_type(int32_t val
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.CreateParticle.attach_type)
 }
 
-// optional uint32 entity_handle = 3 [default = 16777215];
+// optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_CreateParticle::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
@@ -28421,7 +28422,7 @@ inline void CUserMsg_ParticleManager_CreateParticle::set_entity_handle(uint32_t 
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.CreateParticle.entity_handle)
 }
 
-// optional uint32 entity_handle_for_modifiers = 4 [default = 16777215];
+// optional uint32 entity_handle_for_modifiers = 4 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_CreateParticle::_internal_has_entity_handle_for_modifiers() const {
   bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
   return value;
@@ -28780,7 +28781,7 @@ inline void CUserMsg_ParticleManager_DestroyParticleInvolving::set_destroy_immed
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.DestroyParticleInvolving.destroy_immediately)
 }
 
-// optional uint32 entity_handle = 3 [default = 16777215];
+// optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_DestroyParticleInvolving::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -28840,7 +28841,7 @@ inline void CUserMsg_ParticleManager_DestroyParticleNamed::set_particle_name_ind
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.DestroyParticleNamed.particle_name_index)
 }
 
-// optional uint32 entity_handle = 2 [default = 16777215];
+// optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_DestroyParticleNamed::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
@@ -30133,7 +30134,7 @@ inline void CUserMsg_ParticleManager_UpdateParticleEnt::set_control_point(int32_
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.UpdateParticleEnt.control_point)
 }
 
-// optional uint32 entity_handle = 2 [default = 16777215];
+// optional uint32 entity_handle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_UpdateParticleEnt::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -30658,7 +30659,7 @@ inline void CUserMsg_ParticleManager_ChangeControlPointAttachment::set_attachmen
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.ChangeControlPointAttachment.attachment_new)
 }
 
-// optional uint32 entity_handle = 3 [default = 16777215];
+// optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_ChangeControlPointAttachment::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -30690,7 +30691,7 @@ inline void CUserMsg_ParticleManager_ChangeControlPointAttachment::set_entity_ha
 
 // CUserMsg_ParticleManager_UpdateEntityPosition
 
-// optional uint32 entity_handle = 1 [default = 16777215];
+// optional uint32 entity_handle = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_UpdateEntityPosition::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -31685,7 +31686,7 @@ inline void CUserMsg_ParticleManager_FreezeParticleInvolving::set_transition_dur
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.FreezeParticleInvolving.transition_duration)
 }
 
-// optional uint32 entity_handle = 3 [default = 16777215];
+// optional uint32 entity_handle = 3 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_FreezeParticleInvolving::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -32290,7 +32291,7 @@ inline void CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.SetParticleNamedValueContext.EHandleContext.value_name_hash)
 }
 
-// optional uint32 ent_index = 2 [default = 16777215];
+// optional uint32 ent_index = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_SetParticleNamedValueContext_EHandleContext::_internal_has_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -33645,7 +33646,7 @@ inline void CUserMsg_ParticleManager_AddFan::set_cone_length(float value) {
   // @@protoc_insertion_point(field_set:CUserMsg_ParticleManager.AddFan.cone_length)
 }
 
-// optional uint32 entity_handle = 17 [default = 16777215];
+// optional uint32 entity_handle = 17 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CUserMsg_ParticleManager_AddFan::_internal_has_entity_handle() const {
   bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
@@ -38430,7 +38431,7 @@ inline void CUserMessageHapticsManagerEffect::set_hand_id(int32_t value) {
   // @@protoc_insertion_point(field_set:CUserMessageHapticsManagerEffect.hand_id)
 }
 
-// optional uint32 effect_name_hash_code = 2;
+// optional uint32 effect_name_hash_code = 2 [boxed_type = "CUtlStringToken"];
 inline bool CUserMessageHapticsManagerEffect::_internal_has_effect_name_hash_code() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -42710,7 +42711,7 @@ inline void CUserMessage_NotifyResponseFound_Criteria::set_allocated_value(std::
 
 // CUserMessage_NotifyResponseFound
 
-// optional int32 ent_index = 1 [default = -1];
+// optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessage_NotifyResponseFound::_internal_has_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -43296,7 +43297,7 @@ inline void CUserMessage_NotifyResponseFound::set_speak_result(int32_t value) {
 
 // CUserMessage_PlayResponseConditional
 
-// optional int32 ent_index = 1 [default = -1];
+// optional int32 ent_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CUserMessage_PlayResponseConditional::_internal_has_ent_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -43324,7 +43325,7 @@ inline void CUserMessage_PlayResponseConditional::set_ent_index(int32_t value) {
   // @@protoc_insertion_point(field_set:CUserMessage_PlayResponseConditional.ent_index)
 }
 
-// repeated int32 player_slots = 2;
+// repeated int32 player_slots = 2 [boxed_type = "CPlayerSlot"];
 inline int CUserMessage_PlayResponseConditional::_internal_player_slots_size() const {
   return _impl_.player_slots_.size();
 }

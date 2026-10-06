@@ -305,6 +305,9 @@ void CBaseEntity::DispatchSpawn(const KeyValuesVariantItem* items, int count)
             case KeyValuesVariantValueItemType_Pointer:
                 pKeyValues->SetPointer(item.Key, item.Value.pValue);
                 break;
+            case KeyValuesVariantValueItemType_UInt64:
+                pKeyValues->SetUInt64(item.Key, item.Value.u64Value);
+                break;
             default:
                 FatalError("Not support KeyValuesVariantValueItemType");
                 break;

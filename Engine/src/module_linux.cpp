@@ -99,8 +99,8 @@ std::vector<AddressRange> GetElfExecutableRanges(const std::uint8_t* bytes,
     if (!IsSupportedElfFile(bytes, file_size))
         return ranges;
 
-    const auto* header = reinterpret_cast<const Elf64_Ehdr*>(bytes);
-    const auto section_header_fits = [&](std::size_t index) {
+    const auto* header              = reinterpret_cast<const Elf64_Ehdr*>(bytes);
+    const auto  section_header_fits = [&](std::size_t index) {
         if (header->e_shoff > file_size || index > (file_size - header->e_shoff) / header->e_shentsize)
             return false;
 
@@ -186,31 +186,31 @@ void CModule::GetModuleInfo(std::string_view mod)
 {
     std::vector<std::pair<std::string, dl_phdr_info>> module_list;
     dl_iterate_phdr(
-            [](struct dl_phdr_info* info, size_t, void* data) {
-                std::string name = info->dlpi_name;
+        [](struct dl_phdr_info* info, size_t, void* data) {
+            std::string name = info->dlpi_name;
 
-                if (name.rfind(".so") == std::string::npos)
-                    return 0;
-
-                /*if (name.find("/addons/") != std::string::npos)
-                    return 0;*/
-
-                constexpr std::string_view ROOTBIN = "/bin/linuxsteamrt64/";
-                constexpr std::string_view GAMEBIN = "/csgo/bin/linuxsteamrt64/";
-
-                bool isFromRootBin = name.find(ROOTBIN) != std::string::npos;
-                bool isFromGameBin = name.find(GAMEBIN) != std::string::npos;
-                if (!isFromGameBin && !isFromRootBin)
-                    return 0;
-
-                auto& modules  = *static_cast<std::vector<std::pair<std::string, dl_phdr_info>>*>(data);
-                auto& mod_info = modules.emplace_back();
-
-                mod_info.first  = name;
-                mod_info.second = *info;
+            if (name.rfind(".so") == std::string::npos)
                 return 0;
-            },
-            &module_list);
+
+            /*if (name.find("/addons/") != std::string::npos)
+                return 0;*/
+
+            constexpr std::string_view ROOTBIN = "/bin/linuxsteamrt64/";
+            constexpr std::string_view GAMEBIN = "/csgo/bin/linuxsteamrt64/";
+
+            bool isFromRootBin = name.find(ROOTBIN) != std::string::npos;
+            bool isFromGameBin = name.find(GAMEBIN) != std::string::npos;
+            if (!isFromGameBin && !isFromRootBin)
+                return 0;
+
+            auto& modules  = *static_cast<std::vector<std::pair<std::string, dl_phdr_info>>*>(data);
+            auto& mod_info = modules.emplace_back();
+
+            mod_info.first  = name;
+            mod_info.second = *info;
+            return 0;
+        },
+        &module_list);
 
     const auto it = std::ranges::find_if(module_list,
                                          [&](const auto& i) {
@@ -250,11 +250,9 @@ void CModule::GetModuleInfo(std::string_view mod)
         close(fd);
     }
 
-    const auto* elf_bytes      = static_cast<const std::uint8_t*>(mapped_file.get());
-    const bool  has_file_image = MatchesLoadedProgramHeaders(elf_bytes, elf_file_size, info);
-    const auto  executable_ranges = has_file_image
-        ? GetElfExecutableRanges(elf_bytes, elf_file_size, _base_address)
-        : std::vector<AddressRange>{};
+    const auto* elf_bytes         = static_cast<const std::uint8_t*>(mapped_file.get());
+    const bool  has_file_image    = MatchesLoadedProgramHeaders(elf_bytes, elf_file_size, info);
+    const auto  executable_ranges = has_file_image ? GetElfExecutableRanges(elf_bytes, elf_file_size, _base_address) : std::vector<AddressRange>{};
 
     uintptr_t min_vaddr = std::numeric_limits<uintptr_t>::max();
     uintptr_t max_vaddr = 0;
@@ -313,11 +311,9 @@ void CModule::GetModuleInfo(std::string_view mod)
             // retain their relocated runtime image.
             if ((flags & FLAG_X) != 0 && has_file_image && segment_address >= address)
             {
-                const auto load_offset = segment_address - address;
-                const auto initialized_size = load_offset < program_header.p_filesz
-                    ? std::min<std::size_t>(segment_size, program_header.p_filesz - load_offset)
-                    : 0;
-                const auto file_offset = program_header.p_offset + load_offset;
+                const auto load_offset      = segment_address - address;
+                const auto initialized_size = load_offset < program_header.p_filesz ? std::min<std::size_t>(segment_size, program_header.p_filesz - load_offset) : 0;
+                const auto file_offset      = program_header.p_offset + load_offset;
 
                 if (load_offset <= program_header.p_memsz && file_offset <= elf_file_size
                     && initialized_size <= elf_file_size - file_offset)
@@ -1033,8 +1029,8 @@ void CModule::BuildFunctionIndexAndReferences()
     data_segments.reserve(_segments.size());
 
     std::size_t    executable_size = 0;
-    std::uintptr_t min_data_addr = std::numeric_limits<std::uintptr_t>::max();
-    std::uintptr_t max_data_addr = 0;
+    std::uintptr_t min_data_addr   = std::numeric_limits<std::uintptr_t>::max();
+    std::uintptr_t max_data_addr   = 0;
 
     for (const auto& seg : _segments)
     {
@@ -1144,7 +1140,7 @@ void CModule::BuildFunctionIndexAndReferences()
         if (ZYAN_FAILED(ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64)))
             return;
 
-        auto& result = chunk_results[idx];
+        auto&      result          = chunk_results[idx];
         const auto result_capacity = chunk.chunk_end - chunk.chunk_start;
         result.functions.reserve(result_capacity / 64);
         result.refs.reserve(result_capacity / 8);

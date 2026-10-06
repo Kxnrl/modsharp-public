@@ -35,6 +35,12 @@ namespace Sharp.Core.Helpers;
 
 public static class SchemaSystem
 {
+    private static readonly Lazy<int> GameSceneNodeNscIndex
+        = new (() => CoreGameData.Core.GetVFuncIndex("CGameSceneNode::NetworkStateChanged"));
+
+    private static readonly Lazy<int> EconItemViewNscIndex
+        = new (() => CoreGameData.Core.GetVFuncIndex("CEconItemView::NetworkStateChanged"));
+
     public static SchemaField GetSchemaField(string classname, string field)
     {
         var schemaClass = GetSchemaClass(classname);
@@ -381,10 +387,29 @@ public static class SchemaSystem
             Entity.NetworkStateChanged(ptr.Add(schemaClass.ChainOffset),
                                        (ushort) (schemaField.Offset + extraOffset));
         }
+        else if (TryGetStructNscIndex(schemaClass.ClassName, out var nscIndex))
+        {
+            Entity.SetStructStateChanged(ptr, (ushort) (schemaField.Offset + extraOffset), nscIndex);
+        }
         else if (!isStruct)
         {
             Entity.SetStateChanged(ptr, (ushort) (schemaField.Offset + extraOffset));
         }
+    }
+
+    internal static bool TryGetStructNscIndex(string classname, out int index)
+    {
+        index = classname switch
+        {
+            "CCollisionProperty" or "CAttributeContainer" or "CSPerRoundStats_t" or "CSMatchStats_t" => 1,
+            "VPhysicsCollisionAttribute_t"                                                          => 2,
+            "CGlowProperty"                                                                         => 4,
+            "CGameSceneNode" or "CSkeletonInstance"                                                 => GameSceneNodeNscIndex.Value,
+            "CEconItemView"                                                                         => EconItemViewNscIndex.Value,
+            _                                                                                       => -1,
+        };
+
+        return index >= 0;
     }
 
     public static bool FindNetVar(string classname, string field)

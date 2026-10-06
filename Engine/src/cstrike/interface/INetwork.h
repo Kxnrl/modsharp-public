@@ -104,8 +104,16 @@ public:
     }
 
 private:
-    char pad[0x28];
+    void*    m_pUnk08{};
+    uint32_t m_nUnk10{};
+    uint8_t  m_nUnk14{0xFF};
+    uint8_t  m_nUnk15[3]{};
+    int64_t  m_nUnk18{-1};
+    float    m_flUnk20{-1.0f};
+    uint32_t m_nUnk24{};
+    int64_t  m_nUnk28{-1};
 };
+static_assert(sizeof(CNetMessage) == 0x30);
 
 // AMNOTE: This is a stub class over real CNetMessagePB!
 // This is mainly to access the game constructed objects, and not for direct initialization of them

@@ -30,6 +30,7 @@ public:
 
     SCHEMA_FIELD(int32_t, m_iMaxClip1)
     SCHEMA_FIELD(ItemFlagTypes_t, m_iFlags)
+    SCHEMA_FIELD(int8_t, m_nPrimaryAmmoType)
 };
 
 class CCSWeaponBaseVData : public CBasePlayerWeaponVData

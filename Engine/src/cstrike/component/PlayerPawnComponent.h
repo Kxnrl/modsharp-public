@@ -37,6 +37,8 @@ constexpr int WEAPON_SLOT_KNIFE    = 2;
 constexpr int WEAPON_SLOT_GRENADES = 3;
 constexpr int WEAPON_SLOT_C4       = 4;
 
+constexpr int MAX_AMMO_TYPES = 32;
+
 class PlayerPawnComponent : public CStrikeObject
 {
 public:
@@ -69,6 +71,9 @@ public:
     SCHEMA_POINTER_FIELD(CUtlVector<CBaseHandle>, m_hMyWeapons)
     SCHEMA_FIELD(CBaseHandle, m_hActiveWeapon)
     SCHEMA_FIELD(CBaseHandle, m_hLastWeapon)
+    SCHEMA_POINTER_FIELD(uint16_t, m_iAmmo)
+
+    void SetAmmo(int32_t ammoType, uint16_t count);
 };
 
 class CCSPlayer_WeaponServices : public CPlayer_WeaponServices
@@ -96,8 +101,6 @@ public:
 class CPlayer_MovementServices_Humanoid : public CPlayer_MovementServices
 {
     DECLARE_SCHEMA_CLASS(CPlayer_MovementServices_Humanoid)
-public:
-    SCHEMA_FIELD(bool, m_bDucked)
 };
 
 class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
@@ -105,6 +108,7 @@ class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
     DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices)
 
 public:
+    SCHEMA_FIELD(bool, m_bDucked)
     SCHEMA_FIELD(float, m_flDuckSpeed)
 };
 

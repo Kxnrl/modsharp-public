@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
@@ -34,7 +35,7 @@ internal partial class ConVar : NativeObject, IConVar
 
     public string Name => _name ??= _this.GetPtrString(0);
 
-    public string DefaultValue => _this.GetPtrString(8);
+    public string DefaultValue => FormatValue(ref GetDefault());
 
     public string HelpString => _this.GetPtrString(32);
 
@@ -80,20 +81,51 @@ internal partial class ConVar : NativeObject, IConVar
         return ref target;
     }
 
+    private unsafe ref ConVarVariantValue GetDefault()
+    {
+        var pDefault = _this.GetObjectPtr(8);
+
+        if (pDefault == nint.Zero)
+        {
+            throw new InvalidOperationException($"CVar '{Name}' has no default value");
+        }
+
+        return ref Unsafe.AsRef<ConVarVariantValue>(pDefault.ToPointer());
+    }
+
     public string GetString()
+        => FormatValue(ref Get());
+
+    private string FormatValue(ref ConVarVariantValue value)
         => Type switch
         {
-            ConVarType.Bool    => Get().AsBool ? "true" : "false",
-            ConVarType.Int16   => Get().AsInt16.ToString(),
-            ConVarType.UInt16  => Get().AsUInt16.ToString(),
-            ConVarType.Int32   => Get().AsInt32.ToString(),
-            ConVarType.UInt32  => Get().AsUInt32.ToString(),
-            ConVarType.Int64   => Get().AsInt64.ToString(),
-            ConVarType.UInt64  => Get().AsUInt64.ToString(),
-            ConVarType.Float32 => $"{Get().AsFloat}",
-            ConVarType.Float64 => $"{Get().AsDouble}",
-            ConVarType.String  => Get().AsString,
+            ConVarType.Bool    => value.AsBool ? "true" : "false",
+            ConVarType.Int16   => value.AsInt16.ToString(CultureInfo.InvariantCulture),
+            ConVarType.UInt16  => value.AsUInt16.ToString(CultureInfo.InvariantCulture),
+            ConVarType.Int32   => value.AsInt32.ToString(CultureInfo.InvariantCulture),
+            ConVarType.UInt32  => value.AsUInt32.ToString(CultureInfo.InvariantCulture),
+            ConVarType.Int64   => value.AsInt64.ToString(CultureInfo.InvariantCulture),
+            ConVarType.UInt64  => value.AsUInt64.ToString(CultureInfo.InvariantCulture),
+            ConVarType.Float32 => value.AsFloat.ToString(CultureInfo.InvariantCulture),
+            ConVarType.Float64 => value.AsDouble.ToString(CultureInfo.InvariantCulture),
+            ConVarType.String  => value.AsString,
+            ConVarType.Color   => FormatColor(value.AsColor32),
             _                  => throw new NotSupportedException($"Unsupported type {Type}"),
+        };
+
+    private static string FormatColor(Color32 color)
+        => color.A == 255
+            ? string.Create(CultureInfo.InvariantCulture, $"{color.R} {color.G} {color.B}")
+            : string.Create(CultureInfo.InvariantCulture, $"{color.R} {color.G} {color.B} {color.A}");
+
+    private static string? TypeDefaultString(ConVarType type)
+        => type switch
+        {
+            ConVarType.Color                                                => "0 0 0 255",
+            ConVarType.Vector2                                              => "0 0",
+            ConVarType.Vector3 or ConVarType.QAngle or ConVarType.VectorWS => "0 0 0",
+            ConVarType.Vector4                                              => "0 0 0 0",
+            _                                                               => null,
         };
 
     public void ReplicateToClient(IGameClient client, string value)
@@ -138,22 +170,32 @@ internal partial class ConVar : NativeObject, IConVar
         Cvar.SetValue(_this, &x);
     }
 
-    public unsafe void Set(string value)
+    public void Set(string value)
     {
-        Span<byte> bytes = stackalloc byte[256];
-
-        bytes.WriteStringUtf8(value);
-
-        fixed (byte* p = bytes)
+        if (!Cvar.SetValueString(_this, value))
         {
-            var convarValue = new ConVarVariantValue(new IntPtr(p));
-
-            Cvar.SetValue(_this, &convarValue);
+            throw new ArgumentException($"Cannot parse '{value}' as {Type} for CVar '{Name}'", nameof(value));
         }
     }
 
     public unsafe void Set(ConVarVariantValue value)
-        => Cvar.SetValue(_this, &value);
+    {
+        if (Type == ConVarType.Color)
+        {
+            Set(FormatValue(ref value));
+
+            return;
+        }
+
+        if (Type is ConVarType.Float64 or ConVarType.Vector2 or ConVarType.Vector3 or ConVarType.Vector4 or ConVarType.QAngle or ConVarType.VectorWS)
+        {
+            throw new
+                NotSupportedException(
+                    $"Cannot call Set(ConVarVariantValue) on CVar '{Name}' (type={Type}). Use Set(string) instead.");
+        }
+
+        Cvar.SetValue(_this, &value);
+    }
 
     public unsafe bool SetMinBound(ConVarVariantValue value)
         => Cvar.SetMinBound(_this, &value);
@@ -176,20 +218,27 @@ internal partial class ConVar : NativeObject, IConVar
                 Cvar.SetValue(_this, &convarValue);
             }
         }
+        else if (TypeDefaultString(Type) is { } fallback)
+        {
+            if (!Cvar.SetValueString(_this, value))
+            {
+                Cvar.SetValueString(_this, fallback);
+            }
+        }
         else
         {
             var convarValue = Type switch
             {
                 ConVarType.Bool => new ConVarVariantValue(value is "1"
                                                           || value.Equals("true", StringComparison.OrdinalIgnoreCase)),
-                ConVarType.Int16   => new ConVarVariantValue(short.TryParse(value, out var i16Val) ? i16Val : 0),
-                ConVarType.UInt16  => new ConVarVariantValue(ushort.TryParse(value, out var u16Val) ? u16Val : 0),
-                ConVarType.Int32   => new ConVarVariantValue(int.TryParse(value, out var i32Val) ? i32Val : 0),
-                ConVarType.UInt32  => new ConVarVariantValue(uint.TryParse(value, out var u32Val) ? u32Val : 0),
-                ConVarType.Int64   => new ConVarVariantValue(long.TryParse(value, out var i64Val) ? i64Val : 0),
-                ConVarType.UInt64  => new ConVarVariantValue(ulong.TryParse(value, out var u64Val) ? u64Val : 0),
-                ConVarType.Float32 => new ConVarVariantValue(float.TryParse(value, out var fVal) ? fVal : 0),
-                ConVarType.Float64 => new ConVarVariantValue(double.TryParse(value, out var dVal) ? dVal : 0),
+                ConVarType.Int16   => new ConVarVariantValue(short.TryParse(value, CultureInfo.InvariantCulture, out var i16Val) ? i16Val : 0),
+                ConVarType.UInt16  => new ConVarVariantValue(ushort.TryParse(value, CultureInfo.InvariantCulture, out var u16Val) ? u16Val : 0),
+                ConVarType.Int32   => new ConVarVariantValue(int.TryParse(value, CultureInfo.InvariantCulture, out var i32Val) ? i32Val : 0),
+                ConVarType.UInt32  => new ConVarVariantValue(uint.TryParse(value, CultureInfo.InvariantCulture, out var u32Val) ? u32Val : 0),
+                ConVarType.Int64   => new ConVarVariantValue(long.TryParse(value, CultureInfo.InvariantCulture, out var i64Val) ? i64Val : 0),
+                ConVarType.UInt64  => new ConVarVariantValue(ulong.TryParse(value, CultureInfo.InvariantCulture, out var u64Val) ? u64Val : 0),
+                ConVarType.Float32 => new ConVarVariantValue(float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var fVal) ? fVal : 0),
+                ConVarType.Float64 => new ConVarVariantValue(double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var dVal) ? (float) dVal : 0),
                 _                  => throw new NotSupportedException($"Unsupported type {Type}"),
             };
 

@@ -1207,6 +1207,10 @@
       "linux": 406,
       "windows": 405
     },
+    "CEconItemView::NetworkStateChanged": {
+      "linux": 31,
+      "windows": 30
+    },
     "CEntityInstance::GetDynamicBinding": {
       "linux": 48,
       "windows": 47
@@ -1264,6 +1268,10 @@
       "linux": 13,
       "windows": 12
     },
+    "CGameSceneNode::NetworkStateChanged": {
+      "linux": 29,
+      "windows": 28
+    },
     "CSource2GameClients::Active": {
       "linux": 14,
       "windows": 14
@@ -1283,6 +1291,10 @@
     "CSource2Server::GameServerSteamAPIDeactivated": {
       "linux": 42,
       "windows": 42
+    },
+    "IGameSystemFactory::IsReallocating": {
+      "linux": 8,
+      "windows": 8
     }
   }
 }

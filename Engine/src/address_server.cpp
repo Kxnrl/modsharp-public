@@ -175,9 +175,9 @@ void FindGameSystemFactory()
                     return false;
                 }
 
-                if (!modules::server->IsPointerDerivedFrom(first->m_pInstance, "IGameSystem"))
+                if (!modules::server->IsPointerDerivedFrom(first, "IGameSystemFactory"))
                 {
-                    WARN("Candidate at server+0x%llx rejected: m_pInstance is not derived from IGameSystem", pending_addr - modules::server->Base());
+                    WARN("Candidate at server+0x%llx rejected: head is not derived from IGameSystemFactory", pending_addr - modules::server->Base());
                     pending_reg  = ZYDIS_REGISTER_NONE;
                     pending_addr = 0;
                     return false;
