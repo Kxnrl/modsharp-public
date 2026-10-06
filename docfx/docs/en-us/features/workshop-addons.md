@@ -31,7 +31,9 @@ The module always uses the **MultiAddon** flow, based on [MultiAddonManager](htt
 clients reconnect once per addon they still need, on workshop and Valve maps alike.
 Missing addons are downloaded on the server automatically and the map is reloaded once they finish.
 
-Clients that already have the addons skip the reconnects on map changes and rejoins (`ms_cache_clients_with_addons`, on by default).
+By default clients go through the reconnects again on every map change and rejoin.
+`ms_cache_clients_with_addons 1` skips them for clients that already have the addons, but a cached rejoin receives every addon at once,
+which can lock up the client if one of them was updated in the meantime.
 
 > [!NOTE]
 > Without the module, the deprecated `-dual_addon` keeps its previous behavior:
@@ -56,7 +58,7 @@ while the server neither mounts nor downloads it.
 | `ms_addon_mount_download` | `false` | Re-download (update) server addons on every map start. |
 | `ms_extra_addons_timeout` | `10` | Seconds allowed between reconnects for the next addon. |
 | `ms_addon_connection_timeout` | `30` | Seconds allowed to accept the first addon before being kicked, 0 disables. |
-| `ms_cache_clients_with_addons` | `true` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
+| `ms_cache_clients_with_addons` | `false` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
 | `ms_cache_clients_duration` | `0` | How long to remember them in seconds, 0 forever. |
 | `ms_addon_debug` | `false` | Print verbose information about the download flow. |
 

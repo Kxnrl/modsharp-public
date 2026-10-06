@@ -125,9 +125,10 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
                                                     30f,
                                                     "How long until clients are timed out while downloading the first required addon (usually the current map), 0 disables");
 
-        // on by default (unlike MAM) so map changes do not reconnect clients that already have the addons
+        // off by default: a cached rejoin gets every addon at once in ReplyConnection, which can lock up a client
+        // when one of them was updated in the meantime
         _cvCacheClients = conVars.CreateConVar("ms_cache_clients_with_addons",
-                                               true,
+                                               false,
                                                "Whether to cache clients addon download list, this will prevent reconnects on mapchange/rejoin");
 
         _cvCacheDuration = conVars.CreateConVar("ms_cache_clients_duration",

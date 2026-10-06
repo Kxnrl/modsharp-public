@@ -31,7 +31,9 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 客户端每缺一个插件重连一次，工坊地图与官方地图均可用。
 服务端缺少的插件会自动下载，下载完成后重新加载地图。
 
-已拥有插件的客户端在换图和重进时会跳过重连（`ms_cache_clients_with_addons`，默认开启）。
+默认情况下，客户端在每次换图和重进时都会重新经历重连。
+设置 `ms_cache_clients_with_addons 1` 可让已拥有插件的客户端跳过重连，但带缓存重进时会一次性收到全部插件，
+若期间有插件更新，可能导致客户端卡死。
 
 > [!NOTE]
 > 未安装模块时，已弃用的 `-dual_addon` 保持原有行为：
@@ -55,7 +57,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 | `ms_addon_mount_download` | `false` | 每次地图开始时重新下载（更新）服务端插件。 |
 | `ms_extra_addons_timeout` | `10` | 下载下一个插件时允许的重连间隔（秒）。 |
 | `ms_addon_connection_timeout` | `30` | 接收第一个插件的超时时间（秒），超时踢出，0 为禁用。 |
-| `ms_cache_clients_with_addons` | `true` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
+| `ms_cache_clients_with_addons` | `false` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
 | `ms_cache_clients_duration` | `0` | 记住的时长（秒），0 为永久。 |
 | `ms_addon_debug` | `false` | 输出下载流程的详细调试信息。 |
 
