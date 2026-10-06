@@ -30,6 +30,7 @@
 #include "cstrike/interface/CDedicatedServerWorkshopManager.h"
 #include "cstrike/interface/ICommandLine.h"
 #include "cstrike/interface/IEngineServer.h"
+#include "cstrike/interface/IFileSystem.h"
 #include "cstrike/interface/IMemAlloc.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
@@ -38,6 +39,7 @@
 #include "cstrike/type/CHostState.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
+#include "cstrike/type/KeyValues.h"
 
 #include <proto/networkbasetypes.pb.h>
 
@@ -52,14 +54,14 @@ extern void                        MultiAddonResetClientCache(SteamId_t steamId)
 extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache);
 extern bool                        MultiAddonUpdateAddon(uint64_t fileId);
 extern void                        MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
-extern const std::string&          DualMountAddonGetWorkshopMap();
-extern const std::string&          MultiAddonGetWorkshopMap();
 
 namespace
 {
-constexpr int32_t           NET_MESSAGE_ID_SIGNON = 7;
-bool                        s_bEnabled            = false;
-bool                        s_bClientQuery        = false;
+constexpr int32_t           NET_MESSAGE_ID_SIGNON  = 7;
+bool                        s_bClientQuery         = false;
+bool                        s_bOfficialWorkshopMap = false;
+bool                        s_bWorkshopRequest     = false;
+std::string                 s_WorkshopMap;
 std::vector<uint64_t>       s_Addons;
 std::vector<uint64_t>       s_ActiveAddons;
 AddonHooks::Mode            s_Mode   = AddonHooks::Mode::None;
@@ -78,12 +80,48 @@ AddonHooks::IAddonStrategy* GetStrategy()
         return nullptr;
     }
 }
+
+void DetectWorkshopMap(const CHostStateRequest* pRequest)
+{
+    s_bOfficialWorkshopMap = false;
+    s_bWorkshopRequest     = false;
+    s_WorkshopMap.clear();
+
+    if (const auto kv = pRequest->m_pKV; kv != nullptr)
+    {
+        // default is 'ChangeLevel'
+        if (std::string_view(kv->GetName()).starts_with("map_workshop"))
+        {
+            s_WorkshopMap      = kv->GetString("customgamemode", "");
+            s_bWorkshopRequest = true;
+        }
+    }
+    else if (const std::string addons = pRequest->m_Addons.Get();
+             !pRequest->m_LevelName.IsEmpty() && pRequest->m_bChangeLevel && !addons.empty() && StrIsNumber(addons))
+    {
+        s_WorkshopMap      = addons;
+        s_bWorkshopRequest = true;
+    }
+
+    // m_Addons can not be trusted here: changing from de_mirage to an official community map (e.g. cs_agency)
+    // leaves the server addon in it instead of the map, so the client would miss the map's materials
+    if (!pRequest->m_LevelName.IsEmpty()
+        && g_pFullFileSystem->IsDirectory(pRequest->m_LevelName.Get(), "OFFICIAL_ADDONS")
+        && g_pFullFileSystem->FileExists(FString("%s/%s_dir.vpk", pRequest->m_LevelName.Get(), pRequest->m_LevelName.Get()), "OFFICIAL_ADDONS"))
+    {
+        s_WorkshopMap          = pRequest->m_LevelName.Get();
+        s_bOfficialWorkshopMap = true;
+        s_bWorkshopRequest     = false;
+    }
+}
 } // namespace
 
 BeginStaticHookScope(HostStateRequest)
 {
     DeclareStaticDetourHook(HostStateRequest, void, (void* a1, CHostStateRequest* pRequest))
     {
+        DetectWorkshopMap(pRequest);
+
         s_ActiveAddons = s_Addons;
 
         if (s_ActiveAddons.size() >= 2 || s_bClientQuery)
@@ -118,24 +156,15 @@ BeginMemberHookScope(INetChannel)
 
 namespace AddonHooks
 {
-bool IsEnabled()
-{
-    return s_bEnabled;
-}
-
 const std::vector<uint64_t>& GetAddons()
 {
     return s_Addons;
 }
 
-bool SetAddons(std::vector<uint64_t> addons)
+void SetAddons(std::vector<uint64_t> addons)
 {
-    if (!s_bEnabled)
-        return false;
-
     std::erase(addons, 0);
     s_Addons = std::move(addons);
-    return true;
 }
 
 const std::vector<uint64_t>& GetActiveAddons()
@@ -183,8 +212,7 @@ void ReloadMap()
     if (!mapName || !*mapName)
         return;
 
-    static const std::string empty;
-    const auto& workshopMap = s_Mode == Mode::Dual ? DualMountAddonGetWorkshopMap() : s_Mode == Mode::Multi ? MultiAddonGetWorkshopMap() : empty;
+    const auto& workshopMap = GetWorkshopMap();
 
     // official community maps are tracked by name and load through a plain changelevel
     if (workshopMap.empty() || !StrIsNumber(workshopMap))
@@ -209,6 +237,21 @@ void ReloadMap()
     }
 
     engine->ServerCommand(FString("host_workshop_map %s", workshopMap.c_str()));
+}
+
+const std::string& GetWorkshopMap()
+{
+    return s_WorkshopMap;
+}
+
+bool IsOfficialWorkshopMap()
+{
+    return s_bOfficialWorkshopMap;
+}
+
+bool IsWorkshopRequest()
+{
+    return s_bWorkshopRequest;
 }
 
 bool RefreshClient(SteamId_t steamId, bool resetCache)
@@ -279,11 +322,7 @@ bool RefreshClient(SteamId_t steamId, bool resetCache)
 
 void InstallAddonHooks()
 {
-    if (!CommandLine()->HasParam("-dual_addon"))
-        return;
-
-    s_bEnabled = true;
-
+    // deprecated, only seeds the addon list: use the AddonManager module (ms_extra_addons) instead
     if (const auto pszValue = CommandLine()->ParamValue("-dual_addon", nullptr))
     {
         for (const auto& token : StringSplit(pszValue, ","))
@@ -294,6 +333,8 @@ void InstallAddonHooks()
                 LOG("Load dual addon = %llu", id);
             }
         }
+
+        WARN("-dual_addon is deprecated, use the AddonManager module (ms_extra_addons) instead");
     }
 
     s_pDual  = InstallDualMountAddonHooks();

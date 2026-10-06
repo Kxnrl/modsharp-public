@@ -20,7 +20,7 @@
       "`"
     ]
   },
-"MenuManager": {
+  "MenuManager": {
     "KeyBindings": {
       "MoveUpCursor": {
         // MenuBindingType enum: Command=0, Button=1
@@ -61,6 +61,12 @@
       "Disabled": "#888888",
       "Cursor": "#3399FF"
     }
+  },
+  "AddonManager": {
+    // Workshop IDs, read before the first map loads (replaces the deprecated -dual_addon launch parameter)
+    "Addons": [],
+    // Download-only addons delivered to every client
+    "ClientAddons": []
   },
   "ConnectionStrings": {
     "ClientPreferences": "litedb://Filename={sharp::data}/client-preferences.db;Mode=Exclusive;Flush=true",

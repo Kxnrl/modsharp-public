@@ -1568,14 +1568,10 @@ internal partial class SharpCore : ISharpCore
 
     public unsafe bool SetDualAddonId(ulong publishFileId)
     {
-        var success = Game.AddonSetAddons(&publishFileId, publishFileId > 0 ? 1 : 0);
+        Game.AddonSetAddons(&publishFileId, publishFileId > 0 ? 1 : 0);
+        DualAddonPurgeCheck();
 
-        if (success)
-        {
-            DualAddonPurgeCheck();
-        }
-
-        return success;
+        return true;
     }
 
 #endregion

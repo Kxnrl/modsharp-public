@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Sharp.Modules.ExtraAddonManager.Shared;
+using Sharp.Modules.AddonManager.Shared;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Listeners;
@@ -37,11 +37,11 @@ using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
 
-namespace Sharp.Modules.ExtraAddonManager;
+namespace Sharp.Modules.AddonManager;
 
-public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAddonListener, IEventListener, ISteamListener, IGameListener
+public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListener, IEventListener, ISteamListener, IGameListener
 {
-    string IModSharpModule.DisplayName   => "Sharp.Modules.ExtraAddonManager";
+    string IModSharpModule.DisplayName   => "Sharp.Modules.AddonManager";
     string IModSharpModule.DisplayAuthor => "ModSharp Dev Team";
 
     int IAddonListener.ListenerVersion  => IAddonListener.ApiVersion;
@@ -53,13 +53,14 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
     int IGameListener.ListenerVersion   => IGameListener.ApiVersion;
     int IGameListener.ListenerPriority  => 0;
 
-    private readonly ISharedSystem              _sharedSystem;
-    private readonly ILogger<ExtraAddonManager> _logger;
+    private readonly ISharedSystem         _sharedSystem;
+    private readonly IConfiguration        _configuration;
+    private readonly ILogger<AddonManager> _logger;
 
-    private readonly List<ulong>                         _addons             = [];
-    private readonly List<ulong>                         _globalClientAddons = [];
-    private readonly Dictionary<SteamID, List<ulong>>    _clientAddons       = [];
-    private readonly HashSet<ulong>                      _reloadOnDownload   = [];
+    private readonly List<ulong>                      _addons             = [];
+    private readonly List<ulong>                      _globalClientAddons = [];
+    private readonly Dictionary<SteamID, List<ulong>> _clientAddons       = [];
+    private readonly HashSet<ulong>                   _reloadOnDownload   = [];
 
     private IConVar? _cvExtraAddons;
     private IConVar? _cvClientExtraAddons;
@@ -71,26 +72,31 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
     private IConVar? _cvCacheDuration;
     private IConVar? _cvDebug;
     private bool     _syncingConVar;
+    private bool     _listening;
 
-    public ExtraAddonManager(ISharedSystem sharedSystem,
+    public AddonManager(ISharedSystem sharedSystem,
         string                             dllPath,
         string                             sharpPath,
         Version                            version,
         IConfiguration                     coreConfiguration,
         bool                               hotReload)
     {
-        _sharedSystem = sharedSystem;
-        _logger       = sharedSystem.GetLoggerFactory().CreateLogger<ExtraAddonManager>();
+        _sharedSystem  = sharedSystem;
+        _configuration = coreConfiguration;
+        _logger        = sharedSystem.GetLoggerFactory().CreateLogger<AddonManager>();
     }
 
 #region IModSharpModule
 
     public bool Init()
     {
-        var addonManager = _sharedSystem.GetAddonManager();
-
-        // seeded from -dual_addon
-        _addons.AddRange(addonManager.GetAddons());
+        // core.json "AddonManager" is read before the first map, unlike cvars from server.cfg,
+        // so it also works where launch parameters are not available
+        _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons()); // deprecated -dual_addon
+        _addons.AddRange(ReadConfig("AddonManager:Addons").Where(x => !_addons.Contains(x)).ToArray());
+        _globalClientAddons.AddRange(ReadConfig("AddonManager:ClientAddons"));
+        ApplyAddons(false, false);
+        UpdateClientQuery();
 
         var conVars = _sharedSystem.GetConVarManager();
 
@@ -99,7 +105,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
                                               "Workshop IDs of extra server addons separated by commas, applied on the next map change");
 
         _cvClientExtraAddons = conVars.CreateConVar("ms_client_extra_addons",
-                                                    "",
+                                                    string.Join(',', _globalClientAddons),
                                                     "Workshop IDs of extra addons applied to all clients (download-only), separated by commas");
 
         _cvBlockDisconnectMessages = conVars.CreateConVar("ms_block_disconnect_messages",
@@ -158,9 +164,6 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
         // players can re-fetch the addons when they failed to receive them: ms_addon_refresh
         _sharedSystem.GetClientManager().InstallCommandCallback("addon_refresh", OnClientCommandRefresh);
 
-        // always being queried also keeps the core in MultiAddon mode, like MAM
-        addonManager.InstallAddonListener(this);
-
         var eventManager = _sharedSystem.GetEventManager();
         eventManager.HookEvent("player_disconnect");
         eventManager.InstallEventListener(this);
@@ -173,7 +176,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
 
     public void PostInit()
         => _sharedSystem.GetSharpModuleManager()
-                        .RegisterSharpModuleInterface<IExtraAddonManager>(this, IExtraAddonManager.Identity, this);
+                        .RegisterSharpModuleInterface<IAddonManager>(this, IAddonManager.Identity, this);
 
     public void OnServerActivate()
     {
@@ -218,7 +221,11 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
         conVars.ReleaseServerCommandCallback("ms_reload_map",          OnCommandReloadMap);
 
         _sharedSystem.GetClientManager().RemoveCommandCallback("addon_refresh", OnClientCommandRefresh);
-        _sharedSystem.GetAddonManager().RemoveAddonListener(this);
+        if (_listening)
+        {
+            _sharedSystem.GetAddonManager().RemoveAddonListener(this);
+        }
+
         _sharedSystem.GetAddonManager().SetOptions(new AddonOptions());
         _sharedSystem.GetEventManager().RemoveEventListener(this);
         _sharedSystem.GetModSharp().RemoveSteamListener(this);
@@ -227,7 +234,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
 
 #endregion
 
-#region IExtraAddonManager
+#region IAddonManager
 
     public IReadOnlyList<ulong> GetAddons()
         => _addons.ToArray();
@@ -291,6 +298,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
         }
 
         list.Add(addon);
+        UpdateClientQuery();
 
         if (steamId == default)
         {
@@ -309,6 +317,7 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
     public bool RemoveClientAddon(ulong addon, SteamID steamId = default)
     {
         var removed = GetClientAddonList(steamId).Remove(addon);
+        UpdateClientQuery();
 
         if (removed && steamId == default)
         {
@@ -323,11 +332,13 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
         if (steamId != default)
         {
             _clientAddons.Remove(steamId);
+            UpdateClientQuery();
 
             return;
         }
 
         _globalClientAddons.Clear();
+        UpdateClientQuery();
         SyncConVar(_cvClientExtraAddons, _globalClientAddons);
     }
 
@@ -512,23 +523,19 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
 
         _globalClientAddons.Clear();
         _globalClientAddons.AddRange(ParseAddons(conVar.GetString()));
+        UpdateClientQuery();
     }
 
     private void ApplyAddons(bool reloadMap, bool syncConVar = true)
     {
-        if (!_sharedSystem.GetAddonManager().SetAddons(_addons))
-        {
-            _logger.LogError("Failed to set addons, is -dual_addon specified?");
-
-            return;
-        }
+        _sharedSystem.GetAddonManager().SetAddons(_addons);
 
         if (syncConVar)
         {
             SyncConVar(_cvExtraAddons, _addons);
         }
 
-        _logger.LogInformation("Extra addons: [{Addons}]", string.Join(", ", _addons));
+        _logger.LogInformation("Server addons: [{Addons}]", string.Join(", ", _addons));
 
         if (reloadMap)
         {
@@ -588,6 +595,32 @@ public sealed class ExtraAddonManager : IModSharpModule, IExtraAddonManager, IAd
                                                   cacheDuration,
                                                   _cvDebug?.GetBool() ?? false));
     }
+
+    // being queried forces the MultiAddon flow, so only listen while there are client addons:
+    // a single server addon then keeps the DualAddon flow. The flow is picked on the next map change.
+    private void UpdateClientQuery()
+    {
+        var want = _globalClientAddons.Count > 0 || _clientAddons.Values.Any(x => x.Count > 0);
+
+        if (want == _listening)
+        {
+            return;
+        }
+
+        _listening = want;
+
+        if (want)
+        {
+            _sharedSystem.GetAddonManager().InstallAddonListener(this);
+        }
+        else
+        {
+            _sharedSystem.GetAddonManager().RemoveAddonListener(this);
+        }
+    }
+
+    private IEnumerable<ulong> ReadConfig(string key)
+        => _configuration.GetSection(key).Get<ulong[]>()?.Where(x => x > 0).Distinct() ?? [];
 
     private List<ulong> GetClientAddonList(SteamID steamId)
     {

@@ -27,7 +27,6 @@
 #include "sdkproxy.h"
 #include "strtool.h"
 
-#include "cstrike/interface/IFileSystem.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
 #include "cstrike/interface/IProtobufBinding.h"
@@ -35,7 +34,6 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
-#include "cstrike/type/KeyValues.h"
 
 #include <proto/networkbasetypes.pb.h>
 
@@ -107,49 +105,10 @@ public:
 
         LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=[%s]", pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
 
-        if (auto kv = pRequest->m_pKV; kv != nullptr)
-        {
-            const std::string kv_name = kv->GetName();
-            if (kv_name.starts_with("map_workshop")) // default is 'ChangeLevel'
-            {
-                s_CurrentWorkshopMap    = kv->GetString("customgamemode", "");
-                s_bReconnectionRequired = true;
+        s_CurrentWorkshopMap    = AddonHooks::GetWorkshopMap();
+        s_IsOfficialWorkshopMap = AddonHooks::IsOfficialWorkshopMap();
 
-#ifdef DUAL_ADDON_ASSERT
-                LOG("HostStateRequest -> kv = %s -> map_workshop = %s", kv_name.c_str(), s_CurrentWorkshopMap.c_str());
-#endif
-            }
-            else
-            {
-#ifdef DUAL_ADDON_ASSERT
-                LOG("HostStateRequest -> kv = %s ", kv_name.c_str());
-                kv->SaveToFile(g_pFullFileSystem, "HostStateRequest.kv", "GAME", true);
-#endif
-            }
-        }
-        else if (const std::string sOriginalAddonString = pRequest->m_Addons.Get();
-                 !pRequest->m_LevelName.IsEmpty() && pRequest->m_bChangeLevel && !sOriginalAddonString.empty() && StrIsNumber(sOriginalAddonString))
-        {
-            s_CurrentWorkshopMap    = sOriginalAddonString;
-            s_bReconnectionRequired = true;
-
-#ifdef DUAL_ADDON_ASSERT
-            LOG("HostStateRequest -> kv = %s -> addons = %s", "nullptr", sOriginalAddonString.c_str());
-#endif
-        }
-
-        // 这里不能用pRequest->m_Addon
-        // 因为有时候如果从de_mirage换成官方的第三方图，比如cs_agency
-        // m_Addon不会带cs_agency而是DualAddonId
-        // 导致客户端不会加载cs_agency，从而出现材质缺失的情况
-        if (!pRequest->m_LevelName.IsEmpty()
-            && g_pFullFileSystem->IsDirectory(pRequest->m_LevelName.Get(), "OFFICIAL_ADDONS")
-            && g_pFullFileSystem->FileExists(FString("%s/%s_dir.vpk", pRequest->m_LevelName.Get(), pRequest->m_LevelName.Get()), "OFFICIAL_ADDONS"))
-        {
-            s_CurrentWorkshopMap    = pRequest->m_LevelName.Get();
-            s_IsOfficialWorkshopMap = true;
-            s_bReconnectionRequired = false;
-        }
+        s_bReconnectionRequired = AddonHooks::IsWorkshopRequest();
 
         std::vector<std::string> addons{};
         const auto               addonIdString = std::to_string(addonId);
@@ -311,11 +270,6 @@ AddonHooks::IAddonStrategy* InstallDualMountAddonHooks()
     });
 
     return &s_DualMountAddonStrategy;
-}
-
-const std::string& DualMountAddonGetWorkshopMap()
-{
-    return s_CurrentWorkshopMap;
 }
 
 void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time)

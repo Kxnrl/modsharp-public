@@ -29,12 +29,14 @@
  */
 
 
+#include "address.h"
 #include "bridge/forwards/forward.h"
 #include "global.h"
 #include "hook/extern/AddonHooks.h"
 #include "hook/installer.h"
 #include "logging.h"
 #include "manager/HookManager.h"
+#include "module.h"
 #include "sdkproxy.h"
 #include "steamproxy.h"
 #include "strtool.h"
@@ -52,7 +54,6 @@
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
-#include "cstrike/type/KeyValues.h"
 
 #include <proto/networkbasetypes.pb.h>
 #include <steamworks/isteamugc.h>
@@ -381,11 +382,6 @@ void MultiAddonOnSteamApiActivated()
     RefreshAddons(true);
 }
 
-const std::string& MultiAddonGetWorkshopMap()
-{
-    return s_CurrentWorkshopMap;
-}
-
 void MultiAddonResetClientCache(SteamId_t steamId)
 {
     if (steamId == 0)
@@ -451,26 +447,8 @@ public:
                 pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
         }
 
-        if (auto kv = pRequest->m_pKV; kv != nullptr)
-        {
-            const std::string kv_name = kv->GetName();
-            if (kv_name.starts_with("map_workshop"))
-                s_CurrentWorkshopMap = kv->GetString("customgamemode", "");
-        }
-        else if (const std::string sOriginalAddons = pRequest->m_Addons.Get();
-                 !pRequest->m_LevelName.IsEmpty() && pRequest->m_bChangeLevel
-                 && !sOriginalAddons.empty() && StrIsNumber(sOriginalAddons))
-        {
-            s_CurrentWorkshopMap = sOriginalAddons;
-        }
-
-        if (!pRequest->m_LevelName.IsEmpty()
-            && g_pFullFileSystem->IsDirectory(pRequest->m_LevelName.Get(), "OFFICIAL_ADDONS")
-            && g_pFullFileSystem->FileExists(FString("%s/%s_dir.vpk", pRequest->m_LevelName.Get(), pRequest->m_LevelName.Get()), "OFFICIAL_ADDONS"))
-        {
-            s_CurrentWorkshopMap    = pRequest->m_LevelName.Get();
-            s_IsOfficialWorkshopMap = true;
-        }
+        s_CurrentWorkshopMap    = AddonHooks::GetWorkshopMap();
+        s_IsOfficialWorkshopMap = AddonHooks::IsOfficialWorkshopMap();
 
         pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
 
@@ -604,6 +582,23 @@ BeginStaticHookScope(ReplyConnection)
     }
 }
 
+BeginStaticHookScope(EngineClientDisconnect)
+{
+    // the engine-side disconnect every drop goes through. IServerGameClients::ClientDisconnect only runs once the client got past SIGNONSTATE_CONNECTED
+    // so a client leaving right after ReplyConnection (to download the pending addon, cancel, crash...)
+    // never reaches OnClientDisconnectPost and would keep a stale connectionStartTime
+    DeclareStaticDetourHook(EngineClientDisconnect, void, (CServerSideClient * pClient, void* pInfo))
+    {
+        if (IsActive() && !pClient->IsFakeClient())
+        {
+            if (const auto it = s_ClientInfos.find(pClient->GetSteamId()); it != s_ClientInfos.end())
+                it->second.connecting = false;
+        }
+
+        EngineClientDisconnect(pClient, pInfo);
+    }
+}
+
 BeginStaticHookScope(ScriptGetAddon)
 {
     // level resource loading takes the first id of the addon list as the map's addon, keep it the workshop map
@@ -727,6 +722,11 @@ AddonHooks::IAddonStrategy* InstallMultiAddonHooks()
 
     SHOOK(ReplyConnection);
     SHOOK(ScriptGetAddon);
+
+    if (const auto address = modules::engine->FindFunctionFromStringRef("Disconnect client '%s' from server: %s\n"); address.IsValid())
+        SHOOK(EngineClientDisconnect, {.address = address});
+    else
+        WARN("[MultiAddon] Failed to find the engine client disconnect, stale connection timeouts may kick reconnecting clients");
 
     return &s_MultiAddonStrategy;
 }

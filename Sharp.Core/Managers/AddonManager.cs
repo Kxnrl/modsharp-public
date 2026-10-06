@@ -60,8 +60,10 @@ internal class AddonManager : ICoreAddonManager
 
         fixed (ulong* ptr = array)
         {
-            return Game.AddonSetAddons(ptr, array.Length);
+            Game.AddonSetAddons(ptr, array.Length);
         }
+
+        return true;
     }
 
     public void ResetClientCache(SteamID steamId = default)

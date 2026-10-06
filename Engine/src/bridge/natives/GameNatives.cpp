@@ -296,9 +296,9 @@ static NativeSpan<uint64_t> AddonGetAddons()
     return NativeSpan(const_cast<uint64_t*>(addons.data()), static_cast<int>(addons.size()));
 }
 
-static bool AddonSetAddons(const uint64_t* pAddons, int count)
+static void AddonSetAddons(const uint64_t* pAddons, int count)
 {
-    return AddonHooks::SetAddons(std::vector(pAddons, pAddons + count));
+    AddonHooks::SetAddons(std::vector(pAddons, pAddons + count));
 }
 
 static void AddonResetClientCache(SteamId_t steamId)

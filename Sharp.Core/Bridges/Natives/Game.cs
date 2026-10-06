@@ -131,7 +131,7 @@ public static unsafe partial class Game
 
     public static partial NativeSpan<ulong> AddonGetAddons();
 
-    public static partial bool AddonSetAddons(ulong* addons, int count);
+    public static partial void AddonSetAddons(ulong* addons, int count);
 
     public static partial void AddonResetClientCache(ulong steamId);
 

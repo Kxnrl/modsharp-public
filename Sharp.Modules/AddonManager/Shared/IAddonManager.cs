@@ -20,15 +20,17 @@
 using System.Collections.Generic;
 using Sharp.Shared.Units;
 
-namespace Sharp.Modules.ExtraAddonManager.Shared;
+namespace Sharp.Modules.AddonManager.Shared;
 
 /// <summary>
-///     MultiAddonManager style addon management on top of <c>IAddonManager</c>. <br />
+///     Workshop addon management (MultiAddonManager compatible). <br />
+///     1 server addon uses the DualAddon flow, 2+ server addons or any client addon use the MultiAddon flow,
+///     picked on every map change. <br />
 ///     Server addon changes take effect on the next map change, pass <c>reloadMap</c> or call <see cref="ReloadMap" /> to apply them.
 /// </summary>
-public interface IExtraAddonManager
+public interface IAddonManager
 {
-    const string Identity = nameof(IExtraAddonManager);
+    const string Identity = nameof(IAddonManager);
 
     /// <summary>
     ///     Server addons (mounted on the server and delivered to every client)

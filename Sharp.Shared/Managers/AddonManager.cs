@@ -25,21 +25,22 @@ using Sharp.Shared.Units;
 namespace Sharp.Shared.Managers;
 
 /// <summary>
-///     Workshop addons delivered alongside the map. <br />
-///     Requires the <c>-dual_addon</c> launch parameter (e.g. <c>-dual_addon 123</c> or <c>-dual_addon 123,456</c>). <br />
-///     1 addon uses the DualAddon flow, 2+ addons (or an installed <see cref="IAddonListener" />) use the MultiAddon flow.
+///     Low-level workshop addon delivery, the <c>Sharp.Modules.AddonManager</c> module is built on it. <br />
+///     Use the module unless you are writing your own addon manager. <br />
+///     The flow is picked on every map change: 1 addon uses the DualAddon flow,
+///     2+ addons (or an installed <see cref="IAddonListener" />) use the MultiAddon flow.
 /// </summary>
 public interface IAddonManager
 {
     /// <summary>
-    ///     Server addons applied on the next map change (seeded from <c>-dual_addon</c>)
+    ///     Server addons applied on the next map change (seeded from the deprecated <c>-dual_addon</c> launch parameter)
     /// </summary>
     IReadOnlyList<ulong> GetAddons();
 
     /// <summary>
     ///     Replace the server addons. Takes effect on the next map change, changing the map is up to the caller.
     /// </summary>
-    /// <returns>false when <c>-dual_addon</c> is not specified</returns>
+    /// <returns>always true (kept for compatibility)</returns>
     bool SetAddons(IReadOnlyList<ulong> addons);
 
     /// <summary>

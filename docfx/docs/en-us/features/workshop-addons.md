@@ -4,19 +4,26 @@ ModSharp can deliver Steam Workshop addons to clients alongside the map.
 
 ## Usage
 
-Add `-dual_addon` to your launch options:
+Install the `Sharp.Modules.AddonManager` module and list your addons in `core.json`:
 
-```text
-./cs2 -dedicated -port 27015 ... +host_workshop_map 300123123123 -dual_addon 123123123123
+```json
+{
+  "AddonManager": {
+    "Addons": [123123123123, 123123123456],
+    "ClientAddons": []
+  }
+}
 ```
 
-Multiple addons are comma-separated:
+`core.json` is read before the first map loads, so no launch parameter is needed.
+The addons can also be changed at runtime through the ConVars / commands below or the `IAddonManager` module interface.
 
-```text
-./cs2 -dedicated -port 27015 ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
-```
-
-`-dual_addon` must be present to use addon support at all, including the runtime API.
+> [!NOTE]
+> The `-dual_addon` launch parameter is deprecated but still works, its addons are added to the list above.
+>
+> ```text
+> ./cs2 -dedicated ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
+> ```
 
 ## Delivery flow
 
@@ -24,40 +31,31 @@ The flow is picked automatically on every map change:
 
 | Addons | Flow |
 |---|---|
-| 1 | **DualAddon**: the battle-tested single addon flow. Only works on workshop maps. |
-| 2+, or an `IAddonListener` is installed | **MultiAddon**: based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager). Clients reconnect once per addon they still need. Works on Valve maps too. |
+| 1 server addon | **DualAddon**: the battle-tested single addon flow. Only works on workshop maps. |
+| 2+ server addons, or any client addon | **MultiAddon**: based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager). Clients reconnect once per addon they still need. Works on Valve maps too. |
 
-Most servers only need one addon, so DualAddon is the default.
-
-Clients that already downloaded the addons are cached for 10 minutes so reconnects skip the download flow.
+Clients can not take more than one addon per reconnect, so 2+ addons always need the MultiAddon flow.
 Missing addons are downloaded on the server automatically and the map is reloaded once they finish.
 
-## Runtime API
+> [!TIP]
+> By default the MultiAddon flow sends the addons again on every map change.
+> Set `ms_cache_clients_with_addons 1` to skip the reconnects for clients that already have them, like the DualAddon flow.
 
-`IAddonManager` (from `ISharedSystem.GetAddonManager()`) keeps things minimal:
+## Server-only files (`sharp/assets`)
 
-| Method | Purpose |
-|---|---|
-| `GetAddons()` | Server addons applied on the next map change. |
-| `SetAddons(ids)` | Replace the server addons. Change the map yourself to apply them (a restart is best). |
-| `ResetClientCache(steamId)` | Forget what a client (or everyone with `default`) already downloaded. |
-| `RefreshClient(steamId, resetCache)` | Resend the addons to an in-game client (it reconnects). `resetCache: true` resends everything when it failed to receive them, `false` only sends what it does not have yet. |
-| `UpdateAddon(id)` | Force a workshop update, remounting the addon around it (Windows locks mounted files). |
-| `ReloadMap()` | Reload the current map. Workshop maps use `ds_workshop_changelevel` when the server already has them, otherwise `host_workshop_map`. |
-| `SetOptions(options)` | Timeouts, client cache and debug logging of the MultiAddon flow. |
-| `InstallAddonListener(listener)` | Deliver extra addons to specific clients through `IAddonListener.OnClientQueryAddons`. |
+When the `sharp/assets` folder exists it is added to the server's `GAME` search path (always added with the deprecated `-dual_addon`).
+Files there are only read by the server, nothing is sent to clients.
 
-There are no ConVars or console commands. Anything beyond this belongs in a module.
+To serve an addon's content from loose files (e.g. extracted by a plugin) instead of mounting its VPK on the server,
+put the files in `sharp/assets` and list the addon in `ClientAddons`: clients still download it from the workshop,
+while the server neither mounts nor downloads it.
 
-## Extra Addon Manager module
-
-`Sharp.Modules.ExtraAddonManager` provides the [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager) feature set on top of `IAddonManager`.
-Installing it always enables the MultiAddon flow. Other modules can use it through `IExtraAddonManager`.
+## ConVars
 
 | ConVar | Default | Description |
 |---|---|---|
-| `ms_extra_addons` | `-dual_addon` value | Server addons, comma-separated. Applied on the next map change. |
-| `ms_client_extra_addons` | `""` | Addons delivered to every client (download-only). |
+| `ms_extra_addons` | `core.json` value | Server addons, comma-separated. Applied on the next map change. |
+| `ms_client_extra_addons` | `core.json` value | Addons delivered to every client (download-only). |
 | `ms_block_disconnect_messages` | `false` | Hide "loop shutdown" disconnect messages while clients reconnect for addons. |
 | `ms_addon_mount_download` | `false` | Re-download (update) server addons on every map start. |
 | `ms_extra_addons_timeout` | `10` | Seconds allowed between reconnects for the next addon. |
@@ -65,6 +63,8 @@ Installing it always enables the MultiAddon flow. Other modules can use it throu
 | `ms_cache_clients_with_addons` | `false` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
 | `ms_cache_clients_duration` | `0` | How long to remember them in seconds, 0 forever. |
 | `ms_addon_debug` | `false` | Print verbose information about the download flow. |
+
+## Commands
 
 | Command | Description |
 |---|---|
@@ -74,6 +74,21 @@ Installing it always enables the MultiAddon flow. Other modules can use it throu
 | `ms_reload_map` | Reload the current map to apply changes. |
 | `ms_addon_refresh` (client) | Re-fetch the addons when they failed to arrive. |
 
-Search path printing is not available.
+## Runtime API
+
+Other modules use the `IAddonManager` module interface (`Sharp.Modules.AddonManager.Shared`):
+
+| Method | Purpose |
+|---|---|
+| `GetAddons()` / `AddAddon` / `RemoveAddon` / `ClearAddons` | Server addons, applied on the next map change or right away with `reloadMap: true`. |
+| `GetClientAddons` / `AddClientAddon` / `RemoveClientAddon` / `ClearClientAddons` | Download-only addons for every client (`default` SteamID) or a single one. |
+| `RefreshClient(steamId)` | Resend every addon to an in-game client that failed to receive them (it reconnects). |
+| `DownloadAddon(id, reloadMap)` | Download (update) an addon on the server. |
+| `ReloadMap()` | Reload the current map. Workshop maps use `ds_workshop_changelevel` when the server already has them, otherwise `host_workshop_map`. |
+
+> [!NOTE]
+> `ISharedSystem.GetAddonManager()` (`Sharp.Shared.Managers.IAddonManager`) is the low-level API the module is built on.
+> Use it only to write your own addon manager. If you import both namespaces, alias one of them
+> (e.g. `using IAddonManager = Sharp.Modules.AddonManager.Shared.IAddonManager;`).
 
 See the example: [IAddonManager](../examples/addon-manager.md)

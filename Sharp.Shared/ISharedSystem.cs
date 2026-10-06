@@ -56,6 +56,9 @@ public interface ISharedSystem
 
     IParticleManager GetParticleManager();
 
+    /// <summary>
+    ///     Low-level workshop addon delivery, use the <c>Sharp.Modules.AddonManager</c> module instead
+    /// </summary>
     IAddonManager GetAddonManager();
 
     IScriptManager GetScriptManager();

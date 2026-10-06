@@ -4,76 +4,90 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 
 ## 用法
 
-在启动参数中加上 `-dual_addon`：
+安装 `Sharp.Modules.AddonManager` 模块，并在 `core.json` 中列出插件：
 
-```text
-./cs2 -dedicated -port 27015 ... +host_workshop_map 300123123123 -dual_addon 123123123123
+```json
+{
+  "AddonManager": {
+    "Addons": [123123123123, 123123123456],
+    "ClientAddons": []
+  }
+}
 ```
 
-多个插件用逗号分隔：
+`core.json` 在第一张地图加载前读取，因此不需要任何启动参数。
+运行时也可以通过下方的 ConVar / 命令，或模块接口 `IAddonManager` 修改插件。
 
-```text
-./cs2 -dedicated -port 27015 ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
-```
-
-使用插件功能（包括运行时 API）必须指定 `-dual_addon`。
+> [!NOTE]
+> 启动参数 `-dual_addon` 已弃用，但仍然可用，其中的插件会追加到上面的列表中。
+>
+> ```text
+> ./cs2 -dedicated ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
+> ```
 
 ## 分发流程
 
 每次换图时自动选择：
 
-| 插件数量 | 流程 |
+| 插件 | 流程 |
 |---|---|
-| 1 | **DualAddon**：久经考验的单插件流程，仅在工坊地图上生效。 |
-| 2 个以上，或安装了 `IAddonListener` | **MultiAddon**：基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager)，客户端每缺一个插件重连一次，官方地图同样可用。 |
+| 1 个服务端插件 | **DualAddon**：久经考验的单插件流程，仅在工坊地图上生效。 |
+| 2 个以上服务端插件，或存在任意客户端插件 | **MultiAddon**：基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager)，客户端每缺一个插件重连一次，官方地图同样可用。 |
 
-大多数服务器只需要一个插件，所以默认就是 DualAddon。
+客户端每次重连只能接收一个插件，所以 2 个以上的插件必须使用 MultiAddon 流程。
+服务端缺少的插件会自动下载，下载完成后重新加载地图。
 
-已下载过插件的客户端会被缓存 10 分钟，重连时跳过下载流程。
-服务端缺少的插件会自动下载，全部完成后自动重载地图。
+> [!TIP]
+> MultiAddon 流程默认在每次换图时重新发送插件。
+> 设置 `ms_cache_clients_with_addons 1` 后，已下载插件的客户端将跳过重连，行为与 DualAddon 流程相近。
 
-## 运行时 API
+## 仅服务端文件（`sharp/assets`）
 
-`IAddonManager`（通过 `ISharedSystem.GetAddonManager()` 获取）只保留最小功能：
+存在 `sharp/assets` 文件夹时，会将其加入服务端的 `GAME` 搜索路径（使用已弃用的 `-dual_addon` 时总会加入）。
+其中的文件只由服务端读取，不会发送给客户端。
 
-| 方法 | 用途 |
-|---|---|
-| `GetAddons()` | 下次换图时生效的服务端插件。 |
-| `SetAddons(ids)` | 替换服务端插件，需要自行换图才会生效（最好重启）。 |
-| `ResetClientCache(steamId)` | 清除某个客户端（`default` 为全部）的已下载缓存。 |
-| `RefreshClient(steamId, resetCache)` | 向游戏中的客户端重新发送插件（客户端会重连）。`resetCache: true` 用于未收到插件时全部重发，`false` 只发送尚未拥有的插件。 |
-| `UpdateAddon(id)` | 强制更新工坊插件，期间会卸载并重新挂载（Windows 会锁定已挂载文件）。 |
-| `ReloadMap()` | 重载当前地图。服务器已有的工坊地图使用 `ds_workshop_changelevel`，否则使用 `host_workshop_map`。 |
-| `SetOptions(options)` | MultiAddon 流程的超时、客户端缓存与调试日志。 |
-| `InstallAddonListener(listener)` | 通过 `IAddonListener.OnClientQueryAddons` 向指定客户端额外分发插件。 |
+若希望服务端从散文件（例如由插件解包）读取插件内容而不挂载其 VPK，
+请将文件放入 `sharp/assets`，并把该插件写入 `ClientAddons`：客户端仍从创意工坊下载，服务端既不挂载也不下载。
 
-没有 ConVar 和控制台命令，更多功能请做成模块。
-
-## Extra Addon Manager 模块
-
-`Sharp.Modules.ExtraAddonManager` 基于 `IAddonManager` 提供 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager) 的功能。
-安装后始终使用 MultiAddon 流程，其他模块可通过 `IExtraAddonManager` 调用。
+## ConVar
 
 | ConVar | 默认值 | 说明 |
 |---|---|---|
-| `ms_extra_addons` | `-dual_addon` 的值 | 服务端插件，逗号分隔，下次换图生效。 |
-| `ms_client_extra_addons` | `""` | 分发给所有客户端的插件（仅下载）。 |
-| `ms_block_disconnect_messages` | `false` | 屏蔽客户端为下载插件重连时的 "loop shutdown" 消息。 |
-| `ms_addon_mount_download` | `false` | 每次开图时重新下载（更新）服务端插件。 |
-| `ms_extra_addons_timeout` | `10` | 客户端下载下一个插件时允许的重连间隔（秒）。 |
-| `ms_addon_connection_timeout` | `30` | 接受第一个插件的超时时间（秒），超时踢出，0 为禁用。 |
+| `ms_extra_addons` | `core.json` 中的值 | 服务端插件，逗号分隔，下次换图生效。 |
+| `ms_client_extra_addons` | `core.json` 中的值 | 分发给所有客户端的插件（仅下载）。 |
+| `ms_block_disconnect_messages` | `false` | 客户端为插件重连时隐藏 "loop shutdown" 断开消息。 |
+| `ms_addon_mount_download` | `false` | 每次地图开始时重新下载（更新）服务端插件。 |
+| `ms_extra_addons_timeout` | `10` | 下载下一个插件时允许的重连间隔（秒）。 |
+| `ms_addon_connection_timeout` | `30` | 接收第一个插件的超时时间（秒），超时踢出，0 为禁用。 |
 | `ms_cache_clients_with_addons` | `false` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
 | `ms_cache_clients_duration` | `0` | 记住的时长（秒），0 为永久。 |
-| `ms_addon_debug` | `false` | 输出下载流程的详细信息。 |
+| `ms_addon_debug` | `false` | 输出下载流程的详细调试信息。 |
+
+## 命令
 
 | 命令 | 说明 |
 |---|---|
-| `ms_add_addon <id>` / `ms_remove_addon <id>` | 修改服务端插件。 |
-| `ms_add_client_addon <id>` / `ms_remove_client_addon <id>` | 修改全局客户端插件。 |
+| `ms_add_addon <id>` / `ms_remove_addon <id>` | 编辑服务端插件。 |
+| `ms_add_client_addon <id>` / `ms_remove_client_addon <id>` | 编辑全局客户端插件。 |
 | `ms_download_addon <id>` | 在服务端下载插件。 |
-| `ms_reload_map` | 重载当前地图以应用修改。 |
-| `ms_addon_refresh`（客户端） | 插件未收到时重新获取。 |
+| `ms_reload_map` | 重新加载当前地图以应用修改。 |
+| `ms_addon_refresh`（客户端） | 插件未能送达时重新获取。 |
 
-不提供搜索路径打印。
+## 运行时 API
 
-示例：[IAddonManager](../examples/addon-manager.md)
+其他模块通过模块接口 `IAddonManager`（`Sharp.Modules.AddonManager.Shared`）使用：
+
+| 方法 | 用途 |
+|---|---|
+| `GetAddons()` / `AddAddon` / `RemoveAddon` / `ClearAddons` | 服务端插件，下次换图生效，或传入 `reloadMap: true` 立即生效。 |
+| `GetClientAddons` / `AddClientAddon` / `RemoveClientAddon` / `ClearClientAddons` | 分发给所有客户端（`default` SteamID）或单个客户端的仅下载插件。 |
+| `RefreshClient(steamId)` | 向未能收到插件的在线客户端重新发送全部插件（客户端会重连）。 |
+| `DownloadAddon(id, reloadMap)` | 在服务端下载（更新）插件。 |
+| `ReloadMap()` | 重新加载当前地图。服务端已有的工坊地图使用 `ds_workshop_changelevel`，否则使用 `host_workshop_map`。 |
+
+> [!NOTE]
+> `ISharedSystem.GetAddonManager()`（`Sharp.Shared.Managers.IAddonManager`）是模块所依赖的底层 API，
+> 仅在编写自己的插件管理器时使用。若同时引用两个命名空间，请为其中一个起别名
+> （例如 `using IAddonManager = Sharp.Modules.AddonManager.Shared.IAddonManager;`）。
+
+参见示例：[IAddonManager](../examples/addon-manager.md)

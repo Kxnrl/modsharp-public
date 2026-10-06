@@ -28,6 +28,7 @@
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
 
+#include <filesystem>
 #include <string>
 
 // #define ASSERT_FS_LOG
@@ -49,6 +50,8 @@ void FixFileSystem()
         "SHADER_SOURCE_MOD",
         "SHADER_SOURCE_ROOT"};
 
+    // sharp/assets: server-only files (e.g. an addon extracted by a plugin, delivered to clients as a client-only addon).
+    // added when the folder exists, -dual_addon keeps adding it as before
     const auto enableDualAddon = CommandLine()->HasParam("-dual_addon");
     auto       hasReplaceValue = false;
     auto       assetsPath      = std::string();
@@ -97,14 +100,11 @@ void FixFileSystem()
             {
                 g_pFullFileSystem->RemoveSearchPath(searchPath.Get(), pathId);
 
-                if (enableDualAddon)
+                if (strcasecmp(pathId, "game") == 0)
                 {
-                    if (strcasecmp(pathId, "game") == 0)
-                    {
-                        assetsPath = pathView;
-                        assetsPath += "assets\\";
-                        hasReplaceValue = true;
-                    }
+                    assetsPath = pathView;
+                    assetsPath += "assets\\";
+                    hasReplaceValue = enableDualAddon || std::filesystem::is_directory(std::filesystem::path(pathView) / "assets");
                 }
             }
         }
