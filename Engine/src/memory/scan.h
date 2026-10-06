@@ -33,8 +33,8 @@ std::optional<std::size_t> FindPattern(uint8_t* data, std::size_t size, std::str
 std::vector<CAddress>      FindPatternMulti(uint8_t* data, std::size_t size, std::string_view pattern) noexcept;
 std::optional<std::size_t> FindStr(uint8_t* data, std::size_t size, const std::string& str, bool zero_terminated = false, bool exact = false) noexcept;
 
-CAddress                   FindRVA(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;
-std::vector<CAddress>      FindRVAs(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;
+CAddress              FindRVA(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;
+std::vector<CAddress> FindRVAs(std::uintptr_t data, std::size_t size, uint32_t rva) noexcept;
 
 std::optional<std::size_t> FindPtr(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept;
 std::vector<CAddress>      FindPtrs(std::uintptr_t data, std::size_t size, std::uintptr_t ptr) noexcept;

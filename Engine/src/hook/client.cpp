@@ -415,7 +415,7 @@ BeginMemberHookScope(CServerSideClient)
         }
 
         state.lastRefillTime = now;
-        state.tokens         -= 1.0;
+        state.tokens -= 1.0;
 
         if (state.ShouldKick())
         {
@@ -481,8 +481,8 @@ BeginMemberHookScope(CServerSideClient)
                 break;
 
             state.decodedWorkSize -= sample.decodedWorkSize;
-            state.packetCount     -= sample.packetCount;
-            state.firstMessage    = (state.firstMessage + 1) % max_message_rate;
+            state.packetCount -= sample.packetCount;
+            state.firstMessage = (state.firstMessage + 1) % max_message_rate;
             --state.messageCount;
         }
 
@@ -497,7 +497,7 @@ BeginMemberHookScope(CServerSideClient)
         state.samples[index] = {now, decodedWorkSize, packetCount};
         ++state.messageCount;
         state.decodedWorkSize += decodedWorkSize;
-        state.packetCount     += packetCount;
+        state.packetCount += packetCount;
         return false;
     }
 
@@ -829,8 +829,7 @@ void InstallClientHooks()
     });
 
     g_pHookManager->Hook_ClientDisconnect(HookType_Post,
-                                          [](PlayerSlot_t slot, int32_t, const char*, SteamId_t)
-                                          {
+                                          [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
                                               CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
                                               CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
                                           });
@@ -838,10 +837,7 @@ void InstallClientHooks()
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);
     ms_chat_block_whitespace = g_ConVarManager.CreateConVar("ms_chat_block_whitespace", true, "Block whitespace messages.", FCVAR_RELEASE);
     ms_fix_voice_chat        = g_ConVarManager.CreateConVar("ms_fix_voice_chat", true, "Fix voice chat.", FCVAR_RELEASE);
-    ms_voice_lag_should_kick = g_ConVarManager.CreateConVar("ms_voice_lag_should_kick",
-                                                            false,
-                                                            "Whether to kick the player if attempt to lag the server is detected. True - kick, False - drop the packet",
-                                                            FCVAR_RELEASE);
+    ms_voice_lag_should_kick = g_ConVarManager.CreateConVar("ms_voice_lag_should_kick", false, "Whether to kick the player if attempt to lag the server is detected. True - kick, False - drop the packet", FCVAR_RELEASE);
 }
 
 void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommandString)
