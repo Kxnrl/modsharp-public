@@ -507,6 +507,9 @@ public interface IModSharp
     /// <summary>
     ///     Override cache for a player
     /// </summary>
+    /// <remarks>
+    ///     Only works in dual addon mode, ignored once the AddonManager module is in use.
+    /// </remarks>
     [Obsolete("Use the Sharp.Modules.AddonManager module instead")]
     void DualAddonOverrideCheck(SteamID steamId, double time);
 
