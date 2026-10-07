@@ -43,7 +43,6 @@
 
 #include "hook/extern/AddonHooks.h"
 
-extern void DualMountAddonOverrideClientCheck(SteamId_t steamId, double time);
 
 namespace google::protobuf
 {
@@ -283,11 +282,6 @@ static CCSWeaponBaseVData* FindWeaponVDataByName(const char* name)
     return address::server::FindWeaponVDataByName(1, name);
 }
 
-static void DualAddonOverrideCheck(SteamId_t steamId, double time)
-{
-    ::DualMountAddonOverrideClientCheck(steamId, time);
-}
-
 static NativeSpan<uint64_t> AddonGetAddons()
 {
     const auto& addons = AddonHooks::GetAddons();
@@ -386,7 +380,6 @@ void Init()
 
     bridge::CreateNative("Game.GetGameSystemFactory", reinterpret_cast<void*>(GetGameSystemFactory));
 
-    bridge::CreateNative("Game.DualAddonOverrideCheck", reinterpret_cast<void*>(DualAddonOverrideCheck));
     bridge::CreateNative("Game.AddonGetAddons", reinterpret_cast<void*>(AddonGetAddons));
     bridge::CreateNative("Game.AddonSetAddons", reinterpret_cast<void*>(AddonSetAddons));
     bridge::CreateNative("Game.AddonResetClientCache", reinterpret_cast<void*>(AddonResetClientCache));

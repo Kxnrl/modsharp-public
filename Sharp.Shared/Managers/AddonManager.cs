@@ -27,13 +27,12 @@ namespace Sharp.Shared.Managers;
 /// <summary>
 ///     Low-level workshop addon delivery, the <c>Sharp.Modules.AddonManager</c> module is built on it. <br />
 ///     Use the module unless you are writing your own addon manager. <br />
-///     The flow is picked on every map change: 1 addon uses the DualAddon flow,
-///     2+ addons (or an installed <see cref="IAddonListener" />) use the MultiAddon flow.
+///     Active on a map whenever it has any addon or an <see cref="IAddonListener" /> is installed.
 /// </summary>
 public interface IAddonManager
 {
     /// <summary>
-    ///     Server addons applied on the next map change (seeded from the deprecated <c>-dual_addon</c> launch parameter)
+    ///     Server addons applied on the next map change (seeded from the <c>-addons</c> launch parameter)
     /// </summary>
     IReadOnlyList<ulong> GetAddons();
 
@@ -59,8 +58,8 @@ public interface IAddonManager
 
     /// <summary>
     ///     Force a workshop download (update) of an addon on the server. <br />
-    ///     An addon mounted by the MultiAddon flow is unmounted during the download and mounted again afterwards
-    ///     (Windows locks mounted files). Addons mounted by the engine (workshop map, DualAddon) are not.
+    ///     An addon mounted by ModSharp is unmounted during the download and mounted again afterwards
+    ///     (Windows locks mounted files). Addons mounted by the engine (workshop map) are not.
     /// </summary>
     bool UpdateAddon(ulong addon);
 
@@ -71,7 +70,7 @@ public interface IAddonManager
     void ReloadMap();
 
     /// <summary>
-    ///     Tune the MultiAddon flow
+    ///     Tune the addon delivery
     /// </summary>
     void SetOptions(AddonOptions options);
 

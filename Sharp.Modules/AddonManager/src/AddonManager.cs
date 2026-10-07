@@ -91,12 +91,17 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     {
         // core.json "AddonManager" is read before the first map, unlike cvars from server.cfg,
         // so it also works where launch parameters are not available
-        _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons()); // deprecated -dual_addon
-        _addons.AddRange(ReadConfig("AddonManager:Addons").Where(x => !_addons.Contains(x)).ToArray());
+        // -addons on the command line overrides core.json "Addons"
+        _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons());
+        if (_addons.Count == 0)
+        {
+            _addons.AddRange(ReadConfig("AddonManager:Addons"));
+        }
+
         _globalClientAddons.AddRange(ReadConfig("AddonManager:ClientAddons"));
         ApplyAddons(false, false);
 
-        // being queried always selects the MultiAddon flow, even for a single addon
+        // being queried keeps the delivery active even without server addons
         _sharedSystem.GetAddonManager().InstallAddonListener(this);
 
         var conVars = _sharedSystem.GetConVarManager();

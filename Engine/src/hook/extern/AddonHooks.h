@@ -26,44 +26,17 @@
 #include <string>
 #include <vector>
 
-struct CHostStateRequest;
-class INetChannel;
-class CNETMsg_SignonState;
-template <typename T>
-class CNetMessagePB;
-
 namespace AddonHooks
 {
-enum class Mode
-{
-    None,
-    Dual,  // exactly 1 addon: DualMountAddon flow
-    Multi, // 2+ addons or per-client addons: MultiAddon flow
-};
-
-class IAddonStrategy
-{
-public:
-    virtual ~IAddonStrategy() = default;
-
-    // Pre-call: opportunity to mutate pRequest before HostStateRequest runs.
-    virtual void OnHostStateRequestPre(void* a1, CHostStateRequest* pRequest) = 0;
-
-    // Pre-send: opportunity to mutate the SignonState message before the engine sends it.
-    // Only called when m_MessageId == NET_MESSAGE_ID_SIGNON and the bypass flag is off.
-    virtual void OnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData) = 0;
-};
-
-// Addon list applied on the next map change, seeded from the deprecated -dual_addon command line parameter.
+// Addon list applied on the next map change, seeded from the -addons command line parameter.
 const std::vector<uint64_t>& GetAddons();
 void                         SetAddons(std::vector<uint64_t> addons);
 
-// Addon list and mode latched at the last HostStateRequest.
+// Addon list latched at the last HostStateRequest, active when it has any addon or client queries are enabled.
 const std::vector<uint64_t>& GetActiveAddons();
-Mode                         GetMode();
-uint64_t                     GetDualAddonId();
+bool                         IsActive();
 
-// Whether managed listeners want to be queried for per-client addons (forces Multi mode).
+// Whether managed listeners want to be queried for per-client addons (activates even without server addons).
 void SetClientQueryEnabled(bool enabled);
 
 void ResetClientCache(SteamId_t steamId);

@@ -23,7 +23,7 @@ using Sharp.Shared.Units;
 namespace Sharp.Modules.AddonManager.Shared;
 
 /// <summary>
-///     Workshop addon management (MultiAddonManager compatible), always delivered through the MultiAddon flow. <br />
+///     Workshop addon management (MultiAddonManager compatible). <br />
 ///     Server addon changes take effect on the next map change, pass <c>reloadMap</c> or call <see cref="ReloadMap" /> to apply them.
 /// </summary>
 public interface IAddonManager

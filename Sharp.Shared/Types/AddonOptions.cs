@@ -20,7 +20,7 @@
 namespace Sharp.Shared.Types;
 
 /// <summary>
-///     Tuning of the MultiAddon flow
+///     Tuning of the addon delivery
 /// </summary>
 /// <param name="ClientTimeout">Seconds allowed between reconnects while a client downloads the next addon</param>
 /// <param name="ConnectionTimeout">Seconds allowed to accept the first addon before the client is kicked, 0 disables</param>

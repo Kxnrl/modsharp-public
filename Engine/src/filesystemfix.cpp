@@ -51,8 +51,7 @@ void FixFileSystem()
         "SHADER_SOURCE_ROOT"};
 
     // sharp/assets: server-only files (e.g. an addon extracted by a plugin, delivered to clients as a client-only addon).
-    // added when the folder exists, -dual_addon keeps adding it as before
-    const auto enableDualAddon = CommandLine()->HasParam("-dual_addon");
+    // added when the folder exists
     auto       hasReplaceValue = false;
     auto       assetsPath      = std::string();
 
@@ -104,7 +103,7 @@ void FixFileSystem()
                 {
                     assetsPath = pathView;
                     assetsPath += "assets\\";
-                    hasReplaceValue = enableDualAddon || std::filesystem::is_directory(std::filesystem::path(pathView) / "assets");
+                    hasReplaceValue = std::filesystem::is_directory(std::filesystem::path(pathView) / "assets");
                 }
             }
         }

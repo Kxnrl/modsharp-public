@@ -27,7 +27,7 @@
 #include <steamworks/steam_api.h>
 #include <steamworks/steam_gameserver.h>
 
-extern void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult);
+extern void AddonsOnDownloadItemResult(uint64_t fileId, int eResult);
 
 class CallbackListener
 {
@@ -109,7 +109,7 @@ void CallbackListener::OnDownloadItemResult(DownloadItemResult_t* pParam)
 {
     const auto id = static_cast<uint64_t>(pParam->m_nPublishedFileId);
 
-    MultiAddonOnDownloadItemResult(id, pParam->m_eResult);
+    AddonsOnDownloadItemResult(id, pParam->m_eResult);
 
     forwards::OnDownloadItemResult->Invoke(id, pParam->m_eResult);
 }

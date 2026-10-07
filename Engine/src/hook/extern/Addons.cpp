@@ -75,7 +75,7 @@ static double s_flConnectionTimeout = 0;   // seconds allowed to accept the firs
 static double s_flCacheDuration     = 600; // keep downloaded addons per client, 0 forever, < 0 disabled
 static bool   s_bDebug              = false;
 
-struct MultiAddonClientInfo_t
+struct AddonsClientInfo_t
 {
     double                   lastActiveTime {};
     double                   connectionStartTime {};
@@ -85,25 +85,20 @@ struct MultiAddonClientInfo_t
     std::string              currentPendingAddon;
 };
 
-struct MultiAddonDownload_t
+struct AddonsDownload_t
 {
     uint64_t fileId;
     bool     reloadMap; // reload once every reloadMap download finishes
     bool     remount;   // was mounted before an update, mount it again once done
 };
 
-static std::unordered_map<SteamId_t, MultiAddonClientInfo_t> s_ClientInfos;
+static std::unordered_map<SteamId_t, AddonsClientInfo_t> s_ClientInfos;
 static std::vector<std::string>                              s_MountedAddons;
-static std::deque<MultiAddonDownload_t>                      s_DownloadQueue;
+static std::deque<AddonsDownload_t>                      s_DownloadQueue;
 static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
 static bool                                                  s_IsOfficialWorkshopMap = false;
 static bool                                                  s_bReloadBatchSucceeded = false;
-
-static bool IsActive()
-{
-    return AddonHooks::GetMode() == AddonHooks::Mode::Multi;
-}
 
 static bool HasUGC()
 {
@@ -203,12 +198,12 @@ static bool DownloadAddon(uint64_t fileId, bool reloadMap, bool remount)
 
     if (!g_pSteamApiProxy->DownloadItem(fileId, false))
     {
-        LogInfo("[MultiAddon] Failed to start download for %llu", fileId);
+        LogInfo("[Addons] Failed to start download for %llu", fileId);
         return false;
     }
 
     s_DownloadQueue.push_back({fileId, reloadMap, remount});
-    LogInfo("[MultiAddon] Download started for %llu", fileId);
+    LogInfo("[Addons] Download started for %llu", fileId);
     return true;
 }
 
@@ -227,7 +222,7 @@ static void PrintDownloadProgress()
     const double mbTotal      = static_cast<double>(total) / 1024.0 / 1024.0;
     const double progress     = static_cast<double>(downloaded) * 100.0 / static_cast<double>(total);
 
-    LogInfo("[MultiAddon] Downloading %llu: %.2f/%.2f MB (%.2f%%)", fileId, mbDownloaded, mbTotal, progress);
+    LogInfo("[Addons] Downloading %llu: %.2f/%.2f MB (%.2f%%)", fileId, mbDownloaded, mbTotal, progress);
 }
 
 static bool MountAddon(const char* pszAddon)
@@ -244,12 +239,12 @@ static bool MountAddon(const char* pszAddon)
 
     if (state & k_EItemStateLegacyItem)
     {
-        LogInfo("[MultiAddon] %s is a legacy item (Source 1), skipping", pszAddon);
+        LogInfo("[Addons] %s is a legacy item (Source 1), skipping", pszAddon);
         return false;
     }
     if (!(state & k_EItemStateInstalled))
     {
-        LogInfo("[MultiAddon] %s is not installed, queuing a download", pszAddon);
+        LogInfo("[Addons] %s is not installed, queuing a download", pszAddon);
         DownloadAddon(fileId, true, false);
         return false;
     }
@@ -261,7 +256,7 @@ static bool MountAddon(const char* pszAddon)
         BuildAddonPath(pszAddon, path, sizeof(path), true);
         if (!g_pFullFileSystem->FileExists(path))
         {
-            LogInfo("[MultiAddon] %s not found at %s", pszAddon, path);
+            LogInfo("[Addons] %s not found at %s", pszAddon, path);
             return false;
         }
     }
@@ -273,7 +268,7 @@ static bool MountAddon(const char* pszAddon)
     g_pFullFileSystem->AddSearchPath(path, "GAME", PATH_ADD_TO_HEAD, SEARCH_PATH_PRIORITY_VPK);
     s_MountedAddons.emplace_back(pszAddon);
 
-    LogInfo("[MultiAddon] Mounted addon %s -> %s", pszAddon, path);
+    LogInfo("[Addons] Mounted addon %s -> %s", pszAddon, path);
     return true;
 }
 
@@ -305,7 +300,7 @@ static void RefreshAddons(bool reloadMap)
 {
     UnmountAllAddons();
 
-    if (!IsActive() || !HasUGC())
+    if (!AddonHooks::IsActive() || !HasUGC())
         return;
 
     const auto addons     = GetServerAddons();
@@ -316,14 +311,14 @@ static void RefreshAddons(bool reloadMap)
             allMounted = false;
     }
 
-    LogInfo("[MultiAddon] Load complete -> mounted=%zu/%zu [%s]",
+    LogInfo("[Addons] Load complete -> mounted=%zu/%zu [%s]",
             s_MountedAddons.size(), addons.size(), StringJoin(s_MountedAddons, ", ").c_str());
 
     if (allMounted && reloadMap)
         AddonHooks::ReloadMap();
 }
 
-void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
+void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
 {
     const auto it = std::ranges::find_if(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
     if (it == s_DownloadQueue.end())
@@ -334,12 +329,12 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
 
     if (eResult == k_EResultOK)
     {
-        LogInfo("[MultiAddon] Addon %llu downloaded", fileId);
+        LogInfo("[Addons] Addon %llu downloaded", fileId);
         if (entry.reloadMap)
             s_bReloadBatchSucceeded = true;
     }
     else
-        LogInfo("[MultiAddon] Addon %llu download failed (%d)", fileId, eResult);
+        LogInfo("[Addons] Addon %llu download failed (%d)", fileId, eResult);
 
     if (entry.remount)
         MountAddon(std::to_string(fileId).c_str());
@@ -350,17 +345,17 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
         // a failed addon is queued again on the next map load, so reloading on an all-failed batch loops forever
         if (!s_bReloadBatchSucceeded)
         {
-            LogInfo("[MultiAddon] All downloads failed, skipping map reload");
+            LogInfo("[Addons] All downloads failed, skipping map reload");
             return;
         }
 
         s_bReloadBatchSucceeded = false;
-        LogInfo("[MultiAddon] All downloads complete, reloading map");
+        LogInfo("[Addons] All downloads complete, reloading map");
         AddonHooks::ReloadMap();
     }
 }
 
-bool MultiAddonUpdateAddon(uint64_t fileId)
+bool AddonsUpdateAddon(uint64_t fileId)
 {
     if (!HasUGC() || fileId == 0)
         return false;
@@ -383,7 +378,7 @@ bool MultiAddonUpdateAddon(uint64_t fileId)
     return true;
 }
 
-void MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
+void AddonsSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
 {
     s_flClientTimeout     = clientTimeout;
     s_flConnectionTimeout = connectionTimeout;
@@ -391,16 +386,16 @@ void MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double
     s_bDebug              = debug;
 }
 
-void MultiAddonOnSteamApiActivated()
+void AddonsOnSteamApiActivated()
 {
-    if (!IsActive() || !engine || !engine->IsDedicatedServer())
+    if (!AddonHooks::IsActive() || !engine || !engine->IsDedicatedServer())
         return;
 
-    LogInfo("[MultiAddon] Steam API activated, refreshing addons");
+    LogInfo("[Addons] Steam API activated, refreshing addons");
     RefreshAddons(true);
 }
 
-void MultiAddonResetClientCache(SteamId_t steamId)
+void AddonsResetClientCache(SteamId_t steamId)
 {
     if (steamId == 0)
         s_ClientInfos.clear();
@@ -408,13 +403,13 @@ void MultiAddonResetClientCache(SteamId_t steamId)
         s_ClientInfos.erase(steamId);
 }
 
-void MultiAddonCancelRefresh(SteamId_t steamId)
+void AddonsCancelRefresh(SteamId_t steamId)
 {
     if (const auto it = s_ClientInfos.find(steamId); it != s_ClientInfos.end())
         it->second.currentPendingAddon.clear();
 }
 
-static void QueryClientAddons(SteamId_t steamId, MultiAddonClientInfo_t& info)
+static void QueryClientAddons(SteamId_t steamId, AddonsClientInfo_t& info)
 {
     uint64_t        buffer[MAX_CLIENT_ADDONS];
     NativeFixedSpan span(buffer, 0, MAX_CLIENT_ADDONS);
@@ -428,7 +423,7 @@ static void QueryClientAddons(SteamId_t steamId, MultiAddonClientInfo_t& info)
     }
 }
 
-std::string MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache)
+std::string AddonsPrepareRefresh(SteamId_t steamId, bool resetCache)
 {
     auto& info = s_ClientInfos[steamId];
 
@@ -454,83 +449,77 @@ std::string MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache)
     return remaining.empty() ? std::string() : remaining[0];
 }
 
-class MultiAddonStrategy : public AddonHooks::IAddonStrategy
+void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
 {
-public:
-    void OnHostStateRequestPre(void* /*a1*/, CHostStateRequest* pRequest) override
+    s_IsOfficialWorkshopMap = false;
+    s_CurrentWorkshopMap.clear();
+
+    if (!AddonHooks::IsActive())
+        return;
+
+    if (s_bDebug)
     {
-        s_IsOfficialWorkshopMap = false;
-        s_CurrentWorkshopMap.clear();
-
-        if (!IsActive())
-            return;
-
-        if (s_bDebug)
-        {
-            LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=%s",
-                pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
-        }
-
-        s_CurrentWorkshopMap    = AddonHooks::GetWorkshopMap();
-        s_IsOfficialWorkshopMap = AddonHooks::IsOfficialWorkshopMap();
-
-        pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
-
-        LOG("HostStateRequest --> Addons=[%s] workshop_map=%s official=%s",
-            pRequest->m_Addons.Get(), s_CurrentWorkshopMap.c_str(), BooleanSTR(s_IsOfficialWorkshopMap));
+        LOG("HostStateRequest -> Addons=[%s] LevelName=[%s] ChangeLevel=%s",
+            pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
     }
 
-    void OnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData) override
+    s_CurrentWorkshopMap    = AddonHooks::GetWorkshopMap();
+    s_IsOfficialWorkshopMap = AddonHooks::IsOfficialWorkshopMap();
+
+    pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
+
+    LOG("HostStateRequest --> Addons=[%s] workshop_map=%s official=%s",
+        pRequest->m_Addons.Get(), s_CurrentWorkshopMap.c_str(), BooleanSTR(s_IsOfficialWorkshopMap));
+}
+
+void AddonsOnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData)
+{
+    const auto pClient = GetClientByNetChannel(pNetChannel);
+    if (!pClient || pClient->IsFakeClient())
+        return;
+
+    const auto steamId = pClient->GetSteamId();
+    if (steamId == 0)
+        return;
+
+    auto& info          = s_ClientInfos[steamId];
+    info.lastActiveTime = Plat_FloatTime();
+
+    if (s_bDebug)
+        LOG("SignonState -> Steam=%llu State=%d Addons=[%s]", steamId, pData->signon_state(), pData->addons().c_str());
+
+    if (pData->signon_state() == SIGNONSTATE_CHANGELEVEL)
     {
-        const auto pClient = GetClientByNetChannel(pNetChannel);
-        if (!pClient || pClient->IsFakeClient())
-            return;
-
-        const auto steamId = pClient->GetSteamId();
-        if (steamId == 0)
-            return;
-
-        auto& info          = s_ClientInfos[steamId];
-        info.lastActiveTime = Plat_FloatTime();
-
-        if (s_bDebug)
-            LOG("SignonState -> Steam=%llu State=%d Addons=[%s]", steamId, pData->signon_state(), pData->addons().c_str());
-
-        if (pData->signon_state() == SIGNONSTATE_CHANGELEVEL)
+        // HACK Valve 24/7/27: sending 2+ ids on a native changelevel stalls the client
+        if (const auto addonsStr = pData->addons(); addonsStr.find(',') != std::string::npos)
         {
-            // HACK Valve 24/7/27: sending 2+ ids on a native changelevel stalls the client
-            if (const auto addonsStr = pData->addons(); addonsStr.find(',') != std::string::npos)
+            if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty() && !s_IsOfficialWorkshopMap)
             {
-                if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty() && !s_IsOfficialWorkshopMap)
-                {
-                    pData->set_addons(vecAddons[0]);
-                    info.currentPendingAddon = vecAddons[0];
-                }
+                pData->set_addons(vecAddons[0]);
+                info.currentPendingAddon = vecAddons[0];
             }
-            else if (!pData->addons().empty())
-            {
-                info.currentPendingAddon = pData->addons();
-            }
-            return;
         }
-
-        const auto remaining = GetRemainingAddons(steamId);
-        if (remaining.empty())
-            return;
-
-        info.currentPendingAddon = remaining[0];
-        pData->set_addons(remaining[0]);
-        pData->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+        else if (!pData->addons().empty())
+        {
+            info.currentPendingAddon = pData->addons();
+        }
+        return;
     }
-};
 
-static MultiAddonStrategy s_MultiAddonStrategy;
+    const auto remaining = GetRemainingAddons(steamId);
+    if (remaining.empty())
+        return;
+
+    info.currentPendingAddon = remaining[0];
+    pData->set_addons(remaining[0]);
+    pData->set_signon_state(SIGNONSTATE_CHANGELEVEL);
+}
 
 BeginStaticHookScope(ReplyConnection)
 {
     DeclareStaticDetourHook(ReplyConnection, void, (CNetworkGameServer * pServer, CServerSideClient * pClient))
     {
-        if (!IsActive() || pClient->IsFakeClient())
+        if (!AddonHooks::IsActive() || pClient->IsFakeClient())
             return ReplyConnection(pServer, pClient);
 
         const auto steamId = pClient->GetSteamId();
@@ -613,7 +602,7 @@ BeginStaticHookScope(EngineClientDisconnect)
     // never reaches OnClientDisconnectPost and would keep a stale connectionStartTime
     DeclareStaticDetourHook(EngineClientDisconnect, void, (CServerSideClient * pClient, void* pInfo))
     {
-        if (IsActive() && !pClient->IsFakeClient())
+        if (AddonHooks::IsActive() && !pClient->IsFakeClient())
         {
             if (const auto it = s_ClientInfos.find(pClient->GetSteamId()); it != s_ClientInfos.end())
                 it->second.connecting = false;
@@ -628,7 +617,7 @@ BeginStaticHookScope(ScriptGetAddon)
     // level resource loading takes the first id of the addon list as the map's addon, keep it the workshop map
     DeclareStaticDetourHook(ScriptGetAddon, uint64_t, ())
     {
-        if (!IsActive() || s_CurrentWorkshopMap.empty())
+        if (!AddonHooks::IsActive() || s_CurrentWorkshopMap.empty())
             return ScriptGetAddon();
 
         const auto id = strtoull(s_CurrentWorkshopMap.c_str(), nullptr, 10);
@@ -638,7 +627,7 @@ BeginStaticHookScope(ScriptGetAddon)
 
 static void OnClientConnectPre(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId, bool bot)
 {
-    if (bot || !IsActive())
+    if (bot || !AddonHooks::IsActive())
         return;
 
     auto&      info = s_ClientInfos[steamId];
@@ -669,7 +658,7 @@ static void OnClientConnectPre(PlayerSlot_t /*slot*/, const char* /*name*/, Stea
 
 static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, const char* /*name*/, SteamId_t steamId)
 {
-    if (steamId == 0 || !IsActive())
+    if (steamId == 0 || !AddonHooks::IsActive())
         return;
 
     auto& info          = s_ClientInfos[steamId];
@@ -679,7 +668,7 @@ static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, co
 
 static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId)
 {
-    if (steamId == 0 || !IsActive())
+    if (steamId == 0 || !AddonHooks::IsActive())
         return;
 
     auto& info = s_ClientInfos[steamId];
@@ -692,7 +681,7 @@ static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, St
 
 static void OnGameFrame(bool /*sim*/, bool /*first*/, bool /*last*/)
 {
-    if (!sv || !IsActive())
+    if (!sv || !AddonHooks::IsActive())
         return;
 
     if (!s_TimedOutClients.empty())
@@ -736,7 +725,7 @@ static void OnServerInitPost()
         RefreshAddons(false);
 }
 
-AddonHooks::IAddonStrategy* InstallMultiAddonHooks()
+void InstallAddonsHooks()
 {
     g_pHookManager->Hook_ClientConnect(HookType_Pre, OnClientConnectPre);
     g_pHookManager->Hook_ClientDisconnect(HookType_Post, OnClientDisconnectPost);
@@ -750,7 +739,5 @@ AddonHooks::IAddonStrategy* InstallMultiAddonHooks()
     if (const auto address = modules::engine->FindFunctionFromStringRef("Disconnect client '%s' from server: %s\n"); address.IsValid())
         SHOOK(EngineClientDisconnect, {.address = address});
     else
-        WARN("[MultiAddon] Failed to find the engine client disconnect, stale connection timeouts may kick reconnecting clients");
-
-    return &s_MultiAddonStrategy;
+        WARN("[Addons] Failed to find the engine client disconnect, stale connection timeouts may kick reconnecting clients");
 }

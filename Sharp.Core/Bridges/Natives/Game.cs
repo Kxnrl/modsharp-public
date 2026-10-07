@@ -127,8 +127,6 @@ public static unsafe partial class Game
 
     public static partial nint FindWeaponVDataByName(string name);
 
-    public static partial void DualAddonOverrideCheck(ulong steamId, double time);
-
     public static partial NativeSpan<ulong> AddonGetAddons();
 
     public static partial void AddonSetAddons(ulong* addons, int count);

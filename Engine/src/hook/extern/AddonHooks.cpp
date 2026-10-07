@@ -47,40 +47,25 @@
 
 #include <string>
 
-extern AddonHooks::IAddonStrategy* InstallDualMountAddonHooks();
-extern AddonHooks::IAddonStrategy* InstallMultiAddonHooks();
-extern void                        DualMountAddonResetClientCache(SteamId_t steamId);
-extern void                        MultiAddonResetClientCache(SteamId_t steamId);
-extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache);
-extern void                        MultiAddonCancelRefresh(SteamId_t steamId);
-extern bool                        MultiAddonUpdateAddon(uint64_t fileId);
-extern void                        MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
+extern void        InstallAddonsHooks();
+extern void        AddonsOnHostStateRequestPre(CHostStateRequest* pRequest);
+extern void        AddonsOnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData);
+extern void        AddonsResetClientCache(SteamId_t steamId);
+extern std::string AddonsPrepareRefresh(SteamId_t steamId, bool resetCache);
+extern void        AddonsCancelRefresh(SteamId_t steamId);
+extern bool        AddonsUpdateAddon(uint64_t fileId);
+extern void        AddonsSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 
 namespace
 {
-constexpr int32_t           NET_MESSAGE_ID_SIGNON  = 7;
-bool                        s_bClientQuery         = false;
-bool                        s_bOfficialWorkshopMap = false;
-bool                        s_bWorkshopRequest     = false;
-std::string                 s_WorkshopMap;
-std::vector<uint64_t>       s_Addons;
-std::vector<uint64_t>       s_ActiveAddons;
-AddonHooks::Mode            s_Mode   = AddonHooks::Mode::None;
-AddonHooks::IAddonStrategy* s_pDual  = nullptr;
-AddonHooks::IAddonStrategy* s_pMulti = nullptr;
-
-AddonHooks::IAddonStrategy* GetStrategy()
-{
-    switch (s_Mode)
-    {
-    case AddonHooks::Mode::Dual:
-        return s_pDual;
-    case AddonHooks::Mode::Multi:
-        return s_pMulti;
-    default:
-        return nullptr;
-    }
-}
+constexpr int32_t     NET_MESSAGE_ID_SIGNON  = 7;
+bool                  s_bClientQuery         = false;
+bool                  s_bOfficialWorkshopMap = false;
+bool                  s_bWorkshopRequest     = false;
+bool                  s_bActive              = false;
+std::string           s_WorkshopMap;
+std::vector<uint64_t> s_Addons;
+std::vector<uint64_t> s_ActiveAddons;
 
 void DetectWorkshopMap(const CHostStateRequest* pRequest)
 {
@@ -125,16 +110,10 @@ BeginStaticHookScope(HostStateRequest)
 
         s_ActiveAddons = s_Addons;
 
-        if (s_ActiveAddons.size() >= 2 || s_bClientQuery)
-            s_Mode = AddonHooks::Mode::Multi;
-        else if (s_ActiveAddons.size() == 1)
-            s_Mode = AddonHooks::Mode::Dual;
-        else
-            s_Mode = AddonHooks::Mode::None;
+        s_bActive = !s_ActiveAddons.empty() || s_bClientQuery;
 
-        // both strategies reset their per-map state here, so always notify them
-        s_pDual->OnHostStateRequestPre(a1, pRequest);
-        s_pMulti->OnHostStateRequestPre(a1, pRequest);
+        // resets the per-map state, so always notify it
+        AddonsOnHostStateRequestPre(pRequest);
 
         HostStateRequest(a1, pRequest);
     }
@@ -144,11 +123,11 @@ BeginMemberHookScope(INetChannel)
 {
     DeclareMemberDetourHook(SendNetMessage, bool, (INetChannel * pNetChannel, CNetMessagePB<CNETMsg_SignonState> * pData, int a4))
     {
-        if (const auto pStrategy = GetStrategy(); !s_bBypassNetMessageHook && pStrategy)
+        if (!s_bBypassNetMessageHook && s_bActive)
         {
             const auto pInfo = pData->GetNetMessage()->GetNetMessageInfo();
             if (pInfo->m_MessageId == NET_MESSAGE_ID_SIGNON)
-                pStrategy->OnSignonStateNetMessagePre(pNetChannel, pData);
+                AddonsOnSignonStateNetMessagePre(pNetChannel, pData);
         }
 
         return SendNetMessage(pNetChannel, pData, a4);
@@ -173,14 +152,9 @@ const std::vector<uint64_t>& GetActiveAddons()
     return s_ActiveAddons;
 }
 
-Mode GetMode()
+bool IsActive()
 {
-    return s_Mode;
-}
-
-uint64_t GetDualAddonId()
-{
-    return s_Mode == Mode::Dual ? s_ActiveAddons[0] : 0;
+    return s_bActive;
 }
 
 void SetClientQueryEnabled(bool enabled)
@@ -190,18 +164,17 @@ void SetClientQueryEnabled(bool enabled)
 
 void ResetClientCache(SteamId_t steamId)
 {
-    DualMountAddonResetClientCache(steamId);
-    MultiAddonResetClientCache(steamId);
+    AddonsResetClientCache(steamId);
 }
 
 bool UpdateAddon(uint64_t fileId)
 {
-    return MultiAddonUpdateAddon(fileId);
+    return AddonsUpdateAddon(fileId);
 }
 
 void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
 {
-    MultiAddonSetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
+    AddonsSetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
 }
 
 void ReloadMap()
@@ -279,12 +252,10 @@ bool RefreshClient(SteamId_t steamId, bool resetCache)
     if (!pTarget || !pTarget->IsInGame() || !pTarget->GetNetChannel())
         return false;
 
-    std::string addon;
-    if (s_Mode == Mode::Dual)
-        addon = std::to_string(GetDualAddonId());
-    else if (s_Mode == Mode::Multi)
-        addon = MultiAddonPrepareRefresh(steamId, resetCache);
+    if (!s_bActive)
+        return false;
 
+    const auto addon = AddonsPrepareRefresh(steamId, resetCache);
     if (addon.empty())
         return false;
 
@@ -312,15 +283,14 @@ bool RefreshClient(SteamId_t steamId, bool resetCache)
             pSignon->add_players_networkids(netId);
     }
 
-    // goes through our SendNetMessage detour, so the Multi strategy records the pending addon
+    // goes through our SendNetMessage detour, so the pending addon gets recorded
     const auto sent = pSendCall(pTarget->GetNetChannel(), pData, BUF_RELIABLE);
     g_pMemAlloc->Free(pData);
 
     if (!sent)
     {
         // the detour already recorded the pending addon, a quick reconnect would mark it downloaded
-        if (s_Mode == Mode::Multi)
-            MultiAddonCancelRefresh(steamId);
+        AddonsCancelRefresh(steamId);
         return false;
     }
 
@@ -331,23 +301,20 @@ bool RefreshClient(SteamId_t steamId, bool resetCache)
 
 void InstallAddonHooks()
 {
-    // deprecated, only seeds the addon list: use the AddonManager module (ms_extra_addons) instead
-    if (const auto pszValue = CommandLine()->ParamValue("-dual_addon", nullptr))
+    // seeds the addon list, the AddonManager module uses it instead of core.json "Addons"
+    if (const auto pszValue = CommandLine()->ParamValue("-addons", nullptr))
     {
         for (const auto& token : StringSplit(pszValue, ","))
         {
             if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0)
-            {
                 s_Addons.push_back(id);
-                LOG("Load dual addon = %llu", id);
-            }
         }
-
-        WARN("-dual_addon is deprecated, use the AddonManager module (ms_extra_addons) instead");
     }
 
-    s_pDual  = InstallDualMountAddonHooks();
-    s_pMulti = InstallMultiAddonHooks();
+    if (CommandLine()->HasParam("-dual_addon"))
+        FatalError("-dual_addon has been removed, use -addons or core.json \"AddonManager\" with the AddonManager module instead");
+
+    InstallAddonsHooks();
 
     SHOOK(HostStateRequest);
     HOOK(INetChannel, SendNetMessage);

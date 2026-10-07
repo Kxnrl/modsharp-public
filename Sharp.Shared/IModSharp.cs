@@ -496,37 +496,6 @@ public interface IModSharp
 
 #endregion
 
-#region Dual Addon
-
-    /// <summary>
-    ///     Clear dual addon cache
-    /// </summary>
-    [Obsolete("Use the Sharp.Modules.AddonManager module instead")]
-    void DualAddonPurgeCheck();
-
-    /// <summary>
-    ///     Override cache for a player
-    /// </summary>
-    /// <remarks>
-    ///     Only works in dual addon mode, ignored once the AddonManager module is in use.
-    /// </remarks>
-    [Obsolete("Use the Sharp.Modules.AddonManager module instead")]
-    void DualAddonOverrideCheck(SteamID steamId, double time);
-
-    /// <summary>
-    ///     Get dual addon publish file id
-    /// </summary>
-    [Obsolete("Use the Sharp.Modules.AddonManager module instead")]
-    ulong GetDualAddonId();
-
-    /// <summary>
-    ///     Set dual addon publish file id
-    /// </summary>
-    [Obsolete("Use the Sharp.Modules.AddonManager module instead")]
-    bool SetDualAddonId(ulong publishFileId);
-
-#endregion
-
 #region Workshop
 
     /// <summary>
