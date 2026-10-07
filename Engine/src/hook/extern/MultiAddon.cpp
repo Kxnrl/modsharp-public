@@ -193,8 +193,13 @@ static bool IsDownloading(uint64_t fileId)
 
 static bool DownloadAddon(uint64_t fileId, bool reloadMap, bool remount)
 {
-    if (IsDownloading(fileId))
+    if (const auto it = std::ranges::find_if(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
+        it != s_DownloadQueue.end())
+    {
+        it->reloadMap |= reloadMap;
+        it->remount |= remount;
         return true;
+    }
 
     if (!g_pSteamApiProxy->DownloadItem(fileId, false))
     {
@@ -401,6 +406,12 @@ void MultiAddonResetClientCache(SteamId_t steamId)
         s_ClientInfos.clear();
     else
         s_ClientInfos.erase(steamId);
+}
+
+void MultiAddonCancelRefresh(SteamId_t steamId)
+{
+    if (const auto it = s_ClientInfos.find(steamId); it != s_ClientInfos.end())
+        it->second.currentPendingAddon.clear();
 }
 
 static void QueryClientAddons(SteamId_t steamId, MultiAddonClientInfo_t& info)

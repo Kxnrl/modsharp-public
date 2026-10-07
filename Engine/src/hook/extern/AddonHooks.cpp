@@ -52,6 +52,7 @@ extern AddonHooks::IAddonStrategy* InstallMultiAddonHooks();
 extern void                        DualMountAddonResetClientCache(SteamId_t steamId);
 extern void                        MultiAddonResetClientCache(SteamId_t steamId);
 extern std::string                 MultiAddonPrepareRefresh(SteamId_t steamId, bool resetCache);
+extern void                        MultiAddonCancelRefresh(SteamId_t steamId);
 extern bool                        MultiAddonUpdateAddon(uint64_t fileId);
 extern void                        MultiAddonSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 
@@ -312,8 +313,16 @@ bool RefreshClient(SteamId_t steamId, bool resetCache)
     }
 
     // goes through our SendNetMessage detour, so the Multi strategy records the pending addon
-    pSendCall(pTarget->GetNetChannel(), pData, BUF_RELIABLE);
+    const auto sent = pSendCall(pTarget->GetNetChannel(), pData, BUF_RELIABLE);
     g_pMemAlloc->Free(pData);
+
+    if (!sent)
+    {
+        // the detour already recorded the pending addon, a quick reconnect would mark it downloaded
+        if (s_Mode == Mode::Multi)
+            MultiAddonCancelRefresh(steamId);
+        return false;
+    }
 
     LOG("RefreshClient -> %llu addon=%s", steamId, addon.c_str());
     return true;
