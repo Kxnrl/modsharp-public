@@ -4,7 +4,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 
 ## 用法
 
-安装 `Sharp.Modules.AddonManager` 模块，并在 `core.json` 中列出插件：
+启用 `Sharp.Modules.AddonManager` 模块（默认禁用，删除 `sharp/modules/AddonManager/.disabled` 即可），并在 `core.json` 中列出插件：
 
 ```json
 {
