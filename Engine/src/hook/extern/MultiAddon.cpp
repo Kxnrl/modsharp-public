@@ -98,6 +98,7 @@ static std::deque<MultiAddonDownload_t>                      s_DownloadQueue;
 static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
 static bool                                                  s_IsOfficialWorkshopMap = false;
+static bool                                                  s_bReloadBatchSucceeded = false;
 
 static bool IsActive()
 {
@@ -327,7 +328,11 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
     s_DownloadQueue.erase(it);
 
     if (eResult == k_EResultOK)
+    {
         LogInfo("[MultiAddon] Addon %llu downloaded", fileId);
+        if (entry.reloadMap)
+            s_bReloadBatchSucceeded = true;
+    }
     else
         LogInfo("[MultiAddon] Addon %llu download failed (%d)", fileId, eResult);
 
@@ -337,6 +342,14 @@ void MultiAddonOnDownloadItemResult(uint64_t fileId, int eResult)
     // reload once every queued download has finished so the new addons get mounted
     if (entry.reloadMap && std::ranges::none_of(s_DownloadQueue, [](const auto& e) { return e.reloadMap; }))
     {
+        // a failed addon is queued again on the next map load, so reloading on an all-failed batch loops forever
+        if (!s_bReloadBatchSucceeded)
+        {
+            LogInfo("[MultiAddon] All downloads failed, skipping map reload");
+            return;
+        }
+
+        s_bReloadBatchSucceeded = false;
         LogInfo("[MultiAddon] All downloads complete, reloading map");
         AddonHooks::ReloadMap();
     }
