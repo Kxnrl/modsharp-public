@@ -684,8 +684,10 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
 
         g_ClassInfoMap.try_emplace(class_info->GetName(), class_info);
 
-        auto* schema_class = new SchemaClass_t();
-        schema_class->name = class_info->GetName();
+        auto* schema_class  = new SchemaClass_t();
+        schema_class->name  = class_info->GetName();
+        schema_class->size  = class_info->GetSize();
+        schema_class->align = class_info->GetAlignOf();
         schema_class->baseClassList.AddToTail(new CUtlString(class_info->GetName()));
         g_SchemaList.AddToTail(schema_class);
 
