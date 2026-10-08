@@ -85,6 +85,11 @@ constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 34;
 extern void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue);
 extern void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue);
 
+bool IsPushFixEnabled()
+{
+    return ms_trigger_push_fixes_enabled->GetValue<bool>();
+}
+
 // 这里涉及到安全问题, 所以暂时全局Hook
 // 现在Mapper可以通过该实体传入任意命令!
 BeginMemberHookScope(CPointServerCommand)
