@@ -4,7 +4,7 @@ ModSharp can deliver Steam Workshop addons to clients alongside the map.
 
 ## Usage
 
-Enable the `Sharp.Modules.AddonManager` module (it ships disabled, delete `sharp/modules/AddonManager/.disabled`) and list your addons in `core.json`:
+The `Sharp.Modules.AddonManager` module ships enabled. List your addons in `core.json`:
 
 ```json
 {
