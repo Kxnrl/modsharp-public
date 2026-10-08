@@ -38,7 +38,7 @@ static void CommandPrintConsole(CServerSideClient* pClient, const char* string)
     }
 
     g_bInLoggingFlow = true;
-    ConColorMsg({255, 255, 255, 255}, string);
+    ConColorMsg({255, 255, 255, 255}, "%s", string);
     g_bInLoggingFlow = false;
 }
 
