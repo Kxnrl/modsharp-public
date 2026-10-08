@@ -357,15 +357,12 @@ jobs:
   nuget:
     needs: prefetch
     if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
+    environment: nuget
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     steps:
-      - name: Set Timezone
-        uses: szenius/set-timezone@v2.0
-        with:
-          timezoneLinux: "Asia/Shanghai"
-          timezoneMacos: "Asia/Shanghai"
-          timezoneWindows: "China Standard Time"
-
       - name: Checkout
         uses: actions/checkout@v5
         with:
@@ -396,9 +393,15 @@ jobs:
           dotnet pack Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet pack Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj --configuration Release --output .build/nuget -p:VersionSuffix=${{env.GITCOMMIT}}
 
+      - name: NuGet Login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: Kxnrl
+
       - name: Publish
         shell: bash
-        run: dotnet nuget push .build/nuget/*.nupkg --skip-duplicate --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push .build/nuget/*.nupkg --skip-duplicate --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
 
   release:
     if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master' }}
