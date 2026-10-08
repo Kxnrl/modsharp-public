@@ -85,6 +85,13 @@ constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 34;
 extern void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue);
 extern void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue);
 
+static const CEntityClass* LogicCaseClass()
+{
+    static const auto s_pClass = g_pGameEntitySystem->FindEntityClassByName("logic_case");
+    AssertPtr(s_pClass);
+    return s_pClass;
+}
+
 bool IsPushFixEnabled()
 {
     return ms_trigger_push_fixes_enabled->GetValue<bool>();
@@ -287,6 +294,22 @@ BeginMemberHookScope(CEntityIOOutput)
 // 实现劫持AcceptInput
 BeginMemberHookScope(CEntityIdentity)
 {
+    static bool IsPulseFloatIntegerString(const char* pszValue)
+    {
+        if (*pszValue == '-')
+            pszValue++;
+
+        if (*pszValue == '0')
+            pszValue++;
+        else if (*pszValue >= '1' && *pszValue <= '9')
+            while (*pszValue >= '0' && *pszValue <= '9')
+                pszValue++;
+        else
+            return false;
+
+        return strcmp(pszValue, ".0") == 0;
+    }
+
     // a connection's override parameter lives in pKeyValues under "--old-connection-literal--" and takes precedence over pArgs
     DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, void* pArgs, KeyValues3* pKeyValues))
     {
@@ -301,8 +324,12 @@ BeginMemberHookScope(CEntityIdentity)
         // Since the 2026-09-23 update float inputs stringify with %f and break logic_case matching, and inputs read args rather than the variant, so re-dispatch through CBaseEntity::AcceptInput to rebuild args
         if (pValue && pValue->FieldType() == FieldType_t::FIELD_FLOAT32
             && strcasecmp(pInput->Get(), "InValue") == 0
-            && strcasecmp(pInstance->GetClassname(), "logic_case") == 0)
+            && pInstance->GetEntityClass() == LogicCaseClass())
         {
+            const auto pCases = pInstance->GetBaseEntity<CLogicCase*>()->m_nCase();
+            if (std::any_of(pCases, pCases + 32, [](const CUtlSymbolLarge& value) { return IsPulseFloatIntegerString(value.Get()); }))
+                return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);
+
             class RedispatchValue
             {
             public:
