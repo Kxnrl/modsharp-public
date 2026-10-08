@@ -91,9 +91,9 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     {
         // core.json "AddonManager" is read before the first map, unlike cvars from server.cfg,
         // so it also works where launch parameters are not available
-        // -addons on the command line overrides core.json "Addons"
+        // -addons on the command line overrides core.json "Addons", even when empty
         _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons());
-        if (_addons.Count == 0)
+        if (!_sharedSystem.GetModSharp().HasCommandLine("-addons"))
         {
             _addons.AddRange(ReadConfig("AddonManager:Addons"));
         }
