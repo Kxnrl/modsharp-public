@@ -45,6 +45,7 @@
 
 #include <safetyhook.hpp>
 
+#include <cctype>
 #include <string>
 
 extern void        InstallAddonsHooks();
@@ -304,8 +305,12 @@ void InstallAddonHooks()
     // seeds the addon list, the AddonManager module uses it instead of core.json "Addons"
     if (const auto pszValue = CommandLine()->ParamValue("-addons", nullptr))
     {
-        for (const auto& token : StringSplit(pszValue, ","))
+        for (auto token : StringSplit(pszValue, ","))
         {
+            // "123, 456" and "123,456" both work
+            std::erase_if(token, [](unsigned char c) { return std::isspace(c); });
+            if (!StrIsNumber(token))
+                continue;
             if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0)
                 s_Addons.push_back(id);
         }
