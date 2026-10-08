@@ -18,16 +18,18 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 `core.json` 在第一张地图加载前读取，因此不需要任何启动参数。
 运行时也可以通过下方的 ConVar / 命令，或模块接口 `IAddonManager` 修改插件。
 
-> [!NOTE]
-> 启动参数 `-dual_addon` 已弃用，但仍然可用，其中的插件会追加到上面的列表中。
->
-> ```text
-> ./cs2 -dedicated ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
-> ```
+也可以改用启动参数 `-addons`，它会覆盖 `core.json` 中的 `Addons`：
+
+```text
+./cs2 -dedicated ... +host_workshop_map 300123123123 -addons "123123123123,123123123456"
+```
+
+> [!WARNING]
+> 旧的启动参数 `-dual_addon` 已被移除，带此参数时服务端将无法启动。请改用 `-addons` 或 `core.json`。
 
 ## 分发流程
 
-模块始终使用基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager) 的 **MultiAddon** 流程：
+分发流程基于 [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager)：
 客户端每缺一个插件重连一次，工坊地图与官方地图均可用。
 服务端缺少的插件会自动下载，下载完成后重新加载地图。
 
@@ -35,13 +37,18 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 设置 `ms_cache_clients_with_addons 1` 可让已拥有插件的客户端跳过重连，但带缓存重进时会一次性收到全部插件，
 若期间有插件更新，可能导致客户端卡死。
 
-> [!NOTE]
-> 未安装模块时，已弃用的 `-dual_addon` 保持原有行为：
-> 1 个插件使用旧的 **DualAddon** 流程（仅工坊地图），2 个以上使用 MultiAddon 流程。
+## 不使用模块
+
+不安装模块时 `-addons` 依然可用：服务端仍会挂载（并下载）插件，并以相同流程分发给客户端。
+模块提供的功能均不可用：`core.json` 配置、`ClientAddons`、下方的 ConVar / 命令以及模块接口 `IAddonManager`。
+
+> [!WARNING]
+> 不使用模块时客户端缓存为**启用**状态（600 秒），与模块默认的 `ms_cache_clients_with_addons 0` 不同，
+> 因此在此期间重进的客户端会一次性收到全部插件（见上文）。
 
 ## 仅服务端文件（`sharp/assets`）
 
-存在 `sharp/assets` 文件夹时，会将其加入服务端的 `GAME` 搜索路径（使用已弃用的 `-dual_addon` 时总会加入）。
+存在 `sharp/assets` 文件夹时，会将其加入服务端的 `GAME` 搜索路径。
 其中的文件只由服务端读取，不会发送给客户端。
 
 若希望服务端从散文件（例如由插件解包）读取插件内容而不挂载其 VPK，

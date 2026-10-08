@@ -68,4 +68,4 @@ Install the `Sharp.Modules.AddonManager` module and list your workshop IDs in `c
 Multiple addons are supported. See [Workshop Addons](../features/workshop-addons.md).
 
 > [!NOTE]
-> The `-dual_addon {Your workshop subscription ID}` launch option is deprecated but still works.
+> The `-dual_addon` launch option has been removed, the server refuses to start with it. Use `-addons "{ID1},{ID2}"` or `core.json` instead.

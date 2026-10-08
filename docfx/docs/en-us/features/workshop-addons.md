@@ -18,16 +18,18 @@ Enable the `Sharp.Modules.AddonManager` module (it ships disabled, delete `sharp
 `core.json` is read before the first map loads, so no launch parameter is needed.
 The addons can also be changed at runtime through the ConVars / commands below or the `IAddonManager` module interface.
 
-> [!NOTE]
-> The `-dual_addon` launch parameter is deprecated but still works, its addons are added to the list above.
->
-> ```text
-> ./cs2 -dedicated ... +host_workshop_map 300123123123 -dual_addon "123123123123,123123123456"
-> ```
+The `-addons` launch parameter can be used instead, it overrides `Addons` in `core.json`:
+
+```text
+./cs2 -dedicated ... +host_workshop_map 300123123123 -addons "123123123123,123123123456"
+```
+
+> [!WARNING]
+> The legacy `-dual_addon` launch parameter has been removed, the server refuses to start with it. Use `-addons` or `core.json` instead.
 
 ## Delivery flow
 
-The module always uses the **MultiAddon** flow, based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager):
+The delivery is based on [MultiAddonManager](https://github.com/Source2ZE/MultiAddonManager):
 clients reconnect once per addon they still need, on workshop and Valve maps alike.
 Missing addons are downloaded on the server automatically and the map is reloaded once they finish.
 
@@ -35,13 +37,18 @@ By default clients go through the reconnects again on every map change and rejoi
 `ms_cache_clients_with_addons 1` skips them for clients that already have the addons, but a cached rejoin receives every addon at once,
 which can lock up the client if one of them was updated in the meantime.
 
-> [!NOTE]
-> Without the module, the deprecated `-dual_addon` keeps its previous behavior:
-> 1 addon uses the legacy **DualAddon** flow (workshop maps only), 2+ addons use the MultiAddon flow.
+## Without the module
+
+`-addons` also works without the module: the server still mounts (and downloads) the addons and delivers them to clients with the same flow.
+Everything the module adds is unavailable: `core.json` settings, `ClientAddons`, the ConVars / commands below and the `IAddonManager` module interface.
+
+> [!WARNING]
+> Without the module the client cache is **enabled** (600 seconds), unlike the module's default `ms_cache_clients_with_addons 0`,
+> so a client rejoining within that time receives every addon at once (see above).
 
 ## Server-only files (`sharp/assets`)
 
-When the `sharp/assets` folder exists it is added to the server's `GAME` search path (always added with the deprecated `-dual_addon`).
+When the `sharp/assets` folder exists it is added to the server's `GAME` search path.
 Files there are only read by the server, nothing is sent to clients.
 
 To serve an addon's content from loose files (e.g. extracted by a plugin) instead of mounting its VPK on the server,

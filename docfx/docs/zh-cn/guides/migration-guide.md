@@ -68,4 +68,4 @@
 支持多个插件，参见 [创意工坊插件](../features/workshop-addons.md)。
 
 > [!NOTE]
-> 启动项 `-dual_addon {你的创意工坊订阅ID}` 已弃用，但仍然可用。
+> 启动项 `-dual_addon` 已被移除，带此参数时服务端将无法启动。请改用 `-addons "{ID1},{ID2}"` 或 `core.json`。
