@@ -193,6 +193,8 @@ void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int see
         pItem->m_iItemIDLow(-1);
         pItem->m_bInitialized(true);
 
+        m_nEconGlovesChanged(static_cast<uint8_t>(m_nEconGlovesChanged() + 1));
+
         SetDefaultGloves(false);
     }
 }

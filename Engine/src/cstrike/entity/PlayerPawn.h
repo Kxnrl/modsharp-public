@@ -97,6 +97,7 @@ public:
     DECLARE_SCHEMA_CLASS(CCSPlayerPawn)
 
     SCHEMA_POINTER_FIELD(CEconItemView, m_EconGloves)
+    SCHEMA_FIELD(uint8_t, m_nEconGlovesChanged)
     SCHEMA_FIELD(uint16_t, m_nCharacterDefIndex)
     SCHEMA_FIELD(float, m_flVelocityModifier)
     SCHEMA_FIELD(int32_t, m_ArmorValue)

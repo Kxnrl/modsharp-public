@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -56,7 +56,7 @@ static void InitItemDefinitions()
 static void InitPaintKit()
 {
     const CAddress econ_item_schema = address::server::GetEconItemSchema();
-    const auto     paint_kit_map    = econ_item_schema.Offset(8).Dereference(1).Offset(0x2e8).As<CUtlMap<int32_t, CPaintKit*, uint32_t>*>();
+    const auto     paint_kit_map    = econ_item_schema.Offset(8).Dereference(1).Offset(0x298).As<CUtlMap<int32_t, CPaintKit*, uint32_t>*>();
 
     for (auto it = 0u; it < paint_kit_map->Count(); ++it)
     {
