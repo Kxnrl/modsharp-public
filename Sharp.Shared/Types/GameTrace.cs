@@ -105,7 +105,7 @@ public readonly unsafe ref struct GameTrace
     public readonly float Fraction;
 
     [FieldOffset(180)]
-    public readonly float Triangle;
+    public readonly int Triangle;
 
     [FieldOffset(184)]
     public readonly short HitBoxBoneIndex;
@@ -133,7 +133,7 @@ public readonly unsafe ref struct HitBoxData
     public readonly HitGroupType HitGroup;
 
     [FieldOffset(72)]
-    public readonly int HitBoxId;
+    public readonly ushort HitBoxId;
 }
 
 [StructLayout(LayoutKind.Explicit)]

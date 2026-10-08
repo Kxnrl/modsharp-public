@@ -100,5 +100,9 @@ public enum VariantFieldType : byte
     EngineTime                               = 0x4c,
     EngineTick                               = 0x4d,
     WorldGroupId                             = 0x4e,
-    TypeCount                                = 0x4f,
+    GlobalSymbol                             = 0x4f,
+    HNmGraphDefinition                       = 0x50,
+    NetworkQuantizedVectorWS                 = 0x51,
+    NetworkOriginCellQuantizedVectorWS       = 0x52,
+    TypeCount                                = 0x53,
 }

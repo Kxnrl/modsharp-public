@@ -125,6 +125,8 @@ static constexpr const char* FieldTypeToString(FieldType_t type)
         "uint32",                        // FIELD_WORLD_GROUP_ID
         "uint64",                        // FIELD_GLOBALSYMBOL
         "HNmGraphDefinition",            // FIELD_HNMGRAPHDEFINITION
+        "VectorWS",                      // FIELD_NETWORK_QUANTIZED_VECTORWS
+        "VectorWS",                      // FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTORWS
     };
     if (type < FieldType_t::FIELD_TYPECOUNT)
         return names[static_cast<uint8_t>(type)];

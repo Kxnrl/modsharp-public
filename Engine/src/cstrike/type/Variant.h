@@ -104,7 +104,10 @@ enum class FieldType_t : uint8_t
     FIELD_ENGINE_TICK                                   = 0x4d,
     FIELD_WORLD_GROUP_ID                                = 0x4e,
     FIELD_GLOBALSYMBOL                                  = 0x4f,
-    FIELD_TYPECOUNT                                     = 0x50,
+    FIELD_HNMGRAPHDEFINITION                            = 0x50,
+    FIELD_NETWORK_QUANTIZED_VECTORWS                    = 0x51,
+    FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTORWS        = 0x52,
+    FIELD_TYPECOUNT                                     = 0x53,
 };
 
 class Variant_t
