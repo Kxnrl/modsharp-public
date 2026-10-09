@@ -42,7 +42,6 @@
 #include <proto/networkbasetypes.pb.h>
 
 #include <algorithm>
-#include <cctype>
 #include <string>
 
 extern void        AddonsResetClientCache(SteamId_t steamId);
@@ -60,8 +59,9 @@ void AddonManager::Init()
     {
         for (auto token : StringSplit(pszValue, ","))
         {
-            // "123, 456" and "123,456" both work
-            std::erase_if(token, [](unsigned char c) { return std::isspace(c); });
+            // "123, 456" and "123,456" both work, "123 456" stays invalid
+            const auto first = token.find_first_not_of(" \t");
+            token            = first == std::string::npos ? std::string() : token.substr(first, token.find_last_not_of(" \t") - first + 1);
             if (!StrIsNumber(token))
                 continue;
             if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0 && std::ranges::find(m_Addons, id) == m_Addons.end())

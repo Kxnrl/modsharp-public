@@ -313,7 +313,8 @@ static void RefreshAddons(bool reloadMap)
     LogInfo("[Addons] Load complete -> mounted=%zu/%zu [%s]",
             s_MountedAddons.size(), addons.size(), StringJoin(s_MountedAddons, ", ").c_str());
 
-    if (allMounted && reloadMap)
+    // nothing was mounted with only client addons, a reload would just drop every player
+    if (allMounted && reloadMap && !addons.empty())
         g_AddonManager.ReloadMap();
 }
 
@@ -387,6 +388,11 @@ void AddonsSetOptions(double clientTimeout, double connectionTimeout, double cac
 
 void AddonsOnSteamApiActivated()
 {
+    // downloads started before a deactivation lost their callback with the old api context,
+    // drop them so the refresh below starts them again
+    s_DownloadQueue.clear();
+    s_bReloadBatchSucceeded = false;
+
     if (!g_AddonManager.IsActive() || !engine || !engine->IsDedicatedServer())
         return;
 
