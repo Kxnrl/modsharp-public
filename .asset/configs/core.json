@@ -63,7 +63,7 @@
     }
   },
   "AddonManager": {
-    // Workshop IDs, read before the first map loads (replaces the deprecated -dual_addon launch parameter)
+    // Workshop IDs, read before the first map loads (the -addons launch option overrides this list)
     "Addons": [],
     // Download-only addons delivered to every client
     "ClientAddons": []
