@@ -41,6 +41,7 @@
 
 #include <proto/networkbasetypes.pb.h>
 
+#include <algorithm>
 #include <cctype>
 #include <string>
 
@@ -63,7 +64,7 @@ void AddonManager::Init()
             std::erase_if(token, [](unsigned char c) { return std::isspace(c); });
             if (!StrIsNumber(token))
                 continue;
-            if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0)
+            if (const auto id = strtoull(token.c_str(), nullptr, 10); id > 0 && std::ranges::find(m_Addons, id) == m_Addons.end())
                 m_Addons.push_back(id);
         }
     }
@@ -234,10 +235,6 @@ bool AddonManager::RefreshClient(SteamId_t steamId, bool resetCache)
     if (!m_bActive)
         return false;
 
-    const auto addon = AddonsPrepareRefresh(steamId, resetCache);
-    if (addon.empty())
-        return false;
-
     const auto pNetMsg = g_pNetworkMessages->FindNetworkMessagePartial("SignonState");
     if (!pNetMsg)
         return false;
@@ -245,6 +242,11 @@ bool AddonManager::RefreshClient(SteamId_t steamId, bool resetCache)
     using SendFn_t = bool (*)(INetChannel*, CNetMessage*, NetChannelBufType_t);
     static auto pSendCall = g_pGameData->GetAddress<SendFn_t>("INetChannel::SendNetMessage");
     if (!pSendCall)
+        return false;
+
+    // checked before preparing, resetCache clears the client's history
+    const auto addon = AddonsPrepareRefresh(steamId, resetCache);
+    if (addon.empty())
         return false;
 
     const auto pData   = pNetMsg->AllocateMessage();

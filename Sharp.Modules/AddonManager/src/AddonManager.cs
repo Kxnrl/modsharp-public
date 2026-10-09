@@ -92,10 +92,11 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         // core.json "AddonManager" is read before the first map, unlike cvars from server.cfg,
         // so it also works where launch parameters are not available
         // -addons on the command line overrides core.json "Addons", even when empty
-        _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons());
+        // after a hot reload the native list already holds the addons this module applied
+        _addons.AddRange(_sharedSystem.GetAddonManager().GetAddons().Distinct());
         if (!_sharedSystem.GetModSharp().HasCommandLine("-addons"))
         {
-            _addons.AddRange(ReadConfig("AddonManager:Addons"));
+            _addons.AddRange(ReadConfig("AddonManager:Addons").Where(x => !_addons.Contains(x)).ToArray());
         }
 
         _globalClientAddons.AddRange(ReadConfig("AddonManager:ClientAddons"));
@@ -113,6 +114,12 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         _cvClientExtraAddons = conVars.CreateConVar("ms_client_extra_addons",
                                                     string.Join(',', _globalClientAddons),
                                                     "Workshop IDs of extra addons applied to all clients (download-only), separated by commas");
+
+        // after a hot reload the ConVar already exists and keeps its runtime value
+        if (_cvClientExtraAddons is not null)
+        {
+            OnClientExtraAddonsChanged(_cvClientExtraAddons);
+        }
 
         _cvBlockDisconnectMessages = conVars.CreateConVar("ms_block_disconnect_messages",
                                                           false,

@@ -726,6 +726,9 @@ static void OnGameFrame(bool /*sim*/, bool /*first*/, bool /*last*/)
 
 static void OnServerInitPost()
 {
+    // kicks deferred on a map without addons never ran, do not apply them to this one
+    s_TimedOutClients.clear();
+
     if (engine && engine->IsDedicatedServer())
         RefreshAddons(false);
 }
