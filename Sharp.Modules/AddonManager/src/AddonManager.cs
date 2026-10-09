@@ -138,7 +138,7 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
 
         _cvConnectionTimeout = conVars.CreateConVar("ms_addon_connection_timeout",
                                                     30f,
-                                                    "How long until clients are timed out while downloading the first required addon (usually the current map), 0 disables");
+                                                    "How long clients may keep reconnecting without accepting the first required addon (usually the current map) before being kicked, 0 disables");
 
         // off by default: a cached rejoin gets every addon at once in ReplyConnection, which can lock up a client
         // when one of them was updated in the meantime

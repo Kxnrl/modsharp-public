@@ -556,8 +556,9 @@ BeginStaticHookScope(ReplyConnection)
 
         auto&      info = s_ClientInfos[steamId];
         const auto now  = Plat_FloatTime();
+        const auto idle = now - info.lastActiveTime;
 
-        if (s_flCacheDuration > 0 && (now - info.lastActiveTime) > s_flCacheDuration)
+        if (s_flCacheDuration > 0 && idle > s_flCacheDuration)
         {
             if (s_bDebug)
                 LOG("ReplyConnection -> %llu has not connected for a while, clearing the cache", steamId);
@@ -576,7 +577,9 @@ BeginStaticHookScope(ReplyConnection)
             return ReplyConnection(pServer, pClient);
         }
 
-        if (!info.connecting)
+        // the timeout catches a client bouncing back without accepting the addon, one that was away longer
+        // than the timeout (downloading a large addon, or gave up and came back later) starts over
+        if (!info.connecting || idle > s_flConnectionTimeout)
         {
             info.connecting          = true;
             info.connectionStartTime = now;

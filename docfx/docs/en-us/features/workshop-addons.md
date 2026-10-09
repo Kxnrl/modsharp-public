@@ -65,7 +65,7 @@ while the server neither mounts nor downloads it.
 | `ms_block_disconnect_messages` | `false` | Hide "loop shutdown" disconnect messages while clients reconnect for addons. |
 | `ms_addon_mount_download` | `false` | Re-download (update) server addons on every map start. |
 | `ms_extra_addons_timeout` | `10` | Seconds allowed between reconnects for the next addon. |
-| `ms_addon_connection_timeout` | `30` | Seconds allowed to accept the first addon before being kicked, 0 disables. |
+| `ms_addon_connection_timeout` | `30` | Seconds a client may keep reconnecting without accepting the first addon before being kicked, 0 disables. A slow download does not count. |
 | `ms_cache_clients_with_addons` | `false` | Remember downloaded addons so map changes / rejoins skip the reconnects. |
 | `ms_cache_clients_duration` | `0` | How long to remember them in seconds, 0 forever. |
 | `ms_addon_debug` | `false` | Print verbose information about the download flow. |

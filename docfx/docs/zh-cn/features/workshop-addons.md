@@ -64,7 +64,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 | `ms_block_disconnect_messages` | `false` | 客户端为插件重连时隐藏 "loop shutdown" 断开消息。 |
 | `ms_addon_mount_download` | `false` | 每次地图开始时重新下载（更新）服务端插件。 |
 | `ms_extra_addons_timeout` | `10` | 下载下一个插件时允许的重连间隔（秒）。 |
-| `ms_addon_connection_timeout` | `30` | 接收第一个插件的超时时间（秒），超时踢出，0 为禁用。 |
+| `ms_addon_connection_timeout` | `30` | 客户端反复重连却未接收第一个插件的最长时间（秒），超时踢出，0 为禁用。下载较慢不计入。 |
 | `ms_cache_clients_with_addons` | `false` | 记住客户端已下载的插件，换图 / 重进时跳过重连。 |
 | `ms_cache_clients_duration` | `0` | 记住的时长（秒），0 为永久。 |
 | `ms_addon_debug` | `false` | 输出下载流程的详细调试信息。 |
