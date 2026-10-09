@@ -135,7 +135,7 @@ public static unsafe partial class Game
 
     public static partial bool AddonRefreshClient(ulong steamId, bool resetCache);
 
-    public static partial bool AddonUpdateAddon(ulong fileId);
+    public static partial bool AddonUpdateAddon(ulong fileId, bool reloadMap);
 
     public static partial void AddonReloadMap();
 

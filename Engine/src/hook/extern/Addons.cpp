@@ -297,17 +297,27 @@ static void UnmountAllAddons()
 
 static void RefreshAddons(bool reloadMap)
 {
-    // keep the current mounts through a Steam outage, they can not be rebuilt without UGC
-    if (g_AddonManager.IsActive() && !HasUGC())
-        return;
-
-    UnmountAllAddons();
-
     if (!g_AddonManager.IsActive())
+    {
+        UnmountAllAddons();
+        return;
+    }
+
+    const auto addons = GetServerAddons();
+
+    // drop addons no longer listed and the workshop map the engine mounts itself, this needs no UGC
+    for (auto i = s_MountedAddons.size(); i-- > 0;)
+    {
+        if (const auto addon = s_MountedAddons[i]; addon == s_CurrentWorkshopMap || std::ranges::find(addons, addon) == addons.end())
+            UnmountAddon(addon);
+    }
+
+    // mounting reads the item state, what is mounted stays until the Steam API is back
+    if (!HasUGC())
         return;
 
-    const auto addons     = GetServerAddons();
-    bool       allMounted = true;
+    const auto mountedBefore = s_MountedAddons.size();
+    bool       allMounted    = true;
     for (const auto& addon : addons)
     {
         if (!MountAddon(addon.c_str()))
@@ -317,8 +327,8 @@ static void RefreshAddons(bool reloadMap)
     LogInfo("[Addons] Load complete -> mounted=%zu/%zu [%s]",
             s_MountedAddons.size(), addons.size(), StringJoin(s_MountedAddons, ", ").c_str());
 
-    // nothing was mounted with only client addons, a reload would just drop every player
-    if (allMounted && reloadMap && !addons.empty())
+    // reload only to apply newly mounted addons, an unchanged set or client-only addons would just drop every player
+    if (allMounted && reloadMap && s_MountedAddons.size() > mountedBefore)
         g_AddonManager.ReloadMap();
 }
 
@@ -359,20 +369,21 @@ void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
     }
 }
 
-bool AddonsUpdateAddon(uint64_t fileId)
+bool AddonsUpdateAddon(uint64_t fileId, bool reloadMap)
 {
     if (!HasUGC() || fileId == 0)
         return false;
 
+    // already queued (e.g. by MountAddon), only merge the reload request
     if (IsDownloading(fileId))
-        return true;
+        return DownloadAddon(fileId, reloadMap, false);
 
     // the engine keeps a mounted vpk open, on Windows that locks it and the update fails
     // with k_EResultLockingFailed, so unmount first and mount again once the download finishes
     const auto addon   = std::to_string(fileId);
     const auto remount = UnmountAddon(addon);
 
-    if (!DownloadAddon(fileId, false, remount))
+    if (!DownloadAddon(fileId, reloadMap, remount))
     {
         if (remount)
             MountAddon(addon.c_str());
@@ -481,7 +492,9 @@ void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
 
     s_CurrentWorkshopMap = g_AddonManager.GetWorkshopMap();
 
-    pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
+    // nothing to add (client addons only), leave the engine's own value
+    if (const auto addons = GetClientAddons(0); !addons.empty())
+        pRequest->m_Addons = StringJoin(addons, ",").c_str();
 
     LOG("HostStateRequest --> Addons=[%s] workshop_map=%s official=%s",
         pRequest->m_Addons.Get(), s_CurrentWorkshopMap.c_str(), BooleanSTR(g_AddonManager.IsOfficialWorkshopMap()));
@@ -570,6 +583,10 @@ BeginStaticHookScope(ReplyConnection)
         }
         else if (s_flConnectionTimeout > 0 && (now - info.connectionStartTime) > s_flConnectionTimeout)
         {
+            // restart the timer here, the deferred kick misses a client that is already gone
+            // and a stale start time would then time out every later attempt
+            info.connecting = false;
+
             // kicking right now crashes on Windows, defer to the next frame
             s_TimedOutClients.push_back(steamId);
             return;
@@ -607,23 +624,6 @@ BeginStaticHookScope(ReplyConnection)
         ReplyConnection(pServer, pClient);
 
         pServer->SetAddonName(originalAddons.c_str());
-    }
-}
-
-BeginStaticHookScope(EngineClientDisconnect)
-{
-    // the engine-side disconnect every drop goes through. IServerGameClients::ClientDisconnect only runs once the client got past SIGNONSTATE_CONNECTED
-    // so a client leaving right after ReplyConnection (to download the pending addon, cancel, crash...)
-    // never reaches OnClientDisconnectPost and would keep a stale connectionStartTime
-    DeclareStaticDetourHook(EngineClientDisconnect, void, (CServerSideClient * pClient, void* pInfo))
-    {
-        if (g_AddonManager.IsActive() && !pClient->IsFakeClient())
-        {
-            if (const auto it = s_ClientInfos.find(pClient->GetSteamId()); it != s_ClientInfos.end())
-                it->second.connecting = false;
-        }
-
-        EngineClientDisconnect(pClient, pInfo);
     }
 }
 
@@ -753,9 +753,4 @@ void InstallAddonsHooks()
 
     SHOOK(ReplyConnection);
     SHOOK(ScriptGetAddon);
-
-    if (const auto address = modules::engine->FindFunctionFromStringRef("Disconnect client '%s' from server: %s\n"); address.IsValid())
-        SHOOK(EngineClientDisconnect, {.address = address});
-    else
-        WARN("[Addons] Failed to find the engine client disconnect, stale connection timeouts may kick reconnecting clients");
 }

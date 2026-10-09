@@ -55,15 +55,14 @@ public:
     bool RefreshClient(SteamId_t steamId, bool resetCache);
 
     // Force a workshop download (update), remounting the addon if it was mounted.
-    bool UpdateAddon(uint64_t fileId);
+    // reloadMap reloads once every download that asked for it finished, unless all of them failed.
+    bool UpdateAddon(uint64_t fileId, bool reloadMap);
 
     void SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 
     // Workshop map (file id, or name for official community maps) latched at the last HostStateRequest, empty when unknown.
     const std::string& GetWorkshopMap() const;
     bool               IsOfficialWorkshopMap() const;
-    // The last HostStateRequest asked for a (non official) workshop map.
-    bool IsWorkshopRequest() const;
 
     // Reload the current map, through host_workshop_map when it is a workshop map.
     void ReloadMap();
@@ -73,7 +72,6 @@ private:
 
     bool                  m_bClientQuery         = false;
     bool                  m_bOfficialWorkshopMap = false;
-    bool                  m_bWorkshopRequest     = false;
     bool                  m_bActive              = false;
     std::string           m_WorkshopMap;
     std::vector<uint64_t> m_Addons;

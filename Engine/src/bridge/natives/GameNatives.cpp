@@ -303,9 +303,9 @@ static bool AddonRefreshClient(SteamId_t steamId, bool resetCache)
     return g_AddonManager.RefreshClient(steamId, resetCache);
 }
 
-static bool AddonUpdateAddon(uint64_t fileId)
+static bool AddonUpdateAddon(uint64_t fileId, bool reloadMap)
 {
-    return g_AddonManager.UpdateAddon(fileId);
+    return g_AddonManager.UpdateAddon(fileId, reloadMap);
 }
 
 static void AddonReloadMap()

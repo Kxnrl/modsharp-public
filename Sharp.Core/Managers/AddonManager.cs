@@ -72,8 +72,8 @@ internal class AddonManager : ICoreAddonManager
     public bool RefreshClient(SteamID steamId, bool resetCache = true)
         => Game.AddonRefreshClient(steamId, resetCache);
 
-    public bool UpdateAddon(ulong addon)
-        => Game.AddonUpdateAddon(addon);
+    public bool UpdateAddon(ulong addon, bool reloadMap = false)
+        => Game.AddonUpdateAddon(addon, reloadMap);
 
     public void ReloadMap()
         => Game.AddonReloadMap();

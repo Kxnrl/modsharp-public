@@ -45,6 +45,7 @@ Everything the module adds is unavailable: `core.json` settings, `ClientAddons`,
 > [!WARNING]
 > Without the module the client cache is **enabled** (600 seconds), unlike the module's default `ms_cache_clients_with_addons 0`,
 > so a client rejoining within that time receives every addon at once (see above).
+> The connection timeout is also disabled, unlike the module's default `ms_addon_connection_timeout 30`.
 
 ## Server-only files (`sharp/assets`)
 

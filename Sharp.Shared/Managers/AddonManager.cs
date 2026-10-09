@@ -61,7 +61,9 @@ public interface IAddonManager
     ///     An addon mounted by ModSharp is unmounted during the download and mounted again afterwards
     ///     (Windows locks mounted files). Addons mounted by the engine (workshop map) are not.
     /// </summary>
-    bool UpdateAddon(ulong addon);
+    /// <param name="addon">Workshop ID</param>
+    /// <param name="reloadMap">Reload the map once every download that asked for it finished, skipped when all of them failed</param>
+    bool UpdateAddon(ulong addon, bool reloadMap = false);
 
     /// <summary>
     ///     Reload the current map. A workshop map uses <c>ds_workshop_changelevel</c> when the server already has it

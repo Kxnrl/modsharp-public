@@ -39,7 +39,7 @@ using Sharp.Shared.Units;
 
 namespace Sharp.Modules.AddonManager;
 
-public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListener, IEventListener, ISteamListener, IGameListener
+public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListener, IEventListener, IGameListener
 {
     string IModSharpModule.DisplayName   => "Sharp.Modules.AddonManager";
     string IModSharpModule.DisplayAuthor => "ModSharp Dev Team";
@@ -48,8 +48,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     int IAddonListener.ListenerPriority => 0;
     int IEventListener.ListenerVersion  => IEventListener.ApiVersion;
     int IEventListener.ListenerPriority => 0;
-    int ISteamListener.ListenerVersion  => ISteamListener.ApiVersion;
-    int ISteamListener.ListenerPriority => 0;
     int IGameListener.ListenerVersion   => IGameListener.ApiVersion;
     int IGameListener.ListenerPriority  => 0;
 
@@ -60,8 +58,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     private readonly List<ulong>                      _addons             = [];
     private readonly List<ulong>                      _globalClientAddons = [];
     private readonly Dictionary<SteamID, List<ulong>> _clientAddons       = [];
-    private readonly HashSet<ulong>                   _reloadOnDownload   = [];
-    private          bool                             _reloadBatchSucceeded;
 
     private IConVar? _cvExtraAddons;
     private IConVar? _cvClientExtraAddons;
@@ -111,6 +107,12 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         _cvExtraAddons = conVars.CreateConVar("ms_extra_addons",
                                               string.Join(',', _addons),
                                               "Workshop IDs of extra server addons separated by commas, applied on the next map change");
+
+        // after a hot reload the ConVar already exists and keeps its runtime value, it wins over core.json
+        if (_cvExtraAddons is not null)
+        {
+            OnExtraAddonsChanged(_cvExtraAddons);
+        }
 
         _cvClientExtraAddons = conVars.CreateConVar("ms_client_extra_addons",
                                                     string.Join(',', _globalClientAddons),
@@ -184,7 +186,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
         eventManager.HookEvent("player_disconnect");
         eventManager.InstallEventListener(this);
 
-        _sharedSystem.GetModSharp().InstallSteamListener(this);
         _sharedSystem.GetModSharp().InstallGameListener(this);
 
         return true;
@@ -241,7 +242,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
 
         _sharedSystem.GetAddonManager().SetOptions(new AddonOptions());
         _sharedSystem.GetEventManager().RemoveEventListener(this);
-        _sharedSystem.GetModSharp().RemoveSteamListener(this);
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
@@ -370,17 +370,13 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
             return true;
         }
 
-        // goes through the core so a mounted addon is unmounted while updating (Windows file lock)
-        if (!_sharedSystem.GetAddonManager().UpdateAddon(addon))
+        // goes through the core so a mounted addon is unmounted while updating (Windows file lock),
+        // the core also reloads the map once its downloads finish
+        if (!_sharedSystem.GetAddonManager().UpdateAddon(addon, reloadMap))
         {
             _logger.LogWarning("Failed to start download for addon {Addon}", addon);
 
             return false;
-        }
-
-        if (reloadMap)
-        {
-            _reloadOnDownload.Add(addon);
         }
 
         _logger.LogInformation("Download started for addon {Addon}", addon);
@@ -420,40 +416,6 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
 
     public void FireGameEvent(IGameEvent @event)
     {
-    }
-
-    public void OnDownloadItemResult(ulong sharedFileId, SteamApiResult result)
-    {
-        if (!_reloadOnDownload.Remove(sharedFileId))
-        {
-            return;
-        }
-
-        if (result == SteamApiResult.Success)
-        {
-            _reloadBatchSucceeded = true;
-        }
-        else
-        {
-            _logger.LogWarning("Addon {Addon} download failed ({Result})", sharedFileId, result);
-        }
-
-        if (_reloadOnDownload.Count > 0)
-        {
-            return;
-        }
-
-        // nothing new to apply when every download failed, and reloading would request them again
-        if (!_reloadBatchSucceeded)
-        {
-            _logger.LogWarning("All downloads failed, skipping map reload");
-
-            return;
-        }
-
-        _reloadBatchSucceeded = false;
-        _logger.LogInformation("All downloads complete, reloading map");
-        ReloadMap();
     }
 
 #endregion

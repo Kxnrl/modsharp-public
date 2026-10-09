@@ -39,7 +39,7 @@ public interface IAddonListener
     /// <summary>
     ///     Called on every connection attempt to collect extra addons for this client (on top of the server addons). <br />
     ///     Clients reconnect once per addon, so return the same result for the same client while it is downloading. <br />
-    ///     Runs before the client is created, keep it fast and synchronous.
+    ///     Runs while the server answers the connection (before ClientConnect), keep it fast and synchronous.
     /// </summary>
     void OnClientQueryAddons(SteamID steamId, List<ulong> addons)
     {

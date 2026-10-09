@@ -47,7 +47,7 @@
 extern void        AddonsResetClientCache(SteamId_t steamId);
 extern std::string AddonsPrepareRefresh(SteamId_t steamId, bool resetCache);
 extern void        AddonsCancelRefresh(SteamId_t steamId);
-extern bool        AddonsUpdateAddon(uint64_t fileId);
+extern bool        AddonsUpdateAddon(uint64_t fileId, bool reloadMap);
 extern void        AddonsSetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug);
 
 AddonManager g_AddonManager;
@@ -85,23 +85,26 @@ void AddonManager::OnHostStateRequest(const CHostStateRequest* pRequest)
 void AddonManager::DetectWorkshopMap(const CHostStateRequest* pRequest)
 {
     m_bOfficialWorkshopMap = false;
-    m_bWorkshopRequest     = false;
-    m_WorkshopMap.clear();
 
+    // follows MultiAddonManager: the workshop map is remembered across requests that do not name it
     if (const auto kv = pRequest->m_pKV; kv != nullptr)
     {
-        // default is 'ChangeLevel'
         if (std::string_view(kv->GetName()).starts_with("map_workshop"))
-        {
-            m_WorkshopMap      = kv->GetString("customgamemode", "");
-            m_bWorkshopRequest = true;
-        }
+            m_WorkshopMap = kv->GetString("customgamemode", "");
+        // IVEngineServer::ChangeLevel (end of match, plugins) keeps the server addon, so keep a workshop map
+        else if (strcasecmp(kv->GetName(), "ChangeLevel") != 0 || !StrIsNumber(m_WorkshopMap))
+            m_WorkshopMap.clear();
     }
-    else if (const std::string addons = pRequest->m_Addons.Get();
-             !pRequest->m_LevelName.IsEmpty() && pRequest->m_bChangeLevel && !addons.empty() && StrIsNumber(addons))
+    // end of match votes have no kv, and no addons either when they reload the current map
+    else if (const std::string addons = pRequest->m_Addons.Get(); !addons.empty())
     {
-        m_WorkshopMap      = addons;
-        m_bWorkshopRequest = true;
+        if (StrIsNumber(addons))
+            m_WorkshopMap = addons;
+    }
+    else if (!pRequest->m_LevelName.IsEmpty()
+             && g_pFullFileSystem->FileExists(FString("maps/%s.vpk", pRequest->m_LevelName.Get()), "MOD"))
+    {
+        m_WorkshopMap.clear();
     }
 
     // m_Addons can not be trusted here: changing from de_mirage to an official community map (e.g. cs_agency)
@@ -112,7 +115,6 @@ void AddonManager::DetectWorkshopMap(const CHostStateRequest* pRequest)
     {
         m_WorkshopMap          = pRequest->m_LevelName.Get();
         m_bOfficialWorkshopMap = true;
-        m_bWorkshopRequest     = false;
     }
 }
 
@@ -147,9 +149,9 @@ void AddonManager::ResetClientCache(SteamId_t steamId)
     AddonsResetClientCache(steamId);
 }
 
-bool AddonManager::UpdateAddon(uint64_t fileId)
+bool AddonManager::UpdateAddon(uint64_t fileId, bool reloadMap)
 {
-    return AddonsUpdateAddon(fileId);
+    return AddonsUpdateAddon(fileId, reloadMap);
 }
 
 void AddonManager::SetOptions(double clientTimeout, double connectionTimeout, double cacheDuration, bool debug)
@@ -201,11 +203,6 @@ const std::string& AddonManager::GetWorkshopMap() const
 bool AddonManager::IsOfficialWorkshopMap() const
 {
     return m_bOfficialWorkshopMap;
-}
-
-bool AddonManager::IsWorkshopRequest() const
-{
-    return m_bWorkshopRequest;
 }
 
 bool AddonManager::RefreshClient(SteamId_t steamId, bool resetCache)

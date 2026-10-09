@@ -45,6 +45,7 @@ ModSharp 可以在地图之外向客户端分发创意工坊插件。
 > [!WARNING]
 > 不使用模块时客户端缓存为**启用**状态（600 秒），与模块默认的 `ms_cache_clients_with_addons 0` 不同，
 > 因此在此期间重进的客户端会一次性收到全部插件（见上文）。
+> 连接超时同样为禁用状态，与模块默认的 `ms_addon_connection_timeout 30` 不同。
 
 ## 仅服务端文件（`sharp/assets`）
 
