@@ -114,6 +114,7 @@ set(modsharp_SOURCES
 	"src/kvproxy.cpp"
 	"src/loader.cpp"
 	"src/logging.cpp"
+	"src/manager/AddonManager.cpp"
 	"src/manager/ConVarManager.cpp"
 	"src/manager/HookManager.cpp"
 	"src/memory/memory_access.cpp"

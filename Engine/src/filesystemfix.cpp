@@ -102,7 +102,7 @@ void FixFileSystem()
                 if (strcasecmp(pathId, "game") == 0)
                 {
                     assetsPath = pathView;
-                    assetsPath += "assets\\";
+                    assetsPath += "assets/";
                     hasReplaceValue = std::filesystem::is_directory(std::filesystem::path(pathView) / "assets");
                 }
             }

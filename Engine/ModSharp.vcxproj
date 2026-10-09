@@ -110,6 +110,7 @@
     <ClCompile Include="src\proto\steammessages.pb.cc" />
     <ClCompile Include="src\proto\usermessages.pb.cc" />
     <ClCompile Include="src\loader.cpp" />
+    <ClCompile Include="src\manager\AddonManager.cpp" />
     <ClCompile Include="src\manager\ConVarManager.cpp" />
     <ClCompile Include="src\modsharp.cpp" />
     <ClCompile Include="src\module.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="src\manager\HookManager.h" />
     <ClInclude Include="src\hook\network.h" />
     <ClInclude Include="src\logging.h" />
+    <ClInclude Include="src\manager\AddonManager.h" />
     <ClInclude Include="src\manager\ConVarManager.h" />
     <ClInclude Include="src\memory\memory_access.h" />
     <ClInclude Include="src\memory\scan.h" />

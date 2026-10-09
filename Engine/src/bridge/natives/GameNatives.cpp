@@ -41,7 +41,7 @@
 #include "cstrike/type/CTrace.h"
 #include "cstrike/type/ResourceSystem.h"
 
-#include "hook/extern/AddonHooks.h"
+#include "manager/AddonManager.h"
 
 
 namespace google::protobuf
@@ -284,43 +284,43 @@ static CCSWeaponBaseVData* FindWeaponVDataByName(const char* name)
 
 static NativeSpan<uint64_t> AddonGetAddons()
 {
-    const auto& addons = AddonHooks::GetAddons();
+    const auto& addons = g_AddonManager.GetAddons();
     return NativeSpan(const_cast<uint64_t*>(addons.data()), static_cast<int>(addons.size()));
 }
 
 static void AddonSetAddons(const uint64_t* pAddons, int count)
 {
-    AddonHooks::SetAddons(std::vector(pAddons, pAddons + count));
+    g_AddonManager.SetAddons(std::vector(pAddons, pAddons + count));
 }
 
 static void AddonResetClientCache(SteamId_t steamId)
 {
-    AddonHooks::ResetClientCache(steamId);
+    g_AddonManager.ResetClientCache(steamId);
 }
 
 static bool AddonRefreshClient(SteamId_t steamId, bool resetCache)
 {
-    return AddonHooks::RefreshClient(steamId, resetCache);
+    return g_AddonManager.RefreshClient(steamId, resetCache);
 }
 
 static bool AddonUpdateAddon(uint64_t fileId)
 {
-    return AddonHooks::UpdateAddon(fileId);
+    return g_AddonManager.UpdateAddon(fileId);
 }
 
 static void AddonReloadMap()
 {
-    AddonHooks::ReloadMap();
+    g_AddonManager.ReloadMap();
 }
 
 static void AddonSetOptions(float clientTimeout, float connectionTimeout, float cacheDuration, bool debug)
 {
-    AddonHooks::SetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
+    g_AddonManager.SetOptions(clientTimeout, connectionTimeout, cacheDuration, debug);
 }
 
 static void AddonSetClientQueryEnabled(bool enabled)
 {
-    AddonHooks::SetClientQueryEnabled(enabled);
+    g_AddonManager.SetClientQueryEnabled(enabled);
 }
 
 static bool AddWorkshopMap(uint64_t sharedFileId, const char* mapName, const char* path)

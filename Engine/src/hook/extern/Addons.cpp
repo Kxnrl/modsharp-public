@@ -32,7 +32,7 @@
 #include "address.h"
 #include "bridge/forwards/forward.h"
 #include "global.h"
-#include "hook/extern/AddonHooks.h"
+#include "manager/AddonManager.h"
 #include "hook/installer.h"
 #include "logging.h"
 #include "manager/HookManager.h"
@@ -108,7 +108,7 @@ static bool HasUGC()
 static std::vector<std::string> GetServerAddons()
 {
     std::vector<std::string> result;
-    for (const auto id : AddonHooks::GetActiveAddons())
+    for (const auto id : g_AddonManager.GetActiveAddons())
         result.push_back(std::to_string(id));
     return result;
 }
@@ -300,7 +300,7 @@ static void RefreshAddons(bool reloadMap)
 {
     UnmountAllAddons();
 
-    if (!AddonHooks::IsActive() || !HasUGC())
+    if (!g_AddonManager.IsActive() || !HasUGC())
         return;
 
     const auto addons     = GetServerAddons();
@@ -315,7 +315,7 @@ static void RefreshAddons(bool reloadMap)
             s_MountedAddons.size(), addons.size(), StringJoin(s_MountedAddons, ", ").c_str());
 
     if (allMounted && reloadMap)
-        AddonHooks::ReloadMap();
+        g_AddonManager.ReloadMap();
 }
 
 void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
@@ -351,7 +351,7 @@ void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
 
         s_bReloadBatchSucceeded = false;
         LogInfo("[Addons] All downloads complete, reloading map");
-        AddonHooks::ReloadMap();
+        g_AddonManager.ReloadMap();
     }
 }
 
@@ -388,7 +388,7 @@ void AddonsSetOptions(double clientTimeout, double connectionTimeout, double cac
 
 void AddonsOnSteamApiActivated()
 {
-    if (!AddonHooks::IsActive() || !engine || !engine->IsDedicatedServer())
+    if (!g_AddonManager.IsActive() || !engine || !engine->IsDedicatedServer())
         return;
 
     LogInfo("[Addons] Steam API activated, refreshing addons");
@@ -454,7 +454,15 @@ void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
     s_IsOfficialWorkshopMap = false;
     s_CurrentWorkshopMap.clear();
 
-    if (!AddonHooks::IsActive())
+    // without a cache clients go through the download flow again on the next map,
+    // the history is kept while they stay on this one so a refresh only sends the new addons
+    if (s_flCacheDuration < 0)
+    {
+        for (auto& [steamId, info] : s_ClientInfos)
+            info.downloadedAddons.clear();
+    }
+
+    if (!g_AddonManager.IsActive())
         return;
 
     if (s_bDebug)
@@ -463,8 +471,8 @@ void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
             pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
     }
 
-    s_CurrentWorkshopMap    = AddonHooks::GetWorkshopMap();
-    s_IsOfficialWorkshopMap = AddonHooks::IsOfficialWorkshopMap();
+    s_CurrentWorkshopMap    = g_AddonManager.GetWorkshopMap();
+    s_IsOfficialWorkshopMap = g_AddonManager.IsOfficialWorkshopMap();
 
     pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
 
@@ -519,7 +527,7 @@ BeginStaticHookScope(ReplyConnection)
 {
     DeclareStaticDetourHook(ReplyConnection, void, (CNetworkGameServer * pServer, CServerSideClient * pClient))
     {
-        if (!AddonHooks::IsActive() || pClient->IsFakeClient())
+        if (!g_AddonManager.IsActive() || pClient->IsFakeClient())
             return ReplyConnection(pServer, pClient);
 
         const auto steamId = pClient->GetSteamId();
@@ -602,7 +610,7 @@ BeginStaticHookScope(EngineClientDisconnect)
     // never reaches OnClientDisconnectPost and would keep a stale connectionStartTime
     DeclareStaticDetourHook(EngineClientDisconnect, void, (CServerSideClient * pClient, void* pInfo))
     {
-        if (AddonHooks::IsActive() && !pClient->IsFakeClient())
+        if (g_AddonManager.IsActive() && !pClient->IsFakeClient())
         {
             if (const auto it = s_ClientInfos.find(pClient->GetSteamId()); it != s_ClientInfos.end())
                 it->second.connecting = false;
@@ -617,7 +625,7 @@ BeginStaticHookScope(ScriptGetAddon)
     // level resource loading takes the first id of the addon list as the map's addon, keep it the workshop map
     DeclareStaticDetourHook(ScriptGetAddon, uint64_t, ())
     {
-        if (!AddonHooks::IsActive() || s_CurrentWorkshopMap.empty())
+        if (!g_AddonManager.IsActive() || s_CurrentWorkshopMap.empty())
             return ScriptGetAddon();
 
         const auto id = strtoull(s_CurrentWorkshopMap.c_str(), nullptr, 10);
@@ -627,7 +635,7 @@ BeginStaticHookScope(ScriptGetAddon)
 
 static void OnClientConnectPre(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId, bool bot)
 {
-    if (bot || !AddonHooks::IsActive())
+    if (bot || !g_AddonManager.IsActive())
         return;
 
     auto&      info = s_ClientInfos[steamId];
@@ -658,7 +666,7 @@ static void OnClientConnectPre(PlayerSlot_t /*slot*/, const char* /*name*/, Stea
 
 static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, const char* /*name*/, SteamId_t steamId)
 {
-    if (steamId == 0 || !AddonHooks::IsActive())
+    if (steamId == 0 || !g_AddonManager.IsActive())
         return;
 
     auto& info          = s_ClientInfos[steamId];
@@ -668,20 +676,15 @@ static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, co
 
 static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId)
 {
-    if (steamId == 0 || !AddonHooks::IsActive())
+    if (steamId == 0 || !g_AddonManager.IsActive())
         return;
 
-    auto& info = s_ClientInfos[steamId];
-    info.currentPendingAddon.clear();
-
-    // without a cache the client goes through the download flow again on the next connect
-    if (s_flCacheDuration < 0)
-        info.downloadedAddons.clear();
+    s_ClientInfos[steamId].currentPendingAddon.clear();
 }
 
 static void OnGameFrame(bool /*sim*/, bool /*first*/, bool /*last*/)
 {
-    if (!sv || !AddonHooks::IsActive())
+    if (!sv || !g_AddonManager.IsActive())
         return;
 
     if (!s_TimedOutClients.empty())
