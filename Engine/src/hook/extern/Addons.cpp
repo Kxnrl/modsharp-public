@@ -320,7 +320,8 @@ static void RefreshAddons(bool reloadMap)
     bool       allMounted    = true;
     for (const auto& addon : addons)
     {
-        if (!MountAddon(addon.c_str()))
+        // an addon being updated is mounted again once its download finishes (Windows locks mounted files)
+        if (IsDownloading(strtoull(addon.c_str(), nullptr, 10)) || !MountAddon(addon.c_str()))
             allMounted = false;
     }
 
@@ -403,10 +404,22 @@ void AddonsSetOptions(double clientTimeout, double connectionTimeout, double cac
 
 void AddonsOnSteamApiActivated()
 {
-    // downloads started before a deactivation lost their callback with the old api context,
-    // drop them so the refresh below starts them again
-    s_DownloadQueue.clear();
-    s_bReloadBatchSucceeded = false;
+    // downloads started before a deactivation lost their callback with the old api context, start them again
+    // (forced updates and manual downloads too, the refresh below only covers missing server addons)
+    for (auto it = s_DownloadQueue.begin(); it != s_DownloadQueue.end();)
+    {
+        if (g_pSteamApiProxy->DownloadItem(it->fileId, false))
+        {
+            ++it;
+            continue;
+        }
+
+        LogInfo("[Addons] Failed to restart download for %llu", it->fileId);
+        const auto entry = *it;
+        it               = s_DownloadQueue.erase(it);
+        if (entry.remount)
+            MountAddon(std::to_string(entry.fileId).c_str());
+    }
 
     if (!g_AddonManager.IsActive() || !engine || !engine->IsDedicatedServer())
         return;

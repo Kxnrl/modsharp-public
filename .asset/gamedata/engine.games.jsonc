@@ -147,8 +147,8 @@
     },
     // str "Sending S2C_CONNECTION to %s [addons:'%s']\n" 中的 addons 字段
     "CNetworkGameServer::m_Addons": {
-      "linux": 344,
-      "windows": 344
+      "linux": 376,
+      "windows": 376
     },
     // CNetworkGameServer::GetClientCount 就是 mov eax, [this+X] / retn, X 即为此偏移
     "CNetworkGameServer::m_vecClients": {
