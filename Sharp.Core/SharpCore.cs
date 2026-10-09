@@ -1564,31 +1564,6 @@ internal partial class SharpCore : ISharpCore
 
 #endregion
 
-#region Dual Addon
-
-    public void DualAddonPurgeCheck()
-        => Game.DualAddonPurgeCheck();
-
-    public void DualAddonOverrideCheck(SteamID steamId, double time)
-        => Game.DualAddonOverrideCheck(steamId, time);
-
-    public ulong GetDualAddonId()
-        => Game.DualAddonGetPublishFileId();
-
-    public bool SetDualAddonId(ulong publishFileId)
-    {
-        var success = Game.DualAddonSetPublishFileId(publishFileId);
-
-        if (success)
-        {
-            DualAddonPurgeCheck();
-        }
-
-        return success;
-    }
-
-#endregion
-
 #region DedicatedServerWorkshopManager
 
     public bool AddWorkshopMap(ulong sharedFileId, string mapName, string path)

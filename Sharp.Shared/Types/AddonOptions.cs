@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -17,12 +17,17 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MS_ROOT_STEAMWORKS_H
-#define MS_ROOT_STEAMWORKS_H
-#include <cstdint>
+namespace Sharp.Shared.Types;
 
-void InitApiContext();
-
-void DestroyApiContext();
-
-#endif
+/// <summary>
+///     Tuning of the addon delivery
+/// </summary>
+/// <param name="ClientTimeout">Seconds allowed between reconnects while a client downloads the next addon</param>
+/// <param name="ConnectionTimeout">Seconds allowed to accept the first addon before the client is kicked, 0 disables</param>
+/// <param name="CacheDuration">Seconds to remember the addons a client downloaded, 0 forever, negative disables the cache</param>
+/// <param name="Debug">Print verbose information about the download flow</param>
+public readonly record struct AddonOptions(
+    float ClientTimeout     = 10,
+    float ConnectionTimeout = 0,
+    float CacheDuration     = 600,
+    bool  Debug             = false);

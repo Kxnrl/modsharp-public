@@ -64,9 +64,8 @@
 
 ## 创意工坊订阅
 
-添加启动项`-dual_addon {你的创意工坊订阅ID}`即可。
+安装 `Sharp.Modules.AddonManager` 模块，并在 `core.json` 中填写创意工坊ID（`"AddonManager": { "Addons": [1234567890] }`）。
+支持多个插件，参见 [创意工坊插件](../features/workshop-addons.md)。
 
 > [!NOTE]
->
-> 1. 假设你的订阅ID是1234567890，那么在这里就是`-dual_addon 1234567890`  
-> 2. 目前我们不支持多个创意工坊订阅ID，建议优化你的资源包。
+> 启动项 `-dual_addon` 已被移除，带此参数时服务端将无法启动。请改用 `-addons "{ID1},{ID2}"` 或 `core.json`。
