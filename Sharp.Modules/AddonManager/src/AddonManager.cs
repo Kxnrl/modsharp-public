@@ -61,6 +61,7 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     private readonly List<ulong>                      _globalClientAddons = [];
     private readonly Dictionary<SteamID, List<ulong>> _clientAddons       = [];
     private readonly HashSet<ulong>                   _reloadOnDownload   = [];
+    private          bool                             _reloadBatchSucceeded;
 
     private IConVar? _cvExtraAddons;
     private IConVar? _cvClientExtraAddons;
@@ -428,16 +429,31 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
             return;
         }
 
-        if (result != SteamApiResult.Success)
+        if (result == SteamApiResult.Success)
+        {
+            _reloadBatchSucceeded = true;
+        }
+        else
         {
             _logger.LogWarning("Addon {Addon} download failed ({Result})", sharedFileId, result);
         }
 
-        if (_reloadOnDownload.Count == 0)
+        if (_reloadOnDownload.Count > 0)
         {
-            _logger.LogInformation("All downloads complete, reloading map");
-            ReloadMap();
+            return;
         }
+
+        // nothing new to apply when every download failed, and reloading would request them again
+        if (!_reloadBatchSucceeded)
+        {
+            _logger.LogWarning("All downloads failed, skipping map reload");
+
+            return;
+        }
+
+        _reloadBatchSucceeded = false;
+        _logger.LogInformation("All downloads complete, reloading map");
+        ReloadMap();
     }
 
 #endregion

@@ -297,9 +297,13 @@ static void UnmountAllAddons()
 
 static void RefreshAddons(bool reloadMap)
 {
+    // keep the current mounts through a Steam outage, they can not be rebuilt without UGC
+    if (g_AddonManager.IsActive() && !HasUGC())
+        return;
+
     UnmountAllAddons();
 
-    if (!g_AddonManager.IsActive() || !HasUGC())
+    if (!g_AddonManager.IsActive())
         return;
 
     const auto addons     = GetServerAddons();
