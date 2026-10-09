@@ -97,7 +97,6 @@ static std::vector<std::string>                              s_MountedAddons;
 static std::deque<AddonsDownload_t>                      s_DownloadQueue;
 static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
-static bool                                                  s_IsOfficialWorkshopMap = false;
 static bool                                                  s_bReloadBatchSucceeded = false;
 
 static bool HasUGC()
@@ -451,7 +450,6 @@ std::string AddonsPrepareRefresh(SteamId_t steamId, bool resetCache)
 
 void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
 {
-    s_IsOfficialWorkshopMap = false;
     s_CurrentWorkshopMap.clear();
 
     // without a cache clients go through the download flow again on the next map,
@@ -471,13 +469,12 @@ void AddonsOnHostStateRequestPre(CHostStateRequest* pRequest)
             pRequest->m_Addons.Get(), pRequest->m_LevelName.Get(), BooleanSTR(pRequest->m_bChangeLevel));
     }
 
-    s_CurrentWorkshopMap    = g_AddonManager.GetWorkshopMap();
-    s_IsOfficialWorkshopMap = g_AddonManager.IsOfficialWorkshopMap();
+    s_CurrentWorkshopMap = g_AddonManager.GetWorkshopMap();
 
     pRequest->m_Addons = StringJoin(GetClientAddons(0), ",").c_str();
 
     LOG("HostStateRequest --> Addons=[%s] workshop_map=%s official=%s",
-        pRequest->m_Addons.Get(), s_CurrentWorkshopMap.c_str(), BooleanSTR(s_IsOfficialWorkshopMap));
+        pRequest->m_Addons.Get(), s_CurrentWorkshopMap.c_str(), BooleanSTR(g_AddonManager.IsOfficialWorkshopMap()));
 }
 
 void AddonsOnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CNETMsg_SignonState>* pData)
@@ -501,7 +498,7 @@ void AddonsOnSignonStateNetMessagePre(INetChannel* pNetChannel, CNetMessagePB<CN
         // HACK Valve 24/7/27: sending 2+ ids on a native changelevel stalls the client
         if (const auto addonsStr = pData->addons(); addonsStr.find(',') != std::string::npos)
         {
-            if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty() && !s_IsOfficialWorkshopMap)
+            if (auto vecAddons = StringSplit(addonsStr.c_str(), ","); !vecAddons.empty())
             {
                 pData->set_addons(vecAddons[0]);
                 info.currentPendingAddon = vecAddons[0];
@@ -672,6 +669,11 @@ static void OnClientDisconnectPost(PlayerSlot_t /*slot*/, int32_t /*reason*/, co
     auto& info          = s_ClientInfos[steamId];
     info.lastActiveTime = Plat_FloatTime();
     info.connecting     = false;
+
+    // without a cache a client that really leaves goes through the download flow again when it rejoins,
+    // one leaving to download its pending addon (refresh, the next addon of the flow) keeps the history
+    if (s_flCacheDuration < 0 && info.currentPendingAddon.empty())
+        info.downloadedAddons.clear();
 }
 
 static void OnClientActivatePost(PlayerSlot_t /*slot*/, const char* /*name*/, SteamId_t steamId)
