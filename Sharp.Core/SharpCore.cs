@@ -1523,9 +1523,9 @@ internal partial class SharpCore : ISharpCore
     {
         var arguments = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
-        var parts = Bridges.Natives.Core.GetCommandLine().Split(" ").Skip(1).ToArray();
+        var parts = SplitCommandLine(Bridges.Natives.Core.GetCommandLine()).Skip(1).ToArray();
 
-        for (var i = 1; i < parts.Length; i++)
+        for (var i = 0; i < parts.Length; i++)
         {
             var key = parts[i].Trim();
 
@@ -1560,6 +1560,43 @@ internal partial class SharpCore : ISharpCore
         _logger.LogInformation("Parse CommandLine:\n{commands}", sb.ToString());
 
         return arguments.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static List<string> SplitCommandLine(string commandLine)
+    {
+        var parts   = new List<string>();
+        var builder = new StringBuilder();
+        var quoted  = false;
+
+        foreach (var c in commandLine)
+        {
+            if (c == '"')
+            {
+                quoted = !quoted;
+
+                continue;
+            }
+
+            if (!quoted && char.IsWhiteSpace(c))
+            {
+                if (builder.Length > 0)
+                {
+                    parts.Add(builder.ToString());
+                    builder.Clear();
+                }
+
+                continue;
+            }
+
+            builder.Append(c);
+        }
+
+        if (builder.Length > 0)
+        {
+            parts.Add(builder.ToString());
+        }
+
+        return parts;
     }
 
 #endregion

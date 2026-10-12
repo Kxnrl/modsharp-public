@@ -67,17 +67,21 @@ internal class ClientManager : ICoreClientManager
     private static volatile bool _sReloadAdmin;
     private static volatile int  _sQueryCookie;
 
+    private readonly bool _listenServer;
+
     private NetworkServer? _sv;
 
     public ClientManager(ILogger<ClientManager> logger,
         IConfiguration                          configuration,
         IShutdownMonitor                        shutdown,
-        ICoreAssemblyManager                    assemblyManager)
+        ICoreAssemblyManager                    assemblyManager,
+        ISharpCore                              sharpCore)
     {
         _logger               = logger;
         _configuration        = configuration;
         _assemblyManager      = assemblyManager;
         _configurationWatcher = new ConfigurationWatcher(configuration, LoadCommandPrefix, shutdown.Token);
+        _listenServer         = !sharpCore.HasCommandLine("-dedicated");
 
         _listeners          = [];
         _adminRunCheckQueue = [];
@@ -389,7 +393,8 @@ internal class ClientManager : ICoreClientManager
                 continue;
             }
 
-            if (client.IsAuthenticated)
+            // listen server host never gets fully authenticated (sv_steamauth_ignore_localhost)
+            if (client.IsAuthenticated || _listenServer)
             {
                 var block = false;
 
