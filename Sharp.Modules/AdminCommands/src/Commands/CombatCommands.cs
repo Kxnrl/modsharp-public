@@ -20,6 +20,7 @@
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminCommands.Common;
 using Sharp.Modules.AdminManager.Shared;
+using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
@@ -232,7 +233,7 @@ internal sealed class CombatCommands : ICommandCategory
 
         foreach (var target in targets)
         {
-            if (target.GetPlayerController() is not { } controller)
+            if (target.GetPlayerController() is not { Team: > CStrikeTeam.Spectator } controller)
             {
                 continue;
             }
