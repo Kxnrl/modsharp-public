@@ -117,7 +117,7 @@ bool ISteamApiProxy::RequestUserGroupStatus(SteamId_t steamId, uint64_t groupId)
     CSteamID pid;
     CSteamID gid;
     pid.SetFromUint64(static_cast<uint64>(steamId));
-    gid.SetFromUint64(static_cast<uint64>(steamId));
+    gid.SetFromUint64(static_cast<uint64>(groupId));
     return m_pSteamServer->RequestUserGroupStatus(pid, gid);
 #endif
 }

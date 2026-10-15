@@ -710,6 +710,8 @@ static CAddress GetVScriptFunction(const std::string& name)
     };
 
     auto string_address = modules::server->FindString(name, false, true);
+    if (!string_address.IsValid())
+        return {};
 
     final_address = try_find_match(string_address);
 
@@ -1540,7 +1542,7 @@ void GameData::Unregister(const char* name)
     char error[256];
     if (!Unregister(name, error, sizeof(error)))
     {
-        FatalError(error);
+        FatalError("%s", error);
     }
 }
 
