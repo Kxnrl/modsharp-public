@@ -274,7 +274,7 @@
       },
       "windows": {
         "factory": "+3 r",
-        "signature": "48 8D 0D ? ? ? ? 0F 11 44 24 ? 0F 11 44 24 ? E8"
+        "signature": "4C 8D 05 ? ? ? ? 48 8D 94 24 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 83 F8 FF 0F 84 ? ? ? ? F7 05 ? ? ? ? FF FF FF 7F 48 8B 2D ? ? ? ? 49 0F 44 ED 48 98 4C 6B F0 38"
       }
     },
     // str 'TerminateRound: unknown round end ID %i\n'
