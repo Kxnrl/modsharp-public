@@ -152,6 +152,7 @@ jobs:
           dotnet publish Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/InputManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/TargetingManager/src/Sharp.Modules.TargetingManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/TargetingManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AddonManager/src/Sharp.Modules.AddonManager.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/modules/AddonManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -166,6 +167,7 @@ jobs:
           dotnet publish Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.InputManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.TargetingManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AddonManager/Shared/Sharp.Modules.AddonManager.Shared.csproj -f net10.0 -r win-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AddonManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash
@@ -314,6 +316,7 @@ jobs:
           dotnet publish Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/InputManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/src/Sharp.Modules.MenuManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/MenuManager -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/TargetingManager/src/Sharp.Modules.TargetingManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/TargetingManager -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AddonManager/src/Sharp.Modules.AddonManager.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/modules/AddonManager -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Build Sharp.Modules Shared Interface
         shell: bash
@@ -328,6 +331,7 @@ jobs:
           dotnet publish Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.InputManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/MenuManager/Shared/Sharp.Modules.MenuManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.MenuManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
           dotnet publish Sharp.Modules/TargetingManager/Shared/Sharp.Modules.TargetingManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.TargetingManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
+          dotnet publish Sharp.Modules/AddonManager/Shared/Sharp.Modules.AddonManager.Shared.csproj -f net10.0 -r linux-x64 --no-self-contained -c Release --output ./build/sharp/shared/Sharp.Modules.AddonManager.Shared -p:VersionSuffix=${{env.GITCOMMIT}}
 
       - name: Copy Assets
         shell: bash

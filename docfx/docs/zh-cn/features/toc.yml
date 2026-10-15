@@ -12,3 +12,6 @@
 
 - name: 游戏实体
   href: game-entities.md
+
+- name: 创意工坊插件
+  href: workshop-addons.md

@@ -20,6 +20,7 @@
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
+using Sharp.Shared.Types.Runtime;
 using Sharp.Shared.Units;
 using Sharp.Shared.Utilities;
 
@@ -67,6 +68,8 @@ internal static class Client
         string                                            name,
         string                                            value);
 
+    public delegate void DelegateOnClientQueryAddons(SteamID steamId, ref NativeFixedSpan<ulong> addons);
+
     public static event DelegateOnConnectClient?        OnConnectClient;
     public static event DelegateOnClientConnect?        OnClientConnect;
     public static event DelegateOnClientConnected?      OnClientConnected;
@@ -81,6 +84,7 @@ internal static class Client
     public static event DelegateClientSpeakPre?         OnClientSpeakPre;
     public static event DelegateClientSpeakPost?        OnClientSpeakPost;
     public static event DelegateOnClientQueryConVar?    OnClientQueryConVar;
+    public static event DelegateOnClientQueryAddons?    OnClientQueryAddons;
 
     [UnmanagedCallersOnly]
     public static unsafe EHookAction OnConnectClientExport(SteamID steamId, sbyte* pName, uint hNetInfo, uint ip)
@@ -233,4 +237,8 @@ internal static class Client
 
         OnClientQueryConVar.Invoke(ptr, cookie, status, name, value);
     }
+
+    [UnmanagedCallersOnly]
+    public static unsafe void OnClientQueryAddonsExport(SteamID steamId, NativeFixedSpan<ulong>* pAddons)
+        => OnClientQueryAddons?.Invoke(steamId, ref *pAddons);
 }

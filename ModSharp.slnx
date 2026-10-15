@@ -24,6 +24,8 @@
   <Project Path="Sharp.Modules/CommandCenter/Shared/Sharp.Modules.CommandCenter.Shared.csproj" />
   <Project Path="Sharp.Modules/CommandCenter/src/Sharp.Modules.CommandCenter.csproj" />
   <Project Path="Sharp.Modules/EntityEnhancements/src/Sharp.Modules.EntityEnhancements.csproj" />
+  <Project Path="Sharp.Modules/AddonManager/Shared/Sharp.Modules.AddonManager.Shared.csproj" />
+  <Project Path="Sharp.Modules/AddonManager/src/Sharp.Modules.AddonManager.csproj" />
   <Project Path="Sharp.Modules/InputManager/Shared/Sharp.Modules.InputManager.Shared.csproj" />
   <Project Path="Sharp.Modules/InputManager/src/Sharp.Modules.InputManager.csproj" />
   <Project Path="Sharp.Modules/LocalizerManager/Shared/Sharp.Modules.LocalizerManager.Shared.csproj" />

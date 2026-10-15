@@ -25,8 +25,4 @@ void InitApiContext();
 
 void DestroyApiContext();
 
-uint64_t GetDualAddonId();
-
-bool SetDualAddonId(uint64_t publishId);
-
 #endif

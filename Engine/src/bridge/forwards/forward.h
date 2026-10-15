@@ -112,6 +112,7 @@ DECLARE_FORWARD(Client, OnClientConsoleCommand, ECommandAction, FORWARD_ARG(CSer
 DECLARE_FORWARD(Client, OnClientSpeakPre, EHookAction, FORWARD_ARG(CServerSideClient*, uint64_t, uint32_t, const char*, size_t));
 DECLARE_FORWARD(Client, OnClientSpeakPost, void, FORWARD_ARG(CServerSideClient*, uint64_t, uint32_t, const char*, size_t, EHookAction));
 DECLARE_FORWARD(Client, OnClientQueryConVar, void, FORWARD_ARG(CServerSideClient*, int32_t, int32_t, const char*, const char*));
+DECLARE_FORWARD(Client, OnClientQueryAddons, void, FORWARD_ARG(SteamId_t, NativeFixedSpan<uint64_t>*));
 
 // Player
 DECLARE_FORWARD(Player, OnPlayerSpawnPre, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*));
