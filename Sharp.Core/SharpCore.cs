@@ -1531,7 +1531,7 @@ internal partial class SharpCore : ISharpCore
 
             if (i + 1 >= parts.Length)
             {
-                arguments[key] = null;
+                SetCommandLineArgument(arguments, key, null);
 
                 continue;
             }
@@ -1539,14 +1539,14 @@ internal partial class SharpCore : ISharpCore
             var next = parts[i + 1];
 
             // 下一行是新的命令
-            if (next[0] == '+' || next[0] == '-')
+            if (next.Length > 0 && (next[0] == '+' || next[0] == '-'))
             {
-                arguments[key] = null;
+                SetCommandLineArgument(arguments, key, null);
 
                 continue;
             }
 
-            arguments[key] = next.Trim();
+            SetCommandLineArgument(arguments, key, next.Trim());
             i++;
         }
 
@@ -1562,42 +1562,69 @@ internal partial class SharpCore : ISharpCore
         return arguments.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
     }
 
+    // - 参数与 tier0 ParamValue 一致取首次出现 (sub_18005ED10 @ tier0.dll 20261015)
+    private static void SetCommandLineArgument(Dictionary<string, string?> arguments, string key, string? value)
+    {
+        if (key.StartsWith('-'))
+        {
+            arguments.TryAdd(key, value);
+        }
+        else
+        {
+            arguments[key] = value;
+        }
+    }
+
+    // 与 tier0 CCommandLine 的切分一致 (sub_18005E930 @ tier0.dll 20261015): GetCmdLine 返回其切分后重拼的串, 无转义
     private static List<string> SplitCommandLine(string commandLine)
     {
-        var parts   = new List<string>();
-        var builder = new StringBuilder();
-        var quoted  = false;
+        var results = new List<string>();
+        var span    = commandLine.AsSpan();
+        var len     = span.Length;
+        var i       = 0;
 
-        foreach (var c in commandLine)
+        while (i < len)
         {
-            if (c == '"')
+            while (i < len && IsCommandLineSpace(span[i]))
             {
-                quoted = !quoted;
-
-                continue;
+                i++;
             }
 
-            if (!quoted && char.IsWhiteSpace(c))
+            if (i >= len)
             {
-                if (builder.Length > 0)
+                break;
+            }
+
+            if (span[i] == '"')
+            {
+                var quoteStart = ++i;
+
+                while (i < len && span[i] != '"')
                 {
-                    parts.Add(builder.ToString());
-                    builder.Clear();
+                    i++;
                 }
 
+                results.Add(span[quoteStart..i].ToString());
+                i++;
+
                 continue;
             }
 
-            builder.Append(c);
+            var start = i;
+
+            while (i < len && !IsCommandLineSpace(span[i]))
+            {
+                i++;
+            }
+
+            results.Add(span[start..i].ToString());
         }
 
-        if (builder.Length > 0)
-        {
-            parts.Add(builder.ToString());
-        }
-
-        return parts;
+        return results;
     }
+
+    private static bool IsCommandLineSpace(char c)
+        => c is ' ' or >= '\t' and <= '\r';
 
 #endregion
 
