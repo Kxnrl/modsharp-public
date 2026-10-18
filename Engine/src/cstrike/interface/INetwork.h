@@ -115,6 +115,7 @@ private:
 };
 static_assert(sizeof(CNetMessage) == 0x30);
 
+// taken from https://github.com/alliedmodders/hl2sdk/blob/cs2/public/networksystem/netmessage.h
 // AMNOTE: This is a stub class over real CNetMessagePB!
 // This is mainly to access the game constructed objects, and not for direct initialization of them
 // since this misses the CNetMessage implementation which requires supplying other proto related info like
