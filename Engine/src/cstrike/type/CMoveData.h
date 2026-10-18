@@ -26,6 +26,7 @@
 #include "cstrike/type/Vector.h"
 #include "cstrike/type/Vector2D.h"
 
+#include <cstddef>
 #include <cstdint>
 
 #define USE_MV_RE
@@ -48,11 +49,14 @@ struct SubtickMove
         {
             float analog_forward_delta;
             float analog_left_delta;
-            float analog_pitch_delta;
-            float analog_yaw_delta;
         } analogMove;
     };
+
+    float pitch;
+    float yaw;
 };
+static_assert(sizeof(SubtickMove) == 0x20);
+static_assert(offsetof(SubtickMove, pitch) == 0x18);
 
 struct SubtickAttack
 {
@@ -60,6 +64,8 @@ struct SubtickAttack
     uint64_t button;
     bool     pressed;
 };
+static_assert(sizeof(SubtickAttack) == 0x18);
+
 #pragma pack(push, 1)
 class CMoveData
 {
@@ -88,10 +94,10 @@ private:
 public:
     CUtlVector<SubtickMove>   m_SubtickMoves;       // 0x60
     CUtlVector<SubtickAttack> m_AttackSubtickMoves; // 0x78
-    bool                      m_bHasSubtickInputs;  // 0x90
+    float                     m_flUnknown90;        // 0x90
 
 private:
-    [[maybe_unused]] uint8_t m_pad_0x91[0x7];
+    [[maybe_unused]] uint8_t m_pad_0x94[0x4];
 
 public:
     CUtlVector<touchlist_t> m_TouchList;               // 0x98
@@ -108,23 +114,32 @@ private:
 #endif
 
 public:
-    Vector   m_outWishVel;           // Win: 0xe8  | Lin: 0xe4
-    Vector   m_vecOldAngles;         // Win: 0xf4  | Lin: 0xf0
-    Vector2D m_vecWalkWishVel;       // Win: 0x100 | Lin: 0xfc
-    Vector   m_vecAccel;             // Win: 0x108 | Lin: 0x104
-    Vector   m_vecAccelPerSecond;    // Win: 0x114 | Lin: 0x110
-    float    m_flMaxSpeed;           // Win: 0x120 | Lin: 0x11c
-    float    m_flClientMaxSpeed;     // Win: 0x124 | Lin: 0x120
-    float    m_flSubtickFraction;    // Win: 0x128 | Lin: 0x124
-    float    m_flPreAirMovePosZ;     // Win: 0x12c | Lin: 0x128
-    float    m_flPreAirMoveVelZ;     // Win: 0x130 | Lin: 0x12c
-    float    m_flPreAirMoveAccelZ;   // Win: 0x134 | Lin: 0x130
-    bool     m_bInAir;               // Win: 0x138 | Lin: 0x134
-    bool     m_bGameCodeMovedPlayer; // Win: 0x139 | Lin: 0x135
+    Vector   m_outWishVel;                // Win: 0xe8  | Lin: 0xe4
+    Vector   m_vecOldAngles;              // Win: 0xf4  | Lin: 0xf0
+    Vector2D m_vecWalkWishVel;            // Win: 0x100 | Lin: 0xfc
+    Vector   m_vecContinuousAcceleration; // Win: 0x108 | Lin: 0x104
+    Vector   m_vecFrameVelocityDelta;     // Win: 0x114 | Lin: 0x110
+    float    m_flMaxSpeed;                // Win: 0x120 | Lin: 0x11c
+    float    m_flClientMaxSpeed;          // Win: 0x124 | Lin: 0x120
+    float    m_flExcessFrictionDrop;      // Win: 0x128 | Lin: 0x124
+    float    m_flPreAirMovePosZ;          // Win: 0x12c | Lin: 0x128
+    float    m_flPreAirMoveVelZ;          // Win: 0x130 | Lin: 0x12c
+    float    m_flPreAirMoveAccelZ;        // Win: 0x134 | Lin: 0x130
+    bool     m_bInAir;                    // Win: 0x138 | Lin: 0x134
+    bool     m_bGameCodeMovedPlayer;      // Win: 0x139 | Lin: 0x135
+    bool     m_bUseFrictionStashedSpeed;  // Win: 0x13a | Lin: 0x136
 
-}; // Size Win: 0x13E | Lin: 0x13A
+private:
+#ifdef PLATFORM_WINDOWS
+    [[maybe_unused]] uint8_t m_pad_0x13b[0x5];
+#else
+    [[maybe_unused]] uint8_t m_pad_0x137[0x1];
+#endif
+}; // Size Win: 0x140 | Lin: 0x138
 #pragma pack(pop)
 #ifdef PLATFORM_WINDOWS
-static_assert(sizeof(CMoveData) == 0x13A, "sizeof(CMoveData) != 0x13A");
+static_assert(sizeof(CMoveData) == 0x140);
+#else
+static_assert(sizeof(CMoveData) == 0x138);
 #endif
 #endif
