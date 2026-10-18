@@ -28,7 +28,6 @@
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
-#include "vhook/call.h"
 
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/component/CGameSceneNode.h"
@@ -73,13 +72,6 @@ static CConVarBaseData* ms_fix_entities_touching_list = nullptr;
 static bool EntityInputEnhancement(const CEntityIdentity* pEntity, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue);
 
 static CBaseEntity* s_pInputCallerOverride = nullptr;
-
-// IScriptVM::SetValue(ScriptVariant_t) and SetValue(const char*) are adjacent overloads that MSVC orders in reverse, so their slots swap between platforms
-#ifdef PLATFORM_WINDOWS
-constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 33;
-#else
-constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 34;
-#endif
 
 // extern for movement manager
 extern void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue);
@@ -372,9 +364,7 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hActivator = pActivator->GetPublicScriptScope())
                     {
                         ScriptVariant_t activator(hActivator);
-                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "activator", &activator);
-
-                        // WARN("Fix Activator %p(%s) for %s -> %s", pActivator, pActivator->GetClassname(), pInstance->GetName(), pInput->Get());
+                        g_pScriptVM->SetValue(pScope, "activator", activator);
                     }
                 }
                 if (pCaller)
@@ -382,14 +372,10 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hCaller = pCaller->GetPublicScriptScope())
                     {
                         ScriptVariant_t caller(hCaller);
-                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "caller", &caller);
-
-                        // WARN("Fix Caller %p(%s) for %s -> %s", pCaller, pCaller->GetClassname(), pInstance->GetName(), pInput->Get());
+                        g_pScriptVM->SetValue(pScope, "caller", caller);
                     }
                 }
             }
-
-            // g_pScriptVM->SetValueVariant(pScope, "caller", &caller);
         }
 
         return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);

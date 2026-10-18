@@ -21,44 +21,56 @@
 #define CSTRIKE_INTERFACE_SCRIPTVM_H
 
 class CCSGOVScriptGameSystem;
+class HSCRIPT;
 
 struct ScriptVariant_t;
 
 class IScriptVM
 {
-    // virtual ~IScriptVM() = 0;
+public:
+    virtual ~IScriptVM() = default;
 
-    // virtual bool Init()     = 0;
-    // virtual void Shutdown() = 0;
+    virtual bool CreateVM(bool bLoadDebugLibrary) = 0;
+    virtual void DestroyVM()                      = 0;
 
-    virtual void Method_00() = 0;
-    virtual void Method_01() = 0;
-    virtual void Method_02() = 0;
-    virtual void Method_03() = 0;
-    virtual void Method_04() = 0;
-    virtual void Method_05() = 0;
-    virtual void Method_06() = 0;
-    virtual void Method_07() = 0;
-    virtual void Method_08() = 0;
-    virtual void Method_09() = 0;
-    virtual void Method_10() = 0;
+private:
+    virtual void Method003() = 0;
+    virtual void Method004() = 0;
+    virtual void Method005() = 0;
+    virtual void Method006() = 0;
+    virtual void Method007() = 0;
+    virtual void Method008() = 0;
+    virtual void Method009() = 0;
+    virtual void Method010() = 0;
 
-    virtual void Method_21() = 0;
-    virtual void Method_22() = 0;
-    virtual void Method_23() = 0;
-    virtual void Method_24() = 0;
-    virtual void Method_25() = 0;
-    virtual void Method_26() = 0;
-    virtual void Method_27() = 0;
-    virtual void Method_28() = 0;
-    virtual void Method_29() = 0;
-    virtual void Method_30() = 0;
+    virtual void Method011() = 0;
+    virtual void Method012() = 0;
+    virtual void Method013() = 0;
+    virtual void Method014() = 0;
+    virtual void Method015() = 0;
+    virtual void Method016() = 0;
+    virtual void Method017() = 0;
+    virtual void Method018() = 0;
+    virtual void Method019() = 0;
+    virtual void Method020() = 0;
 
-    virtual void Method_31() = 0;
+    virtual void Method021() = 0;
+    virtual void Method022() = 0;
+    virtual void Method023() = 0;
+    virtual void Method024() = 0;
+    virtual void Method025() = 0;
+    virtual void Method026() = 0;
+    virtual void Method027() = 0;
+    virtual void Method028() = 0;
+    virtual void Method029() = 0;
+    virtual void Method030() = 0;
+
+    virtual void Method031() = 0;
 
 public:
-    virtual bool SetValueString(void* pScope, const char* pKey, const char* pValue)             = 0;
-    virtual bool SetValueVariant(void* pScore, const char* pKey, const ScriptVariant_t* pValue) = 0;
+    virtual bool SetValue(HSCRIPT* hScope, const char* pszKey, const char* pszValue)         = 0;
+    virtual bool SetValue(HSCRIPT* hScope, const char* pszKey, const ScriptVariant_t& value) = 0;
+    virtual bool SetValue(HSCRIPT* hScope, int nIndex, const ScriptVariant_t& value)         = 0;
 };
 
 #endif
