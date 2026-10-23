@@ -40,7 +40,8 @@
     <ClCompile Include="src\cstrike\type\CUtlString.cpp" />
     <ClCompile Include="src\cstrike\type\CUtlVectorEmbeddedNetworkVar.cpp" />
     <ClCompile Include="src\cstrike\type\KeyValues3.cpp" />
-    <ClCompile Include="src\hook\extern\DualMountAddon.cpp" />
+    <ClCompile Include="src\hook\extern\AddonHooks.cpp" />
+    <ClCompile Include="src\hook\extern\Addons.cpp" />
     <ClCompile Include="src\kv3proxy.cpp" />
     <ClCompile Include="src\kvproxy.cpp" />
     <ClCompile Include="src\logging.cpp" />
@@ -109,6 +110,7 @@
     <ClCompile Include="src\proto\steammessages.pb.cc" />
     <ClCompile Include="src\proto\usermessages.pb.cc" />
     <ClCompile Include="src\loader.cpp" />
+    <ClCompile Include="src\manager\AddonManager.cpp" />
     <ClCompile Include="src\manager\ConVarManager.cpp" />
     <ClCompile Include="src\modsharp.cpp" />
     <ClCompile Include="src\module.cpp" />
@@ -290,6 +292,7 @@
     <ClInclude Include="src\manager\HookManager.h" />
     <ClInclude Include="src\hook\network.h" />
     <ClInclude Include="src\logging.h" />
+    <ClInclude Include="src\manager\AddonManager.h" />
     <ClInclude Include="src\manager\ConVarManager.h" />
     <ClInclude Include="src\memory\memory_access.h" />
     <ClInclude Include="src\memory\scan.h" />
