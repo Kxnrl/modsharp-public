@@ -140,15 +140,14 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
     /*{"item_heavyassaultsuit",        {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },*/
 };
 
-static volatile bool s_bGiveNamedItemIgnoredCEconItemView = false;
+static int32_t s_nGiveNamedItemIgnoredCEconItemViewDepth = 0;
 
 BeginMemberHookScope(CBasePlayerPawn)
 {
     DeclareMemberDetourHook(FindMatchingWeaponsForTeamLoadout, void, (CBasePlayerPawn * pPawn, const char* pchName, int team, bool bMustBeTeamSpecific, void* unknown))
     {
-        if (s_bGiveNamedItemIgnoredCEconItemView)
+        if (s_nGiveNamedItemIgnoredCEconItemViewDepth > 0)
         {
-            s_bGiveNamedItemIgnoredCEconItemView = false;
             return;
         }
 
@@ -158,6 +157,26 @@ BeginMemberHookScope(CBasePlayerPawn)
 
 BeginMemberHookScope(CCSPlayer_ItemServices)
 {
+    struct ScopedGiveNamedItemIgnoredCEconItemView
+    {
+        ScopedGiveNamedItemIgnoredCEconItemView() = delete;
+
+        explicit ScopedGiveNamedItemIgnoredCEconItemView(bool ignore) : m_bIgnored(ignore)
+        {
+            if (ignore)
+                s_nGiveNamedItemIgnoredCEconItemViewDepth++;
+        }
+
+        ~ScopedGiveNamedItemIgnoredCEconItemView()
+        {
+            if (m_bIgnored)
+                s_nGiveNamedItemIgnoredCEconItemViewDepth--;
+        }
+
+    private:
+        bool m_bIgnored;
+    };
+
 #ifdef PLATFORM_WINDOWS
     DeclareMemberDetourHook(GiveNamedItem, CBaseEntity*, (CCSPlayer_ItemServices * pItemServices, const char* pClassname, int64_t iSubType, void* pScriptItem, bool bForce, Vector* pOrigin))
     {
@@ -173,9 +192,9 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 #    define CALL_GiveNamedItemChanged() \
         GiveNamedItem(pItemServices, classname, a4, pScriptItem, bForced, pOrigin)
 #endif
-        s_bGiveNamedItemIgnoredCEconItemView = false;
 
         auto       bIgnore     = false;
+        auto       ignoreView  = false;
         const auto pPawn       = pItemServices->GetPawn<CCSPlayerPawn*>();
         const auto pController = pPawn->GetController<CCSPlayerController*>();
         if (pController == nullptr)
@@ -215,8 +234,8 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
         {
             if (bIgnore)
             {
-                pScriptItem                          = nullptr;
-                s_bGiveNamedItemIgnoredCEconItemView = bIgnore;
+                pScriptItem = nullptr;
+                ignoreView  = true;
             }
 
             StrCopy(classname, sizeof(classname), refClassname);
@@ -224,7 +243,12 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 
     postHook:
 
-        const auto pWeapon = CALL_GiveNamedItemChanged();
+        CBaseEntity* pWeapon = nullptr;
+        {
+            ScopedGiveNamedItemIgnoredCEconItemView ignore(ignoreView);
+
+            pWeapon = CALL_GiveNamedItemChanged();
+        }
 
         forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon);
 
