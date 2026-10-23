@@ -64,6 +64,7 @@
 #include <deque>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 constexpr int    MAX_CLIENT_ADDONS = 64;
@@ -95,6 +96,7 @@ struct AddonsDownload_t
 static std::unordered_map<SteamId_t, AddonsClientInfo_t> s_ClientInfos;
 static std::vector<std::string>                              s_MountedAddons;
 static std::deque<AddonsDownload_t>                      s_DownloadQueue;
+static std::vector<AddonsDownload_t>                     s_PreLoginDownloads; // failed to start before the Steam logon
 static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
 static bool                                                  s_bReloadBatchSucceeded = false;
@@ -185,6 +187,20 @@ static bool IsDownloading(uint64_t fileId)
     return std::ranges::any_of(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
 }
 
+// DownloadItem fails until the server logs on to Steam, retried in AddonsOnSteamServersConnected
+static void DeferDownload(uint64_t fileId, bool reloadMap)
+{
+    // logged on already, the id is invalid and a retry would not help
+    if (g_pSteamApiProxy->BLoggedOn())
+        return;
+
+    if (const auto it = std::ranges::find_if(s_PreLoginDownloads, [&](const auto& e) { return e.fileId == fileId; });
+        it != s_PreLoginDownloads.end())
+        it->reloadMap |= reloadMap;
+    else
+        s_PreLoginDownloads.push_back({fileId, reloadMap, false});
+}
+
 static bool DownloadAddon(uint64_t fileId, bool reloadMap, bool remount)
 {
     if (const auto it = std::ranges::find_if(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
@@ -198,6 +214,7 @@ static bool DownloadAddon(uint64_t fileId, bool reloadMap, bool remount)
     if (!g_pSteamApiProxy->DownloadItem(fileId, false))
     {
         LogInfo("[Addons] Failed to start download for %llu", fileId);
+        DeferDownload(fileId, reloadMap);
         return false;
     }
 
@@ -335,6 +352,8 @@ static void RefreshAddons(bool reloadMap)
 
 void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
 {
+    std::erase_if(s_PreLoginDownloads, [&](const auto& e) { return e.fileId == fileId; });
+
     const auto it = std::ranges::find_if(s_DownloadQueue, [&](const auto& e) { return e.fileId == fileId; });
     if (it == s_DownloadQueue.end())
         return; // not our download
@@ -419,6 +438,7 @@ void AddonsOnSteamApiActivated()
         it               = s_DownloadQueue.erase(it);
         if (entry.remount)
             MountAddon(std::to_string(entry.fileId).c_str());
+        DeferDownload(entry.fileId, entry.reloadMap);
     }
 
     if (!g_AddonManager.IsActive() || !engine || !engine->IsDedicatedServer())
@@ -426,6 +446,18 @@ void AddonsOnSteamApiActivated()
 
     LogInfo("[Addons] Steam API activated, refreshing addons");
     RefreshAddons(true);
+}
+
+void AddonsOnSteamServersConnected()
+{
+    if (s_PreLoginDownloads.empty() || !HasUGC())
+        return;
+
+    LogInfo("[Addons] Logged on to Steam, retrying %zu download(s)", s_PreLoginDownloads.size());
+
+    // retried as updates, a mounted addon has to be unmounted first or Windows locks the vpk
+    for (const auto& e : std::exchange(s_PreLoginDownloads, {}))
+        AddonsUpdateAddon(e.fileId, e.reloadMap);
 }
 
 void AddonsResetClientCache(SteamId_t steamId)

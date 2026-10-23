@@ -28,6 +28,7 @@
 #include <steamworks/steam_gameserver.h>
 
 extern void AddonsOnDownloadItemResult(uint64_t fileId, int eResult);
+extern void AddonsOnSteamServersConnected();
 
 class CallbackListener
 {
@@ -92,6 +93,8 @@ void CallbackListener::OnGroupStatusResult(GSClientGroupStatus_t* pParam)
 
 void CallbackListener::OnSteamServersConnected(SteamServersConnected_t* pParam)
 {
+    AddonsOnSteamServersConnected();
+
     forwards::OnSteamServersConnected->Invoke();
 }
 

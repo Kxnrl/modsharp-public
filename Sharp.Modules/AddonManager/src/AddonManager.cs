@@ -385,7 +385,11 @@ public sealed class AddonManager : IModSharpModule, IAddonManager, IAddonListene
     }
 
     public bool HasUGCConnection()
-        => _sharedSystem.GetModSharp().GetSteamGameServer().IsAvailable();
+    {
+        var steam = _sharedSystem.GetModSharp().GetSteamGameServer();
+
+        return steam.IsAvailable() && steam.BLoggedOn();
+    }
 
 #endregion
 
