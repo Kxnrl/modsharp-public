@@ -712,7 +712,7 @@ static void PatchGiveNamedItemLimit()
 void InstallGiveNamedItemHooks()
 {
     HOOK(CCSPlayer_ItemServices, GiveNamedItem);
-    HOOK(CCSPlayer_ItemServices, GiveGlove);
+    HOOK(CCSPlayer_ItemServices, GiveGlove, {.address = reinterpret_cast<void*>(address::server::CCSPlayer_ItemServices_GiveGlove)});
     HOOK(CCSPlayer_ItemServices, CanAcquire);
 
     HOOK(CBasePlayerPawn, FindMatchingWeaponsForTeamLoadout);

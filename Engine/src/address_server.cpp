@@ -1904,6 +1904,92 @@ void ResolveCCSPlayerItemServices()
 
         try_overwrite_vfunc("CCSPlayer_ItemServices::RemoveAllItems", remove_all_items_idx);
     }
+
+    {
+        uintptr_t give_glove_addr    = 0;
+        auto      econ_gloves_offset = schemas::GetOffset("CCSPlayerPawn", "m_EconGloves").offset;
+
+        auto spawn_funcs         = svr_mod->FindAllFunctionsFromStringRefs({"PlayerSpawn", "game_player_equip"});
+        auto default_items_funcs = svr_mod->FindAllFunctionsFromStringRefs({"item_assaultsuit", "weapon_knife_t"});
+
+        auto collect_callees = [&](uintptr_t func) {
+            std::unordered_set<uintptr_t> callees{};
+
+            auto range = svr_mod->GetFunctionRange(func);
+            if (!range)
+                return callees;
+
+            ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                if ((instr.mnemonic == ZYDIS_MNEMONIC_CALL || instr.mnemonic == ZYDIS_MNEMONIC_JMP) && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+                {
+                    auto target = ZydisUtility::GetAbsoluteAddress(instr, operands[0], ip);
+                    if (auto callee = svr_mod->GetFunctionRange(target); callee && callee->start == target)
+                        callees.insert(target);
+                }
+                return false;
+            });
+
+            return callees;
+        };
+
+        auto accesses_econ_gloves = [&](uintptr_t func) {
+            auto range = svr_mod->GetFunctionRange(func);
+            if (!range)
+                return false;
+
+            bool found = false;
+            ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                if (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
+                    return false;
+
+                for (auto i = 0; i < instr.operand_count_visible; i++)
+                {
+                    if (operands[i].type == ZYDIS_OPERAND_TYPE_MEMORY
+                        && operands[i].mem.index == ZYDIS_REGISTER_NONE
+                        && static_cast<int32_t>(operands[i].mem.disp.value) == econ_gloves_offset)
+                    {
+                        found = true;
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            return found;
+        };
+
+        if (spawn_funcs.size() == 1)
+        {
+            auto spawn_callees = collect_callees(spawn_funcs[0]);
+
+            std::erase_if(default_items_funcs, [&](uintptr_t func) { return !spawn_callees.contains(func); });
+
+            if (default_items_funcs.size() == 1)
+            {
+                std::vector<uintptr_t> candidates{};
+                for (auto callee : collect_callees(default_items_funcs[0]))
+                {
+                    if (spawn_callees.contains(callee) && accesses_econ_gloves(callee))
+                        candidates.push_back(callee);
+                }
+
+                if (candidates.size() == 1)
+                    give_glove_addr = candidates[0];
+                else
+                    WARN("Expected one common callee touching m_EconGloves for GiveGlove but got %zu, falling back to signature", candidates.size());
+            }
+            else
+            {
+                WARN("Expected one GiveDefaultItems called by the spawn function but got %zu, falling back to signature", default_items_funcs.size());
+            }
+        }
+        else
+        {
+            WARN("Failed to locate the GiveGlove spawn caller (got %zu), falling back to signature", spawn_funcs.size());
+        }
+
+        AssignOrFallback(svr_mod, address::server::CCSPlayer_ItemServices_GiveGlove, give_glove_addr, "CCSPlayer_ItemServices::GiveGlove");
+    }
 }
 
 void ResolveCCSPlayerPawn_IsPlayer()

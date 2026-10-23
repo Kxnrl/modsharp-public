@@ -242,6 +242,7 @@ using FindWeaponVDataByName_t                                 = CCSWeaponBaseVDa
 using GetLegacyGameEventListener_t                            = IGameEventListener2* (*)(int32_t);
 using CGameEntitySystem_GetSpawnOriginOffset_t                = matrix3x4_t& (*)(const CGameEntitySystem*);
 using CCSPlayerPawn_SetDefaultGloves_t                        = void (*)(CCSPlayerPawn* pawn, bool hide);
+using CCSPlayer_ItemServices_GiveGlove_t                      = void (*)(CCSPlayer_ItemServices*);
 using CBasePlayerPawn_SnapViewAngles_t                        = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                                 = void* (*)(Vector*, Vector*, Vector*);
 using CCSCustomHudLayout_SetHasClass_t                        = void (*)(CBaseEntity*, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
@@ -336,6 +337,7 @@ inline CCSScript_InitV8ClassTemplates_t CCSScript_InitV8ClassTemplates;
 #endif
 inline CGameEntitySystem_GetSpawnOriginOffset_t                CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                        CCSPlayerPawn_SetDefaultGloves;
+inline CCSPlayer_ItemServices_GiveGlove_t                      CCSPlayer_ItemServices_GiveGlove;
 inline CCSCustomHudLayout_SetHasClass_t                        CCSCustomHudLayout_SetHasClass;
 inline CCSCustomHudLayout_SetHasClassForPlayer_t               CCSCustomHudLayout_SetHasClassForPlayer;
 inline CCSCustomHudLayout_SetDialogVariableString_t            CCSCustomHudLayout_SetDialogVariableString;
