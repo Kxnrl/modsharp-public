@@ -117,99 +117,100 @@ public:
     virtual void LoadSpawnGroup(void* sgd) = 0; // 60
 
 private:
-    virtual void Unknown62() = 0; // 61
-    virtual void Unknown63() = 0; // 62
-    virtual void Unknown64() = 0; // 63
-    virtual void Unknown65() = 0; // 64
-    virtual void Unknown66() = 0; // 65
-    virtual void Unknown67() = 0; // 66
+    virtual void Unknown62()  = 0; // 61
+    virtual void Unknown63()  = 0; // 62
+    virtual void Unknown64()  = 0; // 63
+    virtual void Unknown65()  = 0; // 64
+    virtual void Method_065() = 0; // 65
+    virtual void Unknown66()  = 0; // 66
+    virtual void Unknown67()  = 0; // 67
 
 public:
-    virtual void SetTimescale(float flTimescale) = 0; // 67
+    virtual void SetTimescale(float flTimescale) = 0; // 68
 private:
-    virtual uint32_t GetAppID() = 0; // 68
+    virtual uint32_t GetAppID() = 0; // 69
 public:
     // 看起来内部调用了 offset 155 读SteamId, 但是还有个Sub判断Bool不知道是干什么的, 返回值不明
-    virtual const SteamId_t* GetClientSteamId(PlayerSlot_t slot) = 0; // 69
+    virtual const SteamId_t* GetClientSteamId(PlayerSlot_t slot) = 0; // 70
 
 private:
-    virtual void SetGamestatsData() = 0; // 70
-    virtual void GetGamestatsData() = 0; // 71
+    virtual void SetGamestatsData() = 0; // 71
+    virtual void GetGamestatsData() = 0; // 72
 
 public:
     // 这里是传的Kv
-    virtual void ClientCommandKeyValues(PlayerSlot_t slot, void* pCommand) = 0; // 72
+    virtual void ClientCommandKeyValues(PlayerSlot_t slot, void* pCommand) = 0; // 73
 
 private:
-    virtual void Unknown74() = 0; // 73
+    virtual void Unknown74() = 0; // 74
 
 public:
     // 内部调用 offset 2490 所以我觉得应该是判断是否被Steam认证
-    virtual bool IsClientFullyAuthenticated(PlayerSlot_t slot) = 0; // 74
+    virtual bool IsClientFullyAuthenticated(PlayerSlot_t slot) = 0; // 75
 
-    virtual CGlobalVars* GetGlobalVars() = 0; // 75
+    virtual CGlobalVars* GetGlobalVars() = 0; // 76
 
-    virtual void SetFakeClientConVarValue(PlayerSlot_t slot, const char* cvar, const char* value) = 0; // 76
+    virtual void SetFakeClientConVarValue(PlayerSlot_t slot, const char* cvar, const char* value) = 0; // 77
 
 private:
-    virtual void GetSharedEdictChangeInfo() = 0; // 77
-    virtual void SetAchievementMgr()        = 0; // 78
-    virtual void GetAchievementMgr()        = 0; // 79
-    virtual void GetPlayerInfo()            = 0; // 80
+    virtual void GetSharedEdictChangeInfo() = 0; // 78
+    virtual void SetAchievementMgr()        = 0; // 79
+    virtual void GetAchievementMgr()        = 0; // 80
+    virtual void GetPlayerInfo()            = 0; // 81
 
 private:
     // 里面判断了virtual 22 -> 判断 offset 96 我也不知道是啥, 失败直接返回0
-    virtual SteamId_t GetClientSteamId_Unknown(PlayerSlot_t slot) = 0; // 81
+    virtual SteamId_t GetClientSteamId_Unknown(PlayerSlot_t slot) = 0; // 82
 
 private:
-    virtual void GetPVSForSpawnGroup()  = 0; // 82
-    virtual void FindSpawnGroupByName() = 0; // 83
-    virtual void GetGameServerSteamID() = 0; // 84
+    virtual void GetPVSForSpawnGroup()  = 0; // 83
+    virtual void FindSpawnGroupByName() = 0; // 84
+    virtual void GetGameServerSteamID() = 0; // 85
 
 public:
-    virtual int GetBuildVersion() const = 0; // 85
+    virtual int GetBuildVersion() const = 0; // 86
 
     // 判断完美国服
-    virtual bool IsClientLowViolence(PlayerSlot_t slot) = 0; // 86
+    virtual bool IsClientLowViolence(PlayerSlot_t slot) = 0; // 87
 
 private:
-    virtual void DisconnectClient()    = 0; // 87
-    virtual void DisconnectAllClient() = 0; // 88
-    virtual void Unknown90()           = 0; // 89
-    virtual void GetClientListening()  = 0; // 90
-    virtual void SetClientListening()  = 0; // 91
-    virtual void SetClientProximity()  = 0; // 92
-    virtual void Unknown94()           = 0; // 93
-    virtual void Unknown95()           = 0; // 94
-    virtual void Unknown96()           = 0; // 95
+    virtual void DisconnectClient()    = 0; // 88
+    virtual void DisconnectAllClient() = 0; // 89
+    virtual void Unknown90()           = 0; // 90
+    virtual void GetClientListening()  = 0; // 91
+    virtual void SetClientListening()  = 0; // 92
+    virtual void SetClientProximity()  = 0; // 93
+    virtual void Unknown94()           = 0; // 94
+    virtual void Unknown95()           = 0; // 95
+    virtual void Unknown96()           = 0; // 96
 
 public:
     // Server 跟 disconnect时的提示有关系, 我也不知道取值
-    virtual void  KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason) = 0; // 96
-    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick)      = 0; // 97
-    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick)              = 0; // 98
+    virtual void  KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason) = 0; // 97
+    virtual void* BanClientUnknown1(SteamId_t steamId, float flDuration, bool bKick)      = 0; // 98
+    virtual void* BanClient(PlayerSlot_t slot, float flDuration, bool bKick)              = 0; // 99
 
-    virtual bool  StartHltvReplay(PlayerSlot_t slot, int64_t unknown2); // 99
-    virtual void* StopHltvReplay(PlayerSlot_t slot);                    // 100
-    virtual void  StopHltvReplayAll();                                  // 101
+    virtual bool  StartHltvReplay(PlayerSlot_t slot, int64_t unknown2); // 100
+    virtual void* StopHltvReplay(PlayerSlot_t slot);                    // 101
+    virtual void  StopHltvReplayAll();                                  // 102
 
 private:
     // client  virtual 70 -> offset 3120
-    virtual void* GetClientUnknown(PlayerSlot_t slot) = 0; // 102
+    virtual void* GetClientUnknown(PlayerSlot_t slot) = 0; // 103
 
-    virtual void Unknown104() = 0; // 103
-    virtual void Unknown105() = 0; // 104
-    virtual void Unknown106() = 0; // 105
-    virtual void Unknown107() = 0; // 106
+    virtual void Unknown104() = 0; // 104
+    virtual void Unknown105() = 0; // 105
+    virtual void Unknown106() = 0; // 106
+    virtual void Unknown107() = 0; // 107
 
     // Find client exists by offset 3120
-    virtual bool CheckClientUnknown()                               = 0; // 107
-    virtual void SetClientUpdateRate(PlayerSlot_t slot, float rate) = 0; // 108
-    virtual void UpdateClientRate(PlayerSlot_t nSlot)               = 0; // 109
+    virtual bool CheckClientUnknown()                               = 0; // 108
+    virtual void SetClientUpdateRate(PlayerSlot_t slot, float rate) = 0; // 109
+    virtual void UpdateClientRate(PlayerSlot_t nSlot)               = 0; // 110
 
-    virtual void Unknown111() = 0; // 110
-    virtual void Unknown112() = 0; // 111
-    virtual void Unknown113() = 0; // 112
+    virtual void Unknown111() = 0; // 111
+    virtual void Unknown112() = 0; // 112
+    virtual void Unknown113() = 0; // 113
     // more rest
 };
 
