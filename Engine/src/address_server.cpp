@@ -2652,3 +2652,100 @@ void ResolveCBaseTrigger_PassesTriggerFilters()
 
     try_overwrite_vfunc("CBaseTrigger::PassesTriggerFilters", vote);
 }
+
+void ResolveCTriggerPush_PathSimplePushDir()
+{
+    const auto svr_mod = modules::server;
+
+    const auto push = svr_mod->GetVFunctionsFromVTable("CTriggerPush");
+    if (push.empty())
+    {
+        WARN("Failed to get CTriggerPush vtable.");
+        return;
+    }
+
+    int touch_index = 0;
+    if (!g_pGameData->GetVFunctionIndex("CBaseEntity::Touch", &touch_index)
+        || touch_index <= 0
+        || static_cast<size_t>(touch_index) >= push.size())
+    {
+        WARN("CTriggerPush vtable (%zu) cannot hold CBaseEntity::Touch (index %d).", push.size(), touch_index);
+        return;
+    }
+
+    const auto* touch = svr_mod->GetFunctionRange(push[touch_index]);
+    if (touch == nullptr)
+    {
+        WARN("Failed to get function range for CTriggerPush::Touch.");
+        return;
+    }
+
+    constexpr auto path_key = MurmurHash2("CTriggerPush->m_PathSimple", MURMURHASH_SEED_MODSHARP);
+    constexpr auto type_key = MurmurHash2("CTriggerPush->m_splinePushType", MURMURHASH_SEED_MODSHARP);
+
+    const auto path = schemas::GetOffset(path_key);
+    const auto type = schemas::GetOffset(type_key);
+    if (!path.valid || !type.valid || path.offset <= 0 || type.offset <= 0)
+    {
+        WARN("Failed to get schema offsets for CTriggerPush::m_PathSimple / m_splinePushType.");
+        return;
+    }
+
+    const auto path_offset = path.offset;
+    const auto type_offset = type.offset;
+
+    const auto reads_field = [&](const uintptr_t func, const int32_t disp) {
+        const auto* range = svr_mod->GetFunctionRange(func);
+        if (range == nullptr)
+            return false;
+
+        bool found = false;
+
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+            for (uint8_t i = 0; i < instr.operand_count_visible; i++)
+            {
+                const auto& op = operands[i];
+
+                if (op.type == ZYDIS_OPERAND_TYPE_MEMORY
+                    && op.mem.index == ZYDIS_REGISTER_NONE
+                    && op.mem.disp.has_displacement
+                    && static_cast<int32_t>(op.mem.disp.value) == disp
+                    && address_scan::IsObjectBase(op.mem.base))
+                {
+                    found = true;
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return found;
+    };
+
+    std::vector<uintptr_t> candidates{};
+
+    ZydisUtility::ScanInstructions(touch->start, touch->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic != ZYDIS_MNEMONIC_CALL || !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+            return false;
+
+        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+        if (target == 0 || std::ranges::find(candidates, target) != candidates.end())
+            return false;
+
+        if (reads_field(target, path_offset) && reads_field(target, type_offset))
+            candidates.emplace_back(target);
+
+        return false;
+    });
+
+    if (candidates.size() != 1)
+    {
+        WARN("GameData auto-resolve: CTriggerPush::PathSimplePushDir matched %zu callees, expected 1.", candidates.size());
+        return;
+    }
+
+    FLOG("Found CTriggerPush::PathSimplePushDir at server+0x%llx", candidates.front() - svr_mod->Base());
+
+    address::server::CTriggerPush_PathSimplePushDir = reinterpret_cast<address::server::CTriggerPush_PathSimplePushDir_t>(candidates.front());
+}

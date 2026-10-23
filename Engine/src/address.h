@@ -83,6 +83,7 @@ class CGameTrace;
 class CGamePhysicsQueryInterface;
 class CConVarBaseData;
 class CCSPlayerPawn;
+class CTriggerPush;
 class ISoundOpSystem;
 class SoundOpGameSystem;
 class CCollisionProperty;
@@ -243,6 +244,7 @@ using CCSPlayerPawn_SetDefaultGloves_t                        = void (*)(CCSPlay
 using CCSPlayer_ItemServices_GiveGlove_t                      = void (*)(CCSPlayer_ItemServices*);
 using CBasePlayerPawn_SnapViewAngles_t                        = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                                 = void* (*)(Vector*, Vector*, Vector*);
+using CTriggerPush_PathSimplePushDir_t                        = float (*)(CTriggerPush* self, CBaseEntity* pOther, Vector* dir);
 using CCSCustomHudLayout_SetHasClass_t                        = void (*)(CBaseEntity*, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetHasClassForPlayer_t               = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetDialogVariableString_t            = void (*)(CBaseEntity*, CUtlString*, CUtlString*, CUtlString*);
@@ -329,6 +331,7 @@ inline FindWeaponVDataByName_t                         FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                    GetLegacyGameEventListener;
 inline CBasePlayerPawn_SnapViewAngles_t                CBasePlayerPawn_SnapViewAngles;
 inline CreateTriggerInternal_t                         CreateTriggerInternal;
+inline CTriggerPush_PathSimplePushDir_t                CTriggerPush_PathSimplePushDir;
 #ifdef ENABLE_SCRIPT_ASSERT
 inline CCSScript_InitV8ClassTemplates_t CCSScript_InitV8ClassTemplates;
 #endif

@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "address.h"
 #include "bridge/forwards/forward.h"
 #include "bridge/natives/EntityNatives.h"
 #include "gamedata.h"
@@ -240,6 +241,14 @@ BeginMemberHookScope(CTriggerPush)
         vecAbsDir.x = pushDir.x * mat[0][0] + pushDir.y * mat[0][1] + pushDir.z * mat[0][2];
         vecAbsDir.y = pushDir.x * mat[1][0] + pushDir.y * mat[1][1] + pushDir.z * mat[1][2];
         vecAbsDir.z = pushDir.x * mat[2][0] + pushDir.y * mat[2][1] + pushDir.z * mat[2][2];
+
+        if (pEntity->m_bUsePathSimple())
+        {
+            if (address::server::CTriggerPush_PathSimplePushDir == nullptr)
+                return Touch(pEntity, pOther);
+
+            address::server::CTriggerPush_PathSimplePushDir(pEntity, pOther, &vecAbsDir);
+        }
 
         auto vecPush = vecAbsDir * pEntity->m_flSpeed() * ms_trigger_push_scale->GetValue<float>();
         auto flags   = pOther->GetFlags();

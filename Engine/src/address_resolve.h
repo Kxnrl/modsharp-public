@@ -297,6 +297,7 @@ void ResolveCEntityClassEntityListOffset();
 void ResolveCBasePlayerPawn_SnapViewAngles();
 void ResolveCreateTriggerInternal();
 void ResolveCBaseTrigger_PassesTriggerFilters();
+void ResolveCTriggerPush_PathSimplePushDir();
 void ResolveProcessClientSvcUserMessage();
 
 // address_engine.cpp

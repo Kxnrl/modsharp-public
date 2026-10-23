@@ -256,4 +256,5 @@ void address::PostSchemaInit()
     ResolveCBasePlayerPawn_CommitSuicide();
     ResolveCBasePlayerPawn_SnapViewAngles();
     ResolveCBaseTrigger_PassesTriggerFilters();
+    ResolveCTriggerPush_PathSimplePushDir();
 }
