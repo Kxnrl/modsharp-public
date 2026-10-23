@@ -95,7 +95,6 @@ class CTransform;
 class CEntityKeyValues;
 class HSCRIPT;
 class CEffectData;
-struct bbox_t;
 class CCSWeaponBaseVData;
 struct HSequence;
 struct CResourceNameTyped;
@@ -236,7 +235,6 @@ using StudioModel_GetAttachment_t              = bool (*)(void*, uint8_t, Vector
 using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SoundEventGuid_t);
 using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
-using CCSPlayer_MovementServices_TracePlayerBBox_t            = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
 using CTraceFilterPlayerMovementCS_ctor_t                     = void (*)(CTraceFilter& filter, CEntityInstance* handleEntity, uint64_t interactWith, uint8_t collisionGroup);
 using FindWeaponVDataByName_t                                 = CCSWeaponBaseVData* (*)(int state, const char* weaponName);
 using GetLegacyGameEventListener_t                            = IGameEventListener2* (*)(int32_t);
@@ -326,7 +324,6 @@ inline StudioModel_LookupAttachment_t                  StudioModel_LookupAttachm
 inline StudioModel_GetAttachment_t                     StudioModel_GetAttachment;
 inline SoundOpGameSystem_StopSoundEventFilter_t        SoundOpGameSystem_StopSoundEventFilter;
 inline CCollisionProperty_SetSolid_t                   CCollisionProperty_SetSolid;
-inline CCSPlayer_MovementServices_TracePlayerBBox_t    CCSPlayer_MovementServices_TracePlayerBBox;
 inline CTraceFilterPlayerMovementCS_ctor_t             CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                         FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                    GetLegacyGameEventListener;

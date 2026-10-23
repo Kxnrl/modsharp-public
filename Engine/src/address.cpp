@@ -229,9 +229,6 @@ bool address::Initialize()
     // Sound OP
     RESOLVE_GAMEDATA_ADDRESS("SoundOpGameSystem::StopSoundEventFilter", address::server::SoundOpGameSystem_StopSoundEventFilter);
 
-    // Movement service
-    RESOLVE_GAMEDATA_ADDRESS("CCSPlayer_MovementServices::TracePlayerBBox", address::server::CCSPlayer_MovementServices_TracePlayerBBox);
-
     // Tracefilter
     // RESOLVE_GAMEDATA_ADDRESS("CTraceFilterPlayerMovementCS::ctor", address::server::CTraceFilterPlayerMovementCS_ctor);
 
