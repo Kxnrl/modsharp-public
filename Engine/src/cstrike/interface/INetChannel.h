@@ -43,8 +43,6 @@ public:
     virtual const void* GetRemoteAddress()  = 0;
     virtual float       GetTime()           = 0;
     virtual float       GetTimeConnected()  = 0;
-
-    // virtual float GetAvgLatency(int type) = 0; // 11
 };
 
 #endif

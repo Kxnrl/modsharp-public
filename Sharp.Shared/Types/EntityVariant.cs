@@ -53,9 +53,10 @@ public ref struct EntityVariant
     public readonly string AsString
         => _type switch
         {
-            VariantFieldType.CString => _szValue.ReadStringUtf8(0),
-            VariantFieldType.String  => ReadPointerString(),
-            _                        => throw new InvalidCastException(),
+            VariantFieldType.CString      => _szValue.ReadStringUtf8(0),
+            VariantFieldType.String       => ReadPointerString(),
+            VariantFieldType.GlobalSymbol => ReadPointerString(),
+            _                             => throw new InvalidCastException(),
         };
 
     public readonly int   AsInt32 => _type is VariantFieldType.Int32 ? _i32Value : throw new InvalidCastException();
@@ -77,12 +78,13 @@ public ref struct EntityVariant
     public override string ToString()
         => _type switch
         {
-            VariantFieldType.CString => AsString,
-            VariantFieldType.String  => AsString,
-            VariantFieldType.Int32   => AsInt32.ToString(),
-            VariantFieldType.Float32 => $"{AsFloat:F2}",
-            VariantFieldType.Boolean => AsBool.ToString(),
-            _                        => throw new InvalidCastException(),
+            VariantFieldType.CString      => AsString,
+            VariantFieldType.String       => AsString,
+            VariantFieldType.GlobalSymbol => AsString,
+            VariantFieldType.Int32        => AsInt32.ToString(),
+            VariantFieldType.Float32      => $"{AsFloat:F2}",
+            VariantFieldType.Boolean      => AsBool.ToString(),
+            _                             => throw new InvalidCastException(),
         };
 
     /// <summary>
@@ -90,5 +92,7 @@ public ref struct EntityVariant
     /// </summary>
     /// <returns></returns>
     public readonly string AutoCastString()
-        => _type is VariantFieldType.CString or VariantFieldType.String ? _szValue.ReadStringUtf8(0) : string.Empty;
+        => _type is VariantFieldType.CString or VariantFieldType.String or VariantFieldType.GlobalSymbol
+            ? _szValue.ReadStringUtf8(0)
+            : string.Empty;
 }

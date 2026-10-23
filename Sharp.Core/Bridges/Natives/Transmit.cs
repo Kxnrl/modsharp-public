@@ -42,6 +42,8 @@ public static partial class Transmit
 
     public static partial bool SetEntityOwner(EntityIndex entity, EntityIndex owner);
 
+    public static partial NetworkReceiver GetEntityReceiver(EntityIndex entity);
+
     public static partial bool GetTempEntState(BlockTempEntType type, PlayerSlot slot);
 
     public static partial bool SetTempEntState(BlockTempEntType type, PlayerSlot slot, bool state);

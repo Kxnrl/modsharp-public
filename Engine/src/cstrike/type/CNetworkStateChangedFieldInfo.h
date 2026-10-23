@@ -28,24 +28,25 @@ struct CNetworkStateChangedInfo
 
     CNetworkStateChangedInfo(uint32_t nOffset, uint32_t nArrayIndex, uint32_t nPathIndex)
     {
-        m_nSize = 1;
+        m_nUseOffsetData = 1;
         m_vecOffsetData.AddToTail(nOffset);
 
-        unk_30 = ~0u;
-        unk_3c = 0;
+        m_nLine             = -1;
+        m_nRequirePathIndex = 0;
 
         m_nArrayIndex = nArrayIndex;
         m_nPathIndex  = nPathIndex;
     }
 
 private:
-    int                  m_nSize{};        // 0x0
-    CUtlVector<uint32_t> m_vecOffsetData;  // 0x8
-    char*                m_pszClassName{}; // 0x20
-    char*                m_pszFieldName{}; // 0x28
-    uint32_t             unk_30 = ~0u;     // 0x30
-    uint32_t             m_nArrayIndex{};  // 0x34
-    uint32_t             m_nPathIndex{};   // 0x38
-    uint16_t             unk_3c{};         // 0x3c
-}; // Size: 0x3e
+    int                  m_nUseOffsetData{};    // 0x0
+    CUtlVector<uint32_t> m_vecOffsetData;       // 0x8
+    const char*          m_pszFieldName{};      // 0x20
+    const char*          m_pszFileName{};       // 0x28
+    int32_t              m_nLine = -1;          // 0x30
+    uint32_t             m_nArrayIndex{};       // 0x34
+    uint32_t             m_nPathIndex{};        // 0x38
+    uint16_t             m_nRequirePathIndex{}; // 0x3c
+}; // Size: 0x40
+static_assert(sizeof(CNetworkStateChangedInfo) == 0x40);
 #endif

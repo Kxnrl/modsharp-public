@@ -126,7 +126,7 @@ void ConsoleText(const Color& color, const char* buffer, ...)
     va_end(args);
 
     g_bInLoggingFlow = true;
-    ConColorMsg(color, message);
+    ConColorMsg(color, "%s", message);
     g_bInLoggingFlow = false;
 }
 

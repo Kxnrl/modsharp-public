@@ -48,6 +48,8 @@
 
 // #define LOG_FIX_TICKCOUNT
 
+extern bool IsPushFixEnabled();
+
 volatile float g_flReplaceMaxSpeed;
 volatile bool  g_bInWalkMove;
 
@@ -220,16 +222,23 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
     // Fix mega push
     DeclareVirtualHook(CheckMovingGround, void, (CCSPlayer_MovementServices * pService, double frametime))
     {
-        ValidateCP();
+        if (!IsPushFixEnabled())
+            return CheckMovingGround(pService, frametime);
 
-        const auto slot = pController->GetPlayerSlot();
+        const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
+        AssertPtr(pPawn);
 
-        static int32_t nPlayerTicks[CS_MAX_PLAYERS];
+        if (const auto pController = pPawn->GetOriginalController<CCSPlayerController*>())
+        {
+            const auto slot = pController->GetPlayerSlot();
 
-        if (nPlayerTicks[slot] == gpGlobals->nTickCount)
-            return;
+            static int32_t nPlayerTicks[CS_MAX_PLAYERS];
 
-        nPlayerTicks[slot] = gpGlobals->nTickCount;
+            if (nPlayerTicks[slot] == gpGlobals->nTickCount)
+                return;
+
+            nPlayerTicks[slot] = gpGlobals->nTickCount;
+        }
 
         CheckMovingGround(pService, frametime);
     }

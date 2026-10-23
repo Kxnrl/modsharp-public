@@ -125,6 +125,8 @@ static constexpr const char* FieldTypeToString(FieldType_t type)
         "uint32",                        // FIELD_WORLD_GROUP_ID
         "uint64",                        // FIELD_GLOBALSYMBOL
         "HNmGraphDefinition",            // FIELD_HNMGRAPHDEFINITION
+        "VectorWS",                      // FIELD_NETWORK_QUANTIZED_VECTORWS
+        "VectorWS",                      // FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTORWS
     };
     if (type < FieldType_t::FIELD_TYPECOUNT)
         return names[static_cast<uint8_t>(type)];
@@ -684,8 +686,10 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
 
         g_ClassInfoMap.try_emplace(class_info->GetName(), class_info);
 
-        auto* schema_class = new SchemaClass_t();
-        schema_class->name = class_info->GetName();
+        auto* schema_class  = new SchemaClass_t();
+        schema_class->name  = class_info->GetName();
+        schema_class->size  = class_info->GetSize();
+        schema_class->align = class_info->GetAlignOf();
         schema_class->baseClassList.AddToTail(new CUtlString(class_info->GetName()));
         g_SchemaList.AddToTail(schema_class);
 

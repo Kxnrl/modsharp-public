@@ -85,6 +85,18 @@ public interface ITransmitManager
     bool SetEntityOwner(EntityIndex entity, EntityIndex owner);
 
     /// <summary>
+    ///     Get the set of players that TransmitManager lets the entity transmit to
+    ///     <remarks>
+    ///         Reflects only TransmitManager's own blocking: the engine PVS is not included, and unconnected slots are not filtered out <br />
+    ///         An entity that is neither a controller nor a pawn returns all 64 bits if it is not hooked <br />
+    ///         Passing a controller or a PlayerPawn returns the receivers of that player's PlayerPawn; an ObserverPawn is not governed by hook state, only by ConVars <br />
+    ///         Pawn blocking is skipped for a receiver on its full update tick, so a pawn's actual receivers on that tick are wider than the returned value <br />
+    ///         Must be called on the main thread
+    ///     </remarks>
+    /// </summary>
+    NetworkReceiver GetEntityReceiver(EntityIndex entity);
+
+    /// <summary>
     ///     Checks if a specific temporary entity type is currently blocked for a player.
     /// </summary>
     /// <param name="type">Temporary entity type</param>

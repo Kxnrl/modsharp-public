@@ -92,7 +92,7 @@ internal sealed class ScriptManager : ICoreScriptManager
 #region IScriptManager
 
     public int RegisterMethod(string methodName, ScriptCallback callback)
-        => RegisterMethod("Domain", methodName, callback);
+        => RegisterMethod("Instance", methodName, callback);
 
     public int RegisterMethod(string className, string methodName, ScriptCallback callback)
     {

@@ -28,7 +28,6 @@
 #include "module.h"
 #include "sdkproxy.h"
 #include "strtool.h"
-#include "vhook/call.h"
 
 #include "cstrike/component/CBodyComponent.h"
 #include "cstrike/component/CGameSceneNode.h"
@@ -74,16 +73,21 @@ static bool EntityInputEnhancement(const CEntityIdentity* pEntity, const char* p
 
 static CBaseEntity* s_pInputCallerOverride = nullptr;
 
-// IScriptVM::SetValue(ScriptVariant_t) and SetValue(const char*) are adjacent overloads that MSVC orders in reverse, so their slots swap between platforms
-#ifdef PLATFORM_WINDOWS
-constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 33;
-#else
-constexpr int32_t SCRIPT_VM_SET_VALUE_VARIANT_INDEX = 34;
-#endif
-
 // extern for movement manager
 extern void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue);
 extern void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue);
+
+static const CEntityClass* LogicCaseClass()
+{
+    static const auto s_pClass = g_pGameEntitySystem->FindEntityClassByName("logic_case");
+    AssertPtr(s_pClass);
+    return s_pClass;
+}
+
+bool IsPushFixEnabled()
+{
+    return ms_trigger_push_fixes_enabled->GetValue<bool>();
+}
 
 // 这里涉及到安全问题, 所以暂时全局Hook
 // 现在Mapper可以通过该实体传入任意命令!
@@ -282,6 +286,22 @@ BeginMemberHookScope(CEntityIOOutput)
 // 实现劫持AcceptInput
 BeginMemberHookScope(CEntityIdentity)
 {
+    static bool IsPulseFloatIntegerString(const char* pszValue)
+    {
+        if (*pszValue == '-')
+            pszValue++;
+
+        if (*pszValue == '0')
+            pszValue++;
+        else if (*pszValue >= '1' && *pszValue <= '9')
+            while (*pszValue >= '0' && *pszValue <= '9')
+                pszValue++;
+        else
+            return false;
+
+        return strcmp(pszValue, ".0") == 0;
+    }
+
     // a connection's override parameter lives in pKeyValues under "--old-connection-literal--" and takes precedence over pArgs
     DeclareMemberDetourHook(AcceptInput, bool, (CEntityIdentity * pInstance, CUtlSymbolLarge * pInput, CBaseEntity * pActivator, CBaseEntity * pCaller, Variant_t * pValue, void* pArgs, KeyValues3* pKeyValues))
     {
@@ -296,8 +316,12 @@ BeginMemberHookScope(CEntityIdentity)
         // Since the 2026-09-23 update float inputs stringify with %f and break logic_case matching, and inputs read args rather than the variant, so re-dispatch through CBaseEntity::AcceptInput to rebuild args
         if (pValue && pValue->FieldType() == FieldType_t::FIELD_FLOAT32
             && strcasecmp(pInput->Get(), "InValue") == 0
-            && strcasecmp(pInstance->GetClassname(), "logic_case") == 0)
+            && pInstance->GetEntityClass() == LogicCaseClass())
         {
+            const auto pCases = pInstance->GetBaseEntity<CLogicCase*>()->m_nCase();
+            if (std::any_of(pCases, pCases + 32, [](const CUtlSymbolLarge& value) { return IsPulseFloatIntegerString(value.Get()); }))
+                return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);
+
             class RedispatchValue
             {
             public:
@@ -340,9 +364,7 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hActivator = pActivator->GetPublicScriptScope())
                     {
                         ScriptVariant_t activator(hActivator);
-                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "activator", &activator);
-
-                        // WARN("Fix Activator %p(%s) for %s -> %s", pActivator, pActivator->GetClassname(), pInstance->GetName(), pInput->Get());
+                        g_pScriptVM->SetValue(pScope, "activator", activator);
                     }
                 }
                 if (pCaller)
@@ -350,14 +372,10 @@ BeginMemberHookScope(CEntityIdentity)
                     if (const auto hCaller = pCaller->GetPublicScriptScope())
                     {
                         ScriptVariant_t caller(hCaller);
-                        CALL_VIRTUAL(bool, SCRIPT_VM_SET_VALUE_VARIANT_INDEX, g_pScriptVM, pScope, "caller", &caller);
-
-                        // WARN("Fix Caller %p(%s) for %s -> %s", pCaller, pCaller->GetClassname(), pInstance->GetName(), pInput->Get());
+                        g_pScriptVM->SetValue(pScope, "caller", caller);
                     }
                 }
             }
-
-            // g_pScriptVM->SetValueVariant(pScope, "caller", &caller);
         }
 
         return AcceptInput(pInstance, pInput, pActivator, pCaller, pValue, pArgs, pKeyValues);

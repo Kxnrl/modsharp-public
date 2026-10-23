@@ -62,6 +62,9 @@ internal class TransmitManager : ICoreTransmitManager
     public bool SetEntityOwner(EntityIndex entity, EntityIndex owner)
         => Transmit.SetEntityOwner(entity, owner);
 
+    public NetworkReceiver GetEntityReceiver(EntityIndex entity)
+        => Transmit.GetEntityReceiver(entity);
+
     public bool GetTempEntState(BlockTempEntType type, PlayerSlot slot)
         => Transmit.GetTempEntState(type, slot);
 

@@ -146,4 +146,8 @@ private:
 
 #define VPROF_MS_HOOK() VPROF_MS_AUTO(VPROF_GROUP_MS_HOOKS)
 
+#define VPROF_MS_HOOK_SCOPE(name)                                                                        \
+    static constexpr CUtlSourceLocation __vprof_scope_source_location(__FILE__, __FUNCTION__, __LINE__); \
+    VProfScopeHelper<0, false>          vprofScopeHelper_(VPROF_PREFIX_MS name, VPROF_GROUP_MS_HOOKS, VProfBudgetFlags::Server, __vprof_scope_source_location)
+
 #endif

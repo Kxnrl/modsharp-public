@@ -141,6 +141,11 @@ struct SchemaClassInfoData_t
         return m_nSize;
     }
 
+    int8_t GetAlignOf() const
+    {
+        return m_nAlignOf;
+    }
+
     SchemaClassInfoData_t* GetParent() const
     {
         if (!m_BaseClasses)

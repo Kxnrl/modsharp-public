@@ -71,14 +71,15 @@ using EHandle_t         = uint32_t;
 using SpawnGroup_t      = uint32_t;
 using WorldGroup_t      = uint32_t;
 
-inline constexpr PlayerSlot_t      INVALID_PLAYER_SLOT  = static_cast<PlayerSlot_t>(~0);
-inline constexpr UserId_t          INVALID_USER_ID      = static_cast<UserId_t>(~0);
-inline constexpr EntityIndex_t     INVALID_ENTITY_INDEX = -1;
-inline constexpr EntityIndex_t     WORLD_ENTITY_INDEX   = 0;
-inline constexpr NetworkReceiver_t BASE_RECEIVER_MAGIC  = 1;
-inline constexpr EHandle_t         INVALID_EHANDLE      = static_cast<EHandle_t>(~0);
-inline constexpr PlayerSlot_t      CS_MAX_PLAYERS       = 64;
-inline constexpr EntityIndex_t     MAX_NETWORKED_ENTITY = 16384;
+inline constexpr PlayerSlot_t      INVALID_PLAYER_SLOT   = static_cast<PlayerSlot_t>(~0);
+inline constexpr UserId_t          INVALID_USER_ID       = static_cast<UserId_t>(~0);
+inline constexpr EntityIndex_t     INVALID_ENTITY_INDEX  = -1;
+inline constexpr EntityIndex_t     WORLD_ENTITY_INDEX    = 0;
+inline constexpr NetworkReceiver_t BASE_RECEIVER_MAGIC   = 1;
+inline constexpr EHandle_t         INVALID_EHANDLE       = static_cast<EHandle_t>(~0);
+inline constexpr uint32_t          INVALID_PACKED_HANDLE = 0xFFFFFF;
+inline constexpr PlayerSlot_t      CS_MAX_PLAYERS        = 64;
+inline constexpr EntityIndex_t     MAX_NETWORKED_ENTITY  = 16384;
 
 inline constexpr float CStrikeMaxSpeed   = 260.f;
 inline constexpr float DefaultSpeedValue = 1.f;
