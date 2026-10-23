@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
+using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
 using Sharp.Core.Types;
 using Sharp.Shared.Enums;
@@ -47,7 +48,7 @@ internal class EntityManager : ICoreEntityManager
     private readonly ILogger<EntityManager> _logger;
     private readonly ICoreAssemblyManager   _assemblyManager;
 
-    private readonly List<IEntityListener> _listeners;
+    private readonly SubscriberList<IEntityListener> _listeners;
 
     private PlayerSlot _maxSlots;
 
@@ -55,7 +56,7 @@ internal class EntityManager : ICoreEntityManager
     {
         _logger          = logger;
         _assemblyManager = assemblyManager;
-        _listeners       = [];
+        _listeners       = new SubscriberList<IEntityListener>(x => x.ListenerPriority);
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
@@ -66,7 +67,7 @@ internal class EntityManager : ICoreEntityManager
 
         Bridges.Forwards.Game.OnServerInit += OnServerInit;
 
-        _assemblyManager.RegisterUnloadCleanup(() => _assemblyManager.ClearLeakedListeners(_listeners, "EntityListener"));
+        _assemblyManager.RegisterUnloadCleanup(() => _listeners.Edit(x => _assemblyManager.ClearLeakedListeners(x, "EntityListener")));
     }
 
     private void OnServerInit()
@@ -87,18 +88,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityCreated(entity);
+                listener.OnEntityCreated(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityCreated),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -114,18 +115,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityDeleted(entity);
+                listener.OnEntityDeleted(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityDeleted),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -141,18 +142,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntitySpawned(entity);
+                listener.OnEntitySpawned(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntitySpawned),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -170,18 +171,18 @@ internal class EntityManager : ICoreEntityManager
 
         var owner = BaseEntity.Create(ownerPtr);
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityFollowed(entity, owner);
+                listener.OnEntityFollowed(entity, owner);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityFollowed),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -200,11 +201,11 @@ internal class EntityManager : ICoreEntityManager
         var activator = BaseEntity.Create(ptrActivator);
         var action    = EHookAction.Ignored;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                var low = _listeners[i].OnEntityFireOutput(entity, output, activator, delay);
+                var low = listener.OnEntityFireOutput(entity, output, activator, delay);
 
                 if (low > action)
                 {
@@ -216,7 +217,7 @@ internal class EntityManager : ICoreEntityManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {output}",
                                  nameof(OnEntityFireOutput),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  output);
             }
         }
@@ -243,10 +244,8 @@ internal class EntityManager : ICoreEntityManager
         var caller    = BaseEntity.Create(ptrCaller);
         var action    = EHookAction.Ignored;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
-            var listener = _listeners[i];
-
             try
             {
                 var low = listener.OnEntityAcceptInput(entity, input, in variant, activator, caller);
@@ -261,7 +260,7 @@ internal class EntityManager : ICoreEntityManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {output}",
                                  nameof(OnEntityAcceptInput),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  input);
             }
         }
@@ -283,7 +282,7 @@ internal class EntityManager : ICoreEntityManager
             throw new InvalidOperationException("Your listener api version mismatch");
         }
 
-        if (_listeners.Any(x => x.Equals(listener)))
+        if (_listeners.Exists(x => x.Equals(listener)))
         {
             _logger.LogError("You are already install listener!\n{stackTrace}", Environment.StackTrace);
 
@@ -291,7 +290,6 @@ internal class EntityManager : ICoreEntityManager
         }
 
         _listeners.Add(listener);
-        _listeners.Sort((x, y) => y.ListenerPriority.CompareTo(x.ListenerPriority));
     }
 
     public void RemoveEntityListener(IEntityListener listener)

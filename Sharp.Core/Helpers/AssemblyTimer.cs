@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using Sharp.Shared.Enums;
 
 namespace Sharp.Core.Helpers;
@@ -31,6 +32,7 @@ internal abstract class AssemblyTimer
 
     private readonly double _interval;
     private          double _lastCallTime;
+    private          int    _finished;
 
     protected AssemblyTimer(Delegate callback,
         double                       interval,
@@ -57,6 +59,11 @@ internal abstract class AssemblyTimer
             return false;
         }
 
+        if (!Flags.HasFlag(GameTimerFlags.Repeatable) && !TryFinish())
+        {
+            return false;
+        }
+
         _lastCallTime += _interval;
 
         if (Run() is TimerAction.Stop)
@@ -76,6 +83,9 @@ internal abstract class AssemblyTimer
 
         _lastCallTime = time;
     }
+
+    public bool TryFinish()
+        => Interlocked.Exchange(ref _finished, 1) == 0;
 
     public void ForceRun()
         => Run();

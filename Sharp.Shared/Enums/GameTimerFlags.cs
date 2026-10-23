@@ -43,11 +43,21 @@ public enum GameTimerFlags
     /// <summary>
     ///     Stop when round ends
     /// </summary>
+    /// <remarks>
+    ///     Stopped in OnRoundRestart (before RestartRound); on map change it is stopped by the rules of
+    ///     <see cref="GameTimerFlags.StopOnMapEnd" />. It still fires between round_end and the restart. Timers pushed
+    ///     during OnRoundRestart are removed with a warning when it returns; push timers for the new round in
+    ///     OnRoundRestarted or later.
+    /// </remarks>
     StopOnRoundEnd = 1 << 2,
 
     /// <summary>
     ///     Stop when map changes
     /// </summary>
+    /// <remarks>
+    ///     Stopped after the OnGamePreShutdown callbacks. Timers pushed after that are removed with a warning at
+    ///     OnGameShutdown; push timers for the new map in OnServerInit or later.
+    /// </remarks>
     StopOnMapEnd = 1 << 3,
 
     /// <summary>
@@ -56,19 +66,35 @@ public enum GameTimerFlags
     ForceCallBeforeShutdown = 1 << 4,
 
     /// <summary>
-    ///     Force execute callback once before timer is forcibly stopped
+    ///     Force execute callback once when the timer is stopped
     /// </summary>
     /// <remarks>
-    ///     Only takes effect in the following cases:
     ///     <list type="bullet">
-    ///         <item>Timer is stopped by <see cref="IModSharp.StopTimer" /></item>
-    ///         <item>Flag contains <see cref="GameTimerFlags.StopOnMapEnd" /> and server changes map</item>
-    ///         <item>Flag contains <see cref="GameTimerFlags.StopOnRoundEnd" /> and round ends</item>
+    ///         <item>
+    ///             When <see cref="IModSharp.StopTimer" /> is called on the main thread, the callback runs immediately.
+    ///             When it is called from another thread it does not wait: the main thread runs the callback at whichever
+    ///             comes first of the end of a frame, a round restart, map cleanup, module unload or server shutdown, which
+    ///             may be before or after <see cref="IModSharp.StopTimer" /> returns. There is no end of frame while the
+    ///             server is hibernating or loading a map.
+    ///         </item>
+    ///         <item>
+    ///             Also applies when the timer is stopped automatically at round or map end
+    ///             (<see cref="GameTimerFlags.StopOnRoundEnd" /> / <see cref="GameTimerFlags.StopOnMapEnd" />); timers that
+    ///             those two flags describe as removed directly do not run.
+    ///         </item>
+    ///         <item>
+    ///             Does not run when the callback returns <see cref="TimerAction.Stop" />, when a one-shot timer has fired,
+    ///             or when the timer is removed because its callback threw. It also does not run when a one-shot timer is
+    ///             stopped while it is firing, or when the callback already ran for
+    ///             <see cref="GameTimerFlags.ForceCallBeforeShutdown" /> at shutdown.
+    ///         </item>
+    ///         <item>
+    ///             Does not run when the owning module has been unloaded (ownership is decided by the module's
+    ///             AssemblyLoadContext, except for delegates from shared libraries or generated dynamically). A callback
+    ///             that runs during a hot reload at map change has no map objects: <see cref="IModSharp.GetGameRules" />
+    ///             and <see cref="IModSharp.GetGlobals" /> throw.
+    ///         </item>
     ///     </list>
-    ///     <para>
-    ///         Note: If the timer ends normally where the callback function returns <see cref="TimerAction.Stop" />, it will
-    ///         not call the callback even the flag is set.
-    ///     </para>
     /// </remarks>
     ForceCallOnStop = 1 << 5,
 }

@@ -18,8 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
@@ -79,8 +77,8 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
 
     private record PostHookInfo(Action<TParams, HookReturnValue<THookReturn>> Callback, int Priority);
 
-    private readonly List<PreHookInfo>  _preHooks;
-    private readonly List<PostHookInfo> _postHooks;
+    private readonly SubscriberList<PreHookInfo>  _preHooks;
+    private readonly SubscriberList<PostHookInfo> _postHooks;
 
     private readonly ILogger _logger;
 
@@ -89,8 +87,8 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
 
     protected HookType(ILoggerFactory factory)
     {
-        _preHooks  = [];
-        _postHooks = [];
+        _preHooks  = new SubscriberList<PreHookInfo>(x => x.Priority);
+        _postHooks = new SubscriberList<PostHookInfo>(x => x.Priority);
 
         _logger = factory.CreateLogger<TClass>();
     }
@@ -115,13 +113,12 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
             return;
         }
 
-        if (_preHooks.Any(x => x.Callback.Equals(pre)))
+        if (_preHooks.Exists(x => x.Callback.Equals(pre)))
         {
             return;
         }
 
         _preHooks.Add(new PreHookInfo(pre, priority));
-        _preHooks.Sort((x, y) => y.Priority.CompareTo(x.Priority));
     }
 
     public void InstallHookPost(Action<TParams, HookReturnValue<THookReturn>> post, int priority)
@@ -144,13 +141,12 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
             return;
         }
 
-        if (_postHooks.Any(x => x.Equals(post)))
+        if (_postHooks.Exists(x => x.Callback.Equals(post)))
         {
             return;
         }
 
         _postHooks.Add(new PostHookInfo(post, priority));
-        _postHooks.Sort((x, y) => y.Priority.CompareTo(x.Priority));
     }
 
     public void RemoveHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre)
@@ -183,11 +179,10 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
         var          action = EHookAction.Ignored;
         THookReturn? result = default;
 
-        for (var i = 0; i < _preHooks.Count; i++)
+        foreach (var hook in _preHooks)
         {
             try
             {
-                var hook = _preHooks[i];
                 var call = hook.Callback(@params, new HookReturnValue<THookReturn>(action, result));
 
                 if (call.Action > action)
@@ -214,11 +209,11 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
             return;
         }
 
-        for (var i = 0; i < _postHooks.Count; i++)
+        foreach (var hook in _postHooks)
         {
             try
             {
-                _postHooks[i].Callback(@params, @return);
+                hook.Callback(@params, @return);
             }
             catch (Exception e)
             {
@@ -232,8 +227,8 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
 
     internal override void ClearLeakedHooks(ICoreAssemblyManager assemblyManager)
     {
-        assemblyManager.ClearLeakedCallbacks(_preHooks, $"{GetType().Name}<pre>", x => x.Callback);
-        assemblyManager.ClearLeakedCallbacks(_postHooks, $"{GetType().Name}<post>", x => x.Callback);
+        _preHooks.Edit(x => assemblyManager.ClearLeakedCallbacks(x, $"{GetType().Name}<pre>", y => y.Callback));
+        _postHooks.Edit(x => assemblyManager.ClearLeakedCallbacks(x, $"{GetType().Name}<post>", y => y.Callback));
     }
 }
 
@@ -254,13 +249,13 @@ internal abstract class ForwardType<TParams, TClass> : UnloadCleanupObject, ICor
 {
     private record HookInfo(Action<TParams> Callback, int Priority);
 
-    private readonly List<HookInfo> _hooks;
+    private readonly SubscriberList<HookInfo> _hooks;
 
     private readonly ILogger<TClass> _logger;
 
     protected ForwardType(ILoggerFactory factory)
     {
-        _hooks  = [];
+        _hooks  = new SubscriberList<HookInfo>(x => x.Priority);
         _logger = factory.CreateLogger<TClass>();
     }
 
@@ -279,17 +274,16 @@ internal abstract class ForwardType<TParams, TClass> : UnloadCleanupObject, ICor
             return;
         }
 
-        if (_hooks.Any(x => x.Callback.Equals(func)))
+        if (_hooks.Exists(x => x.Callback.Equals(func)))
         {
             return;
         }
 
         _hooks.Add(new HookInfo(func, priority));
-        _hooks.Sort((x, y) => y.Priority.CompareTo(x.Priority));
     }
 
     internal override void ClearLeakedHooks(ICoreAssemblyManager assemblyManager)
-        => assemblyManager.ClearLeakedCallbacks(_hooks, GetType().Name, x => x.Callback);
+        => _hooks.Edit(x => assemblyManager.ClearLeakedCallbacks(x, GetType().Name, y => y.Callback));
 
     public void RemoveForward(Action<TParams> func)
     {
@@ -308,11 +302,11 @@ internal abstract class ForwardType<TParams, TClass> : UnloadCleanupObject, ICor
             return;
         }
 
-        for (var i = 0; i < _hooks.Count; i++)
+        foreach (var hook in _hooks)
         {
             try
             {
-                _hooks[i].Callback(@params);
+                hook.Callback(@params);
             }
             catch (Exception e)
             {
