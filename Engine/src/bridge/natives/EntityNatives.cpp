@@ -35,6 +35,7 @@
 #include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
@@ -70,9 +71,25 @@ static CBaseEntity* FindEntityByClassname(CBaseEntity* pStart, const char* class
     return g_pGameEntitySystem->FindByClassname(pStart, classname);
 }
 
-static int32_t EnumerateEntitiesByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity)
+static CBaseEntity* FindEntityByCppClass(CBaseEntity* pStart, const char* cppClass)
 {
-    return g_pGameEntitySystem->EnumerateByClassname(classname, buffer, capacity);
+    return g_pGameEntitySystem->FindByCppClass(pStart, cppClass);
+}
+
+static int32_t FindAllEntitiesByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity)
+{
+    return g_pGameEntitySystem->FindAllByClassname(classname, buffer, capacity);
+}
+
+static int32_t EnumerateEntitiesByCppClass(const char* cppClass, CBaseEntity** buffer, int32_t capacity)
+{
+    return g_pGameEntitySystem->EnumerateByCppClass(cppClass, buffer, capacity);
+}
+
+static void* GetEntityClassThinkFunc(const char* classname, const char* thinkName)
+{
+    const auto* klass = g_pGameEntitySystem->FindEntityClassByName(classname);
+    return klass != nullptr ? reinterpret_cast<void*>(klass->GetThinkFunc(thinkName)) : nullptr;
 }
 
 static CBaseEntity* FindEntityByName(CBaseEntity* pStart, const char* name)
@@ -522,8 +539,11 @@ void Init()
     // Entity List
     bridge::CreateNative("Entity.FindByEHandle", reinterpret_cast<void*>(FindEntityByEHandle));
     bridge::CreateNative("Entity.FindByIndex", reinterpret_cast<void*>(FindEntityByIndex));
-    bridge::CreateNative("Entity.EnumerateByClassname", reinterpret_cast<void*>(EnumerateEntitiesByClassname));
+    bridge::CreateNative("Entity.FindAllByClassname", reinterpret_cast<void*>(FindAllEntitiesByClassname));
+    bridge::CreateNative("Entity.EnumerateByCppClass", reinterpret_cast<void*>(EnumerateEntitiesByCppClass));
     bridge::CreateNative("Entity.FindByClassname", reinterpret_cast<void*>(FindEntityByClassname));
+    bridge::CreateNative("Entity.FindByCppClass", reinterpret_cast<void*>(FindEntityByCppClass));
+    bridge::CreateNative("Entity.GetThinkFunc", reinterpret_cast<void*>(GetEntityClassThinkFunc));
     bridge::CreateNative("Entity.FindByName", reinterpret_cast<void*>(FindEntityByName));
     bridge::CreateNative("Entity.FindInSphere", reinterpret_cast<void*>(FindEntityInSphere));
     bridge::CreateNative("Entity.SpawnEntitySync", reinterpret_cast<void*>(SpawnEntitySync));

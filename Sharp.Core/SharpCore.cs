@@ -1068,6 +1068,9 @@ internal partial class SharpCore : ISharpCore
     public IntPtr FindPattern(string module, string pattern)
         => Bridges.Natives.Core.FindPattern(module, pattern);
 
+    public nint GetEntityClassThinkFunc(string classname, string thinkName)
+        => Bridges.Natives.Entity.GetThinkFunc(classname, thinkName);
+
     public IntPtr GetVTableByClass(string module, string className)
         => Bridges.Natives.Core.GetVTableByClass(module, className);
 

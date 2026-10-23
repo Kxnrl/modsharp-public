@@ -300,70 +300,51 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    [SkipLocalsInit]
-    public unsafe IBaseEntity[] GetAllEntitiesByClassname(string classname)
+    private enum EntityClassNameKind
     {
-        const int stackCap = 256;
-        var       stack    = stackalloc nint[stackCap];
+        Classname,
+        CppClass,
+    }
 
-        var total = Native.EnumerateByClassname(classname, stack, stackCap);
+    public IBaseEntity[] GetAllEntitiesByClassname(string classname)
+        => GetAllEntitiesByClassnameCore<IBaseEntity>(classname, EntityClassNameKind.Classname);
 
-        if (total == 0)
-        {
-            return [];
-        }
+    public IBaseEntity[] GetAllEntitiesByCppClass(string cppClass)
+        => GetAllEntitiesByClassnameCore<IBaseEntity>(cppClass, EntityClassNameKind.CppClass);
 
-        if (total <= stackCap)
-        {
-            var result  = new IBaseEntity[total];
-            var written = 0;
+    public T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
+        => GetAllEntitiesByClassnameCore<T>(classname, EntityClassNameKind.Classname);
 
-            for (var i = 0; i < total; i++)
-            {
-                if (BaseEntity.Create(stack[i]) is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
+    public T[] GetAllEntitiesByCppClass<T>(string cppClass) where T : class, IBaseEntity
+        => GetAllEntitiesByClassnameCore<T>(cppClass, EntityClassNameKind.CppClass);
 
-            if (written != total)
-            {
-                Array.Resize(ref result, written);
-            }
+    private static unsafe int EnumerateEntityPointers(string name, nint* buffer, int capacity, EntityClassNameKind kind)
+        => kind == EntityClassNameKind.CppClass
+            ? Native.EnumerateByCppClass(name, buffer, capacity)
+            : Native.FindAllByClassname(name, buffer, capacity);
 
-            return result;
-        }
+    private static unsafe T[] GetAllEntitiesByClassnameCore<T>(string name, EntityClassNameKind kind)
+        where T : class, IBaseEntity
+    {
+        const int maxEntityCount = 32768;
 
-        // Overflow: rent exact size and re-enumerate (rare path)
-        var rented = ArrayPool<nint>.Shared.Rent(total);
+        var rented = ArrayPool<nint>.Shared.Rent(maxEntityCount);
 
         try
         {
-            int actual;
+            int total;
 
             fixed (nint* p = rented)
             {
-                actual = Native.EnumerateByClassname(classname, p, rented.Length);
+                total = EnumerateEntityPointers(name, p, rented.Length, kind);
             }
 
-            var count   = Math.Min(actual, rented.Length);
-            var result  = new IBaseEntity[count];
-            var written = 0;
-
-            for (var i = 0; i < count; i++)
+            if (total > rented.Length)
             {
-                if (BaseEntity.Create(rented[i]) is { } e)
-                {
-                    result[written++] = e;
-                }
+                throw new InvalidOperationException($"Entity count {total} exceeds the engine limit {maxEntityCount}");
             }
 
-            if (written != count)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
+            return total == 0 ? [] : WrapEntities<T>(rented.AsSpan(0, total));
         }
         finally
         {
@@ -371,75 +352,25 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    [SkipLocalsInit]
-    public unsafe T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
+    private static T[] WrapEntities<T>(ReadOnlySpan<nint> pointers) where T : class, IBaseEntity
     {
-        const int stackCap = 256;
-        var       stack    = stackalloc nint[stackCap];
+        var result  = new T[pointers.Length];
+        var written = 0;
 
-        var total = Native.EnumerateByClassname(classname, stack, stackCap);
-
-        if (total == 0)
+        foreach (var pointer in pointers)
         {
-            return [];
+            if (BaseEntity.Create(pointer)?.As<T>() is { } entity)
+            {
+                result[written++] = entity;
+            }
         }
 
-        if (total <= stackCap)
+        if (written != result.Length)
         {
-            var result  = new T[total];
-            var written = 0;
-
-            for (var i = 0; i < total; i++)
-            {
-                if (BaseEntity.Create(stack[i])?.As<T>() is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
-
-            if (written != total)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
+            Array.Resize(ref result, written);
         }
 
-        // Overflow: rent exact size and re-enumerate (rare path)
-        var rented = ArrayPool<nint>.Shared.Rent(total);
-
-        try
-        {
-            int actual;
-
-            fixed (nint* p = rented)
-            {
-                actual = Native.EnumerateByClassname(classname, p, rented.Length);
-            }
-
-            var count   = Math.Min(actual, rented.Length);
-            var result  = new T[count];
-            var written = 0;
-
-            for (var i = 0; i < count; i++)
-            {
-                if (BaseEntity.Create(rented[i])?.As<T>() is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
-
-            if (written != count)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
-        }
-        finally
-        {
-            ArrayPool<nint>.Shared.Return(rented);
-        }
+        return result;
     }
 
     public T? FindEntityByHandle<T>(CEntityHandle<T> eHandle) where T : class, IBaseEntity
@@ -456,6 +387,9 @@ internal class EntityManager : ICoreEntityManager
 
     public IBaseEntity? FindEntityByClassname(IBaseEntity? start, string classname)
         => BaseEntity.Create(Native.FindByClassname(start?.GetAbsPtr() ?? IntPtr.Zero, classname));
+
+    public IBaseEntity? FindEntityByCppClass(IBaseEntity? start, string cppClass)
+        => BaseEntity.Create(Native.FindByCppClass(start?.GetAbsPtr() ?? IntPtr.Zero, cppClass));
 
     public IBaseEntity? FindEntityByName(IBaseEntity? start, string name)
         => BaseEntity.Create(Native.FindByName(start?.GetAbsPtr() ?? IntPtr.Zero, name));

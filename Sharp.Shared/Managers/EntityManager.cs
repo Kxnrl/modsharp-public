@@ -43,19 +43,44 @@ public interface IEntityManager
     ///     Get all currently existing entities matching a classname
     /// </summary>
     /// <param name="classname">
-    ///     Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player"), case-insensitive
-    ///     and does not support wildcard
+    ///     Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player"), case-insensitive, wildcards
+    ///     follow <see cref="FindEntityByClassname" />. The order of the results is not guaranteed. Aliases must use the
+    ///     target classname (e.g. prop_dynamic instead of prop_dynamic_override). Without wildcards the lookup is limited
+    ///     to the entity class of that classname, so entities of other classes renamed to it are not included
     /// </param>
+    /// <exception cref="System.InvalidOperationException">The number of entities exceeds the engine limit of 32768</exception>
     IBaseEntity[] GetAllEntitiesByClassname(string classname);
 
     /// <summary>
     ///     Get all currently existing entities matching a classname, cast to a specific type
     /// </summary>
     /// <param name="classname">
-    ///     Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player"), case-insensitive
-    ///     and does not support wildcard
+    ///     Entity classname to filter by (e.g. "weapon_ak47", "func_physbox", "player"), case-insensitive, wildcards
+    ///     follow <see cref="FindEntityByClassname" />. The order of the results is not guaranteed. Aliases must use the
+    ///     target classname (e.g. prop_dynamic instead of prop_dynamic_override). Without wildcards the lookup is limited
+    ///     to the entity class of that classname, so entities of other classes renamed to it are not included
     /// </param>
+    /// <exception cref="System.InvalidOperationException">The number of entities exceeds the engine limit of 32768</exception>
     T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity;
+
+    /// <summary>
+    ///     Get all currently existing entities of a C++ class, matching that exact class only (subclasses are not included)
+    /// </summary>
+    /// <exception cref="System.InvalidOperationException">The number of entities exceeds the engine limit of 32768</exception>
+    IBaseEntity[] GetAllEntitiesByCppClass(string cppClass);
+
+    /// <summary>
+    ///     Get all currently existing entities of a C++ class, cast to a specific type
+    /// </summary>
+    /// <exception cref="System.InvalidOperationException">The number of entities exceeds the engine limit of 32768</exception>
+    T[] GetAllEntitiesByCppClass<T>(string cppClass) where T : class, IBaseEntity;
+
+    /// <summary>
+    ///     Same as <c>GetAllEntitiesByClassname("*")</c>, dormant entities are not included
+    /// </summary>
+    /// <exception cref="System.InvalidOperationException">The number of entities exceeds the engine limit of 32768</exception>
+    IBaseEntity[] GetAllEntities()
+        => GetAllEntitiesByClassname("*");
 
     /// <summary>
     ///     Find entity by EHandle
@@ -91,17 +116,30 @@ public interface IEntityManager
     ///         <b>PERFORMANCE WARNING:</b><br />
     ///         JThis method performs an <b>O(N) linear scan</b> over the global
     ///         entity list
-    ///         and uses a wildcard string comparison (<c>V_CompareNameWithWildcards</c>), which is way heavier than a normal
-    ///         <c>strcmp</c>, for every entity.
+    ///         and uses a wildcard string comparison (same rules as <c>V_CompareNameWithWildcards</c>), which is way heavier
+    ///         than a normal <c>strcmp</c>, for every entity.
     ///     </para>
     /// </remarks>
-    /// <param name="start">Entity cursor, null to start from beginning.</param>
+    /// <param name="start">
+    ///     Starts from the node after this cursor in the global entity list, which may have a different classname; null to
+    ///     start from the head of the global entity list.
+    /// </param>
     /// <param name="classname">
     ///     Entity Classname. This is <b>case-insensitive</b> and supports wildcards:
     ///     <c>*</c> matches zero or more characters (e.g., <c>prop_*</c>), and <c>?</c> matches exactly one character.
     /// </param>
     /// <returns>The first entity matching the specified Classname, or <c>null</c> if no match is found.</returns>
     IBaseEntity? FindEntityByClassname(IBaseEntity? start, string classname);
+
+    /// <summary>
+    ///     Find entity by C++ class name
+    /// </summary>
+    /// <param name="start">
+    ///     Cursor entity of the same C++ class, null to start from the head of that class's entity list; a cursor of
+    ///     another class returns null
+    /// </param>
+    /// <param name="cppClass">C++ class name, e.g. CBaseEntity</param>
+    IBaseEntity? FindEntityByCppClass(IBaseEntity? start, string cppClass);
 
     /// <summary>
     ///     Find entity by Targetname.

@@ -50,7 +50,13 @@ public static unsafe partial class Entity
 
     public static partial IntPtr FindByClassname(IntPtr start, string classname);
 
-    public static partial int EnumerateByClassname(string classname, IntPtr* buffer, int capacity);
+    public static partial IntPtr FindByCppClass(IntPtr start, string cppClass);
+
+    public static partial int FindAllByClassname(string classname, IntPtr* buffer, int capacity);
+
+    public static partial int EnumerateByCppClass(string cppClass, IntPtr* buffer, int capacity);
+
+    public static partial IntPtr GetThinkFunc(string classname, string thinkName);
 
     public static partial IntPtr FindByName(IntPtr start, string name);
 

@@ -119,7 +119,10 @@ bool address::Initialize()
     ResolveCBaseEntity_Precache();
     ResolveCCSPlayerPawn_IsPlayer();
     ResolveCCSPlayerPawn_SetDefaultGloves();
-    ResolveCEntityClassEntityListOffset();
+    ResolveEntityListOffsets();
+    ResolveCEntityClassRegistry();
+    ResolveCEntityClassFlagsOffset();
+    ResolveCEntityClassNameToThinkFuncOffset();
     ResolveProcessClientSvcUserMessage();
 
     g_pHookManager->Hook_GameInit(HookType_Post, [] {
