@@ -18,8 +18,6 @@
  */
 
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -40,22 +38,22 @@ internal static class ProcessLock
         return Create(key);
     }
 
-    public static IProcessLock Create(string key)
-        => RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? new WindowsMutexLock(key)
-            : new UnixFileLock(key);
+    public static IProcessLock Create(string key) => new NamedMutexLock(key);
 
-    private sealed class WindowsMutexLock : IProcessLock
+    private sealed class NamedMutexLock : IProcessLock
     {
         private Mutex? _mutex;
 
         public bool IsAcquired { get; }
 
-        public WindowsMutexLock(string key)
+        public NamedMutexLock(string key)
         {
-            _mutex = new Mutex(true, $"Global\\modsharp_{key}", out var success);
+            var name = OperatingSystem.IsWindows()
+                ? $"Global\\modsharp_{key}"
+                : $"modsharp_{key}";
 
-            IsAcquired = success;
+            _mutex = new Mutex(true, name, out var createdNew);
+            IsAcquired = createdNew;
         }
 
         public void Dispose()
@@ -67,45 +65,15 @@ internal static class ProcessLock
 
             try
             {
-                _mutex.ReleaseMutex();
-                _mutex.Close();
+                if (IsAcquired)
+                {
+                    _mutex.ReleaseMutex();
+                }
             }
             finally
             {
+                _mutex.Dispose();
                 _mutex = null;
-            }
-        }
-    }
-
-    private sealed class UnixFileLock : IProcessLock
-    {
-        private FileStream? _lockFile;
-
-        public bool IsAcquired { get; }
-
-        public UnixFileLock(string key)
-        {
-            var lockPath = Path.Combine(Path.GetTempPath(), $"modsharp_{key}.lock");
-
-            _lockFile = new FileStream(lockPath,
-                                       FileMode.OpenOrCreate,
-                                       FileAccess.ReadWrite,
-                                       FileShare.None,
-                                       1,
-                                       FileOptions.DeleteOnClose);
-
-            IsAcquired = true;
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                _lockFile?.Dispose();
-            }
-            finally
-            {
-                _lockFile = null;
             }
         }
     }
