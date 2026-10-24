@@ -56,6 +56,7 @@ public interface INetworkingStringTable : INativeObject
     /// <summary>
     ///     Get UserData from given index
     /// </summary>
+    /// <remarks>Points to engine-internal data; read-only, do not modify</remarks>
     unsafe StringTableUserData* GetStringUserData(int index);
 
     /// <summary>
