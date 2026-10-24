@@ -268,7 +268,9 @@ public class MethodSymbolParamContext
                 builder.AppendLine("{");
             }
 
-            builder.AppendLine($"Utf8.FromUtf16({p.Name}, {p.Name}Bytes, out _, out var {p.Name}BytesWritten);");
+            var destination = p.Utf8Size > 0 ? $"{p.Name}Bytes[..{p.Utf8Size}]" : $"{p.Name}Bytes";
+
+            builder.AppendLine($"Utf8.FromUtf16({p.Name}, {destination}, out _, out var {p.Name}BytesWritten);");
 
             builder.AppendLine($"{p.Name}Bytes[{p.Name}BytesWritten] = 0;");
 

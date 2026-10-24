@@ -48,6 +48,8 @@
 
 // #define LOG_FIX_TICKCOUNT
 
+extern bool IsPushFixEnabled();
+
 volatile float g_flReplaceMaxSpeed;
 volatile bool  g_bInWalkMove;
 
@@ -220,16 +222,23 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
     // Fix mega push
     DeclareVirtualHook(CheckMovingGround, void, (CCSPlayer_MovementServices * pService, double frametime))
     {
-        ValidateCP();
+        if (!IsPushFixEnabled())
+            return CheckMovingGround(pService, frametime);
 
-        const auto slot = pController->GetPlayerSlot();
+        const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
+        AssertPtr(pPawn);
 
-        static int32_t nPlayerTicks[CS_MAX_PLAYERS];
+        if (const auto pController = pPawn->GetOriginalController<CCSPlayerController*>())
+        {
+            const auto slot = pController->GetPlayerSlot();
 
-        if (nPlayerTicks[slot] == gpGlobals->nTickCount)
-            return;
+            static int32_t nPlayerTicks[CS_MAX_PLAYERS];
 
-        nPlayerTicks[slot] = gpGlobals->nTickCount;
+            if (nPlayerTicks[slot] == gpGlobals->nTickCount)
+                return;
+
+            nPlayerTicks[slot] = gpGlobals->nTickCount;
+        }
 
         CheckMovingGround(pService, frametime);
     }
@@ -385,49 +394,6 @@ BeginMemberHookScope(CCSPlayerController)
 
         return ProcessUserCommands(pController, pCommands, commandCount, paused, margin);
     }
-}
-
-static void PatchJumpInWaterVelocityZ()
-{
-    auto addresses = modules::server->FindPatternMulti("00 00 C8 42");
-
-    static constexpr int32_t        vel_offset     = offsetof(CMoveData, m_vecVelocity.z);
-    static constexpr uint32_t       new_z_velocity = 0x43110000; // 145.0f
-    constexpr std::array<int8_t, 2> offsets        = {-3, -4};
-
-    for (auto address : addresses)
-    {
-        for (int8_t offset : offsets)
-        {
-            auto instruction_address = address.Offset(offset);
-
-            ZydisDecodedInstruction instr{};
-            ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT]{};
-
-            if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, instruction_address.As<uint8_t*>(), ZYDIS_MAX_INSTRUCTION_LENGTH, &instr, operands))
-                && instr.mnemonic == ZYDIS_MNEMONIC_MOV
-                && instr.operand_count_visible == 2
-                && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
-                && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-                && operands[0].mem.disp.value == vel_offset)
-            {
-                auto* target_address = instruction_address.Offset(instr.raw.imm[0].offset).As<uint8_t*>();
-                if (target_address != address.As<uint8_t*>())
-                    continue;
-
-                if (auto unprotect_guard = safetyhook::unprotect(target_address, sizeof(new_z_velocity)))
-                {
-                    *reinterpret_cast<uint32_t*>(target_address) = new_z_velocity;
-                    FLOG("Successfully patched JumpInWaterVelocityZ @ server+0x%llx", instruction_address.GetPtr() - modules::server->Base());
-                    return;
-                }
-
-                FERROR("Failed to unprotect memory address for patching JumpInWaterVelocityZ");
-            }
-        }
-    }
-
-    WARN("Found pattern for JumpInWaterVelocityZ but failed to validate and patch the instruction.");
 }
 
 static CAddress FindCPlayerMovementService_RunCommand()
@@ -595,8 +561,6 @@ void InstallMovementHook()
     VHOOK(CCSPlayer_MovementServices, CheckMovingGround, server);
 
     HOOK(CCSPlayerController, ProcessUserCommands);
-
-    PatchJumpInWaterVelocityZ();
 
     g_pHookManager->Hook_ClientActivate(HookType_Post, [](PlayerSlot_t slot, const char* name, uint64_t steamId) {
         m_flLaggedMovementValue[slot] = DefaultSpeedValue;

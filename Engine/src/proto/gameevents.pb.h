@@ -32,6 +32,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_gameevents_2eproto
@@ -690,7 +691,7 @@ class CMsgPlaceDecalEvent /*final*/ :
   void _internal_set_triangleindex(int32_t value);
   public:
 
-  // optional uint32 entityhandle = 10 [default = 16777215];
+  // optional uint32 entityhandle = 10 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entityhandle() const;
   private:
   bool _internal_has_entityhandle() const;
@@ -1198,7 +1199,7 @@ class CMsgClearDecalsForEntityEvent /*final*/ :
   void _internal_set_flagstoclear(uint32_t value);
   public:
 
-  // optional uint32 entityhandle = 2 [default = 16777215];
+  // optional uint32 entityhandle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entityhandle() const;
   private:
   bool _internal_has_entityhandle() const;
@@ -2667,7 +2668,7 @@ class CMsgSosStartSoundEvent /*final*/ :
   void _internal_set_start_time(float value);
   public:
 
-  // optional int32 source_entity_index = 3 [default = -1];
+  // optional int32 source_entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_source_entity_index() const;
   private:
   bool _internal_has_source_entity_index() const;
@@ -3006,7 +3007,7 @@ class CMsgSosStopSoundEventHash /*final*/ :
   void _internal_set_soundevent_hash(uint32_t value);
   public:
 
-  // optional int32 source_entity_index = 2 [default = -1];
+  // optional int32 source_entity_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_source_entity_index() const;
   private:
   bool _internal_has_source_entity_index() const;
@@ -3597,7 +3598,7 @@ class CMsgClothStiffenAnimEvent /*final*/ :
   void _internal_set_speed_out(float value);
   public:
 
-  // optional int32 source_entity_index = 1 [default = -1];
+  // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_source_entity_index() const;
   private:
   bool _internal_has_source_entity_index() const;
@@ -3842,7 +3843,7 @@ class CMsgClothEffectAnimEvent /*final*/ :
   void _internal_set_flags(int32_t value);
   public:
 
-  // optional int32 source_entity_index = 1 [default = -1];
+  // optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_source_entity_index() const;
   private:
   bool _internal_has_source_entity_index() const;
@@ -4443,7 +4444,7 @@ inline void CMsgPlaceDecalEvent::set_size_override(float value) {
   // @@protoc_insertion_point(field_set:CMsgPlaceDecalEvent.size_override)
 }
 
-// optional uint32 entityhandle = 10 [default = 16777215];
+// optional uint32 entityhandle = 10 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgPlaceDecalEvent::_internal_has_entityhandle() const {
   bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
@@ -4797,7 +4798,7 @@ inline void CMsgClearDecalsForEntityEvent::set_flagstoclear(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgClearDecalsForEntityEvent.flagstoclear)
 }
 
-// optional uint32 entityhandle = 2 [default = 16777215];
+// optional uint32 entityhandle = 2 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgClearDecalsForEntityEvent::_internal_has_entityhandle() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -5712,7 +5713,7 @@ inline void CMsgSosStartSoundEvent::set_soundevent_hash(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgSosStartSoundEvent.soundevent_hash)
 }
 
-// optional int32 source_entity_index = 3 [default = -1];
+// optional int32 source_entity_index = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgSosStartSoundEvent::_internal_has_source_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -5928,7 +5929,7 @@ inline void CMsgSosStopSoundEventHash::set_soundevent_hash(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgSosStopSoundEventHash.soundevent_hash)
 }
 
-// optional int32 source_entity_index = 2 [default = -1];
+// optional int32 source_entity_index = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgSosStopSoundEventHash::_internal_has_source_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -6160,7 +6161,7 @@ inline void CMsgSosSetLibraryStackFields::set_allocated_packed_fields(std::strin
 
 // CMsgClothStiffenAnimEvent
 
-// optional int32 source_entity_index = 1 [default = -1];
+// optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgClothStiffenAnimEvent::_internal_has_source_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -6332,7 +6333,7 @@ inline void CMsgClothStiffenAnimEvent::set_speed_out(float value) {
 
 // CMsgClothEffectAnimEvent
 
-// optional int32 source_entity_index = 1 [default = -1];
+// optional int32 source_entity_index = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgClothEffectAnimEvent::_internal_has_source_entity_index() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;

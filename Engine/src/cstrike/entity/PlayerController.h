@@ -103,7 +103,7 @@ public:
 
     [[nodiscard]] static CBasePlayerController* FindBySlot(PlayerSlot_t slot);
 
-    static void EnforceClanTags();
+    void        EnforceClanTag();
     static void ClearClanTagState(PlayerSlot_t slot);
 };
 

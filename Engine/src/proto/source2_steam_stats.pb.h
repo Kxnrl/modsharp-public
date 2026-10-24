@@ -1282,6 +1282,14 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
     kBytesTotalReliableFieldNumber = 6,
     kBytesTotalVoiceFieldNumber = 7,
     kBytesSecP99FieldNumber = 11,
+    kNetframesSizeUncompressedP50FieldNumber = 12,
+    kNetframesSizeUncompressedP95FieldNumber = 13,
+    kNetframesSizeUncompressedP99FieldNumber = 14,
+    kNetframesSizeUncompressedMaxFieldNumber = 15,
+    kNetframesMsgsP50FieldNumber = 16,
+    kNetframesMsgsP95FieldNumber = 17,
+    kNetframesMsgsP99FieldNumber = 18,
+    kNetframesMsgsMaxFieldNumber = 19,
     kEnginemsgsTotalFieldNumber = 20,
     kEnginemsgsSecP95FieldNumber = 21,
     kEnginemsgsSecP99FieldNumber = 22,
@@ -1409,6 +1417,110 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
   private:
   uint32_t _internal_bytes_sec_p99() const;
   void _internal_set_bytes_sec_p99(uint32_t value);
+  public:
+
+  // optional uint32 netframes_size_uncompressed_p50 = 12;
+  bool has_netframes_size_uncompressed_p50() const;
+  private:
+  bool _internal_has_netframes_size_uncompressed_p50() const;
+  public:
+  void clear_netframes_size_uncompressed_p50();
+  uint32_t netframes_size_uncompressed_p50() const;
+  void set_netframes_size_uncompressed_p50(uint32_t value);
+  private:
+  uint32_t _internal_netframes_size_uncompressed_p50() const;
+  void _internal_set_netframes_size_uncompressed_p50(uint32_t value);
+  public:
+
+  // optional uint32 netframes_size_uncompressed_p95 = 13;
+  bool has_netframes_size_uncompressed_p95() const;
+  private:
+  bool _internal_has_netframes_size_uncompressed_p95() const;
+  public:
+  void clear_netframes_size_uncompressed_p95();
+  uint32_t netframes_size_uncompressed_p95() const;
+  void set_netframes_size_uncompressed_p95(uint32_t value);
+  private:
+  uint32_t _internal_netframes_size_uncompressed_p95() const;
+  void _internal_set_netframes_size_uncompressed_p95(uint32_t value);
+  public:
+
+  // optional uint32 netframes_size_uncompressed_p99 = 14;
+  bool has_netframes_size_uncompressed_p99() const;
+  private:
+  bool _internal_has_netframes_size_uncompressed_p99() const;
+  public:
+  void clear_netframes_size_uncompressed_p99();
+  uint32_t netframes_size_uncompressed_p99() const;
+  void set_netframes_size_uncompressed_p99(uint32_t value);
+  private:
+  uint32_t _internal_netframes_size_uncompressed_p99() const;
+  void _internal_set_netframes_size_uncompressed_p99(uint32_t value);
+  public:
+
+  // optional uint32 netframes_size_uncompressed_max = 15;
+  bool has_netframes_size_uncompressed_max() const;
+  private:
+  bool _internal_has_netframes_size_uncompressed_max() const;
+  public:
+  void clear_netframes_size_uncompressed_max();
+  uint32_t netframes_size_uncompressed_max() const;
+  void set_netframes_size_uncompressed_max(uint32_t value);
+  private:
+  uint32_t _internal_netframes_size_uncompressed_max() const;
+  void _internal_set_netframes_size_uncompressed_max(uint32_t value);
+  public:
+
+  // optional uint32 netframes_msgs_p50 = 16;
+  bool has_netframes_msgs_p50() const;
+  private:
+  bool _internal_has_netframes_msgs_p50() const;
+  public:
+  void clear_netframes_msgs_p50();
+  uint32_t netframes_msgs_p50() const;
+  void set_netframes_msgs_p50(uint32_t value);
+  private:
+  uint32_t _internal_netframes_msgs_p50() const;
+  void _internal_set_netframes_msgs_p50(uint32_t value);
+  public:
+
+  // optional uint32 netframes_msgs_p95 = 17;
+  bool has_netframes_msgs_p95() const;
+  private:
+  bool _internal_has_netframes_msgs_p95() const;
+  public:
+  void clear_netframes_msgs_p95();
+  uint32_t netframes_msgs_p95() const;
+  void set_netframes_msgs_p95(uint32_t value);
+  private:
+  uint32_t _internal_netframes_msgs_p95() const;
+  void _internal_set_netframes_msgs_p95(uint32_t value);
+  public:
+
+  // optional uint32 netframes_msgs_p99 = 18;
+  bool has_netframes_msgs_p99() const;
+  private:
+  bool _internal_has_netframes_msgs_p99() const;
+  public:
+  void clear_netframes_msgs_p99();
+  uint32_t netframes_msgs_p99() const;
+  void set_netframes_msgs_p99(uint32_t value);
+  private:
+  uint32_t _internal_netframes_msgs_p99() const;
+  void _internal_set_netframes_msgs_p99(uint32_t value);
+  public:
+
+  // optional uint32 netframes_msgs_max = 19;
+  bool has_netframes_msgs_max() const;
+  private:
+  bool _internal_has_netframes_msgs_max() const;
+  public:
+  void clear_netframes_msgs_max();
+  uint32_t netframes_msgs_max() const;
+  void set_netframes_msgs_max(uint32_t value);
+  private:
+  uint32_t _internal_netframes_msgs_max() const;
+  void _internal_set_netframes_msgs_max(uint32_t value);
   public:
 
   // optional uint32 enginemsgs_total = 20;
@@ -2077,6 +2189,14 @@ class CMsgSource2NetworkFlowQuality /*final*/ :
     uint64_t bytes_total_reliable_;
     uint64_t bytes_total_voice_;
     uint32_t bytes_sec_p99_;
+    uint32_t netframes_size_uncompressed_p50_;
+    uint32_t netframes_size_uncompressed_p95_;
+    uint32_t netframes_size_uncompressed_p99_;
+    uint32_t netframes_size_uncompressed_max_;
+    uint32_t netframes_msgs_p50_;
+    uint32_t netframes_msgs_p95_;
+    uint32_t netframes_msgs_p99_;
+    uint32_t netframes_msgs_max_;
     uint32_t enginemsgs_total_;
     uint32_t enginemsgs_sec_p95_;
     uint32_t enginemsgs_sec_p99_;
@@ -6581,7 +6701,7 @@ inline void CMsgSource2NetworkFlowQuality::set_bytes_sec_p99(uint32_t value) {
 
 // optional uint32 enginemsgs_total = 20;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_total() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_total() const {
@@ -6589,7 +6709,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_total() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_total() {
   _impl_.enginemsgs_total_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000040u;
+  _impl_._has_bits_[0] &= ~0x00004000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_total() const {
   return _impl_.enginemsgs_total_;
@@ -6599,7 +6719,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_total() const {
   return _internal_enginemsgs_total();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_total(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_._has_bits_[0] |= 0x00004000u;
   _impl_.enginemsgs_total_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_total(uint32_t value) {
@@ -6609,7 +6729,7 @@ inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_total(uint32_t value) 
 
 // optional uint32 enginemsgs_sec_p95 = 21;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_sec_p95() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p95() const {
@@ -6617,7 +6737,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_sec_p95() {
   _impl_.enginemsgs_sec_p95_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00008000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_sec_p95() const {
   return _impl_.enginemsgs_sec_p95_;
@@ -6627,7 +6747,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_sec_p95() const {
   return _internal_enginemsgs_sec_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_sec_p95(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00008000u;
   _impl_.enginemsgs_sec_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p95(uint32_t value) {
@@ -6637,7 +6757,7 @@ inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p95(uint32_t value
 
 // optional uint32 enginemsgs_sec_p99 = 22;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_enginemsgs_sec_p99() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p99() const {
@@ -6645,7 +6765,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_enginemsgs_sec_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_enginemsgs_sec_p99() {
   _impl_.enginemsgs_sec_p99_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000100u;
+  _impl_._has_bits_[0] &= ~0x00010000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_enginemsgs_sec_p99() const {
   return _impl_.enginemsgs_sec_p99_;
@@ -6655,7 +6775,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::enginemsgs_sec_p99() const {
   return _internal_enginemsgs_sec_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_enginemsgs_sec_p99(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_._has_bits_[0] |= 0x00010000u;
   _impl_.enginemsgs_sec_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p99(uint32_t value) {
@@ -6665,7 +6785,7 @@ inline void CMsgSource2NetworkFlowQuality::set_enginemsgs_sec_p99(uint32_t value
 
 // optional uint32 netframes_total = 30;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_total() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_total() const {
@@ -6673,7 +6793,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_total() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_total() {
   _impl_.netframes_total_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000200u;
+  _impl_._has_bits_[0] &= ~0x00020000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_total() const {
   return _impl_.netframes_total_;
@@ -6683,7 +6803,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_total() const {
   return _internal_netframes_total();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_total(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_._has_bits_[0] |= 0x00020000u;
   _impl_.netframes_total_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_total(uint32_t value) {
@@ -6693,7 +6813,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_total(uint32_t value) {
 
 // optional uint32 netframes_dropped = 31;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_dropped() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_dropped() const {
@@ -6701,7 +6821,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_dropped() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_dropped() {
   _impl_.netframes_dropped_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000400u;
+  _impl_._has_bits_[0] &= ~0x00040000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_dropped() const {
   return _impl_.netframes_dropped_;
@@ -6711,7 +6831,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_dropped() const {
   return _internal_netframes_dropped();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_dropped(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_._has_bits_[0] |= 0x00040000u;
   _impl_.netframes_dropped_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_dropped(uint32_t value) {
@@ -6721,7 +6841,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_dropped(uint32_t value)
 
 // optional uint32 netframes_outoforder = 32;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_outoforder() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00080000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_outoforder() const {
@@ -6729,7 +6849,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_outoforder() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_outoforder() {
   _impl_.netframes_outoforder_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00000800u;
+  _impl_._has_bits_[0] &= ~0x00080000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_outoforder() const {
   return _impl_.netframes_outoforder_;
@@ -6739,7 +6859,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_outoforder() const {
   return _internal_netframes_outoforder();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_outoforder(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_._has_bits_[0] |= 0x00080000u;
   _impl_.netframes_outoforder_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_outoforder(uint32_t value) {
@@ -6749,7 +6869,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_outoforder(uint32_t val
 
 // optional uint32 netframes_size_exceeds_mtu = 34;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_exceeds_mtu() const {
-  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00100000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_exceeds_mtu() const {
@@ -6757,7 +6877,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_exceeds_mtu() cons
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_exceeds_mtu() {
   _impl_.netframes_size_exceeds_mtu_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00001000u;
+  _impl_._has_bits_[0] &= ~0x00100000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_exceeds_mtu() const {
   return _impl_.netframes_size_exceeds_mtu_;
@@ -6767,7 +6887,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_exceeds_mtu() cons
   return _internal_netframes_size_exceeds_mtu();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_exceeds_mtu(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_._has_bits_[0] |= 0x00100000u;
   _impl_.netframes_size_exceeds_mtu_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_size_exceeds_mtu(uint32_t value) {
@@ -6777,7 +6897,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_size_exceeds_mtu(uint32
 
 // optional uint32 netframes_size_p95 = 35;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_p95() const {
-  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00200000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_p95() const {
@@ -6785,7 +6905,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_p95() {
   _impl_.netframes_size_p95_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00002000u;
+  _impl_._has_bits_[0] &= ~0x00200000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_p95() const {
   return _impl_.netframes_size_p95_;
@@ -6795,7 +6915,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_p95() const {
   return _internal_netframes_size_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_p95(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_._has_bits_[0] |= 0x00200000u;
   _impl_.netframes_size_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_size_p95(uint32_t value) {
@@ -6805,7 +6925,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_size_p95(uint32_t value
 
 // optional uint32 netframes_size_p99 = 36;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_p99() const {
-  bool value = (_impl_._has_bits_[0] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00400000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_p99() const {
@@ -6813,7 +6933,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_p99() {
   _impl_.netframes_size_p99_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00004000u;
+  _impl_._has_bits_[0] &= ~0x00400000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_p99() const {
   return _impl_.netframes_size_p99_;
@@ -6823,7 +6943,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_p99() const {
   return _internal_netframes_size_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_p99(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00004000u;
+  _impl_._has_bits_[0] |= 0x00400000u;
   _impl_.netframes_size_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframes_size_p99(uint32_t value) {
@@ -6831,9 +6951,233 @@ inline void CMsgSource2NetworkFlowQuality::set_netframes_size_p99(uint32_t value
   // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_size_p99)
 }
 
+// optional uint32 netframes_size_uncompressed_p50 = 12;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_uncompressed_p50() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_uncompressed_p50() const {
+  return _internal_has_netframes_size_uncompressed_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_uncompressed_p50() {
+  _impl_.netframes_size_uncompressed_p50_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_uncompressed_p50() const {
+  return _impl_.netframes_size_uncompressed_p50_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_uncompressed_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p50)
+  return _internal_netframes_size_uncompressed_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_uncompressed_p50(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000040u;
+  _impl_.netframes_size_uncompressed_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_size_uncompressed_p50(uint32_t value) {
+  _internal_set_netframes_size_uncompressed_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p50)
+}
+
+// optional uint32 netframes_size_uncompressed_p95 = 13;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_uncompressed_p95() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_uncompressed_p95() const {
+  return _internal_has_netframes_size_uncompressed_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_uncompressed_p95() {
+  _impl_.netframes_size_uncompressed_p95_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000080u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_uncompressed_p95() const {
+  return _impl_.netframes_size_uncompressed_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_uncompressed_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p95)
+  return _internal_netframes_size_uncompressed_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_uncompressed_p95(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_.netframes_size_uncompressed_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_size_uncompressed_p95(uint32_t value) {
+  _internal_set_netframes_size_uncompressed_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p95)
+}
+
+// optional uint32 netframes_size_uncompressed_p99 = 14;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_uncompressed_p99() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_uncompressed_p99() const {
+  return _internal_has_netframes_size_uncompressed_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_uncompressed_p99() {
+  _impl_.netframes_size_uncompressed_p99_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000100u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_uncompressed_p99() const {
+  return _impl_.netframes_size_uncompressed_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_uncompressed_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p99)
+  return _internal_netframes_size_uncompressed_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_uncompressed_p99(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000100u;
+  _impl_.netframes_size_uncompressed_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_size_uncompressed_p99(uint32_t value) {
+  _internal_set_netframes_size_uncompressed_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_p99)
+}
+
+// optional uint32 netframes_size_uncompressed_max = 15;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_size_uncompressed_max() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000200u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_size_uncompressed_max() const {
+  return _internal_has_netframes_size_uncompressed_max();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_size_uncompressed_max() {
+  _impl_.netframes_size_uncompressed_max_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000200u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_size_uncompressed_max() const {
+  return _impl_.netframes_size_uncompressed_max_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_size_uncompressed_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_max)
+  return _internal_netframes_size_uncompressed_max();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_size_uncompressed_max(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000200u;
+  _impl_.netframes_size_uncompressed_max_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_size_uncompressed_max(uint32_t value) {
+  _internal_set_netframes_size_uncompressed_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_size_uncompressed_max)
+}
+
+// optional uint32 netframes_msgs_p50 = 16;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_msgs_p50() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000400u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_msgs_p50() const {
+  return _internal_has_netframes_msgs_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_msgs_p50() {
+  _impl_.netframes_msgs_p50_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000400u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_msgs_p50() const {
+  return _impl_.netframes_msgs_p50_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_msgs_p50() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_msgs_p50)
+  return _internal_netframes_msgs_p50();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_msgs_p50(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000400u;
+  _impl_.netframes_msgs_p50_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_msgs_p50(uint32_t value) {
+  _internal_set_netframes_msgs_p50(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_msgs_p50)
+}
+
+// optional uint32 netframes_msgs_p95 = 17;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_msgs_p95() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_msgs_p95() const {
+  return _internal_has_netframes_msgs_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_msgs_p95() {
+  _impl_.netframes_msgs_p95_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00000800u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_msgs_p95() const {
+  return _impl_.netframes_msgs_p95_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_msgs_p95() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_msgs_p95)
+  return _internal_netframes_msgs_p95();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_msgs_p95(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00000800u;
+  _impl_.netframes_msgs_p95_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_msgs_p95(uint32_t value) {
+  _internal_set_netframes_msgs_p95(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_msgs_p95)
+}
+
+// optional uint32 netframes_msgs_p99 = 18;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_msgs_p99() const {
+  bool value = (_impl_._has_bits_[0] & 0x00001000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_msgs_p99() const {
+  return _internal_has_netframes_msgs_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_msgs_p99() {
+  _impl_.netframes_msgs_p99_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00001000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_msgs_p99() const {
+  return _impl_.netframes_msgs_p99_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_msgs_p99() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_msgs_p99)
+  return _internal_netframes_msgs_p99();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_msgs_p99(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00001000u;
+  _impl_.netframes_msgs_p99_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_msgs_p99(uint32_t value) {
+  _internal_set_netframes_msgs_p99(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_msgs_p99)
+}
+
+// optional uint32 netframes_msgs_max = 19;
+inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframes_msgs_max() const {
+  bool value = (_impl_._has_bits_[0] & 0x00002000u) != 0;
+  return value;
+}
+inline bool CMsgSource2NetworkFlowQuality::has_netframes_msgs_max() const {
+  return _internal_has_netframes_msgs_max();
+}
+inline void CMsgSource2NetworkFlowQuality::clear_netframes_msgs_max() {
+  _impl_.netframes_msgs_max_ = 0u;
+  _impl_._has_bits_[0] &= ~0x00002000u;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframes_msgs_max() const {
+  return _impl_.netframes_msgs_max_;
+}
+inline uint32_t CMsgSource2NetworkFlowQuality::netframes_msgs_max() const {
+  // @@protoc_insertion_point(field_get:CMsgSource2NetworkFlowQuality.netframes_msgs_max)
+  return _internal_netframes_msgs_max();
+}
+inline void CMsgSource2NetworkFlowQuality::_internal_set_netframes_msgs_max(uint32_t value) {
+  _impl_._has_bits_[0] |= 0x00002000u;
+  _impl_.netframes_msgs_max_ = value;
+}
+inline void CMsgSource2NetworkFlowQuality::set_netframes_msgs_max(uint32_t value) {
+  _internal_set_netframes_msgs_max(value);
+  // @@protoc_insertion_point(field_set:CMsgSource2NetworkFlowQuality.netframes_msgs_max)
+}
+
 // optional uint32 ticks_total = 40;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_total() const {
-  bool value = (_impl_._has_bits_[0] & 0x00008000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00800000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_total() const {
@@ -6841,7 +7185,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_total() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_total() {
   _impl_.ticks_total_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00008000u;
+  _impl_._has_bits_[0] &= ~0x00800000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_total() const {
   return _impl_.ticks_total_;
@@ -6851,7 +7195,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_total() const {
   return _internal_ticks_total();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_total(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00008000u;
+  _impl_._has_bits_[0] |= 0x00800000u;
   _impl_.ticks_total_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_total(uint32_t value) {
@@ -6861,7 +7205,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_total(uint32_t value) {
 
 // optional uint32 ticks_good = 41;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_good() const {
-  bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x01000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_good() const {
@@ -6869,7 +7213,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_good() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_good() {
   _impl_.ticks_good_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00010000u;
+  _impl_._has_bits_[0] &= ~0x01000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_good() const {
   return _impl_.ticks_good_;
@@ -6879,7 +7223,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_good() const {
   return _internal_ticks_good();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_good(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00010000u;
+  _impl_._has_bits_[0] |= 0x01000000u;
   _impl_.ticks_good_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_good(uint32_t value) {
@@ -6889,7 +7233,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_good(uint32_t value) {
 
 // optional uint32 ticks_good_almost_late = 42;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_good_almost_late() const {
-  bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x02000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_good_almost_late() const {
@@ -6897,7 +7241,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_good_almost_late() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_good_almost_late() {
   _impl_.ticks_good_almost_late_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00020000u;
+  _impl_._has_bits_[0] &= ~0x02000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_good_almost_late() const {
   return _impl_.ticks_good_almost_late_;
@@ -6907,7 +7251,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_good_almost_late() const {
   return _internal_ticks_good_almost_late();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_good_almost_late(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00020000u;
+  _impl_._has_bits_[0] |= 0x02000000u;
   _impl_.ticks_good_almost_late_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_good_almost_late(uint32_t value) {
@@ -6917,7 +7261,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_good_almost_late(uint32_t v
 
 // optional uint32 ticks_fixed_dropped = 43;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_fixed_dropped() const {
-  bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x04000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_dropped() const {
@@ -6925,7 +7269,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_dropped() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_fixed_dropped() {
   _impl_.ticks_fixed_dropped_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00040000u;
+  _impl_._has_bits_[0] &= ~0x04000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_fixed_dropped() const {
   return _impl_.ticks_fixed_dropped_;
@@ -6935,7 +7279,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_fixed_dropped() const {
   return _internal_ticks_fixed_dropped();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_fixed_dropped(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00040000u;
+  _impl_._has_bits_[0] |= 0x04000000u;
   _impl_.ticks_fixed_dropped_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_dropped(uint32_t value) {
@@ -6945,7 +7289,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_dropped(uint32_t valu
 
 // optional uint32 ticks_fixed_late = 44;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_fixed_late() const {
-  bool value = (_impl_._has_bits_[0] & 0x00080000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x08000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_late() const {
@@ -6953,7 +7297,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_fixed_late() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_fixed_late() {
   _impl_.ticks_fixed_late_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00080000u;
+  _impl_._has_bits_[0] &= ~0x08000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_fixed_late() const {
   return _impl_.ticks_fixed_late_;
@@ -6963,7 +7307,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_fixed_late() const {
   return _internal_ticks_fixed_late();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_fixed_late(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00080000u;
+  _impl_._has_bits_[0] |= 0x08000000u;
   _impl_.ticks_fixed_late_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_late(uint32_t value) {
@@ -6973,7 +7317,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_fixed_late(uint32_t value) 
 
 // optional uint32 ticks_bad_dropped = 45;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_dropped() const {
-  bool value = (_impl_._has_bits_[0] & 0x00100000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x10000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_dropped() const {
@@ -6981,7 +7325,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_dropped() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_dropped() {
   _impl_.ticks_bad_dropped_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00100000u;
+  _impl_._has_bits_[0] &= ~0x10000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_dropped() const {
   return _impl_.ticks_bad_dropped_;
@@ -6991,7 +7335,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_dropped() const {
   return _internal_ticks_bad_dropped();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_dropped(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00100000u;
+  _impl_._has_bits_[0] |= 0x10000000u;
   _impl_.ticks_bad_dropped_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_dropped(uint32_t value) {
@@ -7001,7 +7345,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_dropped(uint32_t value)
 
 // optional uint32 ticks_bad_late = 46;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_late() const {
-  bool value = (_impl_._has_bits_[0] & 0x00200000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x20000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_late() const {
@@ -7009,7 +7353,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_late() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_late() {
   _impl_.ticks_bad_late_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00200000u;
+  _impl_._has_bits_[0] &= ~0x20000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_late() const {
   return _impl_.ticks_bad_late_;
@@ -7019,7 +7363,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_late() const {
   return _internal_ticks_bad_late();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_late(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00200000u;
+  _impl_._has_bits_[0] |= 0x20000000u;
   _impl_.ticks_bad_late_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_late(uint32_t value) {
@@ -7029,7 +7373,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_late(uint32_t value) {
 
 // optional uint32 ticks_bad_other = 47;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_ticks_bad_other() const {
-  bool value = (_impl_._has_bits_[0] & 0x00400000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x40000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_other() const {
@@ -7037,7 +7381,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_ticks_bad_other() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_ticks_bad_other() {
   _impl_.ticks_bad_other_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00400000u;
+  _impl_._has_bits_[0] &= ~0x40000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_ticks_bad_other() const {
   return _impl_.ticks_bad_other_;
@@ -7047,7 +7391,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::ticks_bad_other() const {
   return _internal_ticks_bad_other();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_ticks_bad_other(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00400000u;
+  _impl_._has_bits_[0] |= 0x40000000u;
   _impl_.ticks_bad_other_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_other(uint32_t value) {
@@ -7057,7 +7401,7 @@ inline void CMsgSource2NetworkFlowQuality::set_ticks_bad_other(uint32_t value) {
 
 // optional uint32 tick_missrate_samples_total = 50;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_total() const {
-  bool value = (_impl_._has_bits_[0] & 0x00800000u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x80000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_total() const {
@@ -7065,7 +7409,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_total() con
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_total() {
   _impl_.tick_missrate_samples_total_ = 0u;
-  _impl_._has_bits_[0] &= ~0x00800000u;
+  _impl_._has_bits_[0] &= ~0x80000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_total() const {
   return _impl_.tick_missrate_samples_total_;
@@ -7075,7 +7419,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_total() con
   return _internal_tick_missrate_samples_total();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_total(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x00800000u;
+  _impl_._has_bits_[0] |= 0x80000000u;
   _impl_.tick_missrate_samples_total_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_total(uint32_t value) {
@@ -7085,7 +7429,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_total(uint3
 
 // optional uint32 tick_missrate_samples_perfect = 51;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_perfect() const {
-  bool value = (_impl_._has_bits_[0] & 0x01000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000001u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfect() const {
@@ -7093,7 +7437,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfect() c
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_perfect() {
   _impl_.tick_missrate_samples_perfect_ = 0u;
-  _impl_._has_bits_[0] &= ~0x01000000u;
+  _impl_._has_bits_[1] &= ~0x00000001u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_perfect() const {
   return _impl_.tick_missrate_samples_perfect_;
@@ -7103,7 +7447,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_perfect() c
   return _internal_tick_missrate_samples_perfect();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_perfect(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x01000000u;
+  _impl_._has_bits_[1] |= 0x00000001u;
   _impl_.tick_missrate_samples_perfect_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfect(uint32_t value) {
@@ -7113,7 +7457,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfect(uin
 
 // optional uint32 tick_missrate_samples_perfectnet = 52;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missrate_samples_perfectnet() const {
-  bool value = (_impl_._has_bits_[0] & 0x02000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000002u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfectnet() const {
@@ -7121,7 +7465,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missrate_samples_perfectnet(
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missrate_samples_perfectnet() {
   _impl_.tick_missrate_samples_perfectnet_ = 0u;
-  _impl_._has_bits_[0] &= ~0x02000000u;
+  _impl_._has_bits_[1] &= ~0x00000002u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missrate_samples_perfectnet() const {
   return _impl_.tick_missrate_samples_perfectnet_;
@@ -7131,7 +7475,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missrate_samples_perfectnet(
   return _internal_tick_missrate_samples_perfectnet();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missrate_samples_perfectnet(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x02000000u;
+  _impl_._has_bits_[1] |= 0x00000002u;
   _impl_.tick_missrate_samples_perfectnet_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfectnet(uint32_t value) {
@@ -7141,7 +7485,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missrate_samples_perfectnet(
 
 // optional uint32 tick_missratenet_p75_x10 = 53;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p75_x10() const {
-  bool value = (_impl_._has_bits_[0] & 0x04000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000004u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p75_x10() const {
@@ -7149,7 +7493,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p75_x10() const 
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p75_x10() {
   _impl_.tick_missratenet_p75_x10_ = 0u;
-  _impl_._has_bits_[0] &= ~0x04000000u;
+  _impl_._has_bits_[1] &= ~0x00000004u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p75_x10() const {
   return _impl_.tick_missratenet_p75_x10_;
@@ -7159,7 +7503,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p75_x10() const 
   return _internal_tick_missratenet_p75_x10();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p75_x10(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x04000000u;
+  _impl_._has_bits_[1] |= 0x00000004u;
   _impl_.tick_missratenet_p75_x10_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p75_x10(uint32_t value) {
@@ -7169,7 +7513,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p75_x10(uint32_t
 
 // optional uint32 tick_missratenet_p95_x10 = 54;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p95_x10() const {
-  bool value = (_impl_._has_bits_[0] & 0x08000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000008u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p95_x10() const {
@@ -7177,7 +7521,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p95_x10() const 
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p95_x10() {
   _impl_.tick_missratenet_p95_x10_ = 0u;
-  _impl_._has_bits_[0] &= ~0x08000000u;
+  _impl_._has_bits_[1] &= ~0x00000008u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p95_x10() const {
   return _impl_.tick_missratenet_p95_x10_;
@@ -7187,7 +7531,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p95_x10() const 
   return _internal_tick_missratenet_p95_x10();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p95_x10(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x08000000u;
+  _impl_._has_bits_[1] |= 0x00000008u;
   _impl_.tick_missratenet_p95_x10_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p95_x10(uint32_t value) {
@@ -7197,7 +7541,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p95_x10(uint32_t
 
 // optional uint32 tick_missratenet_p99_x10 = 55;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_tick_missratenet_p99_x10() const {
-  bool value = (_impl_._has_bits_[0] & 0x10000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000010u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p99_x10() const {
@@ -7205,7 +7549,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_tick_missratenet_p99_x10() const 
 }
 inline void CMsgSource2NetworkFlowQuality::clear_tick_missratenet_p99_x10() {
   _impl_.tick_missratenet_p99_x10_ = 0u;
-  _impl_._has_bits_[0] &= ~0x10000000u;
+  _impl_._has_bits_[1] &= ~0x00000010u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_tick_missratenet_p99_x10() const {
   return _impl_.tick_missratenet_p99_x10_;
@@ -7215,7 +7559,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::tick_missratenet_p99_x10() const 
   return _internal_tick_missratenet_p99_x10();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_tick_missratenet_p99_x10(uint32_t value) {
-  _impl_._has_bits_[0] |= 0x10000000u;
+  _impl_._has_bits_[1] |= 0x00000010u;
   _impl_.tick_missratenet_p99_x10_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p99_x10(uint32_t value) {
@@ -7225,7 +7569,7 @@ inline void CMsgSource2NetworkFlowQuality::set_tick_missratenet_p99_x10(uint32_t
 
 // optional sint32 recvmargin_p1 = 61;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p1() const {
-  bool value = (_impl_._has_bits_[0] & 0x20000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000020u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p1() const {
@@ -7233,7 +7577,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p1() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p1() {
   _impl_.recvmargin_p1_ = 0;
-  _impl_._has_bits_[0] &= ~0x20000000u;
+  _impl_._has_bits_[1] &= ~0x00000020u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p1() const {
   return _impl_.recvmargin_p1_;
@@ -7243,7 +7587,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p1() const {
   return _internal_recvmargin_p1();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p1(int32_t value) {
-  _impl_._has_bits_[0] |= 0x20000000u;
+  _impl_._has_bits_[1] |= 0x00000020u;
   _impl_.recvmargin_p1_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p1(int32_t value) {
@@ -7253,7 +7597,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p1(int32_t value) {
 
 // optional sint32 recvmargin_p5 = 62;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p5() const {
-  bool value = (_impl_._has_bits_[0] & 0x40000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000040u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p5() const {
@@ -7261,7 +7605,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p5() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p5() {
   _impl_.recvmargin_p5_ = 0;
-  _impl_._has_bits_[0] &= ~0x40000000u;
+  _impl_._has_bits_[1] &= ~0x00000040u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p5() const {
   return _impl_.recvmargin_p5_;
@@ -7271,7 +7615,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p5() const {
   return _internal_recvmargin_p5();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p5(int32_t value) {
-  _impl_._has_bits_[0] |= 0x40000000u;
+  _impl_._has_bits_[1] |= 0x00000040u;
   _impl_.recvmargin_p5_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p5(int32_t value) {
@@ -7281,7 +7625,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p5(int32_t value) {
 
 // optional sint32 recvmargin_p25 = 63;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p25() const {
-  bool value = (_impl_._has_bits_[0] & 0x80000000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000080u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p25() const {
@@ -7289,7 +7633,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p25() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p25() {
   _impl_.recvmargin_p25_ = 0;
-  _impl_._has_bits_[0] &= ~0x80000000u;
+  _impl_._has_bits_[1] &= ~0x00000080u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p25() const {
   return _impl_.recvmargin_p25_;
@@ -7299,7 +7643,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p25() const {
   return _internal_recvmargin_p25();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p25(int32_t value) {
-  _impl_._has_bits_[0] |= 0x80000000u;
+  _impl_._has_bits_[1] |= 0x00000080u;
   _impl_.recvmargin_p25_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p25(int32_t value) {
@@ -7309,7 +7653,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p25(int32_t value) {
 
 // optional sint32 recvmargin_p50 = 64;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000001u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000100u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p50() const {
@@ -7317,7 +7661,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p50() {
   _impl_.recvmargin_p50_ = 0;
-  _impl_._has_bits_[1] &= ~0x00000001u;
+  _impl_._has_bits_[1] &= ~0x00000100u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p50() const {
   return _impl_.recvmargin_p50_;
@@ -7327,7 +7671,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p50() const {
   return _internal_recvmargin_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p50(int32_t value) {
-  _impl_._has_bits_[1] |= 0x00000001u;
+  _impl_._has_bits_[1] |= 0x00000100u;
   _impl_.recvmargin_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p50(int32_t value) {
@@ -7337,7 +7681,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p50(int32_t value) {
 
 // optional sint32 recvmargin_p75 = 65;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p75() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000002u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000200u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p75() const {
@@ -7345,7 +7689,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p75() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p75() {
   _impl_.recvmargin_p75_ = 0;
-  _impl_._has_bits_[1] &= ~0x00000002u;
+  _impl_._has_bits_[1] &= ~0x00000200u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p75() const {
   return _impl_.recvmargin_p75_;
@@ -7355,7 +7699,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p75() const {
   return _internal_recvmargin_p75();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p75(int32_t value) {
-  _impl_._has_bits_[1] |= 0x00000002u;
+  _impl_._has_bits_[1] |= 0x00000200u;
   _impl_.recvmargin_p75_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p75(int32_t value) {
@@ -7365,7 +7709,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p75(int32_t value) {
 
 // optional sint32 recvmargin_p95 = 66;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_recvmargin_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000004u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000400u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p95() const {
@@ -7373,7 +7717,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_recvmargin_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_recvmargin_p95() {
   _impl_.recvmargin_p95_ = 0;
-  _impl_._has_bits_[1] &= ~0x00000004u;
+  _impl_._has_bits_[1] &= ~0x00000400u;
 }
 inline int32_t CMsgSource2NetworkFlowQuality::_internal_recvmargin_p95() const {
   return _impl_.recvmargin_p95_;
@@ -7383,7 +7727,7 @@ inline int32_t CMsgSource2NetworkFlowQuality::recvmargin_p95() const {
   return _internal_recvmargin_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_recvmargin_p95(int32_t value) {
-  _impl_._has_bits_[1] |= 0x00000004u;
+  _impl_._has_bits_[1] |= 0x00000400u;
   _impl_.recvmargin_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p95(int32_t value) {
@@ -7393,7 +7737,7 @@ inline void CMsgSource2NetworkFlowQuality::set_recvmargin_p95(int32_t value) {
 
 // optional uint32 netframe_jitter_p50 = 70;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframe_jitter_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000008u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00000800u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframe_jitter_p50() const {
@@ -7401,7 +7745,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframe_jitter_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframe_jitter_p50() {
   _impl_.netframe_jitter_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000008u;
+  _impl_._has_bits_[1] &= ~0x00000800u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframe_jitter_p50() const {
   return _impl_.netframe_jitter_p50_;
@@ -7411,7 +7755,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframe_jitter_p50() const {
   return _internal_netframe_jitter_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframe_jitter_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000008u;
+  _impl_._has_bits_[1] |= 0x00000800u;
   _impl_.netframe_jitter_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframe_jitter_p50(uint32_t value) {
@@ -7421,7 +7765,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframe_jitter_p50(uint32_t valu
 
 // optional uint32 netframe_jitter_p99 = 71;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_netframe_jitter_p99() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000010u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00001000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_netframe_jitter_p99() const {
@@ -7429,7 +7773,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_netframe_jitter_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_netframe_jitter_p99() {
   _impl_.netframe_jitter_p99_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000010u;
+  _impl_._has_bits_[1] &= ~0x00001000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_netframe_jitter_p99() const {
   return _impl_.netframe_jitter_p99_;
@@ -7439,7 +7783,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::netframe_jitter_p99() const {
   return _internal_netframe_jitter_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_netframe_jitter_p99(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000010u;
+  _impl_._has_bits_[1] |= 0x00001000u;
   _impl_.netframe_jitter_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_netframe_jitter_p99(uint32_t value) {
@@ -7449,7 +7793,7 @@ inline void CMsgSource2NetworkFlowQuality::set_netframe_jitter_p99(uint32_t valu
 
 // optional uint32 interval_peakjitter_p50 = 72;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_interval_peakjitter_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000020u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00002000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_interval_peakjitter_p50() const {
@@ -7457,7 +7801,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_interval_peakjitter_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_interval_peakjitter_p50() {
   _impl_.interval_peakjitter_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000020u;
+  _impl_._has_bits_[1] &= ~0x00002000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_interval_peakjitter_p50() const {
   return _impl_.interval_peakjitter_p50_;
@@ -7467,7 +7811,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::interval_peakjitter_p50() const {
   return _internal_interval_peakjitter_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_interval_peakjitter_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000020u;
+  _impl_._has_bits_[1] |= 0x00002000u;
   _impl_.interval_peakjitter_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_interval_peakjitter_p50(uint32_t value) {
@@ -7477,7 +7821,7 @@ inline void CMsgSource2NetworkFlowQuality::set_interval_peakjitter_p50(uint32_t 
 
 // optional uint32 interval_peakjitter_p95 = 73;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_interval_peakjitter_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000040u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00004000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_interval_peakjitter_p95() const {
@@ -7485,7 +7829,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_interval_peakjitter_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_interval_peakjitter_p95() {
   _impl_.interval_peakjitter_p95_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000040u;
+  _impl_._has_bits_[1] &= ~0x00004000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_interval_peakjitter_p95() const {
   return _impl_.interval_peakjitter_p95_;
@@ -7495,7 +7839,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::interval_peakjitter_p95() const {
   return _internal_interval_peakjitter_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_interval_peakjitter_p95(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000040u;
+  _impl_._has_bits_[1] |= 0x00004000u;
   _impl_.interval_peakjitter_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_interval_peakjitter_p95(uint32_t value) {
@@ -7505,7 +7849,7 @@ inline void CMsgSource2NetworkFlowQuality::set_interval_peakjitter_p95(uint32_t 
 
 // optional uint32 packet_misdelivery_rate_p50_x4 = 74;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_packet_misdelivery_rate_p50_x4() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00008000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_packet_misdelivery_rate_p50_x4() const {
@@ -7513,7 +7857,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_packet_misdelivery_rate_p50_x4() 
 }
 inline void CMsgSource2NetworkFlowQuality::clear_packet_misdelivery_rate_p50_x4() {
   _impl_.packet_misdelivery_rate_p50_x4_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000080u;
+  _impl_._has_bits_[1] &= ~0x00008000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_packet_misdelivery_rate_p50_x4() const {
   return _impl_.packet_misdelivery_rate_p50_x4_;
@@ -7523,7 +7867,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::packet_misdelivery_rate_p50_x4() 
   return _internal_packet_misdelivery_rate_p50_x4();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_packet_misdelivery_rate_p50_x4(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000080u;
+  _impl_._has_bits_[1] |= 0x00008000u;
   _impl_.packet_misdelivery_rate_p50_x4_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_packet_misdelivery_rate_p50_x4(uint32_t value) {
@@ -7533,7 +7877,7 @@ inline void CMsgSource2NetworkFlowQuality::set_packet_misdelivery_rate_p50_x4(ui
 
 // optional uint32 packet_misdelivery_rate_p95_x4 = 75;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_packet_misdelivery_rate_p95_x4() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000100u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00010000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_packet_misdelivery_rate_p95_x4() const {
@@ -7541,7 +7885,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_packet_misdelivery_rate_p95_x4() 
 }
 inline void CMsgSource2NetworkFlowQuality::clear_packet_misdelivery_rate_p95_x4() {
   _impl_.packet_misdelivery_rate_p95_x4_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000100u;
+  _impl_._has_bits_[1] &= ~0x00010000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_packet_misdelivery_rate_p95_x4() const {
   return _impl_.packet_misdelivery_rate_p95_x4_;
@@ -7551,7 +7895,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::packet_misdelivery_rate_p95_x4() 
   return _internal_packet_misdelivery_rate_p95_x4();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_packet_misdelivery_rate_p95_x4(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000100u;
+  _impl_._has_bits_[1] |= 0x00010000u;
   _impl_.packet_misdelivery_rate_p95_x4_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_packet_misdelivery_rate_p95_x4(uint32_t value) {
@@ -7561,7 +7905,7 @@ inline void CMsgSource2NetworkFlowQuality::set_packet_misdelivery_rate_p95_x4(ui
 
 // optional uint32 net_ping_p5 = 80;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_net_ping_p5() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000200u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00020000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p5() const {
@@ -7569,7 +7913,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p5() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_net_ping_p5() {
   _impl_.net_ping_p5_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000200u;
+  _impl_._has_bits_[1] &= ~0x00020000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_net_ping_p5() const {
   return _impl_.net_ping_p5_;
@@ -7579,7 +7923,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::net_ping_p5() const {
   return _internal_net_ping_p5();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_net_ping_p5(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000200u;
+  _impl_._has_bits_[1] |= 0x00020000u;
   _impl_.net_ping_p5_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_net_ping_p5(uint32_t value) {
@@ -7589,7 +7933,7 @@ inline void CMsgSource2NetworkFlowQuality::set_net_ping_p5(uint32_t value) {
 
 // optional uint32 net_ping_p50 = 81;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_net_ping_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000400u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00040000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p50() const {
@@ -7597,7 +7941,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_net_ping_p50() {
   _impl_.net_ping_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000400u;
+  _impl_._has_bits_[1] &= ~0x00040000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_net_ping_p50() const {
   return _impl_.net_ping_p50_;
@@ -7607,7 +7951,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::net_ping_p50() const {
   return _internal_net_ping_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_net_ping_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000400u;
+  _impl_._has_bits_[1] |= 0x00040000u;
   _impl_.net_ping_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_net_ping_p50(uint32_t value) {
@@ -7617,7 +7961,7 @@ inline void CMsgSource2NetworkFlowQuality::set_net_ping_p50(uint32_t value) {
 
 // optional uint32 net_ping_p95 = 82;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_net_ping_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00000800u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00080000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p95() const {
@@ -7625,7 +7969,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_net_ping_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_net_ping_p95() {
   _impl_.net_ping_p95_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00000800u;
+  _impl_._has_bits_[1] &= ~0x00080000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_net_ping_p95() const {
   return _impl_.net_ping_p95_;
@@ -7635,7 +7979,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::net_ping_p95() const {
   return _internal_net_ping_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_net_ping_p95(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00000800u;
+  _impl_._has_bits_[1] |= 0x00080000u;
   _impl_.net_ping_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_net_ping_p95(uint32_t value) {
@@ -7645,7 +7989,7 @@ inline void CMsgSource2NetworkFlowQuality::set_net_ping_p95(uint32_t value) {
 
 // optional uint32 msgproc_usec_p50 = 90;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00001000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00100000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p50() const {
@@ -7653,7 +7997,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p50() {
   _impl_.msgproc_usec_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00001000u;
+  _impl_._has_bits_[1] &= ~0x00100000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p50() const {
   return _impl_.msgproc_usec_p50_;
@@ -7663,7 +8007,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p50() const {
   return _internal_msgproc_usec_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00001000u;
+  _impl_._has_bits_[1] |= 0x00100000u;
   _impl_.msgproc_usec_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p50(uint32_t value) {
@@ -7673,7 +8017,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p50(uint32_t value) 
 
 // optional uint32 msgproc_usec_p95 = 91;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00002000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00200000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p95() const {
@@ -7681,7 +8025,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p95() {
   _impl_.msgproc_usec_p95_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00002000u;
+  _impl_._has_bits_[1] &= ~0x00200000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p95() const {
   return _impl_.msgproc_usec_p95_;
@@ -7691,7 +8035,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p95() const {
   return _internal_msgproc_usec_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p95(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00002000u;
+  _impl_._has_bits_[1] |= 0x00200000u;
   _impl_.msgproc_usec_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p95(uint32_t value) {
@@ -7701,7 +8045,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p95(uint32_t value) 
 
 // optional uint32 msgproc_usec_p99 = 92;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_p99() const {
-  bool value = (_impl_._has_bits_[1] & 0x00004000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00400000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p99() const {
@@ -7709,7 +8053,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_p99() {
   _impl_.msgproc_usec_p99_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00004000u;
+  _impl_._has_bits_[1] &= ~0x00400000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_p99() const {
   return _impl_.msgproc_usec_p99_;
@@ -7719,7 +8063,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_p99() const {
   return _internal_msgproc_usec_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_p99(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00004000u;
+  _impl_._has_bits_[1] |= 0x00400000u;
   _impl_.msgproc_usec_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p99(uint32_t value) {
@@ -7729,7 +8073,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_p99(uint32_t value) 
 
 // optional uint32 msgproc_usec_max = 93;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x00008000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x00800000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_max() const {
@@ -7737,7 +8081,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_max() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_max() {
   _impl_.msgproc_usec_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00008000u;
+  _impl_._has_bits_[1] &= ~0x00800000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_max() const {
   return _impl_.msgproc_usec_max_;
@@ -7747,7 +8091,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_max() const {
   return _internal_msgproc_usec_max();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00008000u;
+  _impl_._has_bits_[1] |= 0x00800000u;
   _impl_.msgproc_usec_max_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_max(uint32_t value) {
@@ -7757,7 +8101,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_max(uint32_t value) 
 
 // optional uint32 msgproc_usec_avg_p50 = 94;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00010000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x01000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p50() const {
@@ -7765,7 +8109,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p50() {
   _impl_.msgproc_usec_avg_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00010000u;
+  _impl_._has_bits_[1] &= ~0x01000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p50() const {
   return _impl_.msgproc_usec_avg_p50_;
@@ -7775,7 +8119,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p50() const {
   return _internal_msgproc_usec_avg_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00010000u;
+  _impl_._has_bits_[1] |= 0x01000000u;
   _impl_.msgproc_usec_avg_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p50(uint32_t value) {
@@ -7785,7 +8129,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p50(uint32_t val
 
 // optional uint32 msgproc_usec_avg_p95 = 95;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00020000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x02000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p95() const {
@@ -7793,7 +8137,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p95() {
   _impl_.msgproc_usec_avg_p95_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00020000u;
+  _impl_._has_bits_[1] &= ~0x02000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p95() const {
   return _impl_.msgproc_usec_avg_p95_;
@@ -7803,7 +8147,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p95() const {
   return _internal_msgproc_usec_avg_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p95(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00020000u;
+  _impl_._has_bits_[1] |= 0x02000000u;
   _impl_.msgproc_usec_avg_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p95(uint32_t value) {
@@ -7813,7 +8157,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p95(uint32_t val
 
 // optional uint32 msgproc_usec_avg_p99 = 96;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_p99() const {
-  bool value = (_impl_._has_bits_[1] & 0x00040000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x04000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p99() const {
@@ -7821,7 +8165,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_p99() {
   _impl_.msgproc_usec_avg_p99_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00040000u;
+  _impl_._has_bits_[1] &= ~0x04000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_p99() const {
   return _impl_.msgproc_usec_avg_p99_;
@@ -7831,7 +8175,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_p99() const {
   return _internal_msgproc_usec_avg_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_p99(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00040000u;
+  _impl_._has_bits_[1] |= 0x04000000u;
   _impl_.msgproc_usec_avg_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p99(uint32_t value) {
@@ -7841,7 +8185,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_p99(uint32_t val
 
 // optional uint32 msgproc_usec_avg_max = 97;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_msgproc_usec_avg_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x00080000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x08000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_max() const {
@@ -7849,7 +8193,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_msgproc_usec_avg_max() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_msgproc_usec_avg_max() {
   _impl_.msgproc_usec_avg_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00080000u;
+  _impl_._has_bits_[1] &= ~0x08000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_msgproc_usec_avg_max() const {
   return _impl_.msgproc_usec_avg_max_;
@@ -7859,7 +8203,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::msgproc_usec_avg_max() const {
   return _internal_msgproc_usec_avg_max();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_msgproc_usec_avg_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00080000u;
+  _impl_._has_bits_[1] |= 0x08000000u;
   _impl_.msgproc_usec_avg_max_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_max(uint32_t value) {
@@ -7869,7 +8213,7 @@ inline void CMsgSource2NetworkFlowQuality::set_msgproc_usec_avg_max(uint32_t val
 
 // optional uint32 queuedmsgs_p50 = 100;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p50() const {
-  bool value = (_impl_._has_bits_[1] & 0x00100000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x10000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p50() const {
@@ -7877,7 +8221,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p50() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p50() {
   _impl_.queuedmsgs_p50_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00100000u;
+  _impl_._has_bits_[1] &= ~0x10000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p50() const {
   return _impl_.queuedmsgs_p50_;
@@ -7887,7 +8231,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p50() const {
   return _internal_queuedmsgs_p50();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p50(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00100000u;
+  _impl_._has_bits_[1] |= 0x10000000u;
   _impl_.queuedmsgs_p50_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p50(uint32_t value) {
@@ -7897,7 +8241,7 @@ inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p50(uint32_t value) {
 
 // optional uint32 queuedmsgs_p95 = 101;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p95() const {
-  bool value = (_impl_._has_bits_[1] & 0x00200000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x20000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p95() const {
@@ -7905,7 +8249,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p95() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p95() {
   _impl_.queuedmsgs_p95_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00200000u;
+  _impl_._has_bits_[1] &= ~0x20000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p95() const {
   return _impl_.queuedmsgs_p95_;
@@ -7915,7 +8259,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p95() const {
   return _internal_queuedmsgs_p95();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p95(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00200000u;
+  _impl_._has_bits_[1] |= 0x20000000u;
   _impl_.queuedmsgs_p95_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p95(uint32_t value) {
@@ -7925,7 +8269,7 @@ inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p95(uint32_t value) {
 
 // optional uint32 queuedmsgs_p99 = 102;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_p99() const {
-  bool value = (_impl_._has_bits_[1] & 0x00400000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x40000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p99() const {
@@ -7933,7 +8277,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_p99() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_p99() {
   _impl_.queuedmsgs_p99_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00400000u;
+  _impl_._has_bits_[1] &= ~0x40000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_p99() const {
   return _impl_.queuedmsgs_p99_;
@@ -7943,7 +8287,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_p99() const {
   return _internal_queuedmsgs_p99();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_p99(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00400000u;
+  _impl_._has_bits_[1] |= 0x40000000u;
   _impl_.queuedmsgs_p99_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p99(uint32_t value) {
@@ -7953,7 +8297,7 @@ inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_p99(uint32_t value) {
 
 // optional uint32 queuedmsgs_max = 103;
 inline bool CMsgSource2NetworkFlowQuality::_internal_has_queuedmsgs_max() const {
-  bool value = (_impl_._has_bits_[1] & 0x00800000u) != 0;
+  bool value = (_impl_._has_bits_[1] & 0x80000000u) != 0;
   return value;
 }
 inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_max() const {
@@ -7961,7 +8305,7 @@ inline bool CMsgSource2NetworkFlowQuality::has_queuedmsgs_max() const {
 }
 inline void CMsgSource2NetworkFlowQuality::clear_queuedmsgs_max() {
   _impl_.queuedmsgs_max_ = 0u;
-  _impl_._has_bits_[1] &= ~0x00800000u;
+  _impl_._has_bits_[1] &= ~0x80000000u;
 }
 inline uint32_t CMsgSource2NetworkFlowQuality::_internal_queuedmsgs_max() const {
   return _impl_.queuedmsgs_max_;
@@ -7971,7 +8315,7 @@ inline uint32_t CMsgSource2NetworkFlowQuality::queuedmsgs_max() const {
   return _internal_queuedmsgs_max();
 }
 inline void CMsgSource2NetworkFlowQuality::_internal_set_queuedmsgs_max(uint32_t value) {
-  _impl_._has_bits_[1] |= 0x00800000u;
+  _impl_._has_bits_[1] |= 0x80000000u;
   _impl_.queuedmsgs_max_ = value;
 }
 inline void CMsgSource2NetworkFlowQuality::set_queuedmsgs_max(uint32_t value) {

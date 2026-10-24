@@ -20,6 +20,7 @@
 #ifndef CSTRIKE_TYPE_GLOBALS_H
 #define CSTRIKE_TYPE_GLOBALS_H
 
+#include <cstddef>
 #include <cstdint>
 
 enum MapLoadType_t
@@ -68,17 +69,20 @@ public:
     float flSubTickFraction; // 0x50
 private:
     char pad_54[0x4];
-    int  m_nCurrentThreadId; // 0x68
+
+#ifdef PLATFORM_WINDOWS
+    uint32_t m_nCurrentThreadId; // 0x58
+#else
+    uint64_t m_nCurrentThreadId; // 0x58
+#endif
 public:
 };
 
-#ifdef PLATFORM_WINDOWS
 static_assert(offsetof(CGlobalVarsBase, MaxClients) == 0x10);
 static_assert(offsetof(CGlobalVarsBase, flFrameTime) == 0x34);
 static_assert(offsetof(CGlobalVarsBase, flCurTime) == 0x30);
 static_assert(offsetof(CGlobalVarsBase, nTickCount) == 0x44);
 static_assert(offsetof(CGlobalVarsBase, flSubTickFraction) == 0x50);
-#endif
 
 class CGlobalVars : public CGlobalVarsBase
 {
@@ -86,17 +90,16 @@ public:
     CGlobalVars();
 
 public:
-    char* pszMapName; // 0x58
+    char* pszMapName; // 0x60
 private:
-    char pad_60[0x10];
+    char pad_68[0x10];
 
 public:
-    int nMaxEntities; // 0x70
-    int nServerCount; // 0x74
+    int nMaxEntities; // 0x78
+    int nServerCount; // 0x7c
 };
-#ifdef PLATFORM_WINDOWS
 static_assert(offsetof(CGlobalVars, pszMapName) == 0x60);
 static_assert(offsetof(CGlobalVars, nMaxEntities) == 0x78);
-#endif
+static_assert(sizeof(CGlobalVars) == 0x80);
 
 #endif

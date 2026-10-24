@@ -80,7 +80,7 @@ void CBasePlayerPawn::ClientPrintF(HudPrint_t dest, const char* message, ...)
     va_list args;
     va_start(args, message);
 
-    char buffer[256];
+    char buffer[1024];
     vsnprintf(buffer, sizeof(buffer), message, args);
 
     va_end(args);
@@ -192,6 +192,8 @@ void CCSPlayerPawn::GiveGloves(int itemDefIndex, int prefab, float wear, int see
 
         pItem->m_iItemIDLow(-1);
         pItem->m_bInitialized(true);
+
+        m_nEconGlovesChanged(static_cast<uint8_t>(m_nEconGlovesChanged() + 1));
 
         SetDefaultGloves(false);
     }

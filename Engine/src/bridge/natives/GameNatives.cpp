@@ -100,8 +100,6 @@ static void TerminateRound(float delay, uint32_t reason, bool bypassHook, TeamRe
     gameRules->TerminateRound(delay, reason, bypassHook, info, size);
 }
 
-// HACK 这里因为返回值问题可能导致C#传参问题
-static CTraceResult_t g_TraceResult = {};
 class CTraceFilterCustom : public CTraceFilter
 {
 public:

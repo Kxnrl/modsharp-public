@@ -616,10 +616,121 @@ T GetDotnetFunctionPointer(const char* typeName, const char* method)
     return reinterpret_cast<T>(GetDotnetFunctionPointer(typeName, method));
 }
 
+static void PruneCrashDumps(const std::filesystem::path& dir, std::string_view extension, size_t keep)
+{
+    std::error_code                               ec;
+    std::vector<std::filesystem::directory_entry> dumps;
+    for (std::filesystem::directory_iterator it(dir, ec), end; !ec && it != end; it.increment(ec))
+    {
+        std::error_code fileEc;
+        if (it->is_regular_file(fileEc) && it->path().extension() == extension)
+            dumps.push_back(*it);
+    }
+
+    if (dumps.size() <= keep)
+        return;
+
+    std::ranges::sort(dumps, [](const std::filesystem::directory_entry& a, const std::filesystem::directory_entry& b) {
+        std::error_code timeEc;
+        return a.last_write_time(timeEc) > b.last_write_time(timeEc);
+    });
+
+    for (auto it = dumps.begin() + static_cast<std::ptrdiff_t>(keep); it != dumps.end(); ++it)
+        std::filesystem::remove(it->path(), ec);
+}
+
+#ifdef PLATFORM_WINDOWS
+static std::wstring SetEnvIfAbsent(const wchar_t* name, const std::wstring& value)
+{
+    if (const auto size = GetEnvironmentVariableW(name, nullptr, 0); size != 0)
+    {
+        std::wstring existing(size, L'\0');
+        existing.resize(GetEnvironmentVariableW(name, existing.data(), size));
+        return std::wstring(name) + L'=' + existing + L" (environment)";
+    }
+
+    SetEnvironmentVariableW(name, value.c_str());
+    return std::wstring(name) + L'=' + value;
+}
+
+static void SetupCrashDump(const std::filesystem::path& sharpDir)
+{
+    std::error_code ec;
+    const auto      dumpDir = std::filesystem::absolute(sharpDir / "data" / "dumps", ec);
+    if (!ec)
+        std::filesystem::create_directories(dumpDir, ec);
+
+    if (ec)
+    {
+        FERROR("Failed to create crash dump directory %ls: %s", (sharpDir / "data" / "dumps").wstring().c_str(), ec.message().c_str());
+        return;
+    }
+
+    PruneCrashDumps(dumpDir, ".dmp", 3);
+    PruneCrashDumps(dumpDir, ".mdmp", 3);
+
+    auto clrDumpName = (dumpDir / L"%e_%t_%p.dmp").wstring();
+    if (clrDumpName.find(L' ') != std::wstring::npos)
+    {
+        clrDumpName = LR"(..\..\sharp\data\dumps\%e_%t_%p.dmp)";
+        FLOG("Crash dump directory contains spaces, DOTNET_DbgMiniDumpName falls back to %ls", clrDumpName.c_str());
+    }
+
+    std::wstring summary;
+    summary += SetEnvIfAbsent(L"DOTNET_DbgEnableMiniDump", L"1") + L", ";
+    summary += SetEnvIfAbsent(L"DOTNET_DbgMiniDumpType", L"1") + L", ";
+    summary += SetEnvIfAbsent(L"DOTNET_DbgMiniDumpName", clrDumpName) + L", ";
+    summary += SetEnvIfAbsent(L"OVERRIDE_MINIDUMP_PATH", dumpDir.wstring());
+
+    FLOG("Crash dump settings: %ls", summary.c_str());
+}
+#else
+static std::string SetEnvIfAbsent(const char* name, const std::string& value)
+{
+    if (const char* existing = ::getenv(name))
+        return std::string(name) + '=' + existing + " (environment)";
+
+    ::setenv(name, value.c_str(), 0);
+    return std::string(name) + '=' + value;
+}
+
+static void SetupCrashDump(const std::filesystem::path& sharpDir)
+{
+    std::error_code ec;
+    const auto      dumpDir = std::filesystem::absolute(sharpDir / "data" / "dumps", ec);
+    if (!ec)
+        std::filesystem::create_directories(dumpDir, ec);
+
+    if (ec)
+    {
+        FERROR("Failed to create crash dump directory %s: %s", (sharpDir / "data" / "dumps").string().c_str(), ec.message().c_str());
+        return;
+    }
+
+    PruneCrashDumps(dumpDir, ".dmp", 3);
+
+    auto clrDumpName = (dumpDir / "%e_%t_%p.dmp").string();
+    if (clrDumpName.find(' ') != std::string::npos)
+    {
+        clrDumpName = "../../sharp/data/dumps/%e_%t_%p.dmp";
+        FLOG("Crash dump directory contains spaces, DOTNET_DbgMiniDumpName falls back to %s", clrDumpName.c_str());
+    }
+
+    std::string summary;
+    summary += SetEnvIfAbsent("DOTNET_DbgEnableMiniDump", "1") + ", ";
+    summary += SetEnvIfAbsent("DOTNET_DbgMiniDumpType", "1") + ", ";
+    summary += SetEnvIfAbsent("DOTNET_DbgMiniDumpName", clrDumpName);
+
+    FLOG("Crash dump settings: %s", summary.c_str());
+}
+#endif
+
 bool coreclr::Init(const char* baseDir)
 {
     std::filesystem::path dir(baseDir);
     dir /= "sharp";
+
+    SetupCrashDump(dir);
 
     s_vecSearchPaths.emplace_back((dir / "runtime" / "host" / "fxr").generic_string());
 

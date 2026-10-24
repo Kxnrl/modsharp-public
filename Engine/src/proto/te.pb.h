@@ -32,6 +32,7 @@
 #include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_te_2eproto
@@ -2191,7 +2192,7 @@ class CMsgTEDecal /*final*/ :
   void _internal_set_index(uint32_t value);
   public:
 
-  // optional int32 entity = 3 [default = -1];
+  // optional int32 entity = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity() const;
   private:
   bool _internal_has_entity() const;
@@ -2601,7 +2602,7 @@ class CMsgEffectData /*final*/ :
   void _internal_set_effectname(uint32_t value);
   public:
 
-  // optional uint32 attachmentname = 19 [default = 0];
+  // optional uint32 attachmentname = 19 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
   bool has_attachmentname() const;
   private:
   bool _internal_has_attachmentname() const;
@@ -2614,7 +2615,7 @@ class CMsgEffectData /*final*/ :
   void _internal_set_attachmentname(uint32_t value);
   public:
 
-  // optional fixed32 entity = 5 [default = 16777215];
+  // optional fixed32 entity = 5 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_entity() const;
   private:
   bool _internal_has_entity() const;
@@ -2627,7 +2628,7 @@ class CMsgEffectData /*final*/ :
   void _internal_set_entity(uint32_t value);
   public:
 
-  // optional fixed32 otherentity = 6 [default = 16777215];
+  // optional fixed32 otherentity = 6 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_otherentity() const;
   private:
   bool _internal_has_otherentity() const;
@@ -3198,7 +3199,7 @@ class CMsgTEFizz /*final*/ :
   void _internal_set_current(int32_t value);
   public:
 
-  // optional int32 entity = 1 [default = -1];
+  // optional int32 entity = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity() const;
   private:
   bool _internal_has_entity() const;
@@ -4689,7 +4690,7 @@ class CMsgTEExplosion /*final*/ :
   void _internal_set_debris_surfaceprop(uint32_t value);
   public:
 
-  // optional uint32 explosion_type_name = 15 [default = 0];
+  // optional uint32 explosion_type_name = 15 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
   bool has_explosion_type_name() const;
   private:
   bool _internal_has_explosion_type_name() const;
@@ -5572,7 +5573,7 @@ class CMsgTEPhysicsProp /*final*/ :
       ::CMsgVector* dmgdir);
   ::CMsgVector* unsafe_arena_release_dmgdir();
 
-  // optional fixed32 skin = 4 [default = 0];
+  // optional fixed32 skin = 4 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
   bool has_skin() const;
   private:
   bool _internal_has_skin() const;
@@ -8202,7 +8203,7 @@ inline void CMsgTEDecal::set_allocated_start(::CMsgVector* start) {
   // @@protoc_insertion_point(field_set_allocated:CMsgTEDecal.start)
 }
 
-// optional int32 entity = 3 [default = -1];
+// optional int32 entity = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgTEDecal::_internal_has_entity() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -8638,7 +8639,7 @@ inline void CMsgEffectData::set_allocated_angles(::CMsgQAngle* angles) {
   // @@protoc_insertion_point(field_set_allocated:CMsgEffectData.angles)
 }
 
-// optional fixed32 entity = 5 [default = 16777215];
+// optional fixed32 entity = 5 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgEffectData::_internal_has_entity() const {
   bool value = (_impl_._has_bits_[0] & 0x00020000u) != 0;
   return value;
@@ -8666,7 +8667,7 @@ inline void CMsgEffectData::set_entity(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgEffectData.entity)
 }
 
-// optional fixed32 otherentity = 6 [default = 16777215];
+// optional fixed32 otherentity = 6 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CMsgEffectData::_internal_has_otherentity() const {
   bool value = (_impl_._has_bits_[0] & 0x00040000u) != 0;
   return value;
@@ -9030,7 +9031,7 @@ inline void CMsgEffectData::set_effectname(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgEffectData.effectname)
 }
 
-// optional uint32 attachmentname = 19 [default = 0];
+// optional uint32 attachmentname = 19 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
 inline bool CMsgEffectData::_internal_has_attachmentname() const {
   bool value = (_impl_._has_bits_[0] & 0x00010000u) != 0;
   return value;
@@ -9362,7 +9363,7 @@ inline void CMsgTEEnergySplash::set_explosive(bool value) {
 
 // CMsgTEFizz
 
-// optional int32 entity = 1 [default = -1];
+// optional int32 entity = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CMsgTEFizz::_internal_has_entity() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -11201,7 +11202,7 @@ inline void CMsgTEExplosion::set_explosion_type(uint32_t value) {
   // @@protoc_insertion_point(field_set:CMsgTEExplosion.explosion_type)
 }
 
-// optional uint32 explosion_type_name = 15 [default = 0];
+// optional uint32 explosion_type_name = 15 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
 inline bool CMsgTEExplosion::_internal_has_explosion_type_name() const {
   bool value = (_impl_._has_bits_[0] & 0x00000800u) != 0;
   return value;
@@ -12224,7 +12225,7 @@ inline void CMsgTEPhysicsProp::set_allocated_angles(::CMsgQAngle* angles) {
   // @@protoc_insertion_point(field_set_allocated:CMsgTEPhysicsProp.angles)
 }
 
-// optional fixed32 skin = 4 [default = 0];
+// optional fixed32 skin = 4 [default = 0, boxed_type = "CUtlStringToken", synthetic_default = "0"];
 inline bool CMsgTEPhysicsProp::_internal_has_skin() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;

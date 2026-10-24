@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
+using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
 using Sharp.Core.Types;
 using Sharp.Shared.Enums;
@@ -47,7 +48,7 @@ internal class EntityManager : ICoreEntityManager
     private readonly ILogger<EntityManager> _logger;
     private readonly ICoreAssemblyManager   _assemblyManager;
 
-    private readonly List<IEntityListener> _listeners;
+    private readonly SubscriberList<IEntityListener> _listeners;
 
     private PlayerSlot _maxSlots;
 
@@ -55,7 +56,7 @@ internal class EntityManager : ICoreEntityManager
     {
         _logger          = logger;
         _assemblyManager = assemblyManager;
-        _listeners       = [];
+        _listeners       = new SubscriberList<IEntityListener>(x => x.ListenerPriority);
 
         Forward.OnEntityCreated     += OnEntityCreated;
         Forward.OnEntityDeleted     += OnEntityDeleted;
@@ -66,7 +67,7 @@ internal class EntityManager : ICoreEntityManager
 
         Bridges.Forwards.Game.OnServerInit += OnServerInit;
 
-        _assemblyManager.RegisterUnloadCleanup(() => _assemblyManager.ClearLeakedListeners(_listeners, "EntityListener"));
+        _assemblyManager.RegisterUnloadCleanup(() => _listeners.Edit(x => _assemblyManager.ClearLeakedListeners(x, "EntityListener")));
     }
 
     private void OnServerInit()
@@ -87,18 +88,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityCreated(entity);
+                listener.OnEntityCreated(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityCreated),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -114,18 +115,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityDeleted(entity);
+                listener.OnEntityDeleted(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityDeleted),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -141,18 +142,18 @@ internal class EntityManager : ICoreEntityManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntitySpawned(entity);
+                listener.OnEntitySpawned(entity);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntitySpawned),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -170,18 +171,18 @@ internal class EntityManager : ICoreEntityManager
 
         var owner = BaseEntity.Create(ownerPtr);
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnEntityFollowed(entity, owner);
+                listener.OnEntityFollowed(entity, owner);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnEntityFollowed),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -200,11 +201,11 @@ internal class EntityManager : ICoreEntityManager
         var activator = BaseEntity.Create(ptrActivator);
         var action    = EHookAction.Ignored;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                var low = _listeners[i].OnEntityFireOutput(entity, output, activator, delay);
+                var low = listener.OnEntityFireOutput(entity, output, activator, delay);
 
                 if (low > action)
                 {
@@ -216,7 +217,7 @@ internal class EntityManager : ICoreEntityManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {output}",
                                  nameof(OnEntityFireOutput),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  output);
             }
         }
@@ -243,10 +244,8 @@ internal class EntityManager : ICoreEntityManager
         var caller    = BaseEntity.Create(ptrCaller);
         var action    = EHookAction.Ignored;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
-            var listener = _listeners[i];
-
             try
             {
                 var low = listener.OnEntityAcceptInput(entity, input, in variant, activator, caller);
@@ -261,7 +260,7 @@ internal class EntityManager : ICoreEntityManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {output}",
                                  nameof(OnEntityAcceptInput),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  input);
             }
         }
@@ -283,7 +282,7 @@ internal class EntityManager : ICoreEntityManager
             throw new InvalidOperationException("Your listener api version mismatch");
         }
 
-        if (_listeners.Any(x => x.Equals(listener)))
+        if (_listeners.Exists(x => x.Equals(listener)))
         {
             _logger.LogError("You are already install listener!\n{stackTrace}", Environment.StackTrace);
 
@@ -291,7 +290,6 @@ internal class EntityManager : ICoreEntityManager
         }
 
         _listeners.Add(listener);
-        _listeners.Sort((x, y) => y.ListenerPriority.CompareTo(x.ListenerPriority));
     }
 
     public void RemoveEntityListener(IEntityListener listener)
@@ -302,70 +300,51 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    [SkipLocalsInit]
-    public unsafe IBaseEntity[] GetAllEntitiesByClassname(string classname)
+    private enum EntityClassNameKind
     {
-        const int stackCap = 256;
-        var       stack    = stackalloc nint[stackCap];
+        Classname,
+        CppClass,
+    }
 
-        var total = Native.EnumerateByClassname(classname, stack, stackCap);
+    public IBaseEntity[] GetAllEntitiesByClassname(string classname)
+        => GetAllEntitiesByClassnameCore<IBaseEntity>(classname, EntityClassNameKind.Classname);
 
-        if (total == 0)
-        {
-            return [];
-        }
+    public IBaseEntity[] GetAllEntitiesByCppClass(string cppClass)
+        => GetAllEntitiesByClassnameCore<IBaseEntity>(cppClass, EntityClassNameKind.CppClass);
 
-        if (total <= stackCap)
-        {
-            var result  = new IBaseEntity[total];
-            var written = 0;
+    public T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
+        => GetAllEntitiesByClassnameCore<T>(classname, EntityClassNameKind.Classname);
 
-            for (var i = 0; i < total; i++)
-            {
-                if (BaseEntity.Create(stack[i]) is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
+    public T[] GetAllEntitiesByCppClass<T>(string cppClass) where T : class, IBaseEntity
+        => GetAllEntitiesByClassnameCore<T>(cppClass, EntityClassNameKind.CppClass);
 
-            if (written != total)
-            {
-                Array.Resize(ref result, written);
-            }
+    private static unsafe int EnumerateEntityPointers(string name, nint* buffer, int capacity, EntityClassNameKind kind)
+        => kind == EntityClassNameKind.CppClass
+            ? Native.EnumerateByCppClass(name, buffer, capacity)
+            : Native.FindAllByClassname(name, buffer, capacity);
 
-            return result;
-        }
+    private static unsafe T[] GetAllEntitiesByClassnameCore<T>(string name, EntityClassNameKind kind)
+        where T : class, IBaseEntity
+    {
+        const int maxEntityCount = 32768;
 
-        // Overflow: rent exact size and re-enumerate (rare path)
-        var rented = ArrayPool<nint>.Shared.Rent(total);
+        var rented = ArrayPool<nint>.Shared.Rent(maxEntityCount);
 
         try
         {
-            int actual;
+            int total;
 
             fixed (nint* p = rented)
             {
-                actual = Native.EnumerateByClassname(classname, p, rented.Length);
+                total = EnumerateEntityPointers(name, p, rented.Length, kind);
             }
 
-            var count   = Math.Min(actual, rented.Length);
-            var result  = new IBaseEntity[count];
-            var written = 0;
-
-            for (var i = 0; i < count; i++)
+            if (total > rented.Length)
             {
-                if (BaseEntity.Create(rented[i]) is { } e)
-                {
-                    result[written++] = e;
-                }
+                throw new InvalidOperationException($"Entity count {total} exceeds the engine limit {maxEntityCount}");
             }
 
-            if (written != count)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
+            return total == 0 ? [] : WrapEntities<T>(rented.AsSpan(0, total));
         }
         finally
         {
@@ -373,75 +352,25 @@ internal class EntityManager : ICoreEntityManager
         }
     }
 
-    [SkipLocalsInit]
-    public unsafe T[] GetAllEntitiesByClassname<T>(string classname) where T : class, IBaseEntity
+    private static T[] WrapEntities<T>(ReadOnlySpan<nint> pointers) where T : class, IBaseEntity
     {
-        const int stackCap = 256;
-        var       stack    = stackalloc nint[stackCap];
+        var result  = new T[pointers.Length];
+        var written = 0;
 
-        var total = Native.EnumerateByClassname(classname, stack, stackCap);
-
-        if (total == 0)
+        foreach (var pointer in pointers)
         {
-            return [];
+            if (BaseEntity.Create(pointer)?.As<T>() is { } entity)
+            {
+                result[written++] = entity;
+            }
         }
 
-        if (total <= stackCap)
+        if (written != result.Length)
         {
-            var result  = new T[total];
-            var written = 0;
-
-            for (var i = 0; i < total; i++)
-            {
-                if (BaseEntity.Create(stack[i])?.As<T>() is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
-
-            if (written != total)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
+            Array.Resize(ref result, written);
         }
 
-        // Overflow: rent exact size and re-enumerate (rare path)
-        var rented = ArrayPool<nint>.Shared.Rent(total);
-
-        try
-        {
-            int actual;
-
-            fixed (nint* p = rented)
-            {
-                actual = Native.EnumerateByClassname(classname, p, rented.Length);
-            }
-
-            var count   = Math.Min(actual, rented.Length);
-            var result  = new T[count];
-            var written = 0;
-
-            for (var i = 0; i < count; i++)
-            {
-                if (BaseEntity.Create(rented[i])?.As<T>() is { } e)
-                {
-                    result[written++] = e;
-                }
-            }
-
-            if (written != count)
-            {
-                Array.Resize(ref result, written);
-            }
-
-            return result;
-        }
-        finally
-        {
-            ArrayPool<nint>.Shared.Return(rented);
-        }
+        return result;
     }
 
     public T? FindEntityByHandle<T>(CEntityHandle<T> eHandle) where T : class, IBaseEntity
@@ -458,6 +387,9 @@ internal class EntityManager : ICoreEntityManager
 
     public IBaseEntity? FindEntityByClassname(IBaseEntity? start, string classname)
         => BaseEntity.Create(Native.FindByClassname(start?.GetAbsPtr() ?? IntPtr.Zero, classname));
+
+    public IBaseEntity? FindEntityByCppClass(IBaseEntity? start, string cppClass)
+        => BaseEntity.Create(Native.FindByCppClass(start?.GetAbsPtr() ?? IntPtr.Zero, cppClass));
 
     public IBaseEntity? FindEntityByName(IBaseEntity? start, string name)
         => BaseEntity.Create(Native.FindByName(start?.GetAbsPtr() ?? IntPtr.Zero, name));

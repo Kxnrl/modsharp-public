@@ -39,16 +39,20 @@ public:
     // 避免其他继承问题
     explicit CTraceFilter()
     {
-        m_nInteractsWith   = 0;
-        m_nCollisionGroup  = 0;
-        m_bIterateEntities = false;
+        m_nInteractsWith        = 0;
+        m_nCollisionGroup       = 0;
+        m_bIterateEntities      = false;
+        m_nIncludedDetailLayers = 0xFFFF;
+        m_nTargetDetailLayer    = 0;
     }
 
     CTraceFilter(uint64_t nInteractsWith, uint8_t nCollisionGroup)
     {
-        m_nInteractsWith   = nInteractsWith;
-        m_nCollisionGroup  = nCollisionGroup;
-        m_bIterateEntities = false;
+        m_nInteractsWith        = nInteractsWith;
+        m_nCollisionGroup       = nCollisionGroup;
+        m_bIterateEntities      = false;
+        m_nIncludedDetailLayers = 0xFFFF;
+        m_nTargetDetailLayer    = 0;
     }
 
     CTraceFilter(uint64_t nInteractsWith, uint8_t nCollisionGroup, RnQueryObjectFlags flags) :

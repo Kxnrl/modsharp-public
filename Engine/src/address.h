@@ -83,6 +83,7 @@ class CGameTrace;
 class CGamePhysicsQueryInterface;
 class CConVarBaseData;
 class CCSPlayerPawn;
+class CTriggerPush;
 class ISoundOpSystem;
 class SoundOpGameSystem;
 class CCollisionProperty;
@@ -95,7 +96,6 @@ class CTransform;
 class CEntityKeyValues;
 class HSCRIPT;
 class CEffectData;
-struct bbox_t;
 class CCSWeaponBaseVData;
 struct HSequence;
 struct CResourceNameTyped;
@@ -193,7 +193,7 @@ using CGameEntitySystem_RemoveListenerEntity_t      = void (*)(CGameEntitySystem
 using CGameEntitySystem_AddEntityIOEvent_t          = void (*)(CGameEntitySystem*, CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t*, float, void*, void*);
 using ScriptRegisterConVar_t                        = void* (*)(void*, const char*, const char*, const char*, int);
 using ScriptRegisterConCommand_t                    = void (*)(void*, const char*, void*, const char*, int);
-using ScriptSetConVarString_t                       = void (*)(BaseConVar* convar, int64_t, const char*);
+using ScriptSetConVarString_t                       = bool (*)(BaseConVar* convar, int64_t, const char*);
 using ScriptSetConVarNumber_t                       = void (*)(BaseConVar* convar, int32_t value, int32_t value2);
 #ifdef PLATFORM_WINDOWS
 using ScriptSetConVarDouble_t = void (*)(BaseConVar* convar, float value);
@@ -236,14 +236,15 @@ using StudioModel_GetAttachment_t              = bool (*)(void*, uint8_t, Vector
 using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SoundEventGuid_t);
 using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
-using CCSPlayer_MovementServices_TracePlayerBBox_t            = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
 using CTraceFilterPlayerMovementCS_ctor_t                     = void (*)(CTraceFilter& filter, CEntityInstance* handleEntity, uint64_t interactWith, uint8_t collisionGroup);
 using FindWeaponVDataByName_t                                 = CCSWeaponBaseVData* (*)(int state, const char* weaponName);
 using GetLegacyGameEventListener_t                            = IGameEventListener2* (*)(int32_t);
 using CGameEntitySystem_GetSpawnOriginOffset_t                = matrix3x4_t& (*)(const CGameEntitySystem*);
 using CCSPlayerPawn_SetDefaultGloves_t                        = void (*)(CCSPlayerPawn* pawn, bool hide);
+using CCSPlayer_ItemServices_GiveGlove_t                      = void (*)(CCSPlayer_ItemServices*);
 using CBasePlayerPawn_SnapViewAngles_t                        = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                                 = void* (*)(Vector*, Vector*, Vector*);
+using CTriggerPush_PathSimplePushDir_t                        = float (*)(CTriggerPush* self, CBaseEntity* pOther, Vector* dir);
 using CCSCustomHudLayout_SetHasClass_t                        = void (*)(CBaseEntity*, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetHasClassForPlayer_t               = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetDialogVariableString_t            = void (*)(CBaseEntity*, CUtlString*, CUtlString*, CUtlString*);
@@ -325,17 +326,18 @@ inline StudioModel_LookupAttachment_t                  StudioModel_LookupAttachm
 inline StudioModel_GetAttachment_t                     StudioModel_GetAttachment;
 inline SoundOpGameSystem_StopSoundEventFilter_t        SoundOpGameSystem_StopSoundEventFilter;
 inline CCollisionProperty_SetSolid_t                   CCollisionProperty_SetSolid;
-inline CCSPlayer_MovementServices_TracePlayerBBox_t    CCSPlayer_MovementServices_TracePlayerBBox;
 inline CTraceFilterPlayerMovementCS_ctor_t             CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                         FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                    GetLegacyGameEventListener;
 inline CBasePlayerPawn_SnapViewAngles_t                CBasePlayerPawn_SnapViewAngles;
 inline CreateTriggerInternal_t                         CreateTriggerInternal;
+inline CTriggerPush_PathSimplePushDir_t                CTriggerPush_PathSimplePushDir;
 #ifdef ENABLE_SCRIPT_ASSERT
 inline CCSScript_InitV8ClassTemplates_t CCSScript_InitV8ClassTemplates;
 #endif
 inline CGameEntitySystem_GetSpawnOriginOffset_t                CGameEntitySystem_GetSpawnOriginOffset;
 inline CCSPlayerPawn_SetDefaultGloves_t                        CCSPlayerPawn_SetDefaultGloves;
+inline CCSPlayer_ItemServices_GiveGlove_t                      CCSPlayer_ItemServices_GiveGlove;
 inline CCSCustomHudLayout_SetHasClass_t                        CCSCustomHudLayout_SetHasClass;
 inline CCSCustomHudLayout_SetHasClassForPlayer_t               CCSCustomHudLayout_SetHasClassForPlayer;
 inline CCSCustomHudLayout_SetDialogVariableString_t            CCSCustomHudLayout_SetDialogVariableString;

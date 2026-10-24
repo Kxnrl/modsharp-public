@@ -37,4 +37,5 @@ public enum ConVarType : short
     Vector3,
     Vector4,
     QAngle,
+    VectorWS,
 }

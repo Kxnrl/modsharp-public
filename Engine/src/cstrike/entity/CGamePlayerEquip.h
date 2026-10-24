@@ -26,10 +26,7 @@ class CGamePlayerEquip : public CBaseEntity
 {
 public:
     DECLARE_SCHEMA_CLASS(CGamePlayerEquip)
-    SCHEMA_POINTER_FIELD(char*, m_weaponNames)
-    SCHEMA_POINTER_FIELD(int32_t, m_weaponCount)
 
-    static constexpr int32_t MAX_EQUIPMENTS_SIZE          = 32;
     static constexpr int32_t SF_PLAYEREQUIP_USEONLY       = 0x0001;
     static constexpr int32_t SF_PLAYEREQUIP_STRIPFIRST    = 0x0002;
     static constexpr int32_t SF_PLAYEREQUIP_ONLYSTRIPSAME = 0x0004; // NOTE 这个Flags是爆改FGD拿的, 实现逻辑参考CSGO

@@ -3091,88 +3091,6 @@ struct CVDiagnosticDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CVDiagnosticDefaultTypeInternal _CVDiagnostic_default_instance_;
-PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.file_report_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.files_prevented_trusted_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.offer_insecure_mode_)*/false
-  , /*decltype(_impl_.offer_secure_mode_)*/false
-  , /*decltype(_impl_.show_unsigned_ui_)*/false
-  , /*decltype(_impl_.kick_user_)*/false
-  , /*decltype(_impl_.show_trusted_ui_)*/false
-  , /*decltype(_impl_.show_warning_not_trusted_)*/false
-  , /*decltype(_impl_.show_warning_not_trusted_2_)*/false} {}
-struct CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal() {}
-  union {
-    CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCCStrike15_v2_GC2ClientRefuseSecureModeDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode_default_instance_;
-PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientRequestValidation::CMsgGCCStrike15_v2_GC2ClientRequestValidation(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.module_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.full_report_)*/false} {}
-struct CMsgGCCStrike15_v2_GC2ClientRequestValidationDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientRequestValidationDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgGCCStrike15_v2_GC2ClientRequestValidationDefaultTypeInternal() {}
-  union {
-    CMsgGCCStrike15_v2_GC2ClientRequestValidation _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCCStrike15_v2_GC2ClientRequestValidationDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientRequestValidation_default_instance_;
-PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientInitSystem::CMsgGCCStrike15_v2_GC2ClientInitSystem(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.name_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.outputname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.key_data_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.sha_hash_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.manifest_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.system_package_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.load_)*/false
-  , /*decltype(_impl_.load_system_)*/false
-  , /*decltype(_impl_.cookie_)*/0} {}
-struct CMsgGCCStrike15_v2_GC2ClientInitSystemDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientInitSystemDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgGCCStrike15_v2_GC2ClientInitSystemDefaultTypeInternal() {}
-  union {
-    CMsgGCCStrike15_v2_GC2ClientInitSystem _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCCStrike15_v2_GC2ClientInitSystemDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientInitSystem_default_instance_;
-PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response(
-    ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_._has_bits_)*/{}
-  , /*decltype(_impl_._cached_size_)*/{}
-  , /*decltype(_impl_.diagnostic_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.sha_hash_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.success_)*/false
-  , /*decltype(_impl_.response_)*/0
-  , /*decltype(_impl_.error_code1_)*/0
-  , /*decltype(_impl_.error_code2_)*/0
-  , /*decltype(_impl_.handle_)*/int64_t{0}
-  , /*decltype(_impl_.einit_result_)*/0
-  , /*decltype(_impl_.aux_system1_)*/0
-  , /*decltype(_impl_.aux_system2_)*/0} {}
-struct CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal()
-      : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal() {}
-  union {
-    CMsgGCCStrike15_v2_GC2ClientInitSystem_Response _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgGCCStrike15_v2_GC2ClientInitSystem_ResponseDefaultTypeInternal _CMsgGCCStrike15_v2_GC2ClientInitSystem_Response_default_instance_;
 PROTOBUF_CONSTEXPR CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_._has_bits_)*/{}
@@ -3226,8 +3144,8 @@ struct CMsgRecurringMissionSchemaDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CMsgRecurringMissionSchemaDefaultTypeInternal _CMsgRecurringMissionSchema_default_instance_;
-static ::_pb::Metadata file_level_metadata_cstrike15_5fgcmessages_2eproto[181];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto[5];
+static ::_pb::Metadata file_level_metadata_cstrike15_5fgcmessages_2eproto[177];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto[4];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_cstrike15_5fgcmessages_2eproto = nullptr;
 
 const uint32_t TableStruct_cstrike15_5fgcmessages_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -5939,90 +5857,6 @@ const uint32_t TableStruct_cstrike15_5fgcmessages_2eproto::offsets[] PROTOBUF_SE
   2,
   3,
   0,
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.file_report_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.offer_insecure_mode_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.offer_secure_mode_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.show_unsigned_ui_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.kick_user_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.show_trusted_ui_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.show_warning_not_trusted_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.show_warning_not_trusted_2_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.files_prevented_trusted_),
-  0,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  1,
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRequestValidation, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRequestValidation, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRequestValidation, _impl_.full_report_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientRequestValidation, _impl_.module_),
-  1,
-  0,
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.load_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.name_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.outputname_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.key_data_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.sha_hash_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.cookie_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.manifest_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.system_package_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.load_system_),
-  6,
-  0,
-  1,
-  2,
-  3,
-  8,
-  4,
-  5,
-  7,
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_._has_bits_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.success_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.diagnostic_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.sha_hash_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.response_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.error_code1_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.error_code2_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.handle_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.einit_result_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.aux_system1_),
-  PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.aux_system2_),
-  2,
-  0,
-  1,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -6229,14 +6063,10 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 2669, 2681, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport_Entry)},
   { 2687, -1, -1, sizeof(::CMsgGCCStrike15_v2_ClientPerfReport)},
   { 2694, 2704, -1, sizeof(::CVDiagnostic)},
-  { 2708, 2723, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)},
-  { 2732, 2740, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientRequestValidation)},
-  { 2742, 2757, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem)},
-  { 2766, 2782, -1, sizeof(::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)},
-  { 2792, 2799, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
-  { 2800, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
-  { 2806, 2814, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
-  { 2816, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
+  { 2708, 2715, -1, sizeof(::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName)},
+  { 2716, -1, -1, sizeof(::CMsgRequestRecurringMissionSchedule)},
+  { 2722, 2730, -1, sizeof(::CMsgRecurringMissionSchema_MissionTemplateList)},
+  { 2732, -1, -1, sizeof(::CMsgRecurringMissionSchema)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -6413,10 +6243,6 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::_CMsgGCCStrike15_v2_ClientPerfReport_Entry_default_instance_._instance,
   &::_CMsgGCCStrike15_v2_ClientPerfReport_default_instance_._instance,
   &::_CVDiagnostic_default_instance_._instance,
-  &::_CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode_default_instance_._instance,
-  &::_CMsgGCCStrike15_v2_GC2ClientRequestValidation_default_instance_._instance,
-  &::_CMsgGCCStrike15_v2_GC2ClientInitSystem_default_instance_._instance,
-  &::_CMsgGCCStrike15_v2_GC2ClientInitSystem_Response_default_instance_._instance,
   &::_CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName_default_instance_._instance,
   &::_CMsgRequestRecurringMissionSchedule_default_instance_._instance,
   &::_CMsgRecurringMissionSchema_MissionTemplateList_default_instance_._instance,
@@ -7097,191 +6923,156 @@ const char descriptor_table_protodef_cstrike15_5fgcmessages_2eproto[] PROTOBUF_S
   "\003 \001(\014\022\016\n\006actual\030\004 \001(\014\022\020\n\010sourceid\030\005 \001(\r\022"
   "\016\n\006status\030\006 \001(\r\"Q\n\014CVDiagnostic\022\n\n\002id\030\001 "
   "\001(\r\022\020\n\010extended\030\002 \001(\r\022\r\n\005value\030\003 \001(\004\022\024\n\014"
-  "string_value\030\004 \001(\t\"\250\002\n,CMsgGCCStrike15_v"
-  "2_GC2ClientRefuseSecureMode\022\023\n\013file_repo"
-  "rt\030\001 \001(\t\022\033\n\023offer_insecure_mode\030\002 \001(\010\022\031\n"
-  "\021offer_secure_mode\030\003 \001(\010\022\030\n\020show_unsigne"
-  "d_ui\030\004 \001(\010\022\021\n\tkick_user\030\005 \001(\010\022\027\n\017show_tr"
-  "usted_ui\030\006 \001(\010\022 \n\030show_warning_not_trust"
-  "ed\030\007 \001(\010\022\"\n\032show_warning_not_trusted_2\030\010"
-  " \001(\010\022\037\n\027files_prevented_trusted\030\t \001(\t\"T\n"
-  "-CMsgGCCStrike15_v2_GC2ClientRequestVali"
-  "dation\022\023\n\013full_report\030\001 \001(\010\022\016\n\006module\030\002 "
-  "\001(\t\"\313\001\n&CMsgGCCStrike15_v2_GC2ClientInit"
-  "System\022\014\n\004load\030\001 \001(\010\022\014\n\004name\030\002 \001(\t\022\022\n\nou"
-  "tputname\030\003 \001(\t\022\020\n\010key_data\030\004 \001(\014\022\020\n\010sha_"
-  "hash\030\005 \001(\014\022\016\n\006cookie\030\006 \001(\005\022\020\n\010manifest\030\007"
-  " \001(\t\022\026\n\016system_package\030\010 \001(\014\022\023\n\013load_sys"
-  "tem\030\t \001(\010\"\245\002\n/CMsgGCCStrike15_v2_GC2Clie"
-  "ntInitSystem_Response\022\017\n\007success\030\001 \001(\010\022\022"
-  "\n\ndiagnostic\030\002 \001(\t\022\020\n\010sha_hash\030\003 \001(\014\022\020\n\010"
-  "response\030\004 \001(\005\022\023\n\013error_code1\030\005 \001(\005\022\023\n\013e"
-  "rror_code2\030\006 \001(\005\022\016\n\006handle\030\007 \001(\003\022E\n\014eini"
-  "t_result\030\010 \001(\0162\022.EInitSystemResult:\033k_EI"
-  "nitSystemResult_Invalid\022\023\n\013aux_system1\030\t"
-  " \001(\005\022\023\n\013aux_system2\030\n \001(\005\"P\n/CMsgGCCStri"
-  "ke15_v2_SetPlayerLeaderboardSafeName\022\035\n\025"
-  "leaderboard_safe_name\030\001 \001(\t\"%\n#CMsgReque"
-  "stRecurringMissionSchedule\"\241\001\n\032CMsgRecur"
-  "ringMissionSchema\022A\n\010missions\030\001 \003(\0132/.CM"
-  "sgRecurringMissionSchema.MissionTemplate"
-  "List\032@\n\023MissionTemplateList\022\016\n\006period\030\001 "
-  "\001(\r\022\031\n\021mission_templates\030\002 \003(\014*\355*\n\nECsgo"
-  "GCMsg\022\036\n\031k_EMsgGCCStrike15_v2_Base\020\214G\022*\n"
-  "%k_EMsgGCCStrike15_v2_MatchmakingStart\020\215"
-  "G\022)\n$k_EMsgGCCStrike15_v2_MatchmakingSto"
-  "p\020\216G\0226\n1k_EMsgGCCStrike15_v2_Matchmaking"
-  "Client2ServerPing\020\217G\0224\n/k_EMsgGCCStrike1"
-  "5_v2_MatchmakingGC2ClientUpdate\020\220G\022>\n9k_"
-  "EMsgGCCStrike15_v2_MatchmakingServerRese"
-  "rvationResponse\020\222G\0225\n0k_EMsgGCCStrike15_"
-  "v2_MatchmakingGC2ClientReserve\020\223G\0223\n.k_E"
-  "MsgGCCStrike15_v2_MatchmakingClient2GCHe"
-  "llo\020\225G\0223\n.k_EMsgGCCStrike15_v2_Matchmaki"
-  "ngGC2ClientHello\020\226G\0225\n0k_EMsgGCCStrike15"
-  "_v2_MatchmakingGC2ClientAbandon\020\230G\022:\n5k_"
-  "EMsgGCCStrike15_v2_MatchmakingOperator2G"
-  "CBlogUpdate\020\235G\022:\n5k_EMsgGCCStrike15_v2_S"
-  "erverNotificationForUserPenalty\020\236G\022,\n\'k_"
-  "EMsgGCCStrike15_v2_ClientReportPlayer\020\237G"
-  "\022,\n\'k_EMsgGCCStrike15_v2_ClientReportSer"
-  "ver\020\240G\022-\n(k_EMsgGCCStrike15_v2_ClientCom"
-  "mendPlayer\020\241G\022.\n)k_EMsgGCCStrike15_v2_Cl"
-  "ientReportResponse\020\242G\0222\n-k_EMsgGCCStrike"
-  "15_v2_ClientCommendPlayerQuery\020\243G\022:\n5k_E"
-  "MsgGCCStrike15_v2_ClientCommendPlayerQue"
-  "ryResponse\020\244G\022(\n#k_EMsgGCCStrike15_v2_Wa"
-  "tchInfoUsers\020\246G\0225\n0k_EMsgGCCStrike15_v2_"
-  "ClientRequestPlayersProfile\020\247G\022(\n#k_EMsg"
-  "GCCStrike15_v2_PlayersProfile\020\250G\0223\n.k_EM"
-  "sgGCCStrike15_v2_PlayerOverwatchCaseUpda"
-  "te\020\253G\0227\n2k_EMsgGCCStrike15_v2_PlayerOver"
-  "watchCaseAssignment\020\254G\0223\n.k_EMsgGCCStrik"
-  "e15_v2_PlayerOverwatchCaseStatus\020\255G\022*\n%k"
-  "_EMsgGCCStrike15_v2_GC2ClientTextMsg\020\256G\022"
-  "*\n%k_EMsgGCCStrike15_v2_Client2GCTextMsg"
-  "\020\257G\0220\n+k_EMsgGCCStrike15_v2_MatchEndRunR"
-  "ewardDrops\020\260G\0229\n4k_EMsgGCCStrike15_v2_Ma"
-  "tchEndRewardDropsNotification\020\261G\0228\n3k_EM"
-  "sgGCCStrike15_v2_ClientRequestWatchInfoF"
-  "riends2\020\262G\022#\n\036k_EMsgGCCStrike15_v2_Match"
-  "List\020\263G\022:\n5k_EMsgGCCStrike15_v2_MatchLis"
-  "tRequestCurrentLiveGames\020\264G\0229\n4k_EMsgGCC"
-  "Strike15_v2_MatchListRequestRecentUserGa"
-  "mes\020\265G\0224\n/k_EMsgGCCStrike15_v2_GC2Server"
-  "ReservationUpdate\020\266G\0228\n3k_EMsgGCCStrike1"
-  "5_v2_ClientVarValueNotificationInfo\020\270G\0229"
-  "\n4k_EMsgGCCStrike15_v2_MatchListRequestT"
-  "ournamentGames\020\272G\0226\n1k_EMsgGCCStrike15_v"
-  "2_MatchListRequestFullGameInfo\020\273G\0221\n,k_E"
-  "MsgGCCStrike15_v2_GiftsLeaderboardReques"
-  "t\020\274G\0222\n-k_EMsgGCCStrike15_v2_GiftsLeader"
-  "boardResponse\020\275G\0228\n3k_EMsgGCCStrike15_v2"
-  "_ServerVarValueNotificationInfo\020\276G\0220\n+k_"
-  "EMsgGCCStrike15_v2_ClientSubmitSurveyVot"
-  "e\020\300G\0221\n,k_EMsgGCCStrike15_v2_Server2GCCl"
-  "ientValidate\020\301G\0229\n4k_EMsgGCCStrike15_v2_"
-  "MatchListRequestLiveGameForUser\020\302G\022>\n9k_"
-  "EMsgGCCStrike15_v2_Client2GCEconPreviewD"
-  "ataBlockRequest\020\304G\022\?\n:k_EMsgGCCStrike15_"
-  "v2_Client2GCEconPreviewDataBlockResponse"
-  "\020\305G\0220\n+k_EMsgGCCStrike15_v2_AccountPriva"
-  "cySettings\020\306G\022+\n&k_EMsgGCCStrike15_v2_Se"
-  "tMyActivityInfo\020\307G\022\?\n:k_EMsgGCCStrike15_"
-  "v2_MatchListRequestTournamentPredictions"
-  "\020\310G\022>\n9k_EMsgGCCStrike15_v2_MatchListUpl"
-  "oadTournamentPredictions\020\311G\022&\n!k_EMsgGCC"
-  "Strike15_v2_DraftSummary\020\312G\0225\n0k_EMsgGCC"
-  "Strike15_v2_ClientRequestJoinFriendData\020"
-  "\313G\0225\n0k_EMsgGCCStrike15_v2_ClientRequest"
-  "JoinServerData\020\314G\0221\n,k_EMsgGCCStrike15_v"
-  "2_GC2ClientTournamentInfo\020\317G\022\"\n\035k_EMsgGC"
-  "_GlobalGame_Subscribe\020\320G\022$\n\037k_EMsgGC_Glo"
-  "balGame_Unsubscribe\020\321G\022\035\n\030k_EMsgGC_Globa"
-  "lGame_Play\020\322G\022,\n\'k_EMsgGCCStrike15_v2_Ac"
-  "knowledgePenalty\020\323G\0226\n1k_EMsgGCCStrike15"
-  "_v2_Client2GCRequestPrestigeCoin\020\324G\022.\n)k"
-  "_EMsgGCCStrike15_v2_GC2ClientGlobalStats"
-  "\020\325G\022/\n*k_EMsgGCCStrike15_v2_Client2GCStr"
-  "eamUnlock\020\326G\0222\n-k_EMsgGCCStrike15_v2_Fan"
-  "tasyRequestClientData\020\327G\0221\n,k_EMsgGCCStr"
-  "ike15_v2_FantasyUpdateClientData\020\330G\0227\n2k"
-  "_EMsgGCCStrike15_v2_GCToClientSteamdatag"
-  "ramTicket\020\331G\0221\n,k_EMsgGCCStrike15_v2_Cli"
-  "entToGCRequestTicket\020\332G\0222\n-k_EMsgGCCStri"
-  "ke15_v2_ClientToGCRequestElevate\020\333G\022$\n\037k"
-  "_EMsgGCCStrike15_v2_GlobalChat\020\334G\022.\n)k_E"
-  "MsgGCCStrike15_v2_GlobalChat_Subscribe\020\335"
-  "G\0220\n+k_EMsgGCCStrike15_v2_GlobalChat_Uns"
-  "ubscribe\020\336G\022+\n&k_EMsgGCCStrike15_v2_Clie"
-  "ntAuthKeyCode\020\337G\022(\n#k_EMsgGCCStrike15_v2"
-  "_GotvSyncPacket\020\340G\022/\n*k_EMsgGCCStrike15_"
-  "v2_ClientPlayerDecalSign\020\341G\022/\n*k_EMsgGCC"
-  "Strike15_v2_ClientLogonFatalError\020\343G\022)\n$"
-  "k_EMsgGCCStrike15_v2_ClientPollState\020\344G\022"
-  "(\n#k_EMsgGCCStrike15_v2_Party_Register\020\345"
-  "G\022*\n%k_EMsgGCCStrike15_v2_Party_Unregist"
-  "er\020\346G\022&\n!k_EMsgGCCStrike15_v2_Party_Sear"
-  "ch\020\347G\022&\n!k_EMsgGCCStrike15_v2_Party_Invi"
-  "te\020\350G\0220\n+k_EMsgGCCStrike15_v2_Account_Re"
-  "questCoPlays\020\351G\022,\n\'k_EMsgGCCStrike15_v2_"
-  "ClientGCRankUpdate\020\352G\022-\n(k_EMsgGCCStrike"
-  "15_v2_ClientRequestOffers\020\353G\022.\n)k_EMsgGC"
-  "CStrike15_v2_ClientAccountBalance\020\354G\022.\n)"
-  "k_EMsgGCCStrike15_v2_ClientPartyJoinRela"
-  "y\020\355G\022,\n\'k_EMsgGCCStrike15_v2_ClientParty"
-  "Warning\020\356G\022*\n%k_EMsgGCCStrike15_v2_SetEv"
-  "entFavorite\020\360G\0223\n.k_EMsgGCCStrike15_v2_G"
-  "etEventFavorites_Request\020\361G\022*\n%k_EMsgGCC"
-  "Strike15_v2_ClientPerfReport\020\362G\0224\n/k_EMs"
-  "gGCCStrike15_v2_GetEventFavorites_Respon"
-  "se\020\363G\022/\n*k_EMsgGCCStrike15_v2_ClientRequ"
-  "estSouvenir\020\364G\0223\n.k_EMsgGCCStrike15_v2_G"
-  "C2ClientRefuseSecureMode\020\366G\0224\n/k_EMsgGCC"
-  "Strike15_v2_GC2ClientRequestValidation\020\367"
-  "G\0223\n.k_EMsgGCCStrike15_v2_ClientRedeemMi"
-  "ssionReward\020\371G\022&\n!k_EMsgGCCStrike15_Clie"
-  "ntDeepStats\020\372G\0222\n-k_EMsgGCCStrike15_Star"
-  "tAgreementSessionInGame\020\373G\022-\n(k_EMsgGCCS"
-  "trike15_v2_GC2ClientInitSystem\020\374G\0226\n1k_E"
-  "MsgGCCStrike15_v2_GC2ClientInitSystem_Re"
-  "sponse\020\375G\022\'\n\"k_EMsgGCCStrike15_v2_Privat"
-  "eQueues\020\376G\0229\n4k_EMsgGCCStrike15_v2_Match"
-  "ListTournamentOperatorMgmt\020\377G\022(\n#k_EMsgG"
-  "CCStrike15_v2_BetaEnrollment\020\201H\0226\n1k_EMs"
-  "gGCCStrike15_v2_SetPlayerLeaderboardSafe"
-  "Name\020\202H\0220\n+k_EMsgGCCStrike15_v2_ClientRe"
-  "deemFreeReward\020\203H\022-\n(k_EMsgGCCStrike15_v"
-  "2_ClientNetworkConfig\020\204H\022/\n*k_EMsgGCCStr"
-  "ike15_v2_GC2ClientNotifyXPShop\020\205H\0222\n-k_E"
-  "MsgGCCStrike15_v2_Client2GcAckXPShopTrac"
-  "ks\020\206H\0229\n4k_EMsgGCCStrike15_v2_Matchmakin"
-  "gGC2ClientSearchStats\020\207H\022.\n)k_EMsgGCCStr"
-  "ike15_v2_PremierSeasonSummary\020\210H\0229\n4k_EM"
-  "sgGCCStrike15_v2_RequestRecurringMission"
-  "Schedule\020\211H\0220\n+k_EMsgGCCStrike15_v2_Recu"
-  "rringMissionSchema\020\212H\0221\n,k_EMsgGCCStrike"
-  "15_v2_VolatileItemClaimReward\020\213H\022/\n*k_EM"
-  "sgGCCStrike15_v2_VolatileShopSubscribe\020\214"
-  "H\022#\n\036k_EMsgGCCStrike15_v2_SetClanId\020\215H*\230"
-  "\001\n\022ECsgoSteamUserStat\022&\n\"k_ECsgoSteamUse"
-  "rStat_XpEarnedGames\020\001\022-\n)k_ECsgoSteamUse"
-  "rStat_MatchWinsCompetitive\020\002\022+\n\'k_ECsgoS"
-  "teamUserStat_SurvivedDangerZone\020\003*J\n\tQue"
-  "stType\022\032\n\026k_EQuestType_Operation\020\001\022!\n\035k_"
-  "EQuestType_RecurringMission\020\002*\241\001\n\027EClien"
-  "tReportingVersion\022(\n$k_EClientReportingV"
-  "ersion_OldVersion\020\000\022)\n%k_EClientReportin"
-  "gVersion_BetaVersion\020\001\0221\n-k_EClientRepor"
-  "tingVersion_SupportsTrustedMode\020\002*\276\002\n\021EI"
-  "nitSystemResult\022\037\n\033k_EInitSystemResult_I"
-  "nvalid\020\000\022\037\n\033k_EInitSystemResult_Success\020"
-  "\001\022\034\n\030k_EInitSystemResult_None\020\002\022 \n\034k_EIn"
-  "itSystemResult_NotFound\020\003\022 \n\034k_EInitSyst"
-  "emResult_Existing\020\004\022\"\n\036k_EInitSystemResu"
-  "lt_FailedOpen\020\005\022 \n\034k_EInitSystemResult_M"
-  "ismatch\020\006\022\"\n\036k_EInitSystemResult_FailedI"
-  "nit\020\007\022\033\n\027k_EInitSystemResult_Max\020\010"
+  "string_value\030\004 \001(\t\"P\n/CMsgGCCStrike15_v2"
+  "_SetPlayerLeaderboardSafeName\022\035\n\025leaderb"
+  "oard_safe_name\030\001 \001(\t\"%\n#CMsgRequestRecur"
+  "ringMissionSchedule\"\241\001\n\032CMsgRecurringMis"
+  "sionSchema\022A\n\010missions\030\001 \003(\0132/.CMsgRecur"
+  "ringMissionSchema.MissionTemplateList\032@\n"
+  "\023MissionTemplateList\022\016\n\006period\030\001 \001(\r\022\031\n\021"
+  "mission_templates\030\002 \003(\014*\233)\n\nECsgoGCMsg\022\036"
+  "\n\031k_EMsgGCCStrike15_v2_Base\020\214G\022*\n%k_EMsg"
+  "GCCStrike15_v2_MatchmakingStart\020\215G\022)\n$k_"
+  "EMsgGCCStrike15_v2_MatchmakingStop\020\216G\0226\n"
+  "1k_EMsgGCCStrike15_v2_MatchmakingClient2"
+  "ServerPing\020\217G\0224\n/k_EMsgGCCStrike15_v2_Ma"
+  "tchmakingGC2ClientUpdate\020\220G\022>\n9k_EMsgGCC"
+  "Strike15_v2_MatchmakingServerReservation"
+  "Response\020\222G\0225\n0k_EMsgGCCStrike15_v2_Matc"
+  "hmakingGC2ClientReserve\020\223G\0223\n.k_EMsgGCCS"
+  "trike15_v2_MatchmakingClient2GCHello\020\225G\022"
+  "3\n.k_EMsgGCCStrike15_v2_MatchmakingGC2Cl"
+  "ientHello\020\226G\0225\n0k_EMsgGCCStrike15_v2_Mat"
+  "chmakingGC2ClientAbandon\020\230G\022:\n5k_EMsgGCC"
+  "Strike15_v2_MatchmakingOperator2GCBlogUp"
+  "date\020\235G\022:\n5k_EMsgGCCStrike15_v2_ServerNo"
+  "tificationForUserPenalty\020\236G\022,\n\'k_EMsgGCC"
+  "Strike15_v2_ClientReportPlayer\020\237G\022,\n\'k_E"
+  "MsgGCCStrike15_v2_ClientReportServer\020\240G\022"
+  "-\n(k_EMsgGCCStrike15_v2_ClientCommendPla"
+  "yer\020\241G\022.\n)k_EMsgGCCStrike15_v2_ClientRep"
+  "ortResponse\020\242G\0222\n-k_EMsgGCCStrike15_v2_C"
+  "lientCommendPlayerQuery\020\243G\022:\n5k_EMsgGCCS"
+  "trike15_v2_ClientCommendPlayerQueryRespo"
+  "nse\020\244G\022(\n#k_EMsgGCCStrike15_v2_WatchInfo"
+  "Users\020\246G\0225\n0k_EMsgGCCStrike15_v2_ClientR"
+  "equestPlayersProfile\020\247G\022(\n#k_EMsgGCCStri"
+  "ke15_v2_PlayersProfile\020\250G\0223\n.k_EMsgGCCSt"
+  "rike15_v2_PlayerOverwatchCaseUpdate\020\253G\0227"
+  "\n2k_EMsgGCCStrike15_v2_PlayerOverwatchCa"
+  "seAssignment\020\254G\0223\n.k_EMsgGCCStrike15_v2_"
+  "PlayerOverwatchCaseStatus\020\255G\022*\n%k_EMsgGC"
+  "CStrike15_v2_GC2ClientTextMsg\020\256G\022*\n%k_EM"
+  "sgGCCStrike15_v2_Client2GCTextMsg\020\257G\0220\n+"
+  "k_EMsgGCCStrike15_v2_MatchEndRunRewardDr"
+  "ops\020\260G\0229\n4k_EMsgGCCStrike15_v2_MatchEndR"
+  "ewardDropsNotification\020\261G\0228\n3k_EMsgGCCSt"
+  "rike15_v2_ClientRequestWatchInfoFriends2"
+  "\020\262G\022#\n\036k_EMsgGCCStrike15_v2_MatchList\020\263G"
+  "\022:\n5k_EMsgGCCStrike15_v2_MatchListReques"
+  "tCurrentLiveGames\020\264G\0229\n4k_EMsgGCCStrike1"
+  "5_v2_MatchListRequestRecentUserGames\020\265G\022"
+  "4\n/k_EMsgGCCStrike15_v2_GC2ServerReserva"
+  "tionUpdate\020\266G\0228\n3k_EMsgGCCStrike15_v2_Cl"
+  "ientVarValueNotificationInfo\020\270G\0229\n4k_EMs"
+  "gGCCStrike15_v2_MatchListRequestTourname"
+  "ntGames\020\272G\0226\n1k_EMsgGCCStrike15_v2_Match"
+  "ListRequestFullGameInfo\020\273G\0221\n,k_EMsgGCCS"
+  "trike15_v2_GiftsLeaderboardRequest\020\274G\0222\n"
+  "-k_EMsgGCCStrike15_v2_GiftsLeaderboardRe"
+  "sponse\020\275G\0228\n3k_EMsgGCCStrike15_v2_Server"
+  "VarValueNotificationInfo\020\276G\0220\n+k_EMsgGCC"
+  "Strike15_v2_ClientSubmitSurveyVote\020\300G\0221\n"
+  ",k_EMsgGCCStrike15_v2_Server2GCClientVal"
+  "idate\020\301G\0229\n4k_EMsgGCCStrike15_v2_MatchLi"
+  "stRequestLiveGameForUser\020\302G\022>\n9k_EMsgGCC"
+  "Strike15_v2_Client2GCEconPreviewDataBloc"
+  "kRequest\020\304G\022\?\n:k_EMsgGCCStrike15_v2_Clie"
+  "nt2GCEconPreviewDataBlockResponse\020\305G\0220\n+"
+  "k_EMsgGCCStrike15_v2_AccountPrivacySetti"
+  "ngs\020\306G\022+\n&k_EMsgGCCStrike15_v2_SetMyActi"
+  "vityInfo\020\307G\022\?\n:k_EMsgGCCStrike15_v2_Matc"
+  "hListRequestTournamentPredictions\020\310G\022>\n9"
+  "k_EMsgGCCStrike15_v2_MatchListUploadTour"
+  "namentPredictions\020\311G\022&\n!k_EMsgGCCStrike1"
+  "5_v2_DraftSummary\020\312G\0225\n0k_EMsgGCCStrike1"
+  "5_v2_ClientRequestJoinFriendData\020\313G\0225\n0k"
+  "_EMsgGCCStrike15_v2_ClientRequestJoinSer"
+  "verData\020\314G\0221\n,k_EMsgGCCStrike15_v2_GC2Cl"
+  "ientTournamentInfo\020\317G\022\"\n\035k_EMsgGC_Global"
+  "Game_Subscribe\020\320G\022$\n\037k_EMsgGC_GlobalGame"
+  "_Unsubscribe\020\321G\022\035\n\030k_EMsgGC_GlobalGame_P"
+  "lay\020\322G\022,\n\'k_EMsgGCCStrike15_v2_Acknowled"
+  "gePenalty\020\323G\0226\n1k_EMsgGCCStrike15_v2_Cli"
+  "ent2GCRequestPrestigeCoin\020\324G\022.\n)k_EMsgGC"
+  "CStrike15_v2_GC2ClientGlobalStats\020\325G\022/\n*"
+  "k_EMsgGCCStrike15_v2_Client2GCStreamUnlo"
+  "ck\020\326G\0222\n-k_EMsgGCCStrike15_v2_FantasyReq"
+  "uestClientData\020\327G\0221\n,k_EMsgGCCStrike15_v"
+  "2_FantasyUpdateClientData\020\330G\0227\n2k_EMsgGC"
+  "CStrike15_v2_GCToClientSteamdatagramTick"
+  "et\020\331G\0221\n,k_EMsgGCCStrike15_v2_ClientToGC"
+  "RequestTicket\020\332G\0222\n-k_EMsgGCCStrike15_v2"
+  "_ClientToGCRequestElevate\020\333G\022$\n\037k_EMsgGC"
+  "CStrike15_v2_GlobalChat\020\334G\022.\n)k_EMsgGCCS"
+  "trike15_v2_GlobalChat_Subscribe\020\335G\0220\n+k_"
+  "EMsgGCCStrike15_v2_GlobalChat_Unsubscrib"
+  "e\020\336G\022+\n&k_EMsgGCCStrike15_v2_ClientAuthK"
+  "eyCode\020\337G\022(\n#k_EMsgGCCStrike15_v2_GotvSy"
+  "ncPacket\020\340G\022/\n*k_EMsgGCCStrike15_v2_Clie"
+  "ntPlayerDecalSign\020\341G\022/\n*k_EMsgGCCStrike1"
+  "5_v2_ClientLogonFatalError\020\343G\022)\n$k_EMsgG"
+  "CCStrike15_v2_ClientPollState\020\344G\022(\n#k_EM"
+  "sgGCCStrike15_v2_Party_Register\020\345G\022*\n%k_"
+  "EMsgGCCStrike15_v2_Party_Unregister\020\346G\022&"
+  "\n!k_EMsgGCCStrike15_v2_Party_Search\020\347G\022&"
+  "\n!k_EMsgGCCStrike15_v2_Party_Invite\020\350G\0220"
+  "\n+k_EMsgGCCStrike15_v2_Account_RequestCo"
+  "Plays\020\351G\022,\n\'k_EMsgGCCStrike15_v2_ClientG"
+  "CRankUpdate\020\352G\022-\n(k_EMsgGCCStrike15_v2_C"
+  "lientRequestOffers\020\353G\022.\n)k_EMsgGCCStrike"
+  "15_v2_ClientAccountBalance\020\354G\022.\n)k_EMsgG"
+  "CCStrike15_v2_ClientPartyJoinRelay\020\355G\022,\n"
+  "\'k_EMsgGCCStrike15_v2_ClientPartyWarning"
+  "\020\356G\022*\n%k_EMsgGCCStrike15_v2_SetEventFavo"
+  "rite\020\360G\0223\n.k_EMsgGCCStrike15_v2_GetEvent"
+  "Favorites_Request\020\361G\022*\n%k_EMsgGCCStrike1"
+  "5_v2_ClientPerfReport\020\362G\0224\n/k_EMsgGCCStr"
+  "ike15_v2_GetEventFavorites_Response\020\363G\022/"
+  "\n*k_EMsgGCCStrike15_v2_ClientRequestSouv"
+  "enir\020\364G\0223\n.k_EMsgGCCStrike15_v2_ClientRe"
+  "deemMissionReward\020\371G\022&\n!k_EMsgGCCStrike1"
+  "5_ClientDeepStats\020\372G\0222\n-k_EMsgGCCStrike1"
+  "5_StartAgreementSessionInGame\020\373G\022\'\n\"k_EM"
+  "sgGCCStrike15_v2_PrivateQueues\020\376G\0229\n4k_E"
+  "MsgGCCStrike15_v2_MatchListTournamentOpe"
+  "ratorMgmt\020\377G\022(\n#k_EMsgGCCStrike15_v2_Bet"
+  "aEnrollment\020\201H\0226\n1k_EMsgGCCStrike15_v2_S"
+  "etPlayerLeaderboardSafeName\020\202H\0220\n+k_EMsg"
+  "GCCStrike15_v2_ClientRedeemFreeReward\020\203H"
+  "\022-\n(k_EMsgGCCStrike15_v2_ClientNetworkCo"
+  "nfig\020\204H\022/\n*k_EMsgGCCStrike15_v2_GC2Clien"
+  "tNotifyXPShop\020\205H\0222\n-k_EMsgGCCStrike15_v2"
+  "_Client2GcAckXPShopTracks\020\206H\0229\n4k_EMsgGC"
+  "CStrike15_v2_MatchmakingGC2ClientSearchS"
+  "tats\020\207H\022.\n)k_EMsgGCCStrike15_v2_PremierS"
+  "easonSummary\020\210H\0229\n4k_EMsgGCCStrike15_v2_"
+  "RequestRecurringMissionSchedule\020\211H\0220\n+k_"
+  "EMsgGCCStrike15_v2_RecurringMissionSchem"
+  "a\020\212H\0221\n,k_EMsgGCCStrike15_v2_VolatileIte"
+  "mClaimReward\020\213H\022/\n*k_EMsgGCCStrike15_v2_"
+  "VolatileShopSubscribe\020\214H\022#\n\036k_EMsgGCCStr"
+  "ike15_v2_SetClanId\020\215H*\230\001\n\022ECsgoSteamUser"
+  "Stat\022&\n\"k_ECsgoSteamUserStat_XpEarnedGam"
+  "es\020\001\022-\n)k_ECsgoSteamUserStat_MatchWinsCo"
+  "mpetitive\020\002\022+\n\'k_ECsgoSteamUserStat_Surv"
+  "ivedDangerZone\020\003*J\n\tQuestType\022\032\n\026k_EQues"
+  "tType_Operation\020\001\022!\n\035k_EQuestType_Recurr"
+  "ingMission\020\002*\241\001\n\027EClientReportingVersion"
+  "\022(\n$k_EClientReportingVersion_OldVersion"
+  "\020\000\022)\n%k_EClientReportingVersion_BetaVers"
+  "ion\020\001\0221\n-k_EClientReportingVersion_Suppo"
+  "rtsTrustedMode\020\002"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessages_2eproto_deps[3] = {
   &::descriptor_table_engine_5fgcmessages_2eproto,
@@ -7290,9 +7081,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_cstrike15_5fgcmessa
 };
 static ::_pbi::once_flag descriptor_table_cstrike15_5fgcmessages_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_cstrike15_5fgcmessages_2eproto = {
-    false, false, 34314, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
+    false, false, 32896, descriptor_table_protodef_cstrike15_5fgcmessages_2eproto,
     "cstrike15_gcmessages.proto",
-    &descriptor_table_cstrike15_5fgcmessages_2eproto_once, descriptor_table_cstrike15_5fgcmessages_2eproto_deps, 3, 181,
+    &descriptor_table_cstrike15_5fgcmessages_2eproto_once, descriptor_table_cstrike15_5fgcmessages_2eproto_deps, 3, 177,
     schemas, file_default_instances, TableStruct_cstrike15_5fgcmessages_2eproto::offsets,
     file_level_metadata_cstrike15_5fgcmessages_2eproto, file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto,
     file_level_service_descriptors_cstrike15_5fgcmessages_2eproto,
@@ -7396,13 +7187,9 @@ bool ECsgoGCMsg_IsValid(int value) {
     case 9202:
     case 9203:
     case 9204:
-    case 9206:
-    case 9207:
     case 9209:
     case 9210:
     case 9211:
-    case 9212:
-    case 9213:
     case 9214:
     case 9215:
     case 9217:
@@ -7462,27 +7249,6 @@ bool EClientReportingVersion_IsValid(int value) {
     case 0:
     case 1:
     case 2:
-      return true;
-    default:
-      return false;
-  }
-}
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EInitSystemResult_descriptor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_cstrike15_5fgcmessages_2eproto);
-  return file_level_enum_descriptors_cstrike15_5fgcmessages_2eproto[4];
-}
-bool EInitSystemResult_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
       return true;
     default:
       return false;
@@ -64606,1882 +64372,6 @@ void CVDiagnostic::InternalSwap(CVDiagnostic* other) {
 
 // ===================================================================
 
-class CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode>()._impl_._has_bits_);
-  static void set_has_file_report(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_offer_insecure_mode(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_offer_secure_mode(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_show_unsigned_ui(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_kick_user(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
-  }
-  static void set_has_show_trusted_ui(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
-  }
-  static void set_has_show_warning_not_trusted(HasBits* has_bits) {
-    (*has_bits)[0] |= 128u;
-  }
-  static void set_has_show_warning_not_trusted_2(HasBits* has_bits) {
-    (*has_bits)[0] |= 256u;
-  }
-  static void set_has_files_prevented_trusted(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-};
-
-CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-}
-CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode(const CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.file_report_){}
-    , decltype(_impl_.files_prevented_trusted_){}
-    , decltype(_impl_.offer_insecure_mode_){}
-    , decltype(_impl_.offer_secure_mode_){}
-    , decltype(_impl_.show_unsigned_ui_){}
-    , decltype(_impl_.kick_user_){}
-    , decltype(_impl_.show_trusted_ui_){}
-    , decltype(_impl_.show_warning_not_trusted_){}
-    , decltype(_impl_.show_warning_not_trusted_2_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.file_report_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.file_report_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_file_report()) {
-    _this->_impl_.file_report_.Set(from._internal_file_report(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.files_prevented_trusted_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.files_prevented_trusted_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_files_prevented_trusted()) {
-    _this->_impl_.files_prevented_trusted_.Set(from._internal_files_prevented_trusted(), 
-      _this->GetArenaForAllocation());
-  }
-  ::memcpy(&_impl_.offer_insecure_mode_, &from._impl_.offer_insecure_mode_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.show_warning_not_trusted_2_) -
-    reinterpret_cast<char*>(&_impl_.offer_insecure_mode_)) + sizeof(_impl_.show_warning_not_trusted_2_));
-  // @@protoc_insertion_point(copy_constructor:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.file_report_){}
-    , decltype(_impl_.files_prevented_trusted_){}
-    , decltype(_impl_.offer_insecure_mode_){false}
-    , decltype(_impl_.offer_secure_mode_){false}
-    , decltype(_impl_.show_unsigned_ui_){false}
-    , decltype(_impl_.kick_user_){false}
-    , decltype(_impl_.show_trusted_ui_){false}
-    , decltype(_impl_.show_warning_not_trusted_){false}
-    , decltype(_impl_.show_warning_not_trusted_2_){false}
-  };
-  _impl_.file_report_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.file_report_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.files_prevented_trusted_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.files_prevented_trusted_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::~CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode() {
-  // @@protoc_insertion_point(destructor:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.file_report_.Destroy();
-  _impl_.files_prevented_trusted_.Destroy();
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      _impl_.file_report_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _impl_.files_prevented_trusted_.ClearNonDefaultToEmpty();
-    }
-  }
-  if (cached_has_bits & 0x000000fcu) {
-    ::memset(&_impl_.offer_insecure_mode_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.show_warning_not_trusted_) -
-        reinterpret_cast<char*>(&_impl_.offer_insecure_mode_)) + sizeof(_impl_.show_warning_not_trusted_));
-  }
-  _impl_.show_warning_not_trusted_2_ = false;
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional string file_report = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
-          auto str = _internal_mutable_file_report();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode.file_report");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool offer_insecure_mode = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _Internal::set_has_offer_insecure_mode(&has_bits);
-          _impl_.offer_insecure_mode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool offer_secure_mode = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _Internal::set_has_offer_secure_mode(&has_bits);
-          _impl_.offer_secure_mode_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool show_unsigned_ui = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_show_unsigned_ui(&has_bits);
-          _impl_.show_unsigned_ui_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool kick_user = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
-          _Internal::set_has_kick_user(&has_bits);
-          _impl_.kick_user_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool show_trusted_ui = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
-          _Internal::set_has_show_trusted_ui(&has_bits);
-          _impl_.show_trusted_ui_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool show_warning_not_trusted = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
-          _Internal::set_has_show_warning_not_trusted(&has_bits);
-          _impl_.show_warning_not_trusted_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool show_warning_not_trusted_2 = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
-          _Internal::set_has_show_warning_not_trusted_2(&has_bits);
-          _impl_.show_warning_not_trusted_2_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string files_prevented_trusted = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 74)) {
-          auto str = _internal_mutable_files_prevented_trusted();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode.files_prevented_trusted");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional string file_report = 1;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_file_report().data(), static_cast<int>(this->_internal_file_report().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode.file_report");
-    target = stream->WriteStringMaybeAliased(
-        1, this->_internal_file_report(), target);
-  }
-
-  // optional bool offer_insecure_mode = 2;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(2, this->_internal_offer_insecure_mode(), target);
-  }
-
-  // optional bool offer_secure_mode = 3;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(3, this->_internal_offer_secure_mode(), target);
-  }
-
-  // optional bool show_unsigned_ui = 4;
-  if (cached_has_bits & 0x00000010u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_show_unsigned_ui(), target);
-  }
-
-  // optional bool kick_user = 5;
-  if (cached_has_bits & 0x00000020u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(5, this->_internal_kick_user(), target);
-  }
-
-  // optional bool show_trusted_ui = 6;
-  if (cached_has_bits & 0x00000040u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(6, this->_internal_show_trusted_ui(), target);
-  }
-
-  // optional bool show_warning_not_trusted = 7;
-  if (cached_has_bits & 0x00000080u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(7, this->_internal_show_warning_not_trusted(), target);
-  }
-
-  // optional bool show_warning_not_trusted_2 = 8;
-  if (cached_has_bits & 0x00000100u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(8, this->_internal_show_warning_not_trusted_2(), target);
-  }
-
-  // optional string files_prevented_trusted = 9;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_files_prevented_trusted().data(), static_cast<int>(this->_internal_files_prevented_trusted().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode.files_prevented_trusted");
-    target = stream->WriteStringMaybeAliased(
-        9, this->_internal_files_prevented_trusted(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  return target;
-}
-
-size_t CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    // optional string file_report = 1;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_file_report());
-    }
-
-    // optional string files_prevented_trusted = 9;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_files_prevented_trusted());
-    }
-
-    // optional bool offer_insecure_mode = 2;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool offer_secure_mode = 3;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool show_unsigned_ui = 4;
-    if (cached_has_bits & 0x00000010u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool kick_user = 5;
-    if (cached_has_bits & 0x00000020u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool show_trusted_ui = 6;
-    if (cached_has_bits & 0x00000040u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool show_warning_not_trusted = 7;
-    if (cached_has_bits & 0x00000080u) {
-      total_size += 1 + 1;
-    }
-
-  }
-  // optional bool show_warning_not_trusted_2 = 8;
-  if (cached_has_bits & 0x00000100u) {
-    total_size += 1 + 1;
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::GetClassData() const { return &_class_data_; }
-
-
-void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode*>(&to_msg);
-  auto& from = static_cast<const CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_set_file_report(from._internal_file_report());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_internal_set_files_prevented_trusted(from._internal_files_prevented_trusted());
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.offer_insecure_mode_ = from._impl_.offer_insecure_mode_;
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.offer_secure_mode_ = from._impl_.offer_secure_mode_;
-    }
-    if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.show_unsigned_ui_ = from._impl_.show_unsigned_ui_;
-    }
-    if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.kick_user_ = from._impl_.kick_user_;
-    }
-    if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.show_trusted_ui_ = from._impl_.show_trusted_ui_;
-    }
-    if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.show_warning_not_trusted_ = from._impl_.show_warning_not_trusted_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  if (cached_has_bits & 0x00000100u) {
-    _this->_internal_set_show_warning_not_trusted_2(from._internal_show_warning_not_trusted_2());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::CopyFrom(const CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::IsInitialized() const {
-  return true;
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::InternalSwap(CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.file_report_, lhs_arena,
-      &other->_impl_.file_report_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.files_prevented_trusted_, lhs_arena,
-      &other->_impl_.files_prevented_trusted_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.show_warning_not_trusted_2_)
-      + sizeof(CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::_impl_.show_warning_not_trusted_2_)
-      - PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode, _impl_.offer_insecure_mode_)>(
-          reinterpret_cast<char*>(&_impl_.offer_insecure_mode_),
-          reinterpret_cast<char*>(&other->_impl_.offer_insecure_mode_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[173]);
-}
-
-// ===================================================================
-
-class CMsgGCCStrike15_v2_GC2ClientRequestValidation::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgGCCStrike15_v2_GC2ClientRequestValidation>()._impl_._has_bits_);
-  static void set_has_full_report(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_module(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-};
-
-CMsgGCCStrike15_v2_GC2ClientRequestValidation::CMsgGCCStrike15_v2_GC2ClientRequestValidation(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-}
-CMsgGCCStrike15_v2_GC2ClientRequestValidation::CMsgGCCStrike15_v2_GC2ClientRequestValidation(const CMsgGCCStrike15_v2_GC2ClientRequestValidation& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgGCCStrike15_v2_GC2ClientRequestValidation* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.module_){}
-    , decltype(_impl_.full_report_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.module_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.module_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_module()) {
-    _this->_impl_.module_.Set(from._internal_module(), 
-      _this->GetArenaForAllocation());
-  }
-  _this->_impl_.full_report_ = from._impl_.full_report_;
-  // @@protoc_insertion_point(copy_constructor:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientRequestValidation::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.module_){}
-    , decltype(_impl_.full_report_){false}
-  };
-  _impl_.module_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.module_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-CMsgGCCStrike15_v2_GC2ClientRequestValidation::~CMsgGCCStrike15_v2_GC2ClientRequestValidation() {
-  // @@protoc_insertion_point(destructor:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientRequestValidation::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.module_.Destroy();
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRequestValidation::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRequestValidation::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000001u) {
-    _impl_.module_.ClearNonDefaultToEmpty();
-  }
-  _impl_.full_report_ = false;
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgGCCStrike15_v2_GC2ClientRequestValidation::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional bool full_report = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _Internal::set_has_full_report(&has_bits);
-          _impl_.full_report_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string module = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_module();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientRequestValidation.module");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgGCCStrike15_v2_GC2ClientRequestValidation::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional bool full_report = 1;
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_full_report(), target);
-  }
-
-  // optional string module = 2;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_module().data(), static_cast<int>(this->_internal_module().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientRequestValidation.module");
-    target = stream->WriteStringMaybeAliased(
-        2, this->_internal_module(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  return target;
-}
-
-size_t CMsgGCCStrike15_v2_GC2ClientRequestValidation::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    // optional string module = 2;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_module());
-    }
-
-    // optional bool full_report = 1;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 + 1;
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgGCCStrike15_v2_GC2ClientRequestValidation::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgGCCStrike15_v2_GC2ClientRequestValidation::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_GC2ClientRequestValidation::GetClassData() const { return &_class_data_; }
-
-
-void CMsgGCCStrike15_v2_GC2ClientRequestValidation::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgGCCStrike15_v2_GC2ClientRequestValidation*>(&to_msg);
-  auto& from = static_cast<const CMsgGCCStrike15_v2_GC2ClientRequestValidation&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_set_module(from._internal_module());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_impl_.full_report_ = from._impl_.full_report_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRequestValidation::CopyFrom(const CMsgGCCStrike15_v2_GC2ClientRequestValidation& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgGCCStrike15_v2_GC2ClientRequestValidation)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgGCCStrike15_v2_GC2ClientRequestValidation::IsInitialized() const {
-  return true;
-}
-
-void CMsgGCCStrike15_v2_GC2ClientRequestValidation::InternalSwap(CMsgGCCStrike15_v2_GC2ClientRequestValidation* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.module_, lhs_arena,
-      &other->_impl_.module_, rhs_arena
-  );
-  swap(_impl_.full_report_, other->_impl_.full_report_);
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientRequestValidation::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[174]);
-}
-
-// ===================================================================
-
-class CMsgGCCStrike15_v2_GC2ClientInitSystem::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgGCCStrike15_v2_GC2ClientInitSystem>()._impl_._has_bits_);
-  static void set_has_load(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
-  }
-  static void set_has_name(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_outputname(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_key_data(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_sha_hash(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_cookie(HasBits* has_bits) {
-    (*has_bits)[0] |= 256u;
-  }
-  static void set_has_manifest(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_system_package(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
-  }
-  static void set_has_load_system(HasBits* has_bits) {
-    (*has_bits)[0] |= 128u;
-  }
-};
-
-CMsgGCCStrike15_v2_GC2ClientInitSystem::CMsgGCCStrike15_v2_GC2ClientInitSystem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-}
-CMsgGCCStrike15_v2_GC2ClientInitSystem::CMsgGCCStrike15_v2_GC2ClientInitSystem(const CMsgGCCStrike15_v2_GC2ClientInitSystem& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgGCCStrike15_v2_GC2ClientInitSystem* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.name_){}
-    , decltype(_impl_.outputname_){}
-    , decltype(_impl_.key_data_){}
-    , decltype(_impl_.sha_hash_){}
-    , decltype(_impl_.manifest_){}
-    , decltype(_impl_.system_package_){}
-    , decltype(_impl_.load_){}
-    , decltype(_impl_.load_system_){}
-    , decltype(_impl_.cookie_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.name_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.name_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_name()) {
-    _this->_impl_.name_.Set(from._internal_name(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.outputname_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.outputname_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_outputname()) {
-    _this->_impl_.outputname_.Set(from._internal_outputname(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.key_data_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.key_data_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_key_data()) {
-    _this->_impl_.key_data_.Set(from._internal_key_data(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.sha_hash_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.sha_hash_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_sha_hash()) {
-    _this->_impl_.sha_hash_.Set(from._internal_sha_hash(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.manifest_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.manifest_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_manifest()) {
-    _this->_impl_.manifest_.Set(from._internal_manifest(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.system_package_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.system_package_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_system_package()) {
-    _this->_impl_.system_package_.Set(from._internal_system_package(), 
-      _this->GetArenaForAllocation());
-  }
-  ::memcpy(&_impl_.load_, &from._impl_.load_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.cookie_) -
-    reinterpret_cast<char*>(&_impl_.load_)) + sizeof(_impl_.cookie_));
-  // @@protoc_insertion_point(copy_constructor:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientInitSystem::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.name_){}
-    , decltype(_impl_.outputname_){}
-    , decltype(_impl_.key_data_){}
-    , decltype(_impl_.sha_hash_){}
-    , decltype(_impl_.manifest_){}
-    , decltype(_impl_.system_package_){}
-    , decltype(_impl_.load_){false}
-    , decltype(_impl_.load_system_){false}
-    , decltype(_impl_.cookie_){0}
-  };
-  _impl_.name_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.name_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.outputname_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.outputname_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.key_data_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.key_data_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.sha_hash_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.sha_hash_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.manifest_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.manifest_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.system_package_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.system_package_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-CMsgGCCStrike15_v2_GC2ClientInitSystem::~CMsgGCCStrike15_v2_GC2ClientInitSystem() {
-  // @@protoc_insertion_point(destructor:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientInitSystem::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.name_.Destroy();
-  _impl_.outputname_.Destroy();
-  _impl_.key_data_.Destroy();
-  _impl_.sha_hash_.Destroy();
-  _impl_.manifest_.Destroy();
-  _impl_.system_package_.Destroy();
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x0000003fu) {
-    if (cached_has_bits & 0x00000001u) {
-      _impl_.name_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _impl_.outputname_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _impl_.key_data_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _impl_.sha_hash_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000010u) {
-      _impl_.manifest_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000020u) {
-      _impl_.system_package_.ClearNonDefaultToEmpty();
-    }
-  }
-  if (cached_has_bits & 0x000000c0u) {
-    ::memset(&_impl_.load_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.load_system_) -
-        reinterpret_cast<char*>(&_impl_.load_)) + sizeof(_impl_.load_system_));
-  }
-  _impl_.cookie_ = 0;
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgGCCStrike15_v2_GC2ClientInitSystem::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional bool load = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _Internal::set_has_load(&has_bits);
-          _impl_.load_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string name = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_name();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientInitSystem.name");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string outputname = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_outputname();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientInitSystem.outputname");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bytes key_data = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
-          auto str = _internal_mutable_key_data();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bytes sha_hash = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
-          auto str = _internal_mutable_sha_hash();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 cookie = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
-          _Internal::set_has_cookie(&has_bits);
-          _impl_.cookie_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string manifest = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
-          auto str = _internal_mutable_manifest();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientInitSystem.manifest");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bytes system_package = 8;
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 66)) {
-          auto str = _internal_mutable_system_package();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bool load_system = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
-          _Internal::set_has_load_system(&has_bits);
-          _impl_.load_system_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgGCCStrike15_v2_GC2ClientInitSystem::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional bool load = 1;
-  if (cached_has_bits & 0x00000040u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_load(), target);
-  }
-
-  // optional string name = 2;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientInitSystem.name");
-    target = stream->WriteStringMaybeAliased(
-        2, this->_internal_name(), target);
-  }
-
-  // optional string outputname = 3;
-  if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_outputname().data(), static_cast<int>(this->_internal_outputname().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientInitSystem.outputname");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_outputname(), target);
-  }
-
-  // optional bytes key_data = 4;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->WriteBytesMaybeAliased(
-        4, this->_internal_key_data(), target);
-  }
-
-  // optional bytes sha_hash = 5;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->WriteBytesMaybeAliased(
-        5, this->_internal_sha_hash(), target);
-  }
-
-  // optional int32 cookie = 6;
-  if (cached_has_bits & 0x00000100u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_cookie(), target);
-  }
-
-  // optional string manifest = 7;
-  if (cached_has_bits & 0x00000010u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_manifest().data(), static_cast<int>(this->_internal_manifest().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientInitSystem.manifest");
-    target = stream->WriteStringMaybeAliased(
-        7, this->_internal_manifest(), target);
-  }
-
-  // optional bytes system_package = 8;
-  if (cached_has_bits & 0x00000020u) {
-    target = stream->WriteBytesMaybeAliased(
-        8, this->_internal_system_package(), target);
-  }
-
-  // optional bool load_system = 9;
-  if (cached_has_bits & 0x00000080u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(9, this->_internal_load_system(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  return target;
-}
-
-size_t CMsgGCCStrike15_v2_GC2ClientInitSystem::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    // optional string name = 2;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_name());
-    }
-
-    // optional string outputname = 3;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_outputname());
-    }
-
-    // optional bytes key_data = 4;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-          this->_internal_key_data());
-    }
-
-    // optional bytes sha_hash = 5;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-          this->_internal_sha_hash());
-    }
-
-    // optional string manifest = 7;
-    if (cached_has_bits & 0x00000010u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_manifest());
-    }
-
-    // optional bytes system_package = 8;
-    if (cached_has_bits & 0x00000020u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-          this->_internal_system_package());
-    }
-
-    // optional bool load = 1;
-    if (cached_has_bits & 0x00000040u) {
-      total_size += 1 + 1;
-    }
-
-    // optional bool load_system = 9;
-    if (cached_has_bits & 0x00000080u) {
-      total_size += 1 + 1;
-    }
-
-  }
-  // optional int32 cookie = 6;
-  if (cached_has_bits & 0x00000100u) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_cookie());
-  }
-
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgGCCStrike15_v2_GC2ClientInitSystem::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgGCCStrike15_v2_GC2ClientInitSystem::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_GC2ClientInitSystem::GetClassData() const { return &_class_data_; }
-
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgGCCStrike15_v2_GC2ClientInitSystem*>(&to_msg);
-  auto& from = static_cast<const CMsgGCCStrike15_v2_GC2ClientInitSystem&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_set_name(from._internal_name());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_internal_set_outputname(from._internal_outputname());
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_internal_set_key_data(from._internal_key_data());
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _this->_internal_set_sha_hash(from._internal_sha_hash());
-    }
-    if (cached_has_bits & 0x00000010u) {
-      _this->_internal_set_manifest(from._internal_manifest());
-    }
-    if (cached_has_bits & 0x00000020u) {
-      _this->_internal_set_system_package(from._internal_system_package());
-    }
-    if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.load_ = from._impl_.load_;
-    }
-    if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.load_system_ = from._impl_.load_system_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  if (cached_has_bits & 0x00000100u) {
-    _this->_internal_set_cookie(from._internal_cookie());
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem::CopyFrom(const CMsgGCCStrike15_v2_GC2ClientInitSystem& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgGCCStrike15_v2_GC2ClientInitSystem)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgGCCStrike15_v2_GC2ClientInitSystem::IsInitialized() const {
-  return true;
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem::InternalSwap(CMsgGCCStrike15_v2_GC2ClientInitSystem* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.name_, lhs_arena,
-      &other->_impl_.name_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.outputname_, lhs_arena,
-      &other->_impl_.outputname_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.key_data_, lhs_arena,
-      &other->_impl_.key_data_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.sha_hash_, lhs_arena,
-      &other->_impl_.sha_hash_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.manifest_, lhs_arena,
-      &other->_impl_.manifest_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.system_package_, lhs_arena,
-      &other->_impl_.system_package_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.cookie_)
-      + sizeof(CMsgGCCStrike15_v2_GC2ClientInitSystem::_impl_.cookie_)
-      - PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientInitSystem, _impl_.load_)>(
-          reinterpret_cast<char*>(&_impl_.load_),
-          reinterpret_cast<char*>(&other->_impl_.load_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientInitSystem::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[175]);
-}
-
-// ===================================================================
-
-class CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::_Internal {
- public:
-  using HasBits = decltype(std::declval<CMsgGCCStrike15_v2_GC2ClientInitSystem_Response>()._impl_._has_bits_);
-  static void set_has_success(HasBits* has_bits) {
-    (*has_bits)[0] |= 4u;
-  }
-  static void set_has_diagnostic(HasBits* has_bits) {
-    (*has_bits)[0] |= 1u;
-  }
-  static void set_has_sha_hash(HasBits* has_bits) {
-    (*has_bits)[0] |= 2u;
-  }
-  static void set_has_response(HasBits* has_bits) {
-    (*has_bits)[0] |= 8u;
-  }
-  static void set_has_error_code1(HasBits* has_bits) {
-    (*has_bits)[0] |= 16u;
-  }
-  static void set_has_error_code2(HasBits* has_bits) {
-    (*has_bits)[0] |= 32u;
-  }
-  static void set_has_handle(HasBits* has_bits) {
-    (*has_bits)[0] |= 64u;
-  }
-  static void set_has_einit_result(HasBits* has_bits) {
-    (*has_bits)[0] |= 128u;
-  }
-  static void set_has_aux_system1(HasBits* has_bits) {
-    (*has_bits)[0] |= 256u;
-  }
-  static void set_has_aux_system2(HasBits* has_bits) {
-    (*has_bits)[0] |= 512u;
-  }
-};
-
-CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                         bool is_message_owned)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
-  SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-}
-CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response(const CMsgGCCStrike15_v2_GC2ClientInitSystem_Response& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  CMsgGCCStrike15_v2_GC2ClientInitSystem_Response* const _this = this; (void)_this;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){from._impl_._has_bits_}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.diagnostic_){}
-    , decltype(_impl_.sha_hash_){}
-    , decltype(_impl_.success_){}
-    , decltype(_impl_.response_){}
-    , decltype(_impl_.error_code1_){}
-    , decltype(_impl_.error_code2_){}
-    , decltype(_impl_.handle_){}
-    , decltype(_impl_.einit_result_){}
-    , decltype(_impl_.aux_system1_){}
-    , decltype(_impl_.aux_system2_){}};
-
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.diagnostic_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.diagnostic_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_diagnostic()) {
-    _this->_impl_.diagnostic_.Set(from._internal_diagnostic(), 
-      _this->GetArenaForAllocation());
-  }
-  _impl_.sha_hash_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.sha_hash_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (from._internal_has_sha_hash()) {
-    _this->_impl_.sha_hash_.Set(from._internal_sha_hash(), 
-      _this->GetArenaForAllocation());
-  }
-  ::memcpy(&_impl_.success_, &from._impl_.success_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.aux_system2_) -
-    reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.aux_system2_));
-  // @@protoc_insertion_point(copy_constructor:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::SharedCtor(
-    ::_pb::Arena* arena, bool is_message_owned) {
-  (void)arena;
-  (void)is_message_owned;
-  new (&_impl_) Impl_{
-      decltype(_impl_._has_bits_){}
-    , /*decltype(_impl_._cached_size_)*/{}
-    , decltype(_impl_.diagnostic_){}
-    , decltype(_impl_.sha_hash_){}
-    , decltype(_impl_.success_){false}
-    , decltype(_impl_.response_){0}
-    , decltype(_impl_.error_code1_){0}
-    , decltype(_impl_.error_code2_){0}
-    , decltype(_impl_.handle_){int64_t{0}}
-    , decltype(_impl_.einit_result_){0}
-    , decltype(_impl_.aux_system1_){0}
-    , decltype(_impl_.aux_system2_){0}
-  };
-  _impl_.diagnostic_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.diagnostic_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  _impl_.sha_hash_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.sha_hash_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-}
-
-CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::~CMsgGCCStrike15_v2_GC2ClientInitSystem_Response() {
-  // @@protoc_insertion_point(destructor:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
-  (void)arena;
-    return;
-  }
-  SharedDtor();
-}
-
-inline void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.diagnostic_.Destroy();
-  _impl_.sha_hash_.Destroy();
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::Clear() {
-// @@protoc_insertion_point(message_clear_start:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x00000003u) {
-    if (cached_has_bits & 0x00000001u) {
-      _impl_.diagnostic_.ClearNonDefaultToEmpty();
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _impl_.sha_hash_.ClearNonDefaultToEmpty();
-    }
-  }
-  if (cached_has_bits & 0x000000fcu) {
-    ::memset(&_impl_.success_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.einit_result_) -
-        reinterpret_cast<char*>(&_impl_.success_)) + sizeof(_impl_.einit_result_));
-  }
-  if (cached_has_bits & 0x00000300u) {
-    ::memset(&_impl_.aux_system1_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.aux_system2_) -
-        reinterpret_cast<char*>(&_impl_.aux_system1_)) + sizeof(_impl_.aux_system2_));
-  }
-  _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  _Internal::HasBits has_bits{};
-  while (!ctx->Done(&ptr)) {
-    uint32_t tag;
-    ptr = ::_pbi::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // optional bool success = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _Internal::set_has_success(&has_bits);
-          _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional string diagnostic = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_diagnostic();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          #ifndef NDEBUG
-          ::_pbi::VerifyUTF8(str, "CMsgGCCStrike15_v2_GC2ClientInitSystem_Response.diagnostic");
-          #endif  // !NDEBUG
-        } else
-          goto handle_unusual;
-        continue;
-      // optional bytes sha_hash = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_sha_hash();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 response = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
-          _Internal::set_has_response(&has_bits);
-          _impl_.response_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 error_code1 = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
-          _Internal::set_has_error_code1(&has_bits);
-          _impl_.error_code1_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 error_code2 = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
-          _Internal::set_has_error_code2(&has_bits);
-          _impl_.error_code2_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int64 handle = 7;
-      case 7:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 56)) {
-          _Internal::set_has_handle(&has_bits);
-          _impl_.handle_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional .EInitSystemResult einit_result = 8 [default = k_EInitSystemResult_Invalid];
-      case 8:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-          if (PROTOBUF_PREDICT_TRUE(::EInitSystemResult_IsValid(val))) {
-            _internal_set_einit_result(static_cast<::EInitSystemResult>(val));
-          } else {
-            ::PROTOBUF_NAMESPACE_ID::internal::WriteVarint(8, val, mutable_unknown_fields());
-          }
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 aux_system1 = 9;
-      case 9:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
-          _Internal::set_has_aux_system1(&has_bits);
-          _impl_.aux_system1_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // optional int32 aux_system2 = 10;
-      case 10:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
-          _Internal::set_has_aux_system2(&has_bits);
-          _impl_.aux_system2_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      default:
-        goto handle_unusual;
-    }  // switch
-  handle_unusual:
-    if ((tag == 0) || ((tag & 7) == 4)) {
-      CHK_(ptr);
-      ctx->SetLastTag(tag);
-      goto message_done;
-    }
-    ptr = UnknownFieldParse(
-        tag,
-        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-        ptr, ctx);
-    CHK_(ptr != nullptr);
-  }  // while
-message_done:
-  _impl_._has_bits_.Or(has_bits);
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto message_done;
-#undef CHK_
-}
-
-uint8_t* CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::_InternalSerialize(
-    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  // optional bool success = 1;
-  if (cached_has_bits & 0x00000004u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
-  }
-
-  // optional string diagnostic = 2;
-  if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_diagnostic().data(), static_cast<int>(this->_internal_diagnostic().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "CMsgGCCStrike15_v2_GC2ClientInitSystem_Response.diagnostic");
-    target = stream->WriteStringMaybeAliased(
-        2, this->_internal_diagnostic(), target);
-  }
-
-  // optional bytes sha_hash = 3;
-  if (cached_has_bits & 0x00000002u) {
-    target = stream->WriteBytesMaybeAliased(
-        3, this->_internal_sha_hash(), target);
-  }
-
-  // optional int32 response = 4;
-  if (cached_has_bits & 0x00000008u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_response(), target);
-  }
-
-  // optional int32 error_code1 = 5;
-  if (cached_has_bits & 0x00000010u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_error_code1(), target);
-  }
-
-  // optional int32 error_code2 = 6;
-  if (cached_has_bits & 0x00000020u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(6, this->_internal_error_code2(), target);
-  }
-
-  // optional int64 handle = 7;
-  if (cached_has_bits & 0x00000040u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt64ToArray(7, this->_internal_handle(), target);
-  }
-
-  // optional .EInitSystemResult einit_result = 8 [default = k_EInitSystemResult_Invalid];
-  if (cached_has_bits & 0x00000080u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      8, this->_internal_einit_result(), target);
-  }
-
-  // optional int32 aux_system1 = 9;
-  if (cached_has_bits & 0x00000100u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(9, this->_internal_aux_system1(), target);
-  }
-
-  // optional int32 aux_system2 = 10;
-  if (cached_has_bits & 0x00000200u) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_aux_system2(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  return target;
-}
-
-size_t CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  size_t total_size = 0;
-
-  uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  cached_has_bits = _impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    // optional string diagnostic = 2;
-    if (cached_has_bits & 0x00000001u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-          this->_internal_diagnostic());
-    }
-
-    // optional bytes sha_hash = 3;
-    if (cached_has_bits & 0x00000002u) {
-      total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
-          this->_internal_sha_hash());
-    }
-
-    // optional bool success = 1;
-    if (cached_has_bits & 0x00000004u) {
-      total_size += 1 + 1;
-    }
-
-    // optional int32 response = 4;
-    if (cached_has_bits & 0x00000008u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_response());
-    }
-
-    // optional int32 error_code1 = 5;
-    if (cached_has_bits & 0x00000010u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_error_code1());
-    }
-
-    // optional int32 error_code2 = 6;
-    if (cached_has_bits & 0x00000020u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_error_code2());
-    }
-
-    // optional int64 handle = 7;
-    if (cached_has_bits & 0x00000040u) {
-      total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(this->_internal_handle());
-    }
-
-    // optional .EInitSystemResult einit_result = 8 [default = k_EInitSystemResult_Invalid];
-    if (cached_has_bits & 0x00000080u) {
-      total_size += 1 +
-        ::_pbi::WireFormatLite::EnumSize(this->_internal_einit_result());
-    }
-
-  }
-  if (cached_has_bits & 0x00000300u) {
-    // optional int32 aux_system1 = 9;
-    if (cached_has_bits & 0x00000100u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_aux_system1());
-    }
-
-    // optional int32 aux_system2 = 10;
-    if (cached_has_bits & 0x00000200u) {
-      total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_aux_system2());
-    }
-
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::_class_data_ = {
-    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::MergeImpl
-};
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::GetClassData() const { return &_class_data_; }
-
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<CMsgGCCStrike15_v2_GC2ClientInitSystem_Response*>(&to_msg);
-  auto& from = static_cast<const CMsgGCCStrike15_v2_GC2ClientInitSystem_Response&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  GOOGLE_DCHECK_NE(&from, _this);
-  uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  cached_has_bits = from._impl_._has_bits_[0];
-  if (cached_has_bits & 0x000000ffu) {
-    if (cached_has_bits & 0x00000001u) {
-      _this->_internal_set_diagnostic(from._internal_diagnostic());
-    }
-    if (cached_has_bits & 0x00000002u) {
-      _this->_internal_set_sha_hash(from._internal_sha_hash());
-    }
-    if (cached_has_bits & 0x00000004u) {
-      _this->_impl_.success_ = from._impl_.success_;
-    }
-    if (cached_has_bits & 0x00000008u) {
-      _this->_impl_.response_ = from._impl_.response_;
-    }
-    if (cached_has_bits & 0x00000010u) {
-      _this->_impl_.error_code1_ = from._impl_.error_code1_;
-    }
-    if (cached_has_bits & 0x00000020u) {
-      _this->_impl_.error_code2_ = from._impl_.error_code2_;
-    }
-    if (cached_has_bits & 0x00000040u) {
-      _this->_impl_.handle_ = from._impl_.handle_;
-    }
-    if (cached_has_bits & 0x00000080u) {
-      _this->_impl_.einit_result_ = from._impl_.einit_result_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  if (cached_has_bits & 0x00000300u) {
-    if (cached_has_bits & 0x00000100u) {
-      _this->_impl_.aux_system1_ = from._impl_.aux_system1_;
-    }
-    if (cached_has_bits & 0x00000200u) {
-      _this->_impl_.aux_system2_ = from._impl_.aux_system2_;
-    }
-    _this->_impl_._has_bits_[0] |= cached_has_bits;
-  }
-  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::CopyFrom(const CMsgGCCStrike15_v2_GC2ClientInitSystem_Response& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CMsgGCCStrike15_v2_GC2ClientInitSystem_Response)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::IsInitialized() const {
-  return true;
-}
-
-void CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::InternalSwap(CMsgGCCStrike15_v2_GC2ClientInitSystem_Response* other) {
-  using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.diagnostic_, lhs_arena,
-      &other->_impl_.diagnostic_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.sha_hash_, lhs_arena,
-      &other->_impl_.sha_hash_, rhs_arena
-  );
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.aux_system2_)
-      + sizeof(CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::_impl_.aux_system2_)
-      - PROTOBUF_FIELD_OFFSET(CMsgGCCStrike15_v2_GC2ClientInitSystem_Response, _impl_.success_)>(
-          reinterpret_cast<char*>(&_impl_.success_),
-          reinterpret_cast<char*>(&other->_impl_.success_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_GC2ClientInitSystem_Response::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[176]);
-}
-
-// ===================================================================
-
 class CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::_Internal {
  public:
   using HasBits = decltype(std::declval<CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName>()._impl_._has_bits_);
@@ -66697,7 +64587,7 @@ void CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::InternalSwap(CMsgGCCStrike
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[177]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[173]);
 }
 
 // ===================================================================
@@ -66737,7 +64627,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*CMsgRequestRecurringMissionSch
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRequestRecurringMissionSchedule::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[178]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[174]);
 }
 
 // ===================================================================
@@ -66962,7 +64852,7 @@ void CMsgRecurringMissionSchema_MissionTemplateList::InternalSwap(CMsgRecurringM
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRecurringMissionSchema_MissionTemplateList::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[179]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[175]);
 }
 
 // ===================================================================
@@ -67147,7 +65037,7 @@ void CMsgRecurringMissionSchema::InternalSwap(CMsgRecurringMissionSchema* other)
 ::PROTOBUF_NAMESPACE_ID::Metadata CMsgRecurringMissionSchema::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_cstrike15_5fgcmessages_2eproto_getter, &descriptor_table_cstrike15_5fgcmessages_2eproto_once,
-      file_level_metadata_cstrike15_5fgcmessages_2eproto[180]);
+      file_level_metadata_cstrike15_5fgcmessages_2eproto[176]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -67843,22 +65733,6 @@ Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_ClientPerfReport >(Arena* arena)
 template<> PROTOBUF_NOINLINE ::CVDiagnostic*
 Arena::CreateMaybeMessage< ::CVDiagnostic >(Arena* arena) {
   return Arena::CreateMessageInternal< ::CVDiagnostic >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode*
-Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgGCCStrike15_v2_GC2ClientRefuseSecureMode >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgGCCStrike15_v2_GC2ClientRequestValidation*
-Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_GC2ClientRequestValidation >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgGCCStrike15_v2_GC2ClientRequestValidation >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgGCCStrike15_v2_GC2ClientInitSystem*
-Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_GC2ClientInitSystem >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgGCCStrike15_v2_GC2ClientInitSystem >(arena);
-}
-template<> PROTOBUF_NOINLINE ::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response*
-Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::CMsgGCCStrike15_v2_GC2ClientInitSystem_Response >(arena);
 }
 template<> PROTOBUF_NOINLINE ::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName*
 Arena::CreateMaybeMessage< ::CMsgGCCStrike15_v2_SetPlayerLeaderboardSafeName >(Arena* arena) {

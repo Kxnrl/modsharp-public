@@ -134,9 +134,17 @@ public struct SubTickMove
     [FieldOffset(20)]
     public float AnalogLeftDelta;
 
+    /// <summary>
+    ///     Not a delta: the game accumulates CSubtickMoveStep.pitch_delta step by step and writes the absolute pitch of
+    ///     this step here, regardless of Button; every step writes it
+    /// </summary>
     [FieldOffset(24)]
     public float AnalogPitchDelta;
 
+    /// <summary>
+    ///     Not a delta: the game accumulates CSubtickMoveStep.yaw_delta step by step and writes the absolute yaw of
+    ///     this step here, regardless of Button; every step writes it
+    /// </summary>
     [FieldOffset(28)]
     public float AnalogYawDelta;
 

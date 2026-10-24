@@ -213,7 +213,7 @@ static void JS_GetSpread(const v8::FunctionCallbackInfo<v8::Value>& info)
     {.class_name = #binding, .method_name = #method, .callback = JS_##class##__##method}
 
 #define DECLARE_SCRIPT_INSTANCE_ENTRY(method) \
-    {.class_name = "Domain", .method_name = #method, .callback = JS_Instance__##method}
+    {.class_name = "Instance", .method_name = #method, .callback = JS_Instance__##method}
 
 DECLARE_SCRIPT_INSTANCE_METHOD(ModSharpVersion)
 {

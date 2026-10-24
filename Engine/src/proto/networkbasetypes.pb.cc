@@ -1024,107 +1024,110 @@ const char descriptor_table_protodef_networkbasetypes_2eproto[] PROTOBUF_SECTION
   "Info\022\014\n\004name\030\001 \001(\t\022\014\n\004xuid\030\002 \001(\006\022\016\n\006user"
   "id\030\003 \001(\005\022\017\n\007steamid\030\004 \001(\006\022\022\n\nfakeplayer\030"
   "\005 \001(\010\022\016\n\006ishltv\030\006 \001(\010\022\023\n\013clan_member\030\t \001"
-  "(\010\022\024\n\014clan_officer\030\n \001(\010\"-\n\nCEntityMsg\022\037"
-  "\n\rtarget_entity\030\001 \001(\r:\01016777215\"R\n\nCMsg_"
-  "CVars\022\037\n\005cvars\030\001 \003(\0132\020.CMsg_CVars.CVar\032#"
-  "\n\004CVar\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"\r\n\013C"
-  "NETMsg_NOP\"\'\n\027CNETMsg_SplitScreenUser\022\014\n"
-  "\004slot\030\001 \001(\005\"\317\002\n\014CNETMsg_Tick\022\014\n\004tick\030\001 \001"
-  "(\r\022\034\n\024host_computationtime\030\004 \001(\r\022*\n\"host"
-  "_computationtime_std_deviation\030\005 \001(\r\022\030\n\020"
-  "legacy_host_loss\030\007 \001(\r\022!\n\031host_unfiltere"
-  "d_frametime\030\010 \001(\r\022\031\n\021hltv_replay_flags\030\t"
-  " \001(\r\022\032\n\022expected_long_tick\030\n \001(\r\022!\n\031expe"
-  "cted_long_tick_reason\030\013 \001(\t\022\"\n\032host_fram"
-  "e_dropped_pct_x10\030\014 \001(\r\022,\n$host_frame_ir"
-  "regular_arrival_pct_x10\030\r \001(\r\"=\n\021CNETMsg"
-  "_StringCmd\022\017\n\007command\030\001 \001(\t\022\027\n\017predictio"
-  "n_sync\030\002 \001(\r\"8\n\021CNETMsg_SetConVar\022\034\n\007con"
-  "vars\030\001 \001(\0132\013.CMsg_CVars:\005\200\265\030\200 \"\274\001\n\023CNETM"
-  "sg_SignonState\0226\n\014signon_state\030\001 \001(\0162\016.S"
-  "ignonState_t:\020SIGNONSTATE_NONE\022\023\n\013spawn_"
-  "count\030\002 \001(\r\022\032\n\022num_server_players\030\003 \001(\r\022"
-  "\032\n\022players_networkids\030\004 \003(\t\022\020\n\010map_name\030"
-  "\005 \001(\t\022\016\n\006addons\030\006 \001(\t\"\374\001\n\021CSVCMsg_GameEv"
-  "ent\022\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005"
-  "\022&\n\004keys\030\003 \003(\0132\030.CSVCMsg_GameEvent.key_t"
-  "\032\231\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002"
-  " \001(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001("
-  "\005\022\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020"
-  "\n\010val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\205\001\n"
-  "\026CSVCMsgList_GameEvents\022/\n\006events\030\001 \003(\0132"
-  "\037.CSVCMsgList_GameEvents.event_t\032:\n\007even"
-  "t_t\022\014\n\004tick\030\001 \001(\005\022!\n\005event\030\002 \001(\0132\022.CSVCM"
-  "sg_GameEvent\"\263\004\n\027CNETMsg_SpawnGroup_Load"
-  "\022\021\n\tworldname\030\001 \001(\t\022\026\n\016entitylumpname\030\002 "
-  "\001(\t\022\030\n\020entityfiltername\030\003 \001(\t\022\030\n\020spawngr"
-  "ouphandle\030\004 \001(\r\022\035\n\025spawngroupownerhandle"
-  "\030\005 \001(\r\022%\n\020world_offset_pos\030\006 \001(\0132\013.CMsgV"
-  "ector\022\'\n\022world_offset_angle\030\007 \001(\0132\013.CMsg"
-  "QAngle\022\032\n\022spawngroupmanifest\030\010 \001(\014\022\r\n\005fl"
-  "ags\030\t \001(\r\022\021\n\ttickcount\030\n \001(\005\022\032\n\022manifest"
-  "incomplete\030\013 \001(\010\022\026\n\016localnamefixup\030\014 \001(\t"
-  "\022\027\n\017parentnamefixup\030\r \001(\t\022\034\n\024manifestloa"
-  "dpriority\030\016 \001(\005\022\024\n\014worldgroupid\030\017 \001(\r\022\030\n"
-  "\020creationsequence\030\020 \001(\r\022\030\n\020savegamefilen"
-  "ame\030\021 \001(\t\022\036\n\026spawngroupparenthandle\030\022 \001("
-  "\r\022\027\n\017leveltransition\030\023 \001(\010\022\026\n\016worldgroup"
-  "name\030\024 \001(\t:\006\200\265\030\200\200\010\"|\n!CNETMsg_SpawnGroup"
-  "_ManifestUpdate\022\030\n\020spawngrouphandle\030\001 \001("
-  "\r\022\032\n\022spawngroupmanifest\030\002 \001(\014\022\032\n\022manifes"
-  "tincomplete\030\003 \001(\010:\005\200\265\030\200\020\"k\n\"CNETMsg_Spaw"
-  "nGroup_SetCreationTick\022\030\n\020spawngrouphand"
-  "le\030\001 \001(\r\022\021\n\ttickcount\030\002 \001(\005\022\030\n\020creations"
-  "equence\030\003 \001(\r\"W\n\031CNETMsg_SpawnGroup_Unlo"
-  "ad\022\030\n\020spawngrouphandle\030\001 \001(\r\022\r\n\005flags\030\002 "
-  "\001(\r\022\021\n\ttickcount\030\003 \001(\005\"<\n CNETMsg_SpawnG"
-  "roup_LoadCompleted\022\030\n\020spawngrouphandle\030\001"
-  " \001(\r\"\215\001\n\034QuantizedFloatEncoderAlias_t\022\014\n"
-  "\004name\030\001 \001(\t\022\021\n\tbit_count\030\002 \001(\005\022\024\n\014encode"
-  "_flags\030\003 \001(\005\022\021\n\tmin_value\030\004 \001(\002\022\021\n\tmax_v"
-  "alue\030\005 \001(\002\022\020\n\010validate\030\006 \001(\010\"\250\004\n CSVCMsg"
-  "_GameSessionConfiguration\022\026\n\016is_multipla"
-  "yer\030\001 \001(\010\022\027\n\017is_loadsavegame\030\002 \001(\010\022\031\n\021is"
-  "_background_map\030\003 \001(\010\022\023\n\013is_headless\030\004 \001"
-  "(\010\022\030\n\020min_client_limit\030\005 \001(\r\022\030\n\020max_clie"
-  "nt_limit\030\006 \001(\r\022\023\n\013max_clients\030\007 \001(\r\022\025\n\rt"
-  "ick_interval\030\010 \001(\007\022\020\n\010hostname\030\t \001(\t\022\024\n\014"
-  "savegamename\030\n \001(\t\022\022\n\ns1_mapname\030\013 \001(\t\022\020"
-  "\n\010gamemode\030\014 \001(\t\022\031\n\021server_ip_address\030\r "
-  "\001(\t\022\014\n\004data\030\016 \001(\014\022\024\n\014is_localonly\030\017 \001(\010\022"
-  "\027\n\017no_steam_server\030\023 \001(\010\022\025\n\ris_transitio"
-  "n\030\020 \001(\010\022\025\n\rpreviouslevel\030\021 \001(\t\022\024\n\014landma"
-  "rkname\030\022 \001(\t\022F\n\037quantized_float_encoder_"
-  "aliases\030\024 \003(\0132\035.QuantizedFloatEncoderAli"
-  "as_t\022\021\n\tmax_coord\030\025 \001(\002\"\262\001\n\024CNETMsg_Debu"
-  "gOverlay\022\r\n\005etype\030\001 \001(\005\022\034\n\007vectors\030\002 \003(\013"
-  "2\013.CMsgVector\022\031\n\006colors\030\003 \003(\0132\t.CMsgRGBA"
-  "\022\022\n\ndimensions\030\004 \003(\002\022\r\n\005times\030\005 \003(\002\022\r\n\005b"
-  "ools\030\006 \003(\010\022\017\n\007uint64s\030\007 \003(\004\022\017\n\007strings\030\010"
-  " \003(\t*\324\001\n\rSignonState_t\022\024\n\020SIGNONSTATE_NO"
-  "NE\020\000\022\031\n\025SIGNONSTATE_CHALLENGE\020\001\022\031\n\025SIGNO"
-  "NSTATE_CONNECTED\020\002\022\023\n\017SIGNONSTATE_NEW\020\003\022"
-  "\030\n\024SIGNONSTATE_PRESPAWN\020\004\022\025\n\021SIGNONSTATE"
-  "_SPAWN\020\005\022\024\n\020SIGNONSTATE_FULL\020\006\022\033\n\027SIGNON"
-  "STATE_CHANGELEVEL\020\007*\313\002\n\014NET_Messages\022\013\n\007"
-  "net_NOP\020\000\022\031\n\025net_Disconnect_Legacy\020\001\022\027\n\023"
-  "net_SplitScreenUser\020\003\022\014\n\010net_Tick\020\004\022\021\n\rn"
-  "et_StringCmd\020\005\022\021\n\rnet_SetConVar\020\006\022\023\n\017net"
-  "_SignonState\020\007\022\027\n\023net_SpawnGroup_Load\020\010\022"
-  "!\n\035net_SpawnGroup_ManifestUpdate\020\t\022\"\n\036ne"
-  "t_SpawnGroup_SetCreationTick\020\013\022\031\n\025net_Sp"
-  "awnGroup_Unload\020\014\022 \n\034net_SpawnGroup_Load"
-  "Completed\020\r\022\024\n\020net_DebugOverlay\020\017*\314\002\n\021Sp"
-  "awnGroupFlags_t\022\'\n#SPAWN_GROUP_LOAD_ENTI"
-  "TIES_FROM_SAVE\020\001\022#\n\037SPAWN_GROUP_DONT_SPA"
-  "WN_ENTITIES\020\002\022!\n\035SPAWN_GROUP_SYNCHRONOUS"
-  "_SPAWN\020\004\022&\n\"SPAWN_GROUP_IS_INITIAL_SPAWN"
-  "_GROUP\020\010\022+\n\'SPAWN_GROUP_CREATE_CLIENT_ON"
-  "LY_ENTITIES\020\020\022\"\n\036SPAWN_GROUP_BLOCK_UNTIL"
-  "_LOADED\020@\022$\n\037SPAWN_GROUP_LOAD_STREAMING_"
-  "DATA\020\200\001\022\'\n\"SPAWN_GROUP_CREATE_NEW_SCENE_"
-  "WORLD\020\200\002:=\n\022maximum_size_bytes\022\037.google."
-  "protobuf.MessageOptions\030\320\206\003 \001(\005"
+  "(\010\022\024\n\014clan_officer\030\n \001(\010\"S\n\nCEntityMsg\022E"
+  "\n\rtarget_entity\030\001 \001(\r:\01016777215B$\242\001\026CEHa"
+  "ndleNetworkableInt\252\001\01016777215\"R\n\nCMsg_CV"
+  "ars\022\037\n\005cvars\030\001 \003(\0132\020.CMsg_CVars.CVar\032#\n\004"
+  "CVar\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"\r\n\013CNE"
+  "TMsg_NOP\"\'\n\027CNETMsg_SplitScreenUser\022\014\n\004s"
+  "lot\030\001 \001(\005\"\317\002\n\014CNETMsg_Tick\022\014\n\004tick\030\001 \001(\r"
+  "\022\034\n\024host_computationtime\030\004 \001(\r\022*\n\"host_c"
+  "omputationtime_std_deviation\030\005 \001(\r\022\030\n\020le"
+  "gacy_host_loss\030\007 \001(\r\022!\n\031host_unfiltered_"
+  "frametime\030\010 \001(\r\022\031\n\021hltv_replay_flags\030\t \001"
+  "(\r\022\032\n\022expected_long_tick\030\n \001(\r\022!\n\031expect"
+  "ed_long_tick_reason\030\013 \001(\t\022\"\n\032host_frame_"
+  "dropped_pct_x10\030\014 \001(\r\022,\n$host_frame_irre"
+  "gular_arrival_pct_x10\030\r \001(\r\"=\n\021CNETMsg_S"
+  "tringCmd\022\017\n\007command\030\001 \001(\t\022\027\n\017prediction_"
+  "sync\030\002 \001(\r\"8\n\021CNETMsg_SetConVar\022\034\n\007conva"
+  "rs\030\001 \001(\0132\013.CMsg_CVars:\005\200\265\030\200 \"\274\001\n\023CNETMsg"
+  "_SignonState\0226\n\014signon_state\030\001 \001(\0162\016.Sig"
+  "nonState_t:\020SIGNONSTATE_NONE\022\023\n\013spawn_co"
+  "unt\030\002 \001(\r\022\032\n\022num_server_players\030\003 \001(\r\022\032\n"
+  "\022players_networkids\030\004 \003(\t\022\020\n\010map_name\030\005 "
+  "\001(\t\022\016\n\006addons\030\006 \001(\t\"\374\001\n\021CSVCMsg_GameEven"
+  "t\022\022\n\nevent_name\030\001 \001(\t\022\017\n\007eventid\030\002 \001(\005\022&"
+  "\n\004keys\030\003 \003(\0132\030.CSVCMsg_GameEvent.key_t\032\231"
+  "\001\n\005key_t\022\014\n\004type\030\001 \001(\005\022\022\n\nval_string\030\002 \001"
+  "(\t\022\021\n\tval_float\030\003 \001(\002\022\020\n\010val_long\030\004 \001(\005\022"
+  "\021\n\tval_short\030\005 \001(\005\022\020\n\010val_byte\030\006 \001(\005\022\020\n\010"
+  "val_bool\030\007 \001(\010\022\022\n\nval_uint64\030\010 \001(\004\"\205\001\n\026C"
+  "SVCMsgList_GameEvents\022/\n\006events\030\001 \003(\0132\037."
+  "CSVCMsgList_GameEvents.event_t\032:\n\007event_"
+  "t\022\014\n\004tick\030\001 \001(\005\022!\n\005event\030\002 \001(\0132\022.CSVCMsg"
+  "_GameEvent\"\306\004\n\027CNETMsg_SpawnGroup_Load\022\021"
+  "\n\tworldname\030\001 \001(\t\022\026\n\016entitylumpname\030\002 \001("
+  "\t\022\030\n\020entityfiltername\030\003 \001(\t\022\030\n\020spawngrou"
+  "phandle\030\004 \001(\r\022\035\n\025spawngroupownerhandle\030\005"
+  " \001(\r\022%\n\020world_offset_pos\030\006 \001(\0132\013.CMsgVec"
+  "tor\022\'\n\022world_offset_angle\030\007 \001(\0132\013.CMsgQA"
+  "ngle\022\032\n\022spawngroupmanifest\030\010 \001(\014\022\r\n\005flag"
+  "s\030\t \001(\r\022\021\n\ttickcount\030\n \001(\005\022\032\n\022manifestin"
+  "complete\030\013 \001(\010\022\026\n\016localnamefixup\030\014 \001(\t\022\027"
+  "\n\017parentnamefixup\030\r \001(\t\022\034\n\024manifestloadp"
+  "riority\030\016 \001(\005\022\'\n\014worldgroupid\030\017 \001(\rB\021\242\001\016"
+  "WorldGroupId_t\022\030\n\020creationsequence\030\020 \001(\r"
+  "\022\030\n\020savegamefilename\030\021 \001(\t\022\036\n\026spawngroup"
+  "parenthandle\030\022 \001(\r\022\027\n\017leveltransition\030\023 "
+  "\001(\010\022\026\n\016worldgroupname\030\024 \001(\t:\006\200\265\030\200\200\010\"|\n!C"
+  "NETMsg_SpawnGroup_ManifestUpdate\022\030\n\020spaw"
+  "ngrouphandle\030\001 \001(\r\022\032\n\022spawngroupmanifest"
+  "\030\002 \001(\014\022\032\n\022manifestincomplete\030\003 \001(\010:\005\200\265\030\200"
+  "\020\"k\n\"CNETMsg_SpawnGroup_SetCreationTick\022"
+  "\030\n\020spawngrouphandle\030\001 \001(\r\022\021\n\ttickcount\030\002"
+  " \001(\005\022\030\n\020creationsequence\030\003 \001(\r\"W\n\031CNETMs"
+  "g_SpawnGroup_Unload\022\030\n\020spawngrouphandle\030"
+  "\001 \001(\r\022\r\n\005flags\030\002 \001(\r\022\021\n\ttickcount\030\003 \001(\005\""
+  "<\n CNETMsg_SpawnGroup_LoadCompleted\022\030\n\020s"
+  "pawngrouphandle\030\001 \001(\r\"\215\001\n\034QuantizedFloat"
+  "EncoderAlias_t\022\014\n\004name\030\001 \001(\t\022\021\n\tbit_coun"
+  "t\030\002 \001(\005\022\024\n\014encode_flags\030\003 \001(\005\022\021\n\tmin_val"
+  "ue\030\004 \001(\002\022\021\n\tmax_value\030\005 \001(\002\022\020\n\010validate\030"
+  "\006 \001(\010\"\250\004\n CSVCMsg_GameSessionConfigurati"
+  "on\022\026\n\016is_multiplayer\030\001 \001(\010\022\027\n\017is_loadsav"
+  "egame\030\002 \001(\010\022\031\n\021is_background_map\030\003 \001(\010\022\023"
+  "\n\013is_headless\030\004 \001(\010\022\030\n\020min_client_limit\030"
+  "\005 \001(\r\022\030\n\020max_client_limit\030\006 \001(\r\022\023\n\013max_c"
+  "lients\030\007 \001(\r\022\025\n\rtick_interval\030\010 \001(\007\022\020\n\010h"
+  "ostname\030\t \001(\t\022\024\n\014savegamename\030\n \001(\t\022\022\n\ns"
+  "1_mapname\030\013 \001(\t\022\020\n\010gamemode\030\014 \001(\t\022\031\n\021ser"
+  "ver_ip_address\030\r \001(\t\022\014\n\004data\030\016 \001(\014\022\024\n\014is"
+  "_localonly\030\017 \001(\010\022\027\n\017no_steam_server\030\023 \001("
+  "\010\022\025\n\ris_transition\030\020 \001(\010\022\025\n\rpreviousleve"
+  "l\030\021 \001(\t\022\024\n\014landmarkname\030\022 \001(\t\022F\n\037quantiz"
+  "ed_float_encoder_aliases\030\024 \003(\0132\035.Quantiz"
+  "edFloatEncoderAlias_t\022\021\n\tmax_coord\030\025 \001(\002"
+  "\"\262\001\n\024CNETMsg_DebugOverlay\022\r\n\005etype\030\001 \001(\005"
+  "\022\034\n\007vectors\030\002 \003(\0132\013.CMsgVector\022\031\n\006colors"
+  "\030\003 \003(\0132\t.CMsgRGBA\022\022\n\ndimensions\030\004 \003(\002\022\r\n"
+  "\005times\030\005 \003(\002\022\r\n\005bools\030\006 \003(\010\022\017\n\007uint64s\030\007"
+  " \003(\004\022\017\n\007strings\030\010 \003(\t*\324\001\n\rSignonState_t\022"
+  "\024\n\020SIGNONSTATE_NONE\020\000\022\031\n\025SIGNONSTATE_CHA"
+  "LLENGE\020\001\022\031\n\025SIGNONSTATE_CONNECTED\020\002\022\023\n\017S"
+  "IGNONSTATE_NEW\020\003\022\030\n\024SIGNONSTATE_PRESPAWN"
+  "\020\004\022\025\n\021SIGNONSTATE_SPAWN\020\005\022\024\n\020SIGNONSTATE"
+  "_FULL\020\006\022\033\n\027SIGNONSTATE_CHANGELEVEL\020\007*\313\002\n"
+  "\014NET_Messages\022\013\n\007net_NOP\020\000\022\031\n\025net_Discon"
+  "nect_Legacy\020\001\022\027\n\023net_SplitScreenUser\020\003\022\014"
+  "\n\010net_Tick\020\004\022\021\n\rnet_StringCmd\020\005\022\021\n\rnet_S"
+  "etConVar\020\006\022\023\n\017net_SignonState\020\007\022\027\n\023net_S"
+  "pawnGroup_Load\020\010\022!\n\035net_SpawnGroup_Manif"
+  "estUpdate\020\t\022\"\n\036net_SpawnGroup_SetCreatio"
+  "nTick\020\013\022\031\n\025net_SpawnGroup_Unload\020\014\022 \n\034ne"
+  "t_SpawnGroup_LoadCompleted\020\r\022\024\n\020net_Debu"
+  "gOverlay\020\017*\314\002\n\021SpawnGroupFlags_t\022\'\n#SPAW"
+  "N_GROUP_LOAD_ENTITIES_FROM_SAVE\020\001\022#\n\037SPA"
+  "WN_GROUP_DONT_SPAWN_ENTITIES\020\002\022!\n\035SPAWN_"
+  "GROUP_SYNCHRONOUS_SPAWN\020\004\022&\n\"SPAWN_GROUP"
+  "_IS_INITIAL_SPAWN_GROUP\020\010\022+\n\'SPAWN_GROUP"
+  "_CREATE_CLIENT_ONLY_ENTITIES\020\020\022\"\n\036SPAWN_"
+  "GROUP_BLOCK_UNTIL_LOADED\020@\022$\n\037SPAWN_GROU"
+  "P_LOAD_STREAMING_DATA\020\200\001\022\'\n\"SPAWN_GROUP_"
+  "CREATE_NEW_SCENE_WORLD\020\200\002:=\n\022maximum_siz"
+  "e_bytes\022\037.google.protobuf.MessageOptions"
+  "\030\320\206\003 \001(\005B8\222\003$schemasystem/schema_enable_"
+  "defines.h\222\003\016entityhandle.h"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_networkbasetypes_2eproto_deps[3] = {
   &::descriptor_table_google_2fprotobuf_2fdescriptor_2eproto,
@@ -1133,7 +1136,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_networkbasetypes_2e
 };
 static ::_pbi::once_flag descriptor_table_networkbasetypes_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_networkbasetypes_2eproto = {
-    false, false, 4671, descriptor_table_protodef_networkbasetypes_2eproto,
+    false, false, 4786, descriptor_table_protodef_networkbasetypes_2eproto,
     "networkbasetypes.proto",
     &descriptor_table_networkbasetypes_2eproto_once, descriptor_table_networkbasetypes_2eproto_deps, 3, 28,
     schemas, file_default_instances, TableStruct_networkbasetypes_2eproto::offsets,
@@ -3397,7 +3400,7 @@ const char* CEntityMsg::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional uint32 target_entity = 1 [default = 16777215];
+      // optional uint32 target_entity = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _Internal::set_has_target_entity(&has_bits);
@@ -3437,7 +3440,7 @@ uint8_t* CEntityMsg::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  // optional uint32 target_entity = 1 [default = 16777215];
+  // optional uint32 target_entity = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   if (cached_has_bits & 0x00000001u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_target_entity(), target);
@@ -3459,7 +3462,7 @@ size_t CEntityMsg::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // optional uint32 target_entity = 1 [default = 16777215];
+  // optional uint32 target_entity = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_target_entity());
@@ -7246,7 +7249,7 @@ const char* CNETMsg_SpawnGroup_Load::_InternalParse(const char* ptr, ::_pbi::Par
         } else
           goto handle_unusual;
         continue;
-      // optional uint32 worldgroupid = 15;
+      // optional uint32 worldgroupid = 15 [boxed_type = "WorldGroupId_t"];
       case 15:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 120)) {
           _Internal::set_has_worldgroupid(&has_bits);
@@ -7443,7 +7446,7 @@ uint8_t* CNETMsg_SpawnGroup_Load::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(14, this->_internal_manifestloadpriority(), target);
   }
 
-  // optional uint32 worldgroupid = 15;
+  // optional uint32 worldgroupid = 15 [boxed_type = "WorldGroupId_t"];
   if (cached_has_bits & 0x00008000u) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(15, this->_internal_worldgroupid(), target);
@@ -7602,7 +7605,7 @@ size_t CNETMsg_SpawnGroup_Load::ByteSizeLong() const {
       total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_manifestloadpriority());
     }
 
-    // optional uint32 worldgroupid = 15;
+    // optional uint32 worldgroupid = 15 [boxed_type = "WorldGroupId_t"];
     if (cached_has_bits & 0x00008000u) {
       total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_worldgroupid());
     }

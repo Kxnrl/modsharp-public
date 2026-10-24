@@ -117,6 +117,7 @@ static void DumpVTableCount()
         "CCSPlayer_CameraServices",
         "CCSPlayerInventory",
         "CGameSceneNode",
+        "CSkeletonInstance",
         "CCSHitboxSystem",
         "CGameRulesGameSystem",
         "CSource2Server",

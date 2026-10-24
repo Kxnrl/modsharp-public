@@ -20,6 +20,7 @@
 #ifndef CSTRIKE_INTERFACE_PROTOBUFBINDING_H
 #define CSTRIKE_INTERFACE_PROTOBUFBINDING_H
 
+#include "cstrike/interface/INetChannel.h"
 #include "cstrike/type/CUtlString.h"
 
 #include <cstddef>
@@ -39,15 +40,11 @@ public:
 
     virtual const char* ToString(const void* pData, CUtlString& sResult) = 0;
 
-    virtual const char* GetGroup()      = 0;
-    virtual Color       GetGroupColor() = 0;
-    virtual int32_t     GetBufType()    = 0;
-
-    // virtual bool ReadFromBuffer(void* pData, bf_read& pBuf)       = 0;
-    // virtual bool WriteToBuffer(const void* pData, bf_write& pBuf) = 0;
+    virtual const char*         GetGroup()      = 0;
+    virtual Color               GetGroupColor() = 0;
+    virtual NetChannelBufType_t GetBufType()    = 0;
 
     virtual void* AllocateMessage() = 0;
-    // virtual void  DeallocateMessage(void* pMsg) = 0;
 
     virtual bool OkToRedispatch() = 0;
     virtual bool unk001()         = 0;

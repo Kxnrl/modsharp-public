@@ -33,7 +33,7 @@ public unsafe struct Xmm
     public fixed ushort U16[8];
 
     [FieldOffset(0)]
-    public fixed ushort U32[4];
+    public fixed uint U32[4];
 
     [FieldOffset(0)]
     public fixed ulong U64[2];

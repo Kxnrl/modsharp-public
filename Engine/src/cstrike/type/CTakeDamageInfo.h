@@ -79,8 +79,8 @@ enum class DamageTypes_t : int32_t
 
 // Both DestructiblePartDamageRequest_t and CTakeDamageResult end in an owning handle into a
 // generation-checked pool. Only ~0u means "empty"; releasing any other value hands a slot back.
-// The game's copy constructor deliberately leaves the destination's handle untouched so that a
-// copy never co-owns the source's slot -- ours must do the same.
+// The game's copy constructor sets the destination's handle to ~0u and its copy assignment leaves
+// the destination's handle untouched, so a copy never co-owns the source's slot -- ours must do the same.
 inline constexpr uint32_t kInvalidPooledHandle = 0xFFFFFFFFu;
 
 enum EDestructibleParts_DestroyParameterFlags : uint32_t
@@ -104,22 +104,31 @@ private:
     [[maybe_unused]] uint8_t pad_a[0x2];
 
 public:
-    EDestructibleParts_DestroyParameterFlags m_nDestroyFlags;       // 0xc
-    DamageTypes_t                            m_nDamageType;         // 0x10
-    float                                    m_flBreakDamage;       // 0x14
-    float                                    m_flBreakDamageRadius; // 0x18
-private:
-    [[maybe_unused]] uint8_t pad_1c[0x4];
-
-public:
-    Vector m_vWsBreakDamageOrigin; // 0x20
-    Vector m_vWsBreakDamageForce;  // 0x2c
+    EDestructibleParts_DestroyParameterFlags m_nDestroyFlags;        // 0xc
+    DamageTypes_t                            m_nDamageType;          // 0x10
+    float                                    m_flBreakDamage;        // 0x14
+    float                                    m_flBreakDamageRadius;  // 0x18
+    CBaseHandle                              m_hAttacker;            // 0x1c
+    Vector                                   m_vWsBreakDamageOrigin; // 0x20
+    Vector                                   m_vWsBreakDamageForce;  // 0x2c
 
 private:
     uint32_t m_nOwnedHandle{kInvalidPooledHandle}; // 0x38
 
 public:
-    DestructiblePartDamageRequest_t() = default;
+    DestructiblePartDamageRequest_t() :
+        m_nHitGroup(HITGROUP_INVALID),
+        m_nDamageLevel(-1),
+        m_nDesiredHealth(0),
+        pad_a{},
+        m_nDestroyFlags(EDestructibleParts_DestroyParameterFlags::EDestructibleParts_DestroyParameterFlags_Default),
+        m_nDamageType(DamageTypes_t::DMG_BLAST),
+        m_flBreakDamage(0.0f),
+        m_flBreakDamageRadius(24.0f),
+        m_vWsBreakDamageOrigin(0.0f, 0.0f, 0.0f),
+        m_vWsBreakDamageForce(1.0f, 0.0f, 0.0f)
+    {
+    }
 
     DestructiblePartDamageRequest_t(const DestructiblePartDamageRequest_t& other)
     {
@@ -144,12 +153,13 @@ private:
         m_nDamageType          = other.m_nDamageType;
         m_flBreakDamage        = other.m_flBreakDamage;
         m_flBreakDamageRadius  = other.m_flBreakDamageRadius;
+        m_hAttacker            = other.m_hAttacker;
         m_vWsBreakDamageOrigin = other.m_vWsBreakDamageOrigin;
         m_vWsBreakDamageForce  = other.m_vWsBreakDamageForce;
-        m_nOwnedHandle         = kInvalidPooledHandle;
     }
 }; // Size: 0x3c
 static_assert(sizeof(DestructiblePartDamageRequest_t) == 0x3c);
+static_assert(offsetof(DestructiblePartDamageRequest_t, m_hAttacker) == 0x1c);
 static_assert(offsetof(DestructiblePartDamageRequest_t, m_vWsBreakDamageOrigin) == 0x20);
 static_assert(offsetof(DestructiblePartDamageRequest_t, m_vWsBreakDamageForce) == 0x2c);
 

@@ -24,7 +24,11 @@ public interface IGlobalVars : INativeObject
     float AbsoluteFrameTime { get; }
 
     /// <summary>
-    ///     Frame start time standard deviation based on engine time
+    ///     Frame start time standard deviation based on engine time <br />
+    ///     <remarks>
+    ///         Not a standard deviation: it is the unclamped duration of the previous frame in seconds, which the engine
+    ///         sends as CNETMsg_Tick.host_unfiltered_frametime; AbsoluteFrameTime is this value clamped to [0.0001, 0.1]
+    ///     </remarks>
     /// </summary>
     float AbsoluteFrameStartTimeStdDev { get; }
 
@@ -44,7 +48,11 @@ public interface IGlobalVars : INativeObject
     float CurTime { get; }
 
     /// <summary>
-    ///     Render time
+    ///     Render time <br />
+    ///     <remarks>
+    ///         Not a render time: it is the client's interpolation fraction. On a dedicated server the engine only zeroes it
+    ///         at construction, so it always reads 0
+    ///     </remarks>
     /// </summary>
     float RenderTime { get; }
 

@@ -108,7 +108,7 @@ internal partial class SkeletonInstance : GameSceneNode, ISkeletonInstance
     [NativeSchemaField("CSkeletonInstance", "m_bDisableSolidCollisionsForHierarchy", typeof(bool))]
     private partial SchemaField GetDisableSolidCollisionsForHierarchyField();
 
-    [NativeSchemaField("CSkeletonInstance", "m_materialGroup", typeof(uint))]
+    [NativeSchemaField("CSkeletonInstance", "m_materialGroup", typeof(uint), IsStruct = true)]
     private partial SchemaField GetMaterialGroupField();
 
 #endregion

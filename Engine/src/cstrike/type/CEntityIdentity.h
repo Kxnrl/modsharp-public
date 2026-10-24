@@ -73,7 +73,11 @@ public:
         return reinterpret_cast<T>(m_pInstance);
     }
 
+    SCHEMA_FIELD(CEntityIdentity*, m_pNext);
     SCHEMA_FIELD(CEntityIdentity*, m_pNextByClass);
+
+    [[nodiscard]] static int32_t GetNextOffset() { return _schema_data_m_pNext().key.offset; }
+    [[nodiscard]] static int32_t GetNextByClassOffset() { return _schema_data_m_pNextByClass().key.offset; }
 
 private:
     CEntityInstance* m_pInstance;          // 0x00

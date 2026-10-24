@@ -41,6 +41,20 @@ void CCSPlayer_ItemServices::RemoveAllItems(bool removeSuit)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void CPlayer_WeaponServices::SetAmmo(int32_t ammoType, uint16_t count)
+{
+    AssertBool(ammoType >= 0 && ammoType < MAX_AMMO_TYPES);
+
+    auto& ammo = m_iAmmo()[ammoType];
+    if (ammo == count)
+        return;
+
+    const auto& data = _schema_data_m_iAmmo();
+    NetworkStateChanged(reinterpret_cast<uintptr_t>(this) + data.offset, data.key.offset, ammoType);
+
+    ammo = count;
+}
+
 void CCSPlayer_WeaponServices::RemovePlayerItem(CBaseWeapon* weapon)
 {
     return address::server::PlayerPawnWeaponServices_RemovePlayerItem(this, weapon);

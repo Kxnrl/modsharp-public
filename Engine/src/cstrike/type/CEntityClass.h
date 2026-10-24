@@ -23,13 +23,81 @@
 #include <cstdint>
 
 class CEntityIdentity;
+class CEntityInstance;
+class CEntityClass;
+
+struct CEntityClassInfo
+{
+    static constexpr uint32_t kNotSpawnableFlag = 1U << 0;
+
+    const char*       m_pszClassname;
+    const char*       m_pszCppClassname;
+    uint32_t          m_nFlags;
+    CEntityClass*     m_pClass;
+    CEntityClassInfo* m_pBaseClassInfo;
+    void*             m_pSchemaBinding;
+    void*             m_pDataDescMap;
+};
+static_assert(sizeof(CEntityClassInfo) == 0x38);
 
 class CEntityClass
 {
 public:
+    using ThinkFunc = void (*)(CEntityInstance*);
+    using NameToFuncCb = ThinkFunc (*)(const char*);
+
     CEntityClass() = delete;
 
-    inline static uint32_t sm_nEntityListHeadOffset = 0;
+    static constexpr uint32_t kAliasFlag = 1U << 1;
+
+    inline static uint32_t       sm_nEntityListHeadOffset = 0;
+    inline static CEntityClass** sm_ppFirst               = nullptr;
+    inline static uint32_t       sm_nNextOffset           = 0;
+    inline static uint32_t       sm_nClassInfoOffset      = 0;
+    inline static uint32_t       sm_nFlagsOffset          = 0;
+    inline static uint32_t       sm_nNameToThinkFuncOffset = 0;
+
+    [[nodiscard]] static CEntityClass* GetFirst()
+    {
+        if (sm_ppFirst == nullptr)
+            return nullptr;
+
+        auto* first = *sm_ppFirst;
+        return reinterpret_cast<uintptr_t>(first) == ~uintptr_t{0} ? nullptr : first;
+    }
+
+    [[nodiscard]] CEntityClass* GetNext() const
+    {
+        if (sm_nNextOffset == 0)
+            return nullptr;
+
+        return *reinterpret_cast<CEntityClass* const*>(reinterpret_cast<uintptr_t>(this) + sm_nNextOffset);
+    }
+
+    [[nodiscard]] const CEntityClassInfo* GetInfo() const
+    {
+        if (sm_nClassInfoOffset == 0)
+            return nullptr;
+
+        return *reinterpret_cast<CEntityClassInfo* const*>(reinterpret_cast<uintptr_t>(this) + sm_nClassInfoOffset);
+    }
+
+    [[nodiscard]] bool IsAlias() const
+    {
+        if (sm_nFlagsOffset == 0)
+            return false;
+
+        return (*reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(this) + sm_nFlagsOffset) & kAliasFlag) != 0;
+    }
+
+    [[nodiscard]] ThinkFunc GetThinkFunc(const char* name) const
+    {
+        if (name == nullptr || sm_nNameToThinkFuncOffset == 0)
+            return nullptr;
+
+        const auto resolver = *reinterpret_cast<NameToFuncCb const*>(reinterpret_cast<uintptr_t>(this) + sm_nNameToThinkFuncOffset);
+        return resolver != nullptr ? resolver(name) : nullptr;
+    }
 
     [[nodiscard]] CEntityIdentity* GetEntityListHead() const
     {

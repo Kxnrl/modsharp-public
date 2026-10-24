@@ -17,6 +17,10 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "gamedata.h"
+#include "global.h"
+#include "vhook/call.h"
+
 #include "cstrike/interface/IGameSystem.h"
 
 #include <cstring>
@@ -24,6 +28,17 @@
 CBaseGameSystemFactory* GetGameSystemFactory()
 {
     return CBaseGameSystemFactory::GetFirst();
+}
+
+static void* GetFactoryInstance(CBaseGameSystemFactory* factory)
+{
+    DeclareVFuncIndex(IGameSystemFactory, IsReallocating, offset);
+
+    if (!VCall_Manual(offset, bool, factory))
+        return factory->m_pInstance;
+
+    const auto ppInstance = reinterpret_cast<void**>(factory->m_pInstance);
+    return ppInstance ? *ppInstance : nullptr;
 }
 
 void* FindGameSystemByName(const char* name)
@@ -34,7 +49,7 @@ void* FindGameSystemByName(const char* name)
     {
         if (strcmp(list->m_pszName, name) == 0)
         {
-            return list->m_pInstance;
+            return GetFactoryInstance(list);
         }
 
         list = list->m_pNext;

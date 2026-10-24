@@ -329,6 +329,9 @@ private:
     uint32_t m_nEntityId;
     uint32_t m_nOwnerId;
     uint16_t m_nHierarchyId;
+    uint16_t m_nDetailLayerMask;
+    uint8_t  m_nDetailLayerMaskType;
+    uint8_t  m_nTargetDetailLayer;
     uint8_t  m_nCollisionGroup;
     uint8_t  m_nCollisionFunctionMask;
 
@@ -464,6 +467,9 @@ public:
         m_nHierarchyIds[0] = 0;
         m_nHierarchyIds[1] = 0;
 
+        m_nIncludedDetailLayers = 0xFFFF;
+        m_nTargetDetailLayer    = 0;
+
         m_nObjectSetMask  = RNQUERY_OBJECTS_ALL;
         m_nCollisionGroup = 0;
 
@@ -474,8 +480,6 @@ public:
         m_bIgnoreIfBothInteractWithHitBoxes = false;
         m_bForceHitEverything               = false;
         m_bUnknown                          = true;
-
-        m_nIncludedDetailLayers = 0xFFFF;
     }
 
     bool HasInteractsAsLayer(int nLayerIndex) const { return (m_nInteractsAs & (1ull << nLayerIndex)) != 0; }
@@ -503,7 +507,7 @@ public:
     CBaseHandle        m_nEntityIdsToIgnore[2]; // this is the ID of the game entity which should be ignored
     CBaseHandle        m_nOwnerIdsToIgnore[2];  // this is the ID of the owner of the game entity which should be ignored
     uint16_t           m_nHierarchyIds[2];      // this is an ID for the hierarchy of game entities (used to disable collision among objects in a hierarchy)
-    uint16_t           m_nIncludedDetailLayers = 0xFFFF;
+    uint16_t           m_nIncludedDetailLayers;
     uint8_t            m_nTargetDetailLayer;
     RnQueryObjectFlags m_nObjectSetMask;  // set of RnQueryObjectSet bits
     uint8_t            m_nCollisionGroup; // one of the registered collision groups

@@ -125,6 +125,8 @@ static constexpr const char* FieldTypeToString(FieldType_t type)
         "uint32",                        // FIELD_WORLD_GROUP_ID
         "uint64",                        // FIELD_GLOBALSYMBOL
         "HNmGraphDefinition",            // FIELD_HNMGRAPHDEFINITION
+        "VectorWS",                      // FIELD_NETWORK_QUANTIZED_VECTORWS
+        "VectorWS",                      // FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTORWS
     };
     if (type < FieldType_t::FIELD_TYPECOUNT)
         return names[static_cast<uint8_t>(type)];
@@ -163,6 +165,8 @@ using SchemaTableMap_t    = std::unordered_map<uint64_t, SchemaKeyValueMap_t>;
 static CUtlVector<SchemaClass_t*>          g_SchemaList;
 static SchemaKeyValueMap_t                 g_SchemaMap{};
 static std::unordered_map<uint64_t, void*> g_DataMapInputFuncMap{};
+
+static std::unordered_map<std::string, const SchemaClassInfoData_t*> g_ClassInfoMap{};
 
 struct CNetworkSerializerFieldInfo
 {
@@ -347,6 +351,16 @@ int32_t schemas::GetClassSize(const char* className)
     }
 
     return 0;
+}
+
+const SchemaClassInfoData_t* schemas::FindClassInfo(const char* className)
+{
+    if (const auto it = g_ClassInfoMap.find(className); it != g_ClassInfoMap.end())
+    {
+        return it->second;
+    }
+
+    return nullptr;
 }
 
 int32_t schemas::FindChainOffset(const char* className)
@@ -670,8 +684,12 @@ static void ScanSchemaScopeType(CSchemaSystemTypeScope* type_scope)
             continue;
         }
 
-        auto* schema_class = new SchemaClass_t();
-        schema_class->name = class_info->GetName();
+        g_ClassInfoMap.try_emplace(class_info->GetName(), class_info);
+
+        auto* schema_class  = new SchemaClass_t();
+        schema_class->name  = class_info->GetName();
+        schema_class->size  = class_info->GetSize();
+        schema_class->align = class_info->GetAlignOf();
         schema_class->baseClassList.AddToTail(new CUtlString(class_info->GetName()));
         g_SchemaList.AddToTail(schema_class);
 

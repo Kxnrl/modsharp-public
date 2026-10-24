@@ -46,7 +46,7 @@ public static partial class Source2SteamStatsReflection {
           "ASgNIpYBChpDTXNnU291cmNlMlZQcm9mTGl0ZVJlcG9ydBIuCgV0b3RhbBgB",
           "IAEoCzIfLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0SXRlbRIuCgVpdGVt",
           "cxgCIAMoCzIfLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0SXRlbRIYChBk",
-          "aXNjYXJkZWRfZnJhbWVzGAMgASgNIrAMCh1DTXNnU291cmNlMk5ldHdvcmtG",
+          "aXNjYXJkZWRfZnJhbWVzGAMgASgNIsQOCh1DTXNnU291cmNlMk5ldHdvcmtG",
           "bG93UXVhbGl0eRIQCghkdXJhdGlvbhgBIAEoDRITCgtieXRlc190b3RhbBgF",
           "IAEoBBIcChRieXRlc190b3RhbF9yZWxpYWJsZRgGIAEoBBIZChFieXRlc190",
           "b3RhbF92b2ljZRgHIAEoBBIVCg1ieXRlc19zZWNfcDk1GAogASgNEhUKDWJ5",
@@ -56,102 +56,109 @@ public static partial class Source2SteamStatsReflection {
           "ZXNfZHJvcHBlZBgfIAEoDRIcChRuZXRmcmFtZXNfb3V0b2ZvcmRlchggIAEo",
           "DRIiChpuZXRmcmFtZXNfc2l6ZV9leGNlZWRzX210dRgiIAEoDRIaChJuZXRm",
           "cmFtZXNfc2l6ZV9wOTUYIyABKA0SGgoSbmV0ZnJhbWVzX3NpemVfcDk5GCQg",
-          "ASgNEhMKC3RpY2tzX3RvdGFsGCggASgNEhIKCnRpY2tzX2dvb2QYKSABKA0S",
-          "HgoWdGlja3NfZ29vZF9hbG1vc3RfbGF0ZRgqIAEoDRIbChN0aWNrc19maXhl",
-          "ZF9kcm9wcGVkGCsgASgNEhgKEHRpY2tzX2ZpeGVkX2xhdGUYLCABKA0SGQoR",
-          "dGlja3NfYmFkX2Ryb3BwZWQYLSABKA0SFgoOdGlja3NfYmFkX2xhdGUYLiAB",
-          "KA0SFwoPdGlja3NfYmFkX290aGVyGC8gASgNEiMKG3RpY2tfbWlzc3JhdGVf",
-          "c2FtcGxlc190b3RhbBgyIAEoDRIlCh10aWNrX21pc3NyYXRlX3NhbXBsZXNf",
-          "cGVyZmVjdBgzIAEoDRIoCiB0aWNrX21pc3NyYXRlX3NhbXBsZXNfcGVyZmVj",
-          "dG5ldBg0IAEoDRIgChh0aWNrX21pc3NyYXRlbmV0X3A3NV94MTAYNSABKA0S",
-          "IAoYdGlja19taXNzcmF0ZW5ldF9wOTVfeDEwGDYgASgNEiAKGHRpY2tfbWlz",
-          "c3JhdGVuZXRfcDk5X3gxMBg3IAEoDRIVCg1yZWN2bWFyZ2luX3AxGD0gASgR",
-          "EhUKDXJlY3ZtYXJnaW5fcDUYPiABKBESFgoOcmVjdm1hcmdpbl9wMjUYPyAB",
-          "KBESFgoOcmVjdm1hcmdpbl9wNTAYQCABKBESFgoOcmVjdm1hcmdpbl9wNzUY",
-          "QSABKBESFgoOcmVjdm1hcmdpbl9wOTUYQiABKBESGwoTbmV0ZnJhbWVfaml0",
-          "dGVyX3A1MBhGIAEoDRIbChNuZXRmcmFtZV9qaXR0ZXJfcDk5GEcgASgNEh8K",
-          "F2ludGVydmFsX3BlYWtqaXR0ZXJfcDUwGEggASgNEh8KF2ludGVydmFsX3Bl",
-          "YWtqaXR0ZXJfcDk1GEkgASgNEiYKHnBhY2tldF9taXNkZWxpdmVyeV9yYXRl",
-          "X3A1MF94NBhKIAEoDRImCh5wYWNrZXRfbWlzZGVsaXZlcnlfcmF0ZV9wOTVf",
-          "eDQYSyABKA0SEwoLbmV0X3BpbmdfcDUYUCABKA0SFAoMbmV0X3BpbmdfcDUw",
-          "GFEgASgNEhQKDG5ldF9waW5nX3A5NRhSIAEoDRIYChBtc2dwcm9jX3VzZWNf",
-          "cDUwGFogASgNEhgKEG1zZ3Byb2NfdXNlY19wOTUYWyABKA0SGAoQbXNncHJv",
-          "Y191c2VjX3A5ORhcIAEoDRIYChBtc2dwcm9jX3VzZWNfbWF4GF0gASgNEhwK",
-          "FG1zZ3Byb2NfdXNlY19hdmdfcDUwGF4gASgNEhwKFG1zZ3Byb2NfdXNlY19h",
-          "dmdfcDk1GF8gASgNEhwKFG1zZ3Byb2NfdXNlY19hdmdfcDk5GGAgASgNEhwK",
-          "FG1zZ3Byb2NfdXNlY19hdmdfbWF4GGEgASgNEhYKDnF1ZXVlZG1zZ3NfcDUw",
-          "GGQgASgNEhYKDnF1ZXVlZG1zZ3NfcDk1GGUgASgNEhYKDnF1ZXVlZG1zZ3Nf",
-          "cDk5GGYgASgNEhYKDnF1ZXVlZG1zZ3NfbWF4GGcgASgNIvsBCh1DTXNnU291",
-          "cmNlMlBlcmZJbnRlcnZhbFNhbXBsZRIZChFmcmFtZV90aW1lX21heF9tcxgB",
-          "IAEoAhIZChFmcmFtZV90aW1lX2F2Z19tcxgCIAEoAhIZChFmcmFtZV90aW1l",
-          "X21pbl9tcxgDIAEoAhITCgtmcmFtZV9jb3VudBgEIAEoBRIbChNmcmFtZV90",
-          "aW1lX3RvdGFsX21zGAUgASgCEjAKBHRhZ3MYBiADKAsyIi5DTXNnU291cmNl",
-          "MlBlcmZJbnRlcnZhbFNhbXBsZS5UYWcaJQoDVGFnEgsKA3RhZxgBIAEoCRIR",
-          "CgltYXhfdmFsdWUYAiABKA0iuwQKLUNTb3VyY2UyTWV0cmljc19NYXRjaFBl",
-          "cmZTdW1tYXJ5X05vdGlmaWNhdGlvbhINCgVhcHBpZBgBIAEoDRIRCglnYW1l",
-          "X21vZGUYAiABKAkSFwoPc2VydmVyX2J1aWxkX2lkGAMgASgNEhQKDHNlcnZl",
-          "cl9wb3BpZBgEIAEoBxIzCg5zZXJ2ZXJfcHJvZmlsZRgKIAEoCzIbLkNNc2dT",
-          "b3VyY2UyVlByb2ZMaXRlUmVwb3J0EkYKB2NsaWVudHMYCyADKAsyNS5DU291",
-          "cmNlMk1ldHJpY3NfTWF0Y2hQZXJmU3VtbWFyeV9Ob3RpZmljYXRpb24uQ2xp",
-          "ZW50EgsKA21hcBgUIAEoCRquAgoGQ2xpZW50Ei0KDHN5c3RlbV9zcGVjcxgB",
-          "IAEoCzIXLkNNc2dTb3VyY2UyU3lzdGVtU3BlY3MSLAoHcHJvZmlsZRgCIAEo",
-          "CzIbLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0EhAKCGJ1aWxkX2lkGAMg",
-          "ASgNEjcKD2Rvd25zdHJlYW1fZmxvdxgEIAEoCzIeLkNNc2dTb3VyY2UyTmV0",
-          "d29ya0Zsb3dRdWFsaXR5EjUKDXVwc3RyZWFtX2Zsb3cYBSABKAsyHi5DTXNn",
-          "U291cmNlMk5ldHdvcmtGbG93UXVhbGl0eRIPCgdzdGVhbWlkGAogASgGEjQK",
-          "DHBlcmZfc2FtcGxlcxgLIAMoCzIeLkNNc2dTb3VyY2UyUGVyZkludGVydmFs",
-          "U2FtcGxlIpUGCiRDTXNnU291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExp",
-          "c3QSEwoLcmVjb3JkX25hbWUYASABKAkSQgoKZmllbGRfZGVmcxgCIAMoCzIu",
-          "LkNNc2dTb3VyY2UyUGxheVN0YXRzUGFja2VkUmVjb3JkTGlzdC5GaWVsZERl",
-          "ZhIUCgxyZWNvcmRfY291bnQYAyABKA0SFwoLdWludDY0X3ZhbHMYBCADKARC",
-          "AhABEhcKC3VpbnQzMl92YWxzGAUgAygNQgIQARIXCgt1aW50MTZfdmFscxgG",
-          "IAMoDUICEAESFgoKdWludDhfdmFscxgHIAMoDUICEAESFgoKaW50NjRfdmFs",
-          "cxgIIAMoA0ICEAESFgoKaW50MzJfdmFscxgJIAMoBUICEAESFgoKaW50MTZf",
-          "dmFscxgKIAMoBUICEAESFQoJaW50OF92YWxzGAsgAygFQgIQARIYCgxmbG9h",
-          "dDY0X3ZhbHMYDCADKAFCAhABEhgKDGZsb2F0MzJfdmFscxgNIAMoAkICEAES",
-          "FQoJYm9vbF92YWxzGA4gAygIQgIQARITCgtzdHJpbmdfdmFscxgPIAMoCRIj",
-          "Chtsb3dfY2FyZGluYWxpdHlfc3RyaW5nX3ZhbHMYECADKAkSHAoQdXRjZGF0",
-          "ZXRpbWVfdmFscxgRIAMoB0ICEAESIwoXc3RlYW1pZHRydXN0YnVja2V0X3Zh",
-          "bHMYEiADKAZCAhABEksKEHRydXN0YnVja2V0X3ZhbHMYEyADKAsyMS5DTXNn",
-          "U291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExpc3QuU3RlYW1JRExpc3QS",
-          "GAoMc3RlYW1pZF92YWxzGBQgAygEQgIQARppCghGaWVsZERlZhISCgpmaWVs",
-          "ZF9uYW1lGAEgASgJEkkKCmZpZWxkX3R5cGUYAiABKA4yGy5FU291cmNlMlBs",
-          "YXlTdGF0c0ZpZWxkVHlwZToYU291cmNlMlBsYXlTdGF0c19JbnZhbGlkGiIK",
-          "C1N0ZWFtSURMaXN0EhMKB3N0ZWFtaWQYASADKAZCAhABInoKLENTb3VyY2Uy",
-          "TWV0cmljc19SZWNvcmRQbGF5U3RhdHNfTm90aWZpY2F0aW9uEjsKDHJlY29y",
-          "ZF90eXBlcxgBIAMoCzIlLkNNc2dTb3VyY2UyUGxheVN0YXRzUGFja2VkUmVj",
-          "b3JkTGlzdBINCgVhcHBpZBgCIAEoDSKPAQokQ1NvdXJjZTJNZXRyaWNzX0Zl",
-          "dGNoTWFwRGF0YV9SZXF1ZXN0Eg0KBWFwcGlkGAEgASgNEhAKCG1hcF9uYW1l",
-          "GAIgASgJEhEKCWdhbWVfdHlwZRgDIAEoDRIRCglnYW1lX21vZGUYBCABKA0S",
-          "DQoFcGFyYW0YBSABKAkSEQoJdGltZV9zcGFuGAYgASgNIp0BCiVDU291cmNl",
-          "Mk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3BvbnNlEj8KB3Jlc3VsdHMYASAD",
-          "KAsyLi5DU291cmNlMk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3BvbnNlLk1h",
-          "cERhdGEaMwoHTWFwRGF0YRIMCgRuYW1lGAEgASgJEgwKBHR5cGUYAiABKAkS",
-          "DAoEZGF0YRgDIAEoCSLGAQobQ1VzZXJNZXNzYWdlX1VzZXJTZW50QnVnQnVn",
-          "EhQKDGNvbW1hbmRfbGluZRgBIAEoCRIUCgxhdXRvZXhlY19jZmcYAiABKAkS",
-          "LQoMc3lzdGVtX3NwZWNzGAMgASgLMhcuQ01zZ1NvdXJjZTJTeXN0ZW1TcGVj",
-          "cxIQCghidWlsZF9pZBgEIAEoDRIRCglvc3ZlcnNpb24YBSABKAUSFAoMY29t",
-          "bWFuZF9sb2dzGAYgASgJEhEKCWJ1Z2J1Z19ubxgHIAEoBSrQBAoaRVNvdXJj",
-          "ZTJQbGF5U3RhdHNGaWVsZFR5cGUSHAoYU291cmNlMlBsYXlTdGF0c19JbnZh",
-          "bGlkEAASGwoXU291cmNlMlBsYXlTdGF0c19VSW50NjQQARIbChdTb3VyY2Uy",
-          "UGxheVN0YXRzX1VJbnQzMhACEhsKF1NvdXJjZTJQbGF5U3RhdHNfVUludDE2",
-          "EAMSGgoWU291cmNlMlBsYXlTdGF0c19VSW50OBAEEhoKFlNvdXJjZTJQbGF5",
-          "U3RhdHNfSW50NjQQBRIaChZTb3VyY2UyUGxheVN0YXRzX0ludDMyEAYSGgoW",
-          "U291cmNlMlBsYXlTdGF0c19JbnQxNhAHEhkKFVNvdXJjZTJQbGF5U3RhdHNf",
-          "SW50OBAIEhwKGFNvdXJjZTJQbGF5U3RhdHNfRmxvYXQ2NBAJEhwKGFNvdXJj",
-          "ZTJQbGF5U3RhdHNfRmxvYXQzMhAKEhkKFVNvdXJjZTJQbGF5U3RhdHNfQm9v",
-          "bBALEhsKF1NvdXJjZTJQbGF5U3RhdHNfU3RyaW5nEAwSKQolU291cmNlMlBs",
-          "YXlTdGF0c19Mb3dDYXJkaW5hbGl0eVN0cmluZxANEiAKHFNvdXJjZTJQbGF5",
-          "U3RhdHNfVVRDRGF0ZVRpbWUQDhInCiNTb3VyY2UyUGxheVN0YXRzX1N0ZWFt",
-          "SURUcnVzdEJ1Y2tldBAPEioKJlNvdXJjZTJQbGF5U3RhdHNfU3RlYW1JRFRy",
-          "dXN0QnVja2V0TWluEBASHAoYU291cmNlMlBsYXlTdGF0c19TdGVhbUlEEBE="));
+          "ASgNEicKH25ldGZyYW1lc19zaXplX3VuY29tcHJlc3NlZF9wNTAYDCABKA0S",
+          "JwofbmV0ZnJhbWVzX3NpemVfdW5jb21wcmVzc2VkX3A5NRgNIAEoDRInCh9u",
+          "ZXRmcmFtZXNfc2l6ZV91bmNvbXByZXNzZWRfcDk5GA4gASgNEicKH25ldGZy",
+          "YW1lc19zaXplX3VuY29tcHJlc3NlZF9tYXgYDyABKA0SGgoSbmV0ZnJhbWVz",
+          "X21zZ3NfcDUwGBAgASgNEhoKEm5ldGZyYW1lc19tc2dzX3A5NRgRIAEoDRIa",
+          "ChJuZXRmcmFtZXNfbXNnc19wOTkYEiABKA0SGgoSbmV0ZnJhbWVzX21zZ3Nf",
+          "bWF4GBMgASgNEhMKC3RpY2tzX3RvdGFsGCggASgNEhIKCnRpY2tzX2dvb2QY",
+          "KSABKA0SHgoWdGlja3NfZ29vZF9hbG1vc3RfbGF0ZRgqIAEoDRIbChN0aWNr",
+          "c19maXhlZF9kcm9wcGVkGCsgASgNEhgKEHRpY2tzX2ZpeGVkX2xhdGUYLCAB",
+          "KA0SGQoRdGlja3NfYmFkX2Ryb3BwZWQYLSABKA0SFgoOdGlja3NfYmFkX2xh",
+          "dGUYLiABKA0SFwoPdGlja3NfYmFkX290aGVyGC8gASgNEiMKG3RpY2tfbWlz",
+          "c3JhdGVfc2FtcGxlc190b3RhbBgyIAEoDRIlCh10aWNrX21pc3NyYXRlX3Nh",
+          "bXBsZXNfcGVyZmVjdBgzIAEoDRIoCiB0aWNrX21pc3NyYXRlX3NhbXBsZXNf",
+          "cGVyZmVjdG5ldBg0IAEoDRIgChh0aWNrX21pc3NyYXRlbmV0X3A3NV94MTAY",
+          "NSABKA0SIAoYdGlja19taXNzcmF0ZW5ldF9wOTVfeDEwGDYgASgNEiAKGHRp",
+          "Y2tfbWlzc3JhdGVuZXRfcDk5X3gxMBg3IAEoDRIVCg1yZWN2bWFyZ2luX3Ax",
+          "GD0gASgREhUKDXJlY3ZtYXJnaW5fcDUYPiABKBESFgoOcmVjdm1hcmdpbl9w",
+          "MjUYPyABKBESFgoOcmVjdm1hcmdpbl9wNTAYQCABKBESFgoOcmVjdm1hcmdp",
+          "bl9wNzUYQSABKBESFgoOcmVjdm1hcmdpbl9wOTUYQiABKBESGwoTbmV0ZnJh",
+          "bWVfaml0dGVyX3A1MBhGIAEoDRIbChNuZXRmcmFtZV9qaXR0ZXJfcDk5GEcg",
+          "ASgNEh8KF2ludGVydmFsX3BlYWtqaXR0ZXJfcDUwGEggASgNEh8KF2ludGVy",
+          "dmFsX3BlYWtqaXR0ZXJfcDk1GEkgASgNEiYKHnBhY2tldF9taXNkZWxpdmVy",
+          "eV9yYXRlX3A1MF94NBhKIAEoDRImCh5wYWNrZXRfbWlzZGVsaXZlcnlfcmF0",
+          "ZV9wOTVfeDQYSyABKA0SEwoLbmV0X3BpbmdfcDUYUCABKA0SFAoMbmV0X3Bp",
+          "bmdfcDUwGFEgASgNEhQKDG5ldF9waW5nX3A5NRhSIAEoDRIYChBtc2dwcm9j",
+          "X3VzZWNfcDUwGFogASgNEhgKEG1zZ3Byb2NfdXNlY19wOTUYWyABKA0SGAoQ",
+          "bXNncHJvY191c2VjX3A5ORhcIAEoDRIYChBtc2dwcm9jX3VzZWNfbWF4GF0g",
+          "ASgNEhwKFG1zZ3Byb2NfdXNlY19hdmdfcDUwGF4gASgNEhwKFG1zZ3Byb2Nf",
+          "dXNlY19hdmdfcDk1GF8gASgNEhwKFG1zZ3Byb2NfdXNlY19hdmdfcDk5GGAg",
+          "ASgNEhwKFG1zZ3Byb2NfdXNlY19hdmdfbWF4GGEgASgNEhYKDnF1ZXVlZG1z",
+          "Z3NfcDUwGGQgASgNEhYKDnF1ZXVlZG1zZ3NfcDk1GGUgASgNEhYKDnF1ZXVl",
+          "ZG1zZ3NfcDk5GGYgASgNEhYKDnF1ZXVlZG1zZ3NfbWF4GGcgASgNIvsBCh1D",
+          "TXNnU291cmNlMlBlcmZJbnRlcnZhbFNhbXBsZRIZChFmcmFtZV90aW1lX21h",
+          "eF9tcxgBIAEoAhIZChFmcmFtZV90aW1lX2F2Z19tcxgCIAEoAhIZChFmcmFt",
+          "ZV90aW1lX21pbl9tcxgDIAEoAhITCgtmcmFtZV9jb3VudBgEIAEoBRIbChNm",
+          "cmFtZV90aW1lX3RvdGFsX21zGAUgASgCEjAKBHRhZ3MYBiADKAsyIi5DTXNn",
+          "U291cmNlMlBlcmZJbnRlcnZhbFNhbXBsZS5UYWcaJQoDVGFnEgsKA3RhZxgB",
+          "IAEoCRIRCgltYXhfdmFsdWUYAiABKA0iuwQKLUNTb3VyY2UyTWV0cmljc19N",
+          "YXRjaFBlcmZTdW1tYXJ5X05vdGlmaWNhdGlvbhINCgVhcHBpZBgBIAEoDRIR",
+          "CglnYW1lX21vZGUYAiABKAkSFwoPc2VydmVyX2J1aWxkX2lkGAMgASgNEhQK",
+          "DHNlcnZlcl9wb3BpZBgEIAEoBxIzCg5zZXJ2ZXJfcHJvZmlsZRgKIAEoCzIb",
+          "LkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0EkYKB2NsaWVudHMYCyADKAsy",
+          "NS5DU291cmNlMk1ldHJpY3NfTWF0Y2hQZXJmU3VtbWFyeV9Ob3RpZmljYXRp",
+          "b24uQ2xpZW50EgsKA21hcBgUIAEoCRquAgoGQ2xpZW50Ei0KDHN5c3RlbV9z",
+          "cGVjcxgBIAEoCzIXLkNNc2dTb3VyY2UyU3lzdGVtU3BlY3MSLAoHcHJvZmls",
+          "ZRgCIAEoCzIbLkNNc2dTb3VyY2UyVlByb2ZMaXRlUmVwb3J0EhAKCGJ1aWxk",
+          "X2lkGAMgASgNEjcKD2Rvd25zdHJlYW1fZmxvdxgEIAEoCzIeLkNNc2dTb3Vy",
+          "Y2UyTmV0d29ya0Zsb3dRdWFsaXR5EjUKDXVwc3RyZWFtX2Zsb3cYBSABKAsy",
+          "Hi5DTXNnU291cmNlMk5ldHdvcmtGbG93UXVhbGl0eRIPCgdzdGVhbWlkGAog",
+          "ASgGEjQKDHBlcmZfc2FtcGxlcxgLIAMoCzIeLkNNc2dTb3VyY2UyUGVyZklu",
+          "dGVydmFsU2FtcGxlIpUGCiRDTXNnU291cmNlMlBsYXlTdGF0c1BhY2tlZFJl",
+          "Y29yZExpc3QSEwoLcmVjb3JkX25hbWUYASABKAkSQgoKZmllbGRfZGVmcxgC",
+          "IAMoCzIuLkNNc2dTb3VyY2UyUGxheVN0YXRzUGFja2VkUmVjb3JkTGlzdC5G",
+          "aWVsZERlZhIUCgxyZWNvcmRfY291bnQYAyABKA0SFwoLdWludDY0X3ZhbHMY",
+          "BCADKARCAhABEhcKC3VpbnQzMl92YWxzGAUgAygNQgIQARIXCgt1aW50MTZf",
+          "dmFscxgGIAMoDUICEAESFgoKdWludDhfdmFscxgHIAMoDUICEAESFgoKaW50",
+          "NjRfdmFscxgIIAMoA0ICEAESFgoKaW50MzJfdmFscxgJIAMoBUICEAESFgoK",
+          "aW50MTZfdmFscxgKIAMoBUICEAESFQoJaW50OF92YWxzGAsgAygFQgIQARIY",
+          "CgxmbG9hdDY0X3ZhbHMYDCADKAFCAhABEhgKDGZsb2F0MzJfdmFscxgNIAMo",
+          "AkICEAESFQoJYm9vbF92YWxzGA4gAygIQgIQARITCgtzdHJpbmdfdmFscxgP",
+          "IAMoCRIjChtsb3dfY2FyZGluYWxpdHlfc3RyaW5nX3ZhbHMYECADKAkSHAoQ",
+          "dXRjZGF0ZXRpbWVfdmFscxgRIAMoB0ICEAESIwoXc3RlYW1pZHRydXN0YnVj",
+          "a2V0X3ZhbHMYEiADKAZCAhABEksKEHRydXN0YnVja2V0X3ZhbHMYEyADKAsy",
+          "MS5DTXNnU291cmNlMlBsYXlTdGF0c1BhY2tlZFJlY29yZExpc3QuU3RlYW1J",
+          "RExpc3QSGAoMc3RlYW1pZF92YWxzGBQgAygEQgIQARppCghGaWVsZERlZhIS",
+          "CgpmaWVsZF9uYW1lGAEgASgJEkkKCmZpZWxkX3R5cGUYAiABKA4yGy5FU291",
+          "cmNlMlBsYXlTdGF0c0ZpZWxkVHlwZToYU291cmNlMlBsYXlTdGF0c19JbnZh",
+          "bGlkGiIKC1N0ZWFtSURMaXN0EhMKB3N0ZWFtaWQYASADKAZCAhABInoKLENT",
+          "b3VyY2UyTWV0cmljc19SZWNvcmRQbGF5U3RhdHNfTm90aWZpY2F0aW9uEjsK",
+          "DHJlY29yZF90eXBlcxgBIAMoCzIlLkNNc2dTb3VyY2UyUGxheVN0YXRzUGFj",
+          "a2VkUmVjb3JkTGlzdBINCgVhcHBpZBgCIAEoDSKPAQokQ1NvdXJjZTJNZXRy",
+          "aWNzX0ZldGNoTWFwRGF0YV9SZXF1ZXN0Eg0KBWFwcGlkGAEgASgNEhAKCG1h",
+          "cF9uYW1lGAIgASgJEhEKCWdhbWVfdHlwZRgDIAEoDRIRCglnYW1lX21vZGUY",
+          "BCABKA0SDQoFcGFyYW0YBSABKAkSEQoJdGltZV9zcGFuGAYgASgNIp0BCiVD",
+          "U291cmNlMk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3BvbnNlEj8KB3Jlc3Vs",
+          "dHMYASADKAsyLi5DU291cmNlMk1ldHJpY3NfRmV0Y2hNYXBEYXRhX1Jlc3Bv",
+          "bnNlLk1hcERhdGEaMwoHTWFwRGF0YRIMCgRuYW1lGAEgASgJEgwKBHR5cGUY",
+          "AiABKAkSDAoEZGF0YRgDIAEoCSLGAQobQ1VzZXJNZXNzYWdlX1VzZXJTZW50",
+          "QnVnQnVnEhQKDGNvbW1hbmRfbGluZRgBIAEoCRIUCgxhdXRvZXhlY19jZmcY",
+          "AiABKAkSLQoMc3lzdGVtX3NwZWNzGAMgASgLMhcuQ01zZ1NvdXJjZTJTeXN0",
+          "ZW1TcGVjcxIQCghidWlsZF9pZBgEIAEoDRIRCglvc3ZlcnNpb24YBSABKAUS",
+          "FAoMY29tbWFuZF9sb2dzGAYgASgJEhEKCWJ1Z2J1Z19ubxgHIAEoBSrQBAoa",
+          "RVNvdXJjZTJQbGF5U3RhdHNGaWVsZFR5cGUSHAoYU291cmNlMlBsYXlTdGF0",
+          "c19JbnZhbGlkEAASGwoXU291cmNlMlBsYXlTdGF0c19VSW50NjQQARIbChdT",
+          "b3VyY2UyUGxheVN0YXRzX1VJbnQzMhACEhsKF1NvdXJjZTJQbGF5U3RhdHNf",
+          "VUludDE2EAMSGgoWU291cmNlMlBsYXlTdGF0c19VSW50OBAEEhoKFlNvdXJj",
+          "ZTJQbGF5U3RhdHNfSW50NjQQBRIaChZTb3VyY2UyUGxheVN0YXRzX0ludDMy",
+          "EAYSGgoWU291cmNlMlBsYXlTdGF0c19JbnQxNhAHEhkKFVNvdXJjZTJQbGF5",
+          "U3RhdHNfSW50OBAIEhwKGFNvdXJjZTJQbGF5U3RhdHNfRmxvYXQ2NBAJEhwK",
+          "GFNvdXJjZTJQbGF5U3RhdHNfRmxvYXQzMhAKEhkKFVNvdXJjZTJQbGF5U3Rh",
+          "dHNfQm9vbBALEhsKF1NvdXJjZTJQbGF5U3RhdHNfU3RyaW5nEAwSKQolU291",
+          "cmNlMlBsYXlTdGF0c19Mb3dDYXJkaW5hbGl0eVN0cmluZxANEiAKHFNvdXJj",
+          "ZTJQbGF5U3RhdHNfVVRDRGF0ZVRpbWUQDhInCiNTb3VyY2UyUGxheVN0YXRz",
+          "X1N0ZWFtSURUcnVzdEJ1Y2tldBAPEioKJlNvdXJjZTJQbGF5U3RhdHNfU3Rl",
+          "YW1JRFRydXN0QnVja2V0TWluEBASHAoYU291cmNlMlBsYXlTdGF0c19TdGVh",
+          "bUlEEBE="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(new[] {typeof(global::ESource2PlayStatsFieldType), }, null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2SystemSpecs), global::CMsgSource2SystemSpecs.Parser, new[]{ "CpuId", "CpuBrand", "CpuModel", "CpuNumPhysical", "RamPhysicalTotalMb", "GpuRendersystemDllName", "GpuVendorId", "GpuDriverName", "GpuDriverVersionHigh", "GpuDriverVersionLow", "GpuDxSupportLevel", "GpuTextureMemorySizeMb", "BackbufferWidth", "BackbufferHeight" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2VProfLiteReportItem), global::CMsgSource2VProfLiteReportItem.Parser, new[]{ "Name", "ActiveSamples", "ActiveSamples1Secmax", "UsecMax", "UsecAvgActive", "UsecP50Active", "UsecP99Active", "UsecAvgAll", "UsecP50All", "UsecP99All", "Usec1SecmaxAvgActive", "Usec1SecmaxP50Active", "Usec1SecmaxP95Active", "Usec1SecmaxP99Active", "Usec1SecmaxAvgAll", "Usec1SecmaxP50All", "Usec1SecmaxP95All", "Usec1SecmaxP99All" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2VProfLiteReport), global::CMsgSource2VProfLiteReport.Parser, new[]{ "Total", "Items", "DiscardedFrames" }, null, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2NetworkFlowQuality), global::CMsgSource2NetworkFlowQuality.Parser, new[]{ "Duration", "BytesTotal", "BytesTotalReliable", "BytesTotalVoice", "BytesSecP95", "BytesSecP99", "EnginemsgsTotal", "EnginemsgsSecP95", "EnginemsgsSecP99", "NetframesTotal", "NetframesDropped", "NetframesOutoforder", "NetframesSizeExceedsMtu", "NetframesSizeP95", "NetframesSizeP99", "TicksTotal", "TicksGood", "TicksGoodAlmostLate", "TicksFixedDropped", "TicksFixedLate", "TicksBadDropped", "TicksBadLate", "TicksBadOther", "TickMissrateSamplesTotal", "TickMissrateSamplesPerfect", "TickMissrateSamplesPerfectnet", "TickMissratenetP75X10", "TickMissratenetP95X10", "TickMissratenetP99X10", "RecvmarginP1", "RecvmarginP5", "RecvmarginP25", "RecvmarginP50", "RecvmarginP75", "RecvmarginP95", "NetframeJitterP50", "NetframeJitterP99", "IntervalPeakjitterP50", "IntervalPeakjitterP95", "PacketMisdeliveryRateP50X4", "PacketMisdeliveryRateP95X4", "NetPingP5", "NetPingP50", "NetPingP95", "MsgprocUsecP50", "MsgprocUsecP95", "MsgprocUsecP99", "MsgprocUsecMax", "MsgprocUsecAvgP50", "MsgprocUsecAvgP95", "MsgprocUsecAvgP99", "MsgprocUsecAvgMax", "QueuedmsgsP50", "QueuedmsgsP95", "QueuedmsgsP99", "QueuedmsgsMax" }, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2NetworkFlowQuality), global::CMsgSource2NetworkFlowQuality.Parser, new[]{ "Duration", "BytesTotal", "BytesTotalReliable", "BytesTotalVoice", "BytesSecP95", "BytesSecP99", "EnginemsgsTotal", "EnginemsgsSecP95", "EnginemsgsSecP99", "NetframesTotal", "NetframesDropped", "NetframesOutoforder", "NetframesSizeExceedsMtu", "NetframesSizeP95", "NetframesSizeP99", "NetframesSizeUncompressedP50", "NetframesSizeUncompressedP95", "NetframesSizeUncompressedP99", "NetframesSizeUncompressedMax", "NetframesMsgsP50", "NetframesMsgsP95", "NetframesMsgsP99", "NetframesMsgsMax", "TicksTotal", "TicksGood", "TicksGoodAlmostLate", "TicksFixedDropped", "TicksFixedLate", "TicksBadDropped", "TicksBadLate", "TicksBadOther", "TickMissrateSamplesTotal", "TickMissrateSamplesPerfect", "TickMissrateSamplesPerfectnet", "TickMissratenetP75X10", "TickMissratenetP95X10", "TickMissratenetP99X10", "RecvmarginP1", "RecvmarginP5", "RecvmarginP25", "RecvmarginP50", "RecvmarginP75", "RecvmarginP95", "NetframeJitterP50", "NetframeJitterP99", "IntervalPeakjitterP50", "IntervalPeakjitterP95", "PacketMisdeliveryRateP50X4", "PacketMisdeliveryRateP95X4", "NetPingP5", "NetPingP50", "NetPingP95", "MsgprocUsecP50", "MsgprocUsecP95", "MsgprocUsecP99", "MsgprocUsecMax", "MsgprocUsecAvgP50", "MsgprocUsecAvgP95", "MsgprocUsecAvgP99", "MsgprocUsecAvgMax", "QueuedmsgsP50", "QueuedmsgsP95", "QueuedmsgsP99", "QueuedmsgsMax" }, null, null, null, null),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PerfIntervalSample), global::CMsgSource2PerfIntervalSample.Parser, new[]{ "FrameTimeMaxMs", "FrameTimeAvgMs", "FrameTimeMinMs", "FrameCount", "FrameTimeTotalMs", "Tags" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PerfIntervalSample.Types.Tag), global::CMsgSource2PerfIntervalSample.Types.Tag.Parser, new[]{ "Tag_", "MaxValue" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CSource2Metrics_MatchPerfSummary_Notification), global::CSource2Metrics_MatchPerfSummary_Notification.Parser, new[]{ "Appid", "GameMode", "ServerBuildId", "ServerPopid", "ServerProfile", "Clients", "Map" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CSource2Metrics_MatchPerfSummary_Notification.Types.Client), global::CSource2Metrics_MatchPerfSummary_Notification.Types.Client.Parser, new[]{ "SystemSpecs", "Profile", "BuildId", "DownstreamFlow", "UpstreamFlow", "Steamid", "PerfSamples" }, null, null, null, null)}),
           new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PlayStatsPackedRecordList), global::CMsgSource2PlayStatsPackedRecordList.Parser, new[]{ "RecordName", "FieldDefs", "RecordCount", "Uint64Vals", "Uint32Vals", "Uint16Vals", "Uint8Vals", "Int64Vals", "Int32Vals", "Int16Vals", "Int8Vals", "Float64Vals", "Float32Vals", "BoolVals", "StringVals", "LowCardinalityStringVals", "UtcdatetimeVals", "SteamidtrustbucketVals", "TrustbucketVals", "SteamidVals" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::CMsgSource2PlayStatsPackedRecordList.Types.FieldDef), global::CMsgSource2PlayStatsPackedRecordList.Types.FieldDef.Parser, new[]{ "FieldName", "FieldType" }, null, null, null, null),
@@ -2444,6 +2451,7 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   private pb::UnknownFieldSet _unknownFields;
   private int _hasBits0;
   private int _hasBits1;
+  private int _hasBits2;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public static pb::MessageParser<CMsgSource2NetworkFlowQuality> Parser { get { return _parser; } }
@@ -2473,6 +2481,7 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   public CMsgSource2NetworkFlowQuality(CMsgSource2NetworkFlowQuality other) : this() {
     _hasBits0 = other._hasBits0;
     _hasBits1 = other._hasBits1;
+    _hasBits2 = other._hasBits2;
     duration_ = other.duration_;
     bytesTotal_ = other.bytesTotal_;
     bytesTotalReliable_ = other.bytesTotalReliable_;
@@ -2488,6 +2497,14 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     netframesSizeExceedsMtu_ = other.netframesSizeExceedsMtu_;
     netframesSizeP95_ = other.netframesSizeP95_;
     netframesSizeP99_ = other.netframesSizeP99_;
+    netframesSizeUncompressedP50_ = other.netframesSizeUncompressedP50_;
+    netframesSizeUncompressedP95_ = other.netframesSizeUncompressedP95_;
+    netframesSizeUncompressedP99_ = other.netframesSizeUncompressedP99_;
+    netframesSizeUncompressedMax_ = other.netframesSizeUncompressedMax_;
+    netframesMsgsP50_ = other.netframesMsgsP50_;
+    netframesMsgsP95_ = other.netframesMsgsP95_;
+    netframesMsgsP99_ = other.netframesMsgsP99_;
+    netframesMsgsMax_ = other.netframesMsgsMax_;
     ticksTotal_ = other.ticksTotal_;
     ticksGood_ = other.ticksGood_;
     ticksGoodAlmostLate_ = other.ticksGoodAlmostLate_;
@@ -2708,9 +2725,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint EnginemsgsTotal {
-    get { if ((_hasBits0 & 64) != 0) { return enginemsgsTotal_; } else { return EnginemsgsTotalDefaultValue; } }
+    get { if ((_hasBits0 & 16384) != 0) { return enginemsgsTotal_; } else { return EnginemsgsTotalDefaultValue; } }
     set {
-      _hasBits0 |= 64;
+      _hasBits0 |= 16384;
       enginemsgsTotal_ = value;
     }
   }
@@ -2718,13 +2735,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasEnginemsgsTotal {
-    get { return (_hasBits0 & 64) != 0; }
+    get { return (_hasBits0 & 16384) != 0; }
   }
   /// <summary>Clears the value of the "enginemsgs_total" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearEnginemsgsTotal() {
-    _hasBits0 &= ~64;
+    _hasBits0 &= ~16384;
   }
 
   /// <summary>Field number for the "enginemsgs_sec_p95" field.</summary>
@@ -2735,9 +2752,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint EnginemsgsSecP95 {
-    get { if ((_hasBits0 & 128) != 0) { return enginemsgsSecP95_; } else { return EnginemsgsSecP95DefaultValue; } }
+    get { if ((_hasBits0 & 32768) != 0) { return enginemsgsSecP95_; } else { return EnginemsgsSecP95DefaultValue; } }
     set {
-      _hasBits0 |= 128;
+      _hasBits0 |= 32768;
       enginemsgsSecP95_ = value;
     }
   }
@@ -2745,13 +2762,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasEnginemsgsSecP95 {
-    get { return (_hasBits0 & 128) != 0; }
+    get { return (_hasBits0 & 32768) != 0; }
   }
   /// <summary>Clears the value of the "enginemsgs_sec_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearEnginemsgsSecP95() {
-    _hasBits0 &= ~128;
+    _hasBits0 &= ~32768;
   }
 
   /// <summary>Field number for the "enginemsgs_sec_p99" field.</summary>
@@ -2762,9 +2779,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint EnginemsgsSecP99 {
-    get { if ((_hasBits0 & 256) != 0) { return enginemsgsSecP99_; } else { return EnginemsgsSecP99DefaultValue; } }
+    get { if ((_hasBits0 & 65536) != 0) { return enginemsgsSecP99_; } else { return EnginemsgsSecP99DefaultValue; } }
     set {
-      _hasBits0 |= 256;
+      _hasBits0 |= 65536;
       enginemsgsSecP99_ = value;
     }
   }
@@ -2772,13 +2789,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasEnginemsgsSecP99 {
-    get { return (_hasBits0 & 256) != 0; }
+    get { return (_hasBits0 & 65536) != 0; }
   }
   /// <summary>Clears the value of the "enginemsgs_sec_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearEnginemsgsSecP99() {
-    _hasBits0 &= ~256;
+    _hasBits0 &= ~65536;
   }
 
   /// <summary>Field number for the "netframes_total" field.</summary>
@@ -2789,9 +2806,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesTotal {
-    get { if ((_hasBits0 & 512) != 0) { return netframesTotal_; } else { return NetframesTotalDefaultValue; } }
+    get { if ((_hasBits0 & 131072) != 0) { return netframesTotal_; } else { return NetframesTotalDefaultValue; } }
     set {
-      _hasBits0 |= 512;
+      _hasBits0 |= 131072;
       netframesTotal_ = value;
     }
   }
@@ -2799,13 +2816,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesTotal {
-    get { return (_hasBits0 & 512) != 0; }
+    get { return (_hasBits0 & 131072) != 0; }
   }
   /// <summary>Clears the value of the "netframes_total" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesTotal() {
-    _hasBits0 &= ~512;
+    _hasBits0 &= ~131072;
   }
 
   /// <summary>Field number for the "netframes_dropped" field.</summary>
@@ -2816,9 +2833,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesDropped {
-    get { if ((_hasBits0 & 1024) != 0) { return netframesDropped_; } else { return NetframesDroppedDefaultValue; } }
+    get { if ((_hasBits0 & 262144) != 0) { return netframesDropped_; } else { return NetframesDroppedDefaultValue; } }
     set {
-      _hasBits0 |= 1024;
+      _hasBits0 |= 262144;
       netframesDropped_ = value;
     }
   }
@@ -2826,13 +2843,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesDropped {
-    get { return (_hasBits0 & 1024) != 0; }
+    get { return (_hasBits0 & 262144) != 0; }
   }
   /// <summary>Clears the value of the "netframes_dropped" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesDropped() {
-    _hasBits0 &= ~1024;
+    _hasBits0 &= ~262144;
   }
 
   /// <summary>Field number for the "netframes_outoforder" field.</summary>
@@ -2843,9 +2860,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesOutoforder {
-    get { if ((_hasBits0 & 2048) != 0) { return netframesOutoforder_; } else { return NetframesOutoforderDefaultValue; } }
+    get { if ((_hasBits0 & 524288) != 0) { return netframesOutoforder_; } else { return NetframesOutoforderDefaultValue; } }
     set {
-      _hasBits0 |= 2048;
+      _hasBits0 |= 524288;
       netframesOutoforder_ = value;
     }
   }
@@ -2853,13 +2870,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesOutoforder {
-    get { return (_hasBits0 & 2048) != 0; }
+    get { return (_hasBits0 & 524288) != 0; }
   }
   /// <summary>Clears the value of the "netframes_outoforder" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesOutoforder() {
-    _hasBits0 &= ~2048;
+    _hasBits0 &= ~524288;
   }
 
   /// <summary>Field number for the "netframes_size_exceeds_mtu" field.</summary>
@@ -2870,9 +2887,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesSizeExceedsMtu {
-    get { if ((_hasBits0 & 4096) != 0) { return netframesSizeExceedsMtu_; } else { return NetframesSizeExceedsMtuDefaultValue; } }
+    get { if ((_hasBits0 & 1048576) != 0) { return netframesSizeExceedsMtu_; } else { return NetframesSizeExceedsMtuDefaultValue; } }
     set {
-      _hasBits0 |= 4096;
+      _hasBits0 |= 1048576;
       netframesSizeExceedsMtu_ = value;
     }
   }
@@ -2880,13 +2897,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesSizeExceedsMtu {
-    get { return (_hasBits0 & 4096) != 0; }
+    get { return (_hasBits0 & 1048576) != 0; }
   }
   /// <summary>Clears the value of the "netframes_size_exceeds_mtu" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesSizeExceedsMtu() {
-    _hasBits0 &= ~4096;
+    _hasBits0 &= ~1048576;
   }
 
   /// <summary>Field number for the "netframes_size_p95" field.</summary>
@@ -2897,9 +2914,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesSizeP95 {
-    get { if ((_hasBits0 & 8192) != 0) { return netframesSizeP95_; } else { return NetframesSizeP95DefaultValue; } }
+    get { if ((_hasBits0 & 2097152) != 0) { return netframesSizeP95_; } else { return NetframesSizeP95DefaultValue; } }
     set {
-      _hasBits0 |= 8192;
+      _hasBits0 |= 2097152;
       netframesSizeP95_ = value;
     }
   }
@@ -2907,13 +2924,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesSizeP95 {
-    get { return (_hasBits0 & 8192) != 0; }
+    get { return (_hasBits0 & 2097152) != 0; }
   }
   /// <summary>Clears the value of the "netframes_size_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesSizeP95() {
-    _hasBits0 &= ~8192;
+    _hasBits0 &= ~2097152;
   }
 
   /// <summary>Field number for the "netframes_size_p99" field.</summary>
@@ -2924,9 +2941,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframesSizeP99 {
-    get { if ((_hasBits0 & 16384) != 0) { return netframesSizeP99_; } else { return NetframesSizeP99DefaultValue; } }
+    get { if ((_hasBits0 & 4194304) != 0) { return netframesSizeP99_; } else { return NetframesSizeP99DefaultValue; } }
     set {
-      _hasBits0 |= 16384;
+      _hasBits0 |= 4194304;
       netframesSizeP99_ = value;
     }
   }
@@ -2934,13 +2951,229 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframesSizeP99 {
-    get { return (_hasBits0 & 16384) != 0; }
+    get { return (_hasBits0 & 4194304) != 0; }
   }
   /// <summary>Clears the value of the "netframes_size_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframesSizeP99() {
-    _hasBits0 &= ~16384;
+    _hasBits0 &= ~4194304;
+  }
+
+  /// <summary>Field number for the "netframes_size_uncompressed_p50" field.</summary>
+  public const int NetframesSizeUncompressedP50FieldNumber = 12;
+  private readonly static uint NetframesSizeUncompressedP50DefaultValue = 0;
+
+  private uint netframesSizeUncompressedP50_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesSizeUncompressedP50 {
+    get { if ((_hasBits0 & 64) != 0) { return netframesSizeUncompressedP50_; } else { return NetframesSizeUncompressedP50DefaultValue; } }
+    set {
+      _hasBits0 |= 64;
+      netframesSizeUncompressedP50_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_size_uncompressed_p50" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesSizeUncompressedP50 {
+    get { return (_hasBits0 & 64) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_size_uncompressed_p50" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesSizeUncompressedP50() {
+    _hasBits0 &= ~64;
+  }
+
+  /// <summary>Field number for the "netframes_size_uncompressed_p95" field.</summary>
+  public const int NetframesSizeUncompressedP95FieldNumber = 13;
+  private readonly static uint NetframesSizeUncompressedP95DefaultValue = 0;
+
+  private uint netframesSizeUncompressedP95_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesSizeUncompressedP95 {
+    get { if ((_hasBits0 & 128) != 0) { return netframesSizeUncompressedP95_; } else { return NetframesSizeUncompressedP95DefaultValue; } }
+    set {
+      _hasBits0 |= 128;
+      netframesSizeUncompressedP95_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_size_uncompressed_p95" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesSizeUncompressedP95 {
+    get { return (_hasBits0 & 128) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_size_uncompressed_p95" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesSizeUncompressedP95() {
+    _hasBits0 &= ~128;
+  }
+
+  /// <summary>Field number for the "netframes_size_uncompressed_p99" field.</summary>
+  public const int NetframesSizeUncompressedP99FieldNumber = 14;
+  private readonly static uint NetframesSizeUncompressedP99DefaultValue = 0;
+
+  private uint netframesSizeUncompressedP99_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesSizeUncompressedP99 {
+    get { if ((_hasBits0 & 256) != 0) { return netframesSizeUncompressedP99_; } else { return NetframesSizeUncompressedP99DefaultValue; } }
+    set {
+      _hasBits0 |= 256;
+      netframesSizeUncompressedP99_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_size_uncompressed_p99" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesSizeUncompressedP99 {
+    get { return (_hasBits0 & 256) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_size_uncompressed_p99" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesSizeUncompressedP99() {
+    _hasBits0 &= ~256;
+  }
+
+  /// <summary>Field number for the "netframes_size_uncompressed_max" field.</summary>
+  public const int NetframesSizeUncompressedMaxFieldNumber = 15;
+  private readonly static uint NetframesSizeUncompressedMaxDefaultValue = 0;
+
+  private uint netframesSizeUncompressedMax_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesSizeUncompressedMax {
+    get { if ((_hasBits0 & 512) != 0) { return netframesSizeUncompressedMax_; } else { return NetframesSizeUncompressedMaxDefaultValue; } }
+    set {
+      _hasBits0 |= 512;
+      netframesSizeUncompressedMax_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_size_uncompressed_max" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesSizeUncompressedMax {
+    get { return (_hasBits0 & 512) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_size_uncompressed_max" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesSizeUncompressedMax() {
+    _hasBits0 &= ~512;
+  }
+
+  /// <summary>Field number for the "netframes_msgs_p50" field.</summary>
+  public const int NetframesMsgsP50FieldNumber = 16;
+  private readonly static uint NetframesMsgsP50DefaultValue = 0;
+
+  private uint netframesMsgsP50_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesMsgsP50 {
+    get { if ((_hasBits0 & 1024) != 0) { return netframesMsgsP50_; } else { return NetframesMsgsP50DefaultValue; } }
+    set {
+      _hasBits0 |= 1024;
+      netframesMsgsP50_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_msgs_p50" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesMsgsP50 {
+    get { return (_hasBits0 & 1024) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_msgs_p50" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesMsgsP50() {
+    _hasBits0 &= ~1024;
+  }
+
+  /// <summary>Field number for the "netframes_msgs_p95" field.</summary>
+  public const int NetframesMsgsP95FieldNumber = 17;
+  private readonly static uint NetframesMsgsP95DefaultValue = 0;
+
+  private uint netframesMsgsP95_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesMsgsP95 {
+    get { if ((_hasBits0 & 2048) != 0) { return netframesMsgsP95_; } else { return NetframesMsgsP95DefaultValue; } }
+    set {
+      _hasBits0 |= 2048;
+      netframesMsgsP95_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_msgs_p95" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesMsgsP95 {
+    get { return (_hasBits0 & 2048) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_msgs_p95" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesMsgsP95() {
+    _hasBits0 &= ~2048;
+  }
+
+  /// <summary>Field number for the "netframes_msgs_p99" field.</summary>
+  public const int NetframesMsgsP99FieldNumber = 18;
+  private readonly static uint NetframesMsgsP99DefaultValue = 0;
+
+  private uint netframesMsgsP99_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesMsgsP99 {
+    get { if ((_hasBits0 & 4096) != 0) { return netframesMsgsP99_; } else { return NetframesMsgsP99DefaultValue; } }
+    set {
+      _hasBits0 |= 4096;
+      netframesMsgsP99_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_msgs_p99" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesMsgsP99 {
+    get { return (_hasBits0 & 4096) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_msgs_p99" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesMsgsP99() {
+    _hasBits0 &= ~4096;
+  }
+
+  /// <summary>Field number for the "netframes_msgs_max" field.</summary>
+  public const int NetframesMsgsMaxFieldNumber = 19;
+  private readonly static uint NetframesMsgsMaxDefaultValue = 0;
+
+  private uint netframesMsgsMax_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public uint NetframesMsgsMax {
+    get { if ((_hasBits0 & 8192) != 0) { return netframesMsgsMax_; } else { return NetframesMsgsMaxDefaultValue; } }
+    set {
+      _hasBits0 |= 8192;
+      netframesMsgsMax_ = value;
+    }
+  }
+  /// <summary>Gets whether the "netframes_msgs_max" field is set</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public bool HasNetframesMsgsMax {
+    get { return (_hasBits0 & 8192) != 0; }
+  }
+  /// <summary>Clears the value of the "netframes_msgs_max" field</summary>
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+  public void ClearNetframesMsgsMax() {
+    _hasBits0 &= ~8192;
   }
 
   /// <summary>Field number for the "ticks_total" field.</summary>
@@ -2951,9 +3184,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksTotal {
-    get { if ((_hasBits0 & 32768) != 0) { return ticksTotal_; } else { return TicksTotalDefaultValue; } }
+    get { if ((_hasBits0 & 8388608) != 0) { return ticksTotal_; } else { return TicksTotalDefaultValue; } }
     set {
-      _hasBits0 |= 32768;
+      _hasBits0 |= 8388608;
       ticksTotal_ = value;
     }
   }
@@ -2961,13 +3194,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksTotal {
-    get { return (_hasBits0 & 32768) != 0; }
+    get { return (_hasBits0 & 8388608) != 0; }
   }
   /// <summary>Clears the value of the "ticks_total" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksTotal() {
-    _hasBits0 &= ~32768;
+    _hasBits0 &= ~8388608;
   }
 
   /// <summary>Field number for the "ticks_good" field.</summary>
@@ -2978,9 +3211,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksGood {
-    get { if ((_hasBits0 & 65536) != 0) { return ticksGood_; } else { return TicksGoodDefaultValue; } }
+    get { if ((_hasBits0 & 16777216) != 0) { return ticksGood_; } else { return TicksGoodDefaultValue; } }
     set {
-      _hasBits0 |= 65536;
+      _hasBits0 |= 16777216;
       ticksGood_ = value;
     }
   }
@@ -2988,13 +3221,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksGood {
-    get { return (_hasBits0 & 65536) != 0; }
+    get { return (_hasBits0 & 16777216) != 0; }
   }
   /// <summary>Clears the value of the "ticks_good" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksGood() {
-    _hasBits0 &= ~65536;
+    _hasBits0 &= ~16777216;
   }
 
   /// <summary>Field number for the "ticks_good_almost_late" field.</summary>
@@ -3005,9 +3238,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksGoodAlmostLate {
-    get { if ((_hasBits0 & 131072) != 0) { return ticksGoodAlmostLate_; } else { return TicksGoodAlmostLateDefaultValue; } }
+    get { if ((_hasBits0 & 33554432) != 0) { return ticksGoodAlmostLate_; } else { return TicksGoodAlmostLateDefaultValue; } }
     set {
-      _hasBits0 |= 131072;
+      _hasBits0 |= 33554432;
       ticksGoodAlmostLate_ = value;
     }
   }
@@ -3015,13 +3248,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksGoodAlmostLate {
-    get { return (_hasBits0 & 131072) != 0; }
+    get { return (_hasBits0 & 33554432) != 0; }
   }
   /// <summary>Clears the value of the "ticks_good_almost_late" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksGoodAlmostLate() {
-    _hasBits0 &= ~131072;
+    _hasBits0 &= ~33554432;
   }
 
   /// <summary>Field number for the "ticks_fixed_dropped" field.</summary>
@@ -3032,9 +3265,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksFixedDropped {
-    get { if ((_hasBits0 & 262144) != 0) { return ticksFixedDropped_; } else { return TicksFixedDroppedDefaultValue; } }
+    get { if ((_hasBits0 & 67108864) != 0) { return ticksFixedDropped_; } else { return TicksFixedDroppedDefaultValue; } }
     set {
-      _hasBits0 |= 262144;
+      _hasBits0 |= 67108864;
       ticksFixedDropped_ = value;
     }
   }
@@ -3042,13 +3275,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksFixedDropped {
-    get { return (_hasBits0 & 262144) != 0; }
+    get { return (_hasBits0 & 67108864) != 0; }
   }
   /// <summary>Clears the value of the "ticks_fixed_dropped" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksFixedDropped() {
-    _hasBits0 &= ~262144;
+    _hasBits0 &= ~67108864;
   }
 
   /// <summary>Field number for the "ticks_fixed_late" field.</summary>
@@ -3059,9 +3292,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksFixedLate {
-    get { if ((_hasBits0 & 524288) != 0) { return ticksFixedLate_; } else { return TicksFixedLateDefaultValue; } }
+    get { if ((_hasBits0 & 134217728) != 0) { return ticksFixedLate_; } else { return TicksFixedLateDefaultValue; } }
     set {
-      _hasBits0 |= 524288;
+      _hasBits0 |= 134217728;
       ticksFixedLate_ = value;
     }
   }
@@ -3069,13 +3302,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksFixedLate {
-    get { return (_hasBits0 & 524288) != 0; }
+    get { return (_hasBits0 & 134217728) != 0; }
   }
   /// <summary>Clears the value of the "ticks_fixed_late" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksFixedLate() {
-    _hasBits0 &= ~524288;
+    _hasBits0 &= ~134217728;
   }
 
   /// <summary>Field number for the "ticks_bad_dropped" field.</summary>
@@ -3086,9 +3319,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksBadDropped {
-    get { if ((_hasBits0 & 1048576) != 0) { return ticksBadDropped_; } else { return TicksBadDroppedDefaultValue; } }
+    get { if ((_hasBits0 & 268435456) != 0) { return ticksBadDropped_; } else { return TicksBadDroppedDefaultValue; } }
     set {
-      _hasBits0 |= 1048576;
+      _hasBits0 |= 268435456;
       ticksBadDropped_ = value;
     }
   }
@@ -3096,13 +3329,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksBadDropped {
-    get { return (_hasBits0 & 1048576) != 0; }
+    get { return (_hasBits0 & 268435456) != 0; }
   }
   /// <summary>Clears the value of the "ticks_bad_dropped" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksBadDropped() {
-    _hasBits0 &= ~1048576;
+    _hasBits0 &= ~268435456;
   }
 
   /// <summary>Field number for the "ticks_bad_late" field.</summary>
@@ -3113,9 +3346,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksBadLate {
-    get { if ((_hasBits0 & 2097152) != 0) { return ticksBadLate_; } else { return TicksBadLateDefaultValue; } }
+    get { if ((_hasBits0 & 536870912) != 0) { return ticksBadLate_; } else { return TicksBadLateDefaultValue; } }
     set {
-      _hasBits0 |= 2097152;
+      _hasBits0 |= 536870912;
       ticksBadLate_ = value;
     }
   }
@@ -3123,13 +3356,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksBadLate {
-    get { return (_hasBits0 & 2097152) != 0; }
+    get { return (_hasBits0 & 536870912) != 0; }
   }
   /// <summary>Clears the value of the "ticks_bad_late" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksBadLate() {
-    _hasBits0 &= ~2097152;
+    _hasBits0 &= ~536870912;
   }
 
   /// <summary>Field number for the "ticks_bad_other" field.</summary>
@@ -3140,9 +3373,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TicksBadOther {
-    get { if ((_hasBits0 & 4194304) != 0) { return ticksBadOther_; } else { return TicksBadOtherDefaultValue; } }
+    get { if ((_hasBits0 & 1073741824) != 0) { return ticksBadOther_; } else { return TicksBadOtherDefaultValue; } }
     set {
-      _hasBits0 |= 4194304;
+      _hasBits0 |= 1073741824;
       ticksBadOther_ = value;
     }
   }
@@ -3150,13 +3383,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTicksBadOther {
-    get { return (_hasBits0 & 4194304) != 0; }
+    get { return (_hasBits0 & 1073741824) != 0; }
   }
   /// <summary>Clears the value of the "ticks_bad_other" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTicksBadOther() {
-    _hasBits0 &= ~4194304;
+    _hasBits0 &= ~1073741824;
   }
 
   /// <summary>Field number for the "tick_missrate_samples_total" field.</summary>
@@ -3167,9 +3400,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissrateSamplesTotal {
-    get { if ((_hasBits0 & 8388608) != 0) { return tickMissrateSamplesTotal_; } else { return TickMissrateSamplesTotalDefaultValue; } }
+    get { if ((_hasBits0 & -2147483648) != 0) { return tickMissrateSamplesTotal_; } else { return TickMissrateSamplesTotalDefaultValue; } }
     set {
-      _hasBits0 |= 8388608;
+      _hasBits0 |= -2147483648;
       tickMissrateSamplesTotal_ = value;
     }
   }
@@ -3177,13 +3410,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissrateSamplesTotal {
-    get { return (_hasBits0 & 8388608) != 0; }
+    get { return (_hasBits0 & -2147483648) != 0; }
   }
   /// <summary>Clears the value of the "tick_missrate_samples_total" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissrateSamplesTotal() {
-    _hasBits0 &= ~8388608;
+    _hasBits0 &= ~-2147483648;
   }
 
   /// <summary>Field number for the "tick_missrate_samples_perfect" field.</summary>
@@ -3194,9 +3427,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissrateSamplesPerfect {
-    get { if ((_hasBits0 & 16777216) != 0) { return tickMissrateSamplesPerfect_; } else { return TickMissrateSamplesPerfectDefaultValue; } }
+    get { if ((_hasBits1 & 1) != 0) { return tickMissrateSamplesPerfect_; } else { return TickMissrateSamplesPerfectDefaultValue; } }
     set {
-      _hasBits0 |= 16777216;
+      _hasBits1 |= 1;
       tickMissrateSamplesPerfect_ = value;
     }
   }
@@ -3204,13 +3437,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissrateSamplesPerfect {
-    get { return (_hasBits0 & 16777216) != 0; }
+    get { return (_hasBits1 & 1) != 0; }
   }
   /// <summary>Clears the value of the "tick_missrate_samples_perfect" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissrateSamplesPerfect() {
-    _hasBits0 &= ~16777216;
+    _hasBits1 &= ~1;
   }
 
   /// <summary>Field number for the "tick_missrate_samples_perfectnet" field.</summary>
@@ -3221,9 +3454,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissrateSamplesPerfectnet {
-    get { if ((_hasBits0 & 33554432) != 0) { return tickMissrateSamplesPerfectnet_; } else { return TickMissrateSamplesPerfectnetDefaultValue; } }
+    get { if ((_hasBits1 & 2) != 0) { return tickMissrateSamplesPerfectnet_; } else { return TickMissrateSamplesPerfectnetDefaultValue; } }
     set {
-      _hasBits0 |= 33554432;
+      _hasBits1 |= 2;
       tickMissrateSamplesPerfectnet_ = value;
     }
   }
@@ -3231,13 +3464,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissrateSamplesPerfectnet {
-    get { return (_hasBits0 & 33554432) != 0; }
+    get { return (_hasBits1 & 2) != 0; }
   }
   /// <summary>Clears the value of the "tick_missrate_samples_perfectnet" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissrateSamplesPerfectnet() {
-    _hasBits0 &= ~33554432;
+    _hasBits1 &= ~2;
   }
 
   /// <summary>Field number for the "tick_missratenet_p75_x10" field.</summary>
@@ -3248,9 +3481,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissratenetP75X10 {
-    get { if ((_hasBits0 & 67108864) != 0) { return tickMissratenetP75X10_; } else { return TickMissratenetP75X10DefaultValue; } }
+    get { if ((_hasBits1 & 4) != 0) { return tickMissratenetP75X10_; } else { return TickMissratenetP75X10DefaultValue; } }
     set {
-      _hasBits0 |= 67108864;
+      _hasBits1 |= 4;
       tickMissratenetP75X10_ = value;
     }
   }
@@ -3258,13 +3491,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissratenetP75X10 {
-    get { return (_hasBits0 & 67108864) != 0; }
+    get { return (_hasBits1 & 4) != 0; }
   }
   /// <summary>Clears the value of the "tick_missratenet_p75_x10" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissratenetP75X10() {
-    _hasBits0 &= ~67108864;
+    _hasBits1 &= ~4;
   }
 
   /// <summary>Field number for the "tick_missratenet_p95_x10" field.</summary>
@@ -3275,9 +3508,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissratenetP95X10 {
-    get { if ((_hasBits0 & 134217728) != 0) { return tickMissratenetP95X10_; } else { return TickMissratenetP95X10DefaultValue; } }
+    get { if ((_hasBits1 & 8) != 0) { return tickMissratenetP95X10_; } else { return TickMissratenetP95X10DefaultValue; } }
     set {
-      _hasBits0 |= 134217728;
+      _hasBits1 |= 8;
       tickMissratenetP95X10_ = value;
     }
   }
@@ -3285,13 +3518,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissratenetP95X10 {
-    get { return (_hasBits0 & 134217728) != 0; }
+    get { return (_hasBits1 & 8) != 0; }
   }
   /// <summary>Clears the value of the "tick_missratenet_p95_x10" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissratenetP95X10() {
-    _hasBits0 &= ~134217728;
+    _hasBits1 &= ~8;
   }
 
   /// <summary>Field number for the "tick_missratenet_p99_x10" field.</summary>
@@ -3302,9 +3535,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint TickMissratenetP99X10 {
-    get { if ((_hasBits0 & 268435456) != 0) { return tickMissratenetP99X10_; } else { return TickMissratenetP99X10DefaultValue; } }
+    get { if ((_hasBits1 & 16) != 0) { return tickMissratenetP99X10_; } else { return TickMissratenetP99X10DefaultValue; } }
     set {
-      _hasBits0 |= 268435456;
+      _hasBits1 |= 16;
       tickMissratenetP99X10_ = value;
     }
   }
@@ -3312,13 +3545,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasTickMissratenetP99X10 {
-    get { return (_hasBits0 & 268435456) != 0; }
+    get { return (_hasBits1 & 16) != 0; }
   }
   /// <summary>Clears the value of the "tick_missratenet_p99_x10" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearTickMissratenetP99X10() {
-    _hasBits0 &= ~268435456;
+    _hasBits1 &= ~16;
   }
 
   /// <summary>Field number for the "recvmargin_p1" field.</summary>
@@ -3329,9 +3562,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP1 {
-    get { if ((_hasBits0 & 536870912) != 0) { return recvmarginP1_; } else { return RecvmarginP1DefaultValue; } }
+    get { if ((_hasBits1 & 32) != 0) { return recvmarginP1_; } else { return RecvmarginP1DefaultValue; } }
     set {
-      _hasBits0 |= 536870912;
+      _hasBits1 |= 32;
       recvmarginP1_ = value;
     }
   }
@@ -3339,13 +3572,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP1 {
-    get { return (_hasBits0 & 536870912) != 0; }
+    get { return (_hasBits1 & 32) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p1" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP1() {
-    _hasBits0 &= ~536870912;
+    _hasBits1 &= ~32;
   }
 
   /// <summary>Field number for the "recvmargin_p5" field.</summary>
@@ -3356,9 +3589,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP5 {
-    get { if ((_hasBits0 & 1073741824) != 0) { return recvmarginP5_; } else { return RecvmarginP5DefaultValue; } }
+    get { if ((_hasBits1 & 64) != 0) { return recvmarginP5_; } else { return RecvmarginP5DefaultValue; } }
     set {
-      _hasBits0 |= 1073741824;
+      _hasBits1 |= 64;
       recvmarginP5_ = value;
     }
   }
@@ -3366,13 +3599,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP5 {
-    get { return (_hasBits0 & 1073741824) != 0; }
+    get { return (_hasBits1 & 64) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p5" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP5() {
-    _hasBits0 &= ~1073741824;
+    _hasBits1 &= ~64;
   }
 
   /// <summary>Field number for the "recvmargin_p25" field.</summary>
@@ -3383,9 +3616,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP25 {
-    get { if ((_hasBits0 & -2147483648) != 0) { return recvmarginP25_; } else { return RecvmarginP25DefaultValue; } }
+    get { if ((_hasBits1 & 128) != 0) { return recvmarginP25_; } else { return RecvmarginP25DefaultValue; } }
     set {
-      _hasBits0 |= -2147483648;
+      _hasBits1 |= 128;
       recvmarginP25_ = value;
     }
   }
@@ -3393,13 +3626,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP25 {
-    get { return (_hasBits0 & -2147483648) != 0; }
+    get { return (_hasBits1 & 128) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p25" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP25() {
-    _hasBits0 &= ~-2147483648;
+    _hasBits1 &= ~128;
   }
 
   /// <summary>Field number for the "recvmargin_p50" field.</summary>
@@ -3410,9 +3643,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP50 {
-    get { if ((_hasBits1 & 1) != 0) { return recvmarginP50_; } else { return RecvmarginP50DefaultValue; } }
+    get { if ((_hasBits1 & 256) != 0) { return recvmarginP50_; } else { return RecvmarginP50DefaultValue; } }
     set {
-      _hasBits1 |= 1;
+      _hasBits1 |= 256;
       recvmarginP50_ = value;
     }
   }
@@ -3420,13 +3653,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP50 {
-    get { return (_hasBits1 & 1) != 0; }
+    get { return (_hasBits1 & 256) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP50() {
-    _hasBits1 &= ~1;
+    _hasBits1 &= ~256;
   }
 
   /// <summary>Field number for the "recvmargin_p75" field.</summary>
@@ -3437,9 +3670,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP75 {
-    get { if ((_hasBits1 & 2) != 0) { return recvmarginP75_; } else { return RecvmarginP75DefaultValue; } }
+    get { if ((_hasBits1 & 512) != 0) { return recvmarginP75_; } else { return RecvmarginP75DefaultValue; } }
     set {
-      _hasBits1 |= 2;
+      _hasBits1 |= 512;
       recvmarginP75_ = value;
     }
   }
@@ -3447,13 +3680,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP75 {
-    get { return (_hasBits1 & 2) != 0; }
+    get { return (_hasBits1 & 512) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p75" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP75() {
-    _hasBits1 &= ~2;
+    _hasBits1 &= ~512;
   }
 
   /// <summary>Field number for the "recvmargin_p95" field.</summary>
@@ -3464,9 +3697,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public int RecvmarginP95 {
-    get { if ((_hasBits1 & 4) != 0) { return recvmarginP95_; } else { return RecvmarginP95DefaultValue; } }
+    get { if ((_hasBits1 & 1024) != 0) { return recvmarginP95_; } else { return RecvmarginP95DefaultValue; } }
     set {
-      _hasBits1 |= 4;
+      _hasBits1 |= 1024;
       recvmarginP95_ = value;
     }
   }
@@ -3474,13 +3707,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasRecvmarginP95 {
-    get { return (_hasBits1 & 4) != 0; }
+    get { return (_hasBits1 & 1024) != 0; }
   }
   /// <summary>Clears the value of the "recvmargin_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearRecvmarginP95() {
-    _hasBits1 &= ~4;
+    _hasBits1 &= ~1024;
   }
 
   /// <summary>Field number for the "netframe_jitter_p50" field.</summary>
@@ -3491,9 +3724,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframeJitterP50 {
-    get { if ((_hasBits1 & 8) != 0) { return netframeJitterP50_; } else { return NetframeJitterP50DefaultValue; } }
+    get { if ((_hasBits1 & 2048) != 0) { return netframeJitterP50_; } else { return NetframeJitterP50DefaultValue; } }
     set {
-      _hasBits1 |= 8;
+      _hasBits1 |= 2048;
       netframeJitterP50_ = value;
     }
   }
@@ -3501,13 +3734,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframeJitterP50 {
-    get { return (_hasBits1 & 8) != 0; }
+    get { return (_hasBits1 & 2048) != 0; }
   }
   /// <summary>Clears the value of the "netframe_jitter_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframeJitterP50() {
-    _hasBits1 &= ~8;
+    _hasBits1 &= ~2048;
   }
 
   /// <summary>Field number for the "netframe_jitter_p99" field.</summary>
@@ -3518,9 +3751,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetframeJitterP99 {
-    get { if ((_hasBits1 & 16) != 0) { return netframeJitterP99_; } else { return NetframeJitterP99DefaultValue; } }
+    get { if ((_hasBits1 & 4096) != 0) { return netframeJitterP99_; } else { return NetframeJitterP99DefaultValue; } }
     set {
-      _hasBits1 |= 16;
+      _hasBits1 |= 4096;
       netframeJitterP99_ = value;
     }
   }
@@ -3528,13 +3761,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetframeJitterP99 {
-    get { return (_hasBits1 & 16) != 0; }
+    get { return (_hasBits1 & 4096) != 0; }
   }
   /// <summary>Clears the value of the "netframe_jitter_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetframeJitterP99() {
-    _hasBits1 &= ~16;
+    _hasBits1 &= ~4096;
   }
 
   /// <summary>Field number for the "interval_peakjitter_p50" field.</summary>
@@ -3545,9 +3778,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint IntervalPeakjitterP50 {
-    get { if ((_hasBits1 & 32) != 0) { return intervalPeakjitterP50_; } else { return IntervalPeakjitterP50DefaultValue; } }
+    get { if ((_hasBits1 & 8192) != 0) { return intervalPeakjitterP50_; } else { return IntervalPeakjitterP50DefaultValue; } }
     set {
-      _hasBits1 |= 32;
+      _hasBits1 |= 8192;
       intervalPeakjitterP50_ = value;
     }
   }
@@ -3555,13 +3788,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasIntervalPeakjitterP50 {
-    get { return (_hasBits1 & 32) != 0; }
+    get { return (_hasBits1 & 8192) != 0; }
   }
   /// <summary>Clears the value of the "interval_peakjitter_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearIntervalPeakjitterP50() {
-    _hasBits1 &= ~32;
+    _hasBits1 &= ~8192;
   }
 
   /// <summary>Field number for the "interval_peakjitter_p95" field.</summary>
@@ -3572,9 +3805,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint IntervalPeakjitterP95 {
-    get { if ((_hasBits1 & 64) != 0) { return intervalPeakjitterP95_; } else { return IntervalPeakjitterP95DefaultValue; } }
+    get { if ((_hasBits1 & 16384) != 0) { return intervalPeakjitterP95_; } else { return IntervalPeakjitterP95DefaultValue; } }
     set {
-      _hasBits1 |= 64;
+      _hasBits1 |= 16384;
       intervalPeakjitterP95_ = value;
     }
   }
@@ -3582,13 +3815,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasIntervalPeakjitterP95 {
-    get { return (_hasBits1 & 64) != 0; }
+    get { return (_hasBits1 & 16384) != 0; }
   }
   /// <summary>Clears the value of the "interval_peakjitter_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearIntervalPeakjitterP95() {
-    _hasBits1 &= ~64;
+    _hasBits1 &= ~16384;
   }
 
   /// <summary>Field number for the "packet_misdelivery_rate_p50_x4" field.</summary>
@@ -3599,9 +3832,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint PacketMisdeliveryRateP50X4 {
-    get { if ((_hasBits1 & 128) != 0) { return packetMisdeliveryRateP50X4_; } else { return PacketMisdeliveryRateP50X4DefaultValue; } }
+    get { if ((_hasBits1 & 32768) != 0) { return packetMisdeliveryRateP50X4_; } else { return PacketMisdeliveryRateP50X4DefaultValue; } }
     set {
-      _hasBits1 |= 128;
+      _hasBits1 |= 32768;
       packetMisdeliveryRateP50X4_ = value;
     }
   }
@@ -3609,13 +3842,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasPacketMisdeliveryRateP50X4 {
-    get { return (_hasBits1 & 128) != 0; }
+    get { return (_hasBits1 & 32768) != 0; }
   }
   /// <summary>Clears the value of the "packet_misdelivery_rate_p50_x4" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearPacketMisdeliveryRateP50X4() {
-    _hasBits1 &= ~128;
+    _hasBits1 &= ~32768;
   }
 
   /// <summary>Field number for the "packet_misdelivery_rate_p95_x4" field.</summary>
@@ -3626,9 +3859,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint PacketMisdeliveryRateP95X4 {
-    get { if ((_hasBits1 & 256) != 0) { return packetMisdeliveryRateP95X4_; } else { return PacketMisdeliveryRateP95X4DefaultValue; } }
+    get { if ((_hasBits1 & 65536) != 0) { return packetMisdeliveryRateP95X4_; } else { return PacketMisdeliveryRateP95X4DefaultValue; } }
     set {
-      _hasBits1 |= 256;
+      _hasBits1 |= 65536;
       packetMisdeliveryRateP95X4_ = value;
     }
   }
@@ -3636,13 +3869,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasPacketMisdeliveryRateP95X4 {
-    get { return (_hasBits1 & 256) != 0; }
+    get { return (_hasBits1 & 65536) != 0; }
   }
   /// <summary>Clears the value of the "packet_misdelivery_rate_p95_x4" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearPacketMisdeliveryRateP95X4() {
-    _hasBits1 &= ~256;
+    _hasBits1 &= ~65536;
   }
 
   /// <summary>Field number for the "net_ping_p5" field.</summary>
@@ -3653,9 +3886,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetPingP5 {
-    get { if ((_hasBits1 & 512) != 0) { return netPingP5_; } else { return NetPingP5DefaultValue; } }
+    get { if ((_hasBits1 & 131072) != 0) { return netPingP5_; } else { return NetPingP5DefaultValue; } }
     set {
-      _hasBits1 |= 512;
+      _hasBits1 |= 131072;
       netPingP5_ = value;
     }
   }
@@ -3663,13 +3896,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetPingP5 {
-    get { return (_hasBits1 & 512) != 0; }
+    get { return (_hasBits1 & 131072) != 0; }
   }
   /// <summary>Clears the value of the "net_ping_p5" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetPingP5() {
-    _hasBits1 &= ~512;
+    _hasBits1 &= ~131072;
   }
 
   /// <summary>Field number for the "net_ping_p50" field.</summary>
@@ -3680,9 +3913,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetPingP50 {
-    get { if ((_hasBits1 & 1024) != 0) { return netPingP50_; } else { return NetPingP50DefaultValue; } }
+    get { if ((_hasBits1 & 262144) != 0) { return netPingP50_; } else { return NetPingP50DefaultValue; } }
     set {
-      _hasBits1 |= 1024;
+      _hasBits1 |= 262144;
       netPingP50_ = value;
     }
   }
@@ -3690,13 +3923,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetPingP50 {
-    get { return (_hasBits1 & 1024) != 0; }
+    get { return (_hasBits1 & 262144) != 0; }
   }
   /// <summary>Clears the value of the "net_ping_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetPingP50() {
-    _hasBits1 &= ~1024;
+    _hasBits1 &= ~262144;
   }
 
   /// <summary>Field number for the "net_ping_p95" field.</summary>
@@ -3707,9 +3940,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint NetPingP95 {
-    get { if ((_hasBits1 & 2048) != 0) { return netPingP95_; } else { return NetPingP95DefaultValue; } }
+    get { if ((_hasBits1 & 524288) != 0) { return netPingP95_; } else { return NetPingP95DefaultValue; } }
     set {
-      _hasBits1 |= 2048;
+      _hasBits1 |= 524288;
       netPingP95_ = value;
     }
   }
@@ -3717,13 +3950,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasNetPingP95 {
-    get { return (_hasBits1 & 2048) != 0; }
+    get { return (_hasBits1 & 524288) != 0; }
   }
   /// <summary>Clears the value of the "net_ping_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearNetPingP95() {
-    _hasBits1 &= ~2048;
+    _hasBits1 &= ~524288;
   }
 
   /// <summary>Field number for the "msgproc_usec_p50" field.</summary>
@@ -3734,9 +3967,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecP50 {
-    get { if ((_hasBits1 & 4096) != 0) { return msgprocUsecP50_; } else { return MsgprocUsecP50DefaultValue; } }
+    get { if ((_hasBits1 & 1048576) != 0) { return msgprocUsecP50_; } else { return MsgprocUsecP50DefaultValue; } }
     set {
-      _hasBits1 |= 4096;
+      _hasBits1 |= 1048576;
       msgprocUsecP50_ = value;
     }
   }
@@ -3744,13 +3977,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecP50 {
-    get { return (_hasBits1 & 4096) != 0; }
+    get { return (_hasBits1 & 1048576) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecP50() {
-    _hasBits1 &= ~4096;
+    _hasBits1 &= ~1048576;
   }
 
   /// <summary>Field number for the "msgproc_usec_p95" field.</summary>
@@ -3761,9 +3994,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecP95 {
-    get { if ((_hasBits1 & 8192) != 0) { return msgprocUsecP95_; } else { return MsgprocUsecP95DefaultValue; } }
+    get { if ((_hasBits1 & 2097152) != 0) { return msgprocUsecP95_; } else { return MsgprocUsecP95DefaultValue; } }
     set {
-      _hasBits1 |= 8192;
+      _hasBits1 |= 2097152;
       msgprocUsecP95_ = value;
     }
   }
@@ -3771,13 +4004,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecP95 {
-    get { return (_hasBits1 & 8192) != 0; }
+    get { return (_hasBits1 & 2097152) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecP95() {
-    _hasBits1 &= ~8192;
+    _hasBits1 &= ~2097152;
   }
 
   /// <summary>Field number for the "msgproc_usec_p99" field.</summary>
@@ -3788,9 +4021,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecP99 {
-    get { if ((_hasBits1 & 16384) != 0) { return msgprocUsecP99_; } else { return MsgprocUsecP99DefaultValue; } }
+    get { if ((_hasBits1 & 4194304) != 0) { return msgprocUsecP99_; } else { return MsgprocUsecP99DefaultValue; } }
     set {
-      _hasBits1 |= 16384;
+      _hasBits1 |= 4194304;
       msgprocUsecP99_ = value;
     }
   }
@@ -3798,13 +4031,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecP99 {
-    get { return (_hasBits1 & 16384) != 0; }
+    get { return (_hasBits1 & 4194304) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecP99() {
-    _hasBits1 &= ~16384;
+    _hasBits1 &= ~4194304;
   }
 
   /// <summary>Field number for the "msgproc_usec_max" field.</summary>
@@ -3815,9 +4048,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecMax {
-    get { if ((_hasBits1 & 32768) != 0) { return msgprocUsecMax_; } else { return MsgprocUsecMaxDefaultValue; } }
+    get { if ((_hasBits1 & 8388608) != 0) { return msgprocUsecMax_; } else { return MsgprocUsecMaxDefaultValue; } }
     set {
-      _hasBits1 |= 32768;
+      _hasBits1 |= 8388608;
       msgprocUsecMax_ = value;
     }
   }
@@ -3825,13 +4058,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecMax {
-    get { return (_hasBits1 & 32768) != 0; }
+    get { return (_hasBits1 & 8388608) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_max" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecMax() {
-    _hasBits1 &= ~32768;
+    _hasBits1 &= ~8388608;
   }
 
   /// <summary>Field number for the "msgproc_usec_avg_p50" field.</summary>
@@ -3842,9 +4075,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecAvgP50 {
-    get { if ((_hasBits1 & 65536) != 0) { return msgprocUsecAvgP50_; } else { return MsgprocUsecAvgP50DefaultValue; } }
+    get { if ((_hasBits1 & 16777216) != 0) { return msgprocUsecAvgP50_; } else { return MsgprocUsecAvgP50DefaultValue; } }
     set {
-      _hasBits1 |= 65536;
+      _hasBits1 |= 16777216;
       msgprocUsecAvgP50_ = value;
     }
   }
@@ -3852,13 +4085,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecAvgP50 {
-    get { return (_hasBits1 & 65536) != 0; }
+    get { return (_hasBits1 & 16777216) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_avg_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecAvgP50() {
-    _hasBits1 &= ~65536;
+    _hasBits1 &= ~16777216;
   }
 
   /// <summary>Field number for the "msgproc_usec_avg_p95" field.</summary>
@@ -3869,9 +4102,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecAvgP95 {
-    get { if ((_hasBits1 & 131072) != 0) { return msgprocUsecAvgP95_; } else { return MsgprocUsecAvgP95DefaultValue; } }
+    get { if ((_hasBits1 & 33554432) != 0) { return msgprocUsecAvgP95_; } else { return MsgprocUsecAvgP95DefaultValue; } }
     set {
-      _hasBits1 |= 131072;
+      _hasBits1 |= 33554432;
       msgprocUsecAvgP95_ = value;
     }
   }
@@ -3879,13 +4112,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecAvgP95 {
-    get { return (_hasBits1 & 131072) != 0; }
+    get { return (_hasBits1 & 33554432) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_avg_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecAvgP95() {
-    _hasBits1 &= ~131072;
+    _hasBits1 &= ~33554432;
   }
 
   /// <summary>Field number for the "msgproc_usec_avg_p99" field.</summary>
@@ -3896,9 +4129,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecAvgP99 {
-    get { if ((_hasBits1 & 262144) != 0) { return msgprocUsecAvgP99_; } else { return MsgprocUsecAvgP99DefaultValue; } }
+    get { if ((_hasBits1 & 67108864) != 0) { return msgprocUsecAvgP99_; } else { return MsgprocUsecAvgP99DefaultValue; } }
     set {
-      _hasBits1 |= 262144;
+      _hasBits1 |= 67108864;
       msgprocUsecAvgP99_ = value;
     }
   }
@@ -3906,13 +4139,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecAvgP99 {
-    get { return (_hasBits1 & 262144) != 0; }
+    get { return (_hasBits1 & 67108864) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_avg_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecAvgP99() {
-    _hasBits1 &= ~262144;
+    _hasBits1 &= ~67108864;
   }
 
   /// <summary>Field number for the "msgproc_usec_avg_max" field.</summary>
@@ -3923,9 +4156,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint MsgprocUsecAvgMax {
-    get { if ((_hasBits1 & 524288) != 0) { return msgprocUsecAvgMax_; } else { return MsgprocUsecAvgMaxDefaultValue; } }
+    get { if ((_hasBits1 & 134217728) != 0) { return msgprocUsecAvgMax_; } else { return MsgprocUsecAvgMaxDefaultValue; } }
     set {
-      _hasBits1 |= 524288;
+      _hasBits1 |= 134217728;
       msgprocUsecAvgMax_ = value;
     }
   }
@@ -3933,13 +4166,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasMsgprocUsecAvgMax {
-    get { return (_hasBits1 & 524288) != 0; }
+    get { return (_hasBits1 & 134217728) != 0; }
   }
   /// <summary>Clears the value of the "msgproc_usec_avg_max" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearMsgprocUsecAvgMax() {
-    _hasBits1 &= ~524288;
+    _hasBits1 &= ~134217728;
   }
 
   /// <summary>Field number for the "queuedmsgs_p50" field.</summary>
@@ -3950,9 +4183,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint QueuedmsgsP50 {
-    get { if ((_hasBits1 & 1048576) != 0) { return queuedmsgsP50_; } else { return QueuedmsgsP50DefaultValue; } }
+    get { if ((_hasBits1 & 268435456) != 0) { return queuedmsgsP50_; } else { return QueuedmsgsP50DefaultValue; } }
     set {
-      _hasBits1 |= 1048576;
+      _hasBits1 |= 268435456;
       queuedmsgsP50_ = value;
     }
   }
@@ -3960,13 +4193,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasQueuedmsgsP50 {
-    get { return (_hasBits1 & 1048576) != 0; }
+    get { return (_hasBits1 & 268435456) != 0; }
   }
   /// <summary>Clears the value of the "queuedmsgs_p50" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearQueuedmsgsP50() {
-    _hasBits1 &= ~1048576;
+    _hasBits1 &= ~268435456;
   }
 
   /// <summary>Field number for the "queuedmsgs_p95" field.</summary>
@@ -3977,9 +4210,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint QueuedmsgsP95 {
-    get { if ((_hasBits1 & 2097152) != 0) { return queuedmsgsP95_; } else { return QueuedmsgsP95DefaultValue; } }
+    get { if ((_hasBits1 & 536870912) != 0) { return queuedmsgsP95_; } else { return QueuedmsgsP95DefaultValue; } }
     set {
-      _hasBits1 |= 2097152;
+      _hasBits1 |= 536870912;
       queuedmsgsP95_ = value;
     }
   }
@@ -3987,13 +4220,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasQueuedmsgsP95 {
-    get { return (_hasBits1 & 2097152) != 0; }
+    get { return (_hasBits1 & 536870912) != 0; }
   }
   /// <summary>Clears the value of the "queuedmsgs_p95" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearQueuedmsgsP95() {
-    _hasBits1 &= ~2097152;
+    _hasBits1 &= ~536870912;
   }
 
   /// <summary>Field number for the "queuedmsgs_p99" field.</summary>
@@ -4004,9 +4237,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint QueuedmsgsP99 {
-    get { if ((_hasBits1 & 4194304) != 0) { return queuedmsgsP99_; } else { return QueuedmsgsP99DefaultValue; } }
+    get { if ((_hasBits1 & 1073741824) != 0) { return queuedmsgsP99_; } else { return QueuedmsgsP99DefaultValue; } }
     set {
-      _hasBits1 |= 4194304;
+      _hasBits1 |= 1073741824;
       queuedmsgsP99_ = value;
     }
   }
@@ -4014,13 +4247,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasQueuedmsgsP99 {
-    get { return (_hasBits1 & 4194304) != 0; }
+    get { return (_hasBits1 & 1073741824) != 0; }
   }
   /// <summary>Clears the value of the "queuedmsgs_p99" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearQueuedmsgsP99() {
-    _hasBits1 &= ~4194304;
+    _hasBits1 &= ~1073741824;
   }
 
   /// <summary>Field number for the "queuedmsgs_max" field.</summary>
@@ -4031,9 +4264,9 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public uint QueuedmsgsMax {
-    get { if ((_hasBits1 & 8388608) != 0) { return queuedmsgsMax_; } else { return QueuedmsgsMaxDefaultValue; } }
+    get { if ((_hasBits1 & -2147483648) != 0) { return queuedmsgsMax_; } else { return QueuedmsgsMaxDefaultValue; } }
     set {
-      _hasBits1 |= 8388608;
+      _hasBits1 |= -2147483648;
       queuedmsgsMax_ = value;
     }
   }
@@ -4041,13 +4274,13 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public bool HasQueuedmsgsMax {
-    get { return (_hasBits1 & 8388608) != 0; }
+    get { return (_hasBits1 & -2147483648) != 0; }
   }
   /// <summary>Clears the value of the "queuedmsgs_max" field</summary>
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
   public void ClearQueuedmsgsMax() {
-    _hasBits1 &= ~8388608;
+    _hasBits1 &= ~-2147483648;
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4080,6 +4313,14 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (NetframesSizeExceedsMtu != other.NetframesSizeExceedsMtu) return false;
     if (NetframesSizeP95 != other.NetframesSizeP95) return false;
     if (NetframesSizeP99 != other.NetframesSizeP99) return false;
+    if (NetframesSizeUncompressedP50 != other.NetframesSizeUncompressedP50) return false;
+    if (NetframesSizeUncompressedP95 != other.NetframesSizeUncompressedP95) return false;
+    if (NetframesSizeUncompressedP99 != other.NetframesSizeUncompressedP99) return false;
+    if (NetframesSizeUncompressedMax != other.NetframesSizeUncompressedMax) return false;
+    if (NetframesMsgsP50 != other.NetframesMsgsP50) return false;
+    if (NetframesMsgsP95 != other.NetframesMsgsP95) return false;
+    if (NetframesMsgsP99 != other.NetframesMsgsP99) return false;
+    if (NetframesMsgsMax != other.NetframesMsgsMax) return false;
     if (TicksTotal != other.TicksTotal) return false;
     if (TicksGood != other.TicksGood) return false;
     if (TicksGoodAlmostLate != other.TicksGoodAlmostLate) return false;
@@ -4143,6 +4384,14 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (HasNetframesSizeExceedsMtu) hash ^= NetframesSizeExceedsMtu.GetHashCode();
     if (HasNetframesSizeP95) hash ^= NetframesSizeP95.GetHashCode();
     if (HasNetframesSizeP99) hash ^= NetframesSizeP99.GetHashCode();
+    if (HasNetframesSizeUncompressedP50) hash ^= NetframesSizeUncompressedP50.GetHashCode();
+    if (HasNetframesSizeUncompressedP95) hash ^= NetframesSizeUncompressedP95.GetHashCode();
+    if (HasNetframesSizeUncompressedP99) hash ^= NetframesSizeUncompressedP99.GetHashCode();
+    if (HasNetframesSizeUncompressedMax) hash ^= NetframesSizeUncompressedMax.GetHashCode();
+    if (HasNetframesMsgsP50) hash ^= NetframesMsgsP50.GetHashCode();
+    if (HasNetframesMsgsP95) hash ^= NetframesMsgsP95.GetHashCode();
+    if (HasNetframesMsgsP99) hash ^= NetframesMsgsP99.GetHashCode();
+    if (HasNetframesMsgsMax) hash ^= NetframesMsgsMax.GetHashCode();
     if (HasTicksTotal) hash ^= TicksTotal.GetHashCode();
     if (HasTicksGood) hash ^= TicksGood.GetHashCode();
     if (HasTicksGoodAlmostLate) hash ^= TicksGoodAlmostLate.GetHashCode();
@@ -4225,6 +4474,38 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (HasBytesSecP99) {
       output.WriteRawTag(88);
       output.WriteUInt32(BytesSecP99);
+    }
+    if (HasNetframesSizeUncompressedP50) {
+      output.WriteRawTag(96);
+      output.WriteUInt32(NetframesSizeUncompressedP50);
+    }
+    if (HasNetframesSizeUncompressedP95) {
+      output.WriteRawTag(104);
+      output.WriteUInt32(NetframesSizeUncompressedP95);
+    }
+    if (HasNetframesSizeUncompressedP99) {
+      output.WriteRawTag(112);
+      output.WriteUInt32(NetframesSizeUncompressedP99);
+    }
+    if (HasNetframesSizeUncompressedMax) {
+      output.WriteRawTag(120);
+      output.WriteUInt32(NetframesSizeUncompressedMax);
+    }
+    if (HasNetframesMsgsP50) {
+      output.WriteRawTag(128, 1);
+      output.WriteUInt32(NetframesMsgsP50);
+    }
+    if (HasNetframesMsgsP95) {
+      output.WriteRawTag(136, 1);
+      output.WriteUInt32(NetframesMsgsP95);
+    }
+    if (HasNetframesMsgsP99) {
+      output.WriteRawTag(144, 1);
+      output.WriteUInt32(NetframesMsgsP99);
+    }
+    if (HasNetframesMsgsMax) {
+      output.WriteRawTag(152, 1);
+      output.WriteUInt32(NetframesMsgsMax);
     }
     if (HasEnginemsgsTotal) {
       output.WriteRawTag(160, 1);
@@ -4459,6 +4740,38 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (HasBytesSecP99) {
       output.WriteRawTag(88);
       output.WriteUInt32(BytesSecP99);
+    }
+    if (HasNetframesSizeUncompressedP50) {
+      output.WriteRawTag(96);
+      output.WriteUInt32(NetframesSizeUncompressedP50);
+    }
+    if (HasNetframesSizeUncompressedP95) {
+      output.WriteRawTag(104);
+      output.WriteUInt32(NetframesSizeUncompressedP95);
+    }
+    if (HasNetframesSizeUncompressedP99) {
+      output.WriteRawTag(112);
+      output.WriteUInt32(NetframesSizeUncompressedP99);
+    }
+    if (HasNetframesSizeUncompressedMax) {
+      output.WriteRawTag(120);
+      output.WriteUInt32(NetframesSizeUncompressedMax);
+    }
+    if (HasNetframesMsgsP50) {
+      output.WriteRawTag(128, 1);
+      output.WriteUInt32(NetframesMsgsP50);
+    }
+    if (HasNetframesMsgsP95) {
+      output.WriteRawTag(136, 1);
+      output.WriteUInt32(NetframesMsgsP95);
+    }
+    if (HasNetframesMsgsP99) {
+      output.WriteRawTag(144, 1);
+      output.WriteUInt32(NetframesMsgsP99);
+    }
+    if (HasNetframesMsgsMax) {
+      output.WriteRawTag(152, 1);
+      output.WriteUInt32(NetframesMsgsMax);
     }
     if (HasEnginemsgsTotal) {
       output.WriteRawTag(160, 1);
@@ -4715,6 +5028,30 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (HasNetframesSizeP99) {
       size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetframesSizeP99);
     }
+    if (HasNetframesSizeUncompressedP50) {
+      size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NetframesSizeUncompressedP50);
+    }
+    if (HasNetframesSizeUncompressedP95) {
+      size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NetframesSizeUncompressedP95);
+    }
+    if (HasNetframesSizeUncompressedP99) {
+      size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NetframesSizeUncompressedP99);
+    }
+    if (HasNetframesSizeUncompressedMax) {
+      size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NetframesSizeUncompressedMax);
+    }
+    if (HasNetframesMsgsP50) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetframesMsgsP50);
+    }
+    if (HasNetframesMsgsP95) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetframesMsgsP95);
+    }
+    if (HasNetframesMsgsP99) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetframesMsgsP99);
+    }
+    if (HasNetframesMsgsMax) {
+      size += 2 + pb::CodedOutputStream.ComputeUInt32Size(NetframesMsgsMax);
+    }
     if (HasTicksTotal) {
       size += 2 + pb::CodedOutputStream.ComputeUInt32Size(TicksTotal);
     }
@@ -4895,6 +5232,30 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
     if (other.HasNetframesSizeP99) {
       NetframesSizeP99 = other.NetframesSizeP99;
     }
+    if (other.HasNetframesSizeUncompressedP50) {
+      NetframesSizeUncompressedP50 = other.NetframesSizeUncompressedP50;
+    }
+    if (other.HasNetframesSizeUncompressedP95) {
+      NetframesSizeUncompressedP95 = other.NetframesSizeUncompressedP95;
+    }
+    if (other.HasNetframesSizeUncompressedP99) {
+      NetframesSizeUncompressedP99 = other.NetframesSizeUncompressedP99;
+    }
+    if (other.HasNetframesSizeUncompressedMax) {
+      NetframesSizeUncompressedMax = other.NetframesSizeUncompressedMax;
+    }
+    if (other.HasNetframesMsgsP50) {
+      NetframesMsgsP50 = other.NetframesMsgsP50;
+    }
+    if (other.HasNetframesMsgsP95) {
+      NetframesMsgsP95 = other.NetframesMsgsP95;
+    }
+    if (other.HasNetframesMsgsP99) {
+      NetframesMsgsP99 = other.NetframesMsgsP99;
+    }
+    if (other.HasNetframesMsgsMax) {
+      NetframesMsgsMax = other.NetframesMsgsMax;
+    }
     if (other.HasTicksTotal) {
       TicksTotal = other.TicksTotal;
     }
@@ -5055,6 +5416,38 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
         }
         case 88: {
           BytesSecP99 = input.ReadUInt32();
+          break;
+        }
+        case 96: {
+          NetframesSizeUncompressedP50 = input.ReadUInt32();
+          break;
+        }
+        case 104: {
+          NetframesSizeUncompressedP95 = input.ReadUInt32();
+          break;
+        }
+        case 112: {
+          NetframesSizeUncompressedP99 = input.ReadUInt32();
+          break;
+        }
+        case 120: {
+          NetframesSizeUncompressedMax = input.ReadUInt32();
+          break;
+        }
+        case 128: {
+          NetframesMsgsP50 = input.ReadUInt32();
+          break;
+        }
+        case 136: {
+          NetframesMsgsP95 = input.ReadUInt32();
+          break;
+        }
+        case 144: {
+          NetframesMsgsP99 = input.ReadUInt32();
+          break;
+        }
+        case 152: {
+          NetframesMsgsMax = input.ReadUInt32();
           break;
         }
         case 160: {
@@ -5294,6 +5687,38 @@ public sealed partial class CMsgSource2NetworkFlowQuality : pb::IMessage<CMsgSou
         }
         case 88: {
           BytesSecP99 = input.ReadUInt32();
+          break;
+        }
+        case 96: {
+          NetframesSizeUncompressedP50 = input.ReadUInt32();
+          break;
+        }
+        case 104: {
+          NetframesSizeUncompressedP95 = input.ReadUInt32();
+          break;
+        }
+        case 112: {
+          NetframesSizeUncompressedP99 = input.ReadUInt32();
+          break;
+        }
+        case 120: {
+          NetframesSizeUncompressedMax = input.ReadUInt32();
+          break;
+        }
+        case 128: {
+          NetframesMsgsP50 = input.ReadUInt32();
+          break;
+        }
+        case 136: {
+          NetframesMsgsP95 = input.ReadUInt32();
+          break;
+        }
+        case 144: {
+          NetframesMsgsP99 = input.ReadUInt32();
+          break;
+        }
+        case 152: {
+          NetframesMsgsMax = input.ReadUInt32();
           break;
         }
         case 160: {

@@ -18,12 +18,15 @@
  */
 
 using System;
+using Sharp.Core.Attributes;
 using Sharp.Shared.Enums;
 
 namespace Sharp.Core.Bridges.Natives;
 
 public static unsafe partial class Core
 {
+    private const int LogTextMaxBytes = 1920;
+
     public static partial string GetCommandLine();
 
     public static partial IntPtr GetCoreBridge();
@@ -40,11 +43,11 @@ public static unsafe partial class Core
 
     public static partial void FatalError(string message);
 
-    public static partial void LogWarning(string message);
+    public static partial void LogWarning([NativeUtf8String(LogTextMaxBytes)] string message);
 
-    public static partial void LogMessage(string message);
+    public static partial void LogMessage([NativeUtf8String(LogTextMaxBytes)] string message);
 
-    public static partial void LogColorText(byte r, byte g, byte b, string message);
+    public static partial void LogColorText(byte r, byte g, byte b, [NativeUtf8String(LogTextMaxBytes)] string message);
 
     public static partial nint GetGameData();
 

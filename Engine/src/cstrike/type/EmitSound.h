@@ -224,22 +224,16 @@ enum class SoundFlags_t
 
 struct EmitSound_t
 {
-    const char* m_pSoundName;    // 0x0
-    Vector      m_veSoundOrigin; // 0x8
-    float       m_flVolume;      // 0x14
-    float       m_flSoundTime;   // 0x18
-private:
-    [[maybe_unused]] uint8_t m_pad_0x1c[0x4];
-
-public:
-    uint32_t m_nForceGuid; // 0x20
-private:
-    [[maybe_unused]] uint8_t m_pad_0x24[0x4];
-
-public:
-    int16_t m_nPitch; // 0x28
-    uint8_t m_nFlags; // 0x2a
-}; // Size: 0x2b
+    const char* m_pSoundName;        // 0x0
+    Vector      m_veSoundOrigin;     // 0x8
+    float       m_flVolume;          // 0x14
+    float       m_flSoundTime;       // 0x18
+    int32_t     m_nSpeakerEntity;    // 0x1c
+    uint32_t    m_nForceGuid;        // 0x20
+    int32_t     m_nSourceSoundscape; // 0x24
+    int16_t     m_nPitch;            // 0x28
+    uint8_t     m_nFlags;            // 0x2a
+}; // Size: 0x30
 static_assert(sizeof(EmitSound_t) == 48);
 
 enum SOFieldDataType_t : std::int8_t

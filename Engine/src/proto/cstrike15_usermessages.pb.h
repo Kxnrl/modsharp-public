@@ -33,6 +33,7 @@
 #include <google/protobuf/unknown_field_set.h>
 #include "networkbasetypes.pb.h"
 #include "cstrike15_gcmessages.pb.h"
+#include <google/protobuf/descriptor.pb.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_cstrike15_5fusermessages_2eproto
@@ -3085,7 +3086,7 @@ class CCSUsrMsg_RawAudio /*final*/ :
   void _internal_set_duration(float value);
   public:
 
-  // optional int32 entidx = 2 [default = -1];
+  // optional int32 entidx = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -3638,7 +3639,7 @@ class CCSUsrMsg_Damage /*final*/ :
   void _internal_set_amount(int32_t value);
   public:
 
-  // optional int32 victim_entindex = 3 [default = -1];
+  // optional int32 victim_entindex = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_victim_entindex() const;
   private:
   bool _internal_has_victim_entindex() const;
@@ -3858,7 +3859,7 @@ class CCSUsrMsg_RadioText /*final*/ :
   void _internal_set_msg_dst(int32_t value);
   public:
 
-  // optional int32 client = 2 [default = -1];
+  // optional int32 client = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_client() const;
   private:
   bool _internal_has_client() const;
@@ -4468,7 +4469,7 @@ class CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate /*final*/ :
   void _internal_set_player_has_c4(bool value);
   public:
 
-  // optional int32 entity_idx = 1 [default = -1];
+  // optional int32 entity_idx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entity_idx() const;
   private:
   bool _internal_has_entity_idx() const;
@@ -5001,7 +5002,7 @@ class CCSUsrMsg_SendPlayerItemFound /*final*/ :
       ::CEconItemPreviewDataBlock* iteminfo);
   ::CEconItemPreviewDataBlock* unsafe_arena_release_iteminfo();
 
-  // optional int32 playerslot = 2 [default = -1];
+  // optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_playerslot() const;
   private:
   bool _internal_has_playerslot() const;
@@ -5218,7 +5219,7 @@ class CCSUsrMsg_ReloadEffect /*final*/ :
   void _internal_set_origin_z(float value);
   public:
 
-  // optional int32 entidx = 1 [default = -1];
+  // optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -5386,7 +5387,6 @@ class CCSUsrMsg_WeaponSound /*final*/ :
     kOriginZFieldNumber = 4,
     kGameTimestampFieldNumber = 6,
     kSourceSoundscapeidFieldNumber = 7,
-    kStealthFieldNumber = 8,
     kEntidxFieldNumber = 1,
   };
   // optional string sound = 5;
@@ -5472,20 +5472,7 @@ class CCSUsrMsg_WeaponSound /*final*/ :
   void _internal_set_source_soundscapeid(uint32_t value);
   public:
 
-  // optional bool stealth = 8;
-  bool has_stealth() const;
-  private:
-  bool _internal_has_stealth() const;
-  public:
-  void clear_stealth();
-  bool stealth() const;
-  void set_stealth(bool value);
-  private:
-  bool _internal_stealth() const;
-  void _internal_set_stealth(bool value);
-  public:
-
-  // optional int32 entidx = 1 [default = -1];
+  // optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -5514,7 +5501,6 @@ class CCSUsrMsg_WeaponSound /*final*/ :
     float origin_z_;
     float game_timestamp_;
     uint32_t source_soundscapeid_;
-    bool stealth_;
     int32_t entidx_;
   };
   union { Impl_ _impl_; };
@@ -5680,7 +5666,7 @@ class CCSUsrMsg_WeaponMagDrop /*final*/ :
   void _internal_set_server_event(bool value);
   public:
 
-  // optional int32 entidx = 1 [default = -1];
+  // optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -5884,7 +5870,7 @@ class CCSUsrMsg_UpdateScreenHealthBar /*final*/ :
   void _internal_set_style(int32_t value);
   public:
 
-  // optional int32 entidx = 1 [default = -1];
+  // optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -6061,7 +6047,7 @@ class CCSUsrMsg_EntityOutlineHighlight /*final*/ :
   void _internal_set_removehighlight(bool value);
   public:
 
-  // optional int32 entidx = 1 [default = -1];
+  // optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_entidx() const;
   private:
   bool _internal_has_entidx() const;
@@ -6602,7 +6588,7 @@ class CCSUsrMsg_KillCam /*final*/ :
   void _internal_set_obs_mode(int32_t value);
   public:
 
-  // optional int32 first_target = 2 [default = -1];
+  // optional int32 first_target = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_first_target() const;
   private:
   bool _internal_has_first_target() const;
@@ -6615,7 +6601,7 @@ class CCSUsrMsg_KillCam /*final*/ :
   void _internal_set_first_target(int32_t value);
   public:
 
-  // optional int32 second_target = 3 [default = -1];
+  // optional int32 second_target = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
   bool has_second_target() const;
   private:
   bool _internal_has_second_target() const;
@@ -9099,7 +9085,7 @@ class CCSUsrMsg_VoteStart /*final*/ :
   void _internal_set_is_yes_no_vote(bool value);
   public:
 
-  // optional int32 player_slot = 2 [default = -1];
+  // optional int32 player_slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_slot() const;
   private:
   bool _internal_has_player_slot() const;
@@ -9112,7 +9098,7 @@ class CCSUsrMsg_VoteStart /*final*/ :
   void _internal_set_player_slot(int32_t value);
   public:
 
-  // optional int32 player_slot_target = 8 [default = -1];
+  // optional int32 player_slot_target = 8 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_player_slot_target() const;
   private:
   bool _internal_has_player_slot_target() const;
@@ -13392,7 +13378,7 @@ class CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData /*final*/ :
   void _internal_set_isbot(bool value);
   public:
 
-  // optional int32 slot = 1 [default = -1];
+  // optional int32 slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_slot() const;
   private:
   bool _internal_has_slot() const;
@@ -13812,7 +13798,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Victim /*final*/ :
   void _internal_set_is_dead(bool value);
   public:
 
-  // optional int32 playerslot = 2 [default = -1];
+  // optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_playerslot() const;
   private:
   bool _internal_has_playerslot() const;
@@ -14207,7 +14193,7 @@ class CCSUsrMsg_RoundEndReportData_RerEvent_Damage /*final*/ :
   void _internal_set_return_num_hits(int32_t value);
   public:
 
-  // optional int32 other_playerslot = 1 [default = -1];
+  // optional int32 other_playerslot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_other_playerslot() const;
   private:
   bool _internal_has_other_playerslot() const;
@@ -18000,7 +17986,7 @@ class CCSUsrMsg_SendPlayerLoadout /*final*/ :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::CCSUsrMsg_SendPlayerLoadout_LoadoutItem >&
       loadout() const;
 
-  // optional int32 playerslot = 2 [default = -1];
+  // optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
   bool has_playerslot() const;
   private:
   bool _internal_has_playerslot() const;
@@ -18180,7 +18166,7 @@ class CCSUsrMsg_CustomHudClicked /*final*/ :
   std::string* _internal_mutable_button_id();
   public:
 
-  // optional uint32 custom_hud_layout = 1 [default = 16777215];
+  // optional uint32 custom_hud_layout = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
   bool has_custom_hud_layout() const;
   private:
   bool _internal_has_custom_hud_layout() const;
@@ -20355,7 +20341,7 @@ inline void CCSUsrMsg_RawAudio::set_pitch(int32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_RawAudio.pitch)
 }
 
-// optional int32 entidx = 2 [default = -1];
+// optional int32 entidx = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_RawAudio::_internal_has_entidx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
@@ -20730,7 +20716,7 @@ inline void CCSUsrMsg_Damage::set_allocated_inflictor_world_pos(::CMsgVector* in
   // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_Damage.inflictor_world_pos)
 }
 
-// optional int32 victim_entindex = 3 [default = -1];
+// optional int32 victim_entindex = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_Damage::_internal_has_victim_entindex() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -20790,7 +20776,7 @@ inline void CCSUsrMsg_RadioText::set_msg_dst(int32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_RadioText.msg_dst)
 }
 
-// optional int32 client = 2 [default = -1];
+// optional int32 client = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_RadioText::_internal_has_client() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -21116,7 +21102,7 @@ CCSUsrMsg_KeyHintText::mutable_messages() {
 
 // CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate
 
-// optional int32 entity_idx = 1 [default = -1];
+// optional int32 entity_idx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_ProcessSpottedEntityUpdate_SpottedEntityUpdate::_internal_has_entity_idx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000100u) != 0;
   return value;
@@ -21572,7 +21558,7 @@ inline void CCSUsrMsg_SendPlayerItemFound::set_allocated_iteminfo(::CEconItemPre
   // @@protoc_insertion_point(field_set_allocated:CCSUsrMsg_SendPlayerItemFound.iteminfo)
 }
 
-// optional int32 playerslot = 2 [default = -1];
+// optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_SendPlayerItemFound::_internal_has_playerslot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -21604,7 +21590,7 @@ inline void CCSUsrMsg_SendPlayerItemFound::set_playerslot(int32_t value) {
 
 // CCSUsrMsg_ReloadEffect
 
-// optional int32 entidx = 1 [default = -1];
+// optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_ReloadEffect::_internal_has_entidx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000010u) != 0;
   return value;
@@ -21748,9 +21734,9 @@ inline void CCSUsrMsg_ReloadEffect::set_origin_z(float value) {
 
 // CCSUsrMsg_WeaponSound
 
-// optional int32 entidx = 1 [default = -1];
+// optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_WeaponSound::_internal_has_entidx() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
+  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
 }
 inline bool CCSUsrMsg_WeaponSound::has_entidx() const {
@@ -21758,7 +21744,7 @@ inline bool CCSUsrMsg_WeaponSound::has_entidx() const {
 }
 inline void CCSUsrMsg_WeaponSound::clear_entidx() {
   _impl_.entidx_ = -1;
-  _impl_._has_bits_[0] &= ~0x00000080u;
+  _impl_._has_bits_[0] &= ~0x00000040u;
 }
 inline int32_t CCSUsrMsg_WeaponSound::_internal_entidx() const {
   return _impl_.entidx_;
@@ -21768,7 +21754,7 @@ inline int32_t CCSUsrMsg_WeaponSound::entidx() const {
   return _internal_entidx();
 }
 inline void CCSUsrMsg_WeaponSound::_internal_set_entidx(int32_t value) {
-  _impl_._has_bits_[0] |= 0x00000080u;
+  _impl_._has_bits_[0] |= 0x00000040u;
   _impl_.entidx_ = value;
 }
 inline void CCSUsrMsg_WeaponSound::set_entidx(int32_t value) {
@@ -21984,39 +21970,11 @@ inline void CCSUsrMsg_WeaponSound::set_source_soundscapeid(uint32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponSound.source_soundscapeid)
 }
 
-// optional bool stealth = 8;
-inline bool CCSUsrMsg_WeaponSound::_internal_has_stealth() const {
-  bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
-  return value;
-}
-inline bool CCSUsrMsg_WeaponSound::has_stealth() const {
-  return _internal_has_stealth();
-}
-inline void CCSUsrMsg_WeaponSound::clear_stealth() {
-  _impl_.stealth_ = false;
-  _impl_._has_bits_[0] &= ~0x00000040u;
-}
-inline bool CCSUsrMsg_WeaponSound::_internal_stealth() const {
-  return _impl_.stealth_;
-}
-inline bool CCSUsrMsg_WeaponSound::stealth() const {
-  // @@protoc_insertion_point(field_get:CCSUsrMsg_WeaponSound.stealth)
-  return _internal_stealth();
-}
-inline void CCSUsrMsg_WeaponSound::_internal_set_stealth(bool value) {
-  _impl_._has_bits_[0] |= 0x00000040u;
-  _impl_.stealth_ = value;
-}
-inline void CCSUsrMsg_WeaponSound::set_stealth(bool value) {
-  _internal_set_stealth(value);
-  // @@protoc_insertion_point(field_set:CCSUsrMsg_WeaponSound.stealth)
-}
-
 // -------------------------------------------------------------------
 
 // CCSUsrMsg_WeaponMagDrop
 
-// optional int32 entidx = 1 [default = -1];
+// optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_WeaponMagDrop::_internal_has_entidx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -22104,7 +22062,7 @@ inline void CCSUsrMsg_WeaponMagDrop::set_server_event(bool value) {
 
 // CCSUsrMsg_UpdateScreenHealthBar
 
-// optional int32 entidx = 1 [default = -1];
+// optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_UpdateScreenHealthBar::_internal_has_entidx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000008u) != 0;
   return value;
@@ -22220,7 +22178,7 @@ inline void CCSUsrMsg_UpdateScreenHealthBar::set_style(int32_t value) {
 
 // CCSUsrMsg_EntityOutlineHighlight
 
-// optional int32 entidx = 1 [default = -1];
+// optional int32 entidx = 1 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_EntityOutlineHighlight::_internal_has_entidx() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -22456,7 +22414,7 @@ inline void CCSUsrMsg_KillCam::set_obs_mode(int32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_KillCam.obs_mode)
 }
 
-// optional int32 first_target = 2 [default = -1];
+// optional int32 first_target = 2 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_KillCam::_internal_has_first_target() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -22484,7 +22442,7 @@ inline void CCSUsrMsg_KillCam::set_first_target(int32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_KillCam.first_target)
 }
 
-// optional int32 second_target = 3 [default = -1];
+// optional int32 second_target = 3 [default = -1, boxed_type = "CEntityIndex", synthetic_default = "-1"];
 inline bool CCSUsrMsg_KillCam::_internal_has_second_target() const {
   bool value = (_impl_._has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -23590,7 +23548,7 @@ inline void CCSUsrMsg_VoteStart::set_team(int32_t value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_VoteStart.team)
 }
 
-// optional int32 player_slot = 2 [default = -1];
+// optional int32 player_slot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_VoteStart::_internal_has_player_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
@@ -23878,7 +23836,7 @@ inline void CCSUsrMsg_VoteStart::set_is_yes_no_vote(bool value) {
   // @@protoc_insertion_point(field_set:CCSUsrMsg_VoteStart.is_yes_no_vote)
 }
 
-// optional int32 player_slot_target = 8 [default = -1];
+// optional int32 player_slot_target = 8 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_VoteStart::_internal_has_player_slot_target() const {
   bool value = (_impl_._has_bits_[0] & 0x00000080u) != 0;
   return value;
@@ -26132,7 +26090,7 @@ inline void CCSUsrMsg_EndOfMatchAllPlayersData_Accolade::set_position(int32_t va
 
 // CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData
 
-// optional int32 slot = 1 [default = -1];
+// optional int32 slot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_EndOfMatchAllPlayersData_PlayerData::_internal_has_slot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000040u) != 0;
   return value;
@@ -26571,7 +26529,7 @@ inline void CCSUsrMsg_RoundEndReportData_RerEvent_Victim::set_team_number(int32_
   // @@protoc_insertion_point(field_set:CCSUsrMsg_RoundEndReportData.RerEvent.Victim.team_number)
 }
 
-// optional int32 playerslot = 2 [default = -1];
+// optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_RoundEndReportData_RerEvent_Victim::_internal_has_playerslot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -26747,7 +26705,7 @@ inline void CCSUsrMsg_RoundEndReportData_RerEvent_Objective::set_type(int32_t va
 
 // CCSUsrMsg_RoundEndReportData_RerEvent_Damage
 
-// optional int32 other_playerslot = 1 [default = -1];
+// optional int32 other_playerslot = 1 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_RoundEndReportData_RerEvent_Damage::_internal_has_other_playerslot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000020u) != 0;
   return value;
@@ -29234,7 +29192,7 @@ CCSUsrMsg_SendPlayerLoadout::loadout() const {
   return _impl_.loadout_;
 }
 
-// optional int32 playerslot = 2 [default = -1];
+// optional int32 playerslot = 2 [default = -1, boxed_type = "CPlayerSlot", synthetic_default = "-1"];
 inline bool CCSUsrMsg_SendPlayerLoadout::_internal_has_playerslot() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -29266,7 +29224,7 @@ inline void CCSUsrMsg_SendPlayerLoadout::set_playerslot(int32_t value) {
 
 // CCSUsrMsg_CustomHudClicked
 
-// optional uint32 custom_hud_layout = 1 [default = 16777215];
+// optional uint32 custom_hud_layout = 1 [default = 16777215, boxed_type = "CEHandleNetworkableInt", synthetic_default = "16777215"];
 inline bool CCSUsrMsg_CustomHudClicked::_internal_has_custom_hud_layout() const {
   bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
   return value;

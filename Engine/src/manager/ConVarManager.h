@@ -123,6 +123,13 @@ public:
         }
     }
 
+    bool SetValueString(CConVarBaseData* cvarData, const char* value)
+    {
+        BaseConVar cvar;
+        cvar.m_ConVarData = cvarData;
+        return address::server::ScriptSetConVarString(&cvar, 0, value);
+    }
+
     bool SetMin(CConVarBaseData* cvarData, CVValue_t* value) const
     {
         if (!cvarData->HasMinValue())

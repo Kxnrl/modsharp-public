@@ -104,7 +104,10 @@ enum class FieldType_t : uint8_t
     FIELD_ENGINE_TICK                                   = 0x4d,
     FIELD_WORLD_GROUP_ID                                = 0x4e,
     FIELD_GLOBALSYMBOL                                  = 0x4f,
-    FIELD_TYPECOUNT                                     = 0x50,
+    FIELD_HNMGRAPHDEFINITION                            = 0x50,
+    FIELD_NETWORK_QUANTIZED_VECTORWS                    = 0x51,
+    FIELD_NETWORK_ORIGIN_CELL_QUANTIZED_VECTORWS        = 0x52,
+    FIELD_TYPECOUNT                                     = 0x53,
 };
 
 class Variant_t
@@ -164,14 +167,11 @@ public:
     [[nodiscard]] bool        Bool() const { return (fieldType == FieldType_t::FIELD_BOOLEAN) ? bVal : false; }
     [[nodiscard]] float       Float() const { return (fieldType == FieldType_t::FIELD_FLOAT32) ? flVal : 0; }
     [[nodiscard]] const char* CString() const { return (fieldType == FieldType_t::FIELD_CSTRING) ? iszVal : nullptr; }
-    [[nodiscard]] const char* String() const { return (fieldType == FieldType_t::FIELD_STRING) ? (pVal ? *reinterpret_cast<char**>(pVal) : nullptr) : nullptr; }
+    [[nodiscard]] const char* String() const { return (fieldType == FieldType_t::FIELD_STRING) ? iszVal : nullptr; }
     [[nodiscard]] const char* AutoString() const
     {
-        if (fieldType == FieldType_t::FIELD_CSTRING)
+        if (fieldType == FieldType_t::FIELD_CSTRING || fieldType == FieldType_t::FIELD_STRING || fieldType == FieldType_t::FIELD_GLOBALSYMBOL)
             return iszVal;
-
-        if (fieldType == FieldType_t::FIELD_STRING || fieldType == FieldType_t::FIELD_GLOBALSYMBOL)
-            return pVal ? *reinterpret_cast<const char**>(pVal) : nullptr;
 
         return nullptr;
     }

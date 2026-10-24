@@ -308,6 +308,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
 		-fuse-ld=mold
 		-static-libgcc
 		-static-libstdc++
+		-Wl,--no-undefined
 	)
 endif()
 

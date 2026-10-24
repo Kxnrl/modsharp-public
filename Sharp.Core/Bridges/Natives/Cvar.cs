@@ -40,6 +40,8 @@ public static unsafe partial class Cvar
 
     public static partial void SetValue(nint cvar, ConVarVariantValue* value);
 
+    public static partial bool SetValueString(nint cvar, string value);
+
     public static partial bool SetMinBound(nint cvar, ConVarVariantValue* value);
 
     public static partial bool SetMaxBound(nint cvar, ConVarVariantValue* value);

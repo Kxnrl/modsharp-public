@@ -18,9 +18,8 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
 using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
@@ -39,18 +38,18 @@ internal partial class EventManager : ICoreEventManager
     private readonly ILogger<EventManager> _logger;
     private readonly ICoreAssemblyManager  _assemblyManager;
 
-    private readonly List<IEventListener> _listeners;
+    private readonly SubscriberList<IEventListener> _listeners;
 
     public EventManager(ILogger<EventManager> logger, ICoreAssemblyManager assemblyManager)
     {
         _logger          = logger;
         _assemblyManager = assemblyManager;
-        _listeners       = [];
+        _listeners       = new SubscriberList<IEventListener>(x => x.ListenerPriority);
 
         Forward.HookFireEvent += OnHookFireEvent;
         Forward.FireGameEvent += OnFireGameEvent;
 
-        _assemblyManager.RegisterUnloadCleanup(() => _assemblyManager.ClearLeakedListeners(_listeners, "EventListener"));
+        _assemblyManager.RegisterUnloadCleanup(() => _listeners.Edit(x => _assemblyManager.ClearLeakedListeners(x, "EventListener")));
     }
 
     private void OnFireGameEvent(nint ptr)
@@ -60,18 +59,18 @@ internal partial class EventManager : ICoreEventManager
             return;
         }
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].FireGameEvent(@event);
+                listener.FireGameEvent(@event);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {v}",
                                  nameof(OnFireGameEvent),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  @event.Name);
             }
         }
@@ -97,11 +96,11 @@ internal partial class EventManager : ICoreEventManager
         var block  = false;
         var svOnly = serverOnly;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                if (_listeners[i].HookFireEvent(@event, ref svOnly))
+                if (listener.HookFireEvent(@event, ref svOnly))
                 {
                     block = true;
                 }
@@ -111,7 +110,7 @@ internal partial class EventManager : ICoreEventManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name} :: {v}",
                                  nameof(OnHookFireEvent),
-                                 _listeners[i].GetType().Name,
+                                 listener.GetType().Name,
                                  @event.Name);
             }
         }
@@ -140,7 +139,7 @@ internal partial class EventManager : ICoreEventManager
             throw new InvalidOperationException("Your listener api version mismatch");
         }
 
-        if (_listeners.Any(x => x.Equals(listener)))
+        if (_listeners.Exists(x => x.Equals(listener)))
         {
             _logger.LogError("You are already install listener!");
 
@@ -148,7 +147,6 @@ internal partial class EventManager : ICoreEventManager
         }
 
         _listeners.Add(listener);
-        _listeners.Sort((x, y) => y.ListenerPriority.CompareTo(x.ListenerPriority));
     }
 
     public void RemoveEventListener(IEventListener listener)

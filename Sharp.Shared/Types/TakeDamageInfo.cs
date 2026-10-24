@@ -23,7 +23,7 @@ using Sharp.Shared.GameEntities;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 288)]
+[StructLayout(LayoutKind.Explicit, Pack = 8, Size = 0x118)]
 public unsafe struct TakeDamageInfo
 {
     [FieldOffset(0)]
@@ -132,7 +132,7 @@ public unsafe struct TakeDamageInfo
     [FieldOffset(0x110)]
     public bool InTakeDamageFlow;
 
-    [FieldOffset(284)]
+    [FieldOffset(0x114)]
     public int UnknownFinal;
 
     private static readonly CEntityHandle<IBaseEntity> InvalidEntityHandle = new (uint.MaxValue);

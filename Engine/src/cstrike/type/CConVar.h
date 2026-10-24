@@ -42,6 +42,7 @@ enum EConVarType : short
     EConVarType_Vector3,
     EConVarType_Vector4,
     EConVarType_QAngle,
+    EConVarType_VectorWS,
     EConVarType_MAX
 };
 

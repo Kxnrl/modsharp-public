@@ -31,15 +31,17 @@
 #include "cstrike/entity/PlayerPawn.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CBitVec.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/VProf.h"
 
 #include <algorithm>
+#include <atomic>
+#include <bit>
 #include <mutex>
 #include <shared_mutex>
-#include <unordered_set>
 
 #include <safetyhook.hpp>
 
@@ -70,8 +72,14 @@ using write_guard = std::unique_lock<std::shared_mutex>;
 constexpr int MAX_ENTITY_COUNT = 16384;
 constexpr int MAX_CHANNEL      = 5;
 constexpr int TICK_RATE        = 64;
+constexpr int TRANSMIT_WORDS   = MAX_ENTITY_COUNT / 32;
 
 static std::shared_mutex g_MutexHooks;
+
+inline bool IsEntityIndexInRange(int index)
+{
+    return index > 0 && index < MAX_ENTITY_COUNT;
+}
 
 enum BlockTE_t : int64_t
 {
@@ -90,21 +98,22 @@ enum FireBulletState_t : int32_t
     FBS_RifleSilencer,
 };
 
-static uint64_t g_bitsBlockTempEnt[BT_Count];
-
-static CConVarBaseData*                                ms_transmit_block_dead_player_pawn = nullptr;
-static CConVarBaseData*                                ms_transmit_block_ownerless_pawn   = nullptr;
-static std::unordered_map<uint32_t, FireBulletState_t> s_fire_bullet_state;
-
-static uint32_t GetEHandleProtobufHandle(EHandle_t value)
+struct FireBulletSlot
 {
-    return (value & 0x7FFF) | (((value >> 15) & 0x3FF) << 14);
-}
+    uint32_t          handle = INVALID_PACKED_HANDLE;
+    FireBulletState_t state  = FBS_None;
+};
 
-static uint32_t GetEntityProtobufHandle(const CBaseEntity* entity)
+static std::atomic<uint64_t>       g_bitsBlockTempEnt[BT_Count];
+static std::atomic<FireBulletSlot> s_fire_bullet_state[MAX_ENTITY_COUNT];
+static_assert(std::atomic<FireBulletSlot>::is_always_lock_free);
+
+static CConVarBaseData* ms_transmit_block_dead_player_pawn = nullptr;
+static CConVarBaseData* ms_transmit_block_ownerless_pawn   = nullptr;
+
+[[nodiscard]] static bool IsPlayerSlotInRange(const PlayerSlot_t slot) noexcept
 {
-    const auto value = entity->GetActualEHandle().ToInt();
-    return GetEHandleProtobufHandle(value);
+    return slot < CS_MAX_PLAYERS;
 }
 
 static FireBulletState_t GetWeaponFireBulletState(const CBaseEntity* pWeapon)
@@ -112,24 +121,32 @@ static FireBulletState_t GetWeaponFireBulletState(const CBaseEntity* pWeapon)
     if (!pWeapon)
         return FBS_None;
 
-    const auto it = s_fire_bullet_state.find(GetEntityProtobufHandle(pWeapon));
-    if (it == s_fire_bullet_state.end())
+    const auto index = pWeapon->GetEntityIndex();
+    if (!IsEntityIndexInRange(index))
         return FBS_None;
 
-    return it->second;
+    const auto slot = s_fire_bullet_state[index].load(std::memory_order_relaxed);
+
+    return slot.handle == pWeapon->GetActualEHandle().GetPackedValue() ? slot.state : FBS_None;
 }
 
 static void SetBlockTempEntState(const BlockTE_t type, const PlayerSlot_t slot, const bool state)
 {
+    if (!IsPlayerSlotInRange(slot))
+        return;
+
     if (state)
-        g_bitsBlockTempEnt[type] |= (1ull << slot);
+        g_bitsBlockTempEnt[type].fetch_or(1ull << slot, std::memory_order_relaxed);
     else
-        g_bitsBlockTempEnt[type] &= ~(1ull << slot);
+        g_bitsBlockTempEnt[type].fetch_and(~(1ull << slot), std::memory_order_relaxed);
 }
 
 static bool GetBlockTempEntState(const BlockTE_t type, const PlayerSlot_t slot)
 {
-    return g_bitsBlockTempEnt[type] & (1ull << slot);
+    if (!IsPlayerSlotInRange(slot))
+        return false;
+
+    return g_bitsBlockTempEnt[type].load(std::memory_order_relaxed) & (1ull << slot);
 }
 
 struct Entity2Networkable_t;
@@ -141,7 +158,7 @@ class CCheckTransmitInfo // sizeof = 584 (0x248)
 
     // +8  CheckEntities => m_pNonTransmitEntity = Entities & ~m_pTransmitEntity
     //     :: CDeltaEntityNonTransmitHeaderWriter / ...Reader
-    [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pNonTransmitEntity;
+    CBitVec<MAX_ENTITY_COUNT>* m_pNonTransmitEntity;
     // +16 PVS Delta => COutOfPVSDeltaEntityHeaderWriter
     [[maybe_unused]] CBitVec<MAX_ENTITY_COUNT>* m_pOutOfPvsEntity;
     // +24 HLTV/Replay (CSendJob_HltvSource) nullptr otherwise
@@ -170,6 +187,10 @@ public:
     [[nodiscard]] inline bool IsFullUpdate() const noexcept { return m_bFullUpdate; }
 
     [[nodiscard]] inline bool IsTransmitting(EntityIndex_t index) const noexcept { return m_pTransmitEntity->IsBitSet(index); }
+
+    [[nodiscard]] inline uint32_t* TransmitBase() const noexcept { return m_pTransmitEntity->Base(); }
+
+    [[nodiscard]] inline uint32_t* NonTransmitBase() const noexcept { return m_pNonTransmitEntity->Base(); }
 
     inline void BlockTransmit(const CBaseEntity* pEntity) const noexcept { BlockTransmit(pEntity->GetEntityIndex()); }
 
@@ -202,22 +223,17 @@ public:
         m_pEntity(pEntity),
         m_iEntityIndex(pEntity->GetEntityIndex()),
         m_Handle(pEntity->GetActualEHandle()),
+        m_bitsAll(defaultTransmit ? ~0ull : 0ull),
         m_nOwnerEntity(INVALID_ENTITY_INDEX),
         m_bDefaultTransmit(defaultTransmit),
         m_bBlockAll(false),
         m_pszClassname(DumpString(pEntity->GetClassname()))
     {
-        for (PlayerSlot_t i = 0; i <= CS_MAX_PLAYERS; i++)
+        // can see by default
+        for (auto& bits : m_bitsChannel)
         {
-            // can see by default
-            SetAllChannel(i, defaultTransmit);
+            bits = m_bitsAll;
         }
-
-        // m_bRemoveFlags = (m_pszClassname != nullptr && (V_strcasecmp(m_pszClassname, "info_particle_system") == 0 || V_strcasecmp(m_pszClassname, "light_dynamic") == 0 || V_strcasecmp(m_pszClassname, "env_cascade_light") == 0 || V_strcasecmp(m_pszClassname, "env_projectedtexture") == 0 || V_strcasecmp(m_pszClassname, "env_screenoverlay") == 0 || V_strcasecmp(m_pszClassname, "env_fog_controller") == 0 || V_strcasecmp(m_pszClassname, "env_lightglow") == 0 || V_strcasecmp(m_pszClassname, "env_particlesmokegrenade") == 0 || V_strcasecmp(m_pszClassname, "env_global_light") == 0 || V_strcasecmp(m_pszClassname, "env_sun") == 0 || V_strcasecmp(m_pszClassname, "env_sprite") == 0 || V_strcasecmp(m_pszClassname, "point_camera") == 0 || V_strcasecmp(m_pszClassname, "point_viewproxy") == 0 || V_strcasecmp(m_pszClassname, "inferno") == 0 || V_strcasecmp(m_pszClassname, "sunshine_shadow_control") == 0 || V_strcasecmp(m_pszClassname, "cfe_player_decal") == 0 || V_strcasecmp(m_pszClassname, "func_precipitation") == 0 || V_strcasecmp(m_pszClassname, "cs_ragdoll") == 0 || V_strcasecmp(m_pszClassname, "info_target") == 0 || V_strncasecmp(m_pszClassname, "point_viewcontrol", 17) == 0 || V_strncasecmp(m_pszClassname, "env_fire", 8) == 0 || V_strncasecmp(m_pszClassname, "color_correction", 16) == 0));
-
-#ifdef TRACE
-        LOG("Construct::%d.%s::(%s) -> m_bRemoveFlags = %s\n", m_iEntityIndex, m_pszClassname, BOOLEAN(defaultTransmit), BOOLEAN(m_bRemoveFlags));
-#endif
     }
 
     ~CHook()
@@ -225,69 +241,87 @@ public:
         delete[] m_pszClassname;
     }
 
-private:
-    void SetAllChannel(EntityIndex_t client, bool v)
+public:
+    [[nodiscard]] static bool IsClientIndexInRange(EntityIndex_t client) noexcept
     {
-#ifdef TRACE
-        if (m_iEntityIndex < CS_MAX_PLAYERS)
-            LOG("SetAllChannel::%d.%s::(%d, %s)\n", m_iEntityIndex, m_pszClassname, client, BOOLEAN(v));
-#endif
+        return client >= 1 && client <= CS_MAX_PLAYERS;
+    }
 
-        for (auto c = MAX_CHANNEL; c >= 0; c--)
-        {
-            m_bCanTransmit[client][c] = v;
-        }
+private:
+    [[nodiscard]] static uint64_t ClientBit(EntityIndex_t client) noexcept
+    {
+        return 1ull << (client - 1);
     }
 
 public:
-    [[nodiscard]] bool CanSee(EntityIndex_t client) const
+    [[nodiscard]] bool CanSee(EntityIndex_t client) const noexcept
     {
         if (m_iEntityIndex == client)
             return true;
 
-        for (auto c = MAX_CHANNEL; c >= 0; c--)
-        {
-            if (!m_bCanTransmit[client][c])
-            {
-#ifdef TRACE
-                if (m_iEntityIndex < CS_MAX_PLAYERS && playerhelpers->GetGamePlayer(m_iEntityIndex) && playerhelpers->GetGamePlayer(client))
-                    LOG("CanSee[%s] -> [%s] -> channel = %d\n", playerhelpers->GetGamePlayer(m_iEntityIndex)->GetName(), playerhelpers->GetGamePlayer(client)->GetName(), c);
-#endif
-                return false;
-            }
-        }
+        if (!IsClientIndexInRange(client))
+            return true;
 
-        return true;
+        return (m_bitsAll & ClientBit(client)) != 0;
     }
 
-    void SetSee(EntityIndex_t client, bool can, int channel)
+    [[nodiscard]] uint64_t GetVisibleMask() const noexcept
     {
-#ifdef TRACE
-        if (m_iEntityIndex < CS_MAX_PLAYERS)
-            LOG("SetSee::%d.%s::(%d, %s, %d)\n", m_iEntityIndex, m_pszClassname, client, BOOLEAN(can), channel);
-#endif
+        return m_bitsAll;
+    }
+
+    bool SetSee(EntityIndex_t client, bool can, int channel)
+    {
+        if (!IsClientIndexInRange(client))
+            return false;
+
+        const auto bit = ClientBit(client);
+        const auto old = m_bitsAll;
+
         if (channel == -1)
         {
-            SetAllChannel(client, can);
-            return;
+            for (auto& bits : m_bitsChannel)
+            {
+                bits = can ? (bits | bit) : (bits & ~bit);
+            }
+
+            m_bitsAll = can ? (m_bitsAll | bit) : (m_bitsAll & ~bit);
+
+            return m_bitsAll != old;
         }
 
-        const auto c              = std::clamp(channel, 0, MAX_CHANNEL);
-        m_bCanTransmit[client][c] = can;
+        const auto c     = std::clamp(channel, 0, MAX_CHANNEL);
+        m_bitsChannel[c] = can ? (m_bitsChannel[c] | bit) : (m_bitsChannel[c] & ~bit);
+
+        if (!can)
+        {
+            m_bitsAll &= ~bit;
+
+            return m_bitsAll != old;
+        }
+
+        uint64_t all = ~0ull;
+        for (const auto bits : m_bitsChannel)
+        {
+            all &= bits;
+        }
+
+        m_bitsAll = (m_bitsAll & ~bit) | (all & bit);
+
+        return m_bitsAll != old;
     }
 
-    [[nodiscard]] bool GetState(EntityIndex_t client, int channel) const
+    [[nodiscard]] bool GetState(EntityIndex_t client, int channel) const noexcept
     {
-        return m_bCanTransmit[client][channel];
+        if (!IsClientIndexInRange(client))
+            return true;
+
+        return (m_bitsChannel[std::clamp(channel, 0, MAX_CHANNEL)] & ClientBit(client)) != 0;
     }
 
-    void SetDefault(EntityIndex_t client)
+    bool SetDefault(EntityIndex_t client)
     {
-#ifdef TRACE
-        if (m_iEntityIndex < CS_MAX_PLAYERS)
-            LOG("SetDefault::%d.%s::(%d)\n", client);
-#endif
-        SetAllChannel(client, m_bDefaultTransmit);
+        return SetSee(client, m_bDefaultTransmit, -1);
     }
 
     [[nodiscard]] EntityIndex_t GetOwner() const
@@ -295,22 +329,30 @@ public:
         return m_nOwnerEntity;
     }
 
-    void SetOwner(EntityIndex_t owner)
+    bool SetOwner(EntityIndex_t owner)
     {
 #ifdef TRACE
         if (m_iEntityIndex < CS_MAX_PLAYERS)
             LOG("SetOwner::%d.%s::(%d)\n", m_iEntityIndex, m_pszClassname, owner);
 #endif
+        if (m_nOwnerEntity == owner)
+            return false;
+
         m_nOwnerEntity = owner;
+        return true;
     }
 
-    void SetBlockAll(bool state)
+    bool SetBlockAll(bool state)
     {
 #ifdef TRACE
         if (m_iEntityIndex < CS_MAX_PLAYERS)
             LOG("SetBlockAll::%d.%s::(%s)\n", m_iEntityIndex, m_pszClassname, BOOLEAN(state));
 #endif
+        if (m_bBlockAll == state)
+            return false;
+
         m_bBlockAll = state;
+        return true;
     }
 
     [[nodiscard]] bool GetBlockAll() const
@@ -332,9 +374,9 @@ private:
     CBaseEntity*  m_pEntity = nullptr;
     EntityIndex_t m_iEntityIndex;
     CBaseHandle   m_Handle;
-    bool          m_bCanTransmit[CS_MAX_PLAYERS + 1][MAX_CHANNEL + 1];
+    uint64_t      m_bitsChannel[MAX_CHANNEL + 1];
+    uint64_t      m_bitsAll;
     EntityIndex_t m_nOwnerEntity;
-    bool          m_bRemoveFlags;
     bool          m_bDefaultTransmit;
     bool          m_bBlockAll;
     const char*   m_pszClassname = nullptr;
@@ -344,12 +386,122 @@ static CHook*  g_pHooks[MAX_ENTITY_COUNT];
 static int64_t g_iBypassTick[CS_MAX_PLAYERS];
 static bool    g_bEverSpawned[CS_MAX_PLAYERS];
 
-inline bool IsEntityIndexInRange(int index)
+static CBitVec<MAX_ENTITY_COUNT> g_HookedMask;
+
+static std::atomic<uint32_t> g_HookVersion{1};
+
+static inline void InvalidateBlockPlan() noexcept
 {
-    return index > 0 && index < MAX_ENTITY_COUNT;
+    g_HookVersion.fetch_add(1, std::memory_order_release);
 }
 
-void HookEntity(CBaseEntity* pEntity, bool defaultTransmit)
+struct BlockPlan
+{
+    alignas(64) uint32_t blockMask[CS_MAX_PLAYERS][TRANSMIT_WORDS];
+    alignas(64) uint32_t allowMask[CS_MAX_PLAYERS][TRANSMIT_WORDS];
+    alignas(64) uint32_t blockAllMask[TRANSMIT_WORDS];
+
+    uint32_t activeWords[TRANSMIT_WORDS / 32];
+
+    uint64_t senderVisible[CS_MAX_PLAYERS + 1];
+    bool     senderHooked[CS_MAX_PLAYERS + 1];
+
+    bool blockAny[CS_MAX_PLAYERS];
+    bool allowAny[CS_MAX_PLAYERS];
+    bool blockAllAny;
+
+    uint32_t      version     = 0;
+    EntityIndex_t maxClients  = -1;
+    EntityIndex_t senderCount = 0;
+
+    void Reset() noexcept
+    {
+        memset(blockMask, 0, sizeof(blockMask));
+        memset(allowMask, 0, sizeof(allowMask));
+        memset(blockAllMask, 0, sizeof(blockAllMask));
+        memset(activeWords, 0, sizeof(activeWords));
+        memset(senderVisible, 0xFF, sizeof(senderVisible));
+        memset(senderHooked, 0, sizeof(senderHooked));
+        memset(blockAny, 0, sizeof(blockAny));
+        memset(allowAny, 0, sizeof(allowAny));
+        blockAllAny = false;
+    }
+} static g_BlockPlan;
+
+struct SenderCache
+{
+    CCSPlayerController* pController;
+    CCSPlayerPawn*       pPlayerPawn;
+    CCSObserverPawn*     pObserverPawn;
+    uint64_t             visibleMask;
+    bool                 bHooked;
+    bool                 bPlayerAlive;
+};
+
+template <typename Fn>
+static void ForEachOfClass(const CEntityClass* pClass, Fn&& fn)
+{
+    if (pClass == nullptr)
+    {
+        return;
+    }
+
+    for (auto* pIdentity = pClass->GetEntityListHead(); pIdentity; pIdentity = pIdentity->m_pNextByClass())
+    {
+        if (pIdentity->IsMarkedForDeletion())
+        {
+            continue;
+        }
+
+        if (auto* pEntity = pIdentity->GetBaseEntity())
+        {
+            fn(pEntity);
+        }
+    }
+}
+
+template <typename Fn>
+static void ForEachHooked(Fn&& fn)
+{
+    const uint32_t* words = g_HookedMask.Base();
+
+    for (std::size_t w = 0; w < g_HookedMask.GetNumDWords(); w++)
+    {
+        uint32_t bits = words[w];
+
+        while (bits)
+        {
+            const auto b = static_cast<uint32_t>(std::countr_zero(bits));
+            bits &= bits - 1;
+            fn(static_cast<EntityIndex_t>(w * 32 + b));
+        }
+    }
+}
+
+static uint64_t ComputeEntityBlockedMask(const CHook* pHook)
+{
+    const uint64_t notVisible = ~pHook->GetVisibleMask();
+
+    uint64_t conditional = pHook->GetBlockAll() ? ~0ull : 0ull;
+
+    const auto owner = pHook->GetOwner();
+    if (owner != INVALID_ENTITY_INDEX)
+    {
+        if (IsEntityIndexInRange(owner) && g_pHooks[owner] != nullptr)
+        {
+            conditional |= ~g_pHooks[owner]->GetVisibleMask();
+        }
+
+        if (owner >= 1 && owner <= CS_MAX_PLAYERS)
+        {
+            conditional &= ~(1ull << (owner - 1));
+        }
+    }
+
+    return notVisible | conditional;
+}
+
+static void HookEntity(CBaseEntity* pEntity, bool defaultTransmit)
 {
     // NOTE 在外部使用🔒, 否则会循环等待
 
@@ -370,20 +522,26 @@ void HookEntity(CBaseEntity* pEntity, bool defaultTransmit)
 
     if (g_pHooks[index] != nullptr)
     {
-        FERROR("Entity Hook listener<%d> new=[%s<%s>], old=[%s<%s>] is not nullptr.", index,
+        FERROR("Entity Hook listener<%d> new=[%s<%u>], old=[%s<%u>] is not nullptr.", index,
                pEntity->GetClassname(), pEntity->GetActualEHandle().ToInt(),
                g_pHooks[index]->GetClassname(), g_pHooks[index]->GetEntityHandle().ToInt());
         return;
     }
 
     g_pHooks[index] = new CHook(pEntity, defaultTransmit);
+    g_HookedMask.Set(index);
+
+    InvalidateBlockPlan();
 }
 
-void UnhookEntity(CBaseEntity* pEntity)
+static void DestroyHook(EntityIndex_t index)
 {
-    // NOTE 在外部使用🔒, 否则会循环等待
+    if (!IsEntityIndexInRange(index))
+    {
+        return;
+    }
 
-    const auto index = pEntity->GetEntityIndex();
+    g_HookedMask.Clear(index);
 
     if (g_pHooks[index] == nullptr)
     {
@@ -392,6 +550,22 @@ void UnhookEntity(CBaseEntity* pEntity)
 
     delete g_pHooks[index];
     g_pHooks[index] = nullptr;
+
+    InvalidateBlockPlan();
+}
+
+static void UnhookEntity(CBaseEntity* pEntity)
+{
+    // NOTE 在外部使用🔒, 否则会循环等待
+
+    const auto index = pEntity->GetEntityIndex();
+
+    if (!IsEntityIndexInRange(index))
+    {
+        return;
+    }
+
+    DestroyHook(index);
 }
 
 static bool TransmitManagerAddEntityHooks(CBaseEntity* pEntity, bool defaultTransmit)
@@ -420,15 +594,25 @@ static bool TransmitManagerRemoveEntHooks(CBaseEntity* pEntity)
 
 static bool TransmitManagerIsEntityHooked(CBaseEntity* pEntity)
 {
-    WLOCK;
-
     const auto index = pEntity->GetEntityIndex();
+
+    if (!IsEntityIndexInRange(index))
+    {
+        return false;
+    }
+
+    RLOCK;
 
     return g_pHooks[index] != nullptr;
 }
 
 static EntityIndex_t TransmitManagerGetEntityOwner(int index)
 {
+    if (!IsEntityIndexInRange(index))
+    {
+        return -2;
+    }
+
     RLOCK;
 
     if (g_pHooks[index] == nullptr)
@@ -441,20 +625,30 @@ static EntityIndex_t TransmitManagerGetEntityOwner(int index)
 
 static bool TransmitManagerSetEntityOwner(EntityIndex_t index, EntityIndex_t owner)
 {
+    if (!IsEntityIndexInRange(index))
+    {
+        return false;
+    }
+
     WLOCK;
 
     if (g_pHooks[index] != nullptr)
     {
-        g_pHooks[index]->SetOwner(owner);
+        if (g_pHooks[index]->SetOwner(owner))
+            InvalidateBlockPlan();
+
         return true;
     }
 
     return false;
 }
 
-static bool TransmitManagerGetEntityState(EntityIndex_t index, EntityIndex_t controllerIndex, bool state, int channel = -1)
+static bool TransmitManagerGetEntityState(EntityIndex_t index, EntityIndex_t controllerIndex, int channel)
 {
-    WLOCK;
+    if (!IsEntityIndexInRange(index))
+        return true;
+
+    RLOCK;
 
     if (g_pHooks[index] == nullptr)
         return true;
@@ -467,11 +661,18 @@ static bool TransmitManagerGetEntityState(EntityIndex_t index, EntityIndex_t con
 
 static bool TransmitManagerSetEntityState(EntityIndex_t index, EntityIndex_t controllerIndex, bool state, int channel)
 {
+    if (!IsEntityIndexInRange(index) || !CHook::IsClientIndexInRange(controllerIndex))
+    {
+        return false;
+    }
+
     WLOCK;
 
     if (g_pHooks[index] != nullptr)
     {
-        g_pHooks[index]->SetSee(controllerIndex, state, channel);
+        if (g_pHooks[index]->SetSee(controllerIndex, state, channel))
+            InvalidateBlockPlan();
+
         return true;
     }
 
@@ -480,7 +681,12 @@ static bool TransmitManagerSetEntityState(EntityIndex_t index, EntityIndex_t con
 
 static bool TransmitManagerGetEntityBlock(EntityIndex_t index)
 {
-    WLOCK;
+    if (!IsEntityIndexInRange(index))
+    {
+        return false;
+    }
+
+    RLOCK;
 
     if (g_pHooks[index] == nullptr)
     {
@@ -493,6 +699,11 @@ static bool TransmitManagerGetEntityBlock(EntityIndex_t index)
 
 static bool TransmitManagerSetEntityBlock(EntityIndex_t index, bool val)
 {
+    if (!IsEntityIndexInRange(index))
+    {
+        return false;
+    }
+
     WLOCK;
 
     if (g_pHooks[index] == nullptr)
@@ -501,43 +712,149 @@ static bool TransmitManagerSetEntityBlock(EntityIndex_t index, bool val)
         return false;
     }
 
-    g_pHooks[index]->SetBlockAll(val);
+    if (g_pHooks[index]->SetBlockAll(val))
+        InvalidateBlockPlan();
+
     return true;
 }
 
-static bool TransmitManagerGetTempEntState(BlockTE_t type, PlayerSlot_t slot, bool state)
+static bool TransmitManagerGetTempEntState(BlockTE_t type, PlayerSlot_t slot)
 {
-    if (type > BT_Count || type < 0)
+    if (type >= BT_Count || type < 0 || !IsPlayerSlotInRange(slot))
         return false;
-
-    RLOCK;
 
     return GetBlockTempEntState(type, slot);
 }
 
-static void TransmitManagerSetTempEntState(BlockTE_t type, PlayerSlot_t slot, bool state)
+static bool TransmitManagerSetTempEntState(BlockTE_t type, PlayerSlot_t slot, bool state)
 {
-    if (type > BT_Count || type < 0)
-        return;
-
-    WLOCK;
+    if (type >= BT_Count || type < 0 || !IsPlayerSlotInRange(slot))
+        return false;
 
     SetBlockTempEntState(type, slot, state);
+
+    return true;
 }
 
-static void TransmitManagerClearReceiverState(PlayerSlot_t slot)
+static void TransmitManagerClearReceiverState(EntityIndex_t receiverIndex)
 {
     WLOCK;
 
-    for (auto i = 1; i < MAX_ENTITY_COUNT; i++)
+    bool changed = false;
+    ForEachHooked([receiverIndex, &changed](EntityIndex_t index) { changed |= g_pHooks[index]->SetDefault(receiverIndex); });
+
+    if (changed)
+        InvalidateBlockPlan();
+}
+
+static NetworkReceiver_t ComputeBypassMask()
+{
+    NetworkReceiver_t mask = 0;
+
+    for (PlayerSlot_t i = 0; i < CS_MAX_PLAYERS; i++)
     {
-        if (g_pHooks[i] == nullptr)
+        if (g_iBypassTick[i] > 0 || !g_bEverSpawned[i])
         {
-            continue;
+            mask |= BASE_RECEIVER_MAGIC << i;
+        }
+    }
+
+    return mask;
+}
+
+static NetworkReceiver_t ComputePawnReceiver(CCSPlayerPawnBase* pPawn, bool bPlayerPawn)
+{
+    auto* pController = pPawn->GetOriginalController<CCSPlayerController*>();
+
+    const auto controllerIndex = pController != nullptr ? pController->GetEntityIndex() : INVALID_ENTITY_INDEX;
+    const bool bHasSelf        = CHook::IsClientIndexInRange(controllerIndex);
+
+    const NetworkReceiver_t selfBit = bHasSelf ? BASE_RECEIVER_MAGIC << (controllerIndex - 1) : 0;
+
+    NetworkReceiver_t visible = ~0ull;
+
+    if (bHasSelf)
+    {
+        if (bPlayerPawn)
+        {
+            RLOCK;
+
+            if (const auto* pHook = g_pHooks[controllerIndex])
+            {
+                visible = pHook->GetVisibleMask() | selfBit;
+            }
         }
 
-        g_pHooks[i]->SetDefault(slot);
+        if (ms_transmit_block_dead_player_pawn->GetValue<bool>()
+            && (!bPlayerPawn || pPawn->GetLifeState() != LIFE_ALIVE))
+        {
+            visible = selfBit;
+        }
+
+        visible |= ComputeBypassMask();
     }
+
+    if (pController == nullptr && ms_transmit_block_ownerless_pawn->GetValue<bool>())
+    {
+        visible = selfBit;
+    }
+
+    return visible;
+}
+
+static NetworkReceiver_t TransmitManagerGetEntityReceiver(EntityIndex_t index)
+{
+    if (!IsEntityIndexInRange(index))
+    {
+        return ~0ull;
+    }
+
+    if (gpGlobals == nullptr)
+    {
+        return ~0ull;
+    }
+
+    const auto maxClients = static_cast<EntityIndex_t>(gpGlobals->MaxClients);
+
+    if (index > maxClients)
+    {
+        RLOCK;
+
+        if (g_pHooks[index] != nullptr)
+        {
+            return ~ComputeEntityBlockedMask(g_pHooks[index]);
+        }
+    }
+
+    auto* pEntity = g_pGameEntitySystem->FindEntityByIndex<CBaseEntity*>(index);
+
+    if (pEntity == nullptr)
+    {
+        return ~0ull;
+    }
+
+    if (index <= maxClients)
+    {
+        auto* pController = pEntity->ToPlayerController();
+
+        if (pController == nullptr)
+        {
+            return ~0ull;
+        }
+
+        auto* pPlayerPawn = pController->GetPlayerPawn();
+
+        return pPlayerPawn != nullptr ? ComputePawnReceiver(pPlayerPawn, true) : ~0ull;
+    }
+
+    if (pEntity->IsPlayerPawn())
+    {
+        auto* pPawn = reinterpret_cast<CCSPlayerPawnBase*>(pEntity);
+
+        return ComputePawnReceiver(pPawn, pPawn->IsPlayer());
+    }
+
+    return ~0ull;
 }
 
 static int32_t TransmitManagerGetWeaponFireBulletState(CBaseWeapon* pWeapon)
@@ -553,14 +870,114 @@ static void TransmitManagerSetWeaponFireBulletState(CBaseWeapon* pWeapon, FireBu
     if (!pWeapon)
         return;
 
-    const auto hWeapon = GetEntityProtobufHandle(pWeapon);
-    if (state > FBS_None)
+    const auto index = pWeapon->GetEntityIndex();
+    if (!IsEntityIndexInRange(index))
+        return;
+
+    const auto slot = state > FBS_None ? FireBulletSlot{pWeapon->GetActualEHandle().GetPackedValue(), state} : FireBulletSlot{};
+
+    s_fire_bullet_state[index].store(slot, std::memory_order_relaxed);
+}
+
+static void RebuildBlockMask(EntityIndex_t maxClients, BlockPlan& plan)
+{
+    AssertBool(g_nMainThreadId == static_cast<uint64_t>(GetCurrentThreadId()));
+
+    plan.Reset();
+
+    plan.maxClients  = maxClients;
+    plan.senderCount = std::min<EntityIndex_t>(maxClients, CS_MAX_PLAYERS);
+
+    for (EntityIndex_t i = 1; i <= plan.senderCount; i++)
     {
-        s_fire_bullet_state[hWeapon] = state;
+        const auto* pHook     = g_pHooks[i];
+        plan.senderHooked[i]  = pHook != nullptr;
+        plan.senderVisible[i] = pHook != nullptr ? pHook->GetVisibleMask() : ~0ull;
     }
-    else
+
+    ForEachHooked([maxClients, &plan](EntityIndex_t index) {
+        if (index <= maxClients)
+        {
+            return;
+        }
+
+        const uint64_t blocked = ComputeEntityBlockedMask(g_pHooks[index]);
+
+        if (blocked == 0)
+        {
+            return;
+        }
+
+        const auto     word = static_cast<uint32_t>(index) >> 5;
+        const uint32_t bit  = 1u << (static_cast<uint32_t>(index) & 31);
+
+        plan.activeWords[word >> 5] |= 1u << (word & 31);
+
+        if (blocked == ~0ull)
+        {
+            plan.blockAllMask[word] |= bit;
+            plan.blockAllAny = true;
+            return;
+        }
+
+        if (std::popcount(blocked) > CS_MAX_PLAYERS / 2)
+        {
+            plan.blockAllMask[word] |= bit;
+            plan.blockAllAny = true;
+
+            uint64_t remain = ~blocked;
+            while (remain)
+            {
+                const auto slot = static_cast<uint32_t>(std::countr_zero(remain));
+                remain &= remain - 1;
+                plan.allowMask[slot][word] |= bit;
+                plan.allowAny[slot] = true;
+            }
+
+            return;
+        }
+
+        uint64_t remain = blocked;
+        while (remain)
+        {
+            const auto slot = static_cast<uint32_t>(std::countr_zero(remain));
+            remain &= remain - 1;
+            plan.blockMask[slot][word] |= bit;
+            plan.blockAny[slot] = true;
+        }
+    });
+}
+
+static void ApplyBlockPlan(const BlockPlan& plan, PlayerSlot_t slot, uint32_t* __restrict pTransmit, uint32_t* __restrict pNonTransmit) noexcept
+{
+    const uint32_t* __restrict pAll   = plan.blockAllMask;
+    const uint32_t* __restrict pAllow = plan.allowMask[slot];
+    const uint32_t* __restrict pOwn   = plan.blockMask[slot];
+
+    const bool useAllow = plan.allowAny[slot];
+    const bool useOwn   = plan.blockAny[slot];
+
+    for (uint32_t g = 0; g < TRANSMIT_WORDS / 32; g++)
     {
-        s_fire_bullet_state.erase(hWeapon);
+        uint32_t bits = plan.activeWords[g];
+
+        while (bits)
+        {
+            const auto w = g * 32 + static_cast<uint32_t>(std::countr_zero(bits));
+            bits &= bits - 1;
+
+            uint32_t block = pAll[w];
+
+            if (useAllow)
+                block &= ~pAllow[w];
+
+            if (useOwn)
+                block |= pOwn[w];
+
+            const uint32_t old = pTransmit[w];
+            pNonTransmit[w] |= old & block;
+            pTransmit[w] = old & ~block;
+        }
     }
 }
 
@@ -578,6 +995,7 @@ void Init()
     bridge::CreateNative("Transmit.SetEntityBlock", reinterpret_cast<void*>(TransmitManagerSetEntityBlock));
     bridge::CreateNative("Transmit.GetEntityOwner", reinterpret_cast<void*>(TransmitManagerGetEntityOwner));
     bridge::CreateNative("Transmit.SetEntityOwner", reinterpret_cast<void*>(TransmitManagerSetEntityOwner));
+    bridge::CreateNative("Transmit.GetEntityReceiver", reinterpret_cast<void*>(TransmitManagerGetEntityReceiver));
 
     bridge::CreateNative("Transmit.GetTempEntState", reinterpret_cast<void*>(TransmitManagerGetTempEntState));
     bridge::CreateNative("Transmit.SetTempEntState", reinterpret_cast<void*>(TransmitManagerSetTempEntState));
@@ -615,43 +1033,88 @@ BeginMemberHookScope(ISource2GameEntities)
 
         CheckTransmit(pGameEntities, ppInfoList, infoCount, unionTransmitEdicts1, unionTransmitEdicts2, pNetworkables, pEntityIndicies, nEntities);
 
-        RLOCK;
+        VPROF_MS_HOOK_SCOPE("CheckTransmit::PostProcess");
 
-        const auto blockPawn = ms_transmit_block_dead_player_pawn->GetValue<bool>();
-        const auto blockNull = ms_transmit_block_ownerless_pawn->GetValue<bool>();
+        const auto blockPawn  = ms_transmit_block_dead_player_pawn->GetValue<bool>();
+        const auto blockNull  = ms_transmit_block_ownerless_pawn->GetValue<bool>();
+        const auto maxClients = static_cast<EntityIndex_t>(gpGlobals->MaxClients);
+
+        {
+            RLOCK;
+
+            const auto version = g_HookVersion.load(std::memory_order_relaxed);
+
+            if (g_BlockPlan.version != version || g_BlockPlan.maxClients != maxClients)
+            {
+                RebuildBlockMask(maxClients, g_BlockPlan);
+                g_BlockPlan.version = version;
+            }
+        }
+
+        const auto senderCount = g_BlockPlan.senderCount;
+
+        SenderCache senders[CS_MAX_PLAYERS + 1] = {};
+
+        for (EntityIndex_t i = 1; i <= senderCount; i++)
+        {
+            senders[i].bHooked     = g_BlockPlan.senderHooked[i];
+            senders[i].visibleMask = g_BlockPlan.senderVisible[i];
+
+            if (!blockPawn && !senders[i].bHooked)
+            {
+                continue;
+            }
+
+            auto* pController = g_pGameEntitySystem->FindEntityByIndex<CCSPlayerController*>(i);
+            if (!pController)
+            {
+                continue;
+            }
+
+            auto* pPlayerPawn = pController->GetPlayerPawn();
+
+            senders[i].pController   = pController;
+            senders[i].pPlayerPawn   = pPlayerPawn;
+            senders[i].pObserverPawn = pController->GetObserverPawn();
+            senders[i].bPlayerAlive  = pPlayerPawn != nullptr && pPlayerPawn->GetLifeState() == LIFE_ALIVE;
+        }
 
         CUtlVector<CBaseEntity*> nullPawns;
 
         if (blockNull)
         {
-            CCSPlayerPawnBase* pNullPawn = nullptr;
-            while ((pNullPawn = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawnBase*>(pNullPawn, "player")) != nullptr)
-            {
-                if (!pNullPawn->IsPlayerPawn() || !pNullPawn->IsPlayer())
-                {
-                    continue;
-                }
+            static const CEntityClass* s_pPlayerClass   = nullptr;
+            static const CEntityClass* s_pObserverClass = nullptr;
 
-                const CBaseHandle& hController = pNullPawn->m_hOriginalController();
-                if (g_pGameEntitySystem->FindEntityByEHandle(hController) == nullptr)
-                {
-                    nullPawns.AddToTail(pNullPawn);
-                }
-            }
-            pNullPawn = nullptr;
-            while ((pNullPawn = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawnBase*>(pNullPawn, "observer")) != nullptr)
+            if (s_pPlayerClass == nullptr)
             {
-                if (!pNullPawn->IsPlayerPawn() || pNullPawn->IsPlayer())
-                {
-                    continue;
-                }
-
-                const CBaseHandle& hController = pNullPawn->m_hOriginalController();
-                if (g_pGameEntitySystem->FindEntityByEHandle(hController) == nullptr)
-                {
-                    nullPawns.AddToTail(pNullPawn);
-                }
+                s_pPlayerClass = g_pGameEntitySystem->FindEntityClassByName("player");
             }
+
+            if (s_pObserverClass == nullptr)
+            {
+                s_pObserverClass = g_pGameEntitySystem->FindEntityClassByName("observer");
+            }
+
+            const auto collect = [&](const CEntityClass* pClass, bool wantPlayer) {
+                ForEachOfClass(pClass, [&](CBaseEntity* pEntity) {
+                    const auto pPawn = reinterpret_cast<CCSPlayerPawnBase*>(pEntity);
+                    if (!pPawn->IsPlayerPawn() || pPawn->IsPlayer() != wantPlayer)
+                    {
+                        return;
+                    }
+
+                    if (g_pGameEntitySystem->FindEntityByEHandle(pPawn->m_hOriginalController()) != nullptr)
+                    {
+                        return;
+                    }
+
+                    nullPawns.AddToTail(pPawn);
+                });
+            };
+
+            collect(s_pPlayerClass, true);
+            collect(s_pObserverClass, false);
         }
 
         for (int x = 0; x < infoCount; x++)
@@ -672,7 +1135,6 @@ BeginMemberHookScope(ISource2GameEntities)
             const auto pReceiverPawn     = pReceiverController->GetPlayerPawn();
             const auto pReceiverObserver = pReceiverController->GetObserverPawn();
             const auto iReceiverPawn     = pReceiverPawn ? pReceiverPawn->GetEntityIndex() : INVALID_ENTITY_INDEX;
-            const auto maxClients        = static_cast<int32_t>(gpGlobals->MaxClients);
 
             // Team UnAssigned
             if (pReceiverController->GetTeam() == TEAM_UNASSIGNED)
@@ -684,123 +1146,77 @@ BeginMemberHookScope(ISource2GameEntities)
             // LOOP Pawn
             if (g_iBypassTick[playerSlot] <= 0 && g_bEverSpawned[playerSlot] && !pInfo->IsFullUpdate())
             {
-                for (auto i = 1; i <= maxClients; i++)
+                for (EntityIndex_t i = 1; i <= senderCount; i++)
                 {
                     if (i == controllerIndex)
                         continue;
 
-                    if (g_pHooks[i] == nullptr)
+                    const auto& sender = senders[i];
+                    if (sender.pController == nullptr)
                         continue;
 
-                    if (g_pHooks[i]->CanSee(controllerIndex))
-                        continue;
-
-                    const auto pSenderController = g_pGameEntitySystem->FindEntityByIndex<CCSPlayerController*>(i);
-                    if (!pSenderController)
-                        continue;
-
-                    const auto pPawn = pSenderController->GetPlayerPawn();
-                    if (!pPawn)
-                        continue;
-
-                    pInfo->BlockTransmit(pPawn);
-                }
-
-                if (blockPawn)
-                {
-                    for (auto i = 1; i <= maxClients; i++)
+                    const bool bSenderVisible = (sender.visibleMask >> (controllerIndex - 1)) & 1;
+                    if (sender.bHooked && !bSenderVisible && sender.pPlayerPawn != nullptr)
                     {
-                        if (i == controllerIndex)
-                            continue;
+                        pInfo->BlockTransmit(sender.pPlayerPawn);
+                    }
 
-                        const auto pSenderController = g_pGameEntitySystem->FindEntityByIndex<CCSPlayerController*>(i);
-                        if (!pSenderController)
-                            continue;
-
-                        if (const auto pObserver = pSenderController->GetObserverPawn())
+                    if (blockPawn)
+                    {
+                        if (sender.pObserverPawn != nullptr)
                         {
-                            pInfo->BlockTransmit(pObserver);
+                            pInfo->BlockTransmit(sender.pObserverPawn);
                         }
 
-                        if (const auto pPlayer = pSenderController->GetPlayerPawn())
+                        if (sender.pPlayerPawn != nullptr && !sender.bPlayerAlive)
                         {
-                            if (pPlayer->GetLifeState() != LIFE_ALIVE)
-                            {
-                                pInfo->BlockTransmit(pPlayer);
-                            }
+                            pInfo->BlockTransmit(sender.pPlayerPawn);
                         }
                     }
                 }
             }
 
             // LOOP NullPawn
-            if (blockNull)
+            for (int32_t i = 0; i < nullPawns.Count(); i++)
             {
-                for (auto i = 0; i < nullPawns.Count(); i++)
-                {
-                    const auto pPawn = nullPawns.Element(i);
-                    if (pPawn == pReceiverPawn || pPawn == pReceiverObserver)
-                        continue;
+                auto* pPawn = nullPawns.Element(i);
+                if (pPawn == pReceiverPawn || pPawn == pReceiverObserver)
+                    continue;
 
-                    pInfo->BlockTransmit(pPawn);
-                }
+                pInfo->BlockTransmit(pPawn);
             }
 
             // LOOP Other Entities
+            if (g_BlockPlan.blockAny[playerSlot] || g_BlockPlan.blockAllAny)
             {
-                for (auto i = 0u; i < nEntities; i++)
+                auto* pTransmit    = pInfo->TransmitBase();
+                auto* pNonTransmit = pInfo->NonTransmitBase();
+
+                const auto     selfWord = static_cast<uint32_t>(controllerIndex) >> 5;
+                const uint32_t selfBit  = 1u << (static_cast<uint32_t>(controllerIndex) & 31);
+                const uint32_t selfT    = pTransmit[selfWord] & selfBit;
+                const uint32_t selfN    = pNonTransmit[selfWord] & selfBit;
+
+                const bool     bKeepPawn = IsEntityIndexInRange(iReceiverPawn);
+                const auto     pawnWord  = bKeepPawn ? static_cast<uint32_t>(iReceiverPawn) >> 5 : 0u;
+                const uint32_t pawnBit   = bKeepPawn ? 1u << (static_cast<uint32_t>(iReceiverPawn) & 31) : 0u;
+                const uint32_t pawnT     = pTransmit[pawnWord] & pawnBit;
+                const uint32_t pawnN     = pNonTransmit[pawnWord] & pawnBit;
+
+                ApplyBlockPlan(g_BlockPlan, playerSlot, pTransmit, pNonTransmit);
+
+                if (bKeepPawn)
                 {
-                    const auto entity = static_cast<EntityIndex_t>(pEntityIndicies[i]);
-
-                    if (!pInfo->IsTransmitting(entity) || entity <= maxClients)
-                    {
-                        continue;
-                    }
-
-                    if (entity == controllerIndex || entity == iReceiverPawn)
-                    {
-                        continue;
-                    }
-
-                    if (g_pHooks[entity] == nullptr)
-                    {
-                        continue;
-                    }
-
-                    // 这里不应该能操作Pawn
-                    const auto pEntity = g_pGameEntitySystem->FindEntityByIndex(entity);
-                    if (pEntity && pEntity->IsPlayerPawn())
-                        continue;
-
-                    if (!g_pHooks[entity]->CanSee(controllerIndex))
-                    {
-                        pInfo->BlockTransmit(entity);
-                        continue;
-                    }
-
-                    const auto owner = g_pHooks[entity]->GetOwner();
-                    if (controllerIndex == owner)
-                    {
-                        continue;
-                    }
-
-                    if (g_pHooks[entity]->GetBlockAll())
-                    {
-                        pInfo->BlockTransmit(entity);
-                        continue;
-                    }
-
-                    if (owner != INVALID_ENTITY_INDEX && g_pHooks[owner] != nullptr && !g_pHooks[owner]->CanSee(controllerIndex))
-                    {
-                        pInfo->BlockTransmit(entity);
-                    }
+                    pTransmit[pawnWord]    = (pTransmit[pawnWord] & ~pawnBit) | pawnT;
+                    pNonTransmit[pawnWord] = (pNonTransmit[pawnWord] & ~pawnBit) | pawnN;
                 }
+
+                pTransmit[selfWord]    = (pTransmit[selfWord] & ~selfBit) | selfT;
+                pNonTransmit[selfWord] = (pNonTransmit[selfWord] & ~selfBit) | selfN;
             }
         }
     }
 }
-
-// #define LOG_MUZZLE_EVENT
 
 class TransmitEntityListener : public IEntityListener
 {
@@ -822,11 +1238,11 @@ public:
     }
     void OnEntityDeleted(CBaseEntity* pEntity) override
     {
-        s_fire_bullet_state.erase(GetEntityProtobufHandle(pEntity));
-
         const auto index = pEntity->GetEntityIndex();
         if (!IsEntityIndexInRange(index))
             return;
+
+        s_fire_bullet_state[index].store(FireBulletSlot{}, std::memory_order_relaxed);
 
         WLOCK;
         UnhookEntity(pEntity);
@@ -843,7 +1259,7 @@ void InstallTransmitHook()
 
     for (auto& i : g_bitsBlockTempEnt)
     {
-        i = 0;
+        i.store(0, std::memory_order_relaxed);
     }
     for (auto& b : g_bEverSpawned)
     {
@@ -856,15 +1272,14 @@ void InstallTransmitHook()
         SetBlockTempEntState(BT_BloodEffect, slot, false);
 
         WLOCK;
-        for (auto i = 1; i < MAX_ENTITY_COUNT; i++)
-        {
-            if (g_pHooks[i] == nullptr)
-            {
-                continue;
-            }
 
-            g_pHooks[i]->SetDefault(static_cast<int>(slot) + 1);
-        }
+        const EntityIndex_t receiverIndex = static_cast<int>(slot) + 1;
+
+        bool changed = false;
+        ForEachHooked([receiverIndex, &changed](EntityIndex_t index) { changed |= g_pHooks[index]->SetDefault(receiverIndex); });
+
+        if (changed)
+            InvalidateBlockPlan();
     });
     g_pHookManager->Hook_GameDeactivate(HookType_Post, [] {
         for (PlayerSlot_t i = 0; i < CS_MAX_PLAYERS; i++)
@@ -882,20 +1297,21 @@ void InstallTransmitHook()
             b = false;
         }
 
+        for (auto& s : s_fire_bullet_state)
+        {
+            s.store(FireBulletSlot{}, std::memory_order_relaxed);
+        }
+
         WLOCK;
 
-        s_fire_bullet_state.clear();
+        ForEachHooked([](EntityIndex_t index) {
+            delete g_pHooks[index];
+            g_pHooks[index] = nullptr;
+        });
 
-        for (auto i = 1; i < MAX_ENTITY_COUNT; i++)
-        {
-            if (g_pHooks[i] == nullptr)
-            {
-                continue;
-            }
+        g_HookedMask.ClearAll();
 
-            delete g_pHooks[i];
-            g_pHooks[i] = nullptr;
-        }
+        InvalidateBlockPlan();
     });
     g_pHookManager->Hook_ClientConnect(HookType_Post, [](PlayerSlot_t slot, const char* pszName, SteamId_t steamId, bool bFakeClient) {
         WLOCK;
@@ -904,37 +1320,25 @@ void InstallTransmitHook()
 
         const EntityIndex_t index = slot + 1;
 
-        for (auto i = 1; i < MAX_ENTITY_COUNT; i++)
-        {
-            if (g_pHooks[i] == nullptr)
+        bool changed = false;
+        ForEachHooked([index, &changed](EntityIndex_t hooked) {
+            if (g_pHooks[hooked]->GetOwner() == index)
             {
-                continue;
+                changed |= g_pHooks[hooked]->SetOwner(INVALID_ENTITY_INDEX);
             }
+        });
 
-            if (g_pHooks[i]->GetOwner() == index)
-            {
-                g_pHooks[i]->SetOwner(INVALID_ENTITY_INDEX);
-            }
-        }
+        if (changed)
+            InvalidateBlockPlan();
 
-        if (g_pHooks[index] != nullptr)
-        {
-            delete g_pHooks[index];
-            g_pHooks[index] = nullptr;
-        }
+        DestroyHook(index);
     });
     g_pHookManager->Hook_ClientDisconnect(HookType_Post, [](PlayerSlot_t slot, int32_t reason, const char* name, SteamId_t steamId) {
         WLOCK;
         g_iBypassTick[slot]  = TICK_BASE_VALUE(9999);
         g_bEverSpawned[slot] = false;
 
-        const auto index = slot + 1;
-        if (g_pHooks[index] == nullptr)
-        {
-            return;
-        }
-        delete g_pHooks[index];
-        g_pHooks[index] = nullptr;
+        DestroyHook(slot + 1);
     });
     g_pHookManager->Hook_ClientActivate(HookType_Post, [](PlayerSlot_t slot, const char* pszName, SteamId_t steamId) {
         WLOCK;
@@ -961,26 +1365,28 @@ void InstallTransmitHook()
 
 void TransmitCheckFireBullets(const NetworkReceiver_t* clients)
 {
-    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_FireBullets];
+    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_FireBullets].load(std::memory_order_relaxed);
 }
 
 int32_t TransmitGetFireBulletState(uint32_t handle)
 {
-    const auto it = s_fire_bullet_state.find(handle);
-    if (it == s_fire_bullet_state.end())
+    const auto index = CBaseHandle::FromPackedValue(handle).GetEntryIndex();
+    if (!IsEntityIndexInRange(index))
         return FBS_None;
 
-    return it->second;
+    const auto slot = s_fire_bullet_state[index].load(std::memory_order_relaxed);
+
+    return slot.handle == handle ? slot.state : FBS_None;
 }
 
 void TransmitCheckWorldDecals(const NetworkReceiver_t* clients)
 {
-    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_WorldDecals];
+    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_WorldDecals].load(std::memory_order_relaxed);
 }
 
 void TransmitCheckBloodEffect(const NetworkReceiver_t* clients)
 {
-    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_BloodEffect];
+    *const_cast<uint64_t*>(clients) &= ~g_bitsBlockTempEnt[BT_BloodEffect].load(std::memory_order_relaxed);
 }
 
 // Return True if the music is blocked.

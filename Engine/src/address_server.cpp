@@ -24,12 +24,15 @@
 #include "memory/zydis_utility.h"
 #include "module.h"
 
+#include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IGameSystem.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CCSScript.h"
 #include "cstrike/type/CEntityClass.h"
 
+#include <algorithm>
+#include <cstring>
 #include <ranges>
 
 class CBaseGameSystemFactory;
@@ -175,9 +178,9 @@ void FindGameSystemFactory()
                     return false;
                 }
 
-                if (!modules::server->IsPointerDerivedFrom(first->m_pInstance, "IGameSystem"))
+                if (!modules::server->IsPointerDerivedFrom(first, "IGameSystemFactory"))
                 {
-                    WARN("Candidate at server+0x%llx rejected: m_pInstance is not derived from IGameSystem", pending_addr - modules::server->Base());
+                    WARN("Candidate at server+0x%llx rejected: head is not derived from IGameSystemFactory", pending_addr - modules::server->Base());
                     pending_reg  = ZYDIS_REGISTER_NONE;
                     pending_addr = 0;
                     return false;
@@ -203,7 +206,7 @@ void FindGameSystemFactory()
     });
 }
 
-void ResolveCEntityClassEntityListOffset()
+void ResolveEntityListOffsets()
 {
     const auto find_by_classname = g_pGameData->GetAddress<std::uintptr_t>("CGameEntitySystem::FindByClassname");
     if (find_by_classname == 0) [[unlikely]]
@@ -297,6 +300,300 @@ void ResolveCEntityClassEntityListOffset()
 
     FLOG("Found CEntityClass entity list head offset at 0x%x", offset);
     CEntityClass::sm_nEntityListHeadOffset = offset;
+
+    ZydisRegister                                          system_reg   = ZYDIS_REGISTER_NONE;
+    std::uint32_t                                          system_loads = 0;
+    bool                                                   after_cmp    = false;
+    std::vector<std::pair<std::uintptr_t, std::uintptr_t>> flag_branches;
+    ZydisUtility::ScanInstructions(iter_range->start, iter_range->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        const auto follows_cmp = after_cmp;
+        after_cmp              = false;
+
+        const auto& lhs = operands[0];
+        const auto& rhs = operands[1];
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2
+            && lhs.type == ZYDIS_OPERAND_TYPE_REGISTER && lhs.size == 64
+            && rhs.type == ZYDIS_OPERAND_TYPE_MEMORY && rhs.mem.base == ZYDIS_REGISTER_RIP)
+        {
+            if (modules::server->IsInModule(ZydisUtility::GetAbsoluteAddress(instr, rhs, ip)))
+            {
+                system_reg = ZydisUtility::GetBaseRegister(lhs.reg.value);
+                ++system_loads;
+            }
+            return false;
+        }
+
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CMP && instr.operand_count_visible == 2
+            && lhs.type == ZYDIS_OPERAND_TYPE_MEMORY && lhs.size == 8
+            && rhs.type == ZYDIS_OPERAND_TYPE_IMMEDIATE && rhs.imm.value.u == 0)
+        {
+            after_cmp = true;
+            return false;
+        }
+
+        if (follows_cmp && (instr.mnemonic == ZYDIS_MNEMONIC_JNZ || instr.mnemonic == ZYDIS_MNEMONIC_JZ))
+        {
+            const auto taken       = ZydisUtility::GetAbsoluteAddress(instr, lhs, ip);
+            const auto fallthrough = ip + instr.length;
+            if (instr.mnemonic == ZYDIS_MNEMONIC_JNZ)
+                flag_branches.emplace_back(fallthrough, taken);
+            else
+                flag_branches.emplace_back(taken, fallthrough);
+        }
+        return false;
+    });
+
+    const auto load_from_system = [&](std::uintptr_t ip) {
+        std::uint32_t displacement = 0;
+        if (ip < iter_range->start || ip >= iter_range->end)
+            return displacement;
+
+        ZydisUtility::ScanInstructions(ip, iter_range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+            const auto& dst = operands[0];
+            const auto& src = operands[1];
+            if (instr.mnemonic == ZYDIS_MNEMONIC_MOV && instr.operand_count_visible == 2
+                && dst.type == ZYDIS_OPERAND_TYPE_REGISTER && dst.size == 64
+                && src.type == ZYDIS_OPERAND_TYPE_MEMORY && src.size == 64
+                && ZydisUtility::GetBaseRegister(src.mem.base) == system_reg && src.mem.index == ZYDIS_REGISTER_NONE
+                && src.mem.disp.has_displacement && src.mem.disp.value > 0 && src.mem.disp.value < 0x2000
+                && (src.mem.disp.value & 7) == 0)
+                displacement = static_cast<std::uint32_t>(src.mem.disp.value);
+            return true;
+        });
+        return displacement;
+    };
+
+    std::uint32_t global_head_offset = 0;
+    std::uint32_t head_matches       = 0;
+    if (system_loads == 1)
+    {
+        for (const auto& [head_path, alt_path] : flag_branches)
+        {
+            const auto head = load_from_system(head_path);
+            const auto alt  = load_from_system(alt_path);
+            if (head == 0 || alt == 0 || head == alt)
+                continue;
+
+            global_head_offset = head;
+            ++head_matches;
+        }
+    }
+
+    if (head_matches != 1) [[unlikely]]
+    {
+        FatalError("Failed to resolve global entity list head offset (system loads=%u, matches=%u)", system_loads, head_matches);
+        return;
+    }
+
+    CGameEntitySystem::sm_nGlobalListHeadOffset = global_head_offset;
+    FLOG("Found global entity list head offset: 0x%x", global_head_offset);
+}
+
+void ResolveCEntityClassRegistry()
+{
+    const auto function_address = modules::server->FindFunctionFromStringRef(
+        "BUG:  %s couldn't look up codegen info for CEntityClass(%s)\n");
+    if (!function_address.IsValid()) [[unlikely]]
+    {
+        FatalError("Failed to find CEntityClass codegen initialization");
+        return;
+    }
+
+    const auto* range = modules::server->GetFunctionRange(function_address);
+    if (range == nullptr) [[unlikely]]
+    {
+        FatalError("Failed to get CEntityClass codegen initialization range");
+        return;
+    }
+
+    std::uintptr_t first_address = 0;
+    ZydisRegister  class_reg     = ZYDIS_REGISTER_NONE;
+    std::uint32_t  info_offset   = 0;
+    std::uint32_t  next_offset   = 0;
+
+    const auto scan_end = range->end - range->start > 0x100 ? range->start + 0x100 : range->end;
+    ZydisUtility::ScanInstructions(range->start, scan_end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        if (instr.mnemonic != ZYDIS_MNEMONIC_MOV || instr.operand_count_visible != 2)
+            return false;
+
+        const auto& dst = operands[0];
+        const auto& src = operands[1];
+        if (dst.type != ZYDIS_OPERAND_TYPE_REGISTER || dst.size != 64
+            || src.type != ZYDIS_OPERAND_TYPE_MEMORY || src.size != 64
+            || src.mem.index != ZYDIS_REGISTER_NONE)
+            return false;
+
+        const auto dst_reg = ZydisUtility::GetBaseRegister(dst.reg.value);
+        if (class_reg == ZYDIS_REGISTER_NONE)
+        {
+            if (src.mem.base == ZYDIS_REGISTER_RIP)
+            {
+                const auto candidate = ZydisUtility::GetAbsoluteAddress(instr, src, ip);
+                if (modules::server->IsInModule(candidate))
+                {
+                    first_address = candidate;
+                    class_reg     = dst_reg;
+                }
+            }
+            return false;
+        }
+
+        if (ZydisUtility::GetBaseRegister(src.mem.base) != class_reg
+            || !src.mem.disp.has_displacement || src.mem.disp.value <= 0)
+            return false;
+
+        const auto displacement = static_cast<std::uint64_t>(src.mem.disp.value);
+        if (displacement >= 0x400 || (displacement & 7) != 0)
+            return false;
+
+        if (dst_reg == class_reg)
+            next_offset = static_cast<std::uint32_t>(displacement);
+        else if (info_offset == 0)
+            info_offset = static_cast<std::uint32_t>(displacement);
+
+        return next_offset != 0 && info_offset != 0;
+    });
+
+    if (first_address == 0 || info_offset == 0 || next_offset <= info_offset) [[unlikely]]
+    {
+        FatalError("Failed to resolve CEntityClass registry (head=0x%llx, info=0x%x, next=0x%x)",
+                   static_cast<unsigned long long>(first_address), info_offset, next_offset);
+        return;
+    }
+
+    FLOG("Found CEntityClass registry at server+0x%llx (info=0x%x, next=0x%x)",
+         static_cast<unsigned long long>(first_address - modules::server->Base()), info_offset, next_offset);
+    CEntityClass::sm_ppFirst          = reinterpret_cast<CEntityClass**>(first_address);
+    CEntityClass::sm_nNextOffset      = next_offset;
+    CEntityClass::sm_nClassInfoOffset = info_offset;
+}
+
+void ResolveCEntityClassFlagsOffset()
+{
+    const auto function_address = modules::server->FindFunctionFromStringRef("EntitySystem - Class Tables");
+    if (!function_address.IsValid()) [[unlikely]]
+    {
+        FatalError("Failed to find CEntitySystem::Initialize");
+        return;
+    }
+
+    const auto* range = modules::server->GetFunctionRange(function_address);
+    if (range == nullptr) [[unlikely]]
+    {
+        FatalError("Failed to get CEntitySystem::Initialize range");
+        return;
+    }
+
+    ZydisRegister class_reg = ZYDIS_REGISTER_NONE;
+    std::uint32_t candidate = 0;
+    std::uint32_t offset    = 0;
+    ZydisUtility::ScanInstructions(range->start, range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
+        if (instr.operand_count_visible != 2)
+            return false;
+
+        const auto& lhs = operands[0];
+        const auto& rhs = operands[1];
+        if (instr.mnemonic == ZYDIS_MNEMONIC_TEST)
+        {
+            if (lhs.type == ZYDIS_OPERAND_TYPE_MEMORY && lhs.size == 8 && lhs.mem.index == ZYDIS_REGISTER_NONE
+                && lhs.mem.disp.has_displacement && lhs.mem.disp.value > 0 && lhs.mem.disp.value < 0x400
+                && rhs.type == ZYDIS_OPERAND_TYPE_IMMEDIATE && rhs.imm.value.u == CEntityClass::kAliasFlag)
+            {
+                class_reg = ZydisUtility::GetBaseRegister(lhs.mem.base);
+                candidate = static_cast<std::uint32_t>(lhs.mem.disp.value);
+            }
+            return false;
+        }
+
+        if (class_reg == ZYDIS_REGISTER_NONE || instr.mnemonic != ZYDIS_MNEMONIC_MOV
+            || lhs.type != ZYDIS_OPERAND_TYPE_REGISTER || rhs.type != ZYDIS_OPERAND_TYPE_MEMORY
+            || rhs.mem.index != ZYDIS_REGISTER_NONE || !rhs.mem.disp.has_displacement)
+            return false;
+
+        if (ZydisUtility::GetBaseRegister(lhs.reg.value) == class_reg && ZydisUtility::GetBaseRegister(rhs.mem.base) == class_reg
+            && rhs.mem.disp.value == static_cast<std::int64_t>(CEntityClass::sm_nNextOffset))
+        {
+            offset = candidate;
+            return true;
+        }
+        return false;
+    });
+
+    if (offset == 0) [[unlikely]]
+    {
+        FatalError("Failed to resolve CEntityClass flags offset");
+        return;
+    }
+
+    CEntityClass::sm_nFlagsOffset = offset;
+    FLOG("Found CEntityClass flags offset: 0x%x", offset);
+}
+
+void ResolveCEntityClassNameToThinkFuncOffset()
+{
+    CEntityClass::sm_nNameToThinkFuncOffset = 0;
+    auto* server = modules::server;
+    const auto functions = server->FindAllFunctionsFromStringRefs({"CBaseEntitySUB_Remove"});
+    if (functions.empty()) [[unlikely]]
+    {
+        FERROR("Failed to find CBaseEntity think resolvers");
+        return;
+    }
+
+    CEntityClass* base_entity = nullptr;
+    std::uint32_t class_count = 0;
+    for (auto* klass = CEntityClass::GetFirst(); klass != nullptr && class_count < 16384; klass = klass->GetNext(), ++class_count)
+    {
+        const auto* info = klass->GetInfo();
+        if (info != nullptr && info->m_pszCppClassname != nullptr
+            && std::strcmp(info->m_pszCppClassname, "CBaseEntity") == 0)
+        {
+            base_entity = klass;
+            break;
+        }
+    }
+
+    if (base_entity == nullptr) [[unlikely]]
+    {
+        FERROR("Failed to find CBaseEntity in the class registry");
+        return;
+    }
+
+    std::uint32_t offset = 0;
+    for (std::uint32_t candidate = sizeof(void*); candidate < CEntityClass::sm_nClassInfoOffset; candidate += sizeof(void*))
+    {
+        const auto callback = *reinterpret_cast<const std::uintptr_t*>(reinterpret_cast<std::uintptr_t>(base_entity) + candidate);
+        if (std::ranges::find(functions, callback) == functions.end())
+            continue;
+
+        const auto* range = server->GetFunctionRange(callback);
+        if (range == nullptr || range->start != callback)
+            continue;
+
+        bool has_calls = false;
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](std::uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand*) {
+            has_calls = instr.mnemonic == ZYDIS_MNEMONIC_CALL;
+            return has_calls;
+        });
+        if (!has_calls)
+            continue;
+
+        if (offset != 0) [[unlikely]]
+        {
+            FERROR("Ambiguous CEntityClass name-to-think offset: 0x%x and 0x%x", offset, candidate);
+            return;
+        }
+        offset = candidate;
+    }
+
+    if (offset == 0) [[unlikely]]
+    {
+        FERROR("Failed to resolve CEntityClass name-to-think offset");
+        return;
+    }
+
+    CEntityClass::sm_nNameToThinkFuncOffset = offset;
+    FLOG("Found CEntityClass name-to-think offset: 0x%x", offset);
 }
 
 void FindCCSPlayerWeaponServices_DestroyWeapon()
@@ -1904,6 +2201,92 @@ void ResolveCCSPlayerItemServices()
 
         try_overwrite_vfunc("CCSPlayer_ItemServices::RemoveAllItems", remove_all_items_idx);
     }
+
+    {
+        uintptr_t give_glove_addr    = 0;
+        auto      econ_gloves_offset = schemas::GetOffset("CCSPlayerPawn", "m_EconGloves").offset;
+
+        auto spawn_funcs         = svr_mod->FindAllFunctionsFromStringRefs({"PlayerSpawn", "game_player_equip"});
+        auto default_items_funcs = svr_mod->FindAllFunctionsFromStringRefs({"item_assaultsuit", "weapon_knife_t"});
+
+        auto collect_callees = [&](uintptr_t func) {
+            std::unordered_set<uintptr_t> callees{};
+
+            auto range = svr_mod->GetFunctionRange(func);
+            if (!range)
+                return callees;
+
+            ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                if ((instr.mnemonic == ZYDIS_MNEMONIC_CALL || instr.mnemonic == ZYDIS_MNEMONIC_JMP) && (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+                {
+                    auto target = ZydisUtility::GetAbsoluteAddress(instr, operands[0], ip);
+                    if (auto callee = svr_mod->GetFunctionRange(target); callee && callee->start == target)
+                        callees.insert(target);
+                }
+                return false;
+            });
+
+            return callees;
+        };
+
+        auto accesses_econ_gloves = [&](uintptr_t func) {
+            auto range = svr_mod->GetFunctionRange(func);
+            if (!range)
+                return false;
+
+            bool found = false;
+            ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+                if (instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE)
+                    return false;
+
+                for (auto i = 0; i < instr.operand_count_visible; i++)
+                {
+                    if (operands[i].type == ZYDIS_OPERAND_TYPE_MEMORY
+                        && operands[i].mem.index == ZYDIS_REGISTER_NONE
+                        && static_cast<int32_t>(operands[i].mem.disp.value) == econ_gloves_offset)
+                    {
+                        found = true;
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            return found;
+        };
+
+        if (spawn_funcs.size() == 1)
+        {
+            auto spawn_callees = collect_callees(spawn_funcs[0]);
+
+            std::erase_if(default_items_funcs, [&](uintptr_t func) { return !spawn_callees.contains(func); });
+
+            if (default_items_funcs.size() == 1)
+            {
+                std::vector<uintptr_t> candidates{};
+                for (auto callee : collect_callees(default_items_funcs[0]))
+                {
+                    if (spawn_callees.contains(callee) && accesses_econ_gloves(callee))
+                        candidates.push_back(callee);
+                }
+
+                if (candidates.size() == 1)
+                    give_glove_addr = candidates[0];
+                else
+                    WARN("Expected one common callee touching m_EconGloves for GiveGlove but got %zu, falling back to signature", candidates.size());
+            }
+            else
+            {
+                WARN("Expected one GiveDefaultItems called by the spawn function but got %zu, falling back to signature", default_items_funcs.size());
+            }
+        }
+        else
+        {
+            WARN("Failed to locate the GiveGlove spawn caller (got %zu), falling back to signature", spawn_funcs.size());
+        }
+
+        AssignOrFallback(svr_mod, address::server::CCSPlayer_ItemServices_GiveGlove, give_glove_addr, "CCSPlayer_ItemServices::GiveGlove");
+    }
 }
 
 void ResolveCCSPlayerPawn_IsPlayer()
@@ -2565,4 +2948,101 @@ void ResolveCBaseTrigger_PassesTriggerFilters()
     vote.Add(static_cast<int32_t>(base_size));
 
     try_overwrite_vfunc("CBaseTrigger::PassesTriggerFilters", vote);
+}
+
+void ResolveCTriggerPush_PathSimplePushDir()
+{
+    const auto svr_mod = modules::server;
+
+    const auto push = svr_mod->GetVFunctionsFromVTable("CTriggerPush");
+    if (push.empty())
+    {
+        WARN("Failed to get CTriggerPush vtable.");
+        return;
+    }
+
+    int touch_index = 0;
+    if (!g_pGameData->GetVFunctionIndex("CBaseEntity::Touch", &touch_index)
+        || touch_index <= 0
+        || static_cast<size_t>(touch_index) >= push.size())
+    {
+        WARN("CTriggerPush vtable (%zu) cannot hold CBaseEntity::Touch (index %d).", push.size(), touch_index);
+        return;
+    }
+
+    const auto* touch = svr_mod->GetFunctionRange(push[touch_index]);
+    if (touch == nullptr)
+    {
+        WARN("Failed to get function range for CTriggerPush::Touch.");
+        return;
+    }
+
+    constexpr auto path_key = MurmurHash2("CTriggerPush->m_PathSimple", MURMURHASH_SEED_MODSHARP);
+    constexpr auto type_key = MurmurHash2("CTriggerPush->m_splinePushType", MURMURHASH_SEED_MODSHARP);
+
+    const auto path = schemas::GetOffset(path_key);
+    const auto type = schemas::GetOffset(type_key);
+    if (!path.valid || !type.valid || path.offset <= 0 || type.offset <= 0)
+    {
+        WARN("Failed to get schema offsets for CTriggerPush::m_PathSimple / m_splinePushType.");
+        return;
+    }
+
+    const auto path_offset = path.offset;
+    const auto type_offset = type.offset;
+
+    const auto reads_field = [&](const uintptr_t func, const int32_t disp) {
+        const auto* range = svr_mod->GetFunctionRange(func);
+        if (range == nullptr)
+            return false;
+
+        bool found = false;
+
+        ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+            for (uint8_t i = 0; i < instr.operand_count_visible; i++)
+            {
+                const auto& op = operands[i];
+
+                if (op.type == ZYDIS_OPERAND_TYPE_MEMORY
+                    && op.mem.index == ZYDIS_REGISTER_NONE
+                    && op.mem.disp.has_displacement
+                    && static_cast<int32_t>(op.mem.disp.value) == disp
+                    && address_scan::IsObjectBase(op.mem.base))
+                {
+                    found = true;
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        return found;
+    };
+
+    std::vector<uintptr_t> candidates{};
+
+    ZydisUtility::ScanInstructions(touch->start, touch->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic != ZYDIS_MNEMONIC_CALL || !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+            return false;
+
+        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+        if (target == 0 || std::ranges::find(candidates, target) != candidates.end())
+            return false;
+
+        if (reads_field(target, path_offset) && reads_field(target, type_offset))
+            candidates.emplace_back(target);
+
+        return false;
+    });
+
+    if (candidates.size() != 1)
+    {
+        WARN("GameData auto-resolve: CTriggerPush::PathSimplePushDir matched %zu callees, expected 1.", candidates.size());
+        return;
+    }
+
+    FLOG("Found CTriggerPush::PathSimplePushDir at server+0x%llx", candidates.front() - svr_mod->Base());
+
+    address::server::CTriggerPush_PathSimplePushDir = reinterpret_cast<address::server::CTriggerPush_PathSimplePushDir_t>(candidates.front());
 }

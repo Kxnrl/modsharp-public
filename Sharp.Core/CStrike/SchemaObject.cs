@@ -48,7 +48,7 @@ internal abstract class SchemaObject : NativeObject, ISchemaObject
 
     public abstract string GetSchemaClassname();
 
-    protected virtual int StructNscIndex => 1;
+    protected int StructNscIndex => SchemaSystem.TryGetStructNscIndex(GetSchemaClassname(), out var index) ? index : 1;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Dictionary<string, (SchemaClass, SchemaClassField)> GetResolveMap()
