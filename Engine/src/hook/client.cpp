@@ -835,11 +835,6 @@ void InstallClientHooks()
                                               CBasePlayerController::ClearClanTagState(slot);
                                           });
 
-    g_pHookManager->Hook_ClientPutInServer(HookType_Post, [](PlayerSlot_t slot, const char*, SteamId_t) {
-        if (const auto pController = CBasePlayerController::FindBySlot(slot))
-            pController->EnforceClanTag();
-    });
-
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);
     ms_chat_block_whitespace = g_ConVarManager.CreateConVar("ms_chat_block_whitespace", true, "Block whitespace messages.", FCVAR_RELEASE);
     ms_fix_voice_chat        = g_ConVarManager.CreateConVar("ms_fix_voice_chat", true, "Fix voice chat.", FCVAR_RELEASE);
