@@ -27,11 +27,14 @@
 #include "cstrike/entity/CBaseWeapon.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CTakeDamageInfo.h"
 #include "cstrike/type/CTakeDamageResult.h"
 
 #include <safetyhook.hpp>
+
+#include <cstring>
 
 // #define PLAYER_EVENT_ASSERT
 // #define WEAPON_EVENT_ASSERT
@@ -336,8 +339,34 @@ void CCSPlayer_WeaponServices::EquipWeapon(CBaseWeapon* weapon)
     }
 }
 
+BeginMemberHookScope(CCSPlayerController)
+{
+    // SetClan's only caller: UpdateInventory -> UpdatePersonaData on the first GC persona data
+    DeclareMemberDetourHook(InventoryUpdateThink, void, (CCSPlayerController * pController))
+    {
+        InventoryUpdateThink(pController);
+        pController->EnforceClanTag();
+    }
+}
+
+static void* FindThinkFunc(const char* cppClassname, const char* thinkName)
+{
+    for (auto* klass = CEntityClass::GetFirst(); klass != nullptr; klass = klass->GetNext())
+    {
+        const auto* info = klass->GetInfo();
+        if (info != nullptr && info->m_pszCppClassname != nullptr && std::strcmp(info->m_pszCppClassname, cppClassname) == 0)
+            return reinterpret_cast<void*>(klass->GetThinkFunc(thinkName));
+    }
+    return nullptr;
+}
+
 void InstallPlayerHooks()
 {
+    if (auto* think = FindThinkFunc("CCSPlayerController", "CCSPlayerControllerInventoryUpdateThink"))
+        HOOK(CCSPlayerController, InventoryUpdateThink, {.address = think});
+    else
+        FERROR("Failed to find CCSPlayerControllerInventoryUpdateThink, SetClanTag will be overwritten by GC persona data");
+
 #ifdef PLATFORM_WINDOWS
 
     auto address = g_pGameData->GetAddress<void*>("CCSPlayer_MovementServices::ProcessMovement_AssignMaxSpeed");

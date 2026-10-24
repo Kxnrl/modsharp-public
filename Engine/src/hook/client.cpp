@@ -832,6 +832,7 @@ void InstallClientHooks()
                                           [](PlayerSlot_t slot, int32_t, const char*, SteamId_t) {
                                               CServerSideClient_Hooks::ResetVoiceMessageRateState(slot);
                                               CServerSideClient_Hooks::ResetCmdKeyValuesRateState(slot);
+                                              CBasePlayerController::ClearClanTagState(slot);
                                           });
 
     ms_log_chat              = g_ConVarManager.CreateConVar("ms_log_chat", false, "Log chat messages.", FCVAR_RELEASE);

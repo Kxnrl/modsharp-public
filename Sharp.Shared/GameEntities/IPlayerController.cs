@@ -95,9 +95,16 @@ public interface IPlayerController : IBaseEntity
     void Respawn();
 
     /// <summary>
-    ///     Set clantag
+    ///     Set clantag. An empty tag hides it. <br />
+    ///     The tag is kept until the client disconnects or <see cref="ResetClanTag"/> is called; the game's own
+    ///     clan data (Steam group tag) will not overwrite it.
     /// </summary>
     void SetClanTag(string tag);
+
+    /// <summary>
+    ///     Stop overriding the clantag and restore the game's own (Steam group tag).
+    /// </summary>
+    void ResetClanTag();
 
     /// <summary>
     ///     Check awn
