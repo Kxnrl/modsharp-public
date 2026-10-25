@@ -92,7 +92,11 @@ static uint32_t OverrideClanId(const std::string& tag)
 
 void CBasePlayerController::SetClanTag(const char* tag)
 {
-    auto& state = s_ClanTag[GetPlayerSlot()];
+    const auto slot = GetPlayerSlot();
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    auto& state = s_ClanTag[slot];
     if (!state.active)
     {
         state.gameClanId = m_unClanId32bit();
@@ -105,7 +109,11 @@ void CBasePlayerController::SetClanTag(const char* tag)
 
 void CBasePlayerController::ResetClanTag()
 {
-    auto& state = s_ClanTag[GetPlayerSlot()];
+    const auto slot = GetPlayerSlot();
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    auto& state = s_ClanTag[slot];
     if (!state.active)
         return;
     state.active = false;
