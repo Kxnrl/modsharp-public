@@ -162,6 +162,8 @@ internal class ConVarManager : ICoreConVarManager
 
         if (callbacks is not null)
         {
+            _conVarHooks[key] = callbacks;
+
             return;
         }
 

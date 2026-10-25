@@ -156,6 +156,8 @@ internal sealed class CommandCenter : IModSharpModule, ICommandCenter
         if (_registerCommands.TryGetValue(identity, out var set))
         {
             set.Add(command);
+
+            return;
         }
 
         set                         = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { command };
