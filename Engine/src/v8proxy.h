@@ -118,6 +118,12 @@ const char* InternGlobalSymbol(const char* name);
 
 CBaseEntity* GetCurrentPointScriptEntity();
 
+void CacheScriptIsolate(v8::Isolate* isolate);
+
+bool ReadScriptVariable(CBaseEntity* entity, const char* name, ScriptValue& out);
+
+bool WriteScriptVariable(CBaseEntity* entity, const char* name, const ScriptValue& in);
+
 // Call PopOwnerScript only when PushOwnerScript returned true.
 bool PushOwnerScript(CBaseEntity* owner);
 void PopOwnerScript();

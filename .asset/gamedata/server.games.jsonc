@@ -488,6 +488,12 @@
       "linux": "8B 05 ? ? ? ? 31 D2 85 C0 7E ? 48 8B 15 ? ? ? ? 83 E8 ? 48 98 48 8B 14 C2 48 89 D0 C3",
       "windows": "8B 05 ? ? ? ? 85 C0 7E ? FF C8"
     },
+    "CCSScript::ResolveDelays": {
+      "on_demand": true,
+      "library": "server",
+      "linux": "8B 8F ? ? ? ? 85 C9 0F 84 ? ? ? ? 8B 8F ? ? ? ? 83 F9 FF 0F 84 ? ? ? ? 48 8B 35 ? ? ? ? 48 85 F6 0F 84 ? ? ? ? 83 F9 FE 0F 84 ? ? ? ? 55 48 89 E5",
+      "windows": "48 89 4C 24 ? 55 41 55 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 83 B9 ? ? ? ? 00 4C 8B E9 0F 84 ? ? ? ? 8B 91"
+    },
     "CCSScript::ScriptStackPop": {
       "on_demand": true,
       "library": "server",

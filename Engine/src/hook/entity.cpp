@@ -91,7 +91,6 @@ bool IsPushFixEnabled()
 }
 
 // 这里涉及到安全问题, 所以暂时全局Hook
-// 现在Mapper可以通过该实体传入任意命令!
 BeginMemberHookScope(CPointServerCommand)
 {
     DeclareMemberDetourHook(InputCommand, void, (CBaseEntity * pEntity, const InputData_t* pInput))
@@ -107,7 +106,7 @@ BeginMemberHookScope(CPointServerCommand)
         if (forwards::OnPointServerCommand->Invoke(pEntity, pCommand) == EHookAction::SkipCallReturnOverride)
             return;
 
-        engine->ServerCommand(pCommand);
+        InputCommand(pEntity, pInput);
     }
 }
 

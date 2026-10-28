@@ -305,6 +305,7 @@
     <ClInclude Include="src\types.h" />
     <ClInclude Include="src\netmessage.h" />
     <ClInclude Include="src\v8proxy.h" />
+    <ClInclude Include="src\v8proxy_debug.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\vhook\call.h" />
     <ClInclude Include="src\vhook\hook.h" />

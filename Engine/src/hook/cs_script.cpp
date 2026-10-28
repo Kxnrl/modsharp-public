@@ -19,6 +19,7 @@
 
 #include "address.h"
 #include "bridge/forwards/forward.h"
+#include "gamedata.h"
 #include "global.h"
 #include "installer.h"
 #include "logging.h"
@@ -33,12 +34,14 @@
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/type/CCSScript.h"
 #include "cstrike/type/ScriptValue.h"
+#include "cstrike/type/VProf.h"
 #include "cstrike/type/Variant.h"
 
 #include <v8.h>
 
 #include <charconv>
 #include <deque>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -69,7 +72,9 @@ static v8::Local<v8::FunctionTemplate> LookupClassTemplate(CCSBaseScript* script
 
     CGlobalSymbol symbol(interned);
 
-    auto** persistent = script->m_mapClassTemplates.GetPtr(symbol);
+    auto** persistent = script->m_mapEntityClassTemplates.GetPtr(symbol);
+    if (!persistent)
+        persistent = script->m_mapClassTemplates.GetPtr(symbol);
     if (!persistent) [[unlikely]]
         return {};
 
@@ -467,6 +472,8 @@ static void InjectAllMethods(CCSBaseScript* ctx)
     if (!isolate)
         return;
 
+    CacheScriptIsolate(isolate);
+
     v8::HandleScope handleScope(isolate);
 
     const char*                     lastClass = nullptr;
@@ -521,6 +528,78 @@ BeginMemberHookScope(CCSScript_EntityScript)
 
         FLOG("Injected %zu custom cs_script methods (scriptId=%u)", g_ScriptMethods.size(), ctx->m_nScriptIndex);
     }
+
+    DeclareMemberDetourHook(ServerCommand, void, (const v8::FunctionCallbackInfo<v8::Value>& info))
+    {
+        auto* isolate = info.GetIsolate();
+
+        v8::HandleScope handleScope(isolate);
+
+        const auto pEntity = GetCurrentPointScriptEntity();
+        if (!pEntity || !modules::server->IsPointerDerivedFrom(pEntity, "CCSPointScriptEntity"))
+        {
+            WARN("cs_script: blocked Console.ServerCommand, invoked in incorrect scope");
+            isolate->ThrowException(v8::String::NewFromUtf8Literal(isolate, "Method Console.ServerCommand invoked in incorrect scope."));
+            return;
+        }
+
+        const auto* wrapper = GetWrapperFromThis(info);
+        if (!wrapper)
+        {
+            WARN("cs_script: blocked Console.ServerCommand, invoked with unrecognized 'this' value");
+            isolate->ThrowException(v8::String::NewFromUtf8Literal(isolate, "Method Console.ServerCommand invoked with unrecognized 'this' value."));
+            return;
+        }
+
+        if (wrapper->type != static_cast<int32_t>(ScriptWrapperType::ScriptObject) || !wrapper->object
+            || !modules::server->IsPointerDerivedFrom(wrapper->object, "CCSScript_EntityScript"))
+        {
+            WARN("cs_script: blocked Console.ServerCommand, invoked with incorrect 'this' value");
+            isolate->ThrowException(v8::String::NewFromUtf8Literal(isolate, "Method Console.ServerCommand invoked with incorrect 'this' value."));
+            return;
+        }
+
+        if (info.Length() < 1)
+        {
+            WARN("cs_script: blocked Console.ServerCommand, requires 1 argument(s), (command: string)");
+            return;
+        }
+
+        if (!info[0]->IsString())
+        {
+            WARN("cs_script: blocked Console.ServerCommand, invoked with bad command value (parameter #0)");
+            return;
+        }
+
+        const auto value  = info[0].As<v8::String>();
+        const auto length = value->Utf8Length(isolate);
+
+        const std::unique_ptr<char[]> command(new char[static_cast<size_t>(length) + 1]);
+
+        value->WriteUtf8(isolate, command.get(), -1, nullptr, v8::String::NO_OPTIONS);
+
+        if (forwards::OnPointServerCommand->Invoke(pEntity, command.get()) == EHookAction::SkipCallReturnOverride)
+            return;
+
+        ServerCommand(info);
+    }
+}
+
+BeginMemberHookScope(CCSScript)
+{
+    DeclareMemberDetourHook(RunCallback, int, (CCSBaseScript * script, const char* name, void* function, int argc, void* argv, void* result))
+    {
+        VPROF_CS_SCRIPT_SCOPE(name);
+
+        return RunCallback(script, name, function, argc, argv, result);
+    }
+
+    DeclareMemberDetourHook(ResolveDelays, void, (CCSBaseScript * script))
+    {
+        VPROF_CS_SCRIPT_SCOPE("Instance.Delay");
+
+        ResolveDelays(script);
+    }
 }
 
 static CAddress GetInitV8ClassTemplatesAddress()
@@ -542,7 +621,7 @@ static CAddress GetInitV8ClassTemplatesAddress()
     // (index 6), so first-match is the correct rule and is kept.
     //
     // What we add is a shape check. InitV8ClassTemplates is a thin wrapper — grab the
-    // isolate, open a HandleScope, call the three registration helpers, return: 0x43
+    // isolate, open a HandleScope, call the five registration helpers, return: 0x53
     // bytes. Every other GetCurrent-calling vfunc is a full JS callback; those sampled
     // ran 0x24c..0x1203 bytes (a sample, not an exhaustive measurement), so a 0x100
     // ceiling separates them with an order of magnitude to spare.
@@ -581,7 +660,7 @@ static CAddress GetInitV8ClassTemplatesAddress()
         if (first_match != 0)
             continue;
 
-        // Load-bearing shape check: InitV8ClassTemplates is a thin wrapper (~0x43 bytes); every other
+        // Load-bearing shape check: InitV8ClassTemplates is a thin wrapper (~0x53 bytes); every other
         // GetCurrent-calling vfunc is a full JS callback, an order of magnitude larger. REQUIRE thin —
         // a non-thin first match is a mis-hit (e.g. a future build reordering a fat callback ahead of
         // index 6), so skip it and keep walking rather than silently binding the detour to the wrong
@@ -638,6 +717,21 @@ void InstallCSScriptHooks()
         printf("spawned\n");
     });
 #endif
+
+    const auto server_command = modules::server->FindFunctionFromStringRefs({"ServerCommand", "(command: string)"});
+    if (!server_command.IsValid())
+    {
+        FatalError("Failed to find Console.ServerCommand");
+        return;
+    }
+
+    HOOK(CCSScript_EntityScript, ServerCommand, {.address = server_command});
+
+    if (const auto run_callback = modules::server->FindFunctionFromStringRef("Uncaught Exception during callback \"%s\"\n%s%s\n"); run_callback.IsValid())
+        HOOK(CCSScript, RunCallback, {.address = run_callback});
+
+    if (std::uintptr_t resolve_delays; g_pGameData->GetAddress("CCSScript::ResolveDelays", resolve_delays))
+        HOOK(CCSScript, ResolveDelays, {.address = reinterpret_cast<void*>(resolve_delays)});
 
     auto address = GetInitV8ClassTemplatesAddress();
     if (!address.IsValid())
