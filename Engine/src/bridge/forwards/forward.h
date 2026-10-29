@@ -38,6 +38,8 @@ class CCSPlayer_WeaponServices;
 class CBaseWeapon;
 class CTakeDamageInfo;
 class CMoveData;
+class CEconItemView;
+class CUtlString;
 class Vector;
 template <typename T>
 class NativeFixedSpan;
@@ -170,8 +172,8 @@ DECLARE_FORWARD(Steam, OnItemInstalled, void, FORWARD_ARG(uint64_t));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // GiveNamedItem
-DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, char*, bool*));
-DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, bool, EHookAction, CBaseEntity*));
+DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, CUtlString*, bool*, bool*, CEconItemView**));
+DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, bool, EHookAction, CBaseEntity*, CEconItemView*));
 DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveGloveItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*));
 DECLARE_FORWARD(Extern.GiveNamedItem, OnCanAcquirePre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, uint16_t, int, int*));
 

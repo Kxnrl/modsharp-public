@@ -214,11 +214,12 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
             return CALL_GiveNamedItem();
         }
 
-        char refClassname[64], classname[64];
-        StrCopy(refClassname, sizeof(refClassname), pClassname);
-        memcpy(classname, refClassname, sizeof(classname));
+        CUtlString classnameOverride;
+        auto       classnameOverridden = false;
+        auto       classname           = pClassname;
+        auto       pItemView           = static_cast<CEconItemView*>(pScriptItem);
 
-        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, refClassname, &bIgnore);
+        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, pClassname, &classnameOverride, &classnameOverridden, &bIgnore, &pItemView);
 
         if (action == EHookAction::Ignored)
         {
@@ -238,8 +239,15 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
                 pScriptItem = nullptr;
                 ignoreView  = true;
             }
+            else
+            {
+                pScriptItem = pItemView;
+            }
 
-            StrCopy(classname, sizeof(classname), refClassname);
+            if (classnameOverridden)
+            {
+                classname = classnameOverride.Get();
+            }
         }
 
     postHook:
@@ -251,7 +259,7 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
             pWeapon = CALL_GiveNamedItemChanged();
         }
 
-        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon);
+        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon, static_cast<CEconItemView*>(pScriptItem));
 
         return pWeapon;
     }

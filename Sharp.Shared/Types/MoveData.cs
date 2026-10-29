@@ -17,9 +17,11 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Shared.Types;
@@ -33,6 +35,9 @@ public struct MoveData
 
     [FieldOffset(0x0)]
     public byte MoveDataFlags;
+
+    [FieldOffset(0x4)]
+    public CEntityHandle<IBasePlayerPawn> PlayerHandle;
 
     [FieldOffset(0x8)]
     public Vector AbsViewAngles;
@@ -64,8 +69,29 @@ public struct MoveData
     [FieldOffset(0x78)]
     public CUtlVector<SubTickAttack> SubTickAttacks;
 
+    [FieldOffset(0x98)]
+    public CUtlVector<TouchListEntry> TouchList;
+
+    [FieldOffset(0xb0)]
+    public Vector CollisionNormal;
+
+    [FieldOffset(0xbc)]
+    public Vector GroundNormal;
+
     [FieldOffset(0xc8)]
     public Vector AbsOrigin;
+
+    [FieldOffset(0xd4)]
+    public int StartTick;
+
+    [FieldOffset(0xd8)]
+    public int EndTick;
+
+    [FieldOffset(0xdc)]
+    public float SubtickStartFraction;
+
+    [FieldOffset(0xe0)]
+    public float SubtickEndFraction;
 
     private unsafe ref byte Base
     {
@@ -82,6 +108,18 @@ public struct MoveData
     {
         get => Unsafe.ReadUnaligned<Vector>(ref Unsafe.AddByteOffset(ref Base, 0xe8 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,        0xe8 + PlatformOffset), value);
+    }
+
+    public unsafe Vector OldAngles // Win: 0xf4
+    {
+        get => Unsafe.ReadUnaligned<Vector>(ref Unsafe.AddByteOffset(ref Base, 0xf4 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,        0xf4 + PlatformOffset), value);
+    }
+
+    public unsafe Vector2D WalkWishVel // Win: 0x100
+    {
+        get => Unsafe.ReadUnaligned<Vector2D>(ref Unsafe.AddByteOffset(ref Base, 0x100 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,          0x100 + PlatformOffset), value);
     }
 
     public unsafe float MaxSpeed // Win: 0x120
@@ -101,6 +139,25 @@ public struct MoveData
         get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, 0x138 + PlatformOffset));
         set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      0x138 + PlatformOffset), value);
     }
+
+    public unsafe bool GameCodeMovedPlayer // Win: 0x139
+    {
+        get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, 0x139 + PlatformOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      0x139 + PlatformOffset), value);
+    }
+}
+
+[StructLayout(LayoutKind.Explicit, Size = 208, Pack = 8)]
+public struct TouchListEntry
+{
+    [FieldOffset(0)]
+    public Vector DeltaVelocity;
+
+    [FieldOffset(16)]
+    private byte _trace;
+
+    [UnscopedRef]
+    public ref readonly GameTrace Trace => ref Unsafe.As<byte, GameTrace>(ref _trace);
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 24, Pack = 8)]
