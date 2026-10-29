@@ -99,7 +99,8 @@ static std::deque<AddonsDownload_t>                      s_DownloadQueue;
 static std::vector<AddonsDownload_t>                     s_PreLoginDownloads; // failed to start before the Steam logon
 static std::vector<SteamId_t>                                s_TimedOutClients;
 static std::string                                           s_CurrentWorkshopMap;
-static bool                                                  s_bReloadBatchSucceeded = false;
+static std::string                                           s_ScriptWorkshopMap; // s_CurrentWorkshopMap of the loaded level, committed on ServerInit
+static bool                                                 s_bReloadBatchSucceeded = false;
 
 static bool HasUGC()
 {
@@ -678,12 +679,14 @@ BeginStaticHookScope(ReplyConnection)
 BeginStaticHookScope(ScriptGetAddon)
 {
     // level resource loading takes the first id of the addon list as the map's addon, keep it the workshop map
+    // the old level's scripts still run (and save their data) between the host state request and the next level, so
+    // this follows the loaded level instead of the requested one (MAM 3e04eff)
     DeclareStaticDetourHook(ScriptGetAddon, uint64_t, ())
     {
-        if (!g_AddonManager.IsActive() || s_CurrentWorkshopMap.empty())
+        if (!g_AddonManager.IsActive() || s_ScriptWorkshopMap.empty())
             return ScriptGetAddon();
 
-        const auto id = strtoull(s_CurrentWorkshopMap.c_str(), nullptr, 10);
+        const auto id = strtoull(s_ScriptWorkshopMap.c_str(), nullptr, 10);
         return id > 0 ? id : ScriptGetAddon();
     }
 }
@@ -782,6 +785,11 @@ static void OnGameFrame(bool /*sim*/, bool /*first*/, bool /*last*/)
     PrintDownloadProgress();
 }
 
+static void OnServerInitPre()
+{
+    s_ScriptWorkshopMap = s_CurrentWorkshopMap;
+}
+
 static void OnServerInitPost()
 {
     // kicks deferred on a map without addons never ran, do not apply them to this one
@@ -797,6 +805,7 @@ void InstallAddonsHooks()
     g_pHookManager->Hook_ClientDisconnect(HookType_Post, OnClientDisconnectPost);
     g_pHookManager->Hook_ClientActivate(HookType_Post, OnClientActivatePost);
     g_pHookManager->Hook_GameFrame(HookType_Post, OnGameFrame);
+    g_pHookManager->Hook_ServerInit(HookType_Pre, OnServerInitPre);
     g_pHookManager->Hook_ServerInit(HookType_Post, OnServerInitPost);
 
     SHOOK(ReplyConnection);
