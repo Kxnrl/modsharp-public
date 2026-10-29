@@ -713,7 +713,7 @@ static CAddress GetVScriptFunction(const std::string& name)
 
     final_address = try_find_match(string_address);
 
-    if (!final_address.IsValid())
+    if (!final_address.IsValid() && string_address.IsValid())
     {
         auto string_ptrs = modules::server->FindPtrs(string_address);
         for (const auto& ptr : string_ptrs)

@@ -126,8 +126,8 @@ BeginMemberHookScope(CSource2GameClients)
 
         if (allow)
         {
-            forwards::OnClientConnected->Invoke(pClient);
             g_pHookManager->Call_ClientConnect(HookType_Post, slot, pszName, steamId, bFakeClient);
+            forwards::OnClientConnected->Invoke(pClient);
         }
         else
         {
@@ -253,9 +253,9 @@ BeginMemberHookScope(CSource2GameClients)
 
         Active(pServerGameClient, slot, bLoadGame, pszName, steamId);
 
-        forwards::OnClientActive->Invoke(sv->GetClient(slot));
-
         g_pHookManager->Call_ClientActivate(HookType_Post, slot, pszName, steamId);
+
+        forwards::OnClientActive->Invoke(sv->GetClient(slot));
     }
 
     DeclareVirtualHook(SettingsChanged, void, (IServerGameClient * pServerGameClient, PlayerSlot_t slot))
@@ -634,17 +634,9 @@ BeginStaticHookScope(HostSay)
             if (ms_log_chat->GetValue<bool>())
                 LOG("Console %s -> %s", args.Arg(0), args.ArgS());
 
-            const auto action = forwards::OnConsoleSay->Invoke(args.ArgS());
-            if (action == ECommandAction::Stopped)
-                return;
-
-            if (action == ECommandAction::Skipped)
-            {
+            if (forwards::OnConsoleSay->Invoke(args.ArgS()) != ECommandAction::Stopped)
                 HostSay(pFrom, args, bTeamOnly, a4, a5);
-                return;
-            }
 
-            FatalError("OnConsoleSay(HostSay): unsupported command action '%s'", ECommandActionName(action));
             return;
         }
 
@@ -729,17 +721,8 @@ BeginStaticHookScope(ScriptPrintMessageChatAll)
 {
     DeclareStaticDetourHook(ScriptPrintMessageChatAll, void, (const char* pszMessage))
     {
-        const auto action = forwards::OnConsoleSay->Invoke(pszMessage);
-        if (action == ECommandAction::Stopped)
-            return;
-
-        if (action == ECommandAction::Skipped)
-        {
+        if (forwards::OnConsoleSay->Invoke(pszMessage) != ECommandAction::Stopped)
             ScriptPrintMessageChatAll(pszMessage);
-            return;
-        }
-
-        FatalError("OnConsoleSay(ScriptPrintMessageChatAll): unsupported command action '%s'", ECommandActionName(action));
     }
 }
 
@@ -853,5 +836,5 @@ void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommand
 
     CServerSideClient_Hooks::Detour_ExecuteStringCommand(pClient, msg);
 
-    g_pMemAlloc->Free(msg);
+    delete msg;
 }

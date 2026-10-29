@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 public enum EAcquireResult : int
@@ -32,8 +34,17 @@ public enum EAcquireResult : int
     NotAllowedByMode,
     NotAllowedForPurchase,
     NotAllowedByProhibition,
+    ReachedMatchPurchaseLimit = 11,
+    NotEnoughMoney            = 13,
+
+    [Obsolete("Valve changed this value", true)]
     NoEnoughMoney = 14,
+
+    [Obsolete("Valve changed this value", true)]
     ArmorIsFull,
+
+    ArmorFull                   = 14,
+    ReachedGrenadePurchaseLimit = 15,
 }
 
 public enum EAcquireMethod : int

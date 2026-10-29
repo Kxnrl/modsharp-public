@@ -111,6 +111,16 @@ public interface IBaseEntity : ISchemaObject
     string Classname { get; }
 
     /// <summary>
+    ///     Get the designer name of this entity's entity class<br />
+    ///     <remarks>
+    ///         Not affected by <see cref="SetClassname" />; an entity created through an alias returns the designer name
+    ///         of the target class. Make sure this entity is valid before calling it, otherwise it will crash the server
+    ///     </remarks>
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The entity class has no designer name</exception>
+    string GetDesignerName();
+
+    /// <summary>
     ///     Get the targetname of this entity<br />
     ///     <remarks>
     ///         Make sure you call <see cref="IsValid" />, or this entity is valid in current context, before using this field,
@@ -199,17 +209,19 @@ public interface IBaseEntity : ISchemaObject
     ICollisionProperty? GetCollisionProperty();
 
     /// <summary>
-    ///     速度矢量 <br />
-    ///     <remarks>如果存在MoveParent, 这个速度是基于Parent的</remarks>
+    ///     Velocity vector <br />
+    ///     <remarks>
+    ///         If there is a MoveParent, this velocity is relative to the parent; when MoveType is
+    ///         <see cref="Enums.MoveType.VPhysics" />, it reads and writes the physics object's velocity
+    ///     </remarks>
     /// </summary>
-    [Obsolete("Use GetLocalVelocity/GetLocalVelocity, will be removed in 2.2")]
     Vector Velocity { get; set; }
 
     /// <summary>
     ///     绝对的速度矢量 <br />
     ///     <remarks>该矢量不会计算MoveParent</remarks>
     /// </summary>
-    [Obsolete("Use GetAbsVelocity/GetAbsVelocity, will be removed in 2.2")]
+    [Obsolete("Use GetAbsVelocity/SetAbsVelocity, will be removed in 2.2", true)]
     Vector AbsVelocity { get; set; }
 
     /// <summary>
@@ -462,12 +474,14 @@ public interface IBaseEntity : ISchemaObject
     /// <summary>
     ///     Get the relative velocity in world space, networked
     /// </summary>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, reads the physics object's velocity</remarks>
     /// <returns></returns>
     Vector GetLocalVelocity();
 
     /// <summary>
     ///     Set the relative velocity in world space, networked
     /// </summary>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, writes the physics object's velocity</remarks>
     void SetLocalVelocity(Vector velocity);
 
     /// <summary>
@@ -570,6 +584,8 @@ public interface IBaseEntity : ISchemaObject
     ///     Cast to BaseGrenade <br />
     ///     <remarks>It will return null if the entity is not a grenade</remarks>
     /// </summary>
+    /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
+    /// <exception cref="KeyNotFoundException">The entity's schema class is not in the schema table</exception>
     IBaseGrenadeProjectile? AsBaseGrenadeProjectile();
 
     /// <summary>

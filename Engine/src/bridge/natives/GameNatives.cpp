@@ -26,7 +26,6 @@
 #include "netmessage.h"
 #include "sdkproxy.h"
 
-#include "CoreCLR/NativeSpan.h"
 #include "CoreCLR/RuntimeProtobufMessage.h"
 #include "CoreCLR/RuntimeRecipientFilter.h"
 
@@ -59,11 +58,17 @@ static void PrecacheResource(IResourceManifest* pContext, const char* pszResourc
 
 static void PrintChannelAll(HudPrint_t dest, const char* message)
 {
+    if (!sv)
+        return;
+
     sv->PrintChannelAll(dest, message);
 }
 
 static void PrintChannelTeam(HudPrint_t dest, CStrikeTeam_t team, const char* message)
 {
+    if (!sv)
+        return;
+
     sv->PrintChannelTeam(dest, team, message);
 }
 
@@ -238,17 +243,32 @@ static void* GetMapGroupMapList(const char* mapGroup)
     return g_pGameTypes->GetMapGroupMapList(mapGroup);
 }
 
-static NativeSpan<uint8_t> FindResourceDataBlockInfo(const char* filePath, const char* pathId)
+static thread_local std::vector<uint8_t> s_resourceDataBlock;
+
+static int FindResourceDataBlockInfo(const char* filePath, const char* pathId)
 {
+    std::vector<uint8_t>().swap(s_resourceDataBlock);
+
     const auto buffer = ReadGameFile(filePath, pathId);
-    if (buffer.empty())
-        return NativeSpan<uint8_t>{nullptr, 0};
 
     CResourceBlockInfo output{};
-    if (Resource_FindBlockInfo(reinterpret_cast<const ResourceFileHeader_t*>(buffer.data()), g_ResourceBlockId_Data, output))
-        return NativeSpan{reinterpret_cast<uint8_t*>(output.m_pBlockData), output.m_nSize};
+    if (!Resource_FindBlockInfo(buffer.data(), buffer.size(), g_ResourceBlockId_Data, output) || output.m_nSize <= 0)
+        return 0;
 
-    return NativeSpan<uint8_t>{nullptr, 0};
+    const auto pBlock = reinterpret_cast<const uint8_t*>(output.m_pBlockData);
+    s_resourceDataBlock.assign(pBlock, pBlock + output.m_nSize);
+
+    return output.m_nSize;
+}
+
+static void CopyResourceDataBlock(uint8_t* pOutput, int size)
+{
+    AssertPtr(pOutput);
+    AssertBool(size == static_cast<int>(s_resourceDataBlock.size()));
+
+    memcpy(pOutput, s_resourceDataBlock.data(), size);
+
+    std::vector<uint8_t>().swap(s_resourceDataBlock);
 }
 
 static ResourceStatus_t GetResourceStatus(const char* fileName)
@@ -262,13 +282,17 @@ static ResourceStatus_t GetResourceStatus(const char* fileName)
 
 static const char* GetAddonName()
 {
-    AssertPtr(sv);
+    if (!sv)
+        return nullptr;
+
     return sv->GetAddonName();
 }
 
 static const char* GetMapName()
 {
-    AssertPtr(sv);
+    if (!sv)
+        return nullptr;
+
     return sv->GetMapName();
 }
 
@@ -371,6 +395,7 @@ void Init()
     bridge::CreateNative("Game.GetMapGroupMapList", reinterpret_cast<void*>(GetMapGroupMapList));
 
     bridge::CreateNative("Game.FindResourceDataBlockInfo", reinterpret_cast<void*>(FindResourceDataBlockInfo));
+    bridge::CreateNative("Game.CopyResourceDataBlock", reinterpret_cast<void*>(CopyResourceDataBlock));
     bridge::CreateNative("Game.GetResourceStatus", reinterpret_cast<void*>(GetResourceStatus));
 
     bridge::CreateNative("Game.GetAddonName", reinterpret_cast<void*>(GetAddonName));

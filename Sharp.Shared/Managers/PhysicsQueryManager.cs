@@ -76,6 +76,10 @@ public interface IPhysicsQueryManager
     /// <param name="flags">Typically use 7 (1+2+4)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="filter">Filter Callback</param>
+    /// <remarks>
+    ///     An exception thrown by <paramref name="filter" /> is rethrown as-is after the trace ends;
+    ///     once it throws, the filter is not called again for the rest of this trace
+    /// </remarks>
     TraceResult TraceLineFilter(Vector start,
         Vector                         end,
         InteractionLayers              mask,
@@ -139,6 +143,10 @@ public interface IPhysicsQueryManager
     /// <param name="flags">Typically use 7 (1+2+4)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="filter">Filter Callback</param>
+    /// <remarks>
+    ///     An exception thrown by <paramref name="filter" /> is rethrown as-is after the trace ends;
+    ///     once it throws, the filter is not called again for the rest of this trace
+    /// </remarks>
     TraceResult TraceShapeFilter(TraceShapeRay ray,
         Vector                                 start,
         Vector                                 end,
@@ -183,12 +191,15 @@ public interface IPhysicsQueryManager
     GameTrace TraceLine(Vector start, Vector end, in RnQueryShapeAttr query, nint? filterCallback = null);
 
     /// <summary>
-    ///     TraceShapePlayerMovement
+    ///     TraceShape using the game's MovementFilter <br />
+    ///     Build <paramref name="query" /> with <see cref="RnQueryShapeAttr.PlayerMovement" />, then use
+    ///     <see cref="RnQueryShapeAttr.SetEntityToIgnore" /> to put the moving entity in slot 0
     /// </summary>
     /// <param name="ray">Ray shape</param>
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="query">Trace parameters</param>
+    /// <exception cref="ArgumentException">m_nEntityIdsToIgnore[0] does not resolve to an entity</exception>
     GameTrace TraceShapePlayerMovement(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query);
 
     /// <summary>

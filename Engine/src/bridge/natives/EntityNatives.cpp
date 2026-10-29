@@ -35,6 +35,7 @@
 #include "cstrike/entity/CCSCustomHudLayout.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
@@ -49,9 +50,12 @@ namespace natives::entity
 {
 
 // <classname, <outputName>>
-static std::unordered_map<std::string, std::vector<std::string>> s_hookedOutput;
+static std::unordered_map<std::string, std::vector<std::string>, CaseInsensitiveHash, CaseInsensitiveEqual> s_hookedOutput;
 // <classname, <inputName>>
-static std::unordered_map<std::string, std::vector<std::string>> s_hookedInput;
+static std::unordered_map<std::string, std::vector<std::string>, CaseInsensitiveHash, CaseInsensitiveEqual> s_hookedInput;
+
+static std::unordered_map<const CEntityClass*, std::vector<std::string>> s_hookedOutputByClass;
+static std::unordered_map<const CEntityClass*, std::vector<std::string>> s_hookedInputByClass;
 
 static CBaseEntity* FindEntityByEHandle(EHandle_t value)
 {
@@ -70,9 +74,32 @@ static CBaseEntity* FindEntityByClassname(CBaseEntity* pStart, const char* class
     return g_pGameEntitySystem->FindByClassname(pStart, classname);
 }
 
-static int32_t EnumerateEntitiesByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity)
+static CBaseEntity* FindEntityByCppClass(CBaseEntity* pStart, const char* cppClass)
 {
-    return g_pGameEntitySystem->EnumerateByClassname(classname, buffer, capacity);
+    return g_pGameEntitySystem->FindByCppClass(pStart, cppClass);
+}
+
+static int32_t FindAllEntitiesByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity)
+{
+    return g_pGameEntitySystem->FindAllByClassname(classname, buffer, capacity);
+}
+
+static int32_t EnumerateEntitiesByCppClass(const char* cppClass, CBaseEntity** buffer, int32_t capacity)
+{
+    return g_pGameEntitySystem->EnumerateByCppClass(cppClass, buffer, capacity);
+}
+
+static void* GetEntityClassThinkFunc(const char* classname, const char* thinkName)
+{
+    const auto* klass = g_pGameEntitySystem->FindEntityClassByName(classname);
+    return klass != nullptr ? reinterpret_cast<void*>(klass->GetThinkFunc(thinkName)) : nullptr;
+}
+
+static const char* GetEntityDesignerName(CBaseEntity* pEntity)
+{
+    const auto* klass = pEntity->GetEntityIdentity()->GetEntityClass();
+    const auto* info  = klass != nullptr ? klass->GetInfo() : nullptr;
+    return info != nullptr ? info->m_pszClassname : nullptr;
 }
 
 static CBaseEntity* FindEntityByName(CBaseEntity* pStart, const char* name)
@@ -100,6 +127,17 @@ static const char* AllocPooledString(const char* content)
     return g_pGameEntitySystem->AllocPooledString(content).Get();
 }
 
+static void AddHookedClassName(std::unordered_map<const CEntityClass*, std::vector<std::string>>& byClass, const char* classname, const std::string& name)
+{
+    const auto pClass = g_pGameEntitySystem->FindEntityClassByName(classname);
+    if (pClass == nullptr)
+        return;
+
+    auto& names = byClass[pClass];
+    if (std::ranges::find(names, name) == names.end())
+        names.emplace_back(name);
+}
+
 static void HookEntityOutput(const char* classname, const char* pszOutput)
 {
     auto output = LowercaseString(pszOutput);
@@ -108,10 +146,13 @@ static void HookEntityOutput(const char* classname, const char* pszOutput)
     // 旧版中我们使用 m_ 开头以匹配 SchemaSystem 中的字段
     // 当前我们直接匹配EntityIO的名称, 所以不在需要 m_
 
-    const auto hookedEntity = s_hookedOutput.find(classname);
+    AddHookedClassName(s_hookedOutputByClass, classname, output);
+
+    const auto key          = LowercaseString(classname);
+    const auto hookedEntity = s_hookedOutput.find(key);
     if (hookedEntity == s_hookedOutput.end())
     {
-        s_hookedOutput[classname] = {output};
+        s_hookedOutput[key] = {output};
         return;
     }
 
@@ -122,10 +163,13 @@ static void HookEntityInput(const char* classname, const char* pszInput)
 {
     auto input = LowercaseString(pszInput);
 
-    const auto hookedEntity = s_hookedInput.find(classname);
+    AddHookedClassName(s_hookedInputByClass, classname, input);
+
+    const auto key          = LowercaseString(classname);
+    const auto hookedEntity = s_hookedInput.find(key);
     if (hookedEntity == s_hookedInput.end())
     {
-        s_hookedInput[classname] = {input};
+        s_hookedInput[key] = {input};
         return;
     }
 
@@ -185,6 +229,16 @@ static void EntityNetworkStateChanged(CBaseEntity* pEntity, uint16_t offset)
 static void EntitySetStateChanged(CBaseEntity* pEntity, uint16_t offset)
 {
     SetStateChanged(pEntity, offset);
+}
+
+static void EntityNetworkArrayStateChanged(CBaseEntity* pEntity, uint16_t offset, int32_t arrayIndex)
+{
+    NetworkStateChanged(reinterpret_cast<uintptr_t>(pEntity), offset, static_cast<uint32_t>(arrayIndex));
+}
+
+static void EntitySetArrayStateChanged(CBaseEntity* pEntity, uint16_t offset, int32_t arrayIndex)
+{
+    SetStateChanged(pEntity, offset, static_cast<uint32_t>(arrayIndex));
 }
 
 static void EntitySetStructStateChanged(void* pStructObject, uint16_t offset, int32_t vFuncIndex)
@@ -404,7 +458,7 @@ static void EntitySetBodyGroupByName(CBaseModelEntity* pEntity, const char* pNam
     pEntity->SetBodyGroupByName(pName, value);
 }
 
-static void EntitySetMaterialGroupMask(CBaseModelEntity* pEntity, int mask)
+static void EntitySetMaterialGroupMask(CBaseModelEntity* pEntity, uint64_t mask)
 {
     pEntity->SetMaterialGroupMask(mask);
 }
@@ -465,14 +519,19 @@ static bool IsWeapon(CBaseEntity* pEntity)
 
 static CBaseEntity* GetGlobalCStrikeTeam(uint8_t team)
 {
-    CBaseEntity* pEntity = nullptr;
-    while ((pEntity = g_pGameEntitySystem->FindByClassname(pEntity, "cs_team_manager")) != nullptr)
-    {
-        if (pEntity->GetTeam() == team)
-            return pEntity;
-    }
+    static const auto s_pTeamManagerClass = g_pGameEntitySystem->FindEntityClassByName("cs_team_manager");
+    AssertPtr(s_pTeamManagerClass);
 
-    return nullptr;
+    CBaseEntity* pResult = nullptr;
+    s_pTeamManagerClass->ForEachEntity([team, &pResult](CBaseEntity* pEntity) {
+        if (pEntity->GetTeam() != team)
+            return true;
+
+        pResult = pEntity;
+        return false;
+    });
+
+    return pResult;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -522,8 +581,12 @@ void Init()
     // Entity List
     bridge::CreateNative("Entity.FindByEHandle", reinterpret_cast<void*>(FindEntityByEHandle));
     bridge::CreateNative("Entity.FindByIndex", reinterpret_cast<void*>(FindEntityByIndex));
-    bridge::CreateNative("Entity.EnumerateByClassname", reinterpret_cast<void*>(EnumerateEntitiesByClassname));
+    bridge::CreateNative("Entity.FindAllByClassname", reinterpret_cast<void*>(FindAllEntitiesByClassname));
+    bridge::CreateNative("Entity.EnumerateByCppClass", reinterpret_cast<void*>(EnumerateEntitiesByCppClass));
     bridge::CreateNative("Entity.FindByClassname", reinterpret_cast<void*>(FindEntityByClassname));
+    bridge::CreateNative("Entity.FindByCppClass", reinterpret_cast<void*>(FindEntityByCppClass));
+    bridge::CreateNative("Entity.GetThinkFunc", reinterpret_cast<void*>(GetEntityClassThinkFunc));
+    bridge::CreateNative("Entity.GetDesignerName", reinterpret_cast<void*>(GetEntityDesignerName));
     bridge::CreateNative("Entity.FindByName", reinterpret_cast<void*>(FindEntityByName));
     bridge::CreateNative("Entity.FindInSphere", reinterpret_cast<void*>(FindEntityInSphere));
     bridge::CreateNative("Entity.SpawnEntitySync", reinterpret_cast<void*>(SpawnEntitySync));
@@ -539,6 +602,8 @@ void Init()
     bridge::CreateNative("Entity.IsValid", reinterpret_cast<void*>(EntityIsValid));
     bridge::CreateNative("Entity.NetworkStateChanged", reinterpret_cast<void*>(EntityNetworkStateChanged));
     bridge::CreateNative("Entity.SetStateChanged", reinterpret_cast<void*>(EntitySetStateChanged));
+    bridge::CreateNative("Entity.NetworkArrayStateChanged", reinterpret_cast<void*>(EntityNetworkArrayStateChanged));
+    bridge::CreateNative("Entity.SetArrayStateChanged", reinterpret_cast<void*>(EntitySetArrayStateChanged));
     bridge::CreateNative("Entity.SetStructStateChanged", reinterpret_cast<void*>(EntitySetStructStateChanged));
     bridge::CreateNative("Entity.CollisionRulesChanged", reinterpret_cast<void*>(EntityCollisionRulesChanged));
     bridge::CreateNative("Entity.EmitSound", reinterpret_cast<void*>(EntityEmitSound));
@@ -610,15 +675,25 @@ void Init()
     bridge::CreateNative("Panorama.IsInputCaptureEnabled", reinterpret_cast<void*>(PanoramaCustomHudLayoutIsInputCaptureEnabled));
 }
 
+template <typename Map>
+static bool ContainsHookedName(const Map& map, typename Map::const_iterator it, const std::string& name)
+{
+    return it != map.end() && std::ranges::find(it->second, name) != it->second.end();
+}
+
 EHookAction OnEntityFireOutput(CBaseEntity* pCaller, const CEntityIOOutput* pIO, CBaseEntity* pActivator, float flDelay)
 {
-    const auto pHooked = s_hookedOutput.find(pCaller->GetClassname());
-    if (pHooked == s_hookedOutput.end())
+    if (s_hookedOutput.empty())
+        return EHookAction::Ignored;
+
+    const auto pByName  = s_hookedOutput.find(pCaller->GetClassname());
+    const auto pByClass = s_hookedOutputByClass.find(pCaller->GetEntityIdentity()->GetEntityClass());
+    if (pByName == s_hookedOutput.end() && pByClass == s_hookedOutputByClass.end())
         return EHookAction::Ignored;
 
     const auto name = LowercaseString(pIO->m_pDesc->m_pName);
 
-    if (std::ranges::find(pHooked->second, name) == pHooked->second.end())
+    if (!ContainsHookedName(s_hookedOutput, pByName, name) && !ContainsHookedName(s_hookedOutputByClass, pByClass, name))
     {
         return EHookAction::Ignored;
     }
@@ -628,12 +703,16 @@ EHookAction OnEntityFireOutput(CBaseEntity* pCaller, const CEntityIOOutput* pIO,
 
 EHookAction OnEntityAcceptInput(CEntityIdentity* pInstance, const char* pInput, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, int outputId)
 {
-    const auto pHooked = s_hookedInput.find(pInstance->GetClassname());
-    if (pHooked == s_hookedInput.end())
+    if (s_hookedInput.empty())
+        return EHookAction::Ignored;
+
+    const auto pByName  = s_hookedInput.find(pInstance->GetClassname());
+    const auto pByClass = s_hookedInputByClass.find(pInstance->GetEntityClass());
+    if (pByName == s_hookedInput.end() && pByClass == s_hookedInputByClass.end())
         return EHookAction::Ignored;
 
     const auto input = LowercaseString(pInput);
-    if (std::ranges::find(pHooked->second, input) == pHooked->second.end())
+    if (!ContainsHookedName(s_hookedInput, pByName, input) && !ContainsHookedName(s_hookedInputByClass, pByClass, input))
     {
         return EHookAction::Ignored;
     }

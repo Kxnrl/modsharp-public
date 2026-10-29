@@ -22,13 +22,12 @@ using System.Buffers;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
 using Sharp.Shared;
 
-namespace Sharp.Core.Helpers;
+namespace Sharp.Core.Logging;
 
 internal sealed unsafe class LogCaptureSink : ILogEventSink
 {
@@ -52,14 +51,17 @@ internal sealed unsafe class LogCaptureSink : ILogEventSink
         }
         catch (Exception e)
         {
-            Log.Logger.Warning(e, "Failed to resolve tier0 '{Export}', crash dumps will not contain managed logs", ExportName);
+            Bootstrap.CoreLogger.Warning(e,
+                                         "Failed to resolve tier0 '{Export}', crash dumps will not contain managed logs",
+                                         ExportName);
 
             return;
         }
 
         if (address == nint.Zero)
         {
-            Log.Logger.Warning("tier0 export '{Export}' not found, crash dumps will not contain managed logs", ExportName);
+            Bootstrap.CoreLogger.Warning("tier0 export '{Export}' not found, crash dumps will not contain managed logs",
+                                         ExportName);
 
             return;
         }

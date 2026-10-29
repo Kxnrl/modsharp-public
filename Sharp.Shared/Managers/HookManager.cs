@@ -271,7 +271,12 @@ public interface IHookManager
 #region Others
 
     /// <summary>
-    ///     CPointServerCommand::InputCommand
+    ///     CPointServerCommand::InputCommand and cs_script's Console.ServerCommand
+    ///     (including the deprecated Instance.ServerCommand); for the latter, Entity is the calling point_script
+    ///     <remarks>
+    ///         Commands let through still run the engine's original function; on workshop maps they are
+    ///         checked against Valve's command whitelist
+    ///     </remarks>
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,

@@ -89,6 +89,8 @@ public enum UserCommandButtons : ulong
     /// </summary>
     Speed = 1 << 16,
 
+    JoyAutoSprint = 1 << 17,
+
     /// <summary>
     ///     User or Reload
     /// </summary>

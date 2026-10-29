@@ -40,7 +40,7 @@ CSharpKeyValues3Helper*       g_pKeyValues3Helper = &s_CSharpKeyValues3Helper;
 #define IMPL_KV3_GETTER(ret, type)                                          \
     ret CSharpKeyValues3Helper::Get##type(KeyValues3* kv, ret defaultValue) \
     {                                                                       \
-        return kv->Get##type();                                             \
+        return kv->Get##type(defaultValue);                                 \
     }
 
 #define IMPL_KV3_SETTER(ret, type)                                    \
@@ -80,7 +80,7 @@ bool CSharpKeyValues3Helper::LoadFromCompiledFile(KeyValues3* kv, char* error, c
     }
 
     CResourceBlockInfo output{};
-    if (!Resource_FindBlockInfo(static_cast<const ResourceFileHeader_t*>(buffer.Base()), resource_block_type, output))
+    if (!Resource_FindBlockInfo(buffer.Base(), static_cast<size_t>(std::max(buffer.TellPut(), 0)), resource_block_type, output))
     {
         StrCopy(error, 256, "Failed to load resource");
         return false;

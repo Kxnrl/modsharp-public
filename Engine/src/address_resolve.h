@@ -293,10 +293,14 @@ void ResolveCBasePlayerController_CanHearAndReadChatFrom();
 void ResolveCCSPlayerController_RoundRespawn();
 void ResolveCBasePlayerPawn_CommitSuicide();
 void ResolveCCSPlayerPawn_SetDefaultGloves();
-void ResolveCEntityClassEntityListOffset();
+void ResolveEntityListOffsets();
+void ResolveCEntityClassRegistry();
+void ResolveCEntityClassFlagsOffset();
+void ResolveCEntityClassNameToThinkFuncOffset();
 void ResolveCBasePlayerPawn_SnapViewAngles();
 void ResolveCreateTriggerInternal();
 void ResolveCBaseTrigger_PassesTriggerFilters();
+void ResolveCTriggerPush_PathSimplePushDir();
 void ResolveProcessClientSvcUserMessage();
 
 // address_engine.cpp

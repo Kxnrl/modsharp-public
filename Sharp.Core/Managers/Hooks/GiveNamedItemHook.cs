@@ -21,8 +21,10 @@ using Microsoft.Extensions.Logging;
 using Sharp.Core.GameEntities;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
+using Sharp.Shared.GameObjects;
 using Sharp.Shared.HookParams;
 using Sharp.Shared.Types;
+using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.Managers.Hooks;
 
@@ -37,23 +39,38 @@ internal class GiveNamedItemHook : HookType<GiveNamedItemHookParams, IBaseWeapon
     private HookReturnValue<IBaseWeapon> OnGiveNamedItemPre(nint ptrClient,
         nint                                                     ptrController,
         nint                                                     ptrPawn,
-        ref string                                               classname,
-        ref bool                                                 ignoredCEconItemView)
+        nint                                                     ptrClassname,
+        ref string?                                              classnameOverride,
+        ref bool                                                 ignoredCEconItemView,
+        ref nint                                                 econItemView)
     {
         if (!IsHookInvokeRequired(false))
         {
             return new HookReturnValue<IBaseWeapon>(EHookAction.Ignored);
         }
 
-        var param = new GiveNamedItemHookParams(false, ptrClient, ptrController, ptrPawn, classname, ignoredCEconItemView);
+        var classname = NativeString.ReadString(ptrClassname);
+
+        var param = new GiveNamedItemHookParams(false,
+                                                ptrClient,
+                                                ptrController,
+                                                ptrPawn,
+                                                classname,
+                                                ignoredCEconItemView,
+                                                econItemView);
 
         var result = InvokeHookPre(param);
 
         param.MarkAsDisposed();
 
         // restore
-        classname            = param.Classname;
+        if (param.Classname != classname)
+        {
+            classnameOverride = param.Classname;
+        }
+
         ignoredCEconItemView = param.IgnoreCEconItemView;
+        econItemView         = param.EconItemViewPointer;
 
         // 因为这个Hook是没有返回值的, 所以不关心返回值
         return result;
@@ -62,36 +79,71 @@ internal class GiveNamedItemHook : HookType<GiveNamedItemHookParams, IBaseWeapon
     private void OnGiveNamedItemPost(nint ptrClient,
         nint                              ptrController,
         nint                              ptrPawn,
-        string                            classname,
+        nint                              ptrClassname,
         bool                              ignoredCEconItemView,
         EHookAction                       hookAction,
-        nint                              returnValue)
+        nint                              returnValue,
+        nint                              econItemView)
     {
         if (!IsHookInvokeRequired(true))
         {
             return;
         }
 
-        var param = new GiveNamedItemHookParams(true, ptrClient, ptrController, ptrPawn, classname, ignoredCEconItemView);
+        var param = new GiveNamedItemHookParams(true,
+                                                ptrClient,
+                                                ptrController,
+                                                ptrPawn,
+                                                NativeString.ReadString(ptrClassname),
+                                                ignoredCEconItemView,
+                                                econItemView);
+
         InvokeHookPost(param, new HookReturnValue<IBaseWeapon>(hookAction, BaseWeapon.Create(returnValue)));
         param.MarkAsDisposed();
     }
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal class GiveNamedItemHookParams : PlayerPawnFunctionParams, IGiveNamedItemHookParams
 {
-    public GiveNamedItemHookParams(bool postHook, nint client, nint controller, nint pawn, string classname, bool ignore) :
+    private IEconItemView? _econItemView;
+
+    public GiveNamedItemHookParams(bool postHook,
+        nint                            client,
+        nint                            controller,
+        nint                            pawn,
+        string                          classname,
+        bool                            ignore,
+        nint                            econItemView) :
         base(postHook, client, controller, pawn)
     {
         Classname           = classname;
         IgnoreCEconItemView = ignore;
+        EconItemViewPointer = econItemView;
     }
 
     public string Classname           { get; private set; }
     public bool   IgnoreCEconItemView { get; private set; }
+    public nint   EconItemViewPointer { get; private set; }
+
+    public IEconItemView? EconItemView
+    {
+        get
+        {
+            CheckDisposed();
+
+            if (_econItemView is { } view && view.GetAbsPtr() == EconItemViewPointer)
+            {
+                return view;
+            }
+
+            return _econItemView = GameObjects.EconItemView.Create(EconItemViewPointer);
+        }
+    }
 
     public void SetOverride(string classname, bool ignoreCEconItemView = false)
     {
@@ -100,5 +152,22 @@ internal class GiveNamedItemHookParams : PlayerPawnFunctionParams, IGiveNamedIte
 
         Classname           = classname;
         IgnoreCEconItemView = ignoreCEconItemView;
+    }
+
+    public void SetEconItemView(nint econItemView)
+    {
+        CheckDisposed();
+        CheckEditable();
+
+        EconItemViewPointer = econItemView;
+    }
+
+    public void SetEconItemView(IEconItemView? econItemView)
+    {
+        CheckDisposed();
+        CheckEditable();
+
+        EconItemViewPointer = econItemView?.GetAbsPtr() ?? 0;
+        _econItemView       = econItemView;
     }
 }

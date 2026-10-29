@@ -21,8 +21,10 @@ namespace Sharp.Shared.Objects;
 
 public interface IMemAlloc
 {
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="size" /> is negative</exception>
     nint Alloc(int size);
 
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="size" /> is negative</exception>
     nint ReAlloc(nint pMem, int size);
 
     void Free(nint pMem);

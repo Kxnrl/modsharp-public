@@ -45,6 +45,10 @@ public interface IClientManager
     ///     Listen for StringCommand (Virtual Command) sent by <see cref="IGameClient" /> <br />
     ///     Automatically registers with ms_ prefix
     /// </summary>
+    /// <remarks>
+    ///     An ms_ command sent from the console is only blocked when the callback returns Stopped, and a callback
+    ///     that throws counts as Stopped; when triggered from chat, the return value has no effect
+    /// </remarks>
     void InstallCommandCallback(string command, DelegateClientCommand callback);
 
     /// <summary>
@@ -56,6 +60,10 @@ public interface IClientManager
     /// <summary>
     ///     Listen for ConCommand sent by <see cref="IGameClient" />
     /// </summary>
+    /// <remarks>
+    ///     Handled only blocks the command when it is dispatched through the game DLL's ClientCommand; it is not
+    ///     guaranteed to block a ConCommand registered by the game DLL (FCVAR_GAMEDLL), so return Stopped to block it
+    /// </remarks>
     void InstallCommandListener(string command, DelegateClientCommand callback);
 
     /// <summary>

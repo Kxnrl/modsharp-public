@@ -35,6 +35,9 @@
 
 void CBroadcastRecipientFilter::AddTeamPlayer(const CStrikeTeam_t team)
 {
+    if (!sv)
+        return;
+
     const auto pClients = sv->GetClients();
     for (int i = pClients->Count() - 1; i >= 0; i--)
     {
@@ -50,6 +53,9 @@ void CBroadcastRecipientFilter::AddTeamPlayer(const CStrikeTeam_t team)
 
 void CBroadcastRecipientFilter::AddAllPlayer()
 {
+    if (!sv)
+        return;
+
     const auto pClients = sv->GetClients();
     for (int i = pClients->Count() - 1; i >= 0; i--)
     {
@@ -65,6 +71,9 @@ bool ParseNetworkReceivers(const RuntimeRecipientFilter* pFilter, int32_t* bits,
 {
     *receivers = 0;
     *bits      = 0;
+
+    if (!sv)
+        return false;
 
     if (pFilter->Type == RuntimeRecipientFilterType::All)
     {

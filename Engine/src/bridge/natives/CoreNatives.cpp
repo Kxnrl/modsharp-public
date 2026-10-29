@@ -126,7 +126,7 @@ static bool IsMapValid(const char* map)
 
 static void ServerCommand(const char* command)
 {
-    char buffer[256];
+    char buffer[1024];
     snprintf(buffer, sizeof(buffer), "%s\n", command);
     engine->ServerCommand(buffer);
 }

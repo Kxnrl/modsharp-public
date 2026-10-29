@@ -203,7 +203,10 @@ BeginMemberHookScope(SoundOpGameSystem)
         if (!pEntity)
             return false;
 
-        return strcasecmp(pEntity->GetClassname(), "ambient_generic") == 0;
+        static const auto s_pAmbientGenericClass = g_pGameEntitySystem->FindEntityClassByName("ambient_generic");
+        AssertPtr(s_pAmbientGenericClass);
+
+        return pEntity->IsEntityClass(s_pAmbientGenericClass);
     }
 
     struct PackedData

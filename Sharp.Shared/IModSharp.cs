@@ -423,6 +423,16 @@ public interface IModSharp
     nint FindPattern(string module, string pattern);
 
     /// <summary>
+    ///     Resolve the native address of a think function registered by the entity class of a classname
+    /// </summary>
+    /// <param name="classname">Entity classname (e.g. "func_physbox"), case-insensitive</param>
+    /// <param name="thinkName">
+    ///     Full think function name prefixed with the class name (e.g. "CBaseEntitySUB_Remove"), case-sensitive
+    /// </param>
+    /// <returns>Function address, or 0 if the class or the think function does not exist</returns>
+    nint GetEntityClassThinkFunc(string classname, string thinkName);
+
+    /// <summary>
     ///     Get virtual table for specified C++ class
     /// </summary>
     /// <param name="module">DLL/SO name</param>

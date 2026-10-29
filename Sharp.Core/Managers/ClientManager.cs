@@ -54,7 +54,7 @@ internal class ClientManager : ICoreClientManager
     private readonly ICoreAssemblyManager   _assemblyManager;
     private readonly ConfigurationWatcher   _configurationWatcher;
 
-    private readonly List<IClientListener>                                     _listeners;
+    private readonly SubscriberList<IClientListener>                           _listeners;
     private readonly Queue<GameClient>                                         _adminRunCheckQueue;
     private readonly Dictionary<string, IClientManager.DelegateClientCommand?> _commandHooks;
     private readonly Dictionary<string, IClientManager.DelegateClientCommand?> _commandListeners;
@@ -79,7 +79,7 @@ internal class ClientManager : ICoreClientManager
         _assemblyManager      = assemblyManager;
         _configurationWatcher = new ConfigurationWatcher(configuration, LoadCommandPrefix, shutdown.Token);
 
-        _listeners          = [];
+        _listeners          = new SubscriberList<IClientListener>(x => x.ListenerPriority);
         _adminRunCheckQueue = [];
         _commandHooks       = new Dictionary<string, IClientManager.DelegateClientCommand?>(StringComparer.OrdinalIgnoreCase);
         _commandListeners   = new Dictionary<string, IClientManager.DelegateClientCommand?>(StringComparer.OrdinalIgnoreCase);
@@ -115,18 +115,18 @@ internal class ClientManager : ICoreClientManager
     {
         var client = GameClient.Create(ptr)!;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnClientConnected(client);
+                listener.OnClientConnected(client);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientConnected),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -135,18 +135,18 @@ internal class ClientManager : ICoreClientManager
     {
         var client = GameClient.Create(ptr)!;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnClientPutInServer(client);
+                listener.OnClientPutInServer(client);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientPutInServer),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
 
@@ -157,18 +157,18 @@ internal class ClientManager : ICoreClientManager
     {
         var client = GameClient.Create(ptr)!;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnClientDisconnecting(client, reason);
+                listener.OnClientDisconnecting(client, reason);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientDisconnecting),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -177,18 +177,18 @@ internal class ClientManager : ICoreClientManager
     {
         var client = GameClient.Create(ptr)!;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnClientDisconnected(client, reason);
+                listener.OnClientDisconnected(client, reason);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientDisconnected),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -197,18 +197,18 @@ internal class ClientManager : ICoreClientManager
     {
         var client = GameClient.Create(ptr)!;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                _listeners[i].OnClientSettingChanged(client);
+                listener.OnClientSettingChanged(client);
             }
             catch (Exception e)
             {
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientSettingChanged),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
     }
@@ -254,11 +254,11 @@ internal class ClientManager : ICoreClientManager
 
         var action = ECommandAction.Skipped;
 
-        for (var i = 0; i < _listeners.Count; i++)
+        foreach (var listener in _listeners)
         {
             try
             {
-                var low = _listeners[i].OnClientSayCommand(client, teamOnly, isCommand, chatCommand, message);
+                var low = listener.OnClientSayCommand(client, teamOnly, isCommand, chatCommand, message);
 
                 if (low > action)
                 {
@@ -270,7 +270,7 @@ internal class ClientManager : ICoreClientManager
                 _logger.LogError(e,
                                  "An error occurred while calling listener<{s}> {name}",
                                  nameof(OnClientSayCommand),
-                                 _listeners[i].GetType().Name);
+                                 listener.GetType().Name);
             }
         }
 
@@ -357,18 +357,18 @@ internal class ClientManager : ICoreClientManager
 
         if (_sReloadAdmin)
         {
-            for (var i = 0; i < _listeners.Count; i++)
+            foreach (var listener in _listeners)
             {
                 try
                 {
-                    _listeners[i].OnAdminCacheReload();
+                    listener.OnAdminCacheReload();
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(e,
                                      "An error occurred while calling listener<{s}> {name}",
                                      "OnAdminCacheReload",
-                                     _listeners[i].GetType().Name);
+                                     listener.GetType().Name);
                 }
             }
 
@@ -393,11 +393,11 @@ internal class ClientManager : ICoreClientManager
             {
                 var block = false;
 
-                for (var i = 0; i < _listeners.Count; i++)
+                foreach (var listener in _listeners)
                 {
                     try
                     {
-                        if (_listeners[i].OnClientPreAdminCheck(client))
+                        if (listener.OnClientPreAdminCheck(client))
                         {
                             block = true;
                         }
@@ -407,7 +407,7 @@ internal class ClientManager : ICoreClientManager
                         _logger.LogError(e,
                                          "An error occurred while calling listener<{s}> {name}",
                                          "OnClientPreAdminCheck",
-                                         _listeners[i].GetType().Name);
+                                         listener.GetType().Name);
                     }
                 }
 
@@ -425,18 +425,18 @@ internal class ClientManager : ICoreClientManager
                 continue;
             }
 
-            for (var i = 0; i < _listeners.Count; i++)
+            foreach (var listener in _listeners)
             {
                 try
                 {
-                    _listeners[i].OnClientPostAdminCheck(client);
+                    listener.OnClientPostAdminCheck(client);
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(e,
                                      "An error occurred while calling listener<{s}> {name}",
                                      "OnClientPostAdminCheck",
-                                     _listeners[i].GetType().Name);
+                                     listener.GetType().Name);
                 }
             }
         }
@@ -467,7 +467,7 @@ internal class ClientManager : ICoreClientManager
 
     private void ClearLeakedRegistrations()
     {
-        _assemblyManager.ClearLeakedListeners(_listeners, "ClientListener");
+        _listeners.Edit(x => _assemblyManager.ClearLeakedListeners(x, "ClientListener"));
 
         ClearLeakedCommands(_commandHooks, "CommandCallback");
         ClearLeakedCommands(_commandListeners, "CommandListener");
@@ -521,7 +521,7 @@ internal class ClientManager : ICoreClientManager
             throw new InvalidOperationException("Your listener api version mismatch");
         }
 
-        if (_listeners.Any(x => x.Equals(listener)))
+        if (_listeners.Exists(x => x.Equals(listener)))
         {
             _logger.LogError("You are already install listener!\n{stackTrace}", Environment.StackTrace);
 
@@ -529,19 +529,14 @@ internal class ClientManager : ICoreClientManager
         }
 
         _listeners.Add(listener);
-        _listeners.Sort((x, y) => y.ListenerPriority.CompareTo(x.ListenerPriority));
     }
 
     public void RemoveClientListener(IClientListener listener)
     {
-        if (!_listeners.Contains(listener))
+        if (!_listeners.Remove(listener))
         {
             _logger.LogError("You have not install listener yet!\n{stackTrace}", Environment.StackTrace);
-
-            return;
         }
-
-        _listeners.Remove(listener);
     }
 
     public void InstallCommandCallback(string rawCommand, IClientManager.DelegateClientCommand callback)
@@ -577,7 +572,11 @@ internal class ClientManager : ICoreClientManager
 
         callbacks -= callback;
 
-        if (callbacks is null)
+        if (callbacks is not null)
+        {
+            _commandHooks[command] = callbacks;
+        }
+        else
         {
             _commandHooks.Remove(command);
         }
@@ -616,7 +615,11 @@ internal class ClientManager : ICoreClientManager
 
         callbacks -= callback;
 
-        if (callbacks is null)
+        if (callbacks is not null)
+        {
+            _commandListeners[command] = callbacks;
+        }
+        else
         {
             _commandListeners.Remove(command);
         }

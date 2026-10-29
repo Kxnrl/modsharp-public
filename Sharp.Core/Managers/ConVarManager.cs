@@ -82,7 +82,17 @@ internal class ConVarManager : ICoreConVarManager
             return;
         }
 
-        callbacks.Invoke(conVar);
+        foreach (var callback in Delegate.EnumerateInvocationList(callbacks))
+        {
+            try
+            {
+                callback.Invoke(conVar);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while calling ConVar change callback of <{name}>", conVar.Name);
+            }
+        }
     }
 
     public IConVar? FindConVar(string name, bool useIterator = false)
@@ -162,6 +172,8 @@ internal class ConVarManager : ICoreConVarManager
 
         if (callbacks is not null)
         {
+            _conVarHooks[key] = callbacks;
+
             return;
         }
 
@@ -211,7 +223,7 @@ internal class ConVarManager : ICoreConVarManager
         ushort                          max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int16,
+        => CreateConVarInternal(ConVarType.UInt16,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -223,7 +235,7 @@ internal class ConVarManager : ICoreConVarManager
         ushort                          defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int16,
+        => CreateConVarInternal(ConVarType.UInt16,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -259,7 +271,7 @@ internal class ConVarManager : ICoreConVarManager
         uint                            max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt32,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -271,7 +283,7 @@ internal class ConVarManager : ICoreConVarManager
         uint                            defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt32,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -283,7 +295,7 @@ internal class ConVarManager : ICoreConVarManager
         long                            max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.Int64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -295,7 +307,7 @@ internal class ConVarManager : ICoreConVarManager
         long                            defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.Int64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -307,7 +319,7 @@ internal class ConVarManager : ICoreConVarManager
         ulong                           max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -319,7 +331,7 @@ internal class ConVarManager : ICoreConVarManager
         ulong                           defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -400,25 +412,53 @@ internal class ConVarManager : ICoreConVarManager
         var command   = buffer[..commandEndIndex].ToString();
         var arguments = buffer[commandEndIndex..].Trim().ToString();
 
-        {
-            if (_commands.TryGetValue(handle, out var cb))
-            {
-                var context = new StringCommand(command, false, arguments);
+        var action = ECommandAction.Skipped;
 
-                cb.Invoke(client, context);
+        if (_commands.TryGetValue(handle, out var clientCommandCallbacks))
+        {
+            var context = new StringCommand(command, false, arguments);
+
+            foreach (var callback in Delegate.EnumerateInvocationList(clientCommandCallbacks))
+            {
+                try
+                {
+                    var result = callback.Invoke(client, context);
+
+                    if (result > action)
+                    {
+                        action = result;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occurred while calling console command callback: {command}", command);
+                }
             }
         }
 
+        if (client is null && _serverCommands.TryGetValue(handle, out var serverCommandCallbacks))
         {
-            if (_serverCommands.TryGetValue(handle, out var cb))
-            {
-                var context = new StringCommand(command, false, arguments);
+            var context = new StringCommand(command, false, arguments);
 
-                cb.Invoke(context);
+            foreach (var callback in Delegate.EnumerateInvocationList(serverCommandCallbacks))
+            {
+                try
+                {
+                    var result = callback.Invoke(context);
+
+                    if (result > action)
+                    {
+                        action = result;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occurred while calling server command callback: {command}", command);
+                }
             }
         }
 
-        return ECommandAction.Stopped;
+        return action;
     }
 
     public void CreateConsoleCommand(string               name,

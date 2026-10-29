@@ -28,6 +28,7 @@ class CBaseEntity;
 class Variant_t;
 class Vector;
 class CEntityClass;
+class CEntityIdentity;
 
 class IEntityListener
 {
@@ -73,6 +74,7 @@ public:
 
     CBaseEntity* FindEntityByIndex(EntityIndex_t index);
     CBaseEntity* FindByClassname(CBaseEntity* startEntity, const char* classname);
+    CBaseEntity* FindByCppClass(CBaseEntity* startEntity, const char* cppClass);
     CBaseEntity* FindByName(CBaseEntity* startEntity, const char* name);
     CBaseEntity* FindInSphere(CBaseEntity* startEntity, Vector* center, float radius);
 
@@ -83,7 +85,9 @@ public:
     void AddEntityIOEvent(CBaseEntity* pEntity, const char* pInputName, CBaseEntity* pActivator, CBaseEntity* pCaller, Variant_t* pValue, float flDelay);
 
     CEntityClass* FindEntityClassByName(const char* classname) const;
-    int32_t       EnumerateByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity) const; 
+    CEntityClass* FindEntityClassByCppClass(const char* cppClass) const;
+    int32_t       EnumerateByCppClass(const char* cppClass, CBaseEntity** buffer, int32_t capacity) const;
+    int32_t       FindAllByClassname(const char* classname, CBaseEntity** buffer, int32_t capacity) const;
 
     template <typename T>
     T CreateEntityByNameAs(const char* classname) const
@@ -102,7 +106,13 @@ public:
         return reinterpret_cast<T>(FindByClassname(startEntity, classname));
     }
 
+    [[nodiscard]] CEntityIdentity* GetGlobalEntityListHead() const;
+    inline static uint32_t         sm_nGlobalListHeadOffset = 0;
+
     static void Init();
+
+private:
+    static void CacheEntityClasses();
 };
 
 #endif

@@ -78,6 +78,7 @@ linux.link-options = [
     "-fuse-ld=mold",
     "-static-libgcc",
     "-static-libstdc++",
+    "-Wl,--no-undefined",
 ]
 
 # define

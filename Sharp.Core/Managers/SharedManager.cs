@@ -20,6 +20,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sharp.Core.Logging;
 using Sharp.Shared;
 using Sharp.Shared.Managers;
 
@@ -29,13 +30,13 @@ internal interface ISharedManager : ISharedSystem;
 
 internal class SharedManager : ISharedManager
 {
-    private readonly IServiceProvider       _serviceProvider;
-    private readonly ILogger<SharedManager> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILoggerFactory   _loggerFactory;
 
-    public SharedManager(ILogger<SharedManager> logger, IServiceProvider services)
+    public SharedManager(IServiceProvider services, ILoggerFactory loggerFactory)
     {
-        _logger          = logger;
         _serviceProvider = services;
+        _loggerFactory   = new SharedLoggerFactory(loggerFactory);
     }
 
     public IClientManager GetClientManager()
@@ -57,7 +58,10 @@ internal class SharedManager : ISharedManager
         => _serviceProvider.GetRequiredService<ISharpCore>();
 
     public ILoggerFactory GetLoggerFactory()
-        => _serviceProvider.GetRequiredService<ILoggerFactory>();
+        => _loggerFactory;
+
+    public ILoggingManager GetLoggingManager()
+        => _serviceProvider.GetRequiredService<ICoreLoggingManager>();
 
     public ITransmitManager GetTransmitManager()
         => _serviceProvider.GetRequiredService<ICoreTransmitManager>();

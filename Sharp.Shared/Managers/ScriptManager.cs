@@ -18,6 +18,7 @@
  */
 
 using System;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
@@ -51,4 +52,22 @@ public interface IScriptManager
     /// </summary>
     /// <exception cref="InvalidOperationException">not called on the game thread.</exception>
     IScriptCallContext CreateCallContext(nint pointer);
+
+    /// <summary>
+    ///     Read a variable by name from a running <c>point_script</c>; reaches module-scope top-level
+    ///     <c>let</c>/<c>const</c>/<c>var</c>. A dotted path (<c>obj.field.sub</c>) walks properties from a
+    ///     module-scope object. Object/array values report as <see langword="null" />.
+    /// </summary>
+    /// <returns><see langword="false" /> when the name is not resolved.</returns>
+    /// <exception cref="InvalidOperationException">not called on the game thread.</exception>
+    bool TryReadVariable(IBaseEntity script, string name, out ScriptReturnValue? value);
+
+    /// <summary>
+    ///     Write a variable by name into a running <c>point_script</c>; reaches module-scope top-level
+    ///     <c>let</c>/<c>var</c>. A dotted path (<c>obj.field.sub</c>) assigns a property on a module-scope
+    ///     object.
+    /// </summary>
+    /// <returns><see langword="false" /> when the name is not resolved or the binding is read-only.</returns>
+    /// <exception cref="InvalidOperationException">not called on the game thread.</exception>
+    bool TryWriteVariable(IBaseEntity script, string name, ScriptReturnValue value);
 }

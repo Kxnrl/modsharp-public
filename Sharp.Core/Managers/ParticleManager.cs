@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Objects;
@@ -38,7 +39,8 @@ internal class ParticleManager : ICoreParticleManager
     private readonly ILogger<ParticleManager>  _logger;
     private readonly Dictionary<string, ulong> _particleIndexCache;
 
-    private const uint ResourceSeed = 0xEDABCDEF;
+    private const uint ResourceSeed          = 0xEDABCDEF;
+    private const int  MaxResourcePathLength = 199;
 
     private NetworkingStringTable _effectDispatchStringTable = null!;
     private int                   _particleEffectIndex;
@@ -179,9 +181,37 @@ internal class ParticleManager : ICoreParticleManager
             return indexRef;
         }
 
-        var idx = MurmurHash64B.Compute(particle, ResourceSeed);
+        var idx = ComputeResourceId(particle);
         indexRef = idx;
 
         return idx;
+    }
+
+    private static ulong ComputeResourceId(string path)
+    {
+        var bytes  = Encoding.UTF8.GetBytes(path);
+        var length = int.Min(bytes.Length, MaxResourcePathLength);
+        var span   = bytes.AsSpan(0, length);
+
+        for (var i = 0; i < span.Length; i++)
+        {
+            var c = span[i];
+
+            if (c == '\\')
+            {
+                span[i] = (byte) '/';
+            }
+            else if (c is >= (byte) 'A' and <= (byte) 'Z')
+            {
+                span[i] = (byte) (c + ('a' - 'A'));
+            }
+        }
+
+        if (span.IsEmpty || span[0] == '/')
+        {
+            return 0;
+        }
+
+        return MurmurHash64B.Compute(span, ResourceSeed);
     }
 }

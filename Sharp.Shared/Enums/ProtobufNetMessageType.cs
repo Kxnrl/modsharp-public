@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 // ReSharper disable InconsistentNaming
@@ -24,12 +26,15 @@ namespace Sharp.Shared.Enums;
 public enum ProtobufNetMessageType : ushort
 {
     /* CLC_Messages */
-    clc_ClientInfo            = 20,
-    clc_Move                  = 21,
-    clc_VoiceData             = 22,
-    clc_BaselineAck           = 23,
-    clc_RespondCvarValue      = 25,
-    clc_FileCRCCheck          = 26,
+    clc_ClientInfo       = 20,
+    clc_Move             = 21,
+    clc_VoiceData        = 22,
+    clc_BaselineAck      = 23,
+    clc_RespondCvarValue = 25,
+
+    [Obsolete("Valve removed this", true)]
+    clc_FileCRCCheck = 26,
+
     clc_LoadingProgress       = 27,
     clc_SplitPlayerConnect    = 28,
     clc_SplitPlayerDisconnect = 30,
@@ -71,11 +76,18 @@ public enum ProtobufNetMessageType : ushort
     svc_Broadcast_Command       = 74,
     svc_HltvFixupOperatorStatus = 75,
     svc_UserCmds                = 76,
+    svc_NextMsgPredicted        = 77,
+    svc_EncryptedData           = 78,
 
     /* EBaseUserMessages */
-    UM_AchievementEvent        = 101,
-    UM_CloseCaption            = 102,
-    UM_CloseCaptionDirect      = 103,
+    UM_AchievementEvent = 101,
+
+    [Obsolete("Valve removed this", true)]
+    UM_CloseCaption = 102,
+
+    [Obsolete("Valve removed this", true)]
+    UM_CloseCaptionDirect = 103,
+
     UM_CurrentTimescale        = 104,
     UM_DesiredTimescale        = 105,
     UM_Fade                    = 106,
@@ -123,14 +135,21 @@ public enum ProtobufNetMessageType : ushort
     UM_ExtraUserData           = 164,
     UM_NotifyResponseFound     = 165,
     UM_PlayResponseConditional = 166,
+    UM_UserSentBugBug          = 167,
+    UM_UsageReport             = 168,
+    UM_RemoteServerCommand     = 169,
+    UM_RemoteServerResponse    = 170,
 
     /* EBaseEntityMessages */
-    EM_PlayJingle      = 136,
-    EM_ScreenOverlay   = 137,
+    EM_PlayJingle    = 136,
+    EM_ScreenOverlay = 137,
+
+    [Obsolete("Valve removed this", true)]
     EM_RemoveAllDecals = 138,
-    EM_PropagateForce  = 139,
-    EM_DoSpark         = 140,
-    EM_FixAngle        = 141,
+
+    EM_PropagateForce = 139,
+    EM_DoSpark        = 140,
+    EM_FixAngle       = 141,
 
     /* ECstrike15UserMessages */
     CS_UM_VGUIMenu                     = 301,
@@ -209,6 +228,9 @@ public enum ProtobufNetMessageType : ushort
     CS_UM_CounterStrafe                = 385,
     CS_UM_DamagePrediction             = 386,
     CS_UM_RecurringMissionSchema       = 387,
+    CS_UM_SendPlayerLoadout            = 388,
+    CS_UM_WeaponMagDrop                = 389,
+    CS_UM_CustomHudClicked             = 390,
 
     /* EBaseGameEvents */
     GE_VDebugGameSessionIDEvent   = 200,
@@ -224,6 +246,8 @@ public enum ProtobufNetMessageType : ushort
     GE_SosSetSoundEventParams     = 210,
     GE_SosSetLibraryStackFields   = 211,
     GE_SosStopSoundEventHash      = 212,
+    GE_ClothStiffenAnimEvent      = 213,
+    GE_ClothEffectAnimEvent       = 214,
 
     /* ECsgoGameEvents */
     GE_PlayerAnimEventId = 450,

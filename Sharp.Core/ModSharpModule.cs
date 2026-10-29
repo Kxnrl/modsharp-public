@@ -222,7 +222,7 @@ internal sealed class ModSharpModule
 
             if (!_processLock.IsAcquired)
             {
-                throw new AbandonedMutexException(
+                throw new InvalidOperationException(
                     $"Module '{Name}' is already loaded by another process. Ensure no other instance is running.");
             }
 

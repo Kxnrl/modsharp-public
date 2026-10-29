@@ -43,6 +43,10 @@
 
 #    define MS_FMTFUNCTION(a, b)
 
+#    define MS_FORCEINLINE __forceinline
+
+#    define MS_NOINLINE __declspec(noinline)
+
 #else
 
 #    define MS_DECL_ALIGN(x) __attribute__((aligned(x)))
@@ -66,6 +70,10 @@
 #    define MS_EXPORT_C_API extern "C" __attribute__((visibility("default")))
 
 #    define MS_FMTFUNCTION(fmtargnumber, firstvarargnumber) __attribute__((format(printf, fmtargnumber, firstvarargnumber)))
+
+#    define MS_FORCEINLINE inline __attribute__((always_inline))
+
+#    define MS_NOINLINE __attribute__((noinline))
 
 #endif
 

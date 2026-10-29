@@ -35,7 +35,7 @@ internal abstract class EntityComponent : SchemaObject, IEntityComponent
 
     public int ChainOffset => _offset ??= SchemaSystem.GetNetVarOffset(GetSchemaClassname(), "__m_pChainEntity");
 
-    public IBaseEntity? ChainEntity => BaseEntity.Create(_this.Add(ChainOffset));
+    public IBaseEntity? ChainEntity => BaseEntity.Create(_this.GetObjectPtr(ChainOffset));
 }
 
 internal abstract partial class EntityObject : SchemaObject, IEntityObject

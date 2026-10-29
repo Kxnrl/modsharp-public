@@ -92,6 +92,7 @@ enum EDestructibleParts_DestroyParameterFlags : uint32_t
     EDestructibleParts_DestroyParameterFlags_ForceDamageApply              = 8,
     EDestructibleParts_DestroyParameterFlags_IgnoreKillEntityFlag          = 16,
     EDestructibleParts_DestroyParameterFlags_IgnoreHealthCheck             = 32,
+    EDestructibleParts_DestroyParameterFlags_ApplyPhysicsForce             = 64,
     EDestructibleParts_DestroyParameterFlags_Default                       = 7,
 };
 

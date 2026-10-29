@@ -86,8 +86,8 @@ private:
 
 public:
     /* 这里直接调用 g_InputServices + 200 (4, ...) */
-    virtual void ServerCommand(const char* command)                    = 0; // 45
-    virtual void ClientCommand(PlayerSlot_t slot, const char* command) = 0; // 46
+    virtual void ServerCommand(const char* command)                     = 0; // 45
+    virtual void ClientCommand(PlayerSlot_t slot, const char* fmt, ...) = 0; // 46
     // NOTE: LightStyle (was // 47) was removed from the engine in build 24116939, shifting every
     // vfunc after it down by one. All indices below reflect the post-removal numbering.
     virtual void ClientPrint(PlayerSlot_t slot, const char* message) = 0; // 47

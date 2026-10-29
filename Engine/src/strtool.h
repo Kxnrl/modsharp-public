@@ -23,7 +23,9 @@
 #include "platform.h"
 
 #include <array>
+#include <cctype>
 #include <string>
+#include <string_view>
 #include <vector>
 
 template <size_t N>
@@ -75,5 +77,30 @@ const char* FString(const char* buffer, ...) MS_FMTFUNCTION(1, 2);
 
 std::string LowercaseString(const char* str);
 bool        GetTimeFormatString(char* buf, size_t len);
+
+struct CaseInsensitiveHash
+{
+    using is_transparent = void;
+    size_t operator()(std::string_view view) const
+    {
+        size_t hash = 0;
+        for (auto c : view)
+            hash = hash * 31 + static_cast<unsigned char>(tolower(static_cast<unsigned char>(c)));
+        return hash;
+    }
+};
+
+struct CaseInsensitiveEqual
+{
+    using is_transparent = void;
+    bool operator()(std::string_view a, std::string_view b) const
+    {
+        if (a.size() != b.size()) return false;
+        for (size_t i = 0; i < a.size(); ++i)
+            if (tolower(static_cast<unsigned char>(a[i])) != tolower(static_cast<unsigned char>(b[i])))
+                return false;
+        return true;
+    }
+};
 
 #endif

@@ -36,7 +36,10 @@ public interface IEventListener
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     Hook and modify event, if you only need to listen, do not implement this function
+    ///     Hook and modify event, if you only need to listen, do not implement this function <br />
+    ///     The event is blocked if any listener returns false; the default implementation returns true,
+    ///     which does not override another listener's block <br />
+    ///     The event is owned by the engine and only valid during this callback; do not Fire or Dispose it here
     /// </summary>
     /// <returns>False = Block event from firing</returns>
     bool HookFireEvent(IGameEvent @event, ref bool serverOnly)

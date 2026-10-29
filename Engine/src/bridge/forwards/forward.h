@@ -38,6 +38,8 @@ class CCSPlayer_WeaponServices;
 class CBaseWeapon;
 class CTakeDamageInfo;
 class CMoveData;
+class CEconItemView;
+class CUtlString;
 class Vector;
 template <typename T>
 class NativeFixedSpan;
@@ -150,7 +152,7 @@ DECLARE_FORWARD(Event, FireGameEvent, void, FORWARD_ARG(IGameEvent*));
 
 // ConVar
 DECLARE_FORWARD(Cvar, OnConVarChanged, void, FORWARD_ARG(CConVarBaseData*));
-DECLARE_FORWARD(Cvar, OnConCommandTrigger, EHookAction, FORWARD_ARG(int64_t, CServerSideClient*, const char*));
+DECLARE_FORWARD(Cvar, OnConCommandTrigger, ECommandAction, FORWARD_ARG(int64_t, CServerSideClient*, const char*));
 
 // Script (cs_script V8) — dispatch a JS call to a C#-registered method.
 // Args: managedId, info (FunctionCallbackInfo*), ret. C# reads self/args lazily via the
@@ -171,14 +173,14 @@ DECLARE_FORWARD(Steam, OnItemInstalled, void, FORWARD_ARG(uint64_t));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // GiveNamedItem
-DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, char*, bool*));
-DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, bool, EHookAction, CBaseEntity*));
+DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, CUtlString*, bool*, bool*, CEconItemView**));
+DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveNamedItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, const char*, bool, EHookAction, CBaseEntity*, CEconItemView*));
 DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveGloveItemPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*));
 DECLARE_FORWARD(Extern.GiveNamedItem, OnCanAcquirePre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, uint16_t, int, int*));
 
 // HandleCommandJoinTeam
-DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t*, bool*, int32_t*, bool*));
-DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t, bool, int32_t, EHookAction, bool));
+DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t*, uint8_t*, int32_t*, bool*));
+DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t, uint8_t, int32_t, EHookAction, bool));
 
 // PointServerCommand
 DECLARE_FORWARD(Extern.PointServerCommand, OnPointServerCommand, EHookAction, FORWARD_ARG(CBaseEntity*, const char*));

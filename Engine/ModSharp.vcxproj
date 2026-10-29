@@ -186,7 +186,6 @@
     <ClInclude Include="src\cstrike\type\CEntityKeyValues.h" />
     <ClInclude Include="src\cstrike\type\CInButtonState.h" />
     <ClInclude Include="src\cstrike\type\CNetworkUtlVectorBase.h" />
-    <ClInclude Include="src\cstrike\type\CNetworkVelocityVector.h" />
     <ClInclude Include="src\cstrike\type\Color32.h" />
     <ClInclude Include="src\cstrike\type\ConCommand.h" />
     <ClInclude Include="src\cstrike\type\CRecipientFilter.h" />
@@ -308,6 +307,7 @@
     <ClInclude Include="src\types.h" />
     <ClInclude Include="src\netmessage.h" />
     <ClInclude Include="src\v8proxy.h" />
+    <ClInclude Include="src\v8proxy_debug.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\vhook\call.h" />
     <ClInclude Include="src\vhook\hook.h" />

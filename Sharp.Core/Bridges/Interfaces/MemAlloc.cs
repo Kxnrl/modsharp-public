@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Core.CStrike;
 using Sharp.Generator;
 using Sharp.Shared.Objects;
@@ -26,9 +27,23 @@ namespace Sharp.Core.Bridges.Interfaces;
 [NativeVirtualObject(HasDestructors = true)]
 internal partial class MemAlloc : NativeObject, IMemAlloc
 {
-    public partial nint Alloc(int size);
+    public partial nint AllocEx(nuint size);
 
-    public partial nint ReAlloc(nint pMem, int size);
+    public partial nint ReAllocEx(nint pMem, nuint size);
 
     public partial void Free(nint pMem);
+
+    public nint Alloc(int size)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(size);
+
+        return AllocEx((nuint) size);
+    }
+
+    public nint ReAlloc(nint pMem, int size)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(size);
+
+        return ReAllocEx(pMem, (nuint) size);
+    }
 }

@@ -18,6 +18,7 @@
  */
 
 #include "v8proxy.h"
+#include "v8proxy_debug.h"
 #include "address.h"
 #include "gamedata.h"
 #include "global.h"
@@ -28,9 +29,15 @@
 
 #include "cstrike/entity/CBaseEntity.h"
 #include "cstrike/interface/CGameEntitySystem.h"
+#include "cstrike/type/CCSScript.h"
+#include "cstrike/type/CEntityClass.h"
+#include "cstrike/type/VProf.h"
 #include "cstrike/type/Vector.h"
 
+#include <cstring>
+#include <string_view>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 static thread_local std::vector<v8::Local<v8::Value>> s_HandleTable;
@@ -827,24 +834,48 @@ bool InitV8()
     return true;
 }
 
-// Pick the most-derived JS class name for an entity so the wrapper carries the right prototype
-// (spec §6 "full chain"). Uses RTTI-name checks rather than hard-coded vtable offsets — the names
-// are stable across game updates, the offsets are not. Most-derived first.
-static const char* PickScriptClassName(CBaseEntity* entity)
+static const char* ResolveScriptClassName(const CEntityClass* klass)
 {
-    auto* mod = modules::server;
-    void* p   = entity;
+    static constexpr std::pair<std::string_view, const char*> kScriptClasses[] = {
+        {"CCSPlayerController",      "CSPlayerController"     },
+        {"CCSObserverPawn",          "CSObserverPawn"         },
+        {"CCSPlayerPawn",            "CSPlayerPawn"           },
+        {"CC4",                      "C4"                     },
+        {"CCSWeaponBase",            "CSWeaponBase"           },
+        {"CPlantedC4",               "CSPlantedC4"            },
+        {"CBaseCSGrenadeProjectile", "CSGrenadeProjectileBase"},
+        {"CHostage",                 "CSHostage"              },
+        {"CPointTemplate",           "PointTemplate"          },
+        {"CCSCustomPlayerCamera",    "CustomPlayerCamera"     },
+        {"CCSCustomHudLayout",       "CustomHudLayout"        },
+        {"CCSRadarElement",          "CSRadarPoint"           },
+        {"CCSObservableElement",     "CSObservablePoint"      },
+        {"CBaseModelEntity",         "BaseModelEntity"        },
+    };
 
-    if (mod->IsPointerDerivedFrom(p, "CCSPlayerController")) return "CSPlayerController";
-    if (mod->IsPointerDerivedFrom(p, "CCSObserverPawn")) return "CSObserverPawn";
-    if (mod->IsPointerDerivedFrom(p, "CCSPlayerPawn")) return "CSPlayerPawn";
-    if (mod->IsPointerDerivedFrom(p, "CCSWeaponBase")) return "CSWeaponBase";
-    if (mod->IsPointerDerivedFrom(p, "CPlantedC4")) return "CSPlantedC4";
-    if (mod->IsPointerDerivedFrom(p, "CBaseCSGrenadeProjectile")) return "CSGrenadeProjectileBase";
-    if (mod->IsPointerDerivedFrom(p, "CPointTemplate")) return "PointTemplate";
-    if (mod->IsPointerDerivedFrom(p, "CBaseModelEntity")) return "BaseModelEntity";
+    for (const auto* info = klass->GetInfo(); info != nullptr; info = info->m_pBaseClassInfo)
+    {
+        for (const auto& [cppName, scriptName] : kScriptClasses)
+        {
+            if (cppName == info->m_pszCppClassname)
+                return scriptName;
+        }
+    }
 
     return "Entity";
+}
+
+static const char* PickScriptClassName(CBaseEntity* entity)
+{
+    static std::unordered_map<const CEntityClass*, const char*> s_cache;
+
+    const auto* klass = entity->GetEntityIdentity()->GetEntityClass();
+    if (const auto it = s_cache.find(klass); it != s_cache.end())
+        return it->second;
+
+    const char* name = ResolveScriptClassName(klass);
+    s_cache.emplace(klass, name);
+    return name;
 }
 
 v8::Local<v8::Value> ScriptToV8Value(v8::Isolate* isolate, v8::Local<v8::Context> ctx, const ScriptValue& v)
@@ -930,7 +961,14 @@ CBaseEntity* GetCurrentPointScriptEntity()
 
     if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
     {
-        auto* probe = g_pGameEntitySystem->FindByClassname(nullptr, "point_script");
+        static const auto s_pPointScriptClass = g_pGameEntitySystem->FindEntityClassByName("point_script");
+        AssertPtr(s_pPointScriptClass);
+
+        CBaseEntity* probe = nullptr;
+        s_pPointScriptClass->ForEachEntity([&probe](CBaseEntity* pEntity) {
+            probe = pEntity;
+            return false;
+        });
         if (probe == nullptr)
             return nullptr; // no point_script to learn the layout from yet; retry on a later call
 
@@ -969,6 +1007,320 @@ void PopOwnerScript()
 {
     if (s_ScriptStackPop != nullptr)
         s_ScriptStackPop();
+}
+
+struct ScopedOwnerScript
+{
+    bool pushed;
+
+    explicit ScopedOwnerScript(CBaseEntity* owner) : pushed(PushOwnerScript(owner)) {}
+    ~ScopedOwnerScript()
+    {
+        if (pushed) PopOwnerScript();
+    }
+
+    ScopedOwnerScript(const ScopedOwnerScript&)            = delete;
+    ScopedOwnerScript& operator=(const ScopedOwnerScript&) = delete;
+};
+
+static v8::Isolate* s_ScriptIsolate = nullptr;
+
+void CacheScriptIsolate(v8::Isolate* isolate)
+{
+    if (isolate != nullptr)
+        s_ScriptIsolate = isolate;
+}
+
+bool ReadScriptVariable(CBaseEntity* entity, const char* name, ScriptValue& out)
+{
+    out.type = ScriptValueType::Null;
+
+    if (entity == nullptr || name == nullptr)
+        return false;
+
+    if (!modules::server->IsPointerDerivedFrom(entity, "CCSPointScriptEntity"))
+        return false;
+
+    auto* base = reinterpret_cast<uint8_t*>(entity);
+
+    if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
+    {
+        for (size_t i = 0; i < 0x800; i += sizeof(void*))
+        {
+            if (modules::server->IsPointerDerivedFrom(base + i, "CCSScript_EntityScript"))
+            {
+                s_CsScriptSubobjectOffset = i;
+                FLOG("cs_script: CCSScript_EntityScript sub-object at entity+0x%llx", static_cast<uint64_t>(i));
+                break;
+            }
+        }
+
+        if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
+            return false;
+    }
+
+    auto* script = reinterpret_cast<CCSBaseScript*>(base + s_CsScriptSubobjectOffset);
+
+    v8::Isolate* isolate = s_ScriptIsolate != nullptr ? s_ScriptIsolate : v8::Isolate::GetCurrent();
+    if (isolate == nullptr)
+        return false;
+
+    v8::Isolate::Scope isolateScope(isolate);
+    v8::HandleScope    handleScope(isolate);
+
+    v8::Local<v8::Context> ctx = script->m_hContext.Get(isolate);
+    if (ctx.IsEmpty())
+        return false;
+
+    v8::Context::Scope contextScope(ctx);
+
+    v8::Local<v8::Function> seed;
+    auto&                   callbacks = script->m_mapCallbacks;
+    for (auto h = callbacks.FirstHandle(); h != callbacks.InvalidHandle(); h = callbacks.NextHandle(h))
+    {
+        v8::Global<v8::Function>* g = callbacks.Element(h);
+        if (g != nullptr && !g->IsEmpty())
+        {
+            seed = g->Get(isolate);
+            break;
+        }
+    }
+
+    if (seed.IsEmpty())
+        return false;
+
+    v8::TryCatch      tryCatch(isolate);
+    ScopedHandleFrame handleFrame;
+
+    std::unique_ptr<v8::debug::ScopeIterator> scopes(v8::debug::ScopeIterator::CreateForFunction(isolate, seed));
+    if (!scopes)
+    {
+        if (tryCatch.HasCaught())
+            tryCatch.Reset();
+        return false;
+    }
+
+    const char* dot  = strchr(name, '.');
+    const char* rest = dot != nullptr ? dot + 1 : nullptr;
+
+    v8::Local<v8::String> key;
+    if (!v8::String::NewFromUtf8(isolate, name, v8::NewStringType::kNormal, dot != nullptr ? static_cast<int>(dot - name) : -1).ToLocal(&key))
+    {
+        if (tryCatch.HasCaught())
+            tryCatch.Reset();
+        return false;
+    }
+
+    static thread_local char strBuf[kArgStringBufferSize];
+
+    for (; !scopes->Done(); scopes->Advance())
+    {
+        if (scopes->GetType() == v8::debug::ScopeIterator::ScopeTypeGlobal)
+            continue;
+
+        v8::Local<v8::Object> obj = scopes->GetScopeObject();
+        if (obj.IsEmpty())
+            continue;
+
+        bool has = false;
+        if (!obj->HasOwnProperty(ctx, key).To(&has) || !has)
+            continue;
+
+        v8::Local<v8::Value> val;
+        if (!obj->Get(ctx, key).ToLocal(&val))
+            continue;
+
+        for (const char* seg = rest; seg != nullptr;)
+        {
+            const char* next = strchr(seg, '.');
+            const int   len  = next != nullptr ? static_cast<int>(next - seg) : -1;
+
+            if (val.IsEmpty() || !val->IsObject())
+            {
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return false;
+            }
+
+            v8::Local<v8::String> segKey;
+            if (!v8::String::NewFromUtf8(isolate, seg, v8::NewStringType::kNormal, len).ToLocal(&segKey)
+                || !val.As<v8::Object>()->Get(ctx, segKey).ToLocal(&val))
+            {
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return false;
+            }
+
+            seg = next != nullptr ? next + 1 : nullptr;
+        }
+
+        V8ValueToScript(isolate, ctx, val, out, strBuf, kArgStringBufferSize);
+
+        if (out.type == ScriptValueType::Object || out.type == ScriptValueType::Array)
+            out.type = ScriptValueType::Null;
+
+        return true;
+    }
+
+    if (tryCatch.HasCaught())
+        tryCatch.Reset();
+
+    out.type = ScriptValueType::Null;
+    return false;
+}
+
+bool WriteScriptVariable(CBaseEntity* entity, const char* name, const ScriptValue& in)
+{
+    if (entity == nullptr || name == nullptr)
+        return false;
+
+    if (!modules::server->IsPointerDerivedFrom(entity, "CCSPointScriptEntity"))
+        return false;
+
+    auto* base = reinterpret_cast<uint8_t*>(entity);
+
+    if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
+    {
+        for (size_t i = 0; i < 0x800; i += sizeof(void*))
+        {
+            if (modules::server->IsPointerDerivedFrom(base + i, "CCSScript_EntityScript"))
+            {
+                s_CsScriptSubobjectOffset = i;
+                FLOG("cs_script: CCSScript_EntityScript sub-object at entity+0x%llx", static_cast<uint64_t>(i));
+                break;
+            }
+        }
+
+        if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
+            return false;
+    }
+
+    auto* script = reinterpret_cast<CCSBaseScript*>(base + s_CsScriptSubobjectOffset);
+
+    v8::Isolate* isolate = s_ScriptIsolate != nullptr ? s_ScriptIsolate : v8::Isolate::GetCurrent();
+    if (isolate == nullptr)
+        return false;
+
+    v8::Isolate::Scope isolateScope(isolate);
+    v8::HandleScope    handleScope(isolate);
+
+    v8::Local<v8::Context> ctx = script->m_hContext.Get(isolate);
+    if (ctx.IsEmpty())
+        return false;
+
+    v8::Context::Scope contextScope(ctx);
+
+    v8::Local<v8::Function> seed;
+    auto&                   callbacks = script->m_mapCallbacks;
+    for (auto h = callbacks.FirstHandle(); h != callbacks.InvalidHandle(); h = callbacks.NextHandle(h))
+    {
+        v8::Global<v8::Function>* g = callbacks.Element(h);
+        if (g != nullptr && !g->IsEmpty())
+        {
+            seed = g->Get(isolate);
+            break;
+        }
+    }
+
+    if (seed.IsEmpty())
+        return false;
+
+    v8::TryCatch tryCatch(isolate);
+
+    std::unique_ptr<v8::debug::ScopeIterator> scopes(v8::debug::ScopeIterator::CreateForFunction(isolate, seed));
+    if (!scopes)
+    {
+        if (tryCatch.HasCaught())
+            tryCatch.Reset();
+        return false;
+    }
+
+    const char* dot  = strchr(name, '.');
+    const char* rest = dot != nullptr ? dot + 1 : nullptr;
+
+    v8::Local<v8::String> key;
+    if (!v8::String::NewFromUtf8(isolate, name, v8::NewStringType::kNormal, dot != nullptr ? static_cast<int>(dot - name) : -1).ToLocal(&key))
+    {
+        if (tryCatch.HasCaught())
+            tryCatch.Reset();
+        return false;
+    }
+
+    v8::Local<v8::Value> newValue;
+    {
+        ScopedOwnerScript ownerScope(entity);
+        if (in.type == ScriptValueType::Entity && !ownerScope.pushed)
+            return false;
+
+        newValue = ScriptToV8Value(isolate, ctx, in);
+    }
+
+    for (; !scopes->Done(); scopes->Advance())
+    {
+        if (scopes->GetType() == v8::debug::ScopeIterator::ScopeTypeGlobal)
+            continue;
+
+        if (rest == nullptr)
+        {
+            if (scopes->SetVariableValue(key, newValue))
+            {
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return true;
+            }
+
+            continue;
+        }
+
+        v8::Local<v8::Object> obj = scopes->GetScopeObject();
+        if (obj.IsEmpty())
+            continue;
+
+        bool has = false;
+        if (!obj->HasOwnProperty(ctx, key).To(&has) || !has)
+            continue;
+
+        v8::Local<v8::Value> val;
+        if (!obj->Get(ctx, key).ToLocal(&val))
+            continue;
+
+        for (const char* seg = rest;;)
+        {
+            const char* next = strchr(seg, '.');
+            const int   len  = next != nullptr ? static_cast<int>(next - seg) : -1;
+
+            v8::Local<v8::String> segKey;
+            if (!v8::String::NewFromUtf8(isolate, seg, v8::NewStringType::kNormal, len).ToLocal(&segKey))
+            {
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return false;
+            }
+
+            if (next == nullptr)
+            {
+                bool       ok  = false;
+                const bool set = val->IsObject() && val.As<v8::Object>()->Set(ctx, segKey, newValue).To(&ok) && ok;
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return set;
+            }
+
+            if (val.IsEmpty() || !val->IsObject() || !val.As<v8::Object>()->Get(ctx, segKey).ToLocal(&val))
+            {
+                if (tryCatch.HasCaught())
+                    tryCatch.Reset();
+                return false;
+            }
+
+            seg = next + 1;
+        }
+    }
+
+    if (tryCatch.HasCaught())
+        tryCatch.Reset();
+
+    return false;
 }
 
 // Persistent JS callbacks — a v8::Function a script hands to a registered C# method, kept alive across
@@ -1115,17 +1467,6 @@ static v8::Local<v8::Value> BuildScriptArgValue(v8::Isolate* isolate, v8::Local<
     }
 }
 
-struct ScopedOwnerScript
-{
-    bool pushed;
-
-    explicit ScopedOwnerScript(CBaseEntity* owner) : pushed(PushOwnerScript(owner)) {}
-    ~ScopedOwnerScript() { if (pushed) PopOwnerScript(); }
-
-    ScopedOwnerScript(const ScopedOwnerScript&)            = delete;
-    ScopedOwnerScript& operator=(const ScopedOwnerScript&) = delete;
-};
-
 // C# releases the callback when this returns false (unknown id / dead owner).
 bool InvokeManagedCallback(uint32_t id, ScriptValue* nodes, int32_t nodeCount, int32_t argc, ScriptValue* result)
 {
@@ -1168,7 +1509,11 @@ bool InvokeManagedCallback(uint32_t id, ScriptValue* nodes, int32_t nodeCount, i
 
     v8::TryCatch         tryCatch(isolate);
     v8::Local<v8::Value> callResult;
-    bool                 called = function->Call(context, context->Global(), static_cast<int>(argv.size()), argv.data()).ToLocal(&callResult);
+    bool                 called;
+    {
+        VPROF_CS_SCRIPT_SCOPE(VPROF_PREFIX_MS "InvokeManagedCallback");
+        called = function->Call(context, context->Global(), static_cast<int>(argv.size()), argv.data()).ToLocal(&callResult);
+    }
     if (tryCatch.HasCaught())
     {
         v8::String::Utf8Value text(isolate, tryCatch.Exception());

@@ -86,6 +86,7 @@ public interface IGameListener
     {
     }
 
+    /// <returns>Only Stopped blocks the message; Handled lets it through like Skipped</returns>
     ECommandAction ConsoleSay(string message)
         => ECommandAction.Skipped;
 }

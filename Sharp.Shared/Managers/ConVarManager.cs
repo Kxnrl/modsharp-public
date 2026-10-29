@@ -153,14 +153,24 @@ public interface IConVarManager
     ///         please use <see cref="IClientManager.InstallCommandCallback" />
     ///     </remarks>
     /// </summary>
+    /// <remarks>
+    ///     The callback's return value does not affect command execution.
+    ///     Commands with the same name share one engine command: its flags are the union of all registrations,
+    ///     and its help text comes from the first one
+    /// </remarks>
     void CreateConsoleCommand(string                      name,
         Func<IGameClient?, StringCommand, ECommandAction> fn,
         string?                                           description = null,
         ConVarFlags?                                      flags       = null);
 
     /// <summary>
-    ///     Create a server only command
+    ///     Create a server only command, which only responds to non-client callers such as the server console
     /// </summary>
+    /// <remarks>
+    ///     The callback's return value does not affect command execution.
+    ///     Commands with the same name share one engine command: its flags are the union of all registrations,
+    ///     and its help text comes from the first one
+    /// </remarks>
     void CreateServerCommand(string         name,
         Func<StringCommand, ECommandAction> fn,
         string?                             description = null,

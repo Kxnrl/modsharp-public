@@ -86,4 +86,8 @@ public static unsafe partial class Script
     public static partial bool IsCallbackAlive(uint id);
 
     public static partial bool InvokeCallback(uint id, ScriptValue* nodes, int nodeCount, int argc, ScriptValue* result);
+
+    public static partial bool ReadVariable(nint entity, string name, ScriptValue* value);
+
+    public static partial bool WriteVariable(nint entity, string name, ScriptValue* value);
 }

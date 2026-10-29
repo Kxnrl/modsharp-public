@@ -83,6 +83,7 @@ class CGameTrace;
 class CGamePhysicsQueryInterface;
 class CConVarBaseData;
 class CCSPlayerPawn;
+class CTriggerPush;
 class ISoundOpSystem;
 class SoundOpGameSystem;
 class CCollisionProperty;
@@ -95,7 +96,6 @@ class CTransform;
 class CEntityKeyValues;
 class HSCRIPT;
 class CEffectData;
-struct bbox_t;
 class CCSWeaponBaseVData;
 struct HSequence;
 struct CResourceNameTyped;
@@ -138,7 +138,8 @@ using CBaseEntity_AbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
 using CBaseEntity_AbsVelocity_t   = Vector (*)(CBaseEntity*);
 using CBaseEntity_LocalVelocity_t = Vector (*)(CBaseEntity*);
 #endif
-using CBaseEntity_SetAbsVelocity_t = void (*)(CBaseEntity*, Vector*);
+using CBaseEntity_SetAbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
+using CBaseEntity_SetLocalVelocity_t = void (*)(CBaseEntity*, Vector*);
 // build 24116939 dropped the trailing (int outputID, void*): this wrapper now takes 5 params and
 // hardcodes both to 0 when calling the inner handler, so passing an outputID has no effect.
 using CBaseEntity_AcceptInput_t     = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&);
@@ -236,7 +237,6 @@ using StudioModel_GetAttachment_t              = bool (*)(void*, uint8_t, Vector
 using SoundOpGameSystem_StopSoundEventFilter_t = void (*)(SoundOpGameSystem*, IRecipientFilter*, SoundEventGuid_t);
 using CCollisionProperty_SetSolid_t            = void (*)(CCollisionProperty*, uint8_t);
 
-using CCSPlayer_MovementServices_TracePlayerBBox_t            = void (*)(const Vector& start, const Vector& end, const bbox_t& bounds, CTraceFilter* filter, CGameTrace& trace);
 using CTraceFilterPlayerMovementCS_ctor_t                     = void (*)(CTraceFilter& filter, CEntityInstance* handleEntity, uint64_t interactWith, uint8_t collisionGroup);
 using FindWeaponVDataByName_t                                 = CCSWeaponBaseVData* (*)(int state, const char* weaponName);
 using GetLegacyGameEventListener_t                            = IGameEventListener2* (*)(int32_t);
@@ -245,6 +245,7 @@ using CCSPlayerPawn_SetDefaultGloves_t                        = void (*)(CCSPlay
 using CCSPlayer_ItemServices_GiveGlove_t                      = void (*)(CCSPlayer_ItemServices*);
 using CBasePlayerPawn_SnapViewAngles_t                        = void (*)(CBasePlayerPawn*, QAngle*);
 using CreateTriggerInternal_t                                 = void* (*)(Vector*, Vector*, Vector*);
+using CTriggerPush_PathSimplePushDir_t                        = float (*)(CTriggerPush* self, CBaseEntity* pOther, Vector* dir);
 using CCSCustomHudLayout_SetHasClass_t                        = void (*)(CBaseEntity*, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetHasClassForPlayer_t               = void (*)(CBaseEntity*, int32_t, CUtlString*, CUtlString*, EHudPanelClassStatus_t);
 using CCSCustomHudLayout_SetDialogVariableString_t            = void (*)(CBaseEntity*, CUtlString*, CUtlString*, CUtlString*);
@@ -275,6 +276,7 @@ inline CBaseEntity_SetAbsOrigin_t                      CBaseEntity_SetAbsOrigin;
 inline CBaseEntity_LocalVelocity_t                     CBaseEntity_LocalVelocity;
 inline CBaseEntity_AbsVelocity_t                       CBaseEntity_AbsVelocity;
 inline CBaseEntity_SetAbsVelocity_t                    CBaseEntity_SetAbsVelocity;
+inline CBaseEntity_SetLocalVelocity_t                  CBaseEntity_SetLocalVelocity;
 inline CBaseEntity_AcceptInput_t                       CBaseEntity_AcceptInput;
 inline CBaseEntity_DispatchSpawn_t                     CBaseEntity_DispatchSpawn;
 inline CBaseEntity_EmitSoundFilter_t                   CBaseEntity_EmitSoundFilter;
@@ -326,12 +328,12 @@ inline StudioModel_LookupAttachment_t                  StudioModel_LookupAttachm
 inline StudioModel_GetAttachment_t                     StudioModel_GetAttachment;
 inline SoundOpGameSystem_StopSoundEventFilter_t        SoundOpGameSystem_StopSoundEventFilter;
 inline CCollisionProperty_SetSolid_t                   CCollisionProperty_SetSolid;
-inline CCSPlayer_MovementServices_TracePlayerBBox_t    CCSPlayer_MovementServices_TracePlayerBBox;
 inline CTraceFilterPlayerMovementCS_ctor_t             CTraceFilterPlayerMovementCS_ctor;
 inline FindWeaponVDataByName_t                         FindWeaponVDataByName;
 inline GetLegacyGameEventListener_t                    GetLegacyGameEventListener;
 inline CBasePlayerPawn_SnapViewAngles_t                CBasePlayerPawn_SnapViewAngles;
 inline CreateTriggerInternal_t                         CreateTriggerInternal;
+inline CTriggerPush_PathSimplePushDir_t                CTriggerPush_PathSimplePushDir;
 #ifdef ENABLE_SCRIPT_ASSERT
 inline CCSScript_InitV8ClassTemplates_t CCSScript_InitV8ClassTemplates;
 #endif

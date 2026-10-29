@@ -28,6 +28,7 @@
 
 #define VPROF_PREFIX_MS "ModSharp::"
 #define VPROF_GROUP_MS_HOOKS "ModSharp::Hooks"
+#define VPROF_GROUP_CS_SCRIPT "CS Script"
 
 using VProfExitScopeCB = void (*)();
 
@@ -44,7 +45,7 @@ enum VProfBudgetFlags
 
 struct VProfBudgetGroupCallSite
 {
-    VProfBudgetGroupCallSite(const char* group_name, int flags, int group_id = VPROF_BUDGET_GROUP_ID_UNACCOUNTED) :
+    constexpr VProfBudgetGroupCallSite(const char* group_name, int flags, int group_id = VPROF_BUDGET_GROUP_ID_UNACCOUNTED) :
         m_pGroupName(group_name), m_nFlags(flags), m_nGroupId(group_id) {}
 
     const char* m_pGroupName;
@@ -56,29 +57,13 @@ template <int DETAIL_LEVEL, bool ASSERT_ACCOUNTED>
 class VProfScopeHelper
 {
 public:
-    /*
-    VProfScopeHelper(const char* pszName)
+    VProfScopeHelper(const char* pszName, VProfBudgetGroupCallSite& budgetGroup, const CUtlSourceLocation& location)
     {
-        m_pExitScope = EnterScopeInternal(pszName);
+        m_pExitScope = EnterScopeInternalBudgetFlags(pszName, budgetGroup, location);
     }
 
-    VProfScopeHelper(const char* pszName, const char* pszGroupName, int nFlags)
-    {
-        VProfBudgetGroupCallSite budget_group(pszGroupName, nFlags);
-        m_pExitScope = EnterScopeInternalBudgetFlags(pszName, budget_group);
-    }
-    */
-
-    VProfScopeHelper(const char* pszName, const char* pszGroupName, int nFlags, const CUtlSourceLocation& location)
-    {
-        VProfBudgetGroupCallSite budget_group(pszGroupName, nFlags);
-        m_pExitScope = EnterScopeInternalBudgetFlags(pszName, budget_group, location);
-    }
-
-    VProfScopeHelper(VProfScopeHelper& other)
-    {
-        m_pExitScope = other.m_pExitScope;
-    }
+    VProfScopeHelper(const VProfScopeHelper&)            = delete;
+    VProfScopeHelper& operator=(const VProfScopeHelper&) = delete;
 
     ~VProfScopeHelper()
     {
@@ -94,9 +79,6 @@ public:
         m_pExitScope = nullptr;
     }
 
-    MS_CLASS_IMPORT VProfScopeHelper& operator=(const VProfScopeHelper& other);
-    MS_CLASS_IMPORT VProfScopeHelper& operator=(VProfScopeHelper&& other);
-
     static MS_CLASS_IMPORT VProfExitScopeCB EnterScopeInternal(const char* pszName, const CUtlSourceLocation& location);
     static MS_CLASS_IMPORT VProfExitScopeCB EnterScopeInternalBudgetFlags(const char* pszName, VProfBudgetGroupCallSite& budgetGroup, const CUtlSourceLocation& location);
 
@@ -108,30 +90,34 @@ private:
 #    define VPROF_LEVEL 0
 #endif
 
-#define VPROF_0(name, group, assertAccounted, budgetFlags, source) VProfScopeHelper<0, assertAccounted> vprofHelper_(name, group, budgetFlags, source)
+#define VPROF_DETAIL_(detail, name, group, assertAccounted, budgetFlags, source)        \
+    static constinit VProfBudgetGroupCallSite __vprof_budget_group(group, budgetFlags); \
+    VProfScopeHelper<detail, assertAccounted> vprofHelper_(name, __vprof_budget_group, source)
+
+#define VPROF_0(name, group, assertAccounted, budgetFlags, source) VPROF_DETAIL_(0, name, group, assertAccounted, budgetFlags, source)
 
 #if VPROF_LEVEL > 0
-#    define VPROF_1(name, group, assertAccounted, budgetFlags) VProfScopeHelper<1, assertAccounted> vprofHelper_(name, group, budgetFlags)
+#    define VPROF_1(name, group, assertAccounted, budgetFlags, source) VPROF_DETAIL_(1, name, group, assertAccounted, budgetFlags, source)
 #else
-#    define VPROF_1(name, group, assertAccounted, budgetFlags) ((void)0)
+#    define VPROF_1(name, group, assertAccounted, budgetFlags, source) ((void)0)
 #endif
 
 #if VPROF_LEVEL > 1
-#    define VPROF_2(name, group, assertAccounted, budgetFlags) VProfScopeHelper<2, assertAccounted> vprofHelper_(name, group, budgetFlags)
+#    define VPROF_2(name, group, assertAccounted, budgetFlags, source) VPROF_DETAIL_(2, name, group, assertAccounted, budgetFlags, source)
 #else
-#    define VPROF_2(name, group, assertAccounted, budgetFlags) ((void)0)
+#    define VPROF_2(name, group, assertAccounted, budgetFlags, source) ((void)0)
 #endif
 
 #if VPROF_LEVEL > 2
-#    define VPROF_3(name, group, assertAccounted, budgetFlags) VProfScopeHelper<3, assertAccounted> vprofHelper_(name, group, budgetFlags)
+#    define VPROF_3(name, group, assertAccounted, budgetFlags, source) VPROF_DETAIL_(3, name, group, assertAccounted, budgetFlags, source)
 #else
-#    define VPROF_3(name, group, assertAccounted, budgetFlags) ((void)0)
+#    define VPROF_3(name, group, assertAccounted, budgetFlags, source) ((void)0)
 #endif
 
 #if VPROF_LEVEL > 3
-#    define VPROF_4(name, group, assertAccounted, budgetFlags) VProfScopeHelper<4, assertAccounted> vprofHelper_(name, group, budgetFlags)
+#    define VPROF_4(name, group, assertAccounted, budgetFlags, source) VPROF_DETAIL_(4, name, group, assertAccounted, budgetFlags, source)
 #else
-#    define VPROF_4(name, group, assertAccounted, budgetFlags) ((void)0)
+#    define VPROF_4(name, group, assertAccounted, budgetFlags, source) ((void)0)
 #endif
 
 #define VPROF_(name, detail, group, bAssertAccounted, budgetFlags, source) VPROF_##detail(name, group, bAssertAccounted, budgetFlags, source)
@@ -146,8 +132,14 @@ private:
 
 #define VPROF_MS_HOOK() VPROF_MS_AUTO(VPROF_GROUP_MS_HOOKS)
 
-#define VPROF_MS_HOOK_SCOPE(name)                                                                        \
-    static constexpr CUtlSourceLocation __vprof_scope_source_location(__FILE__, __FUNCTION__, __LINE__); \
-    VProfScopeHelper<0, false>          vprofScopeHelper_(VPROF_PREFIX_MS name, VPROF_GROUP_MS_HOOKS, VProfBudgetFlags::Server, __vprof_scope_source_location)
+#define VPROF_MS_HOOK_SCOPE(name)                                                                                         \
+    static constexpr CUtlSourceLocation       __vprof_scope_source_location(__FILE__, __FUNCTION__, __LINE__);            \
+    static constinit VProfBudgetGroupCallSite __vprof_scope_budget_group(VPROF_GROUP_MS_HOOKS, VProfBudgetFlags::Server); \
+    VProfScopeHelper<0, false>                vprofScopeHelper_(VPROF_PREFIX_MS name, __vprof_scope_budget_group, __vprof_scope_source_location)
+
+#define VPROF_CS_SCRIPT_SCOPE(name)                                                                                     \
+    static constexpr CUtlSourceLocation       __vprof_cs_source_location(__FILE__, __FUNCTION__, __LINE__);             \
+    static constinit VProfBudgetGroupCallSite __vprof_cs_budget_group(VPROF_GROUP_CS_SCRIPT, VProfBudgetFlags::Server); \
+    VProfScopeHelper<0, false>                vprofCsScriptHelper_(name, __vprof_cs_budget_group, __vprof_cs_source_location)
 
 #endif

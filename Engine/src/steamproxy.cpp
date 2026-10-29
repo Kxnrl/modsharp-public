@@ -46,16 +46,25 @@ bool ISteamApiProxy::BLoggedOn() const
 
 bool ISteamApiProxy::BSecure() const
 {
+    if (!m_pSteamServer)
+        return false;
+
     return m_pSteamServer->BSecure();
 }
 
 uint64_t ISteamApiProxy::GetSteamId() const
 {
+    if (!m_pSteamServer)
+        return 0;
+
     return static_cast<uint64_t>(m_pSteamServer->GetSteamID().ConvertToUint64());
 }
 
 bool ISteamApiProxy::WasRestartRequested() const
 {
+    if (!m_pSteamServer)
+        return false;
+
     return m_pSteamServer->WasRestartRequested();
 }
 
@@ -117,7 +126,7 @@ bool ISteamApiProxy::RequestUserGroupStatus(SteamId_t steamId, uint64_t groupId)
     CSteamID pid;
     CSteamID gid;
     pid.SetFromUint64(static_cast<uint64>(steamId));
-    gid.SetFromUint64(static_cast<uint64>(steamId));
+    gid.SetFromUint64(static_cast<uint64>(groupId));
     return m_pSteamServer->RequestUserGroupStatus(pid, gid);
 #endif
 }

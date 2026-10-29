@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 public enum TeamRewardType : uint
@@ -37,6 +39,14 @@ public enum TeamRewardType : uint
     PlantedBombButDefused,
     HostageInteraction,
     LoserZero,
+
+    [Obsolete("Valve removed this", true)]
     SurviveGuardianWave,
+
+    [Obsolete("Use Custom instead", true)]
     CustomAward,
+
+    Custom           = 16,
+    BonusShorthanded = 18,
+    PerDeadEnemy     = 19,
 }

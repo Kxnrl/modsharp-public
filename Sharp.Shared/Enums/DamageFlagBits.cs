@@ -70,8 +70,8 @@ public enum DamageFlagBits : uint
     Sonic        = 1 << 9,  // 0x200
     EnergyBeam   = 1 << 10, // 0x400
     Buckshot     = 1 << 11, // 0x800
-    Dissolve     = 1 << 12, // 0x1000
-    BlastSurface = 1 << 13, // 0x2000
+    BlastSurface = 1 << 12, // 0x1000
+    Dissolve     = 1 << 13, // 0x2000
     Drown        = 1 << 14, // 0x4000
     Poison       = 1 << 15, // 0x8000
     Radiation    = 1 << 16, // 0x10000

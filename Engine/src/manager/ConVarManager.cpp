@@ -79,6 +79,7 @@ void SharpCommandCallback::CommandCallback(const CCommandContext& context, const
             else if (slot != -1)
             {
                 WARN("Invalid player slot #%d detected for command \"%s\"", slot, cmd_string);
+                return;
             }
         }
     }
@@ -98,6 +99,15 @@ ConCommandHandle ConVarManager::CreateSharpConsoleCommand(const char* pName, con
 {
     if (const auto it = m_CreatedCommandStrHandles.find(pName); it != m_CreatedCommandStrHandles.end())
     {
+        const auto newFlags = flags & ~(FCVAR_DEVELOPMENTONLY | FCVAR_REFERENCE | FCVAR_INITIAL_SETVALUE | FCVAR_PERFORMING_CALLBACKS);
+
+        if (const auto pCommand = icvar->GetCommand(it->second); pCommand && pCommand->GetFlags() != newFlags)
+        {
+            WARN("Command \"%s\" already exists with flags 0x%llx, merging flags 0x%llx",
+                 pName, static_cast<unsigned long long>(pCommand->GetFlags()), static_cast<unsigned long long>(newFlags));
+            pCommand->AddFlags(newFlags);
+        }
+
         return it->second;
     }
 

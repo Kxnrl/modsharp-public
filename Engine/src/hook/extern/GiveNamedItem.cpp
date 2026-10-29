@@ -35,6 +35,7 @@
 #include "cstrike/interface/ISchemaSystem.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CEconItemView.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
@@ -140,15 +141,14 @@ static std::unordered_map<std::string, WeaponInfo_t> s_WeaponMap = {
     /*{"item_heavyassaultsuit",        {0, 0, GearSlot_t::GEAR_SLOT_INVALID, -1} },*/
 };
 
-static volatile bool s_bGiveNamedItemIgnoredCEconItemView = false;
+static int32_t s_nGiveNamedItemIgnoredCEconItemViewDepth = 0;
 
 BeginMemberHookScope(CBasePlayerPawn)
 {
     DeclareMemberDetourHook(FindMatchingWeaponsForTeamLoadout, void, (CBasePlayerPawn * pPawn, const char* pchName, int team, bool bMustBeTeamSpecific, void* unknown))
     {
-        if (s_bGiveNamedItemIgnoredCEconItemView)
+        if (s_nGiveNamedItemIgnoredCEconItemViewDepth > 0)
         {
-            s_bGiveNamedItemIgnoredCEconItemView = false;
             return;
         }
 
@@ -158,6 +158,26 @@ BeginMemberHookScope(CBasePlayerPawn)
 
 BeginMemberHookScope(CCSPlayer_ItemServices)
 {
+    struct ScopedGiveNamedItemIgnoredCEconItemView
+    {
+        ScopedGiveNamedItemIgnoredCEconItemView() = delete;
+
+        explicit ScopedGiveNamedItemIgnoredCEconItemView(bool ignore) : m_bIgnored(ignore)
+        {
+            if (ignore)
+                s_nGiveNamedItemIgnoredCEconItemViewDepth++;
+        }
+
+        ~ScopedGiveNamedItemIgnoredCEconItemView()
+        {
+            if (m_bIgnored)
+                s_nGiveNamedItemIgnoredCEconItemViewDepth--;
+        }
+
+    private:
+        bool m_bIgnored;
+    };
+
 #ifdef PLATFORM_WINDOWS
     DeclareMemberDetourHook(GiveNamedItem, CBaseEntity*, (CCSPlayer_ItemServices * pItemServices, const char* pClassname, int64_t iSubType, void* pScriptItem, bool bForce, Vector* pOrigin))
     {
@@ -173,9 +193,9 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
 #    define CALL_GiveNamedItemChanged() \
         GiveNamedItem(pItemServices, classname, a4, pScriptItem, bForced, pOrigin)
 #endif
-        s_bGiveNamedItemIgnoredCEconItemView = false;
 
         auto       bIgnore     = false;
+        auto       ignoreView  = false;
         const auto pPawn       = pItemServices->GetPawn<CCSPlayerPawn*>();
         const auto pController = pPawn->GetController<CCSPlayerController*>();
         if (pController == nullptr)
@@ -194,11 +214,12 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
             return CALL_GiveNamedItem();
         }
 
-        char refClassname[64], classname[64];
-        StrCopy(refClassname, sizeof(refClassname), pClassname);
-        memcpy(classname, refClassname, sizeof(classname));
+        CUtlString classnameOverride;
+        auto       classnameOverridden = false;
+        auto       classname           = pClassname;
+        auto       pItemView           = static_cast<CEconItemView*>(pScriptItem);
 
-        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, refClassname, &bIgnore);
+        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, pClassname, &classnameOverride, &classnameOverridden, &bIgnore, &pItemView);
 
         if (action == EHookAction::Ignored)
         {
@@ -215,18 +236,30 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
         {
             if (bIgnore)
             {
-                pScriptItem                          = nullptr;
-                s_bGiveNamedItemIgnoredCEconItemView = bIgnore;
+                pScriptItem = nullptr;
+                ignoreView  = true;
+            }
+            else
+            {
+                pScriptItem = pItemView;
             }
 
-            StrCopy(classname, sizeof(classname), refClassname);
+            if (classnameOverridden)
+            {
+                classname = classnameOverride.Get();
+            }
         }
 
     postHook:
 
-        const auto pWeapon = CALL_GiveNamedItemChanged();
+        CBaseEntity* pWeapon = nullptr;
+        {
+            ScopedGiveNamedItemIgnoredCEconItemView ignore(ignoreView);
 
-        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon);
+            pWeapon = CALL_GiveNamedItemChanged();
+        }
+
+        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon, static_cast<CEconItemView*>(pScriptItem));
 
         return pWeapon;
     }
@@ -332,8 +365,10 @@ static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
     if (!pEntity)
         return nullptr;
 
-    const auto pszClassname = pEntity->GetClassname();
-    if (!pszClassname || strcasecmp(pszClassname, "game_player_equip") != 0)
+    static const auto s_pGamePlayerEquipClass = g_pGameEntitySystem->FindEntityClassByName("game_player_equip");
+    AssertPtr(s_pGamePlayerEquipClass);
+
+    if (!pEntity->IsEntityClass(s_pGamePlayerEquipClass))
         return nullptr;
 
     return pEntity;
@@ -418,12 +453,14 @@ BeginMemberHookScope(CGamePlayerEquip)
     // The Pulse AllPlayers callback still calls this two-argument game function.
     DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void*))
     {
-        CCSPlayerPawn* pPlayer = nullptr;
-        while ((pPlayer = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player")) != nullptr)
-        {
-            if (pPlayer->IsPlayerPawn() && pPlayer->IsPlayer() && pPlayer->IsAlive())
+        static const auto s_pPlayerClass = g_pGameEntitySystem->FindEntityClassByName("player");
+        AssertPtr(s_pPlayerClass);
+
+        s_pPlayerClass->ForEachEntity([pEntity](CBaseEntity* pBase) {
+            const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pBase);
+            if (pPlayer->IsPlayer() && pPlayer->IsAlive())
                 TriggerForPlayer(pEntity, pPlayer, nullptr);
-        }
+        });
     }
 
     DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void*, void*, void*, void* pContext, void* pEntityArgument))

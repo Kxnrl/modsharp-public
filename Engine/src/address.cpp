@@ -119,7 +119,10 @@ bool address::Initialize()
     ResolveCBaseEntity_Precache();
     ResolveCCSPlayerPawn_IsPlayer();
     ResolveCCSPlayerPawn_SetDefaultGloves();
-    ResolveCEntityClassEntityListOffset();
+    ResolveEntityListOffsets();
+    ResolveCEntityClassRegistry();
+    ResolveCEntityClassFlagsOffset();
+    ResolveCEntityClassNameToThinkFuncOffset();
     ResolveProcessClientSvcUserMessage();
 
     g_pHookManager->Hook_GameInit(HookType_Post, [] {
@@ -144,6 +147,7 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::LocalVelocity", address::server::CBaseEntity_LocalVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::AbsVelocity", address::server::CBaseEntity_AbsVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetAbsVelocity", address::server::CBaseEntity_SetAbsVelocity);
+    RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetLocalVelocity", address::server::CBaseEntity_SetLocalVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::AcceptInput", address::server::CBaseEntity_AcceptInput);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetMoveType", address::server::CBaseEntity_SetMoveType);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetGravityScale", address::server::CBaseEntity_SetGravityScale);
@@ -229,9 +233,6 @@ bool address::Initialize()
     // Sound OP
     RESOLVE_GAMEDATA_ADDRESS("SoundOpGameSystem::StopSoundEventFilter", address::server::SoundOpGameSystem_StopSoundEventFilter);
 
-    // Movement service
-    RESOLVE_GAMEDATA_ADDRESS("CCSPlayer_MovementServices::TracePlayerBBox", address::server::CCSPlayer_MovementServices_TracePlayerBBox);
-
     // Tracefilter
     // RESOLVE_GAMEDATA_ADDRESS("CTraceFilterPlayerMovementCS::ctor", address::server::CTraceFilterPlayerMovementCS_ctor);
 
@@ -259,4 +260,5 @@ void address::PostSchemaInit()
     ResolveCBasePlayerPawn_CommitSuicide();
     ResolveCBasePlayerPawn_SnapViewAngles();
     ResolveCBaseTrigger_PassesTriggerFilters();
+    ResolveCTriggerPush_PathSimplePushDir();
 }

@@ -37,6 +37,9 @@ void InlineHook::Prepare(void* targetFn, void* hookFn)
 
 bool InlineHook::Install()
 {
+    if (m_hkInline || m_pTargetFn == nullptr || m_pHookFn == nullptr)
+        return false;
+
     auto hook_result = safetyhook::InlineHook::create(m_pTargetFn, m_pHookFn);
 
     if (!hook_result)
@@ -78,6 +81,9 @@ void MidFuncHook::Prepare(void* targetFn, void* hookFn)
 
 bool MidFuncHook::Install()
 {
+    if (m_hkMid || m_pTargetFn == nullptr || m_pHookFn == nullptr)
+        return false;
+
     auto hook_result = safetyhook::MidHook::create(m_pTargetFn, reinterpret_cast<safetyhook::MidHookFn>(m_pHookFn));
 
     if (!hook_result)

@@ -32,6 +32,8 @@ internal class PlayerCanAcquireHook : HookType<PlayerCanAcquireFunctionParams, E
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
 
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
+
     private HookReturnValue<EAcquireResult> CCSPlayerItemServices_CanAcquire(nint ptrClient,
         nint                                                                      ptrController,
         nint                                                                      ptrPawn,

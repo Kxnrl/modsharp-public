@@ -69,6 +69,8 @@ internal class EntityDispatchTraceAttackHook
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFunctionParams,
@@ -422,11 +424,11 @@ internal sealed unsafe class EntityDispatchTraceAttackFunctionParams : EntityFun
 
     public int DamageDealt
     {
-        get => Result->HealthLost;
+        get => (int) Result->DamageDealt;
         set
         {
             CheckEditable();
-            Result->HealthLost = value;
+            Result->DamageDealt = value;
         }
     }
 

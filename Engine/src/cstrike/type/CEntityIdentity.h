@@ -73,7 +73,20 @@ public:
         return reinterpret_cast<T>(m_pInstance);
     }
 
+    SCHEMA_FIELD(CEntityIdentity*, m_pNext);
     SCHEMA_FIELD(CEntityIdentity*, m_pNextByClass);
+
+    [[nodiscard]] static int32_t GetNextOffset() { return _schema_data_m_pNext().key.offset; }
+    [[nodiscard]] static int32_t GetNextByClassOffset() { return _schema_data_m_pNextByClass().key.offset; }
+
+    inline static int32_t sm_nNextByClassOffset = 0;
+
+    [[nodiscard]] static CEntityIdentity* GetNextByClass(const CEntityIdentity* pIdentity, int32_t offset)
+    {
+        return *reinterpret_cast<CEntityIdentity* const*>(reinterpret_cast<uintptr_t>(pIdentity) + offset);
+    }
+
+    [[nodiscard]] CEntityIdentity* GetNextByClass() const { return GetNextByClass(this, sm_nNextByClassOffset); }
 
 private:
     CEntityInstance* m_pInstance;          // 0x00

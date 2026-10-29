@@ -44,11 +44,13 @@ std::vector<uint8_t> ReadGameFile(const char* path, const char* pathId)
     if (handle == nullptr)
         return {};
 
-    auto                 size = g_pFullFileSystem->Size(handle);
+    const auto           size = g_pFullFileSystem->Size(handle);
     std::vector<uint8_t> buffer{};
     buffer.resize(size);
-    g_pFullFileSystem->Read(buffer.data(), size, handle);
+    const auto read = g_pFullFileSystem->Read(buffer.data(), size, handle);
     g_pFullFileSystem->Close(handle);
+
+    buffer.resize(read > 0 ? static_cast<size_t>(read) : 0);
 
     return buffer;
 }

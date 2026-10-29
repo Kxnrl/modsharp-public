@@ -145,6 +145,12 @@ public interface IGameRules : ISchemaObject
     bool IsGameRestart { get; set; }
 
     /// <summary>
+    ///     The map has a hostage rescue zone (m_bMapHasRescueZone)<br />
+    ///     <remarks>When true, defuse kits are sold and dropped as item_cutters, otherwise as item_defuser</remarks>
+    /// </summary>
+    bool MapHasRescueZone { get; }
+
+    /// <summary>
     ///     Restart the game
     /// </summary>
     void RestartGame();

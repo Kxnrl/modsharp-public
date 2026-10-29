@@ -29,6 +29,7 @@ using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameEntities;
 using Sharp.Core.Objects;
 using Sharp.Shared.Enums;
+using Sharp.Shared.GameEntities;
 using Sharp.Shared.Helpers;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
@@ -132,6 +133,34 @@ internal sealed class ScriptManager : ICoreScriptManager
         context.EnableHandleFrame(frameBase);
 
         return context;
+    }
+
+    public unsafe bool TryReadVariable(IBaseEntity script, string name, out ScriptReturnValue? value)
+    {
+        EnsureGameThread();
+
+        value = null;
+
+        var ret = default(ScriptValue);
+
+        if (!Native.ReadVariable(script.GetAbsPtr(), name, &ret))
+        {
+            return false;
+        }
+
+        value = ReadReturn(in ret);
+
+        return true;
+    }
+
+    public unsafe bool TryWriteVariable(IBaseEntity script, string name, ScriptReturnValue value)
+    {
+        EnsureGameThread();
+
+        var val = default(ScriptValue);
+        WriteReturn(value, &val);
+
+        return Native.WriteVariable(script.GetAbsPtr(), name, &val);
     }
 
 #endregion

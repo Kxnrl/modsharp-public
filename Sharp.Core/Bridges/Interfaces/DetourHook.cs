@@ -28,16 +28,39 @@ namespace Sharp.Core.Bridges.Interfaces;
 [NativeVirtualObject(HasDestructors = true)]
 internal partial class DetourHook : NativeObject, IDetourHook
 {
+    private bool _installed;
+
 #region Natives
 
     public DetourHook() : base(nint.Zero)
         => _this = Natives.Core.CreateInlineHook();
 
     public void Dispose()
-        => Natives.Core.RemoveInlineHook(_this);
+    {
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        MarkAsDisposed();
+        Natives.Core.RemoveInlineHook(_this);
+    }
+
+    public partial void PrepareNative(nint pTargetFn, nint pHookFn);
+
+    public partial bool InstallNative();
+
+    public partial void UninstallNative();
+
+    // ReSharper disable once MemberCanBePrivate.Global
+    public partial nint GetTrampoline();
+
+#endregion
 
     public void Prepare(string gamedata, IntPtr hookFn)
     {
+        CheckDisposed();
+
         var address = CoreGameData.Core.GetAddress(gamedata);
 
         if (address == nint.Zero)
@@ -48,16 +71,48 @@ internal partial class DetourHook : NativeObject, IDetourHook
         Prepare(address, hookFn);
     }
 
-    public partial void Prepare(nint pTargetFn, nint pHookFn);
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    public void Prepare(nint pTargetFn, nint pHookFn)
+    {
+        CheckDisposed();
 
-    public partial bool Install();
+        if (_installed)
+        {
+            throw new InvalidOperationException("Detour hook is already installed, uninstall it before preparing again");
+        }
 
-    public partial void Uninstall();
+        PrepareNative(pTargetFn, pHookFn);
+    }
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    public partial nint GetTrampoline();
+    public bool Install()
+    {
+        CheckDisposed();
 
-#endregion
+        if (!InstallNative())
+        {
+            return false;
+        }
 
-    public nint Trampoline => GetTrampoline();
+        _installed = true;
+
+        return true;
+    }
+
+    public void Uninstall()
+    {
+        CheckDisposed();
+
+        UninstallNative();
+        _installed = false;
+    }
+
+    public nint Trampoline
+    {
+        get
+        {
+            CheckDisposed();
+
+            return GetTrampoline();
+        }
+    }
 }

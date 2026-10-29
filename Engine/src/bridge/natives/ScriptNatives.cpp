@@ -196,7 +196,7 @@ static uint32_t ScriptCallObjKeys(uint32_t handle)
     v8::TryCatch         tryCatch(isolate);
     v8::Local<v8::Array> names;
     // own ENUMERABLE string keys (Object.keys semantics) — not getOwnPropertyNames' non-enumerable set.
-    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS)).ToLocal(&names))
+    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS), v8::KeyConversionMode::kConvertToString).ToLocal(&names))
     {
         tryCatch.Reset();
         return PushHandle(v8::Array::New(isolate));
@@ -246,7 +246,7 @@ static int32_t ScriptCallObjCount(uint32_t handle)
 
     v8::TryCatch         tryCatch(isolate);
     v8::Local<v8::Array> names;
-    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS)).ToLocal(&names))
+    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS), v8::KeyConversionMode::kConvertToString).ToLocal(&names))
     {
         tryCatch.Reset();
         return 0;
@@ -448,6 +448,22 @@ static void ScriptCallHandleFrameEnd(int32_t base)
     HandleFrameEnd(base);
 }
 
+static bool ScriptCallReadVariable(CBaseEntity* entity, const char* name, ScriptValue* out)
+{
+    if (out == nullptr)
+        return false;
+
+    return ReadScriptVariable(entity, name, *out);
+}
+
+static bool ScriptCallWriteVariable(CBaseEntity* entity, const char* name, ScriptValue* in)
+{
+    if (in == nullptr)
+        return false;
+
+    return WriteScriptVariable(entity, name, *in);
+}
+
 namespace natives::script
 {
 static void RegisterMethod(const char* className, const char* methodName, int32_t managedId)
@@ -482,6 +498,8 @@ void Init()
     bridge::CreateNative("Script.ArrInsert", reinterpret_cast<void*>(ScriptCallArrInsert));
     bridge::CreateNative("Script.HandleFrameBegin", reinterpret_cast<void*>(ScriptCallHandleFrameBegin));
     bridge::CreateNative("Script.HandleFrameEnd", reinterpret_cast<void*>(ScriptCallHandleFrameEnd));
+    bridge::CreateNative("Script.ReadVariable", reinterpret_cast<void*>(ScriptCallReadVariable));
+    bridge::CreateNative("Script.WriteVariable", reinterpret_cast<void*>(ScriptCallWriteVariable));
 
     bridge::CreateNative("Script.CreateCallback", reinterpret_cast<void*>(CreateManagedCallback));
     bridge::CreateNative("Script.ReleaseCallback", reinterpret_cast<void*>(ReleaseManagedCallback));

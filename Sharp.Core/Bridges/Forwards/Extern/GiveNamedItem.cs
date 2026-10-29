@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Types;
-using Sharp.Shared.Utilities;
+using Sharp.Shared.Types.Tier;
 
 namespace Sharp.Core.Bridges.Forwards.Extern;
 
@@ -31,16 +31,19 @@ public static class GiveNamedItem
     public delegate HookReturnValue<IBaseWeapon> DelegateGiveNamedItemPre(nint ptrClient,
         nint                                                                   ptrController,
         nint                                                                   ptrPawn,
-        ref string                                                             classname,
-        ref bool                                                               ignoredCEconItemView);
+        nint                                                                   ptrClassname,
+        ref string?                                                            classnameOverride,
+        ref bool                                                               ignoredCEconItemView,
+        ref nint                                                               econItemView);
 
     public delegate void DelegateGiveNamedItemPost(nint ptrClient,
         nint                                            ptrController,
         nint                                            ptrPawn,
-        string                                          classname,
+        nint                                            ptrClassname,
         bool                                            ignoredCEconItemView,
         EHookAction                                     hookAction,
-        nint                                            returnValue);
+        nint                                            returnValue,
+        nint                                            econItemView);
 
     public delegate HookReturnValue<EAcquireResult> DelegateCanAcquirePre(nint ptrClient,
         nint                                                                   ptrController,
@@ -63,48 +66,60 @@ public static class GiveNamedItem
     public static unsafe EHookAction OnGiveNamedItemPreExport(nint ptrClient,
         nint                                                       ptrController,
         nint                                                       ptrPawn,
-        sbyte*                                                     ptrClassname,
-        bool*                                                      ignoredCEconItemView)
+        nint                                                       ptrClassname,
+        CUtlString*                                                ptrClassnameOverride,
+        bool*                                                      classnameOverridden,
+        bool*                                                      ignoredCEconItemView,
+        nint*                                                      econItemView)
     {
-        var     classname = new string(ptrClassname);
-        ref var ignore    = ref Unsafe.AsRef<bool>(ignoredCEconItemView);
-
         if (OnGiveNamedItemPre is null)
         {
             return EHookAction.Ignored;
         }
 
-        var action = OnGiveNamedItemPre.Invoke(ptrClient, ptrController, ptrPawn, ref classname, ref ignore);
+        string? classnameOverride = null;
+        ref var ignore            = ref Unsafe.AsRef<bool>(ignoredCEconItemView);
+        ref var itemView          = ref Unsafe.AsRef<nint>(econItemView);
 
-        if (action.Action == EHookAction.SkipCallReturnOverride)
-        {
-            return EHookAction.SkipCallReturnOverride;
-        }
+        var action = OnGiveNamedItemPre.Invoke(ptrClient,
+                                               ptrController,
+                                               ptrPawn,
+                                               ptrClassname,
+                                               ref classnameOverride,
+                                               ref ignore,
+                                               ref itemView);
 
-        if (action.Action == EHookAction.Ignored)
+        if (action.Action != EHookAction.ChangeParamReturnDefault)
         {
             return EHookAction.Ignored;
         }
 
-        Utils.WriteString(ptrClassname, 32, classname);
+        if (classnameOverride is not null)
+        {
+            ptrClassnameOverride->SetString(classnameOverride);
+            *classnameOverridden = true;
+        }
 
         return action.Action;
     }
 
     [UnmanagedCallersOnly]
-    public static unsafe void OnGiveNamedItemPostExport(nint ptrClient,
-        nint                                                 ptrController,
-        nint                                                 ptrPawn,
-        sbyte*                                               ptrClassname,
-        byte                                                 ignoredCEconItemView,
-        EHookAction                                          hookAction,
-        nint                                                 returnValue)
-    {
-        var classname = Utils.ReadString(ptrClassname);
-        var ignore    = ignoredCEconItemView != 0;
-
-        OnGiveNamedItemPost?.Invoke(ptrClient, ptrController, ptrPawn, classname, ignore, hookAction, returnValue);
-    }
+    public static void OnGiveNamedItemPostExport(nint ptrClient,
+        nint                                          ptrController,
+        nint                                          ptrPawn,
+        nint                                          ptrClassname,
+        byte                                          ignoredCEconItemView,
+        EHookAction                                   hookAction,
+        nint                                          returnValue,
+        nint                                          econItemView)
+        => OnGiveNamedItemPost?.Invoke(ptrClient,
+                                       ptrController,
+                                       ptrPawn,
+                                       ptrClassname,
+                                       ignoredCEconItemView != 0,
+                                       hookAction,
+                                       returnValue,
+                                       econItemView);
 
     [UnmanagedCallersOnly]
     public static void OnGiveGloveItemPostExport(nint ptrClient, nint ptrController, nint ptrPawn)

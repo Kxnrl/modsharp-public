@@ -80,6 +80,13 @@ public interface IClientListener
     {
     }
 
+    /// <returns>
+    ///     Both Handled and Stopped block this chat message; with multiple listeners, the largest value is used
+    /// </returns>
+    /// <remarks>
+    ///     A message starting with the silent prefix (ChatCommand.TriggerPrefixes.Silent) is blocked
+    ///     whatever is returned
+    /// </remarks>
     ECommandAction OnClientSayCommand(IGameClient client, bool teamOnly, bool isCommand, string commandName, string message)
         => ECommandAction.Skipped;
 
