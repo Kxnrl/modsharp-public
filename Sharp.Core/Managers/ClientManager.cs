@@ -572,7 +572,11 @@ internal class ClientManager : ICoreClientManager
 
         callbacks -= callback;
 
-        if (callbacks is null)
+        if (callbacks is not null)
+        {
+            _commandHooks[command] = callbacks;
+        }
+        else
         {
             _commandHooks.Remove(command);
         }
@@ -611,7 +615,11 @@ internal class ClientManager : ICoreClientManager
 
         callbacks -= callback;
 
-        if (callbacks is null)
+        if (callbacks is not null)
+        {
+            _commandListeners[command] = callbacks;
+        }
+        else
         {
             _commandListeners.Remove(command);
         }

@@ -20,6 +20,7 @@
 using System;
 using Sharp.Shared.Enums;
 using Sharp.Shared.Types;
+using Sharp.Shared.Units;
 
 namespace Sharp.Core.Bridges.Natives;
 
@@ -41,7 +42,7 @@ public static unsafe partial class Player
 
     public static partial void ControllerSwitchTeam(IntPtr ptr, CStrikeTeam team);
 
-    public static partial IntPtr ControllerFindBySlot(long slot);
+    public static partial IntPtr ControllerFindBySlot(PlayerSlot slot);
 
     public static partial void ControllerSetClanTag(IntPtr ptr, string tag);
 
@@ -82,11 +83,11 @@ public static unsafe partial class Player
 
     public static partial void WeaponServicesEquipWeapon(IntPtr ptr, IntPtr weaponPtr);
 
-    public static partial IntPtr PawnFindBySlot(long slot);
+    public static partial IntPtr PawnFindBySlot(PlayerSlot slot);
 
     public static partial IntPtr PawnGetActiveWeapon(IntPtr ptr);
 
-    public static partial IntPtr PawnGetWeaponBySlot(IntPtr ptr, GearSlot slot, long unknown);
+    public static partial IntPtr PawnGetWeaponBySlot(IntPtr ptr, GearSlot slot, int position);
 
     public static partial void PawnRemovePlayerItem(IntPtr ptr, IntPtr entityPtr);
 

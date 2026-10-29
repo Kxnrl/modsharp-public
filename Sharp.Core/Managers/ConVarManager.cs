@@ -162,6 +162,8 @@ internal class ConVarManager : ICoreConVarManager
 
         if (callbacks is not null)
         {
+            _conVarHooks[key] = callbacks;
+
             return;
         }
 
@@ -211,7 +213,7 @@ internal class ConVarManager : ICoreConVarManager
         ushort                          max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int16,
+        => CreateConVarInternal(ConVarType.UInt16,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -223,7 +225,7 @@ internal class ConVarManager : ICoreConVarManager
         ushort                          defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int16,
+        => CreateConVarInternal(ConVarType.UInt16,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -259,7 +261,7 @@ internal class ConVarManager : ICoreConVarManager
         uint                            max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt32,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -271,7 +273,7 @@ internal class ConVarManager : ICoreConVarManager
         uint                            defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt32,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -283,7 +285,7 @@ internal class ConVarManager : ICoreConVarManager
         long                            max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.Int64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -295,7 +297,7 @@ internal class ConVarManager : ICoreConVarManager
         long                            defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.Int64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -307,7 +309,7 @@ internal class ConVarManager : ICoreConVarManager
         ulong                           max,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -319,7 +321,7 @@ internal class ConVarManager : ICoreConVarManager
         ulong                           defaultValue,
         string?                         helpString = null,
         ConVarFlags?                    flags      = null)
-        => CreateConVarInternal(ConVarType.Int32,
+        => CreateConVarInternal(ConVarType.UInt64,
                                 name,
                                 new ConVarVariantValue(defaultValue),
                                 flags,
@@ -400,25 +402,27 @@ internal class ConVarManager : ICoreConVarManager
         var command   = buffer[..commandEndIndex].ToString();
         var arguments = buffer[commandEndIndex..].Trim().ToString();
 
-        {
-            if (_commands.TryGetValue(handle, out var cb))
-            {
-                var context = new StringCommand(command, false, arguments);
+        var action = ECommandAction.Skipped;
 
-                cb.Invoke(client, context);
+        if (_commands.TryGetValue(handle, out var clientCommandCallback))
+        {
+            var context = new StringCommand(command, false, arguments);
+
+            action = clientCommandCallback.Invoke(client, context);
+        }
+
+        if (_serverCommands.TryGetValue(handle, out var serverCommandCallback))
+        {
+            var context = new StringCommand(command, false, arguments);
+            var result  = serverCommandCallback.Invoke(context);
+
+            if (result > action)
+            {
+                action = result;
             }
         }
 
-        {
-            if (_serverCommands.TryGetValue(handle, out var cb))
-            {
-                var context = new StringCommand(command, false, arguments);
-
-                cb.Invoke(context);
-            }
-        }
-
-        return ECommandAction.Stopped;
+        return action;
     }
 
     public void CreateConsoleCommand(string               name,

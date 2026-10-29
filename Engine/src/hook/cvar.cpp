@@ -192,14 +192,14 @@ static bool SetConVarValueString(CConVarBaseData* pConVar, const char* value)
     return g_ConVarManager.SetValueString(pConVar, value);
 }
 
-static void SetConVarMinBound(CConVarBaseData* pConVar, CVValue_t* value)
+static bool SetConVarMinBound(CConVarBaseData* pConVar, CVValue_t* value)
 {
-    g_ConVarManager.SetMin(pConVar, value);
+    return g_ConVarManager.SetMin(pConVar, value);
 }
 
-static void SetConVarMaxBound(CConVarBaseData* pConVar, CVValue_t* value)
+static bool SetConVarMaxBound(CConVarBaseData* pConVar, CVValue_t* value)
 {
-    g_ConVarManager.SetMax(pConVar, value);
+    return g_ConVarManager.SetMax(pConVar, value);
 }
 
 static int64_t CreateCommand(const char* name, const char* helpString, int flags)

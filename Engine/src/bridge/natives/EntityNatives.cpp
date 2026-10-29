@@ -421,7 +421,7 @@ static void EntitySetBodyGroupByName(CBaseModelEntity* pEntity, const char* pNam
     pEntity->SetBodyGroupByName(pName, value);
 }
 
-static void EntitySetMaterialGroupMask(CBaseModelEntity* pEntity, int mask)
+static void EntitySetMaterialGroupMask(CBaseModelEntity* pEntity, uint64_t mask)
 {
     pEntity->SetMaterialGroupMask(mask);
 }

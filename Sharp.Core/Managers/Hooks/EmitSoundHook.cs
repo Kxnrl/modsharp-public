@@ -54,6 +54,8 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
         receivers      = param.Receivers.AsPrimitive();
         overrideSound  = param.OverrideSound;
 
+        param.MarkAsDisposed();
+
         return result.Action;
     }
 

@@ -149,7 +149,7 @@ DECLARE_FORWARD(Event, FireGameEvent, void, FORWARD_ARG(IGameEvent*));
 
 // ConVar
 DECLARE_FORWARD(Cvar, OnConVarChanged, void, FORWARD_ARG(CConVarBaseData*));
-DECLARE_FORWARD(Cvar, OnConCommandTrigger, EHookAction, FORWARD_ARG(int64_t, CServerSideClient*, const char*));
+DECLARE_FORWARD(Cvar, OnConCommandTrigger, ECommandAction, FORWARD_ARG(int64_t, CServerSideClient*, const char*));
 
 // Script (cs_script V8) — dispatch a JS call to a C#-registered method.
 // Args: managedId, info (FunctionCallbackInfo*), ret. C# reads self/args lazily via the

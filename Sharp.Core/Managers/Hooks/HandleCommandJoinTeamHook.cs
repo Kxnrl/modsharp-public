@@ -54,6 +54,8 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
         queue     = param.Queue;
         coachTeam = param.CoachTeam;
 
+        param.MarkAsDisposed();
+
         return result;
     }
 
