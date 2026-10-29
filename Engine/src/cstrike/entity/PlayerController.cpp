@@ -96,14 +96,9 @@ void CBasePlayerController::SetClanTag(const char* tag)
     if (slot >= CS_MAX_PLAYERS)
         return;
 
-    auto& state = s_ClanTag[slot];
-    if (!state.active)
-    {
-        state.gameClanId = m_unClanId32bit();
-        state.gameTag    = m_szClan().Get();
-        state.active     = true;
-    }
-    state.tag = tag ? tag : "";
+    auto& state  = s_ClanTag[slot];
+    state.active = true;
+    state.tag    = tag ? tag : "";
     ApplyClan(this, OverrideClanId(state.tag), state.tag);
 }
 
@@ -127,18 +122,22 @@ void CBasePlayerController::EnforceClanTag()
         return;
 
     auto& state = s_ClanTag[slot];
-    if (!state.active)
-        return;
 
     const auto clanId = OverrideClanId(state.tag);
     const auto curId  = m_unClanId32bit();
     const auto curTag = m_szClan().Get();
-    if (curId == clanId && state.tag == curTag)
+    if (state.active && curId == clanId && state.tag == curTag)
         return;
 
-    state.gameClanId = curId;
-    state.gameTag    = curTag;
-    ApplyClan(this, clanId, state.tag);
+    // not our override, so the game wrote it - remember it for ResetClanTag
+    if (curId != state.gameClanId || state.gameTag != curTag)
+    {
+        state.gameClanId = curId;
+        state.gameTag    = curTag;
+    }
+
+    if (state.active)
+        ApplyClan(this, clanId, state.tag);
 }
 
 void CBasePlayerController::ClearClanTagState(PlayerSlot_t slot)
