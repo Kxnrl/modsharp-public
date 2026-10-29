@@ -168,7 +168,7 @@ void CBasePlayerController::ClientPrintF(HudPrint_t dest, const char* message, .
     va_list args;
     va_start(args, message);
 
-    char buffer[256];
+    char buffer[1024];
     vsnprintf(buffer, sizeof(buffer), message, args);
     va_end(args);
 
