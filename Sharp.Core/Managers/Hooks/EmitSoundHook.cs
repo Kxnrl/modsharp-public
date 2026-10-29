@@ -81,6 +81,9 @@ internal class EmitSoundHook : HookType<EmitSoundHookParams, SoundOpEventGuid, E
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal sealed class EmitSoundHookParams : FunctionParams, IEmitSoundHookParams

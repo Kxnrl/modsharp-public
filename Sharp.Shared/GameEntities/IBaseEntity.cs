@@ -209,17 +209,19 @@ public interface IBaseEntity : ISchemaObject
     ICollisionProperty? GetCollisionProperty();
 
     /// <summary>
-    ///     速度矢量 <br />
-    ///     <remarks>如果存在MoveParent, 这个速度是基于Parent的</remarks>
+    ///     Velocity vector <br />
+    ///     <remarks>
+    ///         If there is a MoveParent, this velocity is relative to the parent; when MoveType is
+    ///         <see cref="Enums.MoveType.VPhysics" />, it reads and writes the physics object's velocity
+    ///     </remarks>
     /// </summary>
-    [Obsolete("Use GetLocalVelocity/GetLocalVelocity, will be removed in 2.2")]
     Vector Velocity { get; set; }
 
     /// <summary>
     ///     绝对的速度矢量 <br />
     ///     <remarks>该矢量不会计算MoveParent</remarks>
     /// </summary>
-    [Obsolete("Use GetAbsVelocity/GetAbsVelocity, will be removed in 2.2")]
+    [Obsolete("Use GetAbsVelocity/SetAbsVelocity, will be removed in 2.2", true)]
     Vector AbsVelocity { get; set; }
 
     /// <summary>
@@ -472,12 +474,14 @@ public interface IBaseEntity : ISchemaObject
     /// <summary>
     ///     Get the relative velocity in world space, networked
     /// </summary>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, reads the physics object's velocity</remarks>
     /// <returns></returns>
     Vector GetLocalVelocity();
 
     /// <summary>
     ///     Set the relative velocity in world space, networked
     /// </summary>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, writes the physics object's velocity</remarks>
     void SetLocalVelocity(Vector velocity);
 
     /// <summary>

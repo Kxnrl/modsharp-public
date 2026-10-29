@@ -135,9 +135,16 @@ internal class SharpModuleManager : ICoreSharpModuleManager
             }
         }
 
-        if (updates.Count > 0)
+        foreach (var module in updates)
         {
-            updates.ForEach(x => x.CallOnAllLoad());
+            try
+            {
+                module.CallOnAllLoad();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while calling OnAllModulesLoaded of module [{name}]", module.Name);
+            }
         }
 
         if (_modules.Count(x => x.State == ModuleLoadState.Running) == 0)
@@ -164,10 +171,10 @@ internal class SharpModuleManager : ICoreSharpModuleManager
 
                 builder.Append($"    #{i + 1,-2} {module.Name}\n");
 
-                builder.Append($"      module : {module.DisplayName}\n");
+                builder.Append($"      module : {GetDisplayName(module)}\n");
                 builder.Append($"      version: {version.Major}.{version.Minor}.{version.Build}\n");
 
-                if (module.DisplayAuthor is { } author)
+                if (GetDisplayAuthor(module) is { } author)
                 {
                     builder.Append($"      author : {author}\n");
                 }
@@ -214,12 +221,13 @@ internal class SharpModuleManager : ICoreSharpModuleManager
                 continue;
             }
 
+            var name    = GetDisplayName(module);
             var version = module.DisplayVersion;
-            var author  = module.DisplayAuthor is { } a ? $" by {a}" : string.Empty;
+            var author  = GetDisplayAuthor(module) is { } a ? $" by {a}" : string.Empty;
 
             NetMessageHelper.PrintChannelFilter(receiver,
                                                 HudPrintChannel.Console,
-                                                $"    #{shown + 1,-2} {module.DisplayName} ({version.Major}.{version.Minor}.{version.Build}){author}\n");
+                                                $"    #{shown + 1,-2} {name} ({version.Major}.{version.Minor}.{version.Build}){author}\n");
 
             shown++;
         }
@@ -227,6 +235,34 @@ internal class SharpModuleManager : ICoreSharpModuleManager
         if (shown == 0)
         {
             NetMessageHelper.PrintChannelFilter(receiver, HudPrintChannel.Console, "    No modules found.\n");
+        }
+    }
+
+    private string GetDisplayName(ModSharpModule module)
+    {
+        try
+        {
+            return module.DisplayName;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to read DisplayName of module [{name}]", module.Name);
+
+            return module.Name;
+        }
+    }
+
+    private string? GetDisplayAuthor(ModSharpModule module)
+    {
+        try
+        {
+            return module.DisplayAuthor;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to read DisplayAuthor of module [{name}]", module.Name);
+
+            return null;
         }
     }
 

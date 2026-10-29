@@ -458,10 +458,18 @@ internal class EntityManager : ICoreEntityManager
         => Native.HookInput(classname, input);
 
     public IBasePlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot)
-        => BasePlayerPawn.Create(Player.PawnFindBySlot(slot));
+    {
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(slot, PlayerSlot.MaxPlayerCount);
+
+        return BasePlayerPawn.Create(Player.PawnFindBySlot(slot));
+    }
 
     public IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot)
-        => PlayerController.Create(Player.ControllerFindBySlot(slot));
+    {
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(slot, PlayerSlot.MaxPlayerCount);
+
+        return PlayerController.Create(Player.ControllerFindBySlot(slot));
+    }
 
     public IEnumerable<IPlayerController> GetPlayerControllers(bool inGame = true)
     {

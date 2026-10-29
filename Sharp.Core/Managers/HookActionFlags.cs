@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -17,19 +17,17 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_TYPE_NETWORKVELOCITYVECTOR_H
-#define CSTRIKE_TYPE_NETWORKVELOCITYVECTOR_H
+using System;
+using Sharp.Shared.Enums;
 
-#include "cstrike/schema.h"
+namespace Sharp.Core.Managers;
 
-class CNetworkVelocityVector
+[Flags]
+internal enum HookActionFlags : byte
 {
-public:
-    DECLARE_SCHEMA_STRUCT(CNetworkVelocityVector)
-
-    SCHEMA_FIELD(float, m_vecX)
-    SCHEMA_FIELD(float, m_vecY)
-    SCHEMA_FIELD(float, m_vecZ)
-};
-
-#endif
+    Ignored                   = 1 << (int) EHookAction.Ignored,
+    ChangeParamReturnDefault  = 1 << (int) EHookAction.ChangeParamReturnDefault,
+    ChangeParamReturnOverride = 1 << (int) EHookAction.ChangeParamReturnOverride,
+    IgnoreParamReturnOverride = 1 << (int) EHookAction.IgnoreParamReturnOverride,
+    SkipCallReturnOverride    = 1 << (int) EHookAction.SkipCallReturnOverride,
+}

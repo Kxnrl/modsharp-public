@@ -138,7 +138,8 @@ using CBaseEntity_AbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
 using CBaseEntity_AbsVelocity_t   = Vector (*)(CBaseEntity*);
 using CBaseEntity_LocalVelocity_t = Vector (*)(CBaseEntity*);
 #endif
-using CBaseEntity_SetAbsVelocity_t = void (*)(CBaseEntity*, Vector*);
+using CBaseEntity_SetAbsVelocity_t   = void (*)(CBaseEntity*, Vector*);
+using CBaseEntity_SetLocalVelocity_t = void (*)(CBaseEntity*, Vector*);
 // build 24116939 dropped the trailing (int outputID, void*): this wrapper now takes 5 params and
 // hardcodes both to 0 when calling the inner handler, so passing an outputID has no effect.
 using CBaseEntity_AcceptInput_t     = bool (*)(CBaseEntity*, const char*, CBaseEntity*, CBaseEntity*, Variant_t&);
@@ -275,6 +276,7 @@ inline CBaseEntity_SetAbsOrigin_t                      CBaseEntity_SetAbsOrigin;
 inline CBaseEntity_LocalVelocity_t                     CBaseEntity_LocalVelocity;
 inline CBaseEntity_AbsVelocity_t                       CBaseEntity_AbsVelocity;
 inline CBaseEntity_SetAbsVelocity_t                    CBaseEntity_SetAbsVelocity;
+inline CBaseEntity_SetLocalVelocity_t                  CBaseEntity_SetLocalVelocity;
 inline CBaseEntity_AcceptInput_t                       CBaseEntity_AcceptInput;
 inline CBaseEntity_DispatchSpawn_t                     CBaseEntity_DispatchSpawn;
 inline CBaseEntity_EmitSoundFilter_t                   CBaseEntity_EmitSoundFilter;

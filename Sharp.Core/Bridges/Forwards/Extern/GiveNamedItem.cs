@@ -89,12 +89,7 @@ public static class GiveNamedItem
                                                ref ignore,
                                                ref itemView);
 
-        if (action.Action == EHookAction.SkipCallReturnOverride)
-        {
-            return EHookAction.SkipCallReturnOverride;
-        }
-
-        if (action.Action == EHookAction.Ignored)
+        if (action.Action != EHookAction.ChangeParamReturnDefault)
         {
             return EHookAction.Ignored;
         }

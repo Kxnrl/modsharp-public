@@ -43,6 +43,7 @@ public interface IGameClient : INativeObject
     /// <summary>
     ///     Send chat message as this client
     /// </summary>
+    /// <exception cref="System.InvalidOperationException">The client has no player controller</exception>
     void SayChatMessage(bool teamOnly, string message);
 
     /// <summary>

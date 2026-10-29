@@ -35,6 +35,7 @@ class KeyValues;
 
 using KeyValuesSymbolProc = bool (*)(const char*, void*);
 
+#pragma pack(push, 1)
 class CKeyValues_Data
 {
 public:
@@ -84,12 +85,14 @@ private:
     uint32_t m_bStoredSubKey : 1;
 };
 
-#pragma pack(push, 1)
 class KeyValues : public CKeyValues_Data
 {
 public:
     MS_CLASS_IMPORT KeyValues(const char* setName, IKeyValuesSystem* kvsystem = nullptr, bool unkState = false);
     MS_CLASS_IMPORT ~KeyValues();
+
+    MS_CLASS_IMPORT static void* operator new(size_t size);
+    MS_CLASS_IMPORT static void  operator delete(void* ptr);
 
     MS_CLASS_IMPORT bool LoadFromBuffer(const char* resourceName, const char* pBuffer, IFileSystem* pFileSystem = nullptr, const char* pPathID = nullptr, KeyValuesSymbolProc pfnEvaluateSymbolProc = nullptr, IKeyValuesErrorSpew* pErrorSpew = nullptr, void* pUnk1 = nullptr, const char* pUnk2 = nullptr);
     MS_CLASS_IMPORT bool LoadFromBuffer(const char* resourceName, CUtlBuffer& buf, IFileSystem* pFileSystem = nullptr, const char* pPathID = nullptr, KeyValuesSymbolProc pfnEvaluateSymbolProc = nullptr, IKeyValuesErrorSpew* pErrorSpew = nullptr, void* pUnk1 = nullptr, const char* pUnk2 = nullptr);
@@ -157,5 +160,7 @@ private:
     KeyValues* m_pPeer; // pointer to next key in list
 };
 #pragma pack(pop)
+
+static_assert(sizeof(KeyValues) == 0x1C);
 
 #endif

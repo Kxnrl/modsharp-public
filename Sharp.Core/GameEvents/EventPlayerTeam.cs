@@ -37,7 +37,7 @@ internal partial class EventPlayerTeam : GameEvent, IEventPlayerTeam
     [GameEventProperty("userid")]
     private UserID? _userId;
 
-    [GameEventProperty("newteam")]
+    [GameEventProperty("team")]
     private CStrikeTeam? _newTeam;
 
     [GameEventProperty("oldteam")]
@@ -49,6 +49,6 @@ internal partial class EventPlayerTeam : GameEvent, IEventPlayerTeam
     [GameEventProperty("silent")]
     private bool? _silent;
 
-    [GameEventProperty("bot")]
+    [GameEventProperty("isbot")]
     private bool? _bot;
 }

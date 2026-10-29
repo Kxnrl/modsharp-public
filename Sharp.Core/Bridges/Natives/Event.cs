@@ -43,7 +43,7 @@ public static unsafe partial class Event
 
     public static partial sbyte* GetName(IntPtr @event);
 
-    public static partial sbyte* GetString(IntPtr @event, string key, string defaultValue);
+    public static partial sbyte* GetString(IntPtr @event, string key);
 
     public static partial int GetInt(IntPtr @event, string key, int defaultValue);
 
@@ -61,7 +61,7 @@ public static unsafe partial class Event
 
     public static partial void SetFloat(IntPtr @event, string key, float value);
 
-    public static partial void SetUInt64(IntPtr @event, string key, float value);
+    public static partial void SetUInt64(IntPtr @event, string key, ulong value);
 
     public static partial void SetPlayerPawn(IntPtr @event, string key, IBaseEntity pawn);
 

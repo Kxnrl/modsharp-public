@@ -54,6 +54,11 @@ internal partial class EventManager : ICoreEventManager
 
     private void OnFireGameEvent(nint ptr)
     {
+        if (_listeners.Count == 0)
+        {
+            return;
+        }
+
         if (MakeEvent(ptr, false) is not { } @event)
         {
             return;
@@ -85,24 +90,26 @@ internal partial class EventManager : ICoreEventManager
     {
         if (_listeners.Count == 0)
         {
-            return false;
+            return true;
         }
 
-        if (MakeEvent(ptr, true) is not { } @event)
+        if (MakeEvent(ptr, true) is not GameEvent @event)
         {
-            return false;
+            return true;
         }
 
-        var block  = false;
+        @event.MarkEngineOwned();
+
+        var allow  = true;
         var svOnly = serverOnly;
 
         foreach (var listener in _listeners)
         {
             try
             {
-                if (listener.HookFireEvent(@event, ref svOnly))
+                if (!listener.HookFireEvent(@event, ref svOnly))
                 {
-                    block = true;
+                    allow = false;
                 }
             }
             catch (Exception e)
@@ -117,12 +124,9 @@ internal partial class EventManager : ICoreEventManager
 
         serverOnly = svOnly;
 
-        if (@event is GameEvent ev)
-        {
-            ev.MarkAsDisposed();
-        }
+        @event.MarkAsDisposed();
 
-        return block;
+        return allow;
     }
 
     public void InstallEventListener(IEventListener listener)
@@ -168,6 +172,13 @@ internal partial class EventManager : ICoreEventManager
     public partial T? CreateEvent<T>(bool force) where T : class, IGameEvent;
 
     public partial T? CloneEvent<T>(T @event) where T : class, IGameEvent;
+
+    private static nint CloneNative(IGameEvent @event)
+    {
+        ObjectDisposedException.ThrowIf(@event.IsDisposed, @event);
+
+        return Native.CloneEvent(@event.GetAbsPtr());
+    }
 
     public void HookEvent(string name)
         => Native.HookEvent(name);

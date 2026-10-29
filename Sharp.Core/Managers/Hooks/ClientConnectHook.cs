@@ -48,6 +48,8 @@ internal class ClientConnectHook : HookType<ClientConnectHookParams, bool, Clien
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed class ClientConnectHookParams : FunctionParams, IClientConnectHookParams

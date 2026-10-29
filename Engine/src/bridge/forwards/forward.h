@@ -178,8 +178,8 @@ DECLARE_FORWARD(Extern.GiveNamedItem, OnGiveGloveItemPost, void, FORWARD_ARG(CSe
 DECLARE_FORWARD(Extern.GiveNamedItem, OnCanAcquirePre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, CCSPlayerPawn*, uint16_t, int, int*));
 
 // HandleCommandJoinTeam
-DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t*, bool*, int32_t*, bool*));
-DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t, bool, int32_t, EHookAction, bool));
+DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPre, EHookAction, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t*, uint8_t*, int32_t*, bool*));
+DECLARE_FORWARD(Extern.HandleCommandJoinTeam, OnHandleCommandJoinTeamPost, void, FORWARD_ARG(CServerSideClient*, CCSPlayerController*, int32_t, uint8_t, int32_t, EHookAction, bool));
 
 // PointServerCommand
 DECLARE_FORWARD(Extern.PointServerCommand, OnPointServerCommand, EHookAction, FORWARD_ARG(CBaseEntity*, const char*));

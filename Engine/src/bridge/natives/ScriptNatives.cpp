@@ -196,7 +196,7 @@ static uint32_t ScriptCallObjKeys(uint32_t handle)
     v8::TryCatch         tryCatch(isolate);
     v8::Local<v8::Array> names;
     // own ENUMERABLE string keys (Object.keys semantics) — not getOwnPropertyNames' non-enumerable set.
-    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS)).ToLocal(&names))
+    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS), v8::KeyConversionMode::kConvertToString).ToLocal(&names))
     {
         tryCatch.Reset();
         return PushHandle(v8::Array::New(isolate));
@@ -246,7 +246,7 @@ static int32_t ScriptCallObjCount(uint32_t handle)
 
     v8::TryCatch         tryCatch(isolate);
     v8::Local<v8::Array> names;
-    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS)).ToLocal(&names))
+    if (!obj->GetOwnPropertyNames(ctx, static_cast<v8::PropertyFilter>(v8::ONLY_ENUMERABLE | v8::SKIP_SYMBOLS), v8::KeyConversionMode::kConvertToString).ToLocal(&names))
     {
         tryCatch.Reset();
         return 0;

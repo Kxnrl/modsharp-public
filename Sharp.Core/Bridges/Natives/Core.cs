@@ -27,7 +27,7 @@ public static unsafe partial class Core
 {
     private const int LogTextMaxBytes = 1920;
 
-    public static partial string GetCommandLine();
+    public static partial nint GetCommandLine();
 
     public static partial IntPtr GetCoreBridge();
 

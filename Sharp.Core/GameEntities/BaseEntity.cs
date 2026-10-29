@@ -104,6 +104,12 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
 
     public string PrivateVScripts => SchemaSystem.GetNetVarUtlSymbolLarge(_this, "CBaseEntity", "m_iszPrivateVScripts");
 
+    public Vector Velocity
+    {
+        get => GetLocalVelocity();
+        set => SetLocalVelocity(value);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////
 
     public bool IsValid()
@@ -393,9 +399,6 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
 
     [NativeSchemaField("CBaseEntity", "m_sUniqueHammerID", typeof(CUtlString))]
     private partial SchemaField GetHammerIdField();
-
-    [NativeSchemaField("CBaseEntity", "m_vecVelocity", typeof(Vector))]
-    private partial SchemaField GetVelocityField();
 
     [NativeSchemaField("CBaseEntity", "m_vecAbsVelocity", typeof(Vector))]
     private partial SchemaField GetAbsVelocityField();

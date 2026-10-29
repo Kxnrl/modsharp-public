@@ -132,6 +132,9 @@ static void FireToClient(IGameEvent* pEvent, PlayerSlot_t slot)
     if (!pProxy)
         return;
 
+    if (!sv)
+        return;
+
     const auto pClient = sv->GetClientSafety(slot);
     if (pClient == nullptr || !pClient->IsConnected())
         return;
@@ -141,6 +144,9 @@ static void FireToClient(IGameEvent* pEvent, PlayerSlot_t slot)
 
 static void FireToClients(IGameEvent* pEvent)
 {
+    if (!sv)
+        return;
+
     const auto clients = sv->GetClients();
 
     for (int i = clients->Count() - 1; i >= 0; i--)
@@ -183,9 +189,12 @@ static const char* GetEventName(IGameEvent* pEvent)
     return pEvent->GetName();
 }
 
-static const char* GetEventString(IGameEvent* pEvent, const char* pKey, const char* defaultValue)
+static const char* GetEventString(IGameEvent* pEvent, const char* pKey)
 {
-    return pEvent->GetString(pKey, defaultValue);
+    static char s_missing[1] = {};
+
+    const auto pValue = pEvent->GetString(pKey, s_missing);
+    return pValue == s_missing ? nullptr : pValue;
 }
 
 static int GetEventInt(IGameEvent* pEvent, const char* pKey, int defaultValue)

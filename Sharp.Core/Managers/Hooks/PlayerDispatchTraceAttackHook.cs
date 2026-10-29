@@ -73,6 +73,8 @@ internal class PlayerDispatchTraceAttackHook
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFunctionParams,
@@ -430,11 +432,11 @@ internal sealed unsafe class PlayerDispatchTraceAttackHookParams : PlayerPawnFun
 
     public int DamageDealt
     {
-        get => Result->HealthLost;
+        get => (int) Result->DamageDealt;
         set
         {
             CheckEditable();
-            Result->HealthLost = value;
+            Result->DamageDealt = value;
         }
     }
 

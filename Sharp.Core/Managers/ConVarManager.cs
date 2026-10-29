@@ -82,7 +82,17 @@ internal class ConVarManager : ICoreConVarManager
             return;
         }
 
-        callbacks.Invoke(conVar);
+        foreach (var callback in Delegate.EnumerateInvocationList(callbacks))
+        {
+            try
+            {
+                callback.Invoke(conVar);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while calling ConVar change callback of <{name}>", conVar.Name);
+            }
+        }
     }
 
     public IConVar? FindConVar(string name, bool useIterator = false)
@@ -404,21 +414,47 @@ internal class ConVarManager : ICoreConVarManager
 
         var action = ECommandAction.Skipped;
 
-        if (_commands.TryGetValue(handle, out var clientCommandCallback))
+        if (_commands.TryGetValue(handle, out var clientCommandCallbacks))
         {
             var context = new StringCommand(command, false, arguments);
 
-            action = clientCommandCallback.Invoke(client, context);
+            foreach (var callback in Delegate.EnumerateInvocationList(clientCommandCallbacks))
+            {
+                try
+                {
+                    var result = callback.Invoke(client, context);
+
+                    if (result > action)
+                    {
+                        action = result;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occurred while calling console command callback: {command}", command);
+                }
+            }
         }
 
-        if (_serverCommands.TryGetValue(handle, out var serverCommandCallback))
+        if (client is null && _serverCommands.TryGetValue(handle, out var serverCommandCallbacks))
         {
             var context = new StringCommand(command, false, arguments);
-            var result  = serverCommandCallback.Invoke(context);
 
-            if (result > action)
+            foreach (var callback in Delegate.EnumerateInvocationList(serverCommandCallbacks))
             {
-                action = result;
+                try
+                {
+                    var result = callback.Invoke(context);
+
+                    if (result > action)
+                    {
+                        action = result;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occurred while calling server command callback: {command}", command);
+                }
             }
         }
 

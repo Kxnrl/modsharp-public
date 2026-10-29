@@ -182,9 +182,9 @@ static CConVarBaseData* FindConVar(const char* name, bool useIterator)
     return useIterator ? icvar->FindConVarIterator(name) : icvar->GetConVar(icvar->FindConVar(name));
 }
 
-static void SetConVarValue(CConVarBaseData* pConVar, CVValue_t* value)
+static bool SetConVarValue(CConVarBaseData* pConVar, CVValue_t* value)
 {
-    g_ConVarManager.SetValue(pConVar, value);
+    return g_ConVarManager.SetValue(pConVar, value);
 }
 
 static bool SetConVarValueString(CConVarBaseData* pConVar, const char* value)

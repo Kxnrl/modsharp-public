@@ -147,6 +147,7 @@ bool address::Initialize()
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::LocalVelocity", address::server::CBaseEntity_LocalVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::AbsVelocity", address::server::CBaseEntity_AbsVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetAbsVelocity", address::server::CBaseEntity_SetAbsVelocity);
+    RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetLocalVelocity", address::server::CBaseEntity_SetLocalVelocity);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::AcceptInput", address::server::CBaseEntity_AcceptInput);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetMoveType", address::server::CBaseEntity_SetMoveType);
     RESOLVE_GAMEDATA_ADDRESS("CBaseEntity::SetGravityScale", address::server::CBaseEntity_SetGravityScale);

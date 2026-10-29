@@ -17,6 +17,9 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+using Sharp.Shared.Enums;
+
 namespace Sharp.Shared.HookParams;
 
 public interface IHandleCommandJoinTeamHookParams : IFunctionParams, IPlayerFunctionParams
@@ -27,11 +30,17 @@ public interface IHandleCommandJoinTeamHookParams : IFunctionParams, IPlayerFunc
     /// </summary>
     int Team { get; }
 
-    bool Queue     { get; }
-    int  CoachTeam { get; }
+    JoinTeamFlags Flags     { get; }
+    int           CoachTeam { get; }
+
+    [Obsolete("Use Flags instead.")]
+    bool Queue { get; }
 
     void OverrideTeam(int team);
 
+    void OverrideFlags(JoinTeamFlags flags);
+
+    [Obsolete("Use OverrideFlags instead.")]
     void OverrideQueue(bool queue);
 
     void OverrideCoachTeam(int coachTeam);

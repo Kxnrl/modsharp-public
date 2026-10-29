@@ -214,7 +214,7 @@ BeginMemberHookScope(CNetworkGameServer)
             return pResult;
 
         const auto pClients = pServer->GetClients();
-        if (pClients->Count() < static_cast<int>(gpGlobals->MaxClients))
+        if (pClients->Count() < static_cast<int>(pServer->GetGlobalVars()->MaxClients))
             return pResult;
 
         for (auto i = pClients->Count() - 1; i >= 0; i--)

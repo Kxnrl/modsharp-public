@@ -83,7 +83,14 @@ internal partial class GameRules : SchemaObject, IGameRules
             return -1;
         }
 
-        var flTimeLeft = (GameStartTime + (_cvarTimeLimit.GetFloat() * 60.0f)) - _globalVars.CurTime;
+        var flTimeLimit = _cvarTimeLimit.GetFloat();
+
+        if (flTimeLimit <= 0.0f)
+        {
+            return -1;
+        }
+
+        var flTimeLeft = (GameStartTime + (flTimeLimit * 60.0f)) - _globalVars.CurTime;
 
         return float.Max(flTimeLeft, 0.0f);
     }

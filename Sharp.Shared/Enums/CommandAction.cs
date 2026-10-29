@@ -22,19 +22,17 @@ namespace Sharp.Shared.Enums;
 public enum ECommandAction : byte
 {
     /// <summary>
-    ///     Default behavior
+    ///     Not handled; the default flow continues
     /// </summary>
     Skipped,
 
     /// <summary>
-    ///     Continue executing ExecuteStringCommand. If it is used in
-    ///     <see cref="Sharp.Shared.Listeners.IClientListener.OnClientSayCommand" />, no message will be sent
+    ///     Handled; whether the original flow is blocked depends on the call site, see each callback's documentation
     /// </summary>
     Handled,
 
     /// <summary>
-    ///     Skip executing ExecuteStringCommand. If it is used in
-    ///     <see cref="Sharp.Shared.Listeners.IClientListener.OnClientSayCommand" />, no message will be sent
+    ///     Blocks the original flow
     /// </summary>
     Stopped,
 };

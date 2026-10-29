@@ -751,41 +751,59 @@ static NetworkReceiver_t ComputeBypassMask()
     return mask;
 }
 
-static NetworkReceiver_t ComputePawnReceiver(CCSPlayerPawnBase* pPawn, bool bPlayerPawn)
+static NetworkReceiver_t ComputePawnReceiver(CCSPlayerPawnBase* pPawn)
 {
-    auto* pController = pPawn->GetOriginalController<CCSPlayerController*>();
-
-    const auto controllerIndex = pController != nullptr ? pController->GetEntityIndex() : INVALID_ENTITY_INDEX;
-    const bool bHasSelf        = CHook::IsClientIndexInRange(controllerIndex);
-
-    const NetworkReceiver_t selfBit = bHasSelf ? BASE_RECEIVER_MAGIC << (controllerIndex - 1) : 0;
+    const auto senderCount = std::min<EntityIndex_t>(static_cast<EntityIndex_t>(gpGlobals->MaxClients), CS_MAX_PLAYERS);
+    const bool blockPawn   = ms_transmit_block_dead_player_pawn->GetValue<bool>();
 
     NetworkReceiver_t visible = ~0ull;
+    NetworkReceiver_t owners  = 0;
 
-    if (bHasSelf)
+    for (EntityIndex_t i = 1; i <= senderCount; i++)
     {
+        auto* pSender = g_pGameEntitySystem->FindEntityByIndex<CCSPlayerController*>(i);
+        if (pSender == nullptr)
+        {
+            continue;
+        }
+
+        const bool bPlayerPawn = pSender->GetPlayerPawn() == pPawn;
+        if (!bPlayerPawn && pSender->GetObserverPawn() != pPawn)
+        {
+            continue;
+        }
+
+        const NetworkReceiver_t selfBit = BASE_RECEIVER_MAGIC << (i - 1);
+
+        NetworkReceiver_t mask = ~0ull;
+
         if (bPlayerPawn)
         {
             RLOCK;
 
-            if (const auto* pHook = g_pHooks[controllerIndex])
+            if (const auto* pHook = g_pHooks[i])
             {
-                visible = pHook->GetVisibleMask() | selfBit;
+                mask = pHook->GetVisibleMask();
             }
         }
 
-        if (ms_transmit_block_dead_player_pawn->GetValue<bool>()
-            && (!bPlayerPawn || pPawn->GetLifeState() != LIFE_ALIVE))
+        if (blockPawn && (!bPlayerPawn || pPawn->GetLifeState() != LIFE_ALIVE))
         {
-            visible = selfBit;
+            mask = 0;
         }
 
+        owners |= selfBit;
+        visible &= mask | selfBit;
+    }
+
+    if (owners != 0)
+    {
         visible |= ComputeBypassMask();
     }
 
-    if (pController == nullptr && ms_transmit_block_ownerless_pawn->GetValue<bool>())
+    if (pPawn->GetOriginalController<CCSPlayerController*>() == nullptr && ms_transmit_block_ownerless_pawn->GetValue<bool>())
     {
-        visible = selfBit;
+        visible &= owners;
     }
 
     return visible;
@@ -833,14 +851,14 @@ static NetworkReceiver_t TransmitManagerGetEntityReceiver(EntityIndex_t index)
 
         auto* pPlayerPawn = pController->GetPlayerPawn();
 
-        return pPlayerPawn != nullptr ? ComputePawnReceiver(pPlayerPawn, true) : ~0ull;
+        return pPlayerPawn != nullptr ? ComputePawnReceiver(pPlayerPawn) : ~0ull;
     }
 
     if (pEntity->IsPlayerPawn())
     {
         auto* pPawn = reinterpret_cast<CCSPlayerPawnBase*>(pEntity);
 
-        return ComputePawnReceiver(pPawn, pPawn->IsPlayer());
+        return ComputePawnReceiver(pPawn);
     }
 
     return ~0ull;
@@ -1303,6 +1321,8 @@ void InstallTransmitHook()
         InvalidateBlockPlan();
     });
     g_pHookManager->Hook_ClientConnect(HookType_Post, [](PlayerSlot_t slot, const char* pszName, SteamId_t steamId, bool bFakeClient) {
+        SetBlockTempEntState(BT_MapMusic, slot, false);
+
         WLOCK;
         g_iBypassTick[slot]  = TICK_BASE_VALUE(9999);
         g_bEverSpawned[slot] = false;
@@ -1323,6 +1343,8 @@ void InstallTransmitHook()
         DestroyHook(index);
     });
     g_pHookManager->Hook_ClientDisconnect(HookType_Post, [](PlayerSlot_t slot, int32_t reason, const char* name, SteamId_t steamId) {
+        SetBlockTempEntState(BT_MapMusic, slot, false);
+
         WLOCK;
         g_iBypassTick[slot]  = TICK_BASE_VALUE(9999);
         g_bEverSpawned[slot] = false;

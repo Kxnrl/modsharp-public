@@ -33,6 +33,7 @@ public interface IVirtualHook : IRuntimeNativeHook
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
     /// <exception cref="KeyNotFoundException">GameData not found</exception>
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(string module, string @class, string function, nint hookFn);
 
     /// <summary>
@@ -44,6 +45,7 @@ public interface IVirtualHook : IRuntimeNativeHook
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
     /// <exception cref="KeyNotFoundException">GameData not found</exception>
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(string module, string @class, int offset, nint hookFn);
 
     /// <summary>
@@ -54,5 +56,6 @@ public interface IVirtualHook : IRuntimeNativeHook
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="EntryPointNotFoundException">VTable invalid</exception>
     /// <exception cref="KeyNotFoundException">GameData not found</exception>
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(nint vTable, int offset, nint hookFn);
 }

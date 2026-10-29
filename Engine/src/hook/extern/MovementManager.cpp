@@ -637,34 +637,48 @@ void InstallMovementHook()
     ms_water_ground_jump_velocity    = g_ConVarManager.CreateConVar("ms_water_ground_jump_velocity", 145.f, true, 100.f, true, 1000.f, "Vertical velocity when jumping off the ground in waist-deep or deeper water. The engine gives 100, too low to leave the ground.", FCVAR_RELEASE);
 }
 
-void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue)
+static bool TryGetMovementSlot(CCSPlayerController* pController, PlayerSlot_t& slot)
 {
     if (!pController)
+        return false;
+
+    slot = pController->GetPlayerSlot();
+
+    return slot < CS_MAX_PLAYERS;
+}
+
+void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue)
+{
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
         return;
 
-    m_flLaggedMovementValue[pController->GetPlayerSlot()] = std::clamp(flValue, 0.01f, 5.0f);
+    m_flLaggedMovementValue[slot] = std::clamp(flValue, 0.01f, 5.0f);
 }
 
 void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue)
 {
-    if (!pController)
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
         return;
 
-    m_flRunSpeedValue[pController->GetPlayerSlot()] = std::clamp(flValue, 0.01f, 5.0f);
+    m_flRunSpeedValue[slot] = std::clamp(flValue, 0.01f, 5.0f);
 }
 
 float GetPlayerLaggedMovementValue(CCSPlayerController* pController)
 {
-    if (!pController)
-        return 1;
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
+        return DefaultSpeedValue;
 
-    return m_flLaggedMovementValue[pController->GetPlayerSlot()];
+    return m_flLaggedMovementValue[slot];
 }
 
 float GetPlayerRunSpeedValue(CCSPlayerController* pController)
 {
-    if (!pController)
-        return 1;
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
+        return DefaultSpeedValue;
 
-    return m_flRunSpeedValue[pController->GetPlayerSlot()];
+    return m_flRunSpeedValue[slot];
 }

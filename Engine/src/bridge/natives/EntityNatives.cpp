@@ -231,6 +231,16 @@ static void EntitySetStateChanged(CBaseEntity* pEntity, uint16_t offset)
     SetStateChanged(pEntity, offset);
 }
 
+static void EntityNetworkArrayStateChanged(CBaseEntity* pEntity, uint16_t offset, int32_t arrayIndex)
+{
+    NetworkStateChanged(reinterpret_cast<uintptr_t>(pEntity), offset, static_cast<uint32_t>(arrayIndex));
+}
+
+static void EntitySetArrayStateChanged(CBaseEntity* pEntity, uint16_t offset, int32_t arrayIndex)
+{
+    SetStateChanged(pEntity, offset, static_cast<uint32_t>(arrayIndex));
+}
+
 static void EntitySetStructStateChanged(void* pStructObject, uint16_t offset, int32_t vFuncIndex)
 {
     SetStructStateChanged(pStructObject, offset, vFuncIndex);
@@ -592,6 +602,8 @@ void Init()
     bridge::CreateNative("Entity.IsValid", reinterpret_cast<void*>(EntityIsValid));
     bridge::CreateNative("Entity.NetworkStateChanged", reinterpret_cast<void*>(EntityNetworkStateChanged));
     bridge::CreateNative("Entity.SetStateChanged", reinterpret_cast<void*>(EntitySetStateChanged));
+    bridge::CreateNative("Entity.NetworkArrayStateChanged", reinterpret_cast<void*>(EntityNetworkArrayStateChanged));
+    bridge::CreateNative("Entity.SetArrayStateChanged", reinterpret_cast<void*>(EntitySetArrayStateChanged));
     bridge::CreateNative("Entity.SetStructStateChanged", reinterpret_cast<void*>(EntitySetStructStateChanged));
     bridge::CreateNative("Entity.CollisionRulesChanged", reinterpret_cast<void*>(EntityCollisionRulesChanged));
     bridge::CreateNative("Entity.EmitSound", reinterpret_cast<void*>(EntityEmitSound));

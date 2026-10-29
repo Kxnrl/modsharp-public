@@ -63,6 +63,7 @@ public interface IKeyValues : INativeObject
     /// <summary>
     ///     Export to string
     /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is not positive</exception>
     bool SaveToString(int size,
         out string        result,
         int               indent           = 0,

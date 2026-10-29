@@ -28,25 +28,37 @@ namespace Sharp.Core.Bridges.Interfaces;
 [NativeVirtualObject(HasDestructors = true)]
 internal partial class MidFuncHook : NativeObject, IMidFuncHook
 {
+    private bool _installed;
+
     public MidFuncHook() : base(nint.Zero)
         => _this = Natives.Core.CreateMidFuncHook();
 
     public void Dispose()
-        => Natives.Core.RemoveMidFuncHook(_this);
+    {
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        MarkAsDisposed();
+        Natives.Core.RemoveMidFuncHook(_this);
+    }
 
     public IntPtr Trampoline => throw new NotSupportedException("YOU SHOULD NEVER CALL THIS WITH MidFuncHook");
 
-    public partial void Prepare(nint pTargetFn, nint pHookFn);
+    public partial void PrepareNative(nint pTargetFn, nint pHookFn);
 
-    public partial bool Install();
+    public partial bool InstallNative();
 
-    public partial void Uninstall();
+    public partial void UninstallNative();
 
     // ReSharper disable once MemberCanBePrivate.Global
     public partial nint GetTrampoline();
 
     public void Prepare(string gamedata, nint hookFn)
     {
+        CheckDisposed();
+
         var address = CoreGameData.Core.GetAddress(gamedata);
 
         if (address == nint.Zero)
@@ -55,5 +67,40 @@ internal partial class MidFuncHook : NativeObject, IMidFuncHook
         }
 
         Prepare(address, hookFn);
+    }
+
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    public void Prepare(nint pTargetFn, nint pHookFn)
+    {
+        CheckDisposed();
+
+        if (_installed)
+        {
+            throw new InvalidOperationException("MidFunc hook is already installed, uninstall it before preparing again");
+        }
+
+        PrepareNative(pTargetFn, pHookFn);
+    }
+
+    public bool Install()
+    {
+        CheckDisposed();
+
+        if (!InstallNative())
+        {
+            return false;
+        }
+
+        _installed = true;
+
+        return true;
+    }
+
+    public void Uninstall()
+    {
+        CheckDisposed();
+
+        UninstallNative();
+        _installed = false;
     }
 }

@@ -256,11 +256,13 @@ public interface IEntityManager
     /// <summary>
     ///     Find PlayerPawn by PlayerSlot
     /// </summary>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="slot" /> is 64 or greater</exception>
     IBasePlayerPawn? FindPlayerPawnBySlot(PlayerSlot slot);
 
     /// <summary>
     ///     Find PlayerController by PlayerSlot
     /// </summary>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="slot" /> is 64 or greater</exception>
     IPlayerController? FindPlayerControllerBySlot(PlayerSlot slot);
 
     /// <summary>

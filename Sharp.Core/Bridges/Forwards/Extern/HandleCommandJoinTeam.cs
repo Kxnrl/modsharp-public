@@ -29,13 +29,13 @@ public static class HandleCommandJoinTeam
     public delegate HookReturnValue<bool> DelegateHandleCommandJoinTeamPre(nint ptrClient,
         nint                                                                    ptrController,
         ref int                                                                 team,
-        ref bool                                                                queue,
+        ref JoinTeamFlags                                                       flags,
         ref int                                                                 coachTeam);
 
     public delegate void DelegateHandleCommandJoinTeamPost(nint ptrClient,
         nint                                                    pController,
         int                                                     team,
-        bool                                                    queue,
+        JoinTeamFlags                                           flags,
         int                                                     coachTeam,
         EHookAction                                             hookAction,
         bool                                                    returnValue);
@@ -48,12 +48,12 @@ public static class HandleCommandJoinTeam
     public static unsafe EHookAction OnHandleCommandJoinTeamPreExport(nint ptrClient,
         nint                                                               ptrController,
         int*                                                               pTeam,
-        bool*                                                              pQueue,
+        JoinTeamFlags*                                                     pFlags,
         int*                                                               pCoachTeam,
         bool*                                                              returnValue)
     {
         ref var team      = ref Unsafe.AsRef<int>(pTeam);
-        ref var queue     = ref Unsafe.AsRef<bool>(pQueue);
+        ref var flags     = ref Unsafe.AsRef<JoinTeamFlags>(pFlags);
         ref var coachTeam = ref Unsafe.AsRef<int>(pCoachTeam);
 
         if (OnHandleCommandJoinTeamPre is null)
@@ -61,18 +61,11 @@ public static class HandleCommandJoinTeam
             return EHookAction.Ignored;
         }
 
-        var action = OnHandleCommandJoinTeamPre.Invoke(ptrClient, ptrController, ref team, ref queue, ref coachTeam);
+        var action = OnHandleCommandJoinTeamPre.Invoke(ptrClient, ptrController, ref team, ref flags, ref coachTeam);
 
-        if (action.Action == EHookAction.SkipCallReturnOverride)
+        if (action.Action is EHookAction.SkipCallReturnOverride or EHookAction.ChangeParamReturnOverride)
         {
             *returnValue = action.ReturnValue;
-
-            return EHookAction.SkipCallReturnOverride;
-        }
-
-        if (action.Action == EHookAction.Ignored)
-        {
-            return EHookAction.Ignored;
         }
 
         return action.Action;
@@ -82,7 +75,7 @@ public static class HandleCommandJoinTeam
     public static void OnHandleCommandJoinTeamPostExport(nint ptrClient,
         nint                                                  ptrController,
         int                                                   team,
-        byte                                                  queue,
+        JoinTeamFlags                                         flags,
         int                                                   coachTeam,
         EHookAction                                           hookAction,
         byte                                                  returnValue)
@@ -90,7 +83,7 @@ public static class HandleCommandJoinTeam
         OnHandleCommandJoinTeamPost?.Invoke(ptrClient,
                                             ptrController,
                                             team,
-                                            queue != 0,
+                                            flags,
                                             coachTeam,
                                             hookAction,
                                             returnValue != 0);
