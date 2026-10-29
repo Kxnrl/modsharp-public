@@ -30,4 +30,5 @@ public enum ShakeCommand : uint
     Frequency,
     StartRumbleOnly,
     StartNoRumble,
+    Duration,
 }

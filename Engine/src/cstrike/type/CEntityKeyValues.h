@@ -37,12 +37,7 @@ enum EntityKVAllocatorType_t : uint8_t
 enum EntityIOTargetType_t
 {
     ENTITY_IO_TARGET_INVALID                 = -1,
-    ENTITY_IO_TARGET_CLASSNAME               = 0,
-    ENTITY_IO_TARGET_CLASSNAME_DERIVES_FROM  = 1,
     ENTITY_IO_TARGET_ENTITYNAME              = 2,
-    ENTITY_IO_TARGET_CONTAINS_COMPONENT      = 3,
-    ENTITY_IO_TARGET_SPECIAL_ACTIVATOR       = 4,
-    ENTITY_IO_TARGET_SPECIAL_CALLER          = 5,
     ENTITY_IO_TARGET_EHANDLE                 = 6,
     ENTITY_IO_TARGET_ENTITYNAME_OR_CLASSNAME = 7,
 };
