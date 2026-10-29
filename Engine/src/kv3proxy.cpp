@@ -40,7 +40,7 @@ CSharpKeyValues3Helper*       g_pKeyValues3Helper = &s_CSharpKeyValues3Helper;
 #define IMPL_KV3_GETTER(ret, type)                                          \
     ret CSharpKeyValues3Helper::Get##type(KeyValues3* kv, ret defaultValue) \
     {                                                                       \
-        return kv->Get##type();                                             \
+        return kv->Get##type(defaultValue);                                 \
     }
 
 #define IMPL_KV3_SETTER(ret, type)                                    \
@@ -175,7 +175,10 @@ IMPL_KV3_GETTER(uint32_t, UInt);
 IMPL_KV3_GETTER(uint64_t, UInt64);
 IMPL_KV3_GETTER(float, Float);
 IMPL_KV3_GETTER(double, Double);
-IMPL_KV3_GETTER(const char*, String);
+const char* CSharpKeyValues3Helper::GetString(KeyValues3* kv, const char* defaultValue)
+{
+    return kv->GetString();
+}
 
 uint8_t* CSharpKeyValues3Helper::GetBinaryBlob(KeyValues3* kv)
 {
