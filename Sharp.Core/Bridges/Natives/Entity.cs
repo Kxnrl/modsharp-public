@@ -58,6 +58,8 @@ public static unsafe partial class Entity
 
     public static partial IntPtr GetThinkFunc(string classname, string thinkName);
 
+    public static partial string GetDesignerName(IntPtr entity);
+
     public static partial IntPtr FindByName(IntPtr start, string name);
 
     public static partial IntPtr FindInSphere(IntPtr start, Vector* center, float radius);

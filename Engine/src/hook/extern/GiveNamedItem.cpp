@@ -35,6 +35,7 @@
 #include "cstrike/interface/ISchemaSystem.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CEconItemView.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
@@ -356,8 +357,10 @@ static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
     if (!pEntity)
         return nullptr;
 
-    const auto pszClassname = pEntity->GetClassname();
-    if (!pszClassname || strcasecmp(pszClassname, "game_player_equip") != 0)
+    static const auto s_pGamePlayerEquipClass = g_pGameEntitySystem->FindEntityClassByName("game_player_equip");
+    AssertPtr(s_pGamePlayerEquipClass);
+
+    if (!pEntity->IsEntityClass(s_pGamePlayerEquipClass))
         return nullptr;
 
     return pEntity;
@@ -442,12 +445,14 @@ BeginMemberHookScope(CGamePlayerEquip)
     // The Pulse AllPlayers callback still calls this two-argument game function.
     DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void*))
     {
-        CCSPlayerPawn* pPlayer = nullptr;
-        while ((pPlayer = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player")) != nullptr)
-        {
-            if (pPlayer->IsPlayerPawn() && pPlayer->IsPlayer() && pPlayer->IsAlive())
+        static const auto s_pPlayerClass = g_pGameEntitySystem->FindEntityClassByName("player");
+        AssertPtr(s_pPlayerClass);
+
+        s_pPlayerClass->ForEachEntity([pEntity](CBaseEntity* pBase) {
+            const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pBase);
+            if (pPlayer->IsPlayer() && pPlayer->IsAlive())
                 TriggerForPlayer(pEntity, pPlayer, nullptr);
-        }
+        });
     }
 
     DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void*, void*, void*, void* pContext, void* pEntityArgument))

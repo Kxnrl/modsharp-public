@@ -483,6 +483,13 @@ public static class SchemaSystem
         NetVarStateChanged(ptr, schemaClass, schemaField, extraOffset, isStruct);
     }
 
+#region Inheritance
+
+    public static bool IsDerivedFrom(string classname, string baseClassname)
+        => GetSchemaClass(classname).BaseClasses.Contains(baseClassname);
+
+#endregion
+
 #region Fast-path overloads (pre-resolved SchemaClass + SchemaClassField)
 
     public static void SetNetVarByte(nint ptr,

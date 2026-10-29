@@ -21,6 +21,7 @@ using System;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
 using Sharp.Core.Helpers;
+using Sharp.Core.Objects;
 using Sharp.Core.Utilities;
 using Sharp.Generator;
 using Sharp.Shared;
@@ -153,16 +154,21 @@ internal partial class BaseWeapon : EconEntity, IBaseWeapon
 
     public string GetWeaponClassname()
     {
-        var classname = Classname;
+        var schemaClassname = GetSchemaClassname();
 
-        if (classname.StartsWith("item_", StringComparison.OrdinalIgnoreCase))
+        if (!SchemaSystem.IsDerivedFrom(schemaClassname, "CBasePlayerWeapon"))
         {
-            return classname;
+            if (SchemaSystem.IsDerivedFrom(schemaClassname, "CItem"))
+            {
+                return GetItemClassname();
+            }
+
+            throw new InvalidOperationException($"Entity {Classname} is not weapon!");
         }
 
         if (!SharedGameObject.EconItemDefinitionsById.TryGetValue(ItemDefinitionIndex, out var value))
         {
-            throw new InvalidOperationException($"Entity {classname} is not weapon!");
+            throw new InvalidOperationException($"Entity {Classname} is not weapon!");
         }
 
         var definition = value.DefinitionName;
@@ -172,7 +178,7 @@ internal partial class BaseWeapon : EconEntity, IBaseWeapon
             return definition;
         }
 
-        throw new InvalidOperationException($"Entity {classname} is not weapon!");
+        throw new InvalidOperationException($"Entity {Classname} is not weapon!");
     }
 
     public string GetItemDefinitionName()
@@ -180,23 +186,45 @@ internal partial class BaseWeapon : EconEntity, IBaseWeapon
 
     public IEconItemDefinition GetItemDefinition()
     {
-        var classname = Classname;
+        var schemaClassname = GetSchemaClassname();
 
-        if (classname.StartsWith("item_", StringComparison.OrdinalIgnoreCase))
+        if (!SchemaSystem.IsDerivedFrom(schemaClassname, "CBasePlayerWeapon"))
         {
-            if (SharedGameObject.EconItemDefinitionsByName.TryGetValue(classname, out var itemDefinition))
+            if (!SchemaSystem.IsDerivedFrom(schemaClassname, "CItem"))
+            {
+                throw new InvalidOperationException($"Entity {Classname} is not weapon!");
+            }
+
+            var itemClassname = GetItemClassname();
+
+            if (SharedGameObject.EconItemDefinitionsByName.TryGetValue(itemClassname, out var itemDefinition))
             {
                 return itemDefinition;
             }
 
-            throw new InvalidOperationException($"Item {classname} is not EconItem");
+            throw new InvalidOperationException($"Item {itemClassname} is not EconItem");
         }
 
         if (!SharedGameObject.EconItemDefinitionsById.TryGetValue(ItemDefinitionIndex, out var weaponDefinition))
         {
-            throw new InvalidOperationException($"Entity {classname} is not weapon!");
+            throw new InvalidOperationException($"Entity {Classname} is not weapon!");
         }
 
         return weaponDefinition;
+    }
+
+    private string GetItemClassname()
+    {
+        var designerName = GetDesignerName();
+
+        if (!designerName.Equals("item_cutters", StringComparison.OrdinalIgnoreCase))
+        {
+            return designerName;
+        }
+
+        var gameRules = GameRules.Create(Bridges.Natives.Core.GetGameRules())
+                        ?? throw new InvalidOperationException("GameRules is not available");
+
+        return gameRules.MapHasRescueZone ? "item_cutters" : "item_defuser";
     }
 }

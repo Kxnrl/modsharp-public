@@ -74,6 +74,18 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
 
     public unsafe string Classname => GetIdentity(_this)->Classname.Get();
 
+    public string GetDesignerName()
+    {
+        var designerName = Entity.GetDesignerName(_this);
+
+        if (designerName.Length == 0)
+        {
+            throw new InvalidOperationException($"Entity {Classname} has no designer name");
+        }
+
+        return designerName;
+    }
+
     public unsafe string Name => GetIdentity(_this)->Name.Get();
 
     public IBaseEntity? OwnerEntity
@@ -300,7 +312,9 @@ internal partial class BaseEntity : SchemaObject, IBaseEntity, INativeCreatable<
     public bool IsPlayerController => Entity.IsPlayerController(_this);
 
     public IBaseGrenadeProjectile? AsBaseGrenadeProjectile()
-        => Classname.EndsWith("_projectile", StringComparison.OrdinalIgnoreCase) ? BaseGrenadeProjectile.Create(_this) : null;
+        => SchemaSystem.IsDerivedFrom(GetSchemaClassname(), "CBaseCSGrenadeProjectile")
+            ? BaseGrenadeProjectile.Create(_this)
+            : null;
 
     [SkipLocalsInit]
     public unsafe void DispatchSpawn(IReadOnlyDictionary<string, KeyValuesVariantValueItem>? keyValues = null)

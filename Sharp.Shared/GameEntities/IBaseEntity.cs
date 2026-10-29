@@ -111,6 +111,16 @@ public interface IBaseEntity : ISchemaObject
     string Classname { get; }
 
     /// <summary>
+    ///     Get the designer name of this entity's entity class<br />
+    ///     <remarks>
+    ///         Not affected by <see cref="SetClassname" />; an entity created through an alias returns the designer name
+    ///         of the target class. Make sure this entity is valid before calling it, otherwise it will crash the server
+    ///     </remarks>
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The entity class has no designer name</exception>
+    string GetDesignerName();
+
+    /// <summary>
     ///     Get the targetname of this entity<br />
     ///     <remarks>
     ///         Make sure you call <see cref="IsValid" />, or this entity is valid in current context, before using this field,
@@ -570,6 +580,8 @@ public interface IBaseEntity : ISchemaObject
     ///     Cast to BaseGrenade <br />
     ///     <remarks>It will return null if the entity is not a grenade</remarks>
     /// </summary>
+    /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
+    /// <exception cref="KeyNotFoundException">The entity's schema class is not in the schema table</exception>
     IBaseGrenadeProjectile? AsBaseGrenadeProjectile();
 
     /// <summary>

@@ -174,6 +174,9 @@ internal partial class GameRules : SchemaObject, IGameRules
     [NativeSchemaField("CCSGameRules", "m_bCompleteReset", typeof(bool), Validate = true)]
     private partial SchemaField GetIsCompleteResetField();
 
+    [NativeSchemaField("CCSGameRules", "m_bMapHasRescueZone", typeof(bool), Validate = true)]
+    private partial SchemaField GetMapHasRescueZoneField();
+
     [NativeSchemaField("CCSGameRules", "m_nEndMatchMapGroupVoteTypes", typeof(int[]), Validate = true)]
     private partial SchemaField GetEndMatchMapGroupVoteTypesField();
 

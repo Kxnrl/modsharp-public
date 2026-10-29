@@ -961,7 +961,14 @@ CBaseEntity* GetCurrentPointScriptEntity()
 
     if (s_CsScriptSubobjectOffset == static_cast<size_t>(-1))
     {
-        auto* probe = g_pGameEntitySystem->FindByClassname(nullptr, "point_script");
+        static const auto s_pPointScriptClass = g_pGameEntitySystem->FindEntityClassByName("point_script");
+        AssertPtr(s_pPointScriptClass);
+
+        CBaseEntity* probe = nullptr;
+        s_pPointScriptClass->ForEachEntity([&probe](CBaseEntity* pEntity) {
+            probe = pEntity;
+            return false;
+        });
         if (probe == nullptr)
             return nullptr; // no point_script to learn the layout from yet; retry on a later call
 

@@ -322,8 +322,7 @@ private:
     bool        m_verdicts[256];
 };
 
-int32_t s_identityNextOffset        = 0;
-int32_t s_identityNextByClassOffset = 0;
+int32_t s_identityNextOffset = 0;
 
 [[nodiscard]] inline CEntityIdentity* Link(const CEntityIdentity* identity, int32_t offset)
 {
@@ -395,16 +394,12 @@ int32_t CollectByClassname(const CGameEntitySystem* system, const char* pattern,
 
 CBaseEntity* FindNextEntityInClass(CEntityIdentity* identity)
 {
-    const auto next = s_identityNextByClassOffset;
-    for (; identity != nullptr; identity = Link(identity, next))
-    {
-        if (identity->IsMarkedForDeletion())
-            continue;
-
-        if (auto* entity = identity->GetBaseEntity())
-            return entity;
-    }
-    return nullptr;
+    CBaseEntity* result = nullptr;
+    CEntityClass::ForEachIdentityFrom(identity, [&result](CEntityIdentity* candidate) {
+        result = candidate->GetBaseEntity();
+        return false;
+    });
+    return result;
 }
 
 int32_t EnumerateEntityClass(const CEntityClass* klass, CBaseEntity** buffer, int32_t capacity)
@@ -412,20 +407,12 @@ int32_t EnumerateEntityClass(const CEntityClass* klass, CBaseEntity** buffer, in
     if (klass == nullptr)
         return 0;
 
-    const auto next  = s_identityNextByClassOffset;
-    int32_t    total = 0;
-    for (auto* identity = klass->GetEntityListHead(); identity != nullptr; identity = Link(identity, next))
-    {
-        if (identity->IsMarkedForDeletion())
-            continue;
-
-        if (auto* entity = identity->GetBaseEntity())
-        {
-            if (buffer != nullptr && total < capacity)
-                buffer[total] = entity;
-            ++total;
-        }
-    }
+    int32_t total = 0;
+    klass->ForEachEntity([&](CBaseEntity* entity) {
+        if (buffer != nullptr && total < capacity)
+            buffer[total] = entity;
+        ++total;
+    });
     return total;
 }
 
@@ -433,20 +420,15 @@ int32_t CollectInClass(const CEntityClass* klass, const char* classname, CBaseEn
 {
     const WildcardPattern matches(classname);
     VerdictMemo           memo;
-    const auto            next  = s_identityNextByClassOffset;
     int32_t               total = 0;
-    for (auto* identity = klass->GetEntityListHead(); identity != nullptr; identity = Link(identity, next))
-    {
-        if (identity->IsMarkedForDeletion() || !memo(identity->GetClassname(), matches))
-            continue;
+    klass->ForEachIdentity([&](CEntityIdentity* identity) {
+        if (!memo(identity->GetClassname(), matches))
+            return;
 
-        if (auto* entity = identity->GetBaseEntity())
-        {
-            if (buffer != nullptr && total < capacity)
-                buffer[total] = entity;
-            ++total;
-        }
-    }
+        if (buffer != nullptr && total < capacity)
+            buffer[total] = identity->GetBaseEntity();
+        ++total;
+    });
     return total;
 }
 
@@ -570,9 +552,9 @@ void InitGameEntitySystem()
 
 void CGameEntitySystem::Init()
 {
-    g_pGameEntitySystem         = g_pGameResourceServiceServer->GetGameEntitySystem();
-    s_identityNextOffset        = CEntityIdentity::GetNextOffset();
-    s_identityNextByClassOffset = CEntityIdentity::GetNextByClassOffset();
+    g_pGameEntitySystem                    = g_pGameResourceServiceServer->GetGameEntitySystem();
+    s_identityNextOffset                   = CEntityIdentity::GetNextOffset();
+    CEntityIdentity::sm_nNextByClassOffset = CEntityIdentity::GetNextByClassOffset();
     CacheEntityClasses();
 }
 
@@ -701,7 +683,7 @@ CBaseEntity* CGameEntitySystem::FindByCppClass(CBaseEntity* startEntity, const c
         const auto* info     = klass != nullptr ? klass->GetInfo() : nullptr;
         if (info != nullptr && info->m_pszCppClassname != nullptr
             && EqualsIgnoreCase(cppClass, info->m_pszCppClassname))
-            return FindNextEntityInClass(Link(identity, s_identityNextByClassOffset));
+            return FindNextEntityInClass(identity->GetNextByClass());
         return nullptr;
     }
 

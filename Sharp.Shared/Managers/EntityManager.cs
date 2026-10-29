@@ -232,12 +232,22 @@ public interface IEntityManager
     CUtlSymbolLarge AllocPooledString(string content);
 
     /// <summary>
-    ///     Listen for entity Output
+    ///     Listen for entity Output<br />
+    ///     <remarks>
+    ///         Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
+    ///         class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
+    ///         after their Classname is changed
+    ///     </remarks>
     /// </summary>
     void HookEntityOutput(string classname, string output);
 
     /// <summary>
-    ///     Listen for entity Input
+    ///     Listen for entity Input<br />
+    ///     <remarks>
+    ///         Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
+    ///         class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
+    ///         after their Classname is changed
+    ///     </remarks>
     /// </summary>
     void HookEntityInput(string classname, string input);
 

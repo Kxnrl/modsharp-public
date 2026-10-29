@@ -446,18 +446,7 @@ static void ForEachOfClass(const CEntityClass* pClass, Fn&& fn)
         return;
     }
 
-    for (auto* pIdentity = pClass->GetEntityListHead(); pIdentity; pIdentity = pIdentity->m_pNextByClass())
-    {
-        if (pIdentity->IsMarkedForDeletion())
-        {
-            continue;
-        }
-
-        if (auto* pEntity = pIdentity->GetBaseEntity())
-        {
-            fn(pEntity);
-        }
-    }
+    pClass->ForEachEntity(fn);
 }
 
 template <typename Fn>
