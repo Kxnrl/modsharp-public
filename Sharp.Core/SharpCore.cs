@@ -57,6 +57,8 @@ internal interface ISharpCore : IModSharp
 {
     void InitMainThread();
 
+    bool IsOnMainThread();
+
     void OnModuleUnload(IModSharpModule module);
 
     void OnModuleUnloaded(IModSharpModule module);
@@ -939,9 +941,7 @@ internal partial class SharpCore : ISharpCore
 
     public void StopTimer(Guid uniqueId)
     {
-        var mainThreadId = _mainThreadId != 0 ? _mainThreadId : _bootThreadId;
-
-        if (Environment.CurrentManagedThreadId != mainThreadId)
+        if (!IsOnMainThread())
         {
             if (!_timers.TryGetValue(uniqueId, out var stopping))
             {
@@ -1716,6 +1716,9 @@ internal partial class SharpCore : ISharpCore
 
     public void InitMainThread()
         => _mainThreadId = Environment.CurrentManagedThreadId;
+
+    public bool IsOnMainThread()
+        => Environment.CurrentManagedThreadId == (_mainThreadId != 0 ? _mainThreadId : _bootThreadId);
 
     private void Shutdown()
     {

@@ -80,4 +80,5 @@ public enum LoadoutSlot : uint
     MusicKit             = 0x36,
     Flair0               = 0x37,
     Spray0               = 0x38,
+    Pet                  = 0x39,
 }

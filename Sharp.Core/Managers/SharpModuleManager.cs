@@ -28,7 +28,6 @@ using System.Text;
 using McMaster.NETCore.Plugins;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Helpers;
 using Sharp.Core.Objects;
@@ -123,16 +122,16 @@ internal class SharpModuleManager : ICoreSharpModuleManager
                     continue;
                 }
 
-                Log.Logger.Information("Reloading module [{Name}]...", module.Name);
+                Bootstrap.CoreLogger.Warning("Reloading module [{Name}]...", module.Name);
                 module.Unload(OnModuleUnload);
                 module.Update();
                 module.Load(true, OnModuleLoad, _sharedManager, _configuration);
                 updates.Add(module);
-                Log.Logger.Information("Module [{Name}] reloaded successfully", module.Name);
+                Bootstrap.CoreLogger.Warning("Module [{Name}] reloaded successfully", module.Name);
             }
             catch (Exception e)
             {
-                Log.Logger.Error(e, "Failed to reload module [{Name}]", module.Name);
+                Bootstrap.CoreLogger.Error(e, "Failed to reload module [{Name}]", module.Name);
             }
         }
 
