@@ -114,6 +114,9 @@ public interface ISteamApi
     /// <returns></returns>
     bool DownloadItem(ulong sharedFileId, bool highPriority);
 
+    /// <returns>True if the request was sent to Steam; the deletion result is not reported back.</returns>
+    bool DeleteItem(ulong sharedFileId);
+
     /// <summary>
     ///     Suspend or resume downloads
     /// </summary>
@@ -124,4 +127,10 @@ public interface ISteamApi
     /// </summary>
     /// <returns></returns>
     uint GetPublicIP();
+
+    /// <returns>The native ISteamGameServer pointer, or 0 when Steam is not available.</returns>
+    nint GetSteamGameServer();
+
+    /// <returns>The native ISteamUGC pointer, or 0 when Steam is not available.</returns>
+    nint GetSteamUGC();
 }

@@ -62,8 +62,8 @@ static CSteamGameServerAPIContext g_SteamGameServerAPIContext;
 static ISteamApiProxy             g_SteamApiProxy;
 static CallbackListener*          g_pCallbackListener   = nullptr;
 ISteamApiProxy*                   g_pSteamApiProxy      = &g_SteamApiProxy;
-uint64_t                          g_unDualAddonId       = 0;
-bool                              g_bDualAddonAvailable = false;
+static uint64_t                   g_unDualAddonId       = 0;
+static bool                       g_bDualAddonAvailable = false;
 
 void InitApiContext()
 {

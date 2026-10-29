@@ -198,6 +198,14 @@ bool ISteamApiProxy::DownloadItem(uint64_t nPublishedFileId, bool bHighPriority)
     return m_pSteamUGC->DownloadItem(static_cast<PublishedFileId_t>(nPublishedFileId), bHighPriority);
 }
 
+bool ISteamApiProxy::DeleteItem(uint64_t nPublishedFileId)
+{
+    if (!m_pSteamUGC)
+        return false;
+
+    return m_pSteamUGC->DeleteItem(static_cast<PublishedFileId_t>(nPublishedFileId)) != k_uAPICallInvalid;
+}
+
 void ISteamApiProxy::SuspendDownloads(bool bSuspend)
 {
     if (!m_pSteamUGC)
@@ -212,4 +220,14 @@ uint32_t ISteamApiProxy::GetPublicIP()
         return 0;
 
     return m_pSteamServer->GetPublicIP().m_unIPv4;
+}
+
+void* ISteamApiProxy::GetSteamGameServer()
+{
+    return m_pSteamServer;
+}
+
+void* ISteamApiProxy::GetSteamUGC()
+{
+    return m_pSteamUGC;
 }
