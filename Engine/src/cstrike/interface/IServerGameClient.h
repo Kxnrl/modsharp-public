@@ -24,8 +24,8 @@
 
 #include "definitions.h"
 
-/* IServerGameClients */
-class IServerGameClient : IAppSystem
+// Source2GameClients001 (vtable CSource2GameClients), called without its vtable
+class IServerGameClient
 {
 public:
     enum EClientType
@@ -160,12 +160,21 @@ public:
     };
 
 public:
+    void ClientCommand(PlayerSlot_t slot, const class CCommand& command);
+    int  GetPlayerScore(PlayerSlot_t slot);
+};
+
+// Reference only: CSource2GameClients' vtable as of the 2026-10-23 build, slot numbers in the comments.
+// Never call through it, the slots move between updates; IServerGameClient above is what code uses.
+class IServerGameClientVTable : IAppSystem
+{
+public:
     virtual void ClientConnect(PlayerSlot_t nSlot, const char* pszName, SteamId_t steamId, const char* pszNetworkId, const char* pszAddress, bool bFakePlayer) = 0; // 11
     virtual bool CheckConnect(PlayerSlot_t nSlot, const char* pszName, SteamId_t xuid, const char* pszNetworkId, bool unk1, void* pRejectReason)               = 0; // 12
-    virtual void ClientPutInServer(PlayerSlot_t nSlot, const char* pszName, EClientType type, SteamId_t steamId)                                               = 0; // 13
+    virtual void ClientPutInServer(PlayerSlot_t nSlot, const char* pszName, IServerGameClient::EClientType type, SteamId_t steamId)                            = 0; // 13
     virtual void ClientActive(PlayerSlot_t nSlot, bool bLoadGame, const char* pszName, SteamId_t steamId)                                                      = 0; // 14
     virtual void ClientFullyConnect(PlayerSlot_t nSlot)                                                                                                        = 0; // 15
-    virtual void ClientDisconnect(PlayerSlot_t nSlot, ENetworkDisconnectionReason reason, const char* pszName, SteamId_t steamId, const char* pszNetworkId)    = 0; // 16
+    virtual void ClientDisconnect(PlayerSlot_t nSlot, IServerGameClient::ENetworkDisconnectionReason reason, const char* pszName, SteamId_t steamId, const char* pszNetworkId) = 0; // 16
     virtual void ClientCommand(PlayerSlot_t nSlot, const class CCommand& pCommand)                                                                             = 0; // 17
     virtual void ClientStringTableChanged(PlayerSlot_t slot, void* pData)                                                                                      = 0; // 18
     virtual void ClientSettingsChanged(PlayerSlot_t nSlot)                                                                                                     = 0; // 19

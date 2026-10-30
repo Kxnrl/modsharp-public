@@ -29,10 +29,12 @@
     <ClCompile Include="src\cstrike\interfaces.cpp" />
     <ClCompile Include="src\cstrike\interface\CDedicatedServerWorkshopManager.cpp" />
     <ClCompile Include="src\cstrike\Interface\ICvar.cpp" />
+    <ClCompile Include="src\cstrike\interface\IEngineServer.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameSpawnGroupMgr.cpp" />
     <ClCompile Include="src\cstrike\interface\IGameTypes.cpp" />
     <ClCompile Include="src\cstrike\interface\INetworkStringTable.cpp" />
     <ClCompile Include="src\cstrike\interface\IResourceSystem.cpp" />
+    <ClCompile Include="src\cstrike\interface\IServerGameClient.cpp" />
     <ClCompile Include="src\cstrike\Interface\ISoundOpSystem.cpp" />
     <ClCompile Include="src\cstrike\type\CCommand.cpp" />
     <ClCompile Include="src\cstrike\type\CEntityKeyValues.cpp" />
