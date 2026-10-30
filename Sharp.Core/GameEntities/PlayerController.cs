@@ -67,6 +67,9 @@ internal partial class PlayerController : BaseEntity, IPlayerController
     public void SetClanTag(string tag)
         => Player.ControllerSetClanTag(_this, tag);
 
+    public void ResetClanTag()
+        => Player.ControllerResetClanTag(_this);
+
     public void CheckPawn()
         => Player.ControllerCheckPawn(_this);
 
