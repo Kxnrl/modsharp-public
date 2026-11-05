@@ -98,6 +98,8 @@ internal unsafe partial class KeyValuesHelper : NativeObject
     public partial void SetFloat(nint kv, string name, float value);
 
     public partial void SetPtr(nint kv, string name, nint value);
+
+    public partial void UsesEscapeSequences(nint kv, bool state);
 }
 
 [NativeVirtualObject(HasDestructors = true)]

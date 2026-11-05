@@ -74,6 +74,7 @@ public:
     virtual void SetUint64(KeyValues* kv, const char* name, uint64_t value) const;
     virtual void SetFloat(KeyValues* kv, const char* name, float value) const;
     virtual void SetPtr(KeyValues* kv, const char* name, void* value) const;
+    virtual void UsesEscapeSequences(KeyValues* kv, bool state) const;
 };
 
 #endif
