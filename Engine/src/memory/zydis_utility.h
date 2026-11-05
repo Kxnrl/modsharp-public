@@ -20,6 +20,8 @@
 #ifndef MS_MEMORY_ZYDIS_H
 #define MS_MEMORY_ZYDIS_H
 
+#include "module.h"
+
 #include <concepts>
 #include <Zydis.h>
 
@@ -60,10 +62,13 @@ inline bool IsVolatileRegister(ZydisRegister reg)
     }
 }
 
-inline uintptr_t ResolveCallTarget(const ZydisDecodedInstruction* instr, const ZydisDecodedOperand* operands, uintptr_t current_ip)
+inline uintptr_t ResolveCallTarget(const ZydisDecodedInstruction* instr, const ZydisDecodedOperand* operands, uintptr_t current_ip, const CModule& mod)
 {
     ZyanU64 raw_target = 0;
     if (!ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(instr, &operands[0], current_ip, &raw_target))) return 0;
+
+    if (!mod.IsInModule(raw_target))
+        return 0;
 
     if (instr->opcode == 0xFF && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
     {
@@ -85,7 +90,8 @@ inline uintptr_t ResolveCallTarget(const ZydisDecodedInstruction* instr, const Z
             if (plt_instr.mnemonic == ZYDIS_MNEMONIC_JMP && plt_cursor[plt_instr.raw.modrm.offset] == 0x25 && plt_operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY)
             {
                 ZyanU64 got_entry = 0;
-                if (ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(&plt_instr, &plt_operands[0], (ZyanU64)plt_cursor, &got_entry)))
+                if (ZYAN_SUCCESS(ZydisCalcAbsoluteAddress(&plt_instr, &plt_operands[0], (ZyanU64)plt_cursor, &got_entry))
+                    && mod.IsInModule(got_entry))
                 {
                     return *reinterpret_cast<uintptr_t*>(got_entry);
                 }

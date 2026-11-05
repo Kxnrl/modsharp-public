@@ -644,7 +644,7 @@ static CAddress GetInitV8ClassTemplatesAddress()
         bool found = false;
 
         ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-            if (ZydisUtility::ResolveCallTarget(&instr, operands, ip) == v8_isolate_getcurrent_address)
+            if (ZydisUtility::ResolveCallTarget(&instr, operands, ip, *svr_mod) == v8_isolate_getcurrent_address)
             {
                 found = true;
                 return true;

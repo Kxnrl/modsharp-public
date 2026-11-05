@@ -804,7 +804,7 @@ void ResolveNetworkGameServerOffsets()
                     if (instr.mnemonic != ZYDIS_MNEMONIC_CALL)
                         return false;
 
-                    auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+                    auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *engine_mod);
                     if (target == 0)
                         return false;
 

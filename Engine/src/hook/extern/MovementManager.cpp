@@ -505,7 +505,7 @@ static CAddress FindCPlayerMovementService_RunCommand()
                 return true;
 
             if (!found_call && instr.mnemonic == ZYDIS_MNEMONIC_CALL
-                && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
+                && ZydisUtility::ResolveCallTarget(&instr, operands, ip, *svr_mod) == thread_id_address)
             {
                 found_call = true;
                 return false;
