@@ -18,10 +18,38 @@
  */
 
 #include "steamproxy.h"
+#include "address.h"
 #include "definitions.h"
+#include "logging.h"
+#include "module.h"
+#include "sdkproxy.h"
+
+#include "cstrike/interface/ICommandLine.h"
 
 #include "steamworks/isteamgameserver.h"
+#include "steamworks/isteamnetworkingsockets.h"
 #include "steamworks/isteamugc.h"
+
+bool ISteamApiProxy::GetConnectionSteamId(uint32_t hConnection, SteamId_t* pSteamId) const
+{
+    static const auto s_bUseSteamClient  = CommandLine()->HasParam("-steamnetworkingsockets_use_steamclient");
+    static const auto s_pfnGetLibSockets = modules::steamsockets->GetExportByName("SteamGameServerNetworkingSockets_LibV12").As<ISteamNetworkingSockets* (*)()>();
+    AssertPtr(s_pfnGetLibSockets);
+
+    const auto pSockets = s_bUseSteamClient ? SteamGameServerNetworkingSockets_SteamAPI() : s_pfnGetLibSockets();
+    if (pSockets == nullptr)
+    {
+        FERROR("GameServer networking sockets unavailable, rejecting connection");
+        return false;
+    }
+
+    SteamNetConnectionInfo_t info;
+    if (!pSockets->GetConnectionInfo(hConnection, &info))
+        return false;
+
+    *pSteamId = info.m_identityRemote.GetSteamID64();
+    return true;
+}
 
 bool ISteamApiProxy::IsAvailable()
 {

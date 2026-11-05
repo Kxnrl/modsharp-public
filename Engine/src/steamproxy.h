@@ -47,6 +47,8 @@ public:
         m_pSteamUGC = pUGC;
     }
 
+    [[nodiscard]] bool GetConnectionSteamId(uint32_t hConnection, SteamId_t* pSteamId) const;
+
     [[nodiscard]] virtual bool     IsAvailable();
     virtual void                   SetGameDescription(const char* description) const;
     [[nodiscard]] virtual bool     BLoggedOn() const;
