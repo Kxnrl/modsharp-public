@@ -149,3 +149,7 @@ void CSharpKeyValuesHelper::SetPtr(KeyValues* kv, const char* name, void* value)
 {
     kv->SetPtr(name, value);
 }
+void CSharpKeyValuesHelper::UsesEscapeSequences(KeyValues* kv, bool state) const
+{
+    kv->UsesEscapeSequences(state);
+}

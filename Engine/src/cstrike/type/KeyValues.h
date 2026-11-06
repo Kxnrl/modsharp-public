@@ -152,6 +152,7 @@ public:
 
     MS_CLASS_IMPORT bool LoadFromFile(IFileSystem* file_system, const char* filename, const char* path_id, KeyValuesSymbolProc callback = nullptr, void* pUnk1 = nullptr, const char* pUnk2 = nullptr);
     MS_CLASS_IMPORT bool SaveToFile(IFileSystem* file_system, const char* filename, const char* path_id, bool allow_empty_string = false, bool binary_write = true);
+    MS_CLASS_IMPORT void UsesEscapeSequences(bool state);
     MS_CLASS_IMPORT void RecursiveSaveToFile(CUtlBuffer& buf, int indent, bool sort, bool allow_empty_string) const;
 
     MS_CLASS_IMPORT CKeyValues_Data::types_t GetDataType(const char* name) const;

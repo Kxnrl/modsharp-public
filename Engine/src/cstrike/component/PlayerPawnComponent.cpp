@@ -22,6 +22,7 @@
 #include "vhook/call.h"
 
 #include "cstrike/component/PlayerPawnComponent.h"
+#include "cstrike/entity/PlayerPawn.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 
 CBaseWeapon* CCSPlayer_ItemServices::GiveNamedItem(const char* classname)
@@ -81,4 +82,18 @@ void CCSPlayer_WeaponServices::SwitchWeapon(CBaseWeapon* weapon)
 {
     static auto offset = g_pGameData->GetVFunctionIndex("CCSPlayer_WeaponServices::SwitchWeapon");
     return CALL_VIRTUAL(void, offset, this, weapon);
+}
+void CCSPlayer_WeaponServices::EquipWeapon(CBaseWeapon* weapon)
+{
+    if (!weapon)
+        return;
+
+    static auto fn = g_pGameData->GetAddress<uint16_t (*)(CCSPlayer_WeaponServices*, CBaseWeapon*)>("CCSPlayer_WeaponServices::EquipWeapon");
+    fn(this, weapon);
+
+    // to work around an issue where EquipWeapon does not auto deploy weapon for bots
+    if (auto pawn = this->GetPawn<CCSPlayerPawn*>(); pawn && pawn->IsPlayerPawn() && pawn->IsPlayer() && (pawn->GetFlags() & EntityFlags_t::FL_BOT) != 0)
+    {
+        static_cast<void>(this->SelectItem(weapon));
+    }
 }

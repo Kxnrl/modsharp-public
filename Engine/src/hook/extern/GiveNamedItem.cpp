@@ -732,7 +732,7 @@ static void PatchGiveNamedItemLimit()
 
         if (instr.mnemonic == ZYDIS_MNEMONIC_CALL)
         {
-            uintptr_t final_target = ZydisUtility::ResolveCallTarget(&instr, operands, address);
+            uintptr_t final_target = ZydisUtility::ResolveCallTarget(&instr, operands, address, *modules::server);
             prev_was_stricmp       = final_target == V_stricmp_fast;
         }
         else if (instr.mnemonic != ZYDIS_MNEMONIC_TEST)

@@ -226,7 +226,7 @@ void ResolveEntityListOffsets()
     ZydisUtility::ScanInstructions(wrapper_range->start, wrapper_range->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
         if (instr.opcode == 0xE8 && instr.mnemonic == ZYDIS_MNEMONIC_CALL)
         {
-            if (const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip))
+            if (const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *modules::server))
             {
                 next_by_classname = target;
             }
@@ -1148,29 +1148,11 @@ void ResolveCBaseEntity_GetEyePosition()
         return;
     }
 
-    // CPointScript::GetEyePosition resolves an entity handle then calls GetEyePosition vtable.
-    // Anchor: invalid handle check `cmp reg32, 0xFFFFFFFF` (INVALID_EHANDLE_INDEX).
-    // After this check, entity resolution proceeds and the next vtable call is GetEyePosition.
-    //   Linux:   cmp ecx, 0FFFFFFFFh → ... → call qword ptr [rax+5D0h]
-    //   Windows: cmp edx, 0FFFFFFFFh → ... → call qword ptr [rax+5D8h]
-    int32_t vcall_off          = -1;
-    bool    seen_invalid_check = false;
+    int32_t vcall_off   = -1;
+    int     vcall_count = 0;
 
     ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-        // Detect cmp reg32, 0xFFFFFFFF (invalid entity handle check)
-        if (!seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CMP
-            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-            && operands[0].size == 32
-            && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-            && static_cast<uint32_t>(operands[1].imm.value.u) == 0xFFFFFFFF)
-        {
-            seen_invalid_check = true;
-        }
-
-        // After invalid handle check, the next vtable call is GetEyePosition
-        if (seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CALL
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL
             && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
             && operands[0].mem.disp.has_displacement
             && operands[0].mem.disp.value > 0
@@ -1182,13 +1164,13 @@ void ResolveCBaseEntity_GetEyePosition()
                 && base != ZYDIS_REGISTER_RBP)
             {
                 vcall_off = static_cast<int32_t>(operands[0].mem.disp.value);
-                return true;
+                ++vcall_count;
             }
         }
         return false;
     });
 
-    auto vfunc_index = vcall_off != -1 ? vcall_off / static_cast<int32_t>(sizeof(void*)) : -1;
+    auto vfunc_index = vcall_count == 1 ? vcall_off / static_cast<int32_t>(sizeof(void*)) : -1;
     try_overwrite_vfunc("CBaseEntity::GetEyePosition", vfunc_index);
 }
 
@@ -1297,29 +1279,11 @@ void ResolveCBaseEntity_GetEyeAngles()
         return;
     }
 
-    // CPointScript::GetEyeAngles resolves an entity handle then calls GetEyeAngles vtable.
-    // Anchor: invalid handle check `cmp reg32, 0xFFFFFFFF` (INVALID_EHANDLE_INDEX).
-    // After this check, entity resolution proceeds and the next vtable call is GetEyeAngles.
-    //   Linux:   cmp ecx, 0FFFFFFFFh → ... → call qword ptr [rax+5D0h]
-    //   Windows: cmp edx, 0FFFFFFFFh → ... → call qword ptr [rax+5D8h]
-    int32_t vcall_off          = -1;
-    bool    seen_invalid_check = false;
+    int32_t vcall_off   = -1;
+    int     vcall_count = 0;
 
     ZydisUtility::ScanInstructions(range->start, range->end, [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
-        // Detect cmp reg32, 0xFFFFFFFF (invalid entity handle check)
-        if (!seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CMP
-            && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
-            && operands[0].size == 32
-            && operands[1].type == ZYDIS_OPERAND_TYPE_IMMEDIATE
-            && static_cast<uint32_t>(operands[1].imm.value.u) == 0xFFFFFFFF)
-        {
-            seen_invalid_check = true;
-        }
-
-        // After invalid handle check, the next vtable call is GetEyeAngles
-        if (seen_invalid_check
-            && instr.mnemonic == ZYDIS_MNEMONIC_CALL
+        if (instr.mnemonic == ZYDIS_MNEMONIC_CALL
             && operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY
             && operands[0].mem.disp.has_displacement
             && operands[0].mem.disp.value > 0
@@ -1331,13 +1295,13 @@ void ResolveCBaseEntity_GetEyeAngles()
                 && base != ZYDIS_REGISTER_RBP)
             {
                 vcall_off = static_cast<int32_t>(operands[0].mem.disp.value);
-                return true;
+                ++vcall_count;
             }
         }
         return false;
     });
 
-    auto vfunc_index = vcall_off != -1 ? vcall_off / static_cast<int32_t>(sizeof(void*)) : -1;
+    auto vfunc_index = vcall_count == 1 ? vcall_off / static_cast<int32_t>(sizeof(void*)) : -1;
     try_overwrite_vfunc("CBaseEntity::GetEyeAngles", vfunc_index);
 }
 
@@ -3026,7 +2990,7 @@ void ResolveCTriggerPush_PathSimplePushDir()
         if (instr.mnemonic != ZYDIS_MNEMONIC_CALL || !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
             return false;
 
-        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *svr_mod);
         if (target == 0 || std::ranges::find(candidates, target) != candidates.end())
             return false;
 

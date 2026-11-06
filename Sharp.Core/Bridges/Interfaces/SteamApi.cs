@@ -66,7 +66,13 @@ internal partial class SteamApi : NativeObject, ISteamApi
 
     public partial bool DownloadItem(ulong nPublishedFileId, bool bHighPriority);
 
+    public partial bool DeleteItem(ulong nPublishedFileId);
+
     public partial void SuspendDownloads(bool state);
 
     public partial uint GetPublicIP();
+
+    public partial nint GetSteamGameServer();
+
+    public partial nint GetSteamUGC();
 }

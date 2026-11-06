@@ -100,7 +100,7 @@ public interface IWeaponService : IPlayerPawnComponent
     bool PreventWeaponPickup { get; set; }
 
     /// <summary>
-    ///     Equip the given weapon onto this player (CCSPlayer_WeaponServices::EquipWeapon).
+    ///     Equip weapon then switch to
     /// </summary>
     void EquipWeapon(IBaseWeapon weapon);
 }

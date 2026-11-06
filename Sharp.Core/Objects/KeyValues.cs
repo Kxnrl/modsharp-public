@@ -92,6 +92,13 @@ internal partial class KeyValues : NativeObject, IKeyValues
         return CoreBridge.KeyValuesHelperInstance.LoadFromString(_this, buffer);
     }
 
+    public void UsesEscapeSequences(bool state)
+    {
+        CheckDisposed();
+
+        CoreBridge.KeyValuesHelperInstance.UsesEscapeSequences(_this, state);
+    }
+
     public unsafe bool SaveToString(int size,
         out string                      result,
         int                             indent           = 0,

@@ -24,6 +24,7 @@ using Sharp.Generator;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameObjects;
+using Sharp.Shared.Types;
 using Sharp.Shared.Utilities;
 
 namespace Sharp.Core.GameObjects;
@@ -87,6 +88,8 @@ internal partial class MovementService : PlayerPawnComponent, IMovementService
 
 internal partial class PlayerMovementService : MovementService, IPlayerMovementService
 {
+#region Legacy Jump
+
     private static readonly Lazy<int> LegacyJumpOffset
         = new (() => SchemaSystem.GetNetVarOffset("CCSPlayer_MovementServices", "m_LegacyJump"));
 
@@ -95,14 +98,6 @@ internal partial class PlayerMovementService : MovementService, IPlayerMovementS
 
     private static readonly Lazy<int> JumpPressedTimeOffset
         = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerLegacyJump", "m_flJumpPressedTime"));
-
-    public void TransientChangeStamina(float stamina)
-        => SetStaminaLocal(stamina);
-
-    protected override IPlayerMovementService? GetPlayerMovementService()
-        => this;
-
-#region Schemas
 
     public bool OldJumpPressed
     {
@@ -115,6 +110,86 @@ internal partial class PlayerMovementService : MovementService, IPlayerMovementS
         get => _this.GetFloat(LegacyJumpOffset.Value   + JumpPressedTimeOffset.Value);
         set => _this.WriteFloat(LegacyJumpOffset.Value + JumpPressedTimeOffset.Value, value);
     }
+
+#endregion
+
+#region Modern Jump
+
+    private static readonly Lazy<int> ModernJumpOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayer_MovementServices", "m_ModernJump"));
+
+    private static readonly Lazy<int> LastActualJumpPressTickOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_nLastActualJumpPressTick"));
+
+    private static readonly Lazy<int> LastActualJumpPressFracOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_flLastActualJumpPressFrac"));
+
+    private static readonly Lazy<int> LastUsableJumpPressTickOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_nLastUsableJumpPressTick"));
+
+    private static readonly Lazy<int> LastUsableJumpPressFracOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_flLastUsableJumpPressFrac"));
+
+    private static readonly Lazy<int> LastLandedTickOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_nLastLandedTick"));
+
+    private static readonly Lazy<int> LastLandedFracOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_flLastLandedFrac"));
+
+    private static readonly Lazy<int> LastLandedVelocityOffset
+        = new (() => SchemaSystem.GetNetVarOffset("CCSPlayerModernJump", "m_flLastLandedVelocityX"));
+
+    public int LastActualJumpPressTick
+    {
+        get => _this.GetInt32(ModernJumpOffset.Value   + LastActualJumpPressTickOffset.Value);
+        set => _this.WriteInt32(ModernJumpOffset.Value + LastActualJumpPressTickOffset.Value, value);
+    }
+
+    public float LastActualJumpPressFrac
+    {
+        get => _this.GetFloat(ModernJumpOffset.Value   + LastActualJumpPressFracOffset.Value);
+        set => _this.WriteFloat(ModernJumpOffset.Value + LastActualJumpPressFracOffset.Value, value);
+    }
+
+    public int LastUsableJumpPressTick
+    {
+        get => _this.GetInt32(ModernJumpOffset.Value   + LastUsableJumpPressTickOffset.Value);
+        set => _this.WriteInt32(ModernJumpOffset.Value + LastUsableJumpPressTickOffset.Value, value);
+    }
+
+    public float LastUsableJumpPressFrac
+    {
+        get => _this.GetFloat(ModernJumpOffset.Value   + LastUsableJumpPressFracOffset.Value);
+        set => _this.WriteFloat(ModernJumpOffset.Value + LastUsableJumpPressFracOffset.Value, value);
+    }
+
+    public int LastLandedTick
+    {
+        get => _this.GetInt32(ModernJumpOffset.Value   + LastLandedTickOffset.Value);
+        set => _this.WriteInt32(ModernJumpOffset.Value + LastLandedTickOffset.Value, value);
+    }
+
+    public float LastLandedFrac
+    {
+        get => _this.GetFloat(ModernJumpOffset.Value   + LastLandedFracOffset.Value);
+        set => _this.WriteFloat(ModernJumpOffset.Value + LastLandedFracOffset.Value, value);
+    }
+
+    public Vector LastLandedVelocity
+    {
+        get => _this.GetVector(ModernJumpOffset.Value   + LastLandedVelocityOffset.Value);
+        set => _this.WriteVector(ModernJumpOffset.Value + LastLandedVelocityOffset.Value, value);
+    }
+
+#endregion
+
+    public void TransientChangeStamina(float stamina)
+        => SetStaminaLocal(stamina);
+
+    protected override IPlayerMovementService? GetPlayerMovementService()
+        => this;
+
+#region Schemas
 
     [NativeSchemaField("CCSPlayer_MovementServices", "m_flDuckSpeed", typeof(float), IsStruct = true)]
     private partial SchemaField GetDuckSpeedField();

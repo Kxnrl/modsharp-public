@@ -318,7 +318,7 @@ static uintptr_t ExtractWrapperFactory(CModule* mod, uintptr_t dispatch)
 
     ZydisUtility::ScanInstructions(range->start, range->end,
                                    [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-                                       auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+                                       auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *mod);
 
                                        if (target == 0 && instr.mnemonic == ZYDIS_MNEMONIC_JMP
                                            && operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
@@ -511,7 +511,7 @@ static uintptr_t GetCurrentScriptAddress()
 
             ZydisUtility::ScanInstructions(range->start, range->end,
                                            [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-                                               const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+                                               const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *mod);
                                                if (target == 0)
                                                    return false;
 
@@ -679,13 +679,6 @@ static ScriptStackFnKind ClassifyScriptStackFn(CModule* mod, uintptr_t fn, uintp
 // Resolve push+pop off the method-call dispatcher (string "PublicMethod:%s"), which brackets its
 // invoke with push…pop; classify its callees by the getter-derived depth global. Zydis first, then the
 // gamedata keys "CCSScript::ScriptStackPush"/"ScriptStackPop"; either left null on failure.
-//
-// Those two keys weld the RIP displacement on purpose, so they are pinned to one build and must be
-// re-cut every GameUpdate. Wildcarding the operands is not an option: pop (`dec [rip+depth]; ret`)
-// then matches a handful of unrelated sites on both platforms, and push (a CUtlVector AddToTail
-// instantiation) matches its byte-identical template twin, which differs only in the globals the
-// wildcards would cover. Binding the wrong twin silently pushes onto another vector, so a
-// stale-and-mismatching key is the safer failure than a wildcarded one.
 static void ResolveScriptStackFns(uintptr_t getter, ScriptStackPushFn& outPush, ScriptStackPopFn& outPop)
 {
     auto* mod = modules::server;
@@ -715,7 +708,7 @@ static void ResolveScriptStackFns(uintptr_t getter, ScriptStackPushFn& outPush, 
 
             ZydisUtility::ScanInstructions(range->start, range->end,
                                            [&](uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) {
-                                               auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+                                               auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *mod);
 
                                                // GCC turns trailing calls into direct tail jmps (see
                                                // ExtractWrapperFactory) — treat a jmp that leaves the
@@ -774,13 +767,15 @@ static void ResolveScriptStackFns(uintptr_t getter, ScriptStackPushFn& outPush, 
     if (outPush == nullptr && g_pGameData != nullptr)
     {
         uintptr_t address = 0;
-        if (g_pGameData->GetAddress("CCSScript::ScriptStackPush", address))
+        if (g_pGameData->GetAddress("CCSScript::ScriptStackPush", address)
+            && (depthGlobal == 0 || ClassifyScriptStackFn(mod, address, depthGlobal) == ScriptStackFnKind::Push))
             outPush = reinterpret_cast<ScriptStackPushFn>(address);
     }
     if (outPop == nullptr && g_pGameData != nullptr)
     {
         uintptr_t address = 0;
-        if (g_pGameData->GetAddress("CCSScript::ScriptStackPop", address))
+        if (g_pGameData->GetAddress("CCSScript::ScriptStackPop", address)
+            && (depthGlobal == 0 || ClassifyScriptStackFn(mod, address, depthGlobal) == ScriptStackFnKind::Pop))
             outPop = reinterpret_cast<ScriptStackPopFn>(address);
     }
 

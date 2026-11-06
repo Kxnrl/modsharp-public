@@ -480,12 +480,12 @@
     "CCSScript::CreateEntityWrapper": {
       "on_demand": true,
       "library": "server",
-      "windows": "48 89 5C 24 10 55 56 57 48 83 EC 30 49 8B E8 48 C7 44 24 60 00 00 00 00 48 8B DA 48 8B F9"
+      "windows": "40 53 55 56 57 41 56 41 57 48 83 EC ? 33 FF"
     },
     "CCSScript::CreateEntityWrapperDispatcher": {
       "on_demand": true,
       "library": "server",
-      "linux": "55 48 89 E5 41 54 53 48 83 EC ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 48 89 FB FF 90 ? ? ? ? 48 89 DF 48 89 C2 48 8B 03 48 85 D2 74 ? FF 90 ? ? ? ? 48 83 C4 ? 5B 48 89 C7 41 5C 5D E9 ? ? ? ? ? ? ? ? FF 90 ? ? ? ? 48 8D 3D"
+      "linux": "55 48 89 E5 41 54 53 48 89 FB 48 83 EC ? 48 8B 07 FF 90 ? ? ? ? 48 8D 3D ? ? ? ? 84 C0 0F 85 ? ? ? ? 48 8D 15 ? ? ? ? 48 89 DF 31 C9 48 8D 35 ? ? ? ? E8"
     },
     "CCSScript::GetCurrentScript": {
       "on_demand": true,

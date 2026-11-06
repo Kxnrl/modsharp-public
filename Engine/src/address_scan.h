@@ -141,7 +141,7 @@ inline bool ScanWithLeaves(CModule* mod, uintptr_t start, uintptr_t end, size_t 
         if (instr.mnemonic != ZYDIS_MNEMONIC_CALL || !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
             return false;
 
-        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip);
+        const auto target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *mod);
         if (target == 0)
             return false;
 
