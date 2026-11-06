@@ -25,6 +25,7 @@
 #include "global.h"
 
 #include "cstrike/cstrike.h"
+#include "cstrike/type/CUtlString.h"
 #include "cstrike/type/CUtlVector.h"
 
 class CServerSideClient;
@@ -50,6 +51,7 @@ public:
     const char* GetMapName();
 
     const char* GetAddonName();
+    void        SetAddonName(const char* pAddons);
 
     CServerSideClient* GetClient(PlayerSlot_t slot) const;
     CServerSideClient* GetClientSafety(PlayerSlot_t slot) const;

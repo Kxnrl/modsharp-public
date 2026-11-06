@@ -64,8 +64,8 @@ Use this module: [Jump Link](https://github.com/Kxnrl/StripperSharp)
 
 ## Workshop Addon
 
-Add launch option `-dual_addon {Your workshop subscription ID}`.
+Install the `Sharp.Modules.AddonManager` module and list your workshop IDs in `core.json` (`"AddonManager": { "Addons": [1234567890] }`).
+Multiple addons are supported. See [Workshop Addons](../features/workshop-addons.md).
 
 > [!NOTE]
-> 1. Assume your subscription ID is 1234567890，then here it is`-dual_addon 1234567890`
-> 2. Currently we don't support multiple workshop subscription IDs. Optimize your resources.
+> The `-dual_addon` launch option has been removed, the server refuses to start with it. Use `-addons "{ID1},{ID2}"` or `core.json` instead.
