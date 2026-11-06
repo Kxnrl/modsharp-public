@@ -47,6 +47,11 @@
       "linux": 27,
       "windows": 26
     },
+    // IEngineServer::ServerCommand forwards here: (this, target 4 = server, command, 0)
+    "IInputService::QueueCommand": {
+      "linux": 26,
+      "windows": 25
+    },
     // 在resourcesystem里搜 "Resource \"%s\" was not precached but was loaded by a just in time blocking load.\n"
     // 往上拉有个 (*(unsigned int (__fastcall **)(uintptr_t, __int64))(*(_QWORD *)a1 + offset))(a1, a2) == 3的
     // offset / 8 就是 index
