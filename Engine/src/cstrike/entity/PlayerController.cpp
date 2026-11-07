@@ -32,6 +32,7 @@
 #include "cstrike/type/EmitSound.h"
 
 #include <cstdarg>
+#include <string>
 
 CBasePlayerController* CBasePlayerController::FindBySlot(PlayerSlot_t slot)
 {
@@ -67,10 +68,93 @@ void CBasePlayerController::SwitchTeam(CStrikeTeam_t team)
     address::server::CBasePlayerController_SwitchSteam(this, team);
 }
 
+struct ClanTagState
+{
+    bool        active;
+    std::string tag;
+    // last clan the game itself set (GC persona data), restored by ResetClanTag
+    uint32_t    gameClanId;
+    std::string gameTag;
+};
+static ClanTagState s_ClanTag[CS_MAX_PLAYERS];
+
+// same writes as the game's CCSPlayerController::SetClan(clanId, tag)
+static void ApplyClan(CBasePlayerController* pController, uint32_t clanId, const std::string& tag)
+{
+    if (pController->m_unClanId32bit() != clanId)
+        pController->m_unClanId32bit(clanId);
+    if (tag != pController->m_szClan().Get())
+        pController->m_szClan(g_pGameEntitySystem->AllocPooledString(tag.c_str()));
+}
+
+// the client only shows the tag when the clan id is nonzero
+static uint32_t OverrideClanId(const std::string& tag)
+{
+    return tag.empty() ? 0 : 1;
+}
+
 void CBasePlayerController::SetClanTag(const char* tag)
 {
-    const auto& clan = g_pGameEntitySystem->AllocPooledString(tag);
-    m_szClan(clan);
+    const auto slot = GetPlayerSlot();
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    auto& state  = s_ClanTag[slot];
+    state.active = true;
+    state.tag    = tag ? tag : "";
+    ApplyClan(this, OverrideClanId(state.tag), state.tag);
+}
+
+void CBasePlayerController::ResetClanTag()
+{
+    const auto slot = GetPlayerSlot();
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    auto& state = s_ClanTag[slot];
+    if (!state.active)
+        return;
+    state.active = false;
+    ApplyClan(this, state.gameClanId, state.gameTag);
+}
+
+void CBasePlayerController::EnforceClanTag()
+{
+    const auto slot = GetPlayerSlot();
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    auto& state = s_ClanTag[slot];
+
+    const auto clanId = OverrideClanId(state.tag);
+    const auto curId  = m_unClanId32bit();
+    const auto curTag = m_szClan().Get();
+    if (state.active && curId == clanId && state.tag == curTag)
+        return;
+
+    // not our override, so the game wrote it - remember it for ResetClanTag
+    if (curId != state.gameClanId || state.gameTag != curTag)
+    {
+        state.gameClanId = curId;
+        state.gameTag    = curTag;
+    }
+
+    if (state.active)
+        ApplyClan(this, clanId, state.tag);
+}
+
+void CBasePlayerController::ClearClanTagState(PlayerSlot_t slot)
+{
+    if (slot >= CS_MAX_PLAYERS)
+        return;
+
+    // the controller may be reused by the next client in this slot, and the game only
+    // sets the clan once per controller (first GC persona data) - hand back its value
+    if (g_pGameEntitySystem)
+        if (const auto pController = FindBySlot(slot))
+            pController->ResetClanTag();
+
+    s_ClanTag[slot] = {};
 }
 
 void CBasePlayerController::ClientPrint(HudPrint_t dest, const char* name, const char* param1, const char* param2, const char* param3, const char* param4)
