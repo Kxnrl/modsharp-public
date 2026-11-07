@@ -99,7 +99,8 @@ internal static unsafe class Game
     public delegate HookReturnValue<EmptyHookReturn> DelegateOnTerminateRoundPre(nint gameRules,
         ref float                                                                     delay,
         ref RoundEndReason                                                            reason,
-        NativeFixedSpan<TeamRewardInfo>                                               rewardInfo);
+        ref NativeFixedSpan<TeamRewardInfo>
+            rewardInfo);
 
     public delegate void DelegateOnTerminateRoundPost(nint gameRules,
         float                                              delay,
@@ -371,9 +372,9 @@ internal static unsafe class Game
 
         ref var delay  = ref Unsafe.AsRef<float>(pDelay);
         ref var reason = ref Unsafe.AsRef<RoundEndReason>(pReason);
-        var     info   = *pInfo;
+        ref var info   = ref Unsafe.AsRef<NativeFixedSpan<TeamRewardInfo>>(pInfo);
 
-        var action = OnTerminateRoundPre.Invoke(gameRules, ref delay, ref reason, info);
+        var action = OnTerminateRoundPre.Invoke(gameRules, ref delay, ref reason, ref info);
 
         return action.Action;
     }

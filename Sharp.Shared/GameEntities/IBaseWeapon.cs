@@ -42,20 +42,40 @@ public interface IBaseWeapon : IEconEntity
     /// <summary>
     ///     weapon classname
     /// </summary>
-    /// <returns>The classname is based on ItemDefinitionIndex</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the entity is not a weapon</exception>
+    /// <returns>
+    ///     For a weapon, the classname based on ItemDefinitionIndex; for an item, <see cref="IBaseEntity.GetDesignerName" />.
+    ///     A defuse kit is item_cutters when <see cref="Sharp.Shared.Objects.IGameRules.MapHasRescueZone" /> is true,
+    ///     otherwise item_defuser
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Thrown if the entity is neither a weapon nor an item</exception>
+    /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+    ///     The entity's schema class is not in the schema table
+    /// </exception>
     string GetWeaponClassname();
 
     /// <summary>
     ///     ItemDefinitionName
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the entity is not a valid weapon/item</exception>
+    /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+    ///     The entity's schema class is not in the schema table
+    /// </exception>
     string GetItemDefinitionName();
 
     /// <summary>
-    ///     ItemDefinition
+    ///     ItemDefinition<br />
+    ///     <remarks>
+    ///         Items are looked up by the result of <see cref="GetWeaponClassname" />, so a defuse kit resolves to
+    ///         item_defuser or item_cutters depending on the map
+    ///     </remarks>
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the entity is not a valid weapon/item</exception>
+    /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">
+    ///     The entity's schema class is not in the schema table
+    /// </exception>
     IEconItemDefinition GetItemDefinition();
 
     /// <summary>

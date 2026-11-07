@@ -37,13 +37,14 @@
 #include "cstrike/type/CGlobalVars.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
-#include "cstrike/type/CUtlBuffer.h"
 #include "cstrike/type/VProf.h"
 #include "cstrike/type/netadr_t.h"
 
 #include <proto/connectionless_netmessages.pb.h>
 
 #include <safetyhook.hpp>
+
+#include <cstring>
 
 CConVarBaseData*        g_pModSharpConVar;
 static CConVarBaseData* ms_fix_server_query_players = nullptr;
@@ -217,7 +218,7 @@ BeginMemberHookScope(CNetworkGameServer)
             return pResult;
 
         const auto pClients = pServer->GetClients();
-        if (pClients->Count() < static_cast<int>(gpGlobals->MaxClients))
+        if (pClients->Count() < static_cast<int>(pServer->GetGlobalVars()->MaxClients))
             return pResult;
 
         for (auto i = pClients->Count() - 1; i >= 0; i--)
@@ -258,14 +259,29 @@ BeginMemberHookScope(CNetworkGameServer)
 
         VPROF_MS_HOOK();
 
-        CUtlBuffer      buffer{hashedCdKey, cdkeyLength, CUtlBuffer::READ_ONLY};
-        const SteamId_t steamId = *(SteamId_t*)(buffer.PeekGet(sizeof(SteamId_t), 0));
+        SteamId_t gnsSteamId = 0;
+        if (!g_pSteamApiProxy->GetConnectionSteamId(pNetInfo, &gnsSteamId) || gnsSteamId == 0) [[unlikely]]
+        {
+            g_pNetworkSystem->RejectNetChannel(pNetInfo, IServerGameClient::NETWORK_DISCONNECT_REJECT_STEAM);
+            return nullptr;
+        }
+
+        SteamId_t steamId = 0;
+        if (cdkeyLength >= static_cast<int>(sizeof(steamId)))
+            std::memcpy(&steamId, hashedCdKey, sizeof(steamId));
 
         // 无法获取SteamId直接拒绝连接
         if (steamId == 0 || (steamId & 0xFFFFFFFF) == 0) [[unlikely]]
         {
             // AUTH INVALID
             g_pNetworkSystem->RejectNetChannel(pNetInfo, 12);
+            return nullptr;
+        }
+
+        if (steamId != gnsSteamId) [[unlikely]]
+        {
+            LOG("SteamID %llu doesn't match SteamID in ticket %llu", gnsSteamId, steamId);
+            g_pNetworkSystem->RejectNetChannel(pNetInfo, IServerGameClient::NETWORK_DISCONNECT_REJECT_STEAM);
             return nullptr;
         }
 

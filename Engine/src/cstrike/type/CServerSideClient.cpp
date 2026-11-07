@@ -51,15 +51,12 @@ void CServerSideClient::UpdateUserSettings()
     CALL_VIRTUAL(void, offset, this);
 }
 
-void CServerSideClient::SayChatMessage(bool teamOnly, const char* message) const
+bool CServerSideClient::SayChatMessage(bool teamOnly, const char* message) const
 {
     const auto nSlot             = GetSlot();
     const auto pSenderController = reinterpret_cast<CCSPlayerController*>(CBasePlayerController::FindBySlot(nSlot));
     if (pSenderController == nullptr)
-    {
-        FatalError("PrintChatMessage without controller???");
-        return;
-    }
+        return false;
 
     AssertPtr(gameRules);
 
@@ -88,6 +85,8 @@ void CServerSideClient::SayChatMessage(bool teamOnly, const char* message) const
 
     filter.AddRecipient(nSlot);
     UTIL_SayText2Filter(&filter, true, pSenderController->GetEntityIndex(), message);
+
+    return true;
 }
 
 void CServerSideClient::SetLoadedSpawnGroups(const CUtlVector<SpawnGroup_t>& groups) const

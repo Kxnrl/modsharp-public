@@ -19,6 +19,7 @@
 
 using Sharp.Shared.Attributes;
 using Sharp.Shared.Enums;
+using Sharp.Shared.Types;
 
 namespace Sharp.Shared.GameObjects;
 
@@ -77,6 +78,48 @@ public interface IPlayerMovementService : IMovementService
     ///     When does the player press their jump button
     /// </summary>
     float JumpPressedTime { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_nLastActualJumpPressTick
+    /// </summary>
+    int LastActualJumpPressTick { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_flLastActualJumpPressFrac
+    /// </summary>
+    float LastActualJumpPressFrac { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_nLastUsableJumpPressTick
+    /// </summary>
+    int LastUsableJumpPressTick { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_flLastUsableJumpPressFrac
+    /// </summary>
+    float LastUsableJumpPressFrac { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_nLastLandedTick
+    /// </summary>
+    int LastLandedTick { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_flLastLandedFrac
+    /// </summary>
+    float LastLandedFrac { get; set; }
+
+    /// <summary>
+    ///     <b>CCSPlayerModernJump :: </b>
+    ///     m_flLastLandedVelocityX/Y/Z
+    /// </summary>
+    Vector LastLandedVelocity { get; set; }
 
     /// <summary>
     ///     Stamina value

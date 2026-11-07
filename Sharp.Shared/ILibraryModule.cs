@@ -214,6 +214,7 @@ public interface ILibraryModule
     ///     If <c>true</c>, restricts the search to read-only memory segments (e.g. <c>.rdata</c>).
     ///     If <c>false</c>, scans all non-executable segments (including writable <c>.data</c>).
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="data" /> is empty</exception>
     nint FindData(ReadOnlySpan<byte> data, bool readOnly);
 
     /// <summary>

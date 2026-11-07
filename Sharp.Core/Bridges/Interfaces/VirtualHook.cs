@@ -28,6 +28,7 @@ internal class VirtualHook : IVirtualHook
     private nint _vTable = nint.Zero;
     private int  _offset = -1;
     private nint _hook   = nint.Zero;
+    private bool _installed;
 
     public nint Trampoline { get; private set; } = nint.Zero;
 
@@ -35,31 +36,36 @@ internal class VirtualHook : IVirtualHook
 
     public bool Install()
     {
-        if (_vTable == nint.Zero || _offset == -1 || _hook == nint.Zero)
+        if (_installed || _vTable == nint.Zero || _offset == -1 || _hook == nint.Zero)
         {
             return false;
         }
 
         Trampoline = Natives.Core.InstallVirtualHook(_vTable, _offset, _hook);
+        _installed = true;
 
         return true;
     }
 
     public void Uninstall()
     {
-        if (Trampoline == nint.Zero)
+        if (!_installed)
         {
             return;
         }
 
         Natives.Core.InstallVirtualHook(_vTable, _offset, Trampoline);
         Trampoline = nint.Zero;
+        _installed = false;
     }
 
 #endregion
 
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     public void Prepare(string module, string @class, string function, nint hookFn)
     {
+        ThrowIfInstalled();
+
         var vTable = Natives.Core.GetVTableByClass(module, @class);
 
         if (vTable == nint.Zero)
@@ -79,8 +85,11 @@ internal class VirtualHook : IVirtualHook
         _hook   = hookFn;
     }
 
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     public void Prepare(string module, string @class, int offset, nint hookFn)
     {
+        ThrowIfInstalled();
+
         var vTable = Natives.Core.GetVTableByClass(module, @class);
 
         if (vTable == nint.Zero)
@@ -93,10 +102,21 @@ internal class VirtualHook : IVirtualHook
         _hook   = hookFn;
     }
 
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     public void Prepare(nint vTable, int offset, nint hookFn)
     {
+        ThrowIfInstalled();
+
         _vTable = vTable;
         _offset = offset;
         _hook   = hookFn;
+    }
+
+    private void ThrowIfInstalled()
+    {
+        if (_installed)
+        {
+            throw new InvalidOperationException("Virtual hook is already installed, uninstall it before preparing again");
+        }
     }
 }

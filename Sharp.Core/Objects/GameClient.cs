@@ -76,7 +76,11 @@ internal partial class GameClient : NativeObject, IGameClient
     public void SayChatMessage(bool teamOnly, string message)
     {
         CheckDisposed();
-        Client.SayChatMessage(this, teamOnly, message);
+
+        if (!Client.SayChatMessage(this, teamOnly, message))
+        {
+            throw new InvalidOperationException($"Client in slot {Slot} has no player controller");
+        }
     }
 
     /// <summary>

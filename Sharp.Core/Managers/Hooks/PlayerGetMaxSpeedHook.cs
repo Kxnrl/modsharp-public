@@ -48,6 +48,8 @@ internal class PlayerGetMaxSpeedHook : HookType<PlayerGetMaxSpeedHookParams, flo
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed class PlayerGetMaxSpeedHookParams : PlayerPawnFunctionParams, IPlayerGetMaxSpeedHookParams

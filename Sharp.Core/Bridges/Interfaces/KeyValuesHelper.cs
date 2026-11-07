@@ -98,6 +98,8 @@ internal unsafe partial class KeyValuesHelper : NativeObject
     public partial void SetFloat(nint kv, string name, float value);
 
     public partial void SetPtr(nint kv, string name, nint value);
+
+    public partial void UsesEscapeSequences(nint kv, bool state);
 }
 
 [NativeVirtualObject(HasDestructors = true)]
@@ -167,7 +169,7 @@ internal unsafe partial class KeyValues3Helper : NativeObject
 
     public partial double GetDouble(nint kv, double def);
 
-    public partial sbyte* GetString(nint kv, string def);
+    public partial string GetString(nint kv, string def);
 
     public partial byte* GetBinaryBlob(nint kv);
 

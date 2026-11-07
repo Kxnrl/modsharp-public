@@ -88,6 +88,7 @@ internal sealed class PlayerSwitchWeaponForwardParams : PlayerPawnFunctionParams
                 return _weapon;
             }
 
+            CheckDisposed();
             _checkWeapon = true;
             _weapon      = BaseWeapon.Create(_ptrWeapon);
 

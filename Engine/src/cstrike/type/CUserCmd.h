@@ -24,19 +24,24 @@
 
 enum class EButtons : uint64_t
 {
-    IN_ATTACK    = 1 << 0,
-    IN_JUMP      = 1 << 1,
-    IN_DUCK      = 1 << 2,
-    IN_FORWARD   = 1 << 3,
-    IN_BACK      = 1 << 4,
-    IN_USE       = 1 << 5,
-    IN_MOVELEFT  = 1 << 9,
-    IN_MOVERIGHT = 1 << 10,
-    IN_ATTACK2   = 1 << 11,
-    IN_RELOAD    = 1 << 13,
-    IN_SCORE     = 1 << 16,
-    IN_SPEED     = 1 << 17,
-    IN_BULLRUSH  = 1 << 22
+    IN_ATTACK         = 1ULL << 0,
+    IN_JUMP           = 1ULL << 1,
+    IN_DUCK           = 1ULL << 2,
+    IN_FORWARD        = 1ULL << 3,
+    IN_BACK           = 1ULL << 4,
+    IN_USE            = 1ULL << 5,
+    IN_TURNLEFT       = 1ULL << 7,
+    IN_TURNRIGHT      = 1ULL << 8,
+    IN_MOVELEFT       = 1ULL << 9,
+    IN_MOVERIGHT      = 1ULL << 10,
+    IN_ATTACK2        = 1ULL << 11,
+    IN_RELOAD         = 1ULL << 13,
+    IN_SPEED          = 1ULL << 16,
+    IN_JOYAUTOSPRINT  = 1ULL << 17,
+    IN_USEORRELOAD    = 1ULL << 32,
+    IN_SCORE          = 1ULL << 33,
+    IN_ZOOM           = 1ULL << 34,
+    IN_LOOK_AT_WEAPON = 1ULL << 35,
 };
 
 struct CButtons

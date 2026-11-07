@@ -357,6 +357,8 @@ internal partial class NativeProtobuf : NativeObject, INativeProtobuf
 
     public unsafe bool CopyFromOtherMessage(IMessage message)
     {
+        CheckDisposed();
+
         var data = message.ToByteArray();
 
         fixed (byte* p = data)
@@ -378,6 +380,11 @@ internal partial class NativeProtobuf : NativeObject, INativeProtobuf
         }
 
         var size = (int) GetSize();
+
+        if (size is 0)
+        {
+            return msg;
+        }
 
         if (size > 256)
         {

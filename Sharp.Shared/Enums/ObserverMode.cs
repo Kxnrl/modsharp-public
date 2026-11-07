@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 /// <summary>
@@ -52,5 +54,6 @@ public enum ObserverMode
     /// <summary>
     ///     No idea
     /// </summary>
+    [Obsolete("Valve removed this", true)]
     Directed,
 }

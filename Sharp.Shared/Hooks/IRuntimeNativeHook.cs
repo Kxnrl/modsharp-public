@@ -24,11 +24,19 @@ public interface IRuntimeNativeHook
     /// <summary>
     ///     Install hook
     /// </summary>
+    /// <returns>
+    ///     Whether it succeeded; returns <c>false</c> without touching the target when the hook is not prepared,
+    ///     is already installed, or the underlying hook cannot be created
+    /// </returns>
     bool Install();
 
     /// <summary>
     ///     Uninstall hook
     /// </summary>
+    /// <remarks>
+    ///     Multiple hooks stacked on the same target must be uninstalled in reverse install order;
+    ///     when stacking hooks, consider keeping them in a shared library
+    /// </remarks>
     void Uninstall();
 
     /// <summary>

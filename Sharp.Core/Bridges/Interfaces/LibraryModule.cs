@@ -505,6 +505,11 @@ internal unsafe partial class LibraryModule : NativeObject, ILibraryModule
 
     public nint FindData(ReadOnlySpan<byte> data, bool readOnly)
     {
+        if (data.IsEmpty)
+        {
+            throw new ArgumentException("Data must not be empty.", nameof(data));
+        }
+
         unchecked
         {
             fixed (byte* ptr = data)

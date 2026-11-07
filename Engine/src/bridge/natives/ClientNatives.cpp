@@ -46,23 +46,14 @@ struct Command_t
     Command_t(const std::string& command) :
         m_FullCommand(command)
     {
-        m_FuzzCommand = std::string(command);
-        m_FuzzCommand += " ";
     }
 
-    [[nodiscard]] const char*        GetFuzzCommand() const noexcept { return m_FuzzCommand.c_str(); }
     [[nodiscard]] const char*        GetCommand() const noexcept { return m_FullCommand.c_str(); }
-    [[nodiscard]] size_t             GetSize() const noexcept { return m_FullCommand.size(); }
     [[nodiscard]] const std::string& GetString() const noexcept { return m_FullCommand; }
 
     [[nodiscard]] bool MatchFull(const char* pCommand) const noexcept
     {
         return strcasecmp(pCommand, m_FullCommand.c_str()) == 0;
-    }
-
-    [[nodiscard]] bool MatchFuzz(const char* pCommand) const noexcept
-    {
-        return strncasecmp(pCommand, m_FuzzCommand.c_str(), m_FuzzCommand.size()) == 0;
     }
 
     bool operator==(const Command_t& other) const noexcept
@@ -77,7 +68,6 @@ struct Command_t
 
 private:
     std::string m_FullCommand;
-    std::string m_FuzzCommand;
 };
 
 // FIXME 某些命令不知道为什么完全没有String, 也不是ConCommand
@@ -101,44 +91,32 @@ static bool IsHackCommand(const std::string& command)
 
 ECommandAction PostCommand(CServerSideClient* pClient, const char* pCommandString)
 {
-    // Meta command
-    if (strncasecmp(pCommandString, "meta", 4) == 0)
+    CCommand tokens;
+    if (!tokens.Tokenize(pCommandString) || tokens.ArgC() == 0)
+        return ECommandAction::Stopped;
+
+    const auto pName = tokens.Arg(0);
+    const auto pArgs = tokens.ArgC() > 1 ? tokens.ArgS() : nullptr;
+
+    if (strncasecmp(pName, "meta", 4) == 0)
     {
         UTIL_TextMsgSingle(pClient->GetSlot(), Hud_Console, "please use command 'ms' or 'modsharp' instead!");
         return ECommandAction::Stopped;
     }
-    if (strncasecmp(pCommandString, "ms_", 3) == 0)
+    if (strncasecmp(pName, "ms_", 3) == 0)
     {
-        const auto commandStringLength = strlen(pCommandString);
-        // ms_
-        if (commandStringLength < 4)
+        if (strlen(pName) < 4)
         {
-            // not trigger
             return ECommandAction::Stopped;
         }
 
-        const auto pActualCommand = &pCommandString[3];
+        const auto pActualCommand = &pName[3];
 
         for (const auto& command : s_hookedCommand)
         {
             if (command.MatchFull(pActualCommand))
             {
-                return forwards::OnClientStringCommand->Invoke(pClient, command.GetCommand(), false, nullptr);
-            }
-            if (command.MatchFuzz(pActualCommand))
-            {
-                const char* pArgString = nullptr;
-
-                // +1 is space
-                // +2 meaning args
-                const auto commandLength  = command.GetSize();
-                const auto requiredLength = commandLength + 2;
-                if (strnlen(pActualCommand, requiredLength) >= requiredLength)
-                {
-                    pArgString = &pActualCommand[commandLength + 1];
-                }
-
-                return forwards::OnClientStringCommand->Invoke(pClient, command.GetCommand(), false, pArgString);
+                return forwards::OnClientStringCommand->Invoke(pClient, command.GetCommand(), false, pArgs);
             }
         }
 
@@ -148,11 +126,8 @@ ECommandAction PostCommand(CServerSideClient* pClient, const char* pCommandStrin
     // NOTE 某些实体命令走的是CCommand::Callback
     for (const auto& sCommand : s_commandProxyListener)
     {
-        if (sCommand.MatchFull(pCommandString) || sCommand.MatchFuzz(pCommandString))
+        if (sCommand.MatchFull(pName))
         {
-            const auto pLength = strlen(pCommandString);
-            const auto cLength = sCommand.GetSize() + 1;
-            const auto pArgs   = (pLength > cLength) ? &pCommandString[cLength] : nullptr;
             return PostCommand(pClient, sCommand.GetCommand(), pArgs);
         }
     }
@@ -175,15 +150,15 @@ ECommandAction PostCommand(CServerSideClient* pClient, const char* pCommand, con
 
 static CServerSideClient* GetClientBySlot(PlayerSlot_t slot)
 {
-    return sv->GetClientSafety(slot);
+    return sv ? sv->GetClientSafety(slot) : nullptr;
 }
 static CServerSideClient* GetClientByUserId(UserId_t userId)
 {
-    return sv->GetClientByUserId(userId);
+    return sv ? sv->GetClientByUserId(userId) : nullptr;
 }
 static CServerSideClient* GetClientBySteamId(SteamId_t steamId)
 {
-    return sv->GetClientBySteamId(steamId);
+    return sv ? sv->GetClientBySteamId(steamId) : nullptr;
 }
 static void KickClient(CServerSideClient* pClient, const char* reason, IServerGameClient::ENetworkDisconnectionReason msgId = IServerGameClient::NETWORK_DISCONNECT_INVALID)
 {
@@ -206,9 +181,9 @@ static void ClientSetClientName(CServerSideClient* pClient, const char* name)
 {
     pClient->SetName(name);
 }
-static void ClientSayChatMessage(CServerSideClient* pClient, bool teamOnly, const char* message)
+static bool ClientSayChatMessage(CServerSideClient* pClient, bool teamOnly, const char* message)
 {
-    pClient->SayChatMessage(teamOnly, message);
+    return pClient->SayChatMessage(teamOnly, message);
 }
 static void AddCommandCallback(const char* pCommand)
 {
@@ -263,9 +238,7 @@ static const char* ClientGetConVarValue(CServerSideClient* pClient, const char* 
 static void ClientCommand(CServerSideClient* pClient, const char* command)
 {
     AssertPtr(pClient);
-    char buffer[256];
-    snprintf(buffer, sizeof(buffer), "%s\n", command);
-    engine->ClientCommand(pClient->GetSlot(), buffer);
+    engine->ClientCommand(pClient->GetSlot(), "%s\n", command);
 }
 static void FakeClientCommand(CServerSideClient* pClient, const char* pCommand)
 {

@@ -98,7 +98,7 @@ public:
     void             CreateConsoleCommand(const char* pName, FnCommandCallback_t callback, const char* pHelpString = nullptr, int64_t flags = 0, FnCommandCompletionCallback completionFunc = nullptr);
     ConCommandHandle CreateSharpConsoleCommand(const char* pName, const char* pHelpString = nullptr, int64_t flags = 0);
 
-    void SetValue(CConVarBaseData* cvarData, CVValue_t* value)
+    bool SetValue(CConVarBaseData* cvarData, CVValue_t* value)
     {
         BaseConVar cvar;
         cvar.m_ConVarData = cvarData;
@@ -108,19 +108,26 @@ public:
             || type == EConVarType_Int64 || type == EConVarType_UInt64)
         {
             address::server::ScriptSetConVarNumber(&cvar, 0, *value);
+            return true;
         }
-        else if (type == EConVarType_Float32 || type == EConVarType_Float64)
+
+        if (type == EConVarType_Float32 || type == EConVarType_Float64)
         {
 #ifdef PLATFORM_WINDOWS
             address::server::ScriptSetConVarDouble(&cvar, *value);
 #else
             address::server::ScriptSetConVarDouble(&cvar, 0, *value);
 #endif
+            return true;
         }
-        else
+
+        if (type == EConVarType_String && value->m_szValue != nullptr)
         {
             address::server::ScriptSetConVarString(&cvar, 0, *value);
+            return true;
         }
+
+        return false;
     }
 
     bool SetValueString(CConVarBaseData* cvarData, const char* value)

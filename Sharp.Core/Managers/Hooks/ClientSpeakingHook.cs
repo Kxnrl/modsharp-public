@@ -70,6 +70,8 @@ internal class ClientSpeakingHook : HookType<ClientCanSpeakHookParams, EmptyHook
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed class ClientCanSpeakHookParams : ClientFunctionParams, IClientSpeakingHookParams

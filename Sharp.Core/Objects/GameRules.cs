@@ -83,7 +83,14 @@ internal partial class GameRules : SchemaObject, IGameRules
             return -1;
         }
 
-        var flTimeLeft = (GameStartTime + (_cvarTimeLimit.GetFloat() * 60.0f)) - _globalVars.CurTime;
+        var flTimeLimit = _cvarTimeLimit.GetFloat();
+
+        if (flTimeLimit <= 0.0f)
+        {
+            return -1;
+        }
+
+        var flTimeLeft = (GameStartTime + (flTimeLimit * 60.0f)) - _globalVars.CurTime;
 
         return float.Max(flTimeLeft, 0.0f);
     }
@@ -173,6 +180,9 @@ internal partial class GameRules : SchemaObject, IGameRules
 
     [NativeSchemaField("CCSGameRules", "m_bCompleteReset", typeof(bool), Validate = true)]
     private partial SchemaField GetIsCompleteResetField();
+
+    [NativeSchemaField("CCSGameRules", "m_bMapHasRescueZone", typeof(bool), Validate = true)]
+    private partial SchemaField GetMapHasRescueZoneField();
 
     [NativeSchemaField("CCSGameRules", "m_nEndMatchMapGroupVoteTypes", typeof(int[]), Validate = true)]
     private partial SchemaField GetEndMatchMapGroupVoteTypesField();

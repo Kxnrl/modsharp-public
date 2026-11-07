@@ -39,6 +39,11 @@ internal partial class KeyValues : NativeObject, IKeyValues
 
     public void DeleteThis()
     {
+        if (IsDisposed)
+        {
+            return;
+        }
+
         if (!_deletable)
         {
             throw new InvalidOperationException("KeyValues is not deletable!");
@@ -87,6 +92,13 @@ internal partial class KeyValues : NativeObject, IKeyValues
         return CoreBridge.KeyValuesHelperInstance.LoadFromString(_this, buffer);
     }
 
+    public void UsesEscapeSequences(bool state)
+    {
+        CheckDisposed();
+
+        CoreBridge.KeyValuesHelperInstance.UsesEscapeSequences(_this, state);
+    }
+
     public unsafe bool SaveToString(int size,
         out string                      result,
         int                             indent           = 0,
@@ -94,6 +106,7 @@ internal partial class KeyValues : NativeObject, IKeyValues
         bool                            allowEmptyString = false)
     {
         CheckDisposed();
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(size);
 
         var pool   = ArrayPool<byte>.Shared;
         var buffer = pool.Rent(size);
@@ -103,7 +116,8 @@ internal partial class KeyValues : NativeObject, IKeyValues
             fixed (byte* ptr = buffer)
             {
                 var success = CoreBridge.KeyValuesHelperInstance.SaveToString(_this, ptr, size, indent, sort, allowEmptyString);
-                result = Encoding.UTF8.GetString(ptr, size);
+                var length  = new ReadOnlySpan<byte>(ptr, size).IndexOf((byte) 0);
+                result = Encoding.UTF8.GetString(ptr, length < 0 ? size : length);
 
                 return success;
             }
@@ -288,6 +302,11 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
 
     public void DeleteThis()
     {
+        if (IsDisposed)
+        {
+            return;
+        }
+
         if (!_deletable)
         {
             throw new InvalidOperationException("KeyValues is not deletable!");
@@ -560,7 +579,7 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
     {
         CheckDisposed();
 
-        return Utils.ReadString(CoreBridge.KeyValues3HelperInstance.GetString(_this, def));
+        return CoreBridge.KeyValues3HelperInstance.GetString(_this, def);
     }
 
     public ReadOnlySpan<byte> GetBinaryBlob()
@@ -580,6 +599,8 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
 
     public Color32 GetColor()
     {
+        CheckDisposed();
+
         var c = new Color32();
 
         CoreBridge.KeyValues3HelperInstance.GetColor(_this, &c);
@@ -589,6 +610,8 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
 
     public Vector GetVector()
     {
+        CheckDisposed();
+
         var v = new Vector();
 
         CoreBridge.KeyValues3HelperInstance.GetVector(_this, &v);
@@ -598,6 +621,8 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
 
     public Vector GetQAngle()
     {
+        CheckDisposed();
+
         var v = new Vector();
 
         CoreBridge.KeyValues3HelperInstance.GetQAngle(_this, &v);
@@ -607,6 +632,8 @@ internal unsafe partial class KeyValues3 : NativeObject, IKeyValues3
 
     public Matrix3x4 GetMatrix()
     {
+        CheckDisposed();
+
         var m = new Matrix3x4();
 
         CoreBridge.KeyValues3HelperInstance.GetMatrix(_this, &m);

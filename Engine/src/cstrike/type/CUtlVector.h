@@ -124,6 +124,8 @@ public:
     // Makes sure we have enough memory allocated to store a requested # of elements
     void EnsureCapacity(int32_t num);
 
+    void SetSize(int32_t size);
+
     // Element removal
     void FastRemove(int32_t index); // doesn't preserve order
     void Remove(int32_t index);     // preserves order, shifts elements
@@ -429,6 +431,18 @@ template <typename T, class A>
 void CUtlVector<T, A>::EnsureCapacity(int32_t num)
 {
     m_Memory.EnsureCapacity(num);
+}
+
+template <typename T, class A>
+void CUtlVector<T, A>::SetSize(int32_t size)
+{
+    RemoveAll();
+    GrowVector(size);
+
+    for (int32_t i = 0; i < size; i++)
+    {
+        std::construct_at(m_Memory.Base() + i);
+    }
 }
 
 //-----------------------------------------------------------------------------

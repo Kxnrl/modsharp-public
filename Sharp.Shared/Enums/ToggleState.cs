@@ -21,12 +21,12 @@ namespace Sharp.Shared.Enums;
 
 public enum ToggleState : uint
 {
-    AtTop,
-    AtBottom,
-    GoingUp,
-    GoingDown,
-    DoorOpen,
-    DoorClosed,
-    DoorOpening,
-    DoorClosing,
+    AtTop       = 0,
+    AtBottom    = 1,
+    GoingUp     = 2,
+    GoingDown   = 3,
+    DoorOpen    = 0,
+    DoorClosed  = 1,
+    DoorOpening = 2,
+    DoorClosing = 3,
 }

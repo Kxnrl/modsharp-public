@@ -40,7 +40,7 @@ public static partial class Client
 
     public static partial void SetName(IGameClient ptr, string name);
 
-    public static partial void SayChatMessage(IGameClient ptr, bool teamOnly, string message);
+    public static partial bool SayChatMessage(IGameClient ptr, bool teamOnly, string message);
 
     public static partial void AddCommandCallback(string command);
 

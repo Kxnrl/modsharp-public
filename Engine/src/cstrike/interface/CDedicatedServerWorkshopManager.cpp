@@ -73,8 +73,7 @@ bool CDedicatedServerWorkshopManager::RemoveWorkshopMap(uint64_t sharedFileId)
 
 void CDedicatedServerWorkshopManager::ListWorkshopMaps(CUtlVector<WorkshopMap_t>* list)
 {
-    const auto count = static_cast<int32_t>(m_mapLoadedWorkshopMaps.Count());
-    for (auto it = 0; it < count; it++)
+    for (auto it = m_mapLoadedWorkshopMaps.FirstInorder(); it != m_mapLoadedWorkshopMaps.InvalidIndex(); it = m_mapLoadedWorkshopMaps.NextInorder(it))
     {
         const auto  fileId  = m_mapLoadedWorkshopMaps.Key(it);
         const auto& element = m_mapLoadedWorkshopMaps.Element(it);

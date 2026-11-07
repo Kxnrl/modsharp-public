@@ -57,6 +57,8 @@ internal interface ISharpCore : IModSharp
 {
     void InitMainThread();
 
+    bool IsOnMainThread();
+
     void OnModuleUnload(IModSharpModule module);
 
     void OnModuleUnloaded(IModSharpModule module);
@@ -939,9 +941,7 @@ internal partial class SharpCore : ISharpCore
 
     public void StopTimer(Guid uniqueId)
     {
-        var mainThreadId = _mainThreadId != 0 ? _mainThreadId : _bootThreadId;
-
-        if (Environment.CurrentManagedThreadId != mainThreadId)
+        if (!IsOnMainThread())
         {
             if (!_timers.TryGetValue(uniqueId, out var stopping))
             {
@@ -1147,16 +1147,28 @@ internal partial class SharpCore : ISharpCore
         return items;
     }
 
-    public byte[]? FindResourceDataBlockInfo(string filePath, string pathId)
+    public unsafe byte[]? FindResourceDataBlockInfo(string filePath, string pathId)
     {
         if (!filePath.EndsWith("_c"))
         {
             filePath += "_c";
         }
 
-        var span = Game.FindResourceDataBlockInfo(filePath, pathId);
+        var size = Game.FindResourceDataBlockInfo(filePath, pathId);
 
-        return span.Length == 0 ? null : span.AsSpan().ToArray();
+        if (size <= 0)
+        {
+            return null;
+        }
+
+        var data = new byte[size];
+
+        fixed (byte* pData = data)
+        {
+            Game.CopyResourceDataBlock(pData, size);
+        }
+
+        return data;
     }
 
     public ResourceStatus GetResourceStatus(string filePath)
@@ -1556,7 +1568,8 @@ internal partial class SharpCore : ISharpCore
     {
         var arguments = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
-        var parts = SplitCommandLine(Bridges.Natives.Core.GetCommandLine()).Skip(1).ToArray();
+        var commandLine = Marshal.PtrToStringAnsi(Bridges.Natives.Core.GetCommandLine()) ?? string.Empty;
+        var parts       = SplitCommandLine(commandLine).Skip(1).ToArray();
 
         for (var i = 0; i < parts.Length; i++)
         {
@@ -1716,6 +1729,9 @@ internal partial class SharpCore : ISharpCore
 
     public void InitMainThread()
         => _mainThreadId = Environment.CurrentManagedThreadId;
+
+    public bool IsOnMainThread()
+        => Environment.CurrentManagedThreadId == (_mainThreadId != 0 ? _mainThreadId : _bootThreadId);
 
     private void Shutdown()
     {

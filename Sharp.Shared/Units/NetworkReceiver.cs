@@ -30,25 +30,41 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
 {
     private const ulong BaseMagic = 1UL;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static ulong BitOf(PlayerSlot slot)
+    {
+        var index = (int) slot.AsPrimitive();
+
+        System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, 64, nameof(slot));
+
+        return BaseMagic << index;
+    }
+
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    ///     <paramref name="players" /> contains a slot of 64 or greater
+    /// </exception>
     public NetworkReceiver(IEnumerable<PlayerSlot> players)
     {
         var v = 0UL;
 
         foreach (var player in players)
         {
-            v |= BaseMagic << player.AsPrimitive();
+            v |= BitOf(player);
         }
 
         value = v;
     }
 
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    ///     <paramref name="players" /> contains a slot of 64 or greater
+    /// </exception>
     public NetworkReceiver(IReadOnlyCollection<PlayerSlot> players)
     {
         var v = 0UL;
 
         foreach (var player in players)
         {
-            v |= BaseMagic << player.AsPrimitive();
+            v |= BitOf(player);
         }
 
         value = v;
@@ -66,17 +82,20 @@ public partial struct NetworkReceiver : IEnumerable<PlayerSlot>
     public int Count()
         => BitOperations.PopCount(value);
 
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="slot" /> is 64 or greater</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool HasClient(PlayerSlot slot)
-        => (value & (BaseMagic << slot.AsPrimitive())) != 0;
+        => (value & BitOf(slot)) != 0;
 
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="slot" /> is 64 or greater</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NetworkReceiver Append(PlayerSlot slot)
-        => new (value | (BaseMagic << slot.AsPrimitive()));
+        => new (value | BitOf(slot));
 
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="slot" /> is 64 or greater</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public NetworkReceiver Remove(PlayerSlot slot)
-        => new (value & ~(BaseMagic << slot.AsPrimitive()));
+        => new (value & ~BitOf(slot));
 
     public IEnumerable<PlayerSlot> GetClients()
     {

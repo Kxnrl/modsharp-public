@@ -28,7 +28,6 @@
 #include "cstrike/interface/IRecipientFilter.h"
 #include "cstrike/interface/ISoundOpSystem.h"
 #include "cstrike/type/CEntityKeyValues.h"
-#include "cstrike/type/CNetworkVelocityVector.h"
 #include "cstrike/type/CTakeDamageResult.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/QAngle.h"
@@ -157,11 +156,7 @@ const Vector& CBaseEntity::GetLocalVelocity()
 
 void CBaseEntity::SetLocalVelocity(Vector* vector)
 {
-    const auto velocity = m_vecVelocity();
-
-    velocity->m_vecX(vector->x);
-    velocity->m_vecY(vector->y);
-    velocity->m_vecZ(vector->z);
+    address::server::CBaseEntity_SetLocalVelocity(this, vector);
 }
 
 const Vector& CBaseEntity::GetAbsVelocity()

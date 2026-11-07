@@ -33,7 +33,6 @@ class CBaseWeapon;
 class CTakeDamageInfo;
 class CEntityKeyValues;
 class IRecipientFilter;
-class CNetworkVelocityVector;
 
 struct KeyValuesVariantItem;
 
@@ -66,7 +65,6 @@ public:
     SCHEMA_FIELD(CBodyComponent*, m_CBodyComponent)
     SCHEMA_FIELD(Vector, m_vecBaseVelocity)
     SCHEMA_FIELD(char*, m_target)
-    SCHEMA_POINTER_FIELD(CNetworkVelocityVector, m_vecVelocity)
     SCHEMA_FIELD(CBaseHandle, m_hGroundEntity)
 
     [[nodiscard]] CStrikeTeam_t GetTeam() { return m_iTeamNum(); }

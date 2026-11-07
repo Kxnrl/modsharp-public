@@ -50,6 +50,8 @@ internal class SoundEventHook : HookType<SoundEventHookParams, SoundOpEventGuid,
         changed   = param.Changed;
         receivers = param.Receivers.AsPrimitive();
 
+        param.MarkAsDisposed();
+
         return result.Action;
     }
 
@@ -75,6 +77,9 @@ internal class SoundEventHook : HookType<SoundEventHookParams, SoundOpEventGuid,
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal sealed class SoundEventHookParams : FunctionParams, ISoundEventHookParams

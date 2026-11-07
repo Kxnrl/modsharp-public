@@ -20,6 +20,10 @@
 #ifndef CSTRIKE_TYPE_RESOURCE_SYSTEM_H
 #define CSTRIKE_TYPE_RESOURCE_SYSTEM_H
 
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+
 using ResourceBlockId_t = uint32_t;
 
 // 一般情况下用这个就好
@@ -61,36 +65,66 @@ struct ResourceFileHeader_t
     CResourceArrayBase<ResourceBlockEntry_t> m_ResourceBlocks;
 };
 
-static bool Resource_FindBlockInfo(const ResourceFileHeader_t* header, ResourceBlockId_t block_id, CResourceBlockInfo& out_block_info)
+static bool Resource_FindBlockInfo(const void* buffer, size_t bufferSize, ResourceBlockId_t block_id, CResourceBlockInfo& out_block_info)
 {
-    if (!header || header->m_nHeaderVersion != 12 || header->m_ResourceBlocks.m_nCount == 0)
+    if (!buffer || bufferSize < sizeof(ResourceFileHeader_t))
     {
         return false;
     }
 
-    const auto* entries = reinterpret_cast<const ResourceBlockEntry_t*>(
-        (const char*)&header->m_ResourceBlocks.m_nOffset + header->m_ResourceBlocks.m_nOffset);
+    const auto* header = static_cast<const ResourceFileHeader_t*>(buffer);
+    if (header->m_nHeaderVersion != 12 || header->m_ResourceBlocks.m_nCount == 0)
+    {
+        return false;
+    }
+
+    const auto* base = static_cast<const char*>(buffer);
+
+    const auto entriesPos = (reinterpret_cast<const char*>(&header->m_ResourceBlocks.m_nOffset) - base) + static_cast<int64_t>(header->m_ResourceBlocks.m_nOffset);
+    const auto entriesEnd = static_cast<uint64_t>(entriesPos) + static_cast<uint64_t>(header->m_ResourceBlocks.m_nCount) * sizeof(ResourceBlockEntry_t);
+    if (entriesPos < 0 || entriesEnd > bufferSize)
+    {
+        return false;
+    }
+
+    const auto* entries = reinterpret_cast<const ResourceBlockEntry_t*>(base + entriesPos);
 
     for (uint32_t i = 0; i < header->m_ResourceBlocks.m_nCount; ++i)
     {
         const ResourceBlockEntry_t& entry = entries[i];
 
-        if (entry.m_nBlockType == block_id)
+        if (entry.m_nBlockType != block_id)
         {
-            out_block_info.m_nBlockType = entry.m_nBlockType;
-            out_block_info.m_nSize      = entry.m_nBlockSize;
-
-            if (entry.m_pBlockData.m_nOffset != 0)
-            {
-                out_block_info.m_pBlockData = (char*)&entry.m_pBlockData + entry.m_pBlockData.m_nOffset;
-            }
-            else
-            {
-                out_block_info.m_pBlockData = nullptr;
-            }
-
-            return true;
+            continue;
         }
+
+        if (entry.m_nBlockSize > static_cast<uint32_t>(INT_MAX))
+        {
+            return false;
+        }
+
+        const char* pBlockData = nullptr;
+
+        if (entry.m_pBlockData.m_nOffset != 0)
+        {
+            const auto dataPos = (reinterpret_cast<const char*>(&entry.m_pBlockData) - base) + static_cast<int64_t>(entry.m_pBlockData.m_nOffset);
+            if (dataPos < 0 || static_cast<uint64_t>(dataPos) + entry.m_nBlockSize > bufferSize)
+            {
+                return false;
+            }
+
+            pBlockData = base + dataPos;
+        }
+        else if (entry.m_nBlockSize != 0)
+        {
+            return false;
+        }
+
+        out_block_info.m_nBlockType = entry.m_nBlockType;
+        out_block_info.m_nSize      = static_cast<int>(entry.m_nBlockSize);
+        out_block_info.m_pBlockData = const_cast<char*>(pBlockData);
+
+        return true;
     }
 
     return false;

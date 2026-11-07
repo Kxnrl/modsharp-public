@@ -36,6 +36,9 @@
 
 CBasePlayerController* CBasePlayerController::FindBySlot(PlayerSlot_t slot)
 {
+    if (slot >= CS_MAX_PLAYERS)
+        return nullptr;
+
     return g_pGameEntitySystem->FindEntityByIndex<CBasePlayerController*>(slot + 1);
 }
 

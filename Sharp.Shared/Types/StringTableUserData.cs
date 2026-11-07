@@ -17,16 +17,20 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
 
-[StructLayout(LayoutKind.Explicit)]
+[StructLayout(LayoutKind.Explicit, Size = 24)]
 public unsafe struct StringTableUserData
 {
     [FieldOffset(0)]
-    public byte* Data;
+    public int Size;
 
     [FieldOffset(8)]
-    public int Size;
+    public byte* Data;
+
+    public readonly ReadOnlySpan<byte> AsReadOnlySpan()
+        => Size <= 0 || Data is null ? default : new ReadOnlySpan<byte>(Data, Size);
 }

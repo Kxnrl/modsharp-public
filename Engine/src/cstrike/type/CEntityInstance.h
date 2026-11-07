@@ -55,6 +55,7 @@ public:
     [[nodiscard]] CBaseHandle   GetRefEHandleNative();
 
     [[nodiscard]] SchemaClassInfoData_t* GetSchemaClassInfo();
+    [[nodiscard]] bool                   IsEntityClass(const CEntityClass* pClass) const { return m_pEntity->GetEntityClass() == pClass; }
     void                                 RemoveSelf() { Kill(); }
     void                                 Kill();
 

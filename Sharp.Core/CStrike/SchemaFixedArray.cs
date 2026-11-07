@@ -83,12 +83,13 @@ internal class SchemaFixedArray<T> : NativeObject, ISchemaArray<T>
 
             if (_schemaField.ChainOffset > 0)
             {
-                Bridges.Natives.Entity.NetworkStateChanged(IntPtr.Add(_objectPtr, _schemaField.ChainOffset),
-                                                           (ushort) _schemaField.Offset);
+                Bridges.Natives.Entity.NetworkArrayStateChanged(IntPtr.Add(_objectPtr, _schemaField.ChainOffset),
+                                                                (ushort) _schemaField.Offset,
+                                                                index);
             }
             else
             {
-                Bridges.Natives.Entity.SetStateChanged(_objectPtr, (ushort) _schemaField.Offset);
+                Bridges.Natives.Entity.SetArrayStateChanged(_objectPtr, (ushort) _schemaField.Offset, index);
             }
         }
     }

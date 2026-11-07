@@ -1,4 +1,4 @@
-/* 
+/*
  * ModSharp
  * Copyright (C) 2023-2026 Kxnrl. All Rights Reserved.
  *
@@ -17,19 +17,26 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CSTRIKE_TYPE_NETWORKVELOCITYVECTOR_H
-#define CSTRIKE_TYPE_NETWORKVELOCITYVECTOR_H
+using System;
+using Microsoft.Extensions.Logging;
 
-#include "cstrike/schema.h"
+namespace Sharp.Core.Logging;
 
-class CNetworkVelocityVector
+internal sealed class SharedLoggerFactory : ILoggerFactory
 {
-public:
-    DECLARE_SCHEMA_STRUCT(CNetworkVelocityVector)
+    private readonly ILoggerFactory _factory;
 
-    SCHEMA_FIELD(float, m_vecX)
-    SCHEMA_FIELD(float, m_vecY)
-    SCHEMA_FIELD(float, m_vecZ)
-};
+    public SharedLoggerFactory(ILoggerFactory factory)
+        => _factory = factory;
 
-#endif
+    public ILogger CreateLogger(string categoryName)
+        => _factory.CreateLogger(categoryName);
+
+    public void AddProvider(ILoggerProvider provider)
+        => throw new NotSupportedException(
+            "Adding providers to the shared logger factory is not supported, use ISharedSystem.GetLoggingManager() instead.");
+
+    public void Dispose()
+    {
+    }
+}

@@ -55,6 +55,7 @@ internal partial class GameEvent : NativeObject, IGameEvent
         => ptr == IntPtr.Zero ? null : new GameEvent(ptr, name, true);
 
     private string? _name;
+    private bool    _engineOwned;
 
     public void SetString(string key, string value)
     {
@@ -108,7 +109,9 @@ internal partial class GameEvent : NativeObject, IGameEvent
     {
         CheckDisposed();
 
-        return Utils.ReadString(Event.GetString(_this, key, defaultValue));
+        var value = Event.GetString(_this, key);
+
+        return value == null ? defaultValue : Utils.ReadString(value);
     }
 
     public float GetFloat(string key, float defaultValue = 0.0f)
@@ -165,7 +168,9 @@ internal partial class GameEvent : NativeObject, IGameEvent
 
     public void Fire(bool serverOnly)
     {
-        CheckEditable();
+        CheckOwned();
+
+        MarkAsDisposed();
         Event.FireEvent(_this, serverOnly);
     }
 
@@ -189,9 +194,14 @@ internal partial class GameEvent : NativeObject, IGameEvent
 
     public void Dispose()
     {
-        CheckEditable();
+        CheckOwned();
+
+        MarkAsDisposed();
         Event.FreeEvent(_this);
     }
+
+    internal void MarkEngineOwned()
+        => _engineOwned = true;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void CheckEditable()
@@ -201,6 +211,17 @@ internal partial class GameEvent : NativeObject, IGameEvent
         if (!Editable)
         {
             throw new InvalidOperationException("Event is ReadOnly!");
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void CheckOwned()
+    {
+        CheckEditable();
+
+        if (_engineOwned)
+        {
+            throw new InvalidOperationException("Event is owned by the engine!");
         }
     }
 

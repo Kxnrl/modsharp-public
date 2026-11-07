@@ -115,7 +115,9 @@ public static unsafe partial class Game
 
     public static partial nint GetMapGroupMapList(string mapGroup);
 
-    public static partial NativeSpan<byte> FindResourceDataBlockInfo(string fileName, string pathId);
+    public static partial int FindResourceDataBlockInfo(string fileName, string pathId);
+
+    public static partial void CopyResourceDataBlock(byte* output, int size);
 
     public static partial ResourceStatus GetResourceStatus(string fileName);
 

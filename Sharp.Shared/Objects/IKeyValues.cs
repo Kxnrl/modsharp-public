@@ -61,8 +61,19 @@ public interface IKeyValues : INativeObject
     bool LoadFromString(string buffer);
 
     /// <summary>
+    ///     Whether escape sequences (<c>\"</c>, <c>\\</c>, <c>\n</c>, <c>\t</c>) inside quoted strings are processed while
+    ///     parsing. Set it before <see cref="LoadFromFile" /> / <see cref="LoadFromString" />. <br />
+    ///     <remarks>
+    ///         The game's localization files (such as <c>resource/csgo_english.txt</c>) contain <c>\"</c> and fail to
+    ///         parse without it.
+    ///     </remarks>
+    /// </summary>
+    void UsesEscapeSequences(bool state);
+
+    /// <summary>
     ///     Export to string
     /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="size" /> is not positive</exception>
     bool SaveToString(int size,
         out string        result,
         int               indent           = 0,

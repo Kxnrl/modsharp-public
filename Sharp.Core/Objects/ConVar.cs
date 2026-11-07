@@ -131,43 +131,28 @@ internal partial class ConVar : NativeObject, IConVar
     public void ReplicateToClient(IGameClient client, string value)
         => Cvar.ReplicateToClient(_this, value, client.GetAbsPtr());
 
-    public unsafe void Set(int value)
+    public void Set(int value)
     {
-        if (Type == ConVarType.String)
-        {
-            throw new
-                InvalidOperationException(
-                    $"Cannot call Set(int) on CVar '{Name}' (type={Type}). Use Set(string) or SetString(string) instead.");
-        }
-
-        var x = new ConVarVariantValue(value);
-        Cvar.SetValue(_this, &x);
+        ThrowIfNotNumeric("Set(int)");
+        SetNative(new ConVarVariantValue(value));
     }
 
-    public unsafe void Set(bool value)
+    public void Set(bool value)
     {
-        if (Type == ConVarType.String)
-        {
-            throw new
-                InvalidOperationException(
-                    $"Cannot call Set(bool) on CVar '{Name}' (type={Type}). Use Set(string) or SetString(string) instead.");
-        }
-
-        var x = new ConVarVariantValue(value);
-        Cvar.SetValue(_this, &x);
+        ThrowIfNotNumeric("Set(bool)");
+        SetNative(new ConVarVariantValue(value));
     }
 
-    public unsafe void Set(float value)
+    public void Set(float value)
     {
-        if (Type != ConVarType.Float32 && Type != ConVarType.Float64)
+        if (!IsFloating(Type))
         {
             throw new
                 InvalidOperationException(
-                    $"Cannot call Set(bool) on CVar '{Name}' (type={Type}). Use Set(string) or SetString(string) instead.");
+                    $"Cannot call Set(float) on CVar '{Name}' (type={Type}). long / uint / ulong arguments also bind to Set(float); use Set(int) for values within the int range, otherwise Set(string) or SetString(string).");
         }
 
-        var x = new ConVarVariantValue(value);
-        Cvar.SetValue(_this, &x);
+        SetNative(new ConVarVariantValue(value));
     }
 
     public void Set(string value)
@@ -178,7 +163,7 @@ internal partial class ConVar : NativeObject, IConVar
         }
     }
 
-    public unsafe void Set(ConVarVariantValue value)
+    public void Set(ConVarVariantValue value)
     {
         if (Type == ConVarType.Color)
         {
@@ -187,14 +172,61 @@ internal partial class ConVar : NativeObject, IConVar
             return;
         }
 
-        if (Type is ConVarType.Float64 or ConVarType.Vector2 or ConVarType.Vector3 or ConVarType.Vector4 or ConVarType.QAngle or ConVarType.VectorWS)
+        if (Type == ConVarType.String)
+        {
+            throw CannotCall("Set(ConVarVariantValue)");
+        }
+
+        if (Type is ConVarType.Float64
+            or ConVarType.Vector2
+            or ConVarType.Vector3
+            or ConVarType.Vector4
+            or ConVarType.QAngle
+            or ConVarType.VectorWS)
         {
             throw new
                 NotSupportedException(
                     $"Cannot call Set(ConVarVariantValue) on CVar '{Name}' (type={Type}). Use Set(string) instead.");
         }
 
-        Cvar.SetValue(_this, &value);
+        SetNative(value);
+    }
+
+    private static bool IsFloating(ConVarType type)
+        => type is ConVarType.Float32 or ConVarType.Float64;
+
+    private InvalidOperationException CannotCall(string method)
+        => new ($"Cannot call {method} on CVar '{Name}' (type={Type}). Use Set(string) or SetString(string) instead.");
+
+    private void ThrowIfNotNumeric(string method)
+    {
+        var type = Type;
+
+        if (type == ConVarType.String)
+        {
+            throw CannotCall(method);
+        }
+
+        if (type is ConVarType.Color
+            or ConVarType.Vector2
+            or ConVarType.Vector3
+            or ConVarType.Vector4
+            or ConVarType.QAngle
+            or ConVarType.VectorWS)
+        {
+            throw new
+                NotSupportedException($"Cannot call {method} on CVar '{Name}' (type={type}). Use Set(string) instead.");
+        }
+    }
+
+    private unsafe void SetNative(ConVarVariantValue value)
+    {
+        if (!Cvar.SetValue(_this, &value))
+        {
+            throw new
+                NotSupportedException(
+                    $"CVar '{Name}' (type={Type}) cannot be set from the given ConVarVariantValue. Use Set(string) instead.");
+        }
     }
 
     public unsafe bool SetMinBound(ConVarVariantValue value)
@@ -215,7 +247,7 @@ internal partial class ConVar : NativeObject, IConVar
             {
                 var convarValue = new ConVarVariantValue(new IntPtr(p));
 
-                Cvar.SetValue(_this, &convarValue);
+                SetNative(convarValue);
             }
         }
         else if (TypeDefaultString(Type) is { } fallback)
@@ -242,7 +274,7 @@ internal partial class ConVar : NativeObject, IConVar
                 _                  => throw new NotSupportedException($"Unsupported type {Type}"),
             };
 
-            Cvar.SetValue(_this, &convarValue);
+            SetNative(convarValue);
         }
     }
 

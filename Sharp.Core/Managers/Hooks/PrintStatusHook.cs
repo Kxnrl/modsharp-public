@@ -46,6 +46,8 @@ internal class PrintStatusHook : HookType<PrintStatusHookParams, EmptyHookReturn
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride;
 }
 
 internal sealed class PrintStatusHookParams : FunctionParams, IPrintStatusHookParams

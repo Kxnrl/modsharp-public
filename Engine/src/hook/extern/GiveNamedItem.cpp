@@ -35,6 +35,7 @@
 #include "cstrike/interface/ISchemaSystem.h"
 #include "cstrike/schema.h"
 #include "cstrike/type/CEconItemView.h"
+#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
 #include "cstrike/type/CUtlString.h"
@@ -213,11 +214,12 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
             return CALL_GiveNamedItem();
         }
 
-        char refClassname[64], classname[64];
-        StrCopy(refClassname, sizeof(refClassname), pClassname);
-        memcpy(classname, refClassname, sizeof(classname));
+        CUtlString classnameOverride;
+        auto       classnameOverridden = false;
+        auto       classname           = pClassname;
+        auto       pItemView           = static_cast<CEconItemView*>(pScriptItem);
 
-        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, refClassname, &bIgnore);
+        const auto action = forwards::OnGiveNamedItemPre->Invoke(pClient, pController, pPawn, pClassname, &classnameOverride, &classnameOverridden, &bIgnore, &pItemView);
 
         if (action == EHookAction::Ignored)
         {
@@ -237,8 +239,15 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
                 pScriptItem = nullptr;
                 ignoreView  = true;
             }
+            else
+            {
+                pScriptItem = pItemView;
+            }
 
-            StrCopy(classname, sizeof(classname), refClassname);
+            if (classnameOverridden)
+            {
+                classname = classnameOverride.Get();
+            }
         }
 
     postHook:
@@ -250,7 +259,7 @@ BeginMemberHookScope(CCSPlayer_ItemServices)
             pWeapon = CALL_GiveNamedItemChanged();
         }
 
-        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon);
+        forwards::OnGiveNamedItemPost->Invoke(pClient, pController, pPawn, classname, bIgnore, action, pWeapon, static_cast<CEconItemView*>(pScriptItem));
 
         return pWeapon;
     }
@@ -356,8 +365,10 @@ static CGamePlayerEquip* ResolvePulsePlayerEquip(const void* pEntityArgument)
     if (!pEntity)
         return nullptr;
 
-    const auto pszClassname = pEntity->GetClassname();
-    if (!pszClassname || strcasecmp(pszClassname, "game_player_equip") != 0)
+    static const auto s_pGamePlayerEquipClass = g_pGameEntitySystem->FindEntityClassByName("game_player_equip");
+    AssertPtr(s_pGamePlayerEquipClass);
+
+    if (!pEntity->IsEntityClass(s_pGamePlayerEquipClass))
         return nullptr;
 
     return pEntity;
@@ -442,12 +453,14 @@ BeginMemberHookScope(CGamePlayerEquip)
     // The Pulse AllPlayers callback still calls this two-argument game function.
     DeclareMemberDetourHook(PulseTriggerForAllPlayers, void, (CGamePlayerEquip * pEntity, void*))
     {
-        CCSPlayerPawn* pPlayer = nullptr;
-        while ((pPlayer = g_pGameEntitySystem->FindByClassnameCast<CCSPlayerPawn*>(pPlayer, "player")) != nullptr)
-        {
-            if (pPlayer->IsPlayerPawn() && pPlayer->IsPlayer() && pPlayer->IsAlive())
+        static const auto s_pPlayerClass = g_pGameEntitySystem->FindEntityClassByName("player");
+        AssertPtr(s_pPlayerClass);
+
+        s_pPlayerClass->ForEachEntity([pEntity](CBaseEntity* pBase) {
+            const auto pPlayer = reinterpret_cast<CCSPlayerPawn*>(pBase);
+            if (pPlayer->IsPlayer() && pPlayer->IsAlive())
                 TriggerForPlayer(pEntity, pPlayer, nullptr);
-        }
+        });
     }
 
     DeclareMemberDetourHook(PulseTriggerForActivatedPlayer, int32_t, (void*, void*, void*, void* pContext, void* pEntityArgument))
@@ -719,7 +732,7 @@ static void PatchGiveNamedItemLimit()
 
         if (instr.mnemonic == ZYDIS_MNEMONIC_CALL)
         {
-            uintptr_t final_target = ZydisUtility::ResolveCallTarget(&instr, operands, address);
+            uintptr_t final_target = ZydisUtility::ResolveCallTarget(&instr, operands, address, *modules::server);
             prev_was_stricmp       = final_target == V_stricmp_fast;
         }
         else if (instr.mnemonic != ZYDIS_MNEMONIC_TEST)

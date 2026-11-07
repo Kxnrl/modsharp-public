@@ -29,6 +29,9 @@ CCommand::CCommand() :
     m_ArgSBuffer = {};
     m_ArgvBuffer = {};
     m_Args       = {};
+
+    m_ArgSBuffer.SetSize(COMMAND_MAX_LENGTH);
+    m_ArgvBuffer.SetSize(COMMAND_MAX_LENGTH);
 }
 
 bool CCommand::Tokenize(const char* pCommand, void* pBreakSet)

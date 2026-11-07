@@ -122,7 +122,7 @@ public:
     void ConsolePrint(const char* message) const;
     void SetName(const char* name);
     void UpdateUserSettings();
-    void SayChatMessage(bool teamOnly, const char* message) const;
+    bool SayChatMessage(bool teamOnly, const char* message) const;
 
     void ForceFullUpdate() const
     {

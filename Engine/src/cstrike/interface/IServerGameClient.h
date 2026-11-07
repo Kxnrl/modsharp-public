@@ -154,6 +154,9 @@ public:
         NETWORK_DISCONNECT_KICKED_SUICIDE                        = 159, // "#Player_DisconnectReason_Suicide"
         NETWORK_DISCONNECT_KICKED_NOSTEAMLOGIN                   = 160, // "#Player_DisconnectReason_NoSteamLogin"
         NETWORK_DISCONNECT_KICKED_NOSTEAMTICKET                  = 161, // "#Player_DisconnectReason_NoSteamTicket"
+        NETWORK_DISCONNECT_KICKED_INPUTAUTOMATION                = 162, // "#Player_DisconnectReason_InputAutomation"
+        NETWORK_DISCONNECT_KICKED_VACNETABNORMALBEHAVIOR         = 163, // "#Player_DisconnectReason_VacNetAbnormalBehavior"
+        NETWORK_DISCONNECT_KICKED_INSECURECLIENT                 = 164, // "#Player_DisconnectReason_InsecureClient"
     };
 
 public:

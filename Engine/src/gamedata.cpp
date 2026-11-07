@@ -34,6 +34,7 @@
 #include <algorithm>
 #include <charconv>
 #include <deque>
+#include <format>
 #include <fstream>
 #include <map>
 #include <ranges>
@@ -457,13 +458,73 @@ static RefResult FindFunctionFromReferences(const GameDataAddress& game_data, st
 
         std::ranges::set_intersection(matches, vfuncs, std::back_inserter(intersection));
 
-        matches = std::move(intersection);
-
-        if (matches.empty())
+        // GCC sometimes puts a guard stub in the vtable (`mov eax,[rdi+X]; test; je L; ret; L: jmp body`),
+        // so the referenced body is not a vfunc itself. Accept the stub when one of its first branches lands on a candidate.
+        if (intersection.empty())
         {
-            FERROR("Candidates found, but none exist in VTable %s for %s.", vtable_name.data(), key.data());
+            // returns the rel branch target at ip (0 if none); `uncond` = it is a plain jmp, `stop` = decode failed / ret / jmp
+            const auto branch_at = [](std::uintptr_t ip, std::uintptr_t& length, bool& uncond, bool& stop) -> std::uintptr_t {
+                ZydisDecodedInstruction inst;
+                ZydisDecodedOperand     ops[ZYDIS_MAX_OPERAND_COUNT];
+
+                stop = true;
+                if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&ZydisUtility::DefaultDecoder, reinterpret_cast<const void*>(ip), 15, &inst, ops)))
+                    return 0;
+
+                length = inst.length;
+                uncond = inst.meta.category == ZYDIS_CATEGORY_UNCOND_BR;
+                stop   = uncond || inst.meta.category == ZYDIS_CATEGORY_RET;
+
+                if ((uncond || inst.meta.category == ZYDIS_CATEGORY_COND_BR) && ops[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+                    return ZydisUtility::GetAbsoluteAddress(inst, ops[0], ip);
+
+                return 0;
+            };
+
+            for (const auto vfunc : vfuncs)
+            {
+                auto ip = vfunc;
+                for (int i = 0; i < 8; i++)
+                {
+                    std::uintptr_t length = 0;
+                    bool           uncond = false, stop = false;
+
+                    if (auto target = branch_at(ip, length, uncond, stop); target != 0)
+                    {
+                        // follow one `jmp body` hop (the je lands on it)
+                        std::uintptr_t hop_len = 0;
+                        bool           hop_uncond = false, hop_stop = false;
+                        if (const auto hop = branch_at(target, hop_len, hop_uncond, hop_stop); hop != 0 && hop_uncond)
+                            target = hop;
+
+                        // matches holds function entries; the jmp target may sit inside a range our CFG pass merged into a neighbor
+                        const auto* range = module_ptr->GetFunctionRange(target);
+                        if (std::ranges::binary_search(matches, target) || (range != nullptr && std::ranges::binary_search(matches, range->start)))
+                        {
+                            intersection.push_back(vfunc);
+                            break;
+                        }
+                    }
+
+                    if (stop)
+                        break;
+
+                    ip += length;
+                }
+            }
+        }
+
+        if (intersection.empty())
+        {
+            std::string rvas;
+            for (const auto m : matches)
+                rvas += std::format(" {}+0x{:x}", module_name, m - module_ptr->Base());
+
+            FERROR("Candidates found, but none exist in VTable %s for %s. Candidates:%s", vtable_name.data(), key.data(), rvas.c_str());
             return RefResult::Failed;
         }
+
+        matches = std::move(intersection);
 
         if (matches.size() > 1)
         {
@@ -713,7 +774,7 @@ static CAddress GetVScriptFunction(const std::string& name)
 
     final_address = try_find_match(string_address);
 
-    if (!final_address.IsValid())
+    if (!final_address.IsValid() && string_address.IsValid())
     {
         auto string_ptrs = modules::server->FindPtrs(string_address);
         for (const auto& ptr : string_ptrs)

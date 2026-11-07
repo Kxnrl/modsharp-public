@@ -18,10 +18,38 @@
  */
 
 #include "steamproxy.h"
+#include "address.h"
 #include "definitions.h"
+#include "logging.h"
+#include "module.h"
+#include "sdkproxy.h"
+
+#include "cstrike/interface/ICommandLine.h"
 
 #include "steamworks/isteamgameserver.h"
+#include "steamworks/isteamnetworkingsockets.h"
 #include "steamworks/isteamugc.h"
+
+bool ISteamApiProxy::GetConnectionSteamId(uint32_t hConnection, SteamId_t* pSteamId) const
+{
+    static const auto s_bUseSteamClient  = CommandLine()->HasParam("-steamnetworkingsockets_use_steamclient");
+    static const auto s_pfnGetLibSockets = modules::steamsockets->GetExportByName("SteamGameServerNetworkingSockets_LibV12").As<ISteamNetworkingSockets* (*)()>();
+    AssertPtr(s_pfnGetLibSockets);
+
+    const auto pSockets = s_bUseSteamClient ? SteamGameServerNetworkingSockets_SteamAPI() : s_pfnGetLibSockets();
+    if (pSockets == nullptr)
+    {
+        FERROR("GameServer networking sockets unavailable, rejecting connection");
+        return false;
+    }
+
+    SteamNetConnectionInfo_t info;
+    if (!pSockets->GetConnectionInfo(hConnection, &info))
+        return false;
+
+    *pSteamId = info.m_identityRemote.GetSteamID64();
+    return true;
+}
 
 bool ISteamApiProxy::IsAvailable()
 {
@@ -46,16 +74,25 @@ bool ISteamApiProxy::BLoggedOn() const
 
 bool ISteamApiProxy::BSecure() const
 {
+    if (!m_pSteamServer)
+        return false;
+
     return m_pSteamServer->BSecure();
 }
 
 uint64_t ISteamApiProxy::GetSteamId() const
 {
+    if (!m_pSteamServer)
+        return 0;
+
     return static_cast<uint64_t>(m_pSteamServer->GetSteamID().ConvertToUint64());
 }
 
 bool ISteamApiProxy::WasRestartRequested() const
 {
+    if (!m_pSteamServer)
+        return false;
+
     return m_pSteamServer->WasRestartRequested();
 }
 
@@ -117,7 +154,7 @@ bool ISteamApiProxy::RequestUserGroupStatus(SteamId_t steamId, uint64_t groupId)
     CSteamID pid;
     CSteamID gid;
     pid.SetFromUint64(static_cast<uint64>(steamId));
-    gid.SetFromUint64(static_cast<uint64>(steamId));
+    gid.SetFromUint64(static_cast<uint64>(groupId));
     return m_pSteamServer->RequestUserGroupStatus(pid, gid);
 #endif
 }
@@ -189,6 +226,14 @@ bool ISteamApiProxy::DownloadItem(uint64_t nPublishedFileId, bool bHighPriority)
     return m_pSteamUGC->DownloadItem(static_cast<PublishedFileId_t>(nPublishedFileId), bHighPriority);
 }
 
+bool ISteamApiProxy::DeleteItem(uint64_t nPublishedFileId)
+{
+    if (!m_pSteamUGC)
+        return false;
+
+    return m_pSteamUGC->DeleteItem(static_cast<PublishedFileId_t>(nPublishedFileId)) != k_uAPICallInvalid;
+}
+
 void ISteamApiProxy::SuspendDownloads(bool bSuspend)
 {
     if (!m_pSteamUGC)
@@ -203,4 +248,14 @@ uint32_t ISteamApiProxy::GetPublicIP()
         return 0;
 
     return m_pSteamServer->GetPublicIP().m_unIPv4;
+}
+
+void* ISteamApiProxy::GetSteamGameServer()
+{
+    return m_pSteamServer;
+}
+
+void* ISteamApiProxy::GetSteamUGC()
+{
+    return m_pSteamUGC;
 }

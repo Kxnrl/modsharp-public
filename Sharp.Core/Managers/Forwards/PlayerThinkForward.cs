@@ -52,7 +52,7 @@ internal class PlayerPostThinkForward : ForwardType<PlayerThinkForwardParams, Pl
             return;
         }
 
-        var param = new PlayerThinkForwardParams(false, ptrClient, ptrController, ptrPawn);
+        var param = new PlayerThinkForwardParams(true, ptrClient, ptrController, ptrPawn);
         InvokeForward(param);
         param.MarkAsDisposed();
     }

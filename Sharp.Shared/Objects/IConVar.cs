@@ -77,16 +77,33 @@ public interface IConVar : INativeObject
 
     ref ConVarVariantValue Get();
 
+    /// <exception cref="InvalidOperationException">The type is String</exception>
+    /// <exception cref="NotSupportedException">
+    ///     The type is Color or a vector type (Vector2 / Vector3 / Vector4 / QAngle / VectorWS)
+    /// </exception>
     void Set(int value);
 
+    /// <exception cref="InvalidOperationException">The type is String</exception>
+    /// <exception cref="NotSupportedException">
+    ///     The type is Color or a vector type (Vector2 / Vector3 / Vector4 / QAngle / VectorWS)
+    /// </exception>
     void Set(bool value);
 
+    /// <summary>
+    ///     long / uint / ulong arguments also bind to this overload; use <see cref="Set(int)" /> for integers within
+    ///     the int range and <see cref="Set(string)" /> for integers outside it
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The type is not Float32 / Float64</exception>
     void Set(float value);
 
     /// <exception cref="ArgumentException">The string cannot be parsed as the ConVar's type</exception>
     void Set(string value);
 
-    /// <exception cref="NotSupportedException">The type is Float64 or a vector type (Vector2 / Vector3 / Vector4 / QAngle / VectorWS)</exception>
+    /// <exception cref="InvalidOperationException">The type is String</exception>
+    /// <exception cref="NotSupportedException">
+    ///     The type is Float64 or a vector type (Vector2 / Vector3 / Vector4 / QAngle / VectorWS),
+    ///     or the value cannot be written to this type
+    /// </exception>
     void Set(ConVarVariantValue value);
 
     bool SetMinBound(ConVarVariantValue value);

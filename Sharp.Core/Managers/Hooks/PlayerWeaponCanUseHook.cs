@@ -48,6 +48,9 @@ internal class PlayerWeaponCanUseHook : HookType<PlayerWeaponCanUseHookParams, b
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.IgnoreParamReturnOverride;
 }
 
 internal sealed class PlayerWeaponCanUseHookParams : PlayerWeaponFunctionParams, IPlayerWeaponCanUseHookParams

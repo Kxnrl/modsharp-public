@@ -47,10 +47,7 @@ public:
         m_pSteamUGC = pUGC;
     }
 
-    ISteamUGC* GetSteamUGC()
-    {
-        return m_pSteamUGC;
-    }
+    [[nodiscard]] bool GetConnectionSteamId(uint32_t hConnection, SteamId_t* pSteamId) const;
 
     [[nodiscard]] virtual bool     IsAvailable();
     virtual void                   SetGameDescription(const char* description) const;
@@ -71,8 +68,11 @@ public:
     [[nodiscard]] virtual uint32_t GetItemState(uint64_t nPublishedFileId) const;
     virtual bool                   GetItemDownloadInfo(uint64_t nPublishedFileId, uint64_t* punBytesDownloaded, uint64_t* punBytesTotal);
     virtual bool                   DownloadItem(uint64_t nPublishedFileId, bool bHighPriority);
+    virtual bool                   DeleteItem(uint64_t nPublishedFileId);
     virtual void                   SuspendDownloads(bool bSuspend);
     virtual uint32_t               GetPublicIP();
+    virtual void*                  GetSteamGameServer();
+    virtual void*                  GetSteamUGC();
 
 private:
     ISteamGameServer* m_pSteamServer;

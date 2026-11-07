@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Sharp.Shared.Types;
@@ -24,14 +25,35 @@ namespace Sharp.Shared.Types;
 [StructLayout(LayoutKind.Explicit, Pack = 8, Size = 72)]
 public unsafe ref struct CTraceFilter
 {
+    private static readonly nint IterateEntitiesOffset =
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? 0x3A : 0x40;
+
     [FieldOffset(0)]
     public CTraceFilterVirtualTableDescriptor* Vtable;
 
     [FieldOffset(8)]
     public RnQueryShapeAttr QueryAttribute;
 
-    [FieldOffset(64)]
-    public bool m_bIterateEntities;
+    private ref byte Base
+    {
+        get
+        {
+            fixed (void* ptr = &this)
+            {
+                return ref Unsafe.AsRef<byte>(ptr);
+            }
+        }
+    }
+
+    /// <remarks>
+    ///     On Linux it lies in the tail padding of <see cref="QueryAttribute" />, so write it after assigning
+    ///     <see cref="QueryAttribute" /> as a whole
+    /// </remarks>
+    public bool m_bIterateEntities
+    {
+        get => Unsafe.ReadUnaligned<bool>(ref Unsafe.AddByteOffset(ref Base, IterateEntitiesOffset));
+        set => Unsafe.WriteUnaligned(ref Unsafe.AddByteOffset(ref Base,      IterateEntitiesOffset), value);
+    }
 }
 
 public unsafe struct CTraceFilterVirtualTableDescriptor

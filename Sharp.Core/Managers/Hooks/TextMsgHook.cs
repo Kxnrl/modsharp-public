@@ -48,6 +48,9 @@ internal class TextMsgHook : HookType<TextMsgHookParams, NetworkReceiver, TextMs
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal sealed class TextMsgHookParams : FunctionParams, ITextMsgHookParams

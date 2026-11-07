@@ -216,7 +216,7 @@ enum class SearchAction : uint8_t
 template <typename Callback>
 static void FindDataScalar(uint8_t* data, std::size_t size, const uint8_t* needle, std::size_t needle_size, Callback on_match) noexcept
 {
-    if (size < needle_size) [[unlikely]]
+    if (needle_size == 0 || size < needle_size) [[unlikely]]
         return;
 
     const auto first_byte = needle[0];

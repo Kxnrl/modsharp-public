@@ -443,6 +443,15 @@ public struct Vector2D : IComparable, IComparable<Vector2D>, IEquatable<Vector2D
         => MathF.Abs(X    - other.X) < float.Epsilon
            && MathF.Abs(Y - other.Y) < float.Epsilon;
 
+    public CMsgVector ToMsgVector()
+        => new ()
+        {
+            X = X,
+            Y = Y,
+            Z = 0f,
+            W = 0f,
+        };
+
     public CMsgVector2D ToMsgVector2D()
         => new () { X = X, Y = Y };
 }

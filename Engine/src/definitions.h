@@ -38,17 +38,6 @@ enum class EHookAction : uint8_t
     SkipCallReturnOverride,    // 忽略原始Function, 使用我们提供的返回值
 };
 
-constexpr const char* ECommandActionName(ECommandAction action)
-{
-    switch (action)
-    {
-    case ECommandAction::Skipped: return "Skipped";
-    case ECommandAction::Handled: return "Handled";
-    case ECommandAction::Stopped: return "Stopped";
-    }
-    return "Unknown";
-}
-
 constexpr const char* EHookActionName(EHookAction action)
 {
     switch (action)

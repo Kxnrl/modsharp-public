@@ -28,16 +28,16 @@
 
 BeginMemberHookScope(CBasePlayerController)
 {
-    DeclareMemberDetourHook(HandleCommandJoinTeam, bool, (CCSPlayerController * pController, int32_t team, bool queue))
+    DeclareMemberDetourHook(HandleCommandJoinTeam, bool, (CCSPlayerController * pController, int32_t team, uint8_t flags))
     {
         const auto pClient = sv->GetClient(pController->GetPlayerSlot());
 
         auto refTeam   = team;
-        auto refQueue  = queue;
+        auto refFlags  = flags;
         auto refCoach  = 0;
         auto refReturn = false;
 
-        const auto action = forwards::OnHandleCommandJoinTeamPre->Invoke(pClient, pController, &refTeam, &refQueue, &refCoach, &refReturn);
+        const auto action = forwards::OnHandleCommandJoinTeamPre->Invoke(pClient, pController, &refTeam, &refFlags, &refCoach, &refReturn);
 
         if (action == EHookAction::Ignored)
         {
@@ -52,19 +52,19 @@ BeginMemberHookScope(CBasePlayerController)
         if (action == EHookAction::ChangeParamReturnDefault || action == EHookAction::ChangeParamReturnOverride)
         {
             team  = refTeam;
-            queue = refQueue;
+            flags = refFlags;
         }
 
     postHook:
 
-        auto ret = HandleCommandJoinTeam(pController, team, queue);
+        auto ret = HandleCommandJoinTeam(pController, team, flags);
 
         if (action == EHookAction::ChangeParamReturnOverride)
         {
             ret = refReturn;
         }
 
-        forwards::OnHandleCommandJoinTeamPost->Invoke(pClient, pController, team, queue, refCoach, action, ret);
+        forwards::OnHandleCommandJoinTeamPost->Invoke(pClient, pController, team, flags, refCoach, action, ret);
 
         return ret;
     }

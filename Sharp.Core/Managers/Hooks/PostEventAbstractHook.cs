@@ -50,6 +50,9 @@ internal class PostEventAbstractHook : HookType<PostEventAbstractHookParams, Net
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => false;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal sealed class PostEventAbstractHookParams : FunctionParams, IPostEventAbstractHookParams

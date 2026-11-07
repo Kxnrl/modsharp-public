@@ -126,7 +126,7 @@ public interface IGameEvent : INativeObject
     /// </summary>
     /// <remarks>
     ///     <para>
-    ///         The event object will be automatically disposed after firing the event.
+    ///         The engine takes ownership of the event, and this object is invalid after the call.
     ///         Do not manually call <see cref="Dispose" /> if you use this method.
     ///     </para>
     ///     <para>
@@ -134,6 +134,10 @@ public interface IGameEvent : INativeObject
     ///     </para>
     /// </remarks>
     /// <param name="serverOnly">If set to <c>true</c>, the event is processed only on the server and not sent to clients.</param>
+    /// <exception cref="InvalidOperationException">
+    ///     The event is not editable, or it is the engine-owned event inside a HookFireEvent callback
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">The event has already been fired or disposed</exception>
     void Fire(bool serverOnly);
 
     /// <summary>
@@ -184,7 +188,7 @@ public interface IGameEvent : INativeObject
     void FireToClients();
 
     /// <summary>
-    ///     Manually dispose of the event object.
+    ///     Manually dispose of the event object; it is invalid after the call.
     /// </summary>
     /// <remarks>
     ///     <para>
@@ -192,14 +196,13 @@ public interface IGameEvent : INativeObject
     ///         <see cref="FireToClient(int)" />, <see cref="FireToClient(IGameClient)" />, or <see cref="FireToClients" />.
     ///     </para>
     ///     <para>
-    ///         <b>WARNING:</b> Calling this method on an event that has already been disposed or fired via
-    ///         <see cref="Fire(bool)" />
-    ///         may cause the server to crash.
-    ///     </para>
-    ///     <para>
     ///         Throws an exception if called on a non-custom created event.
     ///     </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    ///     The event is not editable, or it is the engine-owned event inside a HookFireEvent callback
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">The event has already been fired or disposed</exception>
     void Dispose();
 
     /// <summary>

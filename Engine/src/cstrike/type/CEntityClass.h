@@ -20,9 +20,12 @@
 #ifndef CSTRIKE_TYPE_ENTITYCLASS_H
 #define CSTRIKE_TYPE_ENTITYCLASS_H
 
-#include <cstdint>
+#include "cstrike/type/CEntityIdentity.h"
 
-class CEntityIdentity;
+#include <cstdint>
+#include <type_traits>
+#include <utility>
+
 class CEntityInstance;
 class CEntityClass;
 
@@ -102,6 +105,34 @@ public:
     [[nodiscard]] CEntityIdentity* GetEntityListHead() const
     {
         return *reinterpret_cast<CEntityIdentity* const*>(reinterpret_cast<const uintptr_t>(this) + sm_nEntityListHeadOffset);
+    }
+
+    template <typename Fn>
+    static void ForEachIdentityFrom(CEntityIdentity* pIdentity, Fn&& fn)
+    {
+        const auto next = CEntityIdentity::sm_nNextByClassOffset;
+        for (; pIdentity; pIdentity = CEntityIdentity::GetNextByClass(pIdentity, next))
+        {
+            if (pIdentity->IsMarkedForDeletion() || pIdentity->GetBaseEntity() == nullptr)
+                continue;
+
+            if constexpr (std::is_void_v<std::invoke_result_t<Fn&, CEntityIdentity*>>)
+                fn(pIdentity);
+            else if (!fn(pIdentity))
+                return;
+        }
+    }
+
+    template <typename Fn>
+    void ForEachIdentity(Fn&& fn) const
+    {
+        ForEachIdentityFrom(GetEntityListHead(), std::forward<Fn>(fn));
+    }
+
+    template <typename Fn>
+    void ForEachEntity(Fn&& fn) const
+    {
+        ForEachIdentity([&fn](CEntityIdentity* pIdentity) { return fn(pIdentity->GetBaseEntity()); });
     }
 };
 

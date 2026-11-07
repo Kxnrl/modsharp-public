@@ -82,8 +82,9 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
 
     private readonly ILogger _logger;
 
-    protected abstract bool AllowPre  { get; }
-    protected abstract bool AllowPost { get; }
+    protected abstract bool            AllowPre         { get; }
+    protected abstract bool            AllowPost        { get; }
+    protected abstract HookActionFlags SupportedActions { get; }
 
     protected HookType(ILoggerFactory factory)
     {
@@ -185,6 +186,18 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
             {
                 var call = hook.Callback(@params, new HookReturnValue<THookReturn>(action, result));
 
+                if (call.Action != EHookAction.Ignored && !IsActionSupported(call.Action))
+                {
+                    _logger.LogError(
+                        "Pre hook {callback} of module [{module}] returned unsupported action {action} for {type}, treated as Ignored",
+                        hook.Callback.GetMethodSignature(),
+                        hook.Callback.Method.Module.Assembly.GetName().Name,
+                        call.Action,
+                        GetType().Name);
+
+                    continue;
+                }
+
                 if (call.Action > action)
                 {
                     action = call.Action;
@@ -201,6 +214,9 @@ internal abstract class HookType<TParams, THookReturn, TClass> : UnloadCleanupOb
 
         return new HookReturnValue<THookReturn>(action, result);
     }
+
+    private bool IsActionSupported(EHookAction action)
+        => action <= EHookAction.SkipCallReturnOverride && ((byte) SupportedActions & (1 << (int) action)) != 0;
 
     public void InvokeHookPost(TParams @params, HookReturnValue<THookReturn> @return)
     {

@@ -38,7 +38,7 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
     private HookReturnValue<bool> HandleCommandJoinTeam_OnHandleCommandJoinTeamPre(nint ptrClient,
         nint                                                                            ptrController,
         ref int                                                                         team,
-        ref bool                                                                        queue,
+        ref JoinTeamFlags                                                               flags,
         ref int                                                                         coachTeam)
     {
         if (!IsHookInvokeRequired(false))
@@ -46,13 +46,15 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
             return new HookReturnValue<bool>(EHookAction.Ignored, false);
         }
 
-        var param  = new HandleCommandJoinTeamHookParams(false, ptrClient, ptrController, team, queue, coachTeam);
+        var param  = new HandleCommandJoinTeamHookParams(false, ptrClient, ptrController, team, flags, coachTeam);
         var result = InvokeHookPre(param);
 
         // restore
         team      = param.Team;
-        queue     = param.Queue;
+        flags     = param.Flags;
         coachTeam = param.CoachTeam;
+
+        param.MarkAsDisposed();
 
         return result;
     }
@@ -60,7 +62,7 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
     private void HandleCommandJoinTeam_OnHandleCommandJoinTeamPost(nint ptrClient,
         nint                                                            ptrController,
         int                                                             team,
-        bool                                                            queue,
+        JoinTeamFlags                                                   flags,
         int                                                             coachTeam,
         EHookAction                                                     hookAction,
         bool                                                            returnValue)
@@ -70,7 +72,7 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
             return;
         }
 
-        var param = new HandleCommandJoinTeamHookParams(true, ptrClient, ptrController, team, queue, coachTeam);
+        var param = new HandleCommandJoinTeamHookParams(true, ptrClient, ptrController, team, flags, coachTeam);
 
         InvokeHookPost(param, new HookReturnValue<bool>(hookAction, returnValue));
 
@@ -79,21 +81,33 @@ internal class HandleCommandJoinTeamHook : HookType<HandleCommandJoinTeamHookPar
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored
+           | HookActionFlags.SkipCallReturnOverride
+           | HookActionFlags.ChangeParamReturnDefault
+           | HookActionFlags.ChangeParamReturnOverride;
 }
 
 internal sealed class HandleCommandJoinTeamHookParams : PlayerFunctionParams, IHandleCommandJoinTeamHookParams
 {
-    public HandleCommandJoinTeamHookParams(bool postHook, nint client, nint controller, int team, bool queue, int coachTeam) :
+    public HandleCommandJoinTeamHookParams(bool postHook,
+        nint                                    client,
+        nint                                    controller,
+        int                                     team,
+        JoinTeamFlags                           flags,
+        int                                     coachTeam) :
         base(postHook, client, controller)
     {
         Team      = team;
-        Queue     = queue;
+        Flags     = flags;
         CoachTeam = coachTeam;
     }
 
-    public int  Team      { get; private set; }
-    public bool Queue     { get; private set; }
-    public int  CoachTeam { get; private set; }
+    public int           Team      { get; private set; }
+    public JoinTeamFlags Flags     { get; private set; }
+    public int           CoachTeam { get; private set; }
+    public bool          Queue     => (Flags & JoinTeamFlags.Queue) != 0;
 
     public void OverrideTeam(int team)
     {
@@ -102,11 +116,18 @@ internal sealed class HandleCommandJoinTeamHookParams : PlayerFunctionParams, IH
         Team = team;
     }
 
+    public void OverrideFlags(JoinTeamFlags flags)
+    {
+        CheckDisposed();
+        CheckEditable();
+        Flags = flags;
+    }
+
     public void OverrideQueue(bool queue)
     {
         CheckDisposed();
         CheckEditable();
-        Queue = queue;
+        Flags = queue ? Flags | JoinTeamFlags.Queue : Flags & ~JoinTeamFlags.Queue;
     }
 
     public void OverrideCoachTeam(int coachTeam)

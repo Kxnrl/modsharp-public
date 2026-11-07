@@ -21,6 +21,7 @@
 #define CSTRIKE_INTERFACE_NETWORKSTRINGTABLE_H
 
 #include "cstrike/interface/IAppSystem.h"
+#include "cstrike/type/CUtlVector.h"
 
 #include <cstdint>
 
@@ -75,7 +76,7 @@ public:
     virtual int32_t              AddString(bool bIsServer, const char* value, const StringTableUserData* data)         = 0;
     virtual const char*          GetString(int32_t index) const                                                        = 0;
     virtual void                 SetStringUserData(int32_t index, const StringTableUserData* data, bool forceOverride) = 0;
-    virtual StringTableUserData* GetStringUserData(int32_t index) const                                                = 0;
+    virtual CUtlVector<uint8_t>* GetStringUserData(int32_t index) const                                                = 0;
     virtual int32_t              FindStringIndex(const char* value) const                                              = 0;
 
 private:
@@ -101,7 +102,7 @@ public:
         return pTable->AddString(bIsServer, value, &vd);
     }
     virtual const char*          GetString(INetworkStringTable* pTable, int32_t index) const { return pTable->GetString(index); }
-    virtual StringTableUserData* GetStringUserData(INetworkStringTable* pTable, int32_t index) const { return pTable->GetStringUserData(index); }
+    virtual CUtlVector<uint8_t>* GetStringUserData(INetworkStringTable* pTable, int32_t index) const { return pTable->GetStringUserData(index); }
     virtual void                 SetStringUserData(INetworkStringTable* pTable, int32_t index, void* data, int32_t size)
     {
         const StringTableUserData vd(data, size);

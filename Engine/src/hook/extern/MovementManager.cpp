@@ -59,6 +59,7 @@ static float m_flRunSpeedValue[CS_MAX_PLAYERS];
 static CConVarBaseData* ms_disable_usercmd_subtick_moves = nullptr;
 static CConVarBaseData* ms_disable_usercmd_subtick_input = nullptr;
 static CConVarBaseData* ms_fix_usercmd_rapid_fire        = nullptr;
+static CConVarBaseData* ms_water_ground_jump_velocity    = nullptr;
 
 struct CUserCmdInButtonState
 {
@@ -264,9 +265,53 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         return scroll || (held && changed);
     }
 
+    static bool IsWaterGroundJump(CCSPlayerPawn * pPawn, CCSPlayer_MovementServices * pService)
+    {
+        if (pPawn->m_nActualMoveType() != MOVETYPE_WALK || !(pPawn->GetFlags() & FL_ONGROUND) || pPawn->m_flWaterLevel() < 0.5f)
+            return false;
+
+        constexpr auto mask    = static_cast<uint64_t>(EButtons::IN_JUMP);
+        const auto&    buttons = pService->m_nButtons()->m_pButtonStates();
+        return ((static_cast<uint64_t>(buttons.m_nKeyButtons) | static_cast<uint64_t>(buttons.m_nScrollButtons)) & mask) != 0;
+    }
+
+    static bool ForceJumpPress(CCSPlayer_MovementServices * pService)
+    {
+        constexpr auto mask    = static_cast<uint64_t>(EButtons::IN_JUMP);
+        auto&          buttons = pService->m_nButtons()->m_pButtonStates();
+        const auto     changed = static_cast<uint64_t>(buttons.m_nKeyButtonsChanged);
+        if ((static_cast<uint64_t>(buttons.m_nKeyButtons) & mask) == 0 || (changed & mask) != 0)
+            return false;
+
+        buttons.m_nKeyButtonsChanged = static_cast<EButtons>(changed | mask);
+        return true;
+    }
+
+    static void RevertJumpPress(CCSPlayer_MovementServices * pService)
+    {
+        constexpr auto mask          = static_cast<uint64_t>(EButtons::IN_JUMP);
+        auto&          buttons       = pService->m_nButtons()->m_pButtonStates();
+        buttons.m_nKeyButtonsChanged = static_cast<EButtons>(static_cast<uint64_t>(buttons.m_nKeyButtonsChanged) & ~mask);
+    }
+
     DeclareMemberDetourHook(CheckLegacyJump, void, (CStrikeObject * pJump, CMoveData * pMoveData))
     {
+        static int offset   = schemas::GetOffset("CCSPlayer_MovementServices", "m_LegacyJump").offset;
+        const auto pService = pJump->GetFieldPointer<CCSPlayer_MovementServices*>(-offset);
+
+        const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
+        AssertPtr(pPawn);
+
+        const auto bGroundJump  = IsWaterGroundJump(pPawn, pService);
+        const auto bForcedPress = bGroundJump && ForceJumpPress(pService);
+
         CheckLegacyJump(pJump, pMoveData);
+
+        if (bForcedPress)
+            RevertJumpPress(pService);
+
+        if (bGroundJump && pMoveData->m_vecVelocity.z == 100.0f)
+            pMoveData->m_vecVelocity.z = ms_water_ground_jump_velocity->GetValue<float>();
     }
 
     DeclareMemberDetourHook(CheckModernJump, void, (CStrikeObject * pJump, CMoveData * pMoveData))
@@ -277,6 +322,9 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         const auto pPawn = pService->GetPawn<CCSPlayerPawn*>();
         AssertPtr(pPawn);
 
+        const auto bGroundJump  = IsWaterGroundJump(pPawn, pService);
+        const auto bForcedPress = bGroundJump && ForceJumpPress(pService);
+
         if (IsModernWaterJump(pPawn, pService))
         {
             static const int nLegacyJumpOffset = schemas::GetOffset("CCSPlayer_MovementServices", "m_LegacyJump").offset;
@@ -286,6 +334,12 @@ BeginMemberHookScope(CCSPlayer_MovementServices)
         {
             CheckModernJump(pJump, pMoveData);
         }
+
+        if (bForcedPress)
+            RevertJumpPress(pService);
+
+        if (bGroundJump && pMoveData->m_vecVelocity.z == 100.0f)
+            pMoveData->m_vecVelocity.z = ms_water_ground_jump_velocity->GetValue<float>();
     }
 }
 
@@ -451,7 +505,7 @@ static CAddress FindCPlayerMovementService_RunCommand()
                 return true;
 
             if (!found_call && instr.mnemonic == ZYDIS_MNEMONIC_CALL
-                && ZydisUtility::ResolveCallTarget(&instr, operands, ip) == thread_id_address)
+                && ZydisUtility::ResolveCallTarget(&instr, operands, ip, *svr_mod) == thread_id_address)
             {
                 found_call = true;
                 return false;
@@ -580,36 +634,51 @@ void InstallMovementHook()
     ms_disable_usercmd_subtick_moves = g_ConVarManager.CreateConVar("ms_disable_usercmd_subtick_moves", false, "Remove subtick moves command in ProcessUserCommands", FCVAR_RELEASE);
     ms_disable_usercmd_subtick_input = g_ConVarManager.CreateConVar("ms_disable_usercmd_subtick_input", false, "Remove subtick input command in ProcessUserCommands", FCVAR_RELEASE);
     ms_fix_usercmd_rapid_fire        = g_ConVarManager.CreateConVar("ms_fix_usercmd_rapid_fire", false, "Fix rapid fire command", FCVAR_RELEASE);
+    ms_water_ground_jump_velocity    = g_ConVarManager.CreateConVar("ms_water_ground_jump_velocity", 145.f, true, 100.f, true, 1000.f, "Vertical velocity when jumping off the ground in waist-deep or deeper water. The engine gives 100, too low to leave the ground.", FCVAR_RELEASE);
+}
+
+static bool TryGetMovementSlot(CCSPlayerController* pController, PlayerSlot_t& slot)
+{
+    if (!pController)
+        return false;
+
+    slot = pController->GetPlayerSlot();
+
+    return slot < CS_MAX_PLAYERS;
 }
 
 void SetPlayerLaggedMovementValue(CCSPlayerController* pController, float flValue)
 {
-    if (!pController)
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
         return;
 
-    m_flLaggedMovementValue[pController->GetPlayerSlot()] = std::clamp(flValue, 0.01f, 5.0f);
+    m_flLaggedMovementValue[slot] = std::clamp(flValue, 0.01f, 5.0f);
 }
 
 void SetPlayerRunSpeedValue(CCSPlayerController* pController, float flValue)
 {
-    if (!pController)
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
         return;
 
-    m_flRunSpeedValue[pController->GetPlayerSlot()] = std::clamp(flValue, 0.01f, 5.0f);
+    m_flRunSpeedValue[slot] = std::clamp(flValue, 0.01f, 5.0f);
 }
 
 float GetPlayerLaggedMovementValue(CCSPlayerController* pController)
 {
-    if (!pController)
-        return 1;
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
+        return DefaultSpeedValue;
 
-    return m_flLaggedMovementValue[pController->GetPlayerSlot()];
+    return m_flLaggedMovementValue[slot];
 }
 
 float GetPlayerRunSpeedValue(CCSPlayerController* pController)
 {
-    if (!pController)
-        return 1;
+    PlayerSlot_t slot;
+    if (!TryGetMovementSlot(pController, slot))
+        return DefaultSpeedValue;
 
-    return m_flRunSpeedValue[pController->GetPlayerSlot()];
+    return m_flRunSpeedValue[slot];
 }

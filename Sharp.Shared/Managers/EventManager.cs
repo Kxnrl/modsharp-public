@@ -49,6 +49,7 @@ public interface IEventManager
     ///     Clone event (editable)  <br />
     ///     <remarks>Clone a new event, requires manual release or firing later</remarks>
     /// </summary>
+    /// <exception cref="System.ObjectDisposedException"><paramref name="event" /> has been disposed</exception>
     T? CloneEvent<T>(T @event) where T : class, IGameEvent;
 
     /// <summary>

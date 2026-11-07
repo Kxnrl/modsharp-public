@@ -135,6 +135,7 @@ struct ConCommandCreation_t : CVarCreationBase_t
 struct ConVarCreation_t : CVarCreationBase_t
 {
     ConVarCreation_t() :
+        m_Version(0),
         m_bHasDefault(false),
         m_bHasMin(false),
         m_bHasMax(false)
@@ -180,7 +181,13 @@ private:
     void* callback_112 = nullptr; // 0x70
 public:
     EConVarType m_eVarType; // 0x78
+
+    void*   m_pCompletionCallback    = nullptr; // 0x80
+    bool    m_bCompletionIsInterface = false;   // 0x88
+    uint8_t m_Pad_137[7]             = {};      // 0x89
 };
+
+static_assert(sizeof(ConVarCreation_t) == 0x90);
 
 class ICvar : public IAppSystem
 {

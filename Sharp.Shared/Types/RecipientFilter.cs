@@ -85,6 +85,9 @@ public readonly struct RecipientFilter
         Receivers = receiver;
     }
 
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    ///     <paramref name="players" /> contains a slot of 64 or greater
+    /// </exception>
     public RecipientFilter(IEnumerable<PlayerSlot> players)
     {
         Type      = RecipientFilterType.Players;
@@ -92,6 +95,9 @@ public readonly struct RecipientFilter
         Receivers = new NetworkReceiver(players);
     }
 
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    ///     <paramref name="players" /> contains a slot of 64 or greater
+    /// </exception>
     public RecipientFilter(IReadOnlyCollection<PlayerSlot> players)
     {
         Type      = RecipientFilterType.Players;

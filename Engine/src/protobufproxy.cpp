@@ -38,6 +38,9 @@ bool ProtobufHasField(const google::protobuf::Message* message, const char* fiel
     if (!fieldDescriptor)
         return false;
 
+    if (fieldDescriptor->is_repeated())
+        return reflection->FieldSize(*message, fieldDescriptor) > 0;
+
     return reflection->HasField(*message, fieldDescriptor);
 }
 

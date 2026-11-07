@@ -36,6 +36,10 @@ public static unsafe partial class Entity
 
     public static partial void SetStateChanged(IntPtr entity, ushort offset);
 
+    public static partial void NetworkArrayStateChanged(IntPtr entity, ushort offset, int arrayIndex);
+
+    public static partial void SetArrayStateChanged(IntPtr entity, ushort offset, int arrayIndex);
+
     public static partial void SetStructStateChanged(IntPtr structObject, ushort offset, int vfuncIndex);
 
     public static partial void CollisionRulesChanged(IntPtr entity);
@@ -57,6 +61,8 @@ public static unsafe partial class Entity
     public static partial int EnumerateByCppClass(string cppClass, IntPtr* buffer, int capacity);
 
     public static partial IntPtr GetThinkFunc(string classname, string thinkName);
+
+    public static partial string GetDesignerName(IntPtr entity);
 
     public static partial IntPtr FindByName(IntPtr start, string name);
 

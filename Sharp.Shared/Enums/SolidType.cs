@@ -60,4 +60,6 @@ public enum SolidType : byte
     ///     Capsule
     /// </summary>
     Capsule,
+
+    Cylinder,
 }

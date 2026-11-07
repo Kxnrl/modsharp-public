@@ -61,5 +61,10 @@ internal sealed class PlayerWalkMoveForwardParams : PlayerMovementWithDataFuncti
     public int Speed { get; private set; }
 
     public void SetSpeed(int speed)
-        => Speed = speed;
+    {
+        CheckDisposed();
+        CheckEditable();
+
+        Speed = speed;
+    }
 }

@@ -17,6 +17,8 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
+
 namespace Sharp.Shared.Enums;
 
 public enum EconItemType : uint
@@ -27,5 +29,13 @@ public enum EconItemType : uint
     SelfOpeningPurchase,
     OperationCoin,
     PrestigeCoin,
+
+    [Obsolete("Valve changed this value", true)]
     Tool,
+
+    PremierSeasonCoin = 6,
+    TypeTool          = 7,
+    GameLicense       = 8,
+    FanShield         = 9,
+    Subscription      = 10,
 }

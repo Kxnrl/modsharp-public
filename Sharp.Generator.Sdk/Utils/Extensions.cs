@@ -179,7 +179,7 @@ public class MethodSymbolParamContext
         var returnStr = ReturnType switch
         {
             "void"   => "PLACEHOLDER;",
-            "string" => "var __result = new string(PLACEHOLDER);",
+            "string" => "var __result = Sharp.Shared.Utilities.Utils.ReadString(PLACEHOLDER);",
             _        => "var __result = PLACEHOLDER;",
         };
 
@@ -188,7 +188,7 @@ public class MethodSymbolParamContext
             returnStr = ReturnType switch
             {
                 "void"   => "PLACEHOLDER;",
-                "string" => "__result = new string(PLACEHOLDER);",
+                "string" => "__result = Sharp.Shared.Utilities.Utils.ReadString(PLACEHOLDER);",
                 _        => "__result = PLACEHOLDER;",
             };
 

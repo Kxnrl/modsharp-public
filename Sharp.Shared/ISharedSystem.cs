@@ -38,6 +38,8 @@ public interface ISharedSystem
 
     ILoggerFactory GetLoggerFactory();
 
+    ILoggingManager GetLoggingManager();
+
     ITransmitManager GetTransmitManager();
 
     IFileManager GetFileManager();

@@ -38,7 +38,7 @@ internal class TerminateRoundHook : HookType<TerminateRoundHookParams, EmptyHook
     private HookReturnValue<EmptyHookReturn> CCSGameRules_TerminateRoundPre(nint gameRules,
         ref float                                                                delay,
         ref RoundEndReason                                                       reason,
-        NativeFixedSpan<TeamRewardInfo>                                          teamRewards)
+        ref NativeFixedSpan<TeamRewardInfo>                                      teamRewards)
     {
         if (!IsHookInvokeRequired(false))
         {
@@ -49,8 +49,9 @@ internal class TerminateRoundHook : HookType<TerminateRoundHookParams, EmptyHook
         var result = InvokeHookPre(param);
         param.MarkAsDisposed();
 
-        delay  = param.Delay;
-        reason = param.Reason;
+        delay             = param.Delay;
+        reason            = param.Reason;
+        teamRewards.Count = param.RewardCount;
 
         return result;
     }
@@ -75,6 +76,9 @@ internal class TerminateRoundHook : HookType<TerminateRoundHookParams, EmptyHook
 
     protected override bool AllowPre  => true;
     protected override bool AllowPost => true;
+
+    protected override HookActionFlags SupportedActions
+        => HookActionFlags.Ignored | HookActionFlags.SkipCallReturnOverride | HookActionFlags.ChangeParamReturnDefault;
 }
 
 internal sealed class TerminateRoundHookParams : FunctionParams, ITerminateRoundHookParams
@@ -93,10 +97,21 @@ internal sealed class TerminateRoundHookParams : FunctionParams, ITerminateRound
         _rewards  = info;
     }
 
-    public IGameRules                   GameRules      { get; }
-    public float                        Delay          { get; private set; }
-    public RoundEndReason               Reason         { get; private set; }
-    public ReadOnlySpan<TeamRewardInfo> TeamRewardInfo => _rewards.AsReadOnlySpan();
+    public IGameRules     GameRules { get; }
+    public float          Delay     { get; private set; }
+    public RoundEndReason Reason    { get; private set; }
+
+    public ReadOnlySpan<TeamRewardInfo> TeamRewardInfo
+    {
+        get
+        {
+            CheckDisposed();
+
+            return _rewards.AsReadOnlySpan();
+        }
+    }
+
+    internal int RewardCount => _rewards.Count;
 
     public void OverrideDelay(float delay)
     {

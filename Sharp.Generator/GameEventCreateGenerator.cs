@@ -112,16 +112,14 @@ public class GameEventCreateGenerator : IIncrementalGenerator
             {
                 using (builder.BeginScope($"if (typeof(T) == typeof(global::Sharp.Shared.Objects.IGameEvent))"))
                 {
-                    builder.AppendLine(
-                        "return global::Sharp.Core.Objects.GameEvent.CreateEditable(global::Sharp.Core.Bridges.Natives.Event.CloneEvent(@event.GetAbsPtr())) as T;");
+                    builder.AppendLine("return global::Sharp.Core.Objects.GameEvent.CreateEditable(CloneNative(@event)) as T;");
                 }
 
                 foreach (var item in items)
                 {
                     using (builder.BeginScope($"if (typeof(T) == typeof(global::Sharp.Shared.GameEvents.I{item.ClassName}))"))
                     {
-                        builder.AppendLine(
-                            "var ptr = global::Sharp.Core.Bridges.Natives.Event.CloneEvent(@event.GetAbsPtr());");
+                        builder.AppendLine("var ptr = CloneNative(@event);");
 
                         builder.AppendLine(
                             $"return ptr == nint.Zero ? null : new global::Sharp.Core.GameEvents.{item.ClassName}(ptr, true) as T;");

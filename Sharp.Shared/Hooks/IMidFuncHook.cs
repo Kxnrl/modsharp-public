@@ -112,6 +112,7 @@ public interface IMidFuncHook : IRuntimeNativeHook, IDisposable
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="EntryPointNotFoundException">Thrown when GameData is not found / null pointer / invalid field</exception>
     /// <exception cref="KeyNotFoundException">Thrown when faiils to find gamedata</exception>
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(string gamedata, nint hookFn);
 
     /// <summary>
@@ -127,5 +128,6 @@ public interface IMidFuncHook : IRuntimeNativeHook, IDisposable
     /// </example>
     /// <param name="pTargetFn">Native function address</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(nint pTargetFn, nint hookFn);
 }

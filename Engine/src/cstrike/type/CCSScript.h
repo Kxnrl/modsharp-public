@@ -102,21 +102,26 @@ public:
 
     CUtlVector<CUtlString> m_vecRegisteredClasses;      // 0x38
 
-    // Class name → FunctionTemplate (Entity, CSPlayerPawn, CSWeaponBase, etc.)
+    // Singleton class name → FunctionTemplate (Instance, Console, GameRules)
     CUtlHashtable<CGlobalSymbol, v8::Global<v8::FunctionTemplate>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapClassTemplates; // 0x50
 
+    // Entity class name → FunctionTemplate (Entity, CSPlayerPawn, CSWeaponBase, etc.)
+    CUtlHashtable<CGlobalSymbol, v8::Global<v8::FunctionTemplate>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapEntityClassTemplates; // 0x70
+
     // Enum name → Object (CSDamageTypes, CSHitGroup, etc.)
-    CUtlHashtable<CGlobalSymbol, v8::Global<v8::Object>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapEnums; // 0x70
+    CUtlHashtable<CGlobalSymbol, v8::Global<v8::Object>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapEnums; // 0x90
 
     // Callback name → Function (OnPlayerJump, OnActivate, OnRoundStart, etc.)
-    CUtlHashtable<CGlobalSymbol, v8::Global<v8::Function>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapCallbacks; // 0x90
+    CUtlHashtable<CGlobalSymbol, v8::Global<v8::Function>*, GlobalSymbolHashFunctor, PointerEqualFunctor> m_mapCallbacks; // 0xB0
 
     // Entity handle → wrapped V8 object (cached entity wrappers)
-    CUtlHashtable<CBaseHandle, v8::Global<v8::Object>*, ScriptEntityWrapperHashFunctor> m_mapEntityWrappers; // 0xB0
+    CUtlHashtable<CBaseHandle, v8::Global<v8::Object>*, ScriptEntityWrapperHashFunctor> m_mapEntityWrappers; // 0xD0
 
     // 32-bit key → wrapped V8 object (non-entity wrappers). The engine passes this key
     // as a dword, not a pointer, and uses it unhashed.
-    CUtlHashtable<uint32_t, v8::Global<v8::Object>*, ScriptObjectWrapperHashFunctor> m_mapObjectWrappers; // 0xD0
+    CUtlHashtable<uint32_t, v8::Global<v8::Object>*, ScriptObjectWrapperHashFunctor> m_mapObjectWrappers; // 0xF0
+
+    uint8_t m_Pad_272[32]; // 0x110
 };
 
 static_assert(offsetof(CCSBaseScript, m_AutoListNode) == 0x08);
@@ -125,10 +130,11 @@ static_assert(offsetof(CCSBaseScript, m_hContext) == 0x28);
 static_assert(offsetof(CCSBaseScript, m_bActive) == 0x30);
 static_assert(offsetof(CCSBaseScript, m_vecRegisteredClasses) == 0x38);
 static_assert(offsetof(CCSBaseScript, m_mapClassTemplates) == 0x50);
-static_assert(offsetof(CCSBaseScript, m_mapEnums) == 0x70);
-static_assert(offsetof(CCSBaseScript, m_mapCallbacks) == 0x90);
-static_assert(offsetof(CCSBaseScript, m_mapEntityWrappers) == 0xB0);
-static_assert(offsetof(CCSBaseScript, m_mapObjectWrappers) == 0xD0);
+static_assert(offsetof(CCSBaseScript, m_mapEntityClassTemplates) == 0x70);
+static_assert(offsetof(CCSBaseScript, m_mapEnums) == 0x90);
+static_assert(offsetof(CCSBaseScript, m_mapCallbacks) == 0xB0);
+static_assert(offsetof(CCSBaseScript, m_mapEntityWrappers) == 0xD0);
+static_assert(offsetof(CCSBaseScript, m_mapObjectWrappers) == 0xF0);
 
 // Offsets alone are not enough: a field can sit at the right offset and still be
 // read at the wrong width (m_nScriptIndex was declared uint64_t while the engine
@@ -136,7 +142,7 @@ static_assert(offsetof(CCSBaseScript, m_mapObjectWrappers) == 0xD0);
 static_assert(sizeof(CCSBaseScript::m_nScriptIndex) == 4);
 static_assert(sizeof(CCSBaseScript::m_hContext) == 8);
 // Each CUtlHashtable is {ptr, ptr, ptr, int32 m_nMinSize = 32, bool m_bSizeLocked},
-// 0x20 bytes total — matches the five 0x20-strided init blocks in the ctor.
+// 0x20 bytes total — matches the seven 0x20-strided init blocks in the ctor.
 static_assert(sizeof(CCSBaseScript::m_mapClassTemplates) == 0x20);
 static_assert(sizeof(CCSBaseScript::m_mapEntityWrappers) == 0x20);
 

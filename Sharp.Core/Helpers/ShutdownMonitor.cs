@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Serilog;
 
 namespace Sharp.Core.Helpers;
 
@@ -57,7 +56,7 @@ internal sealed class ShutdownMonitor : IShutdownMonitor
             }
             catch (Exception ex)
             {
-                Log.Logger.Error(ex, "An error occurred while executing shutdown event");
+                Bootstrap.CoreLogger.Error(ex, "An error occurred while executing shutdown event");
             }
         }
 

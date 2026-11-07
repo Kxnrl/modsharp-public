@@ -82,7 +82,7 @@ public readonly record struct StringCommand
     {
         var readIndex = index - 1;
 
-        if (readIndex > ArgCount || readIndex < 0 || _arguments is null)
+        if (readIndex >= ArgCount || readIndex < 0 || _arguments is null)
         {
             throw new ArgumentOutOfRangeException(nameof(index));
         }
@@ -143,7 +143,7 @@ public readonly record struct StringCommand
     {
         var readIndex = index - 1;
 
-        if (readIndex > ArgCount || readIndex < 0 || _arguments is null)
+        if (readIndex >= ArgCount || readIndex < 0 || _arguments is null)
         {
             throw new ArgumentOutOfRangeException(nameof(index));
         }
@@ -198,7 +198,7 @@ public readonly record struct StringCommand
     {
         var readIndex = index - 1;
 
-        if (readIndex > ArgCount || readIndex < 0 || _arguments is null)
+        if (readIndex >= ArgCount || readIndex < 0 || _arguments is null)
         {
             throw new ArgumentOutOfRangeException(nameof(index));
         }

@@ -41,6 +41,7 @@ enum SolidType_t : uint8_t
     SOLID_POINT    = 5, // a Point
     SOLID_VPHYSICS = 6, // solid vphysics object, get vcollide from the model and collide with that
     SOLID_CAPSULE  = 7, // a capsule
+    SOLID_CYLINDER = 8,
     SOLID_LAST,
 };
 
@@ -125,40 +126,42 @@ enum ObserverMode_t
     OBS_MODE_IN_EYE    = 0x2,
     OBS_MODE_CHASE     = 0x3,
     OBS_MODE_ROAMING   = 0x4,
-    OBS_MODE_DIRECTED  = 0x5,
-    NUM_OBSERVER_MODES = 0x6,
+    NUM_OBSERVER_MODES = 0x5,
 };
 
 enum class WeaponGameplayAnimState : uint16_t
 {
-    WPN_ANIMSTATE_UNINITIALIZED        = 0,    // 0x0
-    WPN_ANIMSTATE_DROPPED              = 1,    // 0x1
-    WPN_ANIMSTATE_HOLSTERED            = 10,   // 0xA
-    WPN_ANIMSTATE_DEPLOY               = 11,   // 0xB
-    WPN_ANIMSTATE_IDLE                 = 50,   // 0x32
-    WPN_ANIMSTATE_SHOOT_PRIMARY        = 100,  // 0x64
-    WPN_ANIMSTATE_SHOOT_SECONDARY      = 101,  // 0x65
-    WPN_ANIMSTATE_SHOOT_DRYFIRE        = 102,  // 0x66
-    WPN_ANIMSTATE_CHARGE               = 103,  // 0x67
-    WPN_ANIMSTATE_GRENADE_PULL_PIN     = 200,  // 0xC8
-    WPN_ANIMSTATE_GRENADE_READY        = 201,  // 0xC9
-    WPN_ANIMSTATE_GRENADE_THROW        = 202,  // 0xCA
-    WPN_ANIMSTATE_C4_PLANT             = 300,  // 0x12C
-    WPN_ANIMSTATE_HEALTHSHOT_INJECT    = 400,  // 0x190
-    WPN_ANIMSTATE_KNIFE_PRIMARY_HIT    = 500,  // 0x1F4
-    WPN_ANIMSTATE_KNIFE_PRIMARY_MISS   = 501,  // 0x1F5
-    WPN_ANIMSTATE_KNIFE_SECONDARY_HIT  = 502,  // 0x1F6
-    WPN_ANIMSTATE_KNIFE_SECONDARY_MISS = 503,  // 0x1F7
-    WPN_ANIMSTATE_KNIFE_PRIMARY_STAB   = 504,  // 0x1F8
-    WPN_ANIMSTATE_KNIFE_SECONDARY_STAB = 505,  // 0x1F9
-    WPN_ANIMSTATE_SILENCER_APPLY       = 600,  // 0x258
-    WPN_ANIMSTATE_SILENCER_REMOVE      = 601,  // 0x259
-    WPN_ANIMSTATE_RELOAD               = 800,  // 0x320
-    WPN_ANIMSTATE_RELOAD_OUTRO         = 801,  // 0x321
-    WPN_ANIMSTATE_INSPECT              = 1000, // 0x3E8
-    WPN_ANIMSTATE_INSPECT_OUTRO        = 1001, // 0x3E9
-    WPN_ANIMSTATE_END_VALID            = 1100, // 0x44C
-    WEAPON_LEGACY_STATE_CLEAR_FIRING   = 1101  // 0x44D
+    WPN_ANIMSTATE_UNINITIALIZED               = 0,    // 0x0
+    WPN_ANIMSTATE_DROPPED                     = 1,    // 0x1
+    WPN_ANIMSTATE_HOLSTERED                   = 10,   // 0xA
+    WPN_ANIMSTATE_DEPLOY                      = 11,   // 0xB
+    WPN_ANIMSTATE_IDLE                        = 50,   // 0x32
+    WPN_ANIMSTATE_SHOOT_PRIMARY               = 100,  // 0x64
+    WPN_ANIMSTATE_SHOOT_SECONDARY             = 101,  // 0x65
+    WPN_ANIMSTATE_SHOOT_DRYFIRE               = 102,  // 0x66
+    WPN_ANIMSTATE_CHARGE                      = 103,  // 0x67
+    WPN_ANIMSTATE_GRENADE_PULL_PIN            = 200,  // 0xC8
+    WPN_ANIMSTATE_GRENADE_READY               = 201,  // 0xC9
+    WPN_ANIMSTATE_GRENADE_THROW               = 202,  // 0xCA
+    WPN_ANIMSTATE_C4_PLANT                    = 300,  // 0x12C
+    WPN_ANIMSTATE_HEALTHSHOT_INJECT           = 400,  // 0x190
+    WPN_ANIMSTATE_KNIFE_PRIMARY_HIT           = 500,  // 0x1F4
+    WPN_ANIMSTATE_KNIFE_PRIMARY_MISS          = 501,  // 0x1F5
+    WPN_ANIMSTATE_KNIFE_SECONDARY_HIT         = 502,  // 0x1F6
+    WPN_ANIMSTATE_KNIFE_SECONDARY_MISS        = 503,  // 0x1F7
+    WPN_ANIMSTATE_KNIFE_PRIMARY_STAB          = 504,  // 0x1F8
+    WPN_ANIMSTATE_KNIFE_SECONDARY_STAB        = 505,  // 0x1F9
+    WPN_ANIMSTATE_SILENCER_APPLY              = 600,  // 0x258
+    WPN_ANIMSTATE_SILENCER_REMOVE             = 601,  // 0x259
+    WPN_ANIMSTATE_RELOAD                      = 800,  // 0x320
+    WPN_ANIMSTATE_RELOAD_OUTRO                = 801,  // 0x321
+    WPN_ANIMSTATE_RELOAD_SILENT               = 802,  // 0x322
+    WPN_ANIMSTATE_RELOAD_OUTRO_SILENT         = 803,  // 0x323
+    WPN_ANIMSTATE_INSPECT                     = 1000, // 0x3E8
+    WPN_ANIMSTATE_INSPECT_OUTRO               = 1001, // 0x3E9
+    WPN_ANIMSTATE_INVENTORY_UI_TUMBLE         = 1500, // 0x5DC
+    WPN_ANIMSTATE_INVENTORY_UI_KEYCHAIN_APPLY = 1501, // 0x5DD
+    WPN_ANIMSTATE_END_VALID                   = 2000  // 0x7D0
 };
 
 enum class ItemFlagTypes_t : uint8_t
@@ -208,11 +211,9 @@ enum EntityFlags_t : uint32_t
     FL_FLY                   = (1 << 10),
     FL_SUPPRESS_SAVE         = (1 << 11),
     FL_IN_VEHICLE            = (1 << 12),
-    FL_IN_VEHICLE_TRANSPORT  = (1 << 13),
     FL_GODMODE               = (1 << 14),
     FL_NOTARGET              = (1 << 15),
     FL_AIMTARGET             = (1 << 16),
-    FL_STATICPROP            = (1 << 18),
     FL_GRENADE               = (1 << 20),
     FL_DONTTOUCH             = (1 << 22),
     FL_BASEVELOCITY          = (1 << 23),
