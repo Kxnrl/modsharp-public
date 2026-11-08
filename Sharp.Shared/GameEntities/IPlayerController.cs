@@ -105,7 +105,7 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     Stop overriding the clantag and restore the game's own (Steam group tag).
     /// </summary>
-    /// <exception cref="EntryPointNotFoundException">The game's persona data could not be resolved at startup</exception>
+    /// <exception cref="EntryPointNotFoundException">The game's persona data could not be resolved at startup or failed a later check</exception>
     void ResetClanTag();
 
     /// <summary>

@@ -2451,8 +2451,7 @@ void ResolveCCSPlayerController_RoundRespawn()
 
 // CCSPlayerControllerInventoryUpdateThink (server.dll 20261105 sub_180A880E0 / libserver.so sub_1548A00):
 //   mov this, [this + m_pInventoryServices] ; jmp UpdateInventory
-// UpdateInventory 直接 call UpdatePersonaData (sub_180B24DD0 / sub_1612450), 它给 CEconPersonaDataPublic 写虚表,
-// 并且只在旧的 persona 指针为空时调 CCSPlayerController::SetClan
+// UpdateInventory 直接 call UpdatePersonaData (sub_180B24DD0 / sub_1612450), 它给 CEconPersonaDataPublic 写虚表
 void ResolveCCSPlayerController_InventoryPersonaData()
 {
     using namespace address_scan;
@@ -2729,7 +2728,7 @@ void ResolveCCSPlayerController_InventoryPersonaData()
         }
     }
 
-    // 推导 C: mov p, [services + X] ; mov v, [p + level] ; cmp [services + m_nPersonaDataPublicLevel], v
+    // 推导 C: mov p, [services + X] ; mov v, [p + d] ; cmp [services + m_nPersonaDataPublicLevel], v
     struct Origin
     {
         ZydisRegister reg;

@@ -69,7 +69,7 @@ void CBasePlayerController::SwitchTeam(CStrikeTeam_t team)
     address::server::CBasePlayerController_SwitchSteam(this, team);
 }
 
-// think hook 只认「调用前不是初值 (0, "")」的字段为插件所设, 空 tag 必须配一个非 0 clan id 才分得开
+// 空 tag 也要配非 0 clan id, 不然 think hook 会把它当成初值 (0, "")
 static constexpr uint32_t kClanTagSentinelClanId = 0xFFFFFFFF;
 
 void CBasePlayerController::SetClanTag(const char* tag)

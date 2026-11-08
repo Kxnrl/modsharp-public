@@ -72,7 +72,7 @@ internal partial class PlayerController : BaseEntity, IPlayerController
     {
         if (!Player.ControllerResetClanTag(_this))
         {
-            throw new EntryPointNotFoundException("The game's persona data could not be resolved at startup");
+            throw new EntryPointNotFoundException("The game's persona data is unavailable");
         }
     }
 
