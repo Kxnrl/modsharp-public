@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "address.h"
 #include "bridge/forwards/forward.h"
 #include "global.h"
 #include "hook/installer.h"
@@ -27,14 +28,11 @@
 #include "cstrike/entity/CBaseWeapon.h"
 #include "cstrike/entity/PlayerController.h"
 #include "cstrike/entity/PlayerPawn.h"
-#include "cstrike/type/CEntityClass.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CTakeDamageInfo.h"
 #include "cstrike/type/CTakeDamageResult.h"
 
 #include <safetyhook.hpp>
-
-#include <cstring>
 
 // #define PLAYER_EVENT_ASSERT
 // #define WEAPON_EVENT_ASSERT
@@ -328,31 +326,28 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
 
 BeginMemberHookScope(CCSPlayerController)
 {
-    // SetClan's only caller: UpdateInventory -> UpdatePersonaData on the first GC persona data
     DeclareMemberDetourHook(InventoryUpdateThink, void, (CCSPlayerController * pController))
     {
-        InventoryUpdateThink(pController);
-        pController->EnforceClanTag();
-    }
-}
+        const auto clanId = pController->m_unClanId32bit();
+        const auto clan   = pController->m_szClan();
 
-static void* FindThinkFunc(const char* cppClassname, const char* thinkName)
-{
-    for (auto* klass = CEntityClass::GetFirst(); klass != nullptr; klass = klass->GetNext())
-    {
-        const auto* info = klass->GetInfo();
-        if (info != nullptr && info->m_pszCppClassname != nullptr && std::strcmp(info->m_pszCppClassname, cppClassname) == 0)
-            return reinterpret_cast<void*>(klass->GetThinkFunc(thinkName));
+        InventoryUpdateThink(pController);
+
+        // 游戏只在首个 GC persona 数据到达时 SetClan 一次 (UpdatePersonaData), 调用前不是初值 (0, "") 的都是插件设的
+        if (clanId == 0 && *clan.Get() == '\0')
+            return;
+
+        if (pController->m_unClanId32bit() != clanId)
+            pController->m_unClanId32bit(clanId);
+        if (pController->m_szClan() != clan)
+            pController->m_szClan(clan);
     }
-    return nullptr;
 }
 
 void InstallPlayerHooks()
 {
-    if (auto* think = FindThinkFunc("CCSPlayerController", "CCSPlayerControllerInventoryUpdateThink"))
-        HOOK(CCSPlayerController, InventoryUpdateThink, {.address = think});
-    else
-        FERROR("Failed to find CCSPlayerControllerInventoryUpdateThink, SetClanTag will be overwritten by GC persona data");
+    if (const auto think = address::server::CCSPlayerController_InventoryUpdateThink)
+        HOOK(CCSPlayerController, InventoryUpdateThink, {.address = reinterpret_cast<void*>(think)});
 
 #ifdef PLATFORM_WINDOWS
 

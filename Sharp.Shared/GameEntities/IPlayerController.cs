@@ -97,13 +97,15 @@ public interface IPlayerController : IBaseEntity
     /// <summary>
     ///     Set clantag. An empty tag hides it. <br />
     ///     The tag is kept until the client disconnects or <see cref="ResetClanTag"/> is called; the game's own
-    ///     clan data (Steam group tag) will not overwrite it.
+    ///     clan data (Steam group tag) will not overwrite it. <br />
+    ///     When <c>sv_clantags_enabled</c> is 0, clients drop clan tags from the kill feed, the voice indicator and vote prompts.
     /// </summary>
     void SetClanTag(string tag);
 
     /// <summary>
     ///     Stop overriding the clantag and restore the game's own (Steam group tag).
     /// </summary>
+    /// <exception cref="EntryPointNotFoundException">The game's persona data could not be resolved at startup</exception>
     void ResetClanTag();
 
     /// <summary>

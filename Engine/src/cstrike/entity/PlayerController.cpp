@@ -31,8 +31,9 @@
 #include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/EmitSound.h"
 
+#include <proto/cstrike15_gcmessages.pb.h>
+
 #include <cstdarg>
-#include <string>
 
 CBasePlayerController* CBasePlayerController::FindBySlot(PlayerSlot_t slot)
 {
@@ -68,93 +69,16 @@ void CBasePlayerController::SwitchTeam(CStrikeTeam_t team)
     address::server::CBasePlayerController_SwitchSteam(this, team);
 }
 
-struct ClanTagState
-{
-    bool        active;
-    std::string tag;
-    // last clan the game itself set (GC persona data), restored by ResetClanTag
-    uint32_t    gameClanId;
-    std::string gameTag;
-};
-static ClanTagState s_ClanTag[CS_MAX_PLAYERS];
-
-// same writes as the game's CCSPlayerController::SetClan(clanId, tag)
-static void ApplyClan(CBasePlayerController* pController, uint32_t clanId, const std::string& tag)
-{
-    if (pController->m_unClanId32bit() != clanId)
-        pController->m_unClanId32bit(clanId);
-    if (tag != pController->m_szClan().Get())
-        pController->m_szClan(g_pGameEntitySystem->AllocPooledString(tag.c_str()));
-}
-
-// the client only shows the tag when the clan id is nonzero
-static uint32_t OverrideClanId(const std::string& tag)
-{
-    return tag.empty() ? 0 : 1;
-}
+// think hook 只认「调用前不是初值 (0, "")」的字段为插件所设, 空 tag 必须配一个非 0 clan id 才分得开
+static constexpr uint32_t kClanTagSentinelClanId = 0xFFFFFFFF;
 
 void CBasePlayerController::SetClanTag(const char* tag)
 {
-    const auto slot = GetPlayerSlot();
-    if (slot >= CS_MAX_PLAYERS)
-        return;
+    const auto& clan = g_pGameEntitySystem->AllocPooledString(tag);
+    m_szClan(clan);
 
-    auto& state  = s_ClanTag[slot];
-    state.active = true;
-    state.tag    = tag ? tag : "";
-    ApplyClan(this, OverrideClanId(state.tag), state.tag);
-}
-
-void CBasePlayerController::ResetClanTag()
-{
-    const auto slot = GetPlayerSlot();
-    if (slot >= CS_MAX_PLAYERS)
-        return;
-
-    auto& state = s_ClanTag[slot];
-    if (!state.active)
-        return;
-    state.active = false;
-    ApplyClan(this, state.gameClanId, state.gameTag);
-}
-
-void CBasePlayerController::EnforceClanTag()
-{
-    const auto slot = GetPlayerSlot();
-    if (slot >= CS_MAX_PLAYERS)
-        return;
-
-    auto& state = s_ClanTag[slot];
-
-    const auto clanId = OverrideClanId(state.tag);
-    const auto curId  = m_unClanId32bit();
-    const auto curTag = m_szClan().Get();
-    if (state.active && curId == clanId && state.tag == curTag)
-        return;
-
-    // not our override, so the game wrote it - remember it for ResetClanTag
-    if (curId != state.gameClanId || state.gameTag != curTag)
-    {
-        state.gameClanId = curId;
-        state.gameTag    = curTag;
-    }
-
-    if (state.active)
-        ApplyClan(this, clanId, state.tag);
-}
-
-void CBasePlayerController::ClearClanTagState(PlayerSlot_t slot)
-{
-    if (slot >= CS_MAX_PLAYERS)
-        return;
-
-    // the controller may be reused by the next client in this slot, and the game only
-    // sets the clan once per controller (first GC persona data) - hand back its value
-    if (g_pGameEntitySystem)
-        if (const auto pController = FindBySlot(slot))
-            pController->ResetClanTag();
-
-    s_ClanTag[slot] = {};
+    if (m_unClanId32bit() == 0 && *m_szClan().Get() == '\0')
+        m_unClanId32bit(kClanTagSentinelClanId);
 }
 
 void CBasePlayerController::ClientPrint(HudPrint_t dest, const char* name, const char* param1, const char* param2, const char* param3, const char* param4)
@@ -242,4 +166,33 @@ CEconItemView* CCSPlayerController::GetItemInLoadoutFromInventory(CStrikeTeam_t 
     const auto pService = m_pInventoryServices();
     AssertPtr(pService);
     return pService->GetItemInLoadout(team, slot);
+}
+
+bool CCSPlayerController::ResetClanTag()
+{
+    if (CCSPlayerController_InventoryServices::sm_nPersonaDataOffset == 0)
+        return false;
+
+    const CSOPersonaDataPublic* persona = nullptr;
+    if (const auto pService = m_pInventoryServices(); pService != nullptr && !pService->TryGetPersonaDataPublic(persona))
+        return false;
+
+    const auto  clanId = persona != nullptr ? persona->clan_id() : 0;
+    const auto& clan   = g_pGameEntitySystem->AllocPooledString(persona != nullptr ? persona->clan_tag().c_str() : "");
+
+    if (m_unClanId32bit() != clanId)
+        m_unClanId32bit(clanId);
+    if (m_szClan() != clan)
+        m_szClan(clan);
+
+    return true;
+}
+
+void CCSPlayerController::ResetClanTagForSlot(PlayerSlot_t slot)
+{
+    if (g_pGameEntitySystem == nullptr)
+        return;
+
+    if (const auto pController = FindBySlot(slot))
+        static_cast<CCSPlayerController*>(pController)->ResetClanTag();
 }

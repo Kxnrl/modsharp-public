@@ -68,9 +68,9 @@ static void ControllerSetClanTag(CBasePlayerController* pController, const char*
     pController->SetClanTag(tag);
 }
 
-static void ControllerResetClanTag(CBasePlayerController* pController)
+static bool ControllerResetClanTag(CCSPlayerController* pController)
 {
-    pController->ResetClanTag();
+    return pController->ResetClanTag();
 }
 
 static CEconItemView* ControllerGetItemInLoadoutFromInventory(CCSPlayerController* pController, CStrikeTeam_t team, int32_t itemSlot)

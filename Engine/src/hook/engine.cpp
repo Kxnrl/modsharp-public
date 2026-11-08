@@ -120,8 +120,8 @@ BeginMemberHookScope(CNetworkGameServer)
             forwards::OnClientDisconnecting->Invoke(pClient, static_cast<int32_t>(eReason));
             forwards::OnClientDisconnected->Invoke(pClient, static_cast<int32_t>(eReason));
 
-            // the game's ClientDisconnect is skipped here, so the Hook_ClientDisconnect cleanup never runs
-            CBasePlayerController::ClearClanTagState(pClient->GetSlot());
+            // 这条路径不走游戏的 ClientDisconnect, Hook_ClientDisconnect 里的复位不会执行
+            CCSPlayerController::ResetClanTagForSlot(pClient->GetSlot());
         }
 
         DisconnectClient(pServer, pClient, eReason);

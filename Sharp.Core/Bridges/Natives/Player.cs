@@ -46,7 +46,7 @@ public static unsafe partial class Player
 
     public static partial void ControllerSetClanTag(IntPtr ptr, string tag);
 
-    public static partial void ControllerResetClanTag(IntPtr ptr);
+    public static partial bool ControllerResetClanTag(IntPtr ptr);
 
     public static partial IntPtr ControllerGetItemInLoadoutFromInventory(IntPtr ptr, CStrikeTeam team, int slot);
 

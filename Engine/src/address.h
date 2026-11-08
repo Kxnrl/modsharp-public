@@ -254,6 +254,7 @@ using CCSCustomHudLayout_ClearDialogVariableStringForPlayer_t = void (*)(CBaseEn
 using CCSCustomHudLayout_SetInputCaptureEnabled_t             = void (*)(CBaseEntity*, int32_t, bool);
 using CCSCustomHudLayout_IsInputCaptureEnabled_t              = bool (*)(CBaseEntity*, int32_t);
 using ProcessClientSvcUserMessage_t                           = void (*)(int32_t, int32_t, uint32_t, const void*);
+using CCSPlayerController_InventoryUpdateThink_t              = void (*)(CCSPlayerController*);
 
 #ifdef ENABLE_SCRIPT_ASSERT
 // cs_script: InitV8ClassTemplates(CCSBaseScript* ctx)
@@ -348,6 +349,7 @@ inline CCSCustomHudLayout_ClearDialogVariableStringForPlayer_t CCSCustomHudLayou
 inline CCSCustomHudLayout_SetInputCaptureEnabled_t             CCSCustomHudLayout_SetInputCaptureEnabled;
 inline CCSCustomHudLayout_IsInputCaptureEnabled_t              CCSCustomHudLayout_IsInputCaptureEnabled;
 inline ProcessClientSvcUserMessage_t                           ProcessClientSvcUserMessage;
+inline CCSPlayerController_InventoryUpdateThink_t              CCSPlayerController_InventoryUpdateThink;
 } // namespace server
 } // namespace address
 

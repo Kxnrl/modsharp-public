@@ -89,7 +89,6 @@ public:
 
     void SwitchTeam(CStrikeTeam_t team);
     void SetClanTag(const char* tag);
-    void ResetClanTag();
     void ClientPrint(HudPrint_t dest, const char* name, const char* param1 = nullptr, const char* param2 = nullptr, const char* param3 = nullptr, const char* param4 = nullptr);
     void ClientPrintF(HudPrint_t dest, const char* message, ...);
 
@@ -102,9 +101,6 @@ public:
     }
 
     [[nodiscard]] static CBasePlayerController* FindBySlot(PlayerSlot_t slot);
-
-    void        EnforceClanTag();
-    static void ClearClanTagState(PlayerSlot_t slot);
 };
 
 class CCSPlayerController_InventoryServices;
@@ -132,6 +128,9 @@ public:
     void CheckPawn();
     void SetPawn(CCSPlayerPawn* pawn, bool unk1, bool unk2, bool unk3, bool unk4);
     void RoundRespawn();
+    bool ResetClanTag();
+
+    static void ResetClanTagForSlot(PlayerSlot_t slot);
 };
 
 #endif
