@@ -263,7 +263,7 @@ bool AddonManager::RefreshClient(SteamId_t steamId, bool resetCache)
 
     // goes through our SendNetMessage detour, so the pending addon gets recorded
     const auto sent = pSendCall(pTarget->GetNetChannel(), pData, BUF_RELIABLE);
-    g_pMemAlloc->Free(pData);
+    delete pSignon; // virtual dtor frees the addon string and network ids
 
     if (!sent)
     {

@@ -357,6 +357,22 @@ static void RemountAddon(uint64_t fileId)
         MountAddon(std::to_string(fileId).c_str());
 }
 
+static void FinishReloadBatch()
+{
+    const auto reloadPending = [](const auto& e) { return e.reloadMap; };
+    if (std::ranges::any_of(s_DownloadQueue, reloadPending) || std::ranges::any_of(s_PreLoginDownloads, reloadPending))
+        return;
+
+    if (!std::exchange(s_bReloadBatchSucceeded, false))
+    {
+        LogInfo("[Addons] All downloads failed, skipping map reload");
+        return;
+    }
+
+    LogInfo("[Addons] All downloads complete, reloading map");
+    g_AddonManager.ReloadMap();
+}
+
 void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
 {
     std::erase_if(s_PreLoginDownloads, [&](const auto& e) { return e.fileId == fileId; });
@@ -380,20 +396,8 @@ void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
     if (entry.remount)
         RemountAddon(fileId);
 
-    // reload once every queued download has finished so the new addons get mounted
-    if (entry.reloadMap && std::ranges::none_of(s_DownloadQueue, [](const auto& e) { return e.reloadMap; }))
-    {
-        // a failed addon is queued again on the next map load, so reloading on an all-failed batch loops forever
-        if (!s_bReloadBatchSucceeded)
-        {
-            LogInfo("[Addons] All downloads failed, skipping map reload");
-            return;
-        }
-
-        s_bReloadBatchSucceeded = false;
-        LogInfo("[Addons] All downloads complete, reloading map");
-        g_AddonManager.ReloadMap();
-    }
+    if (entry.reloadMap)
+        FinishReloadBatch();
 }
 
 bool AddonsUpdateAddon(uint64_t fileId, bool reloadMap)
@@ -432,6 +436,7 @@ void AddonsOnSteamApiActivated()
 {
     // downloads started before a deactivation lost their callback with the old api context, start them again
     // (forced updates and manual downloads too, the refresh below only covers missing server addons)
+    bool reloadDropped = false;
     for (auto it = s_DownloadQueue.begin(); it != s_DownloadQueue.end();)
     {
         if (g_pSteamApiProxy->DownloadItem(it->fileId, false))
@@ -446,13 +451,17 @@ void AddonsOnSteamApiActivated()
         if (entry.remount)
             RemountAddon(entry.fileId);
         DeferDownload(entry.fileId, entry.reloadMap);
+        reloadDropped |= entry.reloadMap;
     }
 
-    if (!g_AddonManager.IsActive() || !engine || !engine->IsDedicatedServer())
-        return;
+    if (g_AddonManager.IsActive() && engine && engine->IsDedicatedServer())
+    {
+        LogInfo("[Addons] Steam API activated, refreshing addons");
+        RefreshAddons(true);
+    }
 
-    LogInfo("[Addons] Steam API activated, refreshing addons");
-    RefreshAddons(true);
+    if (reloadDropped)
+        FinishReloadBatch();
 }
 
 void AddonsOnSteamServersConnected()
@@ -463,8 +472,16 @@ void AddonsOnSteamServersConnected()
     LogInfo("[Addons] Logged on to Steam, retrying %zu download(s)", s_PreLoginDownloads.size());
 
     // retried as updates, a mounted addon has to be unmounted first or Windows locks the vpk
+    bool reloadRequested = false;
     for (const auto& e : std::exchange(s_PreLoginDownloads, {}))
+    {
         AddonsUpdateAddon(e.fileId, e.reloadMap);
+        reloadRequested |= e.reloadMap;
+    }
+
+    // a retry that failed to start is dropped, finish its batch unless the others are still queued
+    if (reloadRequested)
+        FinishReloadBatch();
 }
 
 void AddonsResetClientCache(SteamId_t steamId)
@@ -499,19 +516,16 @@ std::string AddonsPrepareRefresh(SteamId_t steamId, bool resetCache)
 {
     auto& info = s_ClientInfos[steamId];
 
+    if (!info.currentPendingAddon.empty())
+        return {};
+
     if (resetCache)
     {
-        info.currentPendingAddon.clear();
         info.downloadedAddons.clear();
 
         // the client is in game, so it already has the map
         if (!s_CurrentWorkshopMap.empty())
             info.downloadedAddons.push_back(s_CurrentWorkshopMap);
-    }
-    else if (!info.currentPendingAddon.empty())
-    {
-        // still downloading, it receives the rest after the pending one anyway
-        return {};
     }
 
     // pick up addons the listeners added since the client connected

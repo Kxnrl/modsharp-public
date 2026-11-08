@@ -26,10 +26,6 @@ endif()
 
 project(ModSharpLoader)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
-	set(CMAKE_CXX_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-endif()
-
 # Target: server
 set(server_SOURCES
 	loader.cpp
@@ -50,5 +46,12 @@ endif()
 if(UNIX) # unix
 	target_compile_definitions(server PUBLIC
 		PLATFORM_POSIX
+	)
+endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
+	target_link_options(server PUBLIC
+		-static-libgcc
+		-static-libstdc++
 	)
 endif()
