@@ -351,6 +351,12 @@ static void RefreshAddons(bool reloadMap)
         g_AddonManager.ReloadMap();
 }
 
+static void RemountAddon(uint64_t fileId)
+{
+    if (std::ranges::find(g_AddonManager.GetActiveAddons(), fileId) != g_AddonManager.GetActiveAddons().end())
+        MountAddon(std::to_string(fileId).c_str());
+}
+
 void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
 {
     std::erase_if(s_PreLoginDownloads, [&](const auto& e) { return e.fileId == fileId; });
@@ -372,7 +378,7 @@ void AddonsOnDownloadItemResult(uint64_t fileId, int eResult)
         LogInfo("[Addons] Addon %llu download failed (%d)", fileId, eResult);
 
     if (entry.remount)
-        MountAddon(std::to_string(fileId).c_str());
+        RemountAddon(fileId);
 
     // reload once every queued download has finished so the new addons get mounted
     if (entry.reloadMap && std::ranges::none_of(s_DownloadQueue, [](const auto& e) { return e.reloadMap; }))
@@ -438,7 +444,7 @@ void AddonsOnSteamApiActivated()
         const auto entry = *it;
         it               = s_DownloadQueue.erase(it);
         if (entry.remount)
-            MountAddon(std::to_string(entry.fileId).c_str());
+            RemountAddon(entry.fileId);
         DeferDownload(entry.fileId, entry.reloadMap);
     }
 
@@ -683,7 +689,7 @@ BeginStaticHookScope(ScriptGetAddon)
     // this follows the loaded level instead of the requested one (MAM 3e04eff)
     DeclareStaticDetourHook(ScriptGetAddon, uint64_t, ())
     {
-        if (!g_AddonManager.IsActive() || s_ScriptWorkshopMap.empty())
+        if (s_ScriptWorkshopMap.empty())
             return ScriptGetAddon();
 
         const auto id = strtoull(s_ScriptWorkshopMap.c_str(), nullptr, 10);

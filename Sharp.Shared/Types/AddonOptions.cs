@@ -30,4 +30,9 @@ public readonly record struct AddonOptions(
     float ClientTimeout     = 10,
     float ConnectionTimeout = 0,
     float CacheDuration     = 600,
-    bool  Debug             = false);
+    bool  Debug             = false)
+{
+    public AddonOptions() : this(10, 0, 600, false)
+    {
+    }
+}

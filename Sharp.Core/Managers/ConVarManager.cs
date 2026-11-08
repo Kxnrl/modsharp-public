@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Sharp.Core.Objects;
 using Sharp.Shared.Enums;
@@ -363,7 +364,8 @@ internal class ConVarManager : ICoreConVarManager
         string?                                helpString = null,
         ConVarFlags?                           flags      = null)
     {
-        Span<byte> bytes = stackalloc byte[256];
+        var        size  = Encoding.UTF8.GetByteCount(defaultValue) + 1;
+        Span<byte> bytes = size <= 256 ? stackalloc byte[256] : new byte[size];
 
         bytes.WriteStringUtf8(defaultValue);
 
