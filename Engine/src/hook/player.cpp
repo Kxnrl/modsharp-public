@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "address.h"
 #include "bridge/forwards/forward.h"
 #include "global.h"
 #include "hook/installer.h"
@@ -323,8 +324,31 @@ BeginMemberHookScope(CCSPlayer_WeaponServices)
     }
 }
 
+BeginMemberHookScope(CCSPlayerController)
+{
+    DeclareMemberDetourHook(InventoryUpdateThink, void, (CCSPlayerController * pController))
+    {
+        const auto clanId = pController->m_unClanId32bit();
+        const auto clan   = pController->m_szClan();
+
+        InventoryUpdateThink(pController);
+
+        // 游戏只在首个 GC persona 数据到达时 SetClan 一次 (UpdatePersonaData), 调用前不是初值 (0, "") 的都是插件设的
+        if (clanId == 0 && *clan.Get() == '\0')
+            return;
+
+        if (pController->m_unClanId32bit() != clanId)
+            pController->m_unClanId32bit(clanId);
+        if (pController->m_szClan() != clan)
+            pController->m_szClan(clan);
+    }
+}
+
 void InstallPlayerHooks()
 {
+    if (const auto think = address::server::CCSPlayerController_InventoryUpdateThink)
+        HOOK(CCSPlayerController, InventoryUpdateThink, {.address = reinterpret_cast<void*>(think)});
+
 #ifdef PLATFORM_WINDOWS
 
     auto address = g_pGameData->GetAddress<void*>("CCSPlayer_MovementServices::ProcessMovement_AssignMaxSpeed");

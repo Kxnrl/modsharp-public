@@ -261,4 +261,5 @@ void address::PostSchemaInit()
     ResolveCBasePlayerPawn_SnapViewAngles();
     ResolveCBaseTrigger_PassesTriggerFilters();
     ResolveCTriggerPush_PathSimplePushDir();
+    ResolveCCSPlayerController_InventoryPersonaData();
 }

@@ -23,7 +23,9 @@
 #include "logging.h"
 #include "memory/zydis_utility.h"
 #include "module.h"
+#include "murmurhash.h"
 
+#include "cstrike/component/PlayerControllerComponent.h"
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IGameSystem.h"
@@ -2445,6 +2447,398 @@ void ResolveCCSPlayerController_RoundRespawn()
     }
 
     try_overwrite_vfunc("CCSPlayerController::RoundRespawn", result_idx);
+}
+
+// CCSPlayerControllerInventoryUpdateThink (server.dll 20261105 sub_180A880E0 / libserver.so sub_1548A00):
+//   mov this, [this + m_pInventoryServices] ; jmp UpdateInventory
+// UpdateInventory 直接 call UpdatePersonaData (sub_180B24DD0 / sub_1612450), 它给 CEconPersonaDataPublic 写虚表
+void ResolveCCSPlayerController_InventoryPersonaData()
+{
+    using namespace address_scan;
+
+    auto* svr_mod = modules::server;
+
+    CCSPlayerController_InventoryServices::sm_nPersonaDataOffset = 0;
+    address::server::CCSPlayerController_InventoryUpdateThink    = nullptr;
+
+    std::vector<CEntityClass::ThinkFunc> thinks{};
+    std::uint32_t                        class_count = 0;
+    for (auto* klass = CEntityClass::GetFirst(); klass != nullptr && class_count < 16384; klass = klass->GetNext(), ++class_count)
+    {
+        const auto* info = klass->GetInfo();
+        if (info == nullptr || info->m_pszCppClassname == nullptr || std::strcmp(info->m_pszCppClassname, "CCSPlayerController") != 0)
+            continue;
+
+        const auto think = klass->GetThinkFunc("CCSPlayerControllerInventoryUpdateThink");
+        if (std::ranges::find(thinks, think) == thinks.end())
+            thinks.emplace_back(think);
+    }
+
+    if (thinks.size() != 1 || thinks.front() == nullptr) [[unlikely]]
+    {
+        FERROR("Failed to find CCSPlayerControllerInventoryUpdateThink (%zu candidates), "
+               "SetClanTag can be overwritten once by GC persona data and ResetClanTag is unavailable",
+               thinks.size());
+        return;
+    }
+
+    const auto think = reinterpret_cast<std::uintptr_t>(thinks.front());
+
+    address::server::CCSPlayerController_InventoryUpdateThink = reinterpret_cast<address::server::CCSPlayerController_InventoryUpdateThink_t>(think);
+    FLOG("Found CCSPlayerControllerInventoryUpdateThink at server+0x%llx", static_cast<unsigned long long>(think - svr_mod->Base()));
+
+    const auto services_offset = schemas::GetOffset(MurmurHash2("CCSPlayerController->m_pInventoryServices", MURMURHASH_SEED_MODSHARP));
+    const auto level_offset    = schemas::GetOffset(MurmurHash2("CCSPlayerController_InventoryServices->m_nPersonaDataPublicLevel", MURMURHASH_SEED_MODSHARP));
+    const auto xp_trail_offset = schemas::GetOffset(MurmurHash2("CCSPlayerController_InventoryServices->m_nPersonaDataXpTrailLevel", MURMURHASH_SEED_MODSHARP));
+    const auto services_size   = schemas::GetClassSize("CCSPlayerController_InventoryServices");
+    if (!services_offset.valid || !level_offset.valid || !xp_trail_offset.valid || services_size <= 0) [[unlikely]]
+    {
+        FERROR("Missing CCSPlayerController_InventoryServices schema data, ResetClanTag is unavailable");
+        return;
+    }
+
+    std::uintptr_t update_inventory = 0;
+    int            think_index      = 0;
+    ZydisUtility::ScanInstructions(think, think + 0x20, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic == ZYDIS_MNEMONIC_ENDBR64)
+            return false;
+
+        if (think_index++ == 0)
+        {
+            return !(instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                     && operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+                     && operands[0].size == 64
+                     && ZydisUtility::GetBaseRegister(operands[0].reg.value) == kThisReg
+                     && operands[1].size == 64
+                     && IsFieldMem(operands[1], kThisReg)
+                     && operands[1].mem.disp.value == services_offset.offset);
+        }
+
+        if (instr.mnemonic == ZYDIS_MNEMONIC_JMP && operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
+        {
+            const auto target = ZydisUtility::GetAbsoluteAddress(instr, operands[0], ip);
+            if (svr_mod->IsInModule(target))
+                update_inventory = target;
+        }
+
+        return true;
+    });
+
+    const auto* update_range = update_inventory != 0 ? svr_mod->GetFunctionRange(update_inventory) : nullptr;
+    if (update_range == nullptr) [[unlikely]]
+    {
+        FERROR("Unexpected CCSPlayerControllerInventoryUpdateThink shape, ResetClanTag is unavailable");
+        return;
+    }
+
+    std::vector<std::uintptr_t> callees{update_range->start};
+    ZydisUtility::ScanInstructions(update_range->start, update_range->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        if (instr.mnemonic != ZYDIS_MNEMONIC_CALL || !(instr.attributes & ZYDIS_ATTRIB_IS_RELATIVE))
+            return false;
+
+        const auto  target = ZydisUtility::ResolveCallTarget(&instr, operands, ip, *svr_mod);
+        const auto* range  = target != 0 ? svr_mod->GetFunctionRange(target) : nullptr;
+        if (range != nullptr && std::ranges::find(callees, range->start) == callees.end())
+            callees.emplace_back(range->start);
+
+        return false;
+    });
+
+    const auto persona_vtable = svr_mod->GetVirtualTableByName("CEconPersonaDataPublic");
+    const auto message_vtable = svr_mod->GetVirtualTableByName("CSOPersonaDataPublic");
+    if (!persona_vtable.IsValid() || !message_vtable.IsValid()) [[unlikely]]
+    {
+        FERROR("Failed to find CEconPersonaDataPublic / CSOPersonaDataPublic vtables, ResetClanTag is unavailable");
+        return;
+    }
+
+    auto anchors = AnchorFunctions(svr_mod, persona_vtable);
+#ifdef PLATFORM_LINUX
+    for (const auto* range : AnchorFunctions(svr_mod, persona_vtable.Offset(-2 * static_cast<int>(sizeof(void*)))))
+    {
+        if (std::ranges::none_of(anchors, [&](const auto* r) { return r->start == range->start; }))
+            anchors.emplace_back(range);
+    }
+#endif
+
+    std::vector<const CModule::FunctionEntry*> matched{};
+    for (const auto* range : anchors)
+    {
+        if (std::ranges::find(callees, range->start) != callees.end())
+            matched.emplace_back(range);
+    }
+
+    if (matched.size() != 1) [[unlikely]]
+    {
+        FERROR("Failed to locate UpdatePersonaData (%zu vtable refs, %zu callees, %zu matches), ResetClanTag is unavailable",
+               anchors.size(), callees.size(), matched.size());
+        return;
+    }
+
+    struct Decoded
+    {
+        std::uintptr_t          ip;
+        ZydisDecodedInstruction instr;
+        ZydisDecodedOperand     operands[ZYDIS_MAX_OPERAND_COUNT];
+    };
+
+    std::vector<Decoded> code{};
+    ZydisUtility::ScanInstructions(matched.front()->start, matched.front()->end, [&](std::uintptr_t ip, const ZydisDecodedInstruction& instr, const ZydisDecodedOperand* operands) -> bool {
+        auto& decoded = code.emplace_back();
+        decoded.ip    = ip;
+        decoded.instr = instr;
+        std::copy_n(operands, ZYDIS_MAX_OPERAND_COUNT, decoded.operands);
+        return false;
+    });
+
+    const auto field_disp = [](const ZydisDecodedOperand& op) { return static_cast<std::int32_t>(op.mem.disp.value); };
+
+    const auto accesses = [&](ZydisRegister base, std::int32_t disp) {
+        return std::ranges::any_of(code, [&](const Decoded& d) {
+            for (std::uint8_t i = 0; i < d.instr.operand_count_visible; i++)
+            {
+                if (IsFieldMem(d.operands[i], base) && field_disp(d.operands[i]) == disp)
+                    return true;
+            }
+            return false;
+        });
+    };
+
+    std::vector<ZydisRegister> services_bases{};
+    for (const auto& d : code)
+    {
+        for (std::uint8_t i = 0; i < d.instr.operand_count_visible; i++)
+        {
+            const auto& op = d.operands[i];
+            if (op.type != ZYDIS_OPERAND_TYPE_MEMORY || !IsObjectBase(op.mem.base))
+                continue;
+
+            const auto base = ZydisUtility::GetBaseRegister(op.mem.base);
+            if (IsFieldMem(op, base) && field_disp(op) == level_offset.offset
+                && std::ranges::find(services_bases, base) == services_bases.end()
+                && accesses(base, xp_trail_offset.offset))
+                services_bases.emplace_back(base);
+        }
+    }
+
+    const auto is_services_base = [&](ZydisRegister reg) { return std::ranges::find(services_bases, reg) != services_bases.end(); };
+
+    const auto writes = [](const Decoded& d, ZydisRegister reg) {
+        if (d.instr.mnemonic == ZYDIS_MNEMONIC_CALL && ZydisUtility::IsVolatileRegister(reg))
+            return true;
+
+        for (std::uint8_t i = 0; i < d.instr.operand_count; i++)
+        {
+            const auto& op = d.operands[i];
+            if (op.type == ZYDIS_OPERAND_TYPE_REGISTER && (op.actions & ZYDIS_OPERAND_ACTION_MASK_WRITE) != 0
+                && ZydisUtility::GetBaseRegister(op.reg.value) == reg)
+                return true;
+        }
+        return false;
+    };
+
+    const auto add_unique = [](std::vector<std::int32_t>& values, std::int32_t value) {
+        if (std::ranges::find(values, value) == values.end())
+            values.emplace_back(value);
+    };
+
+    // 推导 A: lea vt, CEconPersonaDataPublic ; mov [obj], vt ; 前后 16 条内 mov [services + X], obj
+    // 消息偏移: 同一窗口内的 lea reg, [obj + Y]
+    std::vector<std::int32_t> by_store{};
+    std::vector<std::int32_t> message_offsets{};
+    for (std::size_t i = 0; i < code.size(); i++)
+    {
+        const auto& lea = code[i];
+        if (lea.instr.mnemonic != ZYDIS_MNEMONIC_LEA || lea.operands[1].mem.base != ZYDIS_REGISTER_RIP
+            || !MatchesVTableRef(ZydisUtility::GetAbsoluteAddress(lea.instr, lea.operands[1], lea.ip), persona_vtable))
+            continue;
+
+        const auto vtable_reg = ZydisUtility::GetBaseRegister(lea.operands[0].reg.value);
+
+        ZydisRegister object = ZYDIS_REGISTER_NONE;
+        for (std::size_t j = i + 1; j < std::min(code.size(), i + 9) && object == ZYDIS_REGISTER_NONE; j++)
+        {
+            const auto& d = code[j];
+            if (d.instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                && d.operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY && d.operands[0].size == 64
+                && d.operands[0].mem.index == ZYDIS_REGISTER_NONE && IsObjectBase(d.operands[0].mem.base)
+                && (!d.operands[0].mem.disp.has_displacement || d.operands[0].mem.disp.value == 0)
+                && d.operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && ZydisUtility::GetBaseRegister(d.operands[1].reg.value) == vtable_reg)
+                object = ZydisUtility::GetBaseRegister(d.operands[0].mem.base);
+        }
+
+        if (object == ZYDIS_REGISTER_NONE)
+            continue;
+
+        for (std::size_t j = i >= 16 ? i - 16 : 0; j < std::min(code.size(), i + 17); j++)
+        {
+            const auto& d = code[j];
+            if (d.instr.mnemonic == ZYDIS_MNEMONIC_MOV
+                && d.operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY && d.operands[0].size == 64
+                && d.operands[1].type == ZYDIS_OPERAND_TYPE_REGISTER
+                && ZydisUtility::GetBaseRegister(d.operands[1].reg.value) == object)
+            {
+                const auto base = ZydisUtility::GetBaseRegister(d.operands[0].mem.base);
+                if (base != object && is_services_base(base) && IsFieldMem(d.operands[0], base))
+                    add_unique(by_store, field_disp(d.operands[0]));
+            }
+            else if (d.instr.mnemonic == ZYDIS_MNEMONIC_LEA && IsFieldMem(d.operands[1], object))
+            {
+                add_unique(message_offsets, field_disp(d.operands[1]));
+            }
+        }
+    }
+
+    // 推导 B: mov p, [services + X] ; 8 条内不经 call 就 mov r, [p] (析构旧 persona 时取虚表)
+    std::vector<std::int32_t> by_deref{};
+    for (std::size_t i = 0; i < code.size(); i++)
+    {
+        const auto& load = code[i];
+        if (load.instr.mnemonic != ZYDIS_MNEMONIC_MOV || load.operands[0].type != ZYDIS_OPERAND_TYPE_REGISTER
+            || load.operands[1].type != ZYDIS_OPERAND_TYPE_MEMORY || load.operands[1].size != 64)
+            continue;
+
+        const auto base    = ZydisUtility::GetBaseRegister(load.operands[1].mem.base);
+        const auto pointer = ZydisUtility::GetBaseRegister(load.operands[0].reg.value);
+        if (pointer == base || !is_services_base(base) || !IsFieldMem(load.operands[1], base))
+            continue;
+
+        for (std::size_t j = i + 1; j < std::min(code.size(), i + 9); j++)
+        {
+            const auto& d = code[j];
+            if (d.instr.mnemonic == ZYDIS_MNEMONIC_CALL)
+                break;
+
+            const bool deref = d.instr.mnemonic != ZYDIS_MNEMONIC_LEA
+                               && std::ranges::any_of(d.operands, d.operands + d.instr.operand_count_visible, [&](const ZydisDecodedOperand& op) {
+                                      return op.type == ZYDIS_OPERAND_TYPE_MEMORY
+                                             && ZydisUtility::GetBaseRegister(op.mem.base) == pointer
+                                             && op.mem.index == ZYDIS_REGISTER_NONE
+                                             && (!op.mem.disp.has_displacement || op.mem.disp.value == 0);
+                                  });
+            if (deref)
+            {
+                add_unique(by_deref, field_disp(load.operands[1]));
+                break;
+            }
+
+            if (writes(d, pointer) || writes(d, base))
+                break;
+        }
+    }
+
+    // 推导 C: mov p, [services + X] ; mov v, [p + d] ; cmp [services + m_nPersonaDataPublicLevel], v
+    struct Origin
+    {
+        ZydisRegister reg;
+        ZydisRegister base;
+        std::int32_t  disp;
+        std::size_t   at;
+    };
+
+    constexpr std::size_t kTrackWindow = 12;
+
+    std::vector<Origin>       pointers{};
+    std::vector<Origin>       values{};
+    std::vector<std::int32_t> by_compare{};
+    for (std::size_t i = 0; i < code.size(); i++)
+    {
+        const auto& d = code[i];
+
+        if (d.instr.mnemonic == ZYDIS_MNEMONIC_CMP)
+        {
+            for (int side = 0; side < 2; side++)
+            {
+                const auto& mem = d.operands[side];
+                const auto& val = d.operands[1 - side];
+                if (mem.type != ZYDIS_OPERAND_TYPE_MEMORY || mem.size != 32 || val.type != ZYDIS_OPERAND_TYPE_REGISTER)
+                    continue;
+
+                const auto base = ZydisUtility::GetBaseRegister(mem.mem.base);
+                if (!IsFieldMem(mem, base) || field_disp(mem) != level_offset.offset)
+                    continue;
+
+                const auto value = ZydisUtility::GetBaseRegister(val.reg.value);
+                for (const auto& origin : values)
+                {
+                    if (origin.reg == value && origin.base == base)
+                        add_unique(by_compare, origin.disp);
+                }
+            }
+        }
+
+        bool   has_pointer = false;
+        bool   has_value   = false;
+        Origin fresh{};
+        if (d.instr.mnemonic == ZYDIS_MNEMONIC_MOV && d.operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER
+            && d.operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY)
+        {
+            const auto dst = ZydisUtility::GetBaseRegister(d.operands[0].reg.value);
+            const auto src = ZydisUtility::GetBaseRegister(d.operands[1].mem.base);
+            if (IsFieldMem(d.operands[1], src))
+            {
+                if (d.operands[1].size == 64 && is_services_base(src))
+                {
+                    fresh       = {dst, src, field_disp(d.operands[1]), i};
+                    has_pointer = true;
+                }
+                else if (d.operands[1].size == 32)
+                {
+                    for (const auto& origin : pointers)
+                    {
+                        if (origin.reg == src)
+                        {
+                            fresh     = {dst, origin.base, origin.disp, i};
+                            has_value = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        const auto stale = [&](const Origin& origin) { return i - origin.at > kTrackWindow || writes(d, origin.reg); };
+        std::erase_if(pointers, stale);
+        std::erase_if(values, stale);
+
+        if (has_pointer)
+            pointers.emplace_back(fresh);
+        if (has_value)
+            values.emplace_back(fresh);
+    }
+
+    // 推导内部有歧义 (候选不止一个) 也算反对票, 不当弃权
+    const auto vote = [](const std::vector<std::int32_t>& candidates) { return candidates.size() == 1 ? candidates.front() : (candidates.empty() ? 0 : -1); };
+
+    const std::int32_t votes[] = {vote(by_store), vote(by_deref), vote(by_compare)};
+
+    std::int32_t offset = 0;
+    for (const auto candidate : votes)
+    {
+        if (candidate > 0 && std::ranges::count(votes, candidate) >= 2)
+            offset = candidate;
+    }
+
+    const bool opposed = std::ranges::any_of(votes, [&](std::int32_t v) { return v != 0 && v != offset; });
+    if (offset == 0 || opposed || offset % sizeof(void*) != 0 || offset + static_cast<std::int32_t>(sizeof(void*)) > services_size) [[unlikely]]
+    {
+        FERROR("Failed to resolve CEconPersonaDataPublic offset (store=%d/%zu, deref=%d/%zu, compare=%d/%zu, size=0x%x), ResetClanTag is unavailable",
+               votes[0], by_store.size(), votes[1], by_deref.size(), votes[2], by_compare.size(), services_size);
+        return;
+    }
+
+    if (message_offsets.size() != 1 || message_offsets.front() <= 0) [[unlikely]]
+    {
+        FERROR("Failed to resolve CSOPersonaDataPublic offset (%zu candidates), ResetClanTag is unavailable", message_offsets.size());
+        return;
+    }
+
+    CCSPlayerController_InventoryServices::sm_nPersonaDataMessageOffset = static_cast<std::uint32_t>(message_offsets.front());
+    CCSPlayerController_InventoryServices::sm_pPersonaDataVTable        = persona_vtable;
+    CCSPlayerController_InventoryServices::sm_pPersonaDataMessageVTable = message_vtable;
+    CCSPlayerController_InventoryServices::sm_nPersonaDataOffset        = static_cast<std::uint32_t>(offset);
+    FLOG("Found CEconPersonaDataPublic at CCSPlayerController_InventoryServices+0x%x (message +0x%x, class size 0x%x)",
+         offset, message_offsets.front(), services_size);
 }
 
 void ResolveCBasePlayerPawn_CommitSuicide()

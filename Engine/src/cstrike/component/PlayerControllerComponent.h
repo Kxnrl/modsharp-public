@@ -37,15 +37,22 @@ public:
 
 class CEconItemView;
 class CCSPlayerInventory;
+class CSOPersonaDataPublic;
 
 class CCSPlayerController_InventoryServices : public PlayerControllerComponent
 {
     DECLARE_SCHEMA_CLASS(CCSPlayerController_InventoryServices)
 public:
+    inline static uint32_t sm_nPersonaDataOffset        = 0;
+    inline static uint32_t sm_nPersonaDataMessageOffset = 0;
+    inline static void*    sm_pPersonaDataVTable        = nullptr;
+    inline static void*    sm_pPersonaDataMessageVTable = nullptr;
+
     SCHEMA_FIELD(uint16_t, m_unMusicID)
 
     [[nodiscard]] CCSPlayerInventory* GetPlayerInventory() const;
     [[nodiscard]] CEconItemView*      GetItemInLoadout(CStrikeTeam_t team, int32_t slot) const;
+    [[nodiscard]] bool                TryGetPersonaDataPublic(const CSOPersonaDataPublic*& out) const;
 };
 
 #endif

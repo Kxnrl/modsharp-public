@@ -17,6 +17,7 @@
  * along with ModSharp. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System;
 using Sharp.Core.Bridges.Interfaces;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.GameObjects;
@@ -66,6 +67,14 @@ internal partial class PlayerController : BaseEntity, IPlayerController
 
     public void SetClanTag(string tag)
         => Player.ControllerSetClanTag(_this, tag);
+
+    public void ResetClanTag()
+    {
+        if (!Player.ControllerResetClanTag(_this))
+        {
+            throw new EntryPointNotFoundException("The game's persona data is unavailable");
+        }
+    }
 
     public void CheckPawn()
         => Player.ControllerCheckPawn(_this);

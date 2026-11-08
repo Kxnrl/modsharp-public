@@ -302,6 +302,7 @@ void ResolveCreateTriggerInternal();
 void ResolveCBaseTrigger_PassesTriggerFilters();
 void ResolveCTriggerPush_PathSimplePushDir();
 void ResolveProcessClientSvcUserMessage();
+void ResolveCCSPlayerController_InventoryPersonaData();
 
 // address_engine.cpp
 void ResolveServerSideClientOffsets();

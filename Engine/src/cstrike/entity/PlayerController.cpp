@@ -31,6 +31,8 @@
 #include "cstrike/type/CRecipientFilter.h"
 #include "cstrike/type/EmitSound.h"
 
+#include <proto/cstrike15_gcmessages.pb.h>
+
 #include <cstdarg>
 
 CBasePlayerController* CBasePlayerController::FindBySlot(PlayerSlot_t slot)
@@ -67,10 +69,16 @@ void CBasePlayerController::SwitchTeam(CStrikeTeam_t team)
     address::server::CBasePlayerController_SwitchSteam(this, team);
 }
 
+// 空 tag 也要配非 0 clan id, 不然 think hook 会把它当成初值 (0, "")
+static constexpr uint32_t kClanTagSentinelClanId = 0xFFFFFFFF;
+
 void CBasePlayerController::SetClanTag(const char* tag)
 {
     const auto& clan = g_pGameEntitySystem->AllocPooledString(tag);
     m_szClan(clan);
+
+    if (m_unClanId32bit() == 0 && *m_szClan().Get() == '\0')
+        m_unClanId32bit(kClanTagSentinelClanId);
 }
 
 void CBasePlayerController::ClientPrint(HudPrint_t dest, const char* name, const char* param1, const char* param2, const char* param3, const char* param4)
@@ -158,4 +166,33 @@ CEconItemView* CCSPlayerController::GetItemInLoadoutFromInventory(CStrikeTeam_t 
     const auto pService = m_pInventoryServices();
     AssertPtr(pService);
     return pService->GetItemInLoadout(team, slot);
+}
+
+bool CCSPlayerController::ResetClanTag()
+{
+    if (CCSPlayerController_InventoryServices::sm_nPersonaDataOffset == 0)
+        return false;
+
+    const CSOPersonaDataPublic* persona = nullptr;
+    if (const auto pService = m_pInventoryServices(); pService != nullptr && !pService->TryGetPersonaDataPublic(persona))
+        return false;
+
+    const auto  clanId = persona != nullptr ? persona->clan_id() : 0;
+    const auto& clan   = g_pGameEntitySystem->AllocPooledString(persona != nullptr ? persona->clan_tag().c_str() : "");
+
+    if (m_unClanId32bit() != clanId)
+        m_unClanId32bit(clanId);
+    if (m_szClan() != clan)
+        m_szClan(clan);
+
+    return true;
+}
+
+void CCSPlayerController::ResetClanTagForSlot(PlayerSlot_t slot)
+{
+    if (g_pGameEntitySystem == nullptr)
+        return;
+
+    if (const auto pController = FindBySlot(slot))
+        static_cast<CCSPlayerController*>(pController)->ResetClanTag();
 }

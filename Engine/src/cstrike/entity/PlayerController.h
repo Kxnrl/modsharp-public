@@ -51,6 +51,7 @@ public:
     SCHEMA_FIELD(bool, m_bLagCompensation)
 
     SCHEMA_FIELD_MANUAL(CCSPlayerController, m_szClan, CUtlSymbolLarge)
+    SCHEMA_FIELD_MANUAL(CCSPlayerController, m_unClanId32bit, uint32_t)
 
 private:
     [[nodiscard]] CBasePlayerPawn* GetPawnInternal();
@@ -127,6 +128,9 @@ public:
     void CheckPawn();
     void SetPawn(CCSPlayerPawn* pawn, bool unk1, bool unk2, bool unk3, bool unk4);
     void RoundRespawn();
+    bool ResetClanTag();
+
+    static void ResetClanTagForSlot(PlayerSlot_t slot);
 };
 
 #endif
