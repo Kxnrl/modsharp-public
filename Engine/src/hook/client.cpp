@@ -828,7 +828,7 @@ void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommand
     AssertPtr(pClient);
     AssertPtr(pCommandString);
 
-    const auto net = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_StringCmd");
+    static auto net = g_pNetworkMessages->FindNetworkMessageByTypeName("CNETMsg_StringCmd");
     AssertPtr(net);
     auto msg = net->AllocateMessage()->ToPB<CNETMsg_StringCmd>();
 

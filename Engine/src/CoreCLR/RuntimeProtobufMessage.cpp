@@ -23,5 +23,5 @@
 
 NetMessageInfo_t* GetRuntimeProtobufSerializable(const char* name)
 {
-    return g_pNetworkMessages->FindNetworkMessagePartial(name);
+    return g_pNetworkMessages->FindNetworkMessageByTypeName(name);
 }

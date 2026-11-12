@@ -26,6 +26,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <string>
+#include <string_view>
 
 class CBaseHandle;
 class CUtlAbstractDelegate;
@@ -50,7 +52,7 @@ using NetMessageAllocateFn = CNetMessage* (*)();
 
 struct NetMessageInfo_t
 {
-    CUtlString           m_szName; // "<proto type name> [<message id>]"; bare type names only resolve via FindNetworkMessagePartial
+    CUtlString           m_szName; // "<proto type name> [<message id>]"; look up by type name with INetworkMessages::FindNetworkMessageByTypeName
     NetMessageAllocateFn m_pfnAllocateMessage;
     CUtlString           m_szGroup;
     NetworkMessageId     m_MessageId;
@@ -153,6 +155,17 @@ public:
     virtual NetMessageInfo_t* GetNetMessageInfo(NetMessageInfo_t* pNetMessage)     = 0;
     virtual NetMessageInfo_t* FindNetworkMessage(const char* szName)               = 0;
     virtual NetMessageInfo_t* FindNetworkMessagePartial(const char* szPartialName) = 0;
+
+    NetMessageInfo_t* FindNetworkMessageByTypeName(const char* szTypeName)
+    {
+        const auto prefix = std::string(szTypeName) + " [";
+        const auto info   = FindNetworkMessagePartial(prefix.c_str());
+
+        if (info == nullptr || !std::string_view(info->m_szName.Get()).starts_with(prefix))
+            return nullptr;
+
+        return info;
+    }
 };
 
 class INetworkSystem
