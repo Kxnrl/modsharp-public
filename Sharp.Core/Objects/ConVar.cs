@@ -19,6 +19,7 @@
 
 using System;
 using System.Globalization;
+using System.Text;
 using System.Runtime.CompilerServices;
 using Sharp.Core.Bridges.Natives;
 using Sharp.Core.CStrike;
@@ -239,7 +240,8 @@ internal partial class ConVar : NativeObject, IConVar
     {
         if (Type == ConVarType.String)
         {
-            Span<byte> bytes = stackalloc byte[256];
+            var        size  = Encoding.UTF8.GetByteCount(value) + 1;
+            Span<byte> bytes = size <= 256 ? stackalloc byte[256] : new byte[size];
 
             bytes.WriteStringUtf8(value);
 

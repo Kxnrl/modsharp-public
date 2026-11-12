@@ -48,6 +48,8 @@
 static bool             s_bPatchVScriptVM;
 static CConVarBaseData* ms_fix_spawngroups_leak = nullptr;
 
+extern void AddonsOnSteamApiActivated();
+
 BeginMemberHookScope(CSource2Server)
 {
     DeclareMemberDetourHook(GameFrame, void, (CSource2Server * pServer, bool bSimulating, bool bFirstTick, bool bLastTick))
@@ -85,6 +87,7 @@ BeginMemberHookScope(CSource2Server)
 
         GameServerSteamAPIActivated(pServer);
         InitApiContext();
+        AddonsOnSteamApiActivated();
     }
 
     DeclareVirtualHook(GameServerSteamAPIDeactivated, void, (CSource2Server * pServer))

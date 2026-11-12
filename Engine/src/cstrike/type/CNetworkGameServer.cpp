@@ -39,6 +39,12 @@ const char* CNetworkGameServer::GetAddonName()
     return VCall_Manual(offset, const char*, this);
 }
 
+void CNetworkGameServer::SetAddonName(const char* pAddons)
+{
+    static auto offset = g_pGameData->GetOffset("CNetworkGameServer::m_Addons");
+    GetFieldPointer<CUtlString*>(offset)->Set(pAddons ? pAddons : "");
+}
+
 CUtlVector<CServerSideClient*>* CNetworkGameServer::GetClients() const
 {
     static auto offset = g_pGameData->GetOffset("CNetworkGameServer::m_vecClients");

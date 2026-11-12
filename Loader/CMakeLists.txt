@@ -48,3 +48,10 @@ if(UNIX) # unix
 		PLATFORM_POSIX
 	)
 endif()
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux") # linux
+	target_link_options(server PUBLIC
+		-static-libgcc
+		-static-libstdc++
+	)
+endif()

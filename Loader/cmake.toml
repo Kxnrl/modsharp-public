@@ -1,11 +1,9 @@
 [project]
 name = "ModSharpLoader"
-linux.cmake-after = """
-set(CMAKE_CXX_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -static-libgcc -static-libstdc++")
-"""
 
 [target.server]
 type = "shared"
 sources = ["loader.cpp"]
 windows.compile-definitions = [ "PLATFORM_WINDOWS" ]
 unix.compile-definitions = [ "PLATFORM_POSIX" ]
+linux.link-options = [ "-static-libgcc", "-static-libstdc++" ]
