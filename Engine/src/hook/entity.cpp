@@ -50,6 +50,7 @@
 #include "cstrike/type/CEntityKeyValues.h"
 #include "cstrike/type/CEntityPrecacheContext.h"
 #include "cstrike/type/CGlobalVars.h"
+#include "cstrike/type/CTransform.h"
 #include "cstrike/type/CUtlSymbolLarge.h"
 #include "cstrike/type/CUtlVector.h"
 #include "cstrike/type/EntityIO.h"
@@ -64,6 +65,8 @@
 // #define ENTITY_HOOK_ASSERT
 // #define ENTITY_LISTENER_ASSERT
 
+struct CPhysicsShape;
+struct CPhysicsBody;
 static CConVarBaseData* ms_trigger_push_fixes_enabled = nullptr;
 static CConVarBaseData* ms_trigger_push_scale         = nullptr;
 static CConVarBaseData* ms_entity_io_enhancement      = nullptr;
@@ -419,119 +422,149 @@ BeginMemberHookScope(CPhysBox)
 
 BeginMemberHookScope(CVPhys2World)
 {
-    struct TouchLinked_t
+    struct PhysicsContact_t
     {
-        uint32_t TouchFlags;
+        CPhysicsShape* m_pShape1;   // 0x0
+        CPhysicsShape* m_pShape2;   // 0x8
+        void*          m_Manifolds; // 0x10
+    }; // Size: 0x18
 
-    private:
-        uint8_t padding_0[20];
+    enum IntersectionReason
+    {
+        Collision  = 1 << 0,
+        StartTouch = 1 << 2,
 
-    public:
-        CBaseHandle SourceHandle;
-        CBaseHandle TargetHandle;
+        Touch    = 1 << 3,
+        EndTouch = 1 << 4,
 
-    private:
-        uint8_t padding_1[224];
-
-    public:
-        [[nodiscard]] bool IsUnTouching() const
-        {
-            return !!(TouchFlags & 0x10);
-        }
-
-        [[nodiscard]] bool IsTouching() const
-        {
-            return (!!(TouchFlags & 4)) || (!!(TouchFlags & 8));
-        }
+        StartTouchAndCollision = Collision | StartTouch,
     };
-    static_assert(sizeof(TouchLinked_t) == 256, "Touch_t size mismatch");
 
-    DeclareVirtualHook(GenerateIntersectionNotifications, void, (void* pVphysicsWorld, CUtlVector<TouchLinked_t>* pList, bool unknown))
+    struct VPhysIntersectionNotification_t
     {
-        GenerateIntersectionNotifications(pVphysicsWorld, pList, unknown);
+        uint32_t m_Reason; // 0x0
 
-        if (pList->Count() <= 1 || !ms_fix_entities_touching_list->GetValue<bool>())
-            return;
+        CPhysicsBody*    m_pPhysicsBody[2];         // 0x8
+        CBaseHandle      m_nEntityHandle[2];        // 0x18
+        CUtlStringToken  m_MaterialIndex[2];        // 0x20
+        Vector           m_vecContactPoint1;        // 0x28
+        Vector           m_vecContactNormal;        // 0x34
+        Vector           m_vecContactPoint2;        // 0x40
+        float            m_flSeparationFraction;    // 0x4c
+        float            m_flFrictionCoefficient;   // 0x50
+        float            m_flRestitutionBounciness; // 0x54
+        float            m_flNormalImpulse;         // 0x58
+        float            m_flFrictionImpulse;       // 0x5c
+        CTransform       m_ContactTransform;        // 0x60
+        Vector           m_vPreLinearVelocity[2];   // 0x80
+        Vector           m_vPreAngularVelocity[2];  // 0x98
+        Vector           m_vPostLinearVelocity[2];  // 0xb0
+        Vector           m_vPostAngularVelocity[2]; // 0xc8
+        PhysicsContact_t m_Contact;                 // 0xe0
 
-        std::srand(gpGlobals->nTickCount);
-
-#ifdef DEBUG
-
-        std::string dump{};
-
-        FOR_EACH_VEC(*pList, i)
+        [[nodiscard]] CBaseHandle GetSourceEntityHandle() const
         {
-            char       buffer[128];
-            const auto source = entList->FindEntityByEHandle(pList->Element(i).SourceHandle);
-            const auto target = entList->FindEntityByEHandle(pList->Element(i).TargetHandle);
-            snprintf(buffer, sizeof(buffer), "#%d flags: %d | source: %d.%s | target: %d.%s\n",
-                     i,
-                     pList->Element(i).TouchFlags,
-                     pList->Element(i).SourceHandle.GetEntryIndex(), source ? source->GetClassname() : "<null>",
-                     pList->Element(i).TargetHandle.GetEntryIndex(), target ? target->GetClassname() : "<null>");
-            dump.append(buffer);
-        }
-#endif
-
-        std::vector<TouchLinked_t> touchingLinks{};
-        std::vector<TouchLinked_t> unTouchLinks{};
-
-        for (auto i = 0; i < pList->Count(); i++)
-        {
-            const auto& link = pList->Element(i);
-            if (link.IsUnTouching())
-                unTouchLinks.push_back(link);
-            else
-                touchingLinks.push_back(link);
+            return m_nEntityHandle[0];
         }
 
-#ifdef DEBUG
-        if (touchingLinks.empty())
+        [[nodiscard]] CBaseHandle GetTargetEntityHandle() const
+        {
+            return m_nEntityHandle[1];
+        }
+
+        [[nodiscard]] bool IsCollision() const
+        {
+            return (m_Reason & IntersectionReason::Collision) != 0;
+        }
+
+        [[nodiscard]] bool IsStartTouch() const
+        {
+            return (m_Reason & IntersectionReason::StartTouch) != 0;
+        }
+
+        [[nodiscard]] bool IsTouch() const
+        {
+            return (m_Reason & IntersectionReason::Touch) != 0;
+        }
+
+        [[nodiscard]] bool IsEndTouch() const
+        {
+            return (m_Reason & IntersectionReason::EndTouch) != 0;
+        }
+    }; // Size: 0x100
+    static_assert(sizeof(VPhysIntersectionNotification_t) == 256, "VPhysIntersectionNotification_t size mismatch");
+
+    DeclareVirtualHook(GenerateIntersectionNotifications, void, (void* pVphysicsWorld, CUtlVector<VPhysIntersectionNotification_t>* pNotifications, bool unknown))
+    {
+        GenerateIntersectionNotifications(pVphysicsWorld, pNotifications, unknown);
+
+        const int count = pNotifications->Count();
+
+        if (count <= 1 || !ms_fix_entities_touching_list->GetValue<bool>()) [[unlikely]]
             return;
 
-        bool foundUnTouch = false;
-        FOR_EACH_VEC(*pList, i)
+        auto* const begin = pNotifications->Base();
+        auto* const end   = begin + count;
+
+        auto untouch_start = std::partition(begin, end, [](const VPhysIntersectionNotification_t& link) {
+            return !link.IsEndTouch();
+        });
+
+        const uint32_t touching_count = static_cast<uint32_t>(untouch_start - begin);
+
+        if (touching_count > 1) [[likely]]
         {
-            const auto& link = pList->Element(i);
-            if (link.IsUnTouching())
-                foundUnTouch = true;
-            else if (foundUnTouch)
+            uint32_t state = gpGlobals->nTickCount * 7919 + touching_count;
+
+            for (uint32_t range = touching_count; range > 1; --range)
             {
-                const auto source = entList->FindEntityByEHandle(pList->Element(i).SourceHandle);
-                const auto target = entList->FindEntityByEHandle(pList->Element(i).TargetHandle);
-                WARN("@%d Regular Touching after UnTouch: #%d flags: %d | source: %d.%s | target: %d.%s",
-                     gpGlobals->nTickCount,
-                     i,
-                     pList->Element(i).TouchFlags,
-                     pList->Element(i).SourceHandle.GetEntryIndex(), source ? source->GetClassname() : "<null>",
-                     pList->Element(i).TargetHandle.GetEntryIndex(), target ? target->GetClassname() : "<null>");
+                state                   = state * 1664525u + 1013904223u;
+                const uint32_t swap_idx = static_cast<uint32_t>((static_cast<uint64_t>(state) * range) >> 32);
+                std::swap(begin[range - 1], begin[swap_idx]);
             }
         }
-#endif
-
-        if (touchingLinks.size() <= 1)
-        {
-#ifdef DEBUG
-            LOG("@%d Kept Physics List -> %d pairs\n%s", gpGlobals->nTickCount, pList->Count(), dump.c_str());
-#endif
-            return;
-        }
-
-        for (size_t i = touchingLinks.size() - 1; i > 0; --i)
-        {
-            const auto j = std::rand() % (i + 1);
-            std::swap(touchingLinks[i], touchingLinks[j]);
-        }
-
-        pList->Purge();
-
-        for (const auto& link : touchingLinks)
-            pList->AddToTail(link);
-        for (const auto& link : unTouchLinks)
-            pList->AddToTail(link);
 
 #ifdef DEBUG
-        LOG("@%d Fixup Physics List -> %d pairs\n%s", gpGlobals->nTickCount, pList->Count(), dump.c_str());
+        std::string dump{};
+        dump.reserve(count * 256);
+
+        int countTouch = 0, countUnTouch = 0, countAtCol = 0;
+
+        for (int i = 0; i < count; ++i)
+        {
+            const auto& notification = begin[i];
+            const auto  source       = g_pGameEntitySystem->FindEntityByEHandle(notification.GetSourceEntityHandle());
+            const auto  target       = g_pGameEntitySystem->FindEntityByEHandle(notification.GetTargetEntityHandle());
+
+            if (notification.IsStartTouch()) countTouch++;
+            if (notification.IsEndTouch()) countUnTouch++;
+            if (notification.IsCollision()) countAtCol++;
+
+            char bits[8];
+            snprintf(bits, sizeof(bits), "[%c%c%c%c%c]",
+                     (notification.m_Reason & 0x10) ? 'E' : '-',
+                     (notification.m_Reason & 0x08) ? 'T' : '-',
+                     (notification.m_Reason & 0x04) ? 'S' : '-',
+                     (notification.m_Reason & 0x02) ? '?' : '-',
+                     (notification.m_Reason & 0x01) ? 'C' : '-');
+
+            const char* srcClass = source ? source->GetClassname() : "<null>";
+            const char* tgtClass = target ? target->GetClassname() : "<null>";
+
+            char buffer[256];
+            snprintf(buffer, sizeof(buffer),
+                     "  [%02d] %s | Reason: 0x%02X | Src: %4d %-15s | Tgt: %4d %-15s\n",
+                     i, bits, notification.m_Reason,
+                     notification.GetSourceEntityHandle().GetEntryIndex(), srcClass,
+                     notification.GetTargetEntityHandle().GetEntryIndex(), tgtClass);
+
+            dump.append(buffer);
+        }
+
+        printf("@%d Fixup Physics List -> %d pairs\n  [Summary] Touch: %d | UnTouch: %d | AtCol: %d\n%s",
+               gpGlobals->nTickCount, count,
+               countTouch, countUnTouch, countAtCol,
+               dump.c_str());
 #endif
     }
 }
