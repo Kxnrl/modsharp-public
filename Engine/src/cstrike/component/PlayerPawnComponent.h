@@ -108,7 +108,6 @@ class CCSPlayer_MovementServices : public CPlayer_MovementServices_Humanoid
     DECLARE_SCHEMA_CLASS(CCSPlayer_MovementServices)
 
 public:
-    SCHEMA_FIELD(bool, m_bDucked)
     SCHEMA_FIELD(float, m_flDuckSpeed)
 };
 

@@ -107,7 +107,6 @@ internal class ClientManager : ICoreClientManager
         Bridges.Forwards.Game.OnStartupServerPre += OnServerReset;
         Bridges.Forwards.Game.OnServerInit       += OnServerInit;
 
-        configuration.GetReloadToken().RegisterChangeCallback(_ => LoadCommandPrefix(), null);
         LoadCommandPrefix();
     }
 

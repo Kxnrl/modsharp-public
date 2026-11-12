@@ -310,13 +310,11 @@ BeginMemberHookScope(INetworkServerService)
 {
     DeclareVirtualHook(StartupServer, void, (INetworkServerService * pService, const GameSessionConfiguration_t& config, ISource2WorldSession* pWorldSession, const char* pszMapName))
     {
-        g_pSpawnGroupMgr = nullptr;
-
 #ifdef ENGINE_HOOK_ASSERT
         WARN("%10s: 0x%p\n"
              "%10s: 0x%p\n"
-             "%10s: 0x%p",
-             "this", pService, "config", pWorldSession, "unknown", pszMapName);
+             "%10s: %s",
+             "this", pService, "config", pWorldSession, "mapName", pszMapName);
 #endif
 
         g_pLoggerMapName = "| ";

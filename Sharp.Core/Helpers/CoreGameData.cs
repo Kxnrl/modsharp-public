@@ -74,11 +74,6 @@ internal static class CoreGameData
             VecClients = Core.GetOffset("CNetworkGameServer::m_vecClients"),
         };
 
-    private static CBaseWeaponGameData? _cBaseWeapon;
-
-    public static CBaseWeaponGameData CBaseWeapon
-        => _cBaseWeapon ??= new CBaseWeaponGameData { VData = Core.GetOffset("CBaseWeapon::m_VData") };
-
     private static GameData? _core;
 
     public static GameData Core => _core ??= GameData.Create(Bridges.Natives.Core.GetGameData())!;

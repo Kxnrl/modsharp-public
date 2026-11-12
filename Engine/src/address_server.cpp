@@ -3028,14 +3028,14 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
     if (!usage_str.IsValid()) [[unlikely]]
     {
         WARN("Failed to find 'Usage:  setang pitch yaw ...' string.");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     auto refs = svr_mod->GetReferenceRange(usage_str);
     if (refs.empty())
     {
         WARN("No references to 'Usage:  setang pitch yaw' string.");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     // Collect unique containing functions from the references
@@ -3050,7 +3050,7 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
     if (handler_candidates.size() != 1)
     {
         WARN("Expected 1 handler for setang, got %zu.", handler_candidates.size());
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     auto handler_addr  = *handler_candidates.begin();
@@ -3058,7 +3058,7 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
     if (!handler_range)
     {
         WARN("Failed to get function range for setang handler.");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     FLOG("Found setang handler at server+0x%llx", handler_addr - svr_mod->Base());
@@ -3081,7 +3081,7 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
     if (call_targets.empty())
     {
         WARN("No relative call targets found in setang handler.");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     // Verification: the real SnapViewAngles writes to the "v_angle" QAngle field
@@ -3091,7 +3091,7 @@ void ResolveCBasePlayerPawn_SnapViewAngles()
     if (v_angle_offset <= 0)
     {
         WARN("Failed to get schema offset for CBasePlayerPawn::v_angle.");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CBasePlayerPawn_SnapViewAngles, 0, "CBasePlayerPawn::SnapViewAngles");
     }
 
     uintptr_t snap_view_angles_addr = 0;
@@ -3156,21 +3156,21 @@ void ResolveCreateTriggerInternal()
     if (!str_addr.IsValid())
     {
         WARN("Failed to find string 'Script_CreateTrigger'");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CreateTriggerInternal, 0, "CreateTriggerInternal");
     }
 
     auto ptr_addr = svr_mod->FindPtr(str_addr.GetPtr());
     if (!ptr_addr.IsValid())
     {
         WARN("Failed to find pointer to 'Script_CreateTrigger' string");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CreateTriggerInternal, 0, "CreateTriggerInternal");
     }
 
     auto wrapper_func = *reinterpret_cast<uintptr_t*>(ptr_addr.GetPtr() + 0x38);
     if (!svr_mod->IsInModule(wrapper_func))
     {
         WARN("Function pointer at Script_CreateTrigger descriptor+0x38 is not in module");
-        return;
+        return AssignOrFallback(svr_mod, address::server::CreateTriggerInternal, 0, "CreateTriggerInternal");
     }
 
     uintptr_t target_call_addr = 0;

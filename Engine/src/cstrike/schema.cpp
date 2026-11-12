@@ -574,7 +574,6 @@ static void BuildClassSchemaRecursive(SchemaClass_t*                            
                                       std::unordered_set<std::string_view>&         added_field_names,
                                       std::unordered_map<std::string, const char*>& override_fields)
 {
-    std::string_view class_name = current_class_info->GetName();
     if (strcmp(derived_schema_class->name.Get(), current_class_info->GetName()) != 0)
     {
         derived_schema_class->baseClassList.AddToTail(new CUtlString(current_class_info->GetName()));
