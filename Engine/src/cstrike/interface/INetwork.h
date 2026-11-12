@@ -22,20 +22,18 @@
 
 #include "cstrike/interface/IAppSystem.h"
 #include "cstrike/interface/INetChannel.h"
+#include "cstrike/type/CUtlString.h"
 
+#include <cstddef>
 #include <cstdint>
+#include <string>
+#include <string_view>
 
 class CBaseHandle;
 class CUtlAbstractDelegate;
 class CUtlSlot;
 class IRecipientFilter;
 class CNetMessage;
-struct NetMessageInfo_t;
-
-enum NetworkValidationMode_t
-{
-
-};
 
 enum NetworkSerializationMode_t
 {
@@ -47,27 +45,30 @@ enum NetworkSerializationMode_t
     NET_SERIALIZATION_MODE_CLIENT  = 0x1,
 };
 
-class INetworkMessageInternal
+using NetworkMessageId     = int32_t;
+using NetworkGroupId       = uint8_t;
+using NetworkCategoryId    = uint32_t;
+using NetMessageAllocateFn = CNetMessage* (*)();
+
+struct NetMessageInfo_t
 {
-public:
-    virtual ~INetworkMessageInternal() = default;
+    CUtlString           m_szName; // "<proto type name> [<message id>]"; look up by type name with INetworkMessages::FindNetworkMessageByTypeName
+    NetMessageAllocateFn m_pfnAllocateMessage;
+    CUtlString           m_szGroup;
+    NetworkMessageId     m_MessageId;
+    uint32_t             m_nCategories;
+    int32_t              m_Field_032;
+    NetworkGroupId       m_GroupId;
+    uint8_t              m_nFlags; // bits 0-4: default buf type, bit 5: not networked (Serialize rejects it, message id auto-assigned)
 
-    virtual const char*       GetUnscopedName()   = 0;
-    virtual NetMessageInfo_t* GetNetMessageInfo() = 0;
-
-    virtual void SetMessageId(int nMessageId) = 0;
-
-    virtual void AddCategoryMask(int nMask, bool) = 0;
-
-    virtual void SwitchMode(NetworkValidationMode_t nMode) = 0;
-
-    virtual CNetMessage* AllocateMessage() = 0;
-
-    // Calls to INetworkMessages::SerializeMessageInternal
-    virtual bool Serialize(void* pBuf, const CNetMessage* pData) = 0;
-    // Calls to INetworkMessages::UnserializeMessageInternal
-    virtual bool Unserialize(void* pBuf, CNetMessage* pData) = 0;
+    CNetMessage* AllocateMessage() const { return m_pfnAllocateMessage(); }
 };
+static_assert(offsetof(NetMessageInfo_t, m_pfnAllocateMessage) == 0x08);
+static_assert(offsetof(NetMessageInfo_t, m_MessageId) == 0x18);
+static_assert(offsetof(NetMessageInfo_t, m_nCategories) == 0x1C);
+static_assert(offsetof(NetMessageInfo_t, m_GroupId) == 0x24);
+static_assert(offsetof(NetMessageInfo_t, m_nFlags) == 0x25);
+static_assert(sizeof(NetMessageInfo_t) == 0x28);
 
 template <typename PROTO_TYPE>
 class CNetMessagePB;
@@ -81,7 +82,7 @@ public:
     virtual void* AsProto() const  = 0;
     virtual void* AsProto2() const = 0;
 
-    virtual INetworkMessageInternal* GetNetMessage() const
+    virtual NetMessageInfo_t* GetNetMessage() const
     {
         // This shouldn't ever be called and the game provided vtable should be called instead!
         return nullptr;
@@ -89,8 +90,7 @@ public:
 
     virtual void* AllocAndCopy() const = 0;
 
-    virtual int         GetType() const = 0;
-    virtual const char* GetName() const = 0;
+    virtual int GetType() const = 0;
 
     // Helper function to cast up the abstract message to a concrete CNetMessagePB<T> type.
     // Doesn't do any validity checks itself!
@@ -122,11 +122,10 @@ static_assert(sizeof(CNetMessage) == 0x30);
 // AMNOTE: This is a stub class over real CNetMessagePB!
 // This is mainly to access the game constructed objects, and not for direct initialization of them
 // since this misses the CNetMessage implementation which requires supplying other proto related info like
-// proto binding object, proto msg id/group, etc.
-// So to allocate the message yourself use INetworkMessageInternal::AllocateMessage() or INetworkMessages::AllocateNetMessageAbstract()
-// functions instead of direct initialization (they both are equivalent)!
+// proto msg id/group, etc.
+// So to allocate the message yourself use NetMessageInfo_t::AllocateMessage() instead of direct initialization!
 // Example usage:
-// CNetMessagePB<ProtoClass> *msg = INetworkMessageInternal::AllocateMessage()->ToPB<ProtoClass>();
+// CNetMessagePB<ProtoClass> *msg = pNetMessageInfo->AllocateMessage()->ToPB<ProtoClass>();
 // msg->field1( 2 );
 // msg->field2( 3 );
 // IGameEventSystem::PostEventAbstract( ..., msg, ... );
@@ -143,7 +142,6 @@ private:
 
 class INetworkMessages
 {
-    // IAppSystem
     virtual void Method_00() = 0;
     virtual void Method_01() = 0;
     virtual void Method_02() = 0;
@@ -152,15 +150,22 @@ class INetworkMessages
     virtual void Method_05() = 0;
     virtual void Method_06() = 0;
     virtual void Method_07() = 0;
-    virtual void Method_08() = 0;
-    virtual void Method_09() = 0;
-    virtual void Method_10() = 0;
-    virtual void Method_11() = 0;
 
 public:
-    virtual NetMessageInfo_t*        GetNetMessageInfo(INetworkMessageInternal* pNetMessage) = 0;
-    virtual INetworkMessageInternal* FindNetworkMessage(const char* szName)                  = 0;
-    virtual INetworkMessageInternal* FindNetworkMessagePartial(const char* szPartialName)    = 0;
+    virtual NetMessageInfo_t* GetNetMessageInfo(NetMessageInfo_t* pNetMessage)     = 0;
+    virtual NetMessageInfo_t* FindNetworkMessage(const char* szName)               = 0;
+    virtual NetMessageInfo_t* FindNetworkMessagePartial(const char* szPartialName) = 0;
+
+    NetMessageInfo_t* FindNetworkMessageByTypeName(const char* szTypeName)
+    {
+        const auto prefix = std::string(szTypeName) + " [";
+        const auto info   = FindNetworkMessagePartial(prefix.c_str());
+
+        if (info == nullptr || !std::string_view(info->m_szName.Get()).starts_with(prefix))
+            return nullptr;
+
+        return info;
+    }
 };
 
 class INetworkSystem
@@ -227,18 +232,18 @@ public:
 
 class IGameEventSystem : public IAppSystem
 {
-    virtual void RegisterGameEvent(INetworkMessageInternal* pEvent)                                                                                      = 0;
-    virtual void RegisterGameEventHandlerAbstract(CUtlSlot* pSlot, const CUtlAbstractDelegate& delegate, INetworkMessageInternal* pEvent, int nPriority) = 0;
-    virtual void UnregisterGameEventHandlerAbstract(CUtlSlot* pSlot, const CUtlAbstractDelegate& delegate, INetworkMessageInternal* pEvent)              = 0;
+    virtual void RegisterGameEvent(NetMessageInfo_t* pEvent)                                                                                      = 0;
+    virtual void RegisterGameEventHandlerAbstract(CUtlSlot* pSlot, const CUtlAbstractDelegate& delegate, NetMessageInfo_t* pEvent, int nPriority) = 0;
+    virtual void UnregisterGameEventHandlerAbstract(CUtlSlot* pSlot, const CUtlAbstractDelegate& delegate, NetMessageInfo_t* pEvent)              = 0;
 
 public:
-    virtual void PostEventAbstract_Local(uint32_t nSlot, INetworkMessageInternal* pEvent, const void* pData, uint64_t nSize) = 0;
+    virtual void PostEventAbstract_Local(uint32_t nSlot, NetMessageInfo_t* pEvent, const void* pData, uint64_t nSize) = 0;
 
-    virtual void PostEventAbstract(uint32_t nSlot, bool bLocalOnly, uint32_t nClientCount, const uint64_t* clients, INetworkMessageInternal* pEvent, const void* pData, uint64_t nSize, NetChannelBufType_t bufType) = 0;
-    virtual void PostEventAbstract(uint32_t nSlot, bool bLocalOnly, IRecipientFilter* pFilter, INetworkMessageInternal* pEvent, const void* pData, uint64_t nSize)                                                   = 0;
+    virtual void PostEventAbstract(uint32_t nSlot, bool bLocalOnly, uint32_t nClientCount, const uint64_t* clients, NetMessageInfo_t* pEvent, const void* pData, uint64_t nSize, NetChannelBufType_t bufType) = 0;
+    virtual void PostEventAbstract(uint32_t nSlot, bool bLocalOnly, IRecipientFilter* pFilter, NetMessageInfo_t* pEvent, const void* pData, uint64_t nSize)                                                   = 0;
 
 private:
-    virtual void PostEntityEventAbstract(const CBaseHandle& hHandle, INetworkMessageInternal* pEvent, const void* pData, uint64_t nSize, NetChannelBufType_t bufType, bool bAllClients) = 0;
+    virtual void PostEntityEventAbstract(const CBaseHandle& hHandle, NetMessageInfo_t* pEvent, const void* pData, uint64_t nSize, NetChannelBufType_t bufType, bool bAllClients) = 0;
 
 public:
     virtual void ProcessQueuedEvents()  = 0;

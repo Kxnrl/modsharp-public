@@ -28,9 +28,9 @@
 #include <proto/netmessages.pb.h>
 #include <proto/usermessages.pb.h>
 
-#define DeclareNetMessage(name)                                            \
-    const auto net = g_pNetworkMessages->FindNetworkMessagePartial(#name); \
-    AssertPtr(net);                                                        \
+#define DeclareNetMessage(name)                                                      \
+    static const auto net = g_pNetworkMessages->FindNetworkMessageByTypeName(#name); \
+    AssertPtr(net);                                                                  \
     auto msg = net->AllocateMessage()->ToPB<name>()
 
 #define SendNetMessageF()                                                 \

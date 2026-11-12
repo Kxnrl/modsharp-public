@@ -391,6 +391,9 @@ void InstallEngineHooks()
     UnlockHiddenCommand("vprof_generate_report", true);
     UnlockHiddenCommand("vprof_generate_report_budget", true);
     UnlockHiddenCommand("vprof_generate_report_hierarchy", true);
+    UnlockHiddenCommand("vprof_lite_start", true);
+    UnlockHiddenCommand("vprof_lite_stop", true);
+    UnlockHiddenCommand("vprof_lite_dump", true);
     UnlockHiddenCommand("dumpstringtable", true);
 }
 

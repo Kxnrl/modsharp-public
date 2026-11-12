@@ -23,7 +23,6 @@
 #include "global.h"
 
 #include "cstrike/interface/INetwork.h"
-#include "cstrike/interface/IProtobufBinding.h"
 
 #include <google/protobuf/message.h>
 
@@ -64,7 +63,7 @@ public:
         return m_nSize;
     }
 
-    CSharpNetworkData(void* data, int size, INetworkMessageInternal* message) :
+    CSharpNetworkData(void* data, int size, NetMessageInfo_t* message) :
         m_nSize(size), m_pSerializable(message)
     {
         if (!data)
@@ -89,12 +88,12 @@ public:
 
     void* GetData() const { return m_pData; }
 
-    INetworkMessageInternal* GetSerializable() const { return m_pSerializable; }
+    NetMessageInfo_t* GetSerializable() const { return m_pSerializable; }
 
 private:
-    void*                    m_pData;
-    int                      m_nSize;
-    INetworkMessageInternal* m_pSerializable;
+    void*             m_pData;
+    int               m_nSize;
+    NetMessageInfo_t* m_pSerializable;
 };
 
 class CSharpNetworkDataWrapper : public CNetMessage, public CSharpNetworkData
@@ -109,7 +108,7 @@ class CSharpNetworkDataWrapper : public CNetMessage, public CSharpNetworkData
         return (void*)static_cast<const CSharpNetworkData*>(this);
     }
 
-    INetworkMessageInternal* GetNetMessage() const override
+    NetMessageInfo_t* GetNetMessage() const override
     {
         return this->GetSerializable();
     }
@@ -121,56 +120,16 @@ class CSharpNetworkDataWrapper : public CNetMessage, public CSharpNetworkData
 
     int GetType() const override
     {
-        return this->GetNetMessage()->GetNetMessageInfo()->m_MessageId;
-    }
-
-    const char* GetName() const override
-    {
-        return this->GetNetMessage()->GetNetMessageInfo()->m_pBinding->GetName();
+        return this->GetNetMessage()->m_MessageId;
     }
 
 public:
-    CSharpNetworkDataWrapper(void* data, int size, INetworkMessageInternal* message) :
+    CSharpNetworkDataWrapper(void* data, int size, NetMessageInfo_t* message) :
         CSharpNetworkData(data, size, message)
     {
     }
 };
 
-class CSharpNetworkSerializable : public INetworkMessageInternal
-{
-public:
-    CSharpNetworkSerializable(INetworkMessageInternal* pSerializable) :
-        m_pSerializable(pSerializable) {}
-    ~CSharpNetworkSerializable() override = default;
-
-    const char*       GetUnscopedName() override { return m_pSerializable->GetUnscopedName(); }
-    NetMessageInfo_t* GetNetMessageInfo() override { return m_pSerializable->GetNetMessageInfo(); }
-    void              SetMessageId(int nMessageId) override { m_pSerializable->SetMessageId(nMessageId); }
-    void              AddCategoryMask(int nMask, bool unk) override { m_pSerializable->AddCategoryMask(nMask, unk); }
-    void              SwitchMode(NetworkValidationMode_t nMode) override { m_pSerializable->SwitchMode(nMode); }
-    CNetMessage*      AllocateMessage() override
-    {
-        return new CSharpNetworkDataWrapper(nullptr, 0, m_pSerializable);
-    }
-    void DeallocateMessage(CNetMessage* pMsg)
-    {
-        const auto pData = reinterpret_cast<CSharpNetworkDataWrapper*>(pMsg);
-        FreeMemory(pData);
-    }
-    CNetMessage* AllocateAndCopyConstructNetMessage(const CNetMessage* pOther)
-    {
-        const auto pProtobufData = reinterpret_cast<const CSharpNetworkDataWrapper*>(pOther);
-        return new CSharpNetworkDataWrapper(pProtobufData->GetData(), pProtobufData->GetSize(), m_pSerializable);
-    }
-
-    bool Serialize(void* pBuf, const CNetMessage* pData) override { return m_pSerializable->Serialize(pBuf, pData); }
-
-    bool Unserialize(void* pBuf, CNetMessage* pData) override { return m_pSerializable->Unserialize(pBuf, pData); }
-
-private:
-    INetworkMessageInternal* m_pSerializable;
-};
-
-INetworkMessageInternal* GetRuntimeProtobufSerializable(const char* name);
+NetMessageInfo_t* GetRuntimeProtobufSerializable(const char* name);
 
 #endif

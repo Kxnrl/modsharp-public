@@ -1,13 +1,13 @@
 {
   "Addresses": {
-    // str "CNetChan::SendNetMessage: SerializeAbstract for message %s failed!\n"
+    // str "CNetChan::SendNetMessage: Failed to serialize %s\n"
     "INetChannel::SendNetMessage": {
       "library": "networksystem",
       "linux": "55 48 89 E5 41 57 41 89 D7 41 56 4C 8D B7",
-      "windows": "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 41 0F B6 F0",
+      "windows": "40 53 48 83 EC ? 48 89 6C 24 ? 48 8D 99 ? ? ? ? 48 89 7C 24 ? 41 0F B6 E8",
       "refs": {
         "strings": [
-          "CNetChan::SendNetMessage: SerializeAbstract for message %s failed!\n"
+          "CNetChan::SendNetMessage: Failed to serialize %s\n"
         ],
         "vtable": "CNetChan"
       }

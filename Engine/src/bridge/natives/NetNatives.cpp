@@ -31,7 +31,7 @@
 
 namespace natives::net
 {
-static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, INetworkMessageInternal* pNetMessage, uint8_t* pData, int32_t size)
+static bool SendNetMessage(const RuntimeRecipientFilter* pFilter, NetMessageInfo_t* pNetMessage, uint8_t* pData, int32_t size)
 {
     if (!pNetMessage) [[unlikely]]
         return false;

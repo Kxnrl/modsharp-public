@@ -29,7 +29,6 @@
 #include "cstrike/interface/CGameEntitySystem.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
-#include "cstrike/interface/IProtobufBinding.h"
 #include "cstrike/type/CEffectData.h"
 
 #include <proto/cs_gameevents.pb.h>
@@ -181,7 +180,7 @@ BeginStaticHookScope(UTIL_DispatchEffectFilter)
 
 BeginMemberHookScope(IGameEventSystem)
 {
-    DeclareVirtualHook(PostEventAbstract, void, (IGameEventSystem * pGameEventSystem, int nSlot, bool bLocalOnly, int nClientCount, const NetworkReceiver_t* clients, INetworkMessageInternal* pEvent, CNetMessage* pData, uint64_t nSize, NetChannelBufType_t bufType))
+    DeclareVirtualHook(PostEventAbstract, void, (IGameEventSystem * pGameEventSystem, int nSlot, bool bLocalOnly, int nClientCount, const NetworkReceiver_t* clients, NetMessageInfo_t* pEvent, CNetMessage* pData, uint64_t nSize, NetChannelBufType_t bufType))
     {
 #ifdef HOOK_NETWORK_ASSERT
         WARN("%10s: 0x%p\n"   // IGameEventSystem*
@@ -189,7 +188,7 @@ BeginMemberHookScope(IGameEventSystem)
              "%10s: %s\n"     // bool
              "%10s: %d\n"     // int
              "%10s: 0x%llx\n" // const uint64_t*
-             "%10s: 0x%p\n"   // INetworkSerializable*
+             "%10s: 0x%p\n"   // NetMessageInfo_t*
              "%10s: 0x%p\n"   // const void*
              "%10s: %lu\n"    // unsigned long
              "%10s: %d",      // NetChannelBufType_t
@@ -208,8 +207,7 @@ BeginMemberHookScope(IGameEventSystem)
         if (s_bBypassNetMessageHook)
             return PostEventAbstract(pGameEventSystem, nSlot, bLocalOnly, nClientCount, clients, pEvent, pData, nSize, bufType);
 
-        const auto pInfo  = pEvent->GetNetMessageInfo();
-        const auto nMsgId = static_cast<uint16_t>(pInfo->m_MessageId);
+        const auto nMsgId = static_cast<uint16_t>(pEvent->m_MessageId);
         const auto pMsg   = static_cast<const google::protobuf::Message*>(pData->AsProto());
 
         switch (nMsgId)
@@ -250,13 +248,12 @@ BeginMemberHookScope(IGameEventSystem)
             const auto pPlayer = GetEntityFromProtobuf(msg->player());
             const auto pWeapon = GetEntityFromProtobuf(msg->weapon_id());
 
-            CUtlString buf;
-            pInfo->m_pBinding->ToString(pData, buf);
+            const auto text = msg->DebugString();
 
             LOG("GE_FireBullets ->\n player: %d.%s\n weapon:%d.%s\n %s",
                 pPlayer ? pPlayer->GetEntityIndex() : -1, pPlayer ? pPlayer->GetClassname() : "<null>",
                 pWeapon ? pWeapon->GetEntityIndex() : -1, pWeapon ? pWeapon->GetClassname() : "<null>",
-                buf.String());
+                text.c_str());
 #endif
 
             return PostEventAbstract(pGameEventSystem, nSlot, bLocalOnly, nClientCount, clients, pEvent, pData, nSize, bufType);

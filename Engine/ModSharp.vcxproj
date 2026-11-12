@@ -146,7 +146,6 @@
     <ClInclude Include="src\cstrike\Interface\IGameEvent.h" />
     <ClInclude Include="src\cstrike\interface\IGameSpawnGroupMgr.h" />
     <ClInclude Include="src\cstrike\Interface\IMemAlloc.h" />
-    <ClInclude Include="src\cstrike\interface\IProtobufBinding.h" />
     <ClInclude Include="src\cstrike\interface\IRecipientFilter.h" />
     <ClInclude Include="src\cstrike\Interface\IResourceManifest.h" />
     <ClInclude Include="src\cstrike\Interface\IResourceSystem.h" />
