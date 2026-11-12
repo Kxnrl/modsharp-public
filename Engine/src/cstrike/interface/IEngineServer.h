@@ -28,7 +28,30 @@
 
 class CGlobalVars;
 
-class IEngineServer : public IAppSystem
+// Source2EngineToServer001 (vtable CEngineServer). The interface version never changes while
+// Valve keeps inserting slots, so nothing here goes through its vtable: each method calls what
+// the engine wrapper forwards to.
+class IEngineServer
+{
+public:
+    void ChangeLevel(const char* map);
+    bool IsDedicatedServer();
+
+    const char* GetPlayerNetworkIDString(PlayerSlot_t slot);
+
+    void ServerCommand(const char* command);
+    void ClientCommand(PlayerSlot_t slot, const char* command);
+
+    const char*      GetClientConVarValue(PlayerSlot_t slot, const char* name);
+    const SteamId_t* GetClientSteamId(PlayerSlot_t slot);
+
+    // Server 跟 disconnect时的提示有关系, 我也不知道取值
+    void KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason);
+};
+
+// Reference only: CEngineServer's vtable as of the 2026-10-23 build, slot numbers in the comments.
+// Never call through it, the slots move between updates; IEngineServer above is what code uses.
+class IEngineServerVTable : public IAppSystem
 {
 public:
     virtual bool  IsPaused()     = 0; // 11
