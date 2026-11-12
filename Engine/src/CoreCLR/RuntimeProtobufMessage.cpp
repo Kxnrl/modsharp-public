@@ -18,35 +18,10 @@
  */
 
 #include "global.h"
-#include "murmurhash.h"
 
 #include "CoreCLR/RuntimeProtobufMessage.h"
 
-static std::unordered_map<uint32_t, INetworkMessageInternal*> s_CachedCSharpNetworkSerializable;
-
-INetworkMessageInternal* GetRuntimeProtobufSerializable(const char* name)
+NetMessageInfo_t* GetRuntimeProtobufSerializable(const char* name)
 {
-    const auto hash = MurmurHash2(name, MURMURHASH_SEED);
-
-    if (const auto it = s_CachedCSharpNetworkSerializable.find(hash); it != s_CachedCSharpNetworkSerializable.end())
-    {
-        return it->second;
-    }
-
-    const auto net = g_pNetworkMessages->FindNetworkMessagePartial(name);
-
-    if (net == nullptr)
-        return nullptr;
-
-    const auto csharpNet = new CSharpNetworkSerializable(net);
-
-    auto [it, inserted] = s_CachedCSharpNetworkSerializable.try_emplace(hash, csharpNet);
-
-    if (!inserted)
-    {
-        delete csharpNet;
-        return it->second;
-    }
-
-    return csharpNet;
+    return g_pNetworkMessages->FindNetworkMessagePartial(name);
 }

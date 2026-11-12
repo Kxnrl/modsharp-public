@@ -35,7 +35,6 @@
 #include "cstrike/interface/ICvar.h"
 #include "cstrike/interface/IMemAlloc.h"
 #include "cstrike/interface/INetwork.h"
-#include "cstrike/interface/IProtobufBinding.h"
 #include "cstrike/interface/IServerGameClient.h"
 #include "cstrike/type/CBufferString.h"
 #include "cstrike/type/CNetworkGameServer.h"
@@ -605,7 +604,7 @@ BeginMemberHookScope(CServerSideClient)
 
     DeclareMemberDetourHook(SendNetMessage, bool, (CServerSideClient * pClient, CNetMessage * pData, int8_t bufType))
     {
-        if (const auto info = pData->GetNetMessage()->GetNetMessageInfo())
+        if (const auto info = pData->GetNetMessage())
         {
             if (info->m_MessageId == NET_MESSAGE_ID_VOICE && ms_fix_voice_chat->GetValue<bool>()
                 // ignore csharp proto

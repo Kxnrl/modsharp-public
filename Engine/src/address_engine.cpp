@@ -459,7 +459,12 @@ void ResolveServerSideClientOffsets()
     //   Windows: vtable call (not inlined) - will fallback to gamedata.
 
     {
-        if (auto func = engine_mod->FindFunctionFromStringRef("'%s' already awaiting full update\n"); func.IsValid())
+        ResolveVote delta_tick{};
+        ResolveVote fake_client{};
+
+        // Since 2026-11-12 libengine2 inlines a copy of this virtual into a deferred-call wrapper; both reference the string.
+        // In the copy `this` is the wrapper and the scan finds nothing, so every referencing function is scanned and voted on
+        for (const auto func : engine_mod->FindAllFunctionsFromStringRefs({"'%s' already awaiting full update\n"}))
         {
             auto range = engine_mod->GetFunctionRange(func);
 
@@ -548,17 +553,15 @@ void ResolveServerSideClientOffsets()
                 }
             }
 
-            // Both are positional first-match heuristics (fast-path store / trivial getter), so they
-            // are treated as cross-checks: they confirm gamedata and warn on disagreement rather than
-            // silently overwriting a hand-verified value.
-            ResolveVote delta_tick{};
             delta_tick.Add(delta_tick_primary);
-            ResolveVote fake_client{};
             fake_client.Add(fake_client_off);
-
-            try_overwrite_offset("CServerSideClient::m_nDeltaTick", delta_tick);
-            try_overwrite_offset("CServerSideClient::m_FakeClient", fake_client);
         }
+
+        // Both are positional first-match heuristics (fast-path store / trivial getter), so they
+        // are treated as cross-checks: they confirm gamedata and warn on disagreement rather than
+        // silently overwriting a hand-verified value.
+        try_overwrite_offset("CServerSideClient::m_nDeltaTick", delta_tick);
+        try_overwrite_offset("CServerSideClient::m_FakeClient", fake_client);
     }
 
     // --- m_ControllerEntityIndex ---

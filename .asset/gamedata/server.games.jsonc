@@ -408,7 +408,8 @@
     },
     "CCSPlayer_WeaponServices::DetachWeapon": {
       "library": "server",
-      "linux": "48 85 F6 0F 84 ? ? ? ? 55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 44 8B 77",
+      // Linux：武器数量仍位于 +0x48；寄存器在 r14d/r13d 间变化，通配 ModRM 并保留字段偏移。
+      "linux": "48 85 F6 0F 84 ? ? ? ? 55 48 89 E5 41 57 41 56 41 55 41 54 53 48 89 FB 48 81 EC ? ? ? ? 44 8B ? 48",
       "windows": "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? 48 8B DA 48 8B F1 48 85 D2"
     },
     // 搜 cvra 'sv_buymenu_open_prevents_opportunistic_pickup' 的引用

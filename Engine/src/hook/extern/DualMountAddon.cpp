@@ -31,7 +31,6 @@
 #include "cstrike/interface/IFileSystem.h"
 #include "cstrike/interface/INetChannel.h"
 #include "cstrike/interface/INetwork.h"
-#include "cstrike/interface/IProtobufBinding.h"
 #include "cstrike/type/CHostState.h"
 #include "cstrike/type/CNetworkGameServer.h"
 #include "cstrike/type/CServerSideClient.h"
@@ -197,7 +196,7 @@ BeginMemberHookScope(INetChannel)
         if (s_bBypassNetMessageHook)
             return SendNetMessage(pNetChannel, pData, a4);
 
-        const auto pInfo = pData->GetNetMessage()->GetNetMessageInfo();
+        const auto pInfo = pData->GetNetMessage();
 
         if (pInfo->m_MessageId != NET_MESSAGE_ID_SIGNON || !s_bReconnectionRequired)
             return SendNetMessage(pNetChannel, pData, a4);
