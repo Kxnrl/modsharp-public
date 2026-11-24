@@ -22,12 +22,12 @@ namespace Sharp.Modules.ClientPreferences.Shared;
 public interface ISerializableCookieItem<out T> : ICookieItem where T : notnull
 {
     /// <summary>
-    ///     序列化实现
+    ///     Serializes this item into a string for cookie storage.
     /// </summary>
     string Serialize();
 
     /// <summary>
-    ///     反序列化实现
+    ///     Deserializes a stored cookie string back into an instance of <typeparamref name="T" />.
     /// </summary>
     static abstract T Deserialize(string body);
 }

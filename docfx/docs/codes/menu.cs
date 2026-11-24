@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.MenuManager.Shared;
@@ -6,339 +8,252 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.HookParams;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
-using System;
 
 namespace MenuExample;
 
-internal class MenuExample : IModSharpModule
+public sealed class MenuExample : IModSharpModule
 {
-    private const string MenuManagerAssemblyName = "Sharp.Modules.MenuManager";
-
-    private readonly ISharedSystem _sharedSystem;
+    private const string ProviderAssemblyName = "Sharp.Modules.MenuManager";
+    private readonly ISharedSystem _shared;
     private readonly ILogger<MenuExample> _logger;
-
-    private readonly Menu _cachedSubMenu;
     private readonly Menu _cachedMenu;
-
-    private bool _useCacheMenu = true;
-    private bool _isGodModeOn;
-
+    private readonly Menu _cachedSubMenu;
+    private readonly Dictionary<IGameClient, ulong> _sessions = [];
     private IModSharpModuleInterface<IMenuManager>? _menuManager;
+    private bool _useCachedMenu = true;
+    private bool _showStatusMessages = true;
 
     public MenuExample(ISharedSystem sharedSystem,
-                       string dllPath,
-                       string sharpPath,
-                       Version version,
-                       IConfiguration configuration,
-                       bool hotReload)
+        string                      dllPath,
+        string                      sharpPath,
+        Version                     version,
+        IConfiguration              configuration,
+        bool                        hotReload)
     {
-        _sharedSystem = sharedSystem;
+        _shared = sharedSystem;
         _logger = sharedSystem.GetLoggerFactory().CreateLogger<MenuExample>();
 
-        // Example 1: Cached Menu (Recommended for static menus)
-        // You can precache menu in constructor.
+        // Cache static menu definitions, not per-client controllers or native entities.
         _cachedSubMenu = Menu.Create()
                              .Title("Sub Menu")
-                             .Cursor("»", "«") // Custom cursor (avoid raw < > which conflict with HTML tags)
+                             .Cursor("»", "«") // Text is embedded in HTML; avoid raw angle brackets.
                              .DisabledItem("This item is not selectable")
                              .Spacer()
-                             .Item("Do something", _ => { /* ... */ })
-                             .BackItem()  // Navigates back to the parent menu
-                             .ExitItem()  // Closes the menu entirely
+                             .Item("Print my slot", controller =>
+                                 controller.Client.Print(HudPrintChannel.Chat, $"Your slot: {controller.Client.Slot}"))
+                             .BackItem()
+                             .ExitItem()
                              .Build();
 
         _cachedMenu = Menu.Create()
                           .Title("Main Menu (Cached)")
-                          .HideIndex() // Hide item indices, so it wont display "1.", "2." before the item name
+                          .HideIndex()
                           .SubMenu("Open Sub Menu", _cachedSubMenu)
-                          // Example 3: Toggle button + Refresh
-                          .Item(_ => $"God Mode: {(_isGodModeOn ? "ON" : "OFF")}",
-                                controller =>
-                                {
-                                    _isGodModeOn = !_isGodModeOn;
-
-                                    controller.Client
-                                              .Print(HudPrintChannel.Chat,
-                                                      $"God mode switched to {_isGodModeOn}");
-
-                                    // Re-evaluate item text/state and redraw the current page
-                                    controller.Refresh();
-                                })
-                          .Item("Give me a deagle!", OnMenuItemGiveDeagle)
-                          .Item(gameClient =>
-                                    // Title factory — useful for localized titles via LocalizeManager
-                                    gameClient.IsAuthenticated
-                                        ? "Give me a deagle! (authenticated)"
-                                        : "Give me a deagle..?",
-                                OnMenuItemGiveDeagle)
-                          .Item(OnMenuItemGiveAk47)
-                          // Note: OnEnter runs when opening the menu or navigating into it via Next().
-                          // It does not run when returning via GoBack() from a child menu.
+                          .Item(_ => $"Menu status messages (all players): {(_showStatusMessages ? "ON" : "OFF")}",
+                              controller =>
+                              {
+                                  _showStatusMessages = !_showStatusMessages;
+                                  controller.Refresh(); // Re-evaluate text and state for this session.
+                              })
+                          .Item("Give me a deagle!", OnGiveDeagle)
+                          .Item(client => client.IsAuthenticated ? "Deagle (authenticated)" : "Deagle",
+                              OnGiveDeagle)
+                          .Item(BuildAk47Item)
                           .OnEnter(OnEnterMenu)
-                          // Note: OnExit runs when this menu is closed or replaced.
                           .OnExit(OnExitMenu)
                           .Build();
     }
 
     public bool Init()
     {
-        _sharedSystem.GetHookManager().PlayerSpawnPost.InstallForward(OnPlayerSpawnPost);
-        _sharedSystem.GetConVarManager().CreateServerCommand("menu_type_toggle", OnCommandMenuTypeToggle);
-
+        _shared.GetHookManager().PlayerSpawnPost.InstallForward(OnPlayerSpawned);
+        _shared.GetConVarManager().CreateServerCommand("menu_type_toggle", OnToggleMenuType);
         return true;
     }
 
-    public void PostInit()
-    {
-        // Also resolve here in case our module is hot-reloaded after initial startup,
-        // since OnAllModulesLoaded is only called once at first load.
-        TryResolveMenuManager();
-    }
+    public void OnAllModulesLoaded()
+        => ResolveMenuManager();
 
     public void OnLibraryConnected(string name)
     {
-        if (name.Equals(MenuManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        if (name.Equals(ProviderAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
-            TryResolveMenuManager();
+            ResolveMenuManager();
         }
     }
 
     public void OnLibraryDisconnect(string name)
     {
-        // No need to null out _menuManager here — the framework sets .Instance to null
-        // when the module is unloaded via IModSharpModuleInterface<T>.Dispose().
+        if (name.Equals(ProviderAssemblyName, StringComparison.OrdinalIgnoreCase))
+        {
+            _menuManager = null;
+            _sessions.Clear();
+        }
     }
 
-    public void OnAllModulesLoaded()
+    private void ResolveMenuManager()
     {
-        // Try again here and warn if MenuManager is not installed
-        TryResolveMenuManager(true);
-    }
-
-    public void Shutdown()
-    {
-        _sharedSystem.GetHookManager().PlayerSpawnPost.RemoveForward(OnPlayerSpawnPost);
-        _sharedSystem.GetConVarManager().ReleaseServerCommandCallback("menu_type_toggle", OnCommandMenuTypeToggle);
-    }
-
-    public string DisplayName => "MenuExample";
-    public string DisplayAuthor => "ModSharp Dev Team";
-
-    private ECommandAction OnCommandMenuTypeToggle(StringCommand arg)
-    {
-        _useCacheMenu = !_useCacheMenu;
-        Console.Write("[Menu Example] we are ");
-        Console.WriteLine(_useCacheMenu ? "using cached menu" : "creating menu on the fly");
-
-        return ECommandAction.Handled;
-    }
-
-    private void OnPlayerSpawnPost(IPlayerSpawnForwardParams obj)
-    {
-        if (_menuManager?.Instance is not { } menuManager)
-        {
-            return;
-        }
-
-        var client = obj.Client;
-
-        // Method 1: Display the cached menu
-        if (_useCacheMenu)
-        {
-            menuManager.DisplayMenu(client, _cachedMenu, out var sessionId);
-
-            // Menu state checks (instance + current session)
-            _logger.LogInformation("[Menu Example] IsInMenu(instance): {InCached}; IsInCurrentMenu(instance): {InCurrentCached}",
-                                   menuManager.IsInMenu(client, _cachedMenu),
-                                   menuManager.IsInCurrentMenu(client, _cachedMenu));
-
-            _logger.LogInformation("[Menu Example] Current session: {SessionId}; IsInMenu: {InMenuSession}",
-                                   sessionId,
-                                   menuManager.IsInMenu(client, sessionId));
-        }
-        else
-        {
-            var dynamicMenu = CreateAndDisplayMenuOnTheFly(client, menuManager);
-
-            _logger.LogInformation("[Menu Example] IsInMenu(instance): {InDynamic}; IsInCurrentMenu(instance): {InCurrentDynamic}",
-                                   menuManager.IsInMenu(client, dynamicMenu),
-                                   menuManager.IsInCurrentMenu(client, dynamicMenu));
-        }
-
-        obj.Controller.Print(HudPrintChannel.Chat, "Menu opened, it will be closed in 10 seconds");
-
-        // Auto-close the menu after 10 seconds
-        _sharedSystem.GetModSharp()
-                     .PushTimer(() =>
-                     {
-                         // Must check IsInMenu before calling QuitMenu
-                         if (menuManager.IsInMenu(client))
-                         {
-                             menuManager.QuitMenu(client);
-                         }
-                     },
-                                10.0);
-    }
-
-    private Menu CreateAndDisplayMenuOnTheFly(IGameClient client, IMenuManager menuManager)
-    {
-        // Example 2: Imperative menu construction (useful when items depend on runtime state)
-        var menu = new Menu();
-
-        // Title factory — useful for localized titles via LocalizeManager
-        menu.SetTitle(gameClient =>
-            gameClient.IsAuthenticated ? "Main menu (authenticated)" : "Main menu");
-        // or if you prefer a static title
-        // menu.SetTitle("My menu title");
-
-        menu.AddSubMenu("Open sub menu", _cachedSubMenu);
-        menu.AddItem("Give me a deagle!", OnMenuItemGiveDeagle);
-
-        // Disabled item — visible but not selectable
-        menu.AddDisabledItem("Coming soon...");
-
-        // Example 4: Programmatic navigation using controller.Next(menu)
-        menu.AddItem("Dynamically generate next menu...",
-                     controller =>
-                     {
-                         var targetSlot = controller.Client.Slot;
-
-                         var specificMenu = Menu.Create()
-                                                .Title($"Settings for Slot {targetSlot}")
-                                                .Item("Kick", c => c.Exit())
-                                                .Item("Ban", c => c.Exit())
-                                                .BackItem()
-                                                .Build();
-
-                         controller.Next(specificMenu);
-                     });
-
-        menu.AddItem(gameClient =>
-                         gameClient.IsAuthenticated ? "Give me a deagle! (authenticated)" : "Give me a deagle..?",
-                     // If the action is null, the item will be treated as Disabled
-                     client.IsAuthenticated ? OnMenuItemGiveDeagle : null);
-
-        // Generator-based item for full control over title, state, color, and action
-        menu.AddItem(OnMenuItemGiveAk47);
-        menu.OnExit = OnExitMenu;
-
-        menuManager.DisplayMenu(client, menu);
-
-        return menu;
-    }
-
-    private void OnExitMenu(IGameClient cl)
-    {
-        cl.Print(HudPrintChannel.Chat, "Menu closed.");
-    }
-
-    private void OnEnterMenu(IGameClient cl)
-    {
-        cl.Print(HudPrintChannel.Chat, "Menu opened.");
-    }
-
-    private void OnMenuItemGiveAk47(IGameClient client, ref MenuItemContext context)
-    {
-        // Generator-based item: full control over the MenuItemContext.
-        // This is useful when the item's title, state, or action depends on the player's state.
-
-        if (client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
-        {
-            // Returning without setting Title causes the item to be skipped entirely.
-            // To add an empty line instead, use: context.State = MenuItemState.Spacer;
-            return;
-        }
-
-        context.Title = "Give me an AK47!";
-
-        if (playerPawn.Team != CStrikeTeam.TE)
-        {
-            // Disabled items are visible but cannot be selected
-            context.State = MenuItemState.Disabled;
-        }
-        else
-        {
-            // Custom color (does not apply to disabled items)
-            context.Color = "#FFCCCB";
-        }
-
-        if (!playerPawn.IsAlive)
-        {
-            // Not setting Action leaves the item disabled automatically
-            return;
-        }
-
-        context.Action = menuController =>
-        {
-            if (playerPawn.IsAlive)
-            {
-                if (playerPawn.GiveNamedItem(EconItemId.Ak47) is null)
-                {
-                    playerPawn.Print(HudPrintChannel.Chat,
-                                     "Can't give you an AK47 for some reason...?");
-                }
-            }
-            else
-            {
-                playerPawn.Print(HudPrintChannel.Chat,
-                                 "You are not alive, so no weapon for you haha!");
-            }
-
-            menuController.Exit();
-        };
-    }
-
-    private void OnMenuItemGiveDeagle(IMenuController controller)
-    {
-        // Simple action example — this pattern covers most use cases.
-        // Action code only runs when the player selects this item.
-        if (controller.Client.GetPlayerController()?.GetPlayerPawn() is not { } playerPawn)
-        {
-            controller.Exit();
-
-            return;
-        }
-
-        if (!playerPawn.IsAlive)
-        {
-            playerPawn.Print(HudPrintChannel.Chat,
-                             "You are not alive, so no weapon for you haha!");
-
-            controller.Exit();
-
-            return;
-        }
-
-        if (playerPawn.GiveNamedItem(EconItemId.Deagle) is null)
-        {
-            playerPawn.Print(HudPrintChannel.Chat,
-                             "Can't give you a deagle for some reason...?");
-        }
-
-        controller.Exit();
-    }
-
-    private void TryResolveMenuManager(bool logFailure = false)
-    {
-        // Re-resolve if the wrapper is null or the instance was disposed (e.g. after hot-reload)
         if (_menuManager?.Instance is not null)
         {
             return;
         }
 
-        _menuManager = GetExternalModule<IMenuManager>(IMenuManager.Identity);
-
-        if (_menuManager is null)
+        _menuManager = _shared.GetSharpModuleManager()
+                              .GetOptionalSharpModuleInterface<IMenuManager>(IMenuManager.Identity);
+        if (_menuManager?.Instance is null)
         {
-            if (logFailure)
-            {
-                _logger.LogWarning("Failed to get MenuManager. Do you have '{AssemblyName}' installed? Target selectors will be limited.",
-                                   MenuManagerAssemblyName);
-            }
+            _logger.LogWarning("Install {AssemblyName} to display menus.", ProviderAssemblyName);
         }
     }
 
-    private IModSharpModuleInterface<T>? GetExternalModule<T>(string identity) where T : class
-        => _sharedSystem.GetSharpModuleManager()
-                        .GetOptionalSharpModuleInterface<T>(identity);
+    private ECommandAction OnToggleMenuType(StringCommand command)
+    {
+        _useCachedMenu = !_useCachedMenu;
+        _logger.LogInformation("Using {Type} menus.", _useCachedMenu ? "cached" : "dynamic");
+        return ECommandAction.Stopped;
+    }
+
+    private void OnPlayerSpawned(IPlayerSpawnForwardParams param)
+    {
+        if (param.Client.IsFakeClient || _menuManager?.Instance is not { } manager)
+        {
+            return;
+        }
+
+        var client = param.Client;
+        var menu = _useCachedMenu ? _cachedMenu : CreateDynamicMenu();
+        manager.DisplayMenu(client, menu, out var sessionId);
+        _sessions[client] = sessionId;
+
+        _logger.LogInformation("Session {Session}: in menu={InMenu}; current menu={IsCurrent}",
+            sessionId, manager.IsInMenu(client, menu), manager.IsInCurrentMenu(client, menu));
+
+        // Capture only the wrapper: never retain a provider instance in a delayed callback.
+        var provider = _menuManager;
+        _shared.GetModSharp().PushTimer(() =>
+        {
+            // An earlier spawn's timer must not close a replacement menu or a new provider's session.
+            if (ReferenceEquals(provider, _menuManager)
+                && _sessions.TryGetValue(client, out var currentSession) && currentSession == sessionId)
+            {
+                if (client.IsValid && _menuManager?.Instance is { } currentManager
+                    && currentManager.IsInMenu(client, sessionId))
+                {
+                    currentManager.QuitMenu(client);
+                }
+
+                _sessions.Remove(client);
+            }
+        }, 10.0);
+    }
+
+    private Menu CreateDynamicMenu()
+    {
+        var menu = new Menu();
+        menu.SetTitle(client => client.IsAuthenticated ? "Main Menu (authenticated)" : "Main Menu");
+        menu.AddSubMenu("Open Sub Menu", _cachedSubMenu);
+        menu.AddItem("Give me a deagle!", OnGiveDeagle);
+        menu.AddDisabledItem("Unavailable item");
+        menu.AddItem("Generate next menu", controller =>
+        {
+            var next = Menu.Create()
+                           .Title($"Weapons for slot {controller.Client.Slot}")
+                           .Item("Give me a deagle!", OnGiveDeagle)
+                           .Item(BuildAk47Item)
+                           .BackItem()
+                           .ExitItem()
+                           .Build();
+            controller.Next(next);
+        });
+        menu.AddItem(BuildAk47Item);
+        menu.OnEnter = OnEnterMenu;
+        menu.OnExit = OnExitMenu;
+        return menu;
+    }
+
+    private void BuildAk47Item(IGameClient client, ref MenuItemContext context)
+    {
+        if (client.GetPlayerController()?.GetPlayerPawn() is not { } pawn)
+        {
+            return; // Without a title, the item is omitted. Use Spacer() for an empty line.
+        }
+
+        context.Title = "Give me an AK47! (T only)";
+        if (!pawn.IsAlive || pawn.Team != CStrikeTeam.TE)
+        {
+            context.State = MenuItemState.Disabled;
+            return;
+        }
+
+        context.Color = "#FFCCCB";
+        context.Action = controller =>
+        {
+            // Native wrappers can become stale between drawing and selection: resolve again here.
+            if (controller.Client.GetPlayerController()?.GetPlayerPawn() is { IsAlive: true, Team: CStrikeTeam.TE } currentPawn)
+            {
+                if (currentPawn.GiveNamedItem(EconItemId.Ak47) is null)
+                {
+                    controller.Client.Print(HudPrintChannel.Chat, "Could not give you an AK47.");
+                }
+            }
+
+            controller.Exit();
+        };
+    }
+
+    private void OnGiveDeagle(IMenuController controller)
+    {
+        if (controller.Client.GetPlayerController()?.GetPlayerPawn() is { IsAlive: true } pawn)
+        {
+            if (pawn.GiveNamedItem(EconItemId.Deagle) is null)
+            {
+                controller.Client.Print(HudPrintChannel.Chat, "Could not give you a deagle.");
+            }
+        }
+        else
+        {
+            controller.Client.Print(HudPrintChannel.Chat, "You must be alive to receive a weapon.");
+        }
+
+        controller.Exit();
+    }
+
+    private void OnEnterMenu(IGameClient client)
+    {
+        if (_showStatusMessages && client.IsValid)
+        {
+            client.Print(HudPrintChannel.Chat, "Menu opened. This session closes after 10 seconds.");
+        }
+    }
+
+    private void OnExitMenu(IGameClient client)
+    {
+        if (_showStatusMessages && client.IsValid)
+        {
+            client.Print(HudPrintChannel.Chat, "Menu closed.");
+        }
+    }
+
+    public void Shutdown()
+    {
+        _shared.GetHookManager().PlayerSpawnPost.RemoveForward(OnPlayerSpawned);
+        _shared.GetConVarManager().ReleaseServerCommandCallback("menu_type_toggle", OnToggleMenuType);
+        // Close only sessions opened by this module, releasing menu delegates before unloading.
+        if (_menuManager?.Instance is { } manager)
+        {
+            foreach (var (client, session) in _sessions)
+            {
+                if (client.IsValid && manager.IsInMenu(client, session))
+                {
+                    manager.QuitMenu(client);
+                }
+            }
+        }
+
+        _sessions.Clear();
+        _menuManager = null;
+    }
+
+    public string DisplayName   => "Menu Example";
+    public string DisplayAuthor => "ModSharp dev team";
 }

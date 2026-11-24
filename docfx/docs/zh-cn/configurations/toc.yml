@@ -1,8 +1,8 @@
-- name: Core
+- name: 核心配置
   href: core.md
-- name: Admin
+- name: 管理员配置
   href: admin.md
-- name: Admin Commands SQL Storage
+- name: 管理指令 SQL 存储
   href: admin-commands-sqlstorage.md
-- name: Client Preferences
+- name: 玩家偏好
   href: client-preferences.md

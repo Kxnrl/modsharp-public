@@ -22,8 +22,7 @@ using System;
 namespace Sharp.Modules.InputManager.Shared;
 
 /// <summary>
-///     Input Keys <br />
-///     the keys in here is「CS2 Original binds」
+///     Input keys mapped to default CS2 key bindings.
 /// </summary>
 public enum InputKey
 {

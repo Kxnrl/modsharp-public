@@ -29,28 +29,32 @@ public interface ILocalizerManager
     const string Identity = nameof(ILocalizerManager);
 
     /// <summary>
-    ///     Load a locale file from {sharp}/locales/{name}.json.
+    ///     Load a locale file from <c>{sharp}/locales/{name}.json</c>.
     /// </summary>
     /// <param name="name">Locale file name without extension.</param>
     /// <param name="suppressDuplicationWarnings">Disable duplicate-key warnings when merging.</param>
+    /// <exception cref="System.IO.FileNotFoundException">The locale file does not exist.</exception>
+    /// <exception cref="System.IO.InvalidDataException">The locale file is empty or cannot be deserialized.</exception>
+    /// <exception cref="System.Text.Json.JsonException">The locale file contains invalid JSON.</exception>
     void LoadLocaleFile(string name, bool suppressDuplicationWarnings = false);
 
     /// <summary>
     ///     Format a localized message for server-side usage (logging, webhooks).
     /// </summary>
-    /// <param name="culture">culture info. en-us for example</param>
-    /// <param name="key">Key in the locale file</param>
-    /// <param name="args">arguments</param>
-    /// <returns></returns>
+    /// <param name="culture">Culture info (for example, <c>en-us</c>).</param>
+    /// <param name="key">Key in the locale file.</param>
+    /// <param name="args">Format arguments.</param>
+    /// <returns>The formatted string, <paramref name="key" /> if missing, or the raw template string if formatting fails.</returns>
     string Format(CultureInfo culture, string key, params ReadOnlySpan<object?> args);
 
     /// <summary>
     ///     Format a localized message for server-side usage (logging, webhooks).
     /// </summary>
-    /// <param name="cultureName">culture name. en-us for example</param>
-    /// <param name="key">Key in the locale file</param>
-    /// <param name="args">arguments</param>
-    /// <returns></returns>
+    /// <param name="cultureName">Culture name (for example, <c>en-us</c>).</param>
+    /// <param name="key">Key in the locale file.</param>
+    /// <param name="args">Format arguments.</param>
+    /// <returns>The formatted string, <paramref name="key" /> if missing, or the raw template string if formatting fails.</returns>
+    /// <exception cref="CultureNotFoundException"><paramref name="cultureName" /> is not a valid culture name.</exception>
     string Format(string cultureName, string key, params ReadOnlySpan<object?> args);
 
     /// <summary>

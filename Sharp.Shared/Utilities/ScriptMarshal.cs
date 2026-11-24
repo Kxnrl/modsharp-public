@@ -34,6 +34,13 @@ public static unsafe class ScriptMarshal
 
     private const int InitialBufferSize = 1024;
 
+    /// <summary>
+    ///     Encodes <paramref name="value" /> as a null-terminated UTF-8 string in a reused thread-local unmanaged buffer.
+    /// </summary>
+    /// <remarks>
+    ///     The returned pointer is overwritten by the next <see cref="Encode" /> or <see cref="EncodeString" /> call on the same thread.
+    ///     Consume it immediately and never free or cache the pointer.
+    /// </remarks>
     public static byte* Encode(string value)
     {
         // Grow the reused thread-local buffer to fit; never silently truncate a valid string.
@@ -61,6 +68,13 @@ public static unsafe class ScriptMarshal
         return (byte*) _stringBuffer;
     }
 
+    /// <summary>
+    ///     Creates a <see cref="ScriptValue" /> pointing to <paramref name="value" /> encoded in the reused thread-local buffer.
+    /// </summary>
+    /// <remarks>
+    ///     The underlying pointer is invalidated by the next <see cref="Encode" /> or <see cref="EncodeString" /> call on the same thread;
+    ///     consume it immediately.
+    /// </remarks>
     public static ScriptValue EncodeString(string value)
         => new () { Type = ScriptValueType.String, String = Encode(value) };
 }

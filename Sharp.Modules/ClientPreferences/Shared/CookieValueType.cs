@@ -22,17 +22,17 @@ namespace Sharp.Modules.ClientPreferences.Shared;
 public enum CookieValueType
 {
     /// <summary>
-    ///     整数
+    ///     64-bit integer value (also used for boolean cookies).
     /// </summary>
     Number,
 
     /// <summary>
-    ///     浮点数
+    ///     Double-precision floating-point value.
     /// </summary>
     Double,
 
     /// <summary>
-    ///     字符串
+    ///     String value (also used for serialized objects).
     /// </summary>
     String,
 }

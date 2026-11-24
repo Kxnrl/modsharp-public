@@ -1,10 +1,9 @@
-# Multi Listeners
+# Multiple Listeners in One Module
 
-This tutorial demonstrates how to implement multiple Listeners in one Module.
+Use the [Hello World project settings](hello-world.md).
 
-> [!TIP]
->
-> Because multiple Listeners all contain `ListenerVersion` and `ListenerPriority`,  
-> we explicitly implement the interfaces to distinguish the priority and version of each Listener.
+One module can implement several listener interfaces. Explicitly implement each interface's `ListenerVersion` and `ListenerPriority` so they can have independent versions and priorities.
 
-[!code-csharp[MultiListenerExample.cs](../../codes/multi-listeners.cs)]
+Register the module once with each corresponding manager and remove every registration in `Shutdown`. `IEventListener.FireGameEvent` is required; the sample logs event names. Other listener callbacks can use their interface defaults when not needed.
+
+[!code-csharp[multi-listeners.cs](../../codes/multi-listeners.cs)]

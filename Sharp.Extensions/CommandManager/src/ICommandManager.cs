@@ -30,20 +30,35 @@ public interface ICommandManager
     public delegate void DelegateOnClientCommand(IGameClient client, StringCommand command);
 
     /// <summary>
-    ///     注册仅限客户端的<b>控制台</b>和<b>聊天框</b>命令 <br />
-    ///     <remarks>控制台会自动加上<c>ms_</c>前缀</remarks>
+    ///     Registers a client-only command accessible from both client console and chat.
     /// </summary>
+    /// <remarks>
+    ///     <paramref name="command" /> is normalized to lowercase and automatically exposed with the <c>ms_</c> prefix in the client console via <see cref="Sharp.Shared.Managers.IClientManager.InstallCommandCallback" />.
+    ///     Multiple registrations for the same command compose as multicast delegates.
+    /// </remarks>
+    /// <param name="command">The command name without prefix.</param>
+    /// <param name="callback">The callback to invoke when the command executes.</param>
     void RegisterClientCommand(string command, DelegateOnClientCommand callback);
 
     /// <summary>
-    ///     注册仅限客户端且需要管理员权限的<b>控制台</b>和<b>聊天框</b>命令 <br />
-    ///     <remarks>控制台会自动加上<c>ms_</c>前缀</remarks>
+    ///     Registers a client-only admin command accessible from both client console and chat.
     /// </summary>
+    /// <remarks>Automatically exposed with the <c>ms_</c> prefix in the client console.</remarks>
+    /// <param name="command">The command name without prefix.</param>
+    /// <param name="callback">The callback to invoke when the command executes.</param>
+    /// <param name="permission">Required permission name.</param>
     [Obsolete("This has been merged into AdminManager. Will be removed at 2.2")]
     void RegisterAdminCommand(string command, DelegateOnClientCommand callback, string permission);
 
     /// <summary>
-    ///     注册仅限服务端控制台执行的命令
+    ///     Registers a server-console-only command.
     /// </summary>
+    /// <remarks>
+    ///     <paramref name="command" /> is normalized to lowercase and registered as-is (no <c>ms_</c> prefix is added automatically).
+    ///     Multiple registrations for the same command compose as multicast delegates.
+    /// </remarks>
+    /// <param name="command">The full server command name.</param>
+    /// <param name="description">Command help description.</param>
+    /// <param name="callback">The callback to invoke when the command executes.</param>
     void RegisterServerCommand(string command, string description, DelegateOnServerCommand callback);
 }

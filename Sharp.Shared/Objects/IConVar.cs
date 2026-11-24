@@ -106,20 +106,39 @@ public interface IConVar : INativeObject
     /// </exception>
     void Set(ConVarVariantValue value);
 
+    /// <summary>
+    ///     Sets the minimum bound of this ConVar.
+    /// </summary>
+    /// <returns>
+    ///     <see langword="true" /> if updated; <see langword="false" /> if the ConVar does not already have a minimum bound or its type is not <see cref="ConVarType.Float32" /> or an integer type.
+    /// </returns>
     bool SetMinBound(ConVarVariantValue value);
 
+    /// <summary>
+    ///     Sets the maximum bound of this ConVar.
+    /// </summary>
+    /// <returns>
+    ///     <see langword="true" /> if updated; <see langword="false" /> if the ConVar does not already have a maximum bound or its type is not <see cref="ConVarType.Float32" /> or an integer type.
+    /// </returns>
     bool SetMaxBound(ConVarVariantValue value);
 
     /// <summary>
-    ///     Universal method to set the ConVar value by parsing a string.
+    ///     Universal method to set the ConVar value by parsing a string with permissive fallbacks.
     ///     <para>
     ///         Use this if you do not know the underlying type of the ConVar.
     ///         It attempts to parse the string and set the ConVar to the corresponding typed value.
     ///     </para>
     ///     <para>
-    ///         Falls back to the default value if parsing fails.
+    ///         Invalid numeric input falls back to zero. Invalid color or vector input uses the type's fallback:
+    ///         color "0 0 0 255", or a zero vector with the appropriate number of components.
+    ///         Boolean input is true only for "1" or "true" (case-insensitive); all other input is false.
+    ///         This does not restore <see cref="DefaultValue" />.
     ///     </para>
     /// </summary>
+    /// <remarks>
+    ///     For <see cref="ConVarType.String" />, values longer than 255 UTF-8 bytes are truncated (use <see cref="Set(string)" /> for unrestricted length).
+    ///     For <see cref="ConVarType.Float64" />, parsed values are narrowed to <see cref="float" />.
+    /// </remarks>
     /// <param name="value">The string value to parse and set.</param>
     void SetString(string value);
 

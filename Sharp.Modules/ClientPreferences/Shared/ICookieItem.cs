@@ -24,39 +24,39 @@ namespace Sharp.Modules.ClientPreferences.Shared;
 public interface ICookieItem
 {
     /// <summary>
-    ///     类型
+    ///     Value type of this cookie.
     /// </summary>
     CookieValueType Type { get; }
 
     /// <summary>
-    ///     取整数
+    ///     Gets the stored 64-bit integer value.
     /// </summary>
-    /// <exception cref="InvalidOperationException">类型不匹配</exception>
+    /// <exception cref="InvalidOperationException">Cookie <see cref="Type" /> is not <see cref="CookieValueType.Number" />.</exception>
     long GetNumber();
 
     /// <summary>
-    ///     取浮点数
+    ///     Gets the stored double-precision floating-point value.
     /// </summary>
-    /// <exception cref="InvalidOperationException">类型不匹配</exception>
+    /// <exception cref="InvalidOperationException">Cookie <see cref="Type" /> is not <see cref="CookieValueType.Double" />.</exception>
     double GetDouble();
 
     /// <summary>
-    ///     取字符串
+    ///     Gets the stored string value.
     /// </summary>
-    /// <exception cref="InvalidOperationException">类型不匹配</exception>
+    /// <exception cref="InvalidOperationException">Cookie <see cref="Type" /> is not <see cref="CookieValueType.String" />.</exception>
     string GetString();
 
     /// <summary>
-    ///     取整数并转换类型为你定义的枚举
+    ///     Gets the stored integer value converted to enum <typeparamref name="T" />.
     /// </summary>
-    /// <typeparam name="T">自定义Enum</typeparam>
-    /// <exception cref="InvalidOperationException">类型不匹配</exception>
+    /// <typeparam name="T">Target enum type.</typeparam>
+    /// <exception cref="InvalidOperationException">Cookie <see cref="Type" /> is not <see cref="CookieValueType.Number" />.</exception>
     T Get<T>() where T : Enum;
 
     /// <summary>
-    ///     取字符串并反序列化为你定义的类型
+    ///     Gets the stored string value and deserializes it into <typeparamref name="T" />.
     /// </summary>
-    /// <typeparam name="T">自定义Object</typeparam>
-    /// <exception cref="InvalidOperationException">类型不匹配</exception>
+    /// <typeparam name="T">Custom <see cref="ISerializableCookieItem{T}" /> type.</typeparam>
+    /// <exception cref="InvalidOperationException">Cookie <see cref="Type" /> is not <see cref="CookieValueType.String" />.</exception>
     T GetObject<T>() where T : ISerializableCookieItem<T>;
 }

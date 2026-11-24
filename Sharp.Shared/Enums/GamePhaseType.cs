@@ -27,9 +27,9 @@ public enum GamePhase
     WarmupRound,
 
     /// <summary>
-    ///     Standard game without first/second half division <br />
-    ///     <remarks>Commonly used when <b>mp_maxround</b> is 0</remarks>
+    ///     Standard game without first/second half division.
     /// </summary>
+    /// <remarks>Commonly used when <c>mp_maxrounds</c> is 0.</remarks>
     PlayingStandard,
 
     /// <summary>

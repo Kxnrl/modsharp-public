@@ -31,21 +31,24 @@ public interface IFileManager
     nint GetValveFileSystem();
 
     /// <summary>
-    ///     Check if file exists <br />
-    ///     <remarks>Uses engine file system, supports vp access</remarks>
+    ///     Check if file exists.
     /// </summary>
+    /// <remarks>Uses engine file system; supports VPK access.</remarks>
     bool FileExists(string filename, string pathId = "GAME");
 
     /// <summary>
-    ///     Open file <br />
-    ///     <remarks>Uses engine file system, supports vp access</remarks>
+    ///     Open file for binary reading (<c>"rb"</c>).
     /// </summary>
+    /// <remarks>
+    ///     Uses engine file system; supports VPK access.
+    ///     Files opened with this method are read-only; <see cref="IValveFile.Write" /> cannot write to them.
+    /// </remarks>
     IValveFile? OpenFile(string filename, string pathId = "GAME");
 
     /// <summary>
-    ///     Open directory <br />
-    ///     <remarks>Uses engine file system, supports vp access</remarks>
+    ///     Open directory.
     /// </summary>
+    /// <remarks>Uses engine file system; supports VPK access.</remarks>
     IValveDirectory? OpenDirectory(string path, string pathId = "GAME");
 
     /// <summary>

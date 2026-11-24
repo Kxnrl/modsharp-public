@@ -5,48 +5,45 @@ using Microsoft.Extensions.DependencyInjection;
 using Sharp.Shared;
 using Sharp.Shared.Attributes;
 using Sharp.Shared.Calls;
+using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
-using Sharp.Shared.GameObjects;
+using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 
 [assembly: DisableRuntimeMarshalling]
 
 namespace NativeCallExample;
 
-internal unsafe interface IBaseEntityVirtualCall : IVirtualCall<IBaseEntity>
+internal interface IBaseEntityVirtualCall : IVirtualCall<IBaseEntity>
 {
-    // Same as signature call, but this one uses vtable index instead of signature.
-    bool PassesDamageFilter(IBaseEntity instance, TakeDamageInfo* pInfo);
+    // Resolves the current CBaseEntity::CollisionRulesChanged vtable index from GameData.
+    // The current virtual-call generator requires the first parameter to be named "instance".
+    void CollisionRulesChanged(IBaseEntity instance);
 }
 
-internal interface IWeaponServiceSignatureCall : ISignatureCall<IWeaponService>
+internal interface IBaseEntitySignatureCall : ISignatureCall<IBaseEntity>
 {
-    // in gamedata it will be CCSPlayer_WeaponServices::GetWeaponByName
-    // Where does CCSPlayer_WeaponServices comes from? you can F12 (if you use Visual Studio) then see NetClass attribute.
-    // this is the class name what we need.
-    // if your function name in gamedata mismatch with method name, you can use AddressKey to specify it.
-    // by default, it always uses {NetClass}::{MethodName} to find the signature.
-    [AddressKey("GetWeaponByName")]
-    nint GetWeaponByName(IWeaponService weaponService, string weaponName);
+    // IBaseEntity's NetClass is CBaseEntity. AddressKey overrides the METHOD part of the key.
+    [AddressKey("SetGravityScale")]
+    void SetGravity(IBaseEntity entity, float scale);
 }
 
-// you also can define without type parameter
-internal interface IWeaponServiceSignatureCallWithoutType : ISignatureCall
+// Without a generic native type, AddressKey must contain the full GameData key.
+internal interface IUnscopedEntitySignatureCall : ISignatureCall
 {
-    [AddressKey("CCSPlayer_WeaponServices::GetWeaponByName")]
-    nint GetWeaponByName(IWeaponService weaponService, string weaponName);
+    [AddressKey("CBaseEntity::SetGravityScale")]
+    void SetGravity(IBaseEntity entity, float scale);
 
-    [AddressKey("CCSPlayer_WeaponServices::GetWeaponByName")]
-    nint GetWeaponByNameUsingPointer(nint weaponService, string weaponName);
+    [AddressKey("CBaseEntity::SetGravityScale")]
+    void SetGravityUsingPointer(nint entity, float scale);
 }
 
-internal class NativeCallExample : IModSharpModule
+public sealed class NativeCallExample : IModSharpModule
 {
-    private readonly ISharedSystem _sharedSystem;
-
-    // How to invoke them is ignored.
-    private readonly IBaseEntityVirtualCall      _vCall;
-    private readonly IWeaponServiceSignatureCall _sigCall;
+    private readonly ISharedSystem _shared;
+    private readonly ServiceProvider _provider;
+    private readonly IBaseEntityVirtualCall _virtualCall;
+    private readonly IBaseEntitySignatureCall _signatureCall;
 
     public NativeCallExample(ISharedSystem sharedSystem,
         string                             dllPath,
@@ -55,54 +52,40 @@ internal class NativeCallExample : IModSharpModule
         IConfiguration                     coreConfiguration,
         bool                               hotReload)
     {
-        _sharedSystem = sharedSystem;
-
-        sharedSystem.GetModSharp().GetGameData().Register("native-call.games");
-
-        // For concept validation, you can directly construct and call.
-        _vCall   = new BaseEntityVirtualCall(sharedSystem.GetModSharp().GetGameData());
-        _sigCall = new WeaponServiceSignatureCall(sharedSystem.GetModSharp().GetGameData());
-
-        // For a real project, you should always use dependency injection!
+        _shared = sharedSystem;
         var services = new ServiceCollection();
-
-        // You must add GameData, otherwise native call will fail to construct.
+        // The SDK generator emits BaseEntityVirtualCall and BaseEntitySignatureCall.
         services.AddSingleton(sharedSystem.GetModSharp().GetGameData());
-
         services.AddSingleton<IBaseEntityVirtualCall, BaseEntityVirtualCall>();
-        services.AddSingleton<IWeaponServiceSignatureCall, WeaponServiceSignatureCall>();
-
-        var provider = services.BuildServiceProvider();
-        _vCall   = provider.GetRequiredService<BaseEntityVirtualCall>();
-        _sigCall = provider.GetRequiredService<WeaponServiceSignatureCall>();
+        services.AddSingleton<IBaseEntitySignatureCall, BaseEntitySignatureCall>();
+        _provider = services.BuildServiceProvider();
+        // Resolve the interface types that were registered, not their implementation types.
+        _virtualCall = _provider.GetRequiredService<IBaseEntityVirtualCall>();
+        _signatureCall = _provider.GetRequiredService<IBaseEntitySignatureCall>();
     }
 
     public bool Init()
-        => true;
+    {
+        _shared.GetClientManager().InstallCommandCallback("native_gravity", OnGravityCommand);
+        return true;
+    }
+
+    // .native_gravity or ms_native_gravity: set your pawn's gravity scale to 0.5.
+    private ECommandAction OnGravityCommand(IGameClient client, StringCommand command)
+    {
+        if (client.GetPlayerController()?.GetPlayerPawn() is { IsAlive: true } pawn)
+        {
+            _signatureCall.SetGravity(pawn, 0.5f);
+            _virtualCall.CollisionRulesChanged(pawn);
+        }
+
+        return ECommandAction.Stopped;
+    }
 
     public void Shutdown()
     {
-        _sharedSystem.GetModSharp().GetGameData().Register("native-call.games");
-    }
-
-    private IBaseWeapon? GetWeaponByName(IPlayerPawn pawn)
-    {
-        if (pawn.GetWeaponService() is not { } ws)
-        {
-            return null;
-        }
-
-        var pWeapon = _sigCall.GetWeaponByName(ws, "weapon_ak47");
-
-        return _sharedSystem.GetModSharp().CreateNativeObject<IBaseWeapon>(pWeapon);
-    }
-
-    private unsafe bool PassesDamageFilter(IBaseEntity entity, in TakeDamageInfo info)
-    {
-        fixed (TakeDamageInfo* pInfo = &info)
-        {
-            return _vCall.PassesDamageFilter(entity, pInfo);
-        }
+        _shared.GetClientManager().RemoveCommandCallback("native_gravity", OnGravityCommand);
+        _provider.Dispose();
     }
 
     public string DisplayName   => "Native Call Example";

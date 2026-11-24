@@ -49,39 +49,48 @@ public interface IHookManager
 #region Client Hook
 
     /// <summary>
-    ///     CNetworkGameServer::ConnectClient
+    ///     CNetworkGameServer::ConnectClient (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Only installed on dedicated servers (<c>-dedicated</c>). Post hooks are not supported (<see cref="IHookType{TParams, THookReturn}.InstallHookPost" /> throws <see cref="InvalidOperationException" />).
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IConnectClientHookParams, NetworkDisconnectionReason> ConnectClient { get; }
 
     /// <summary>
-    ///     IServerGameClients::ClientConnect
+    ///     IServerGameClients::ClientConnect (Pre-only).
     /// </summary>
     [Obsolete("Use ConnectClient instead, will be removed in the future", true)]
     IHookType<IClientConnectHookParams, bool> ClientConnect { get; }
 
     /// <summary>
-    ///     CServerSideClient::ClientCanHear
+    ///     CServerSideClient::ClientCanHear (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IClientCanHearHookParams, bool> ClientCanHear { get; }
 
     /// <summary>
-    ///     CServerSideClient:CLCMsg_VoiceData
+    ///     CServerSideClient::CLCMsg_VoiceData (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks still run when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IClientSpeakingHookParams, EmptyHookReturn> ClientSpeaking { get; }
 
 #endregion
@@ -89,40 +98,44 @@ public interface IHookManager
 #region Player Weapons
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::WeaponCanUse
+    ///     CCSPlayerPawn->WeaponService::WeaponCanUse (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.IgnoreParamReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerWeaponCanUseHookParams, bool> PlayerWeaponCanUse { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::WeaponCanSwitch
+    ///     CCSPlayerPawn->WeaponService::WeaponCanSwitch (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerWeaponCanSwitchHookParams, bool> PlayerWeaponCanSwitch { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::CanEquip <br />
-    ///     <remarks>
-    ///         This actually hooks ValidateLineOfSight  <br />
-    ///         CS2 doesn't just check LOS, it also checks VIS <br />
-    ///         Forcing true still won't allow picking up weapons that fail VIS check <br />
-    ///         This is just for convenience to hook CanEquip
-    ///     </remarks>
+    ///     CCSPlayerPawn->WeaponService::CanEquip (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     This actually hooks <c>ValidateLineOfSight</c>. CS2 also checks VIS in addition to LOS, so forcing
+    ///     <see langword="true" /> still will not allow picking up weapons that fail the VIS check. Post hooks are not supported.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerWeaponCanEquipHookParams, bool> PlayerWeaponCanEquip { get; }
 
 #endregion
@@ -130,28 +143,40 @@ public interface IHookManager
 #region Player Misc
 
     /// <summary>
-    ///     CCSPlayerPawn::GetPlayerMaxSpeed
+    ///     CCSPlayerPawn::GetPlayerMaxSpeed (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported. On Windows this uses a mid-function hook in <c>ProcessMovement</c>; on Linux the original
+    ///     <c>GetPlayerMaxSpeed</c> runs first. Returning <see cref="EHookAction.SkipCallReturnOverride" /> overrides the base max speed,
+    ///     which is still multiplied by the player's run speed modifier.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerGetMaxSpeedHookParams, float> PlayerGetMaxSpeed { get; }
 
     /// <summary>
-    ///     CCSPlayer_ItemServices::CanAcquire
-    ///     <remarks>Used for checking if the player can acquire an item or weapon</remarks>
+    ///     CCSPlayer_ItemServices::CanAcquire (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Used for checking whether the player can acquire an item or weapon. Post hooks are not supported.
+    ///     The engine's original <c>CanAcquire</c> runs before this hook, so <see cref="EHookAction.SkipCallReturnOverride" />
+    ///     overrides the returned <see cref="EAcquireResult" /> rather than skipping the original call.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerCanAcquireHookParams, EAcquireResult> PlayerCanAcquire { get; }
 
     /// <summary>
-    ///     CCSPlayerController::HandleCommandJoinTeam
+    ///     CCSPlayerController::HandleCommandJoinTeam (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are skipped when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
@@ -159,17 +184,19 @@ public interface IHookManager
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />,
     ///         <see cref="EHookAction.ChangeParamReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IHandleCommandJoinTeamHookParams, bool> HandleCommandJoinTeam { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->ItemService::GiveNamedItem
+    ///     CCSPlayerPawn->ItemService::GiveNamedItem (Pre and Post).
+    /// </summary>
+    /// <remarks>
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IGiveNamedItemHookParams, IBaseWeapon> GiveNamedItem { get; }
 
 #endregion
@@ -177,17 +204,17 @@ public interface IHookManager
 #region Player Movement
 
     /// <summary>
-    ///     CCSPlayerPawn->MovementService::RunCommand <br />
-    ///     <remarks>
-    ///         Fields in MovementService is from the last frame. To get Buttons you can get it from
-    ///         <see cref="IPlayerRunCommandHookParams" />
-    ///     </remarks>
+    ///     CCSPlayerPawn->MovementService::RunCommand (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Fields on <c>MovementService</c> are from the previous frame; read current buttons from
+    ///     <see cref="IPlayerRunCommandHookParams" />. Post hooks still run when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPlayerRunCommandHookParams, EmptyHookReturn> PlayerRunCommand { get; }
 
 #endregion
@@ -195,25 +222,33 @@ public interface IHookManager
 #region Sound
 
     /// <summary>
-    ///     CSoundEmitterSystem::EmitSound
+    ///     CSoundEmitterSystem::EmitSound (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are skipped when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
+    ///     Sounds triggered through <c>EmitSound</c> do not also fire <see cref="SoundEvent" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IEmitSoundHookParams, SoundOpEventGuid> EmitSound { get; }
 
     /// <summary>
-    ///     SoundOpGameSystem::DoStartSoundEvent
+    ///     SoundOpGameSystem::DoStartSoundEvent (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are skipped when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
+    ///     Skipped for sounds emitted via <see cref="EmitSound" /> and for sounds classified as map music (which route to <see cref="EmitMusic" /> instead).
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<ISoundEventHookParams, SoundOpEventGuid> SoundEvent { get; }
 
 #endregion
@@ -221,10 +256,11 @@ public interface IHookManager
 #region Damage
 
     /// <summary>
-    ///     CBaseEntity::DispatchTraceAttack (PlayerPawn Only)
+    ///     CBaseEntity::DispatchTraceAttack (PlayerPawn Only; Pre and Post).
     /// </summary>
     /// <remarks>
     ///     This hook is only fired when the entity that takes damage is a player pawn.
+    ///     Post hooks still run when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         This hook should only return <see cref="EHookAction.Ignored" /> or
     ///         <see cref="EHookAction.SkipCallReturnOverride" />.
@@ -232,7 +268,7 @@ public interface IHookManager
     ///         provided by the hook is ignored).
     ///     </para>
     ///     <para>
-    ///         To make a player take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack" /> on the player
+    ///         To make a player take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack(in TakeDamageInfo, bool)" /> on the player
     ///         pawn entity.
     ///     </para>
     ///     <para>
@@ -244,10 +280,11 @@ public interface IHookManager
     IHookType<IPlayerDispatchTraceAttackHookParams, long> PlayerDispatchTraceAttack { get; }
 
     /// <summary>
-    ///     CBaseEntity::DispatchTraceAttack (No PlayerPawn)
+    ///     CBaseEntity::DispatchTraceAttack (Non-PlayerPawn; Pre and Post).
     /// </summary>
     /// <remarks>
     ///     This hook is only fired when the entity that takes damage is <b>not</b> a player pawn.
+    ///     Post hooks still run when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         This hook should only return <see cref="EHookAction.Ignored" /> or
     ///         <see cref="EHookAction.SkipCallReturnOverride" />.
@@ -255,7 +292,7 @@ public interface IHookManager
     ///         provided by the hook is ignored).
     ///     </para>
     ///     <para>
-    ///         To make an entity take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack" /> on the
+    ///         To make an entity take damage programmatically, use <see cref="IBaseEntity.DispatchTraceAttack(in TakeDamageInfo, bool)" /> on the
     ///         target entity.
     ///     </para>
     ///     <para>
@@ -271,65 +308,79 @@ public interface IHookManager
 #region Others
 
     /// <summary>
-    ///     CPointServerCommand::InputCommand and cs_script's Console.ServerCommand
-    ///     (including the deprecated Instance.ServerCommand); for the latter, Entity is the calling point_script
-    ///     <remarks>
-    ///         Commands let through still run the engine's original function; on workshop maps they are
-    ///         checked against Valve's command whitelist
-    ///     </remarks>
+    ///     CPointServerCommand::InputCommand and cs_script's Console.ServerCommand (Pre-only).
+    ///     Also covers the deprecated <c>Instance.ServerCommand</c>; for cs_script calls, <c>Entity</c> is the calling <c>point_script</c>.
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported. Commands let through still run the engine's original function; on workshop maps they are
+    ///     checked against Valve's command whitelist.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPointServerCommandHookParams, EmptyHookReturn> PointServerCommand { get; }
 
     /// <summary>
-    ///     'status' Command <br />
-    ///     <remarks>When client is null means it is sent by server</remarks>
+    ///     'status' Command (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported. When <c>Client</c> is <see langword="null" />, the command was issued by the server console.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<IPrintStatusHookParams, EmptyHookReturn> PrintStatus { get; }
 
     /// <summary>
-    ///     NetworkMessages::CUserMsgTextMSG
+    ///     NetworkMessages::CUserMsgTextMSG (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported. Skipped when the message has no parameters (<c>param_size &lt; 1</c>) or when sent through
+    ///     <see cref="IModSharp.SendNetMessage{T}" /> / ModSharp chat helpers (which bypass network hooks).
+    ///     Returns the updated receiver bitmask when using <see cref="EHookAction.ChangeParamReturnDefault" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
-    /// </summary>
-    /// <returns>The new Receiver Bits</returns>
+    /// </remarks>
     IHookType<ITextMsgHookParams, NetworkReceiver> TextMsg { get; }
 
     /// <summary>
-    ///     IGameEventSystem::PostEventAbstract
+    ///     IGameEventSystem::PostEventAbstract (Pre-only).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks are not supported. Requires registering the message ID via <see cref="IModSharp.HookNetMessage" />.
+    ///     Never fires for messages handled earlier in the native switch (<c>UM_TextMsg</c>, <c>GE_FireBulletsId</c>,
+    ///     <c>TE_MuzzleFlashId</c>, <c>TE_WorldDecalId</c>, <c>TE_BloodStreamId</c>, <c>TE_ArmorRicochetId</c>) or for messages sent via
+    ///     <see cref="IModSharp.SendNetMessage{T}" /> (which sets the native bypass flag).
+    ///     Returns the updated receiver bitmask when using <see cref="EHookAction.ChangeParamReturnDefault" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
-    /// <returns>The new Receiver Bits</returns>
+    /// </remarks>
     IHookType<IPostEventAbstractHookParams, NetworkReceiver> PostEventAbstract { get; }
 
     /// <summary>
-    ///     CCSGameRules::TerminateRound
+    ///     CCSGameRules::TerminateRound (Pre and Post).
+    /// </summary>
+    /// <remarks>
+    ///     Post hooks still run when a Pre hook returns <see cref="EHookAction.SkipCallReturnOverride" />.
     ///     <para>
     ///         Supported HookAction:
     ///         <see cref="EHookAction.Ignored" />,
     ///         <see cref="EHookAction.SkipCallReturnOverride" />,
     ///         <see cref="EHookAction.ChangeParamReturnDefault" />
     ///     </para>
-    /// </summary>
+    /// </remarks>
     IHookType<ITerminateRoundHookParams, EmptyHookReturn> TerminateRound { get; }
 
 #endregion
@@ -341,9 +392,9 @@ public interface IHookManager
 #region Sound
 
     /// <summary>
-    ///     SoundOpGameSystem::DoStartSoundEvent <br />
-    ///     <remarks>Only fires when the sound event is treated as music</remarks>
+    ///     SoundOpGameSystem::DoStartSoundEvent for sounds treated as map music.
     /// </summary>
+    /// <remarks>Only fires when <c>ms_hook_map_music</c> is enabled and the sound event is treated as music.</remarks>
     IForwardType<IEmitMusicForwardParams> EmitMusic { get; }
 
 #endregion
@@ -351,23 +402,25 @@ public interface IHookManager
 #region Player Base
 
     /// <summary>
-    ///     CCSPlayerPawn::PlayerSpawn
+    ///     CCSPlayerPawn::PlayerSpawn (Pre).
     /// </summary>
     IForwardType<IPlayerSpawnForwardParams> PlayerSpawnPre { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn::
+    ///     CCSPlayerPawn::PlayerSpawn (Post).
     /// </summary>
     IForwardType<IPlayerSpawnForwardParams> PlayerSpawnPost { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn::Killed
+    ///     CCSPlayerPawn::Event_Killed (Pre).
     /// </summary>
+    /// <remarks>Only fires when the victim pawn has an associated client.</remarks>
     IForwardType<IPlayerKilledForwardParams> PlayerKilledPre { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn::Killed
+    ///     CCSPlayerPawn::Event_Killed (Post).
     /// </summary>
+    /// <remarks>Only fires when the victim pawn has an associated client.</remarks>
     IForwardType<IPlayerKilledForwardParams> PlayerKilledPost { get; }
 
     /// <summary>
@@ -393,8 +446,9 @@ public interface IHookManager
 #region Player Misc
 
     /// <summary>
-    ///     CCSPlayerPawn->ItemService::GiveGloveItem
+    ///     CCSPlayerPawn->ItemService::GiveGloveItem.
     /// </summary>
+    /// <remarks>Only fires for authenticated human (non-bot) clients.</remarks>
     IForwardType<IGiveGloveItemForwardParams> GiveGloveItem { get; }
 
 #endregion
@@ -434,17 +488,17 @@ public interface IHookManager
 #region Player Weapon
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::SwitchWeapon
+    ///     CCSPlayerPawn->WeaponService::SwitchWeapon (Post).
     /// </summary>
     IForwardType<IPlayerSwitchWeaponForwardParams> PlayerSwitchWeapon { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::EquipWeapon
+    ///     CCSPlayerPawn->WeaponService::EquipWeapon (Post).
     /// </summary>
     IForwardType<IPlayerEquipWeaponForwardParams> PlayerEquipWeapon { get; }
 
     /// <summary>
-    ///     CCSPlayerPawn->WeaponService::DropWeapon
+    ///     CCSPlayerPawn->WeaponService::DropWeapon (Post).
     /// </summary>
     IForwardType<IPlayerDropWeaponForwardParams> PlayerDropWeapon { get; }
 
@@ -465,38 +519,56 @@ public interface IHookManager
 public interface IHookType<out TParams, THookReturn> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     Listen to this Hook's Pre <br />
-    ///     <remarks>Higher priority value means higher priority</remarks>
+    ///     Listen to this Hook's Pre callback.
     /// </summary>
+    /// <remarks>
+    ///     Higher <paramref name="priority" /> values run first. All Pre hooks run; a subsequent hook's
+    ///     <see cref="HookReturnValue{T}" /> only replaces the winning result when its <see cref="EHookAction" /> is
+    ///     strictly greater than the current winning action (so on equal actions, the earlier/higher-priority hook wins).
+    ///     Leaked hooks are automatically cleaned up with a warning on module unload.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="pre" /> is a multicast delegate.</exception>
     void InstallHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre, int priority = 0);
 
     /// <summary>
-    ///     Listen to this Hook's Post <br />
-    ///     <remarks>Higher priority value means higher priority</remarks>
+    ///     Listen to this Hook's Post callback.
     /// </summary>
+    /// <remarks>
+    ///     Higher <paramref name="priority" /> values run first. Not all hooks support Post callbacks.
+    ///     Leaked hooks are automatically cleaned up with a warning on module unload.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">This hook is Pre-only and does not support Post callbacks.</exception>
+    /// <exception cref="ArgumentException"><paramref name="post" /> is a multicast delegate.</exception>
     void InstallHookPost(Action<TParams, HookReturnValue<THookReturn>> post, int priority = 0);
 
     /// <summary>
-    ///     Stop listening to this Hook's Pre
+    ///     Stop listening to this Hook's Pre callback.
     /// </summary>
+    /// <exception cref="EntryPointNotFoundException"><paramref name="pre" /> is not currently registered.</exception>
     void RemoveHookPre(Func<TParams, HookReturnValue<THookReturn>, HookReturnValue<THookReturn>> pre);
 
     /// <summary>
-    ///     Stop listening to this Hook's Post
+    ///     Stop listening to this Hook's Post callback.
     /// </summary>
+    /// <exception cref="EntryPointNotFoundException"><paramref name="post" /> is not currently registered.</exception>
     void RemoveHookPost(Action<TParams, HookReturnValue<THookReturn>> post);
 }
 
 public interface IForwardType<out TParams> where TParams : class, IFunctionParams
 {
     /// <summary>
-    ///     Listen to this Forward call <br />
-    ///     <remarks>Higher priority value means higher priority</remarks>
+    ///     Listen to this Forward call.
     /// </summary>
+    /// <remarks>
+    ///     Higher <paramref name="priority" /> values run first.
+    ///     Leaked forwards are automatically cleaned up with a warning on module unload.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="func" /> is a multicast delegate.</exception>
     void InstallForward(Action<TParams> func, int priority = 0);
 
     /// <summary>
-    ///     Stop listening to this Forward call
+    ///     Stop listening to this Forward call.
     /// </summary>
+    /// <exception cref="EntryPointNotFoundException"><paramref name="func" /> is not currently registered.</exception>
     void RemoveForward(Action<TParams> func);
 }

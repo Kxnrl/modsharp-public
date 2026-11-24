@@ -10,5 +10,5 @@
 - name: Reload Module
   href: reload-module.md
 
-- name: Integrating APIs from Other Modules
+- name: Installing a Shared API
   href: integrating-api.md

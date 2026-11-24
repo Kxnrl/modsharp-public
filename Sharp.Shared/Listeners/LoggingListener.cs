@@ -33,12 +33,12 @@ public interface ILoggingListener
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     Priority
+    ///     Priority (read once at install time; higher values run first)
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     Read only once, at install time. Events below the Logger:LogLevel configured in core.json
+    ///     Read only once, at install time. Events below the <c>Logger.LogLevel</c> configured in <c>core.json</c>
     ///     are never produced, so a lower value here still does not receive them
     /// </summary>
     LogLevel RuntimeMinimumLevel { get; }

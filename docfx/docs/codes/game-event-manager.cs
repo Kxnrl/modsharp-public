@@ -13,7 +13,7 @@ namespace GameEventManagerExample;
 
 public sealed class GameEventManagerExample : IModSharpModule
 {
-    private readonly IServiceProvider  _provider;
+    private readonly ServiceProvider   _provider;
     private readonly IGameEventManager _gameEventManager;
 
     public GameEventManagerExample(ISharedSystem sharedSystem,
@@ -45,6 +45,7 @@ public sealed class GameEventManagerExample : IModSharpModule
     public void Shutdown()
     {
         _provider.ShutdownAllSharpExtensions();
+        _provider.Dispose();
     }
 
     // block player_changename event
@@ -81,7 +82,7 @@ public sealed class GameEventManagerExample : IModSharpModule
                     ?? throw new InvalidOperationException("Failed to clone event");
 
             // modify kill feed icon
-            clone.SetString("weapon", "SawnLake");
+            clone.SetString("weapon", "ak47");
 
             foreach (var client in clients.GetGameClients(true))
             {
@@ -91,7 +92,7 @@ public sealed class GameEventManagerExample : IModSharpModule
             // hide original event
             serverOnly = true;
 
-            return new HookReturnValue<bool>();
+            return new HookReturnValue<bool>(EHookAction.ChangeParamReturnDefault);
         }
         finally
         {

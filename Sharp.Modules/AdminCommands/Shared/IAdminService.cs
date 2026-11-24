@@ -37,9 +37,13 @@ public interface IAdminService
     ISilenceService Silence { get; }
 
     /// <summary>
-    ///     Registers a new operation handler. It is not recommended to register handlers outside OnAllModuleLoaded or
-    ///     PostInit.
+    ///     Registers an operation handler for <see cref="IAdminOperationHandler.Type" />, replacing any existing handler for that type.
+    ///     It is not recommended to register handlers outside <c>OnAllModulesLoaded</c> or <c>PostInit</c>.
     /// </summary>
+    /// <remarks>
+    ///     Handlers are automatically unregistered on <c>OnLibraryDisconnect</c> for <paramref name="moduleIdentity" />,
+    ///     restoring any displaced built-in handler.
+    /// </remarks>
     void RegisterHandler(string moduleIdentity, IAdminOperationHandler handler);
 
     /// <summary>
@@ -60,8 +64,8 @@ public interface IAdminService
     /// <summary>
     ///     Applies an admin operation to an offline target.
     ///     <para>
-    ///         This executes the full pipeline: game actions (e.g. kick), cache updates, and storage
-    ///         persistence.
+    ///         Runs the offline pipeline: invokes the handler with a <see langword="null" /> client target (updating its cache
+    ///         without kicking or broadcasting notifications), logs the operation, and persists it to storage.
     ///         For simple data persistence without side effects, use <see cref="IAdminOperationStorageService" />.
     ///     </para>
     /// </summary>

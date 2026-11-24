@@ -10,7 +10,7 @@ namespace SharpExtensions;
 
 public sealed class SharpExtensions : IModSharpModule
 {
-    private readonly IServiceProvider _provider;
+    private readonly ServiceProvider _provider;
 
     public SharpExtensions(ISharedSystem sharedSystem,
         string                           dllPath,
@@ -38,8 +38,9 @@ public sealed class SharpExtensions : IModSharpModule
 
     public void Shutdown()
     {
-        // shutdown all sharp extensions, otherwise you will get fucked after reloaded.
+        // Shut extensions down before disposing the container to unregister their callbacks.
         _provider.ShutdownAllSharpExtensions();
+        _provider.Dispose();
     }
 
     public string DisplayName   => "Sharp Extensions Example";

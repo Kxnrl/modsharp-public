@@ -33,10 +33,22 @@ public interface ITargetingManager
     /// <param name="target">
     ///     The target string. Resolution order:
     ///     <list type="bullet">
-    ///         <item><c>#name</c> - Forces a literal name match (escapes special characters like @).</item>
-    ///         <item><c>@resolver_name</c> - Registered resolvers (e.g., <c>@me</c>, <c>@t</c>, <c>@ct</c>).</item>
-    ///         <item><c>@!resolver_name</c> - Inversion (targets all players EXCEPT those matching the target).</item>
-    ///         <item><c>7656...</c> or <c>@7656...</c> - Targeted by SteamID64.</item>
+    ///         <item>
+    ///             <term><c>#name</c></term>
+    ///             <description>Forces a literal name match (escapes special characters like <c>@</c>).</description>
+    ///         </item>
+    ///         <item>
+    ///             <term><c>@resolver_name</c></term>
+    ///             <description>Registered resolvers (e.g., <c>@me</c>, <c>@t</c>, <c>@ct</c>).</description>
+    ///         </item>
+    ///         <item>
+    ///             <term><c>@!resolver_name</c></term>
+    ///             <description>Inversion (targets all players EXCEPT those matching the target).</description>
+    ///         </item>
+    ///         <item>
+    ///             <term><c>7656...</c> or <c>@7656...</c></term>
+    ///             <description>Targeted by SteamID64.</description>
+    ///         </item>
     ///         <item>
     ///             <term>Player Name</term>
     ///             <description>
@@ -53,10 +65,10 @@ public interface ITargetingManager
     ///     Register a custom target resolver.
     /// </summary>
     /// <param name="ownerIdentity">
-    ///     The identity of the module registering this target.
-    ///     Recommended: <c>typeof(YourModule).Assembly.GetName().Name</c>
+    ///     The exact module assembly name (case-sensitive) so resolvers are unregistered automatically on <c>OnLibraryDisconnect</c>.
+    ///     Recommended: <c>typeof(YourModule).Assembly.GetName().Name</c>.
     /// </param>
-    /// <param name="resolver">The resolver logic.</param>
-    /// <returns>True if registered successfully, false if target already exists.</returns>
+    /// <param name="resolver">The resolver logic. <see cref="ITargetResolver.GetTarget" /> must return a non-empty string starting with <c>'@'</c>.</param>
+    /// <returns><see langword="true" /> if registered successfully; <see langword="false" /> if the target is null/whitespace, does not start with <c>'@'</c>, or is already registered.</returns>
     public bool RegisterResolver(string ownerIdentity, ITargetResolver resolver);
 }

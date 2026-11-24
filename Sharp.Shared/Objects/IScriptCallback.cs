@@ -42,11 +42,12 @@ public interface IScriptCallback : IContextObject, IDisposable
     /// <summary>
     ///     The point_script that owns this callback (the current-script at creation time). Resolved fresh
     ///     on each access (with a serial check); returns <see langword="null" /> if that entity has been
-    ///     destroyed.
+    ///     destroyed. Must be accessed on the game main thread.
     /// </summary>
     IBaseEntity? Owner { get; }
 
-    /// <summary>The callback is still usable (not disposed, and the owning point_script is still alive).</summary>
+    /// <summary>The callback is still usable (not disposed, and the owning point_script is still alive). Must be accessed on the game main thread.</summary>
+    /// <exception cref="System.InvalidOperationException">Not called on the game main thread.</exception>
     bool IsAvailable { get; }
 
     /// <summary>

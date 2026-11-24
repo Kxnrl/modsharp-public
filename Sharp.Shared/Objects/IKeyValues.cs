@@ -27,12 +27,11 @@ namespace Sharp.Shared.Objects;
 public interface IKeyValues : INativeObject
 {
     /// <summary>
-    ///     Destroy this instance <br />
-    ///     <remarks>
-    ///         Only instances created by <see cref="IModSharp.CreateKeyValues" /> or <see cref="IKeyValues.Clone" /> can
-    ///         be destroyed
-    ///     </remarks>
+    ///     Destroy this instance.
     /// </summary>
+    /// <remarks>
+    ///     Only instances created by <see cref="IModSharp.CreateKeyValues" /> or <see cref="IKeyValues.Clone" /> can be destroyed.
+    /// </remarks>
     void DeleteThis();
 
     /// <summary>
@@ -62,12 +61,12 @@ public interface IKeyValues : INativeObject
 
     /// <summary>
     ///     Whether escape sequences (<c>\"</c>, <c>\\</c>, <c>\n</c>, <c>\t</c>) inside quoted strings are processed while
-    ///     parsing. Set it before <see cref="LoadFromFile" /> / <see cref="LoadFromString" />. <br />
-    ///     <remarks>
-    ///         The game's localization files (such as <c>resource/csgo_english.txt</c>) contain <c>\"</c> and fail to
-    ///         parse without it.
-    ///     </remarks>
+    ///     parsing. Set it before <see cref="LoadFromFile" /> / <see cref="LoadFromString" />.
     /// </summary>
+    /// <remarks>
+    ///     The game's localization files (such as <c>resource/csgo_english.txt</c>) contain <c>\"</c> and fail to
+    ///     parse without it.
+    /// </remarks>
     void UsesEscapeSequences(bool state);
 
     /// <summary>
@@ -167,9 +166,9 @@ public interface IKeyValues : INativeObject
 public interface IKeyValues3 : INativeObject
 {
     /// <summary>
-    ///     Destroy this instance <br />
-    ///     <remarks>Only instances created by <see cref="IModSharp.CreateKeyValues3" /> can be destroyed</remarks>
+    ///     Destroy this instance.
     /// </summary>
+    /// <remarks>Only instances created by <see cref="IModSharp.CreateKeyValues3" /> can be destroyed.</remarks>
     void DeleteThis();
 
     bool LoadFromFile(string file, string pathId, out string error);
@@ -177,20 +176,20 @@ public interface IKeyValues3 : INativeObject
     /// <summary>
     ///     Load the <see cref="ResourceBlockType.DATA" /> type from the given compiled resource
     /// </summary>
-    /// <param name="file">Path to compiled resource, the function will append "_" if it doesn't end with it</param>
+    /// <param name="file">Path to compiled resource; appends <c>"_c"</c> automatically if it does not already end with <c>"_c"</c>.</param>
     /// <param name="pathId">GAME path id, using GAME is sufficient in most cases</param>
     /// <param name="error">Error message if it fails</param>
-    /// <returns></returns>
+    /// <returns><see langword="true" /> if loaded successfully; otherwise, <see langword="false" />.</returns>
     bool LoadFromCompiledFile(string file, string pathId, out string error);
 
     /// <summary>
     ///     Load the given datablock type from the given compiled resource
     /// </summary>
-    /// <param name="file">Path to compiled resource, the function will append "_" if it doesn't end with it</param>
+    /// <param name="file">Path to compiled resource; appends <c>"_c"</c> automatically if it does not already end with <c>"_c"</c>.</param>
     /// <param name="pathId">GAME path id, using GAME is sufficient in most cases</param>
     /// <param name="block">Resource data block type</param>
     /// <param name="error">Error message if it fails</param>
-    /// <returns></returns>
+    /// <returns><see langword="true" /> if loaded successfully; otherwise, <see langword="false" />.</returns>
     bool LoadFromCompiledFile(string file, string pathId, ResourceBlockType block, out string error);
 
     bool LoadFromBuffer(byte[] buffer, out string error);

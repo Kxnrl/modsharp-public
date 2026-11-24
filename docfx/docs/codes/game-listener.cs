@@ -28,8 +28,7 @@ public sealed class GameListener : IModSharpModule, IGameListener
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove this module's listener before unloading or reloading it.
         _sharedSystem.GetModSharp().RemoveGameListener(this);
     }
 
@@ -59,7 +58,7 @@ public sealed class GameListener : IModSharpModule, IGameListener
     {
         // you only can precache resources in this callback!!!
         Console.WriteLine("[OnResourcePrecache] Precaching resources...");
-        _sharedSystem.GetModSharp().PrecacheResource("models/foo/bar.vmdl");
+        _sharedSystem.GetModSharp().PrecacheResource("weapons/models/defuser/defuser.vmdl");
     }
 
     // safe to get GameRules

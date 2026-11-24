@@ -2,7 +2,7 @@ namespace Sharp.Shared.Enums;
 
 /// <summary>
 ///   Resource Block Type
-///   <br> taken from https://github.com/ValveResourceFormat/ValveResourceFormat/blob/master/ValveResourceFormat/Resource/Enums/BlockType.cs
+///   <br /> taken from https://github.com/ValveResourceFormat/ValveResourceFormat/blob/master/ValveResourceFormat/Resource/Enums/BlockType.cs
 /// </summary>
 public enum ResourceBlockType : uint
 {

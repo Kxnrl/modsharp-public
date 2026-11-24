@@ -29,14 +29,12 @@ public interface ICommandRegistry
     /// <summary>
     ///     Registers a client command.<br />
     ///     The command can be invoked in the following ways:<br />
-    ///     1. Chat: Type .{<paramref name="command" />} (e.g., <b>.ztele</b>).<br />
-    ///     (Note: You can replace "." with "!" or "/"; they function identically.)<br />
-    ///     2. Client Console: Requires the `ms_` prefix (e.g., <b>ms_ztele</b>).<br />
+    ///     1. Chat: Using a configured chat trigger prefix (by default <c>.</c> / <c>!</c> for public chat, or <c>/</c> for silent chat, e.g., <b>.ztele</b> or <b>/ztele</b>).<br />
+    ///     2. Client Console: Requires the <c>ms_</c> prefix (e.g., <b>ms_ztele</b>).<br />
     ///     Commands registered via this method CANNOT be used in the server console.
     /// </summary>
     /// <param name="command">
-    ///     The command name. The prefix 'ms_' is automatically added during registration.
-    ///     Do not include 'ms_' manually, or the command will result in a double prefix (e.g., "ms_ms_command").
+    ///     The command name without prefix (preferred). Any leading <c>ms_</c> prefix is stripped automatically before registration.
     /// </param>
     /// <param name="call">The callback function to execute.</param>
     void RegisterClientCommand(string command, Action<IGameClient, StringCommand> call);
@@ -47,8 +45,8 @@ public interface ICommandRegistry
     /// </summary>
     /// <param name="command">The command name.</param>
     /// <param name="call">The callback function to execute.</param>
-    /// <param name="description">The command description.</param>
-    /// <param name="addPrefix">Whether to add the 'ms_' prefix to the command. Defaults to true.</param>
+    /// <param name="description">The command description (currently unused by the underlying registration).</param>
+    /// <param name="addPrefix">Whether to prepend the <c>ms_</c> prefix if absent. Defaults to <see langword="true" />.</param>
     void RegisterServerCommand(string command, Action<StringCommand> call, string description = "", bool addPrefix = true);
 
     /// <summary>
@@ -57,14 +55,13 @@ public interface ICommandRegistry
     /// </summary>
     /// <param name="command">The command name.</param>
     /// <param name="call">The callback function to execute.</param>
-    /// <param name="description">The command description.</param>
-    /// <param name="addPrefix">Whether to add the 'ms_' prefix to the command. Defaults to true.</param>
+    /// <param name="description">The command description (currently unused by the underlying registration).</param>
+    /// <param name="addPrefix">Whether to prepend the <c>ms_</c> prefix if absent. Defaults to <see langword="true" />.</param>
     void RegisterServerCommand(string command, Action call, string description = "", bool addPrefix = true);
 
     /// <summary>
-    ///     Registers a "generic" command usable in in-game chat, client console, and server console.
-    ///     <br />
-    ///     Note: This will strictly enforce the 'ms_' prefix.
+    ///     Registers a "generic" command usable in in-game chat (unprefixed via chat triggers, stripping any leading <c>ms_</c>),
+    ///     client console, and server console (with <c>ms_</c> prepended if absent).
     /// </summary>
     /// <param name="command">The command name.</param>
     /// <param name="call">The callback function to execute.</param>

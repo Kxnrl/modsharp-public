@@ -26,13 +26,22 @@ namespace Sharp.Shared.Managers;
 public interface IParticleManager
 {
     /// <summary>
-    ///     Dispatch particle effect (.vpcf)
+    ///     Dispatch particle effect (<c>.vpcf</c>) at a world position.
     /// </summary>
+    /// <remarks>
+    ///     Must be called after <see cref="Listeners.IGameListener.OnServerActivate" /> (before that, the particle effect index is uninitialized and sent as <c>0</c>).
+    ///     The <paramref name="particle" /> path is normalized (<c>\</c> to <c>/</c>, lowercased ASCII, truncated to 199 UTF-8 bytes; empty paths or paths starting with <c>/</c> resolve to resource ID <c>0</c>).
+    ///     Sent via <c>CMsgTEEffectDispatch</c> bypassing <see cref="IHookManager.PostEventAbstract" />.
+    /// </remarks>
     void DispatchParticleEffect(string particle, Vector origin, Vector angles, RecipientFilter filter = default);
 
     /// <summary>
-    ///     Dispatch particle effect (.vpcf)
+    ///     Dispatch particle effect (<c>.vpcf</c>) associated with an entity.
     /// </summary>
+    /// <remarks>
+    ///     Must be called after <see cref="Listeners.IGameListener.OnServerActivate" />.
+    ///     See <see cref="DispatchParticleEffect(string, Vector, Vector, RecipientFilter)" /> for path normalization and delivery notes.
+    /// </remarks>
     void DispatchParticleEffect(string particle,
         IBaseEntity                    entity,
         Vector                         origin,
@@ -41,8 +50,12 @@ public interface IParticleManager
         RecipientFilter                filter      = default);
 
     /// <summary>
-    ///     Dispatch particle effect (.vpcf)
+    ///     Dispatch particle effect (<c>.vpcf</c>) attached to an entity.
     /// </summary>
+    /// <remarks>
+    ///     Must be called after <see cref="Listeners.IGameListener.OnServerActivate" />.
+    ///     See <see cref="DispatchParticleEffect(string, Vector, Vector, RecipientFilter)" /> for path normalization and delivery notes.
+    /// </remarks>
     void DispatchParticleEffect(string particle,
         ParticleAttachmentType         attachType,
         IBaseEntity                    entity,
@@ -51,8 +64,13 @@ public interface IParticleManager
         RecipientFilter                filter          = default);
 
     /// <summary>
-    ///     Dispatch effects (csshocked, cstaserrope, gunshotsplash, csblood etc.)
+    ///     Dispatch named effects (<c>csshocked</c>, <c>cstaserrope</c>, <c>gunshotsplash</c>, <c>csblood</c>, etc.).
     /// </summary>
+    /// <remarks>
+    ///     Must be called after <see cref="Listeners.IGameListener.OnServerActivate" />; calling earlier throws <see cref="System.NullReferenceException" />
+    ///     because the <c>EffectDispatch</c> string table is not yet initialized.
+    ///     Sent via <c>CMsgTEEffectDispatch</c> bypassing <see cref="IHookManager.PostEventAbstract" />.
+    /// </remarks>
     void DispatchEffect(string effectName,
         IBaseEntity            entity,
         Vector                 origin,

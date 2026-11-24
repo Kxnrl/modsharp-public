@@ -100,11 +100,9 @@ public interface IGameEvent : INativeObject
     IPlayerController? GetPlayerController(string key);
 
     /// <summary>
-    ///     Get event field as PlayerPawn
-    ///     <remarks>
-    ///         Returns null if entity is an Observer
-    ///     </remarks>
+    ///     Get event field as PlayerPawn.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if entity is an Observer.</remarks>
     IPlayerPawn? GetPlayerPawn(string key);
 
     /// <summary>
@@ -113,9 +111,9 @@ public interface IGameEvent : INativeObject
     IBasePlayerPawn? GetBasePlayerPawn(string key);
 
     /// <summary>
-    ///     Get event name
+    ///     Get event name.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The game event name.</returns>
     string GetName();
 
     /// <summary>
@@ -147,13 +145,12 @@ public interface IGameEvent : INativeObject
     ///     <para>
     ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
     ///         You can cache the event object, modify its parameters, and re-fire it as needed.
-    ///         Ensure you manually call <see cref="Dispose" /> when the event is no longer needed (e.g., on module unload).
-    ///     </para>
-    ///     <para>
-    ///         Throws an exception if called on a non-custom created event.
+    ///         Ensure you manually call <see cref="Dispose" /> on custom-created events when no longer needed (e.g., on module unload).
     ///     </para>
     /// </remarks>
     /// <param name="slot">The client's slot index (0-based).</param>
+    /// <exception cref="InvalidOperationException">The event is not editable (for example, inside <c>FireGameEvent</c>).</exception>
+    /// <exception cref="ObjectDisposedException">The event has already been fired or disposed.</exception>
     void FireToClient(int slot);
 
     /// <summary>
@@ -163,13 +160,12 @@ public interface IGameEvent : INativeObject
     ///     <para>
     ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
     ///         You can cache the event object, modify its parameters, and re-fire it as needed.
-    ///         Ensure you manually call <see cref="Dispose" /> when the event is no longer needed (e.g., on module unload).
-    ///     </para>
-    ///     <para>
-    ///         Throws an exception if called on a non-custom created event.
+    ///         Ensure you manually call <see cref="Dispose" /> on custom-created events when no longer needed (e.g., on module unload).
     ///     </para>
     /// </remarks>
     /// <param name="client">The target <see cref="IGameClient" />.</param>
+    /// <exception cref="InvalidOperationException">The event is not editable (for example, inside <c>FireGameEvent</c>).</exception>
+    /// <exception cref="ObjectDisposedException">The event has already been fired or disposed.</exception>
     void FireToClient(IGameClient client);
 
     /// <summary>
@@ -179,12 +175,11 @@ public interface IGameEvent : INativeObject
     ///     <para>
     ///         The event object will <b>NOT</b> be automatically disposed after calling this function.
     ///         You can cache the event object, modify its parameters, and re-fire it as needed.
-    ///         Ensure you manually call <see cref="Dispose" /> when the event is no longer needed (e.g., on plugin unload).
-    ///     </para>
-    ///     <para>
-    ///         Throws an exception if called on a non-custom created event.
+    ///         Ensure you manually call <see cref="Dispose" /> on custom-created events when no longer needed (e.g., on module unload).
     ///     </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">The event is not editable (for example, inside <c>FireGameEvent</c>).</exception>
+    /// <exception cref="ObjectDisposedException">The event has already been fired or disposed.</exception>
     void FireToClients();
 
     /// <summary>
@@ -211,13 +206,15 @@ public interface IGameEvent : INativeObject
     string Name { get; }
 
     /// <summary>
-    ///     Whether event can be modified or fired
+    ///     Whether event fields can be modified (<see langword="true" /> for custom-created events and pre-hooked events in <c>HookFireEvent</c>; <see langword="false" /> in <c>FireGameEvent</c>).
     /// </summary>
+    /// <remarks><see cref="Fire" /> and <see cref="Dispose" /> additionally require the event to be custom-owned, not engine-owned.</remarks>
     bool Editable { get; }
 
     /// <summary>
-    ///     Set value using indexer
+    ///     Set value using indexer. Supports <see cref="int" />, <see cref="float" />, <see cref="bool" />, and <see cref="string" />.
     /// </summary>
+    /// <exception cref="NotSupportedException">Value type is not supported.</exception>
     object this[string key] { set; }
 
     /// <summary>

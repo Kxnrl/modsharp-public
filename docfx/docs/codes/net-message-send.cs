@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
@@ -35,7 +36,6 @@ public sealed class NetMsg : IModSharpModule
     // type 'ms_sendnetmsg' in client console, or chat trigger with '.sendnetmsg' or '/sendnetmsg' or '!sendnetmsg'
     private ECommandAction OnCommandSendNetMsg(IGameClient client, StringCommand command)
     {
-        var entityManager = _sharedSystem.GetEntityManager();
         var modSharp      = _sharedSystem.GetModSharp();
 
         // create protobuf message

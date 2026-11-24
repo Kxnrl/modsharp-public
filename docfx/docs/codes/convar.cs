@@ -19,12 +19,19 @@ public sealed class ConVar : IModSharpModule
 
     public bool Init()
     {
-        // That's it. Very easy.
-        _sharedSystem.GetConVarManager().CreateConVar("my_cvar", 0, "This is my cvar.", ConVarFlags.Release);
-
-        if (_sharedSystem.GetConVarManager().FindConVar("sv_cheats") is { } cheats)
+        var manager = _sharedSystem.GetConVarManager();
+        if (manager.CreateConVar("example_value", 0, "Example integer value.", ConVarFlags.Release) is not { } value)
         {
-            cheats.Set(true);
+            return false;
+        }
+
+        value.Set(1);
+        Console.WriteLine($"example_value = {value.GetInt32()}");
+
+        if (manager.FindConVar("sv_cheats") is { } cheats)
+        {
+            // Read an existing ConVar without changing the server's cheat setting.
+            Console.WriteLine($"sv_cheats = {cheats.GetBool()}");
         }
 
         return true;

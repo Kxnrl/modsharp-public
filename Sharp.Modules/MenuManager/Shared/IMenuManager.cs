@@ -25,10 +25,24 @@ public interface IMenuManager
 {
     const string Identity = nameof(IMenuManager);
 
+    /// <summary>
+    ///     Displays a menu to the specified client, replacing any existing active menu session.
+    /// </summary>
     void DisplayMenu(IGameClient client, Menu menu);
 
+    /// <summary>
+    ///     Displays a menu to the specified client and outputs the new session identifier.
+    /// </summary>
     void DisplayMenu(IGameClient client, Menu menu, out ulong sessionId);
 
+    /// <summary>
+    ///     Closes the client's active menu session.
+    /// </summary>
+    /// <remarks>
+    ///     Disposal and <see cref="Menu.OnExit" /> callbacks are scheduled asynchronously on a short timer (~0.01s),
+    ///     so <see cref="IsInMenu(IGameClient)" /> remains <see langword="true" /> briefly after this method returns.
+    /// </remarks>
+    /// <exception cref="System.InvalidOperationException">The client does not currently have an active menu session.</exception>
     void QuitMenu(IGameClient client);
 
     /// <summary>
@@ -40,6 +54,7 @@ public interface IMenuManager
     ///     Returns whether the client is currently in the specified menu instance,
     ///     including parent menus in the current menu chain.
     /// </summary>
+    /// <exception cref="System.ArgumentNullException"><paramref name="menuInstance" /> is <see langword="null" />.</exception>
     bool IsInMenu(IGameClient client, Menu menuInstance);
 
     /// <summary>
@@ -50,6 +65,7 @@ public interface IMenuManager
     /// <summary>
     ///     Returns whether the current top menu is the specified menu instance.
     /// </summary>
+    /// <exception cref="System.ArgumentNullException"><paramref name="menuInstance" /> is <see langword="null" />.</exception>
     bool IsInCurrentMenu(IGameClient client, Menu menuInstance);
 
     /// <summary>

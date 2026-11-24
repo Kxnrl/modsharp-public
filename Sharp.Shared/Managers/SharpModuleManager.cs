@@ -24,40 +24,57 @@ namespace Sharp.Shared.Managers;
 public interface ISharpModuleManager
 {
     /// <summary>
-    ///     Register your current module as a library to allow other modules to use the interface
+    ///     Register a shared interface for your module so other modules can consume it.
     /// </summary>
+    /// <remarks>
+    ///     Must be called once the module is in the <c>Running</c> state (<see cref="IModSharpModule.PostInit" /> or later; calling in <see cref="IModSharpModule.Init" /> throws).
+    ///     <paramref name="identity" /> lookup is case-insensitive.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    ///     <paramref name="owner" /> is not the module's entry instance, the module is not yet in the <c>Running</c> state, or <paramref name="identity" /> is already registered.
+    /// </exception>
     public void RegisterSharpModuleInterface<T>(IModSharpModule owner, string identity, T impl) where T : class;
 
     /// <summary>
-    ///     Get the required sharp module interface. If the interface is not found, an exception is thrown.
+    ///     Get the required sharp module interface (case-insensitive lookup).
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The module interface wrapper.</returns>
+    /// <exception cref="EntryPointNotFoundException">No interface is registered for <paramref name="identity" />, or it is registered under a different type.</exception>
     public IModSharpModuleInterface<T> GetRequiredSharpModuleInterface<T>(string identity) where T : class;
 
     /// <summary>
-    ///     Get the optional sharp module interface.
+    ///     Get the optional sharp module interface (case-insensitive lookup).
     /// </summary>
     public IModSharpModuleInterface<T>? GetOptionalSharpModuleInterface<T>(string identity) where T : class;
 
     /// <summary>
-    ///     Register dynamic native functions for convenient debugging, performance is actually decent too<br />
-    ///     <remarks>It is the same as SourceMod, you can use it however you want</remarks>
+    ///     Register a dynamic native function (case-insensitive name).
     /// </summary>
+    /// <remarks>
+    ///     Must be called once the module is in the <c>Running</c> state (<see cref="IModSharpModule.PostInit" /> or later).
+    ///     The <paramref name="function" /> method must belong to <paramref name="owner" />'s assembly.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    ///     <paramref name="owner" /> is not the module's entry instance, the module is not yet in the <c>Running</c> state, or <paramref name="function" /> does not belong to <paramref name="owner" />'s assembly.
+    /// </exception>
+    /// <exception cref="System.Data.DuplicateNameException"><paramref name="name" /> is already registered.</exception>
     public void RegisterDynamicNative(IModSharpModule owner, string name, Delegate function);
 
     /// <summary>
-    ///     Get dynamic native function
-    ///     <remarks>
-    ///         After retrieving, you need to use 'is' operator for type conversion to ensure type safety <br />
-    ///         The returned delegate belongs to the registering module's ALC: do not cache it long-term;
-    ///         you must drop any cached delegate when you receive OnLibraryDisconnect,
-    ///         otherwise you will pin the unloaded module's ALC and may invoke unloaded code.
-    ///     </remarks>
+    ///     Get a dynamic native function by name (case-insensitive).
     /// </summary>
+    /// <remarks>
+    ///     After retrieving, use the <c>is</c> operator for type conversion to ensure type safety. <br />
+    ///     The returned delegate belongs to the registering module's ALC: do not cache it long-term;
+    ///     you must drop any cached delegate when you receive <see cref="IModSharpModule.OnLibraryDisconnect" />,
+    ///     otherwise you will pin the unloaded module's ALC and may invoke unloaded code.
+    /// </remarks>
+    /// <example>
     /// <code>
     /// var func = moduleManager.GetDynamicNative("MyFunction");
     /// if (func is Func&lt;int, int, int&gt; myFunction)
     ///    result = myFunction(1, 2);
     /// </code>
+    /// </example>
     public Delegate? GetDynamicNative(string name);
 }

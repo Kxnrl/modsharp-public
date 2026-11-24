@@ -133,12 +133,16 @@ public readonly record struct StringCommand
     }
 
     /// <summary>
-    ///     Try to get command argument converted to specified type, returns null if conversion fails
+    ///     Try to get command argument converted to a nullable numeric type; returns <see langword="null" /> if conversion fails.
     /// </summary>
-    /// <typeparam name="T">Target type, supports Int16, UInt16, Int32, UInt32, Int64, UInt64, Float</typeparam>
+    /// <typeparam name="T">
+    ///     Target nullable value type. Supports only <see cref="short" />?, <see cref="ushort" />?, <see cref="int" />?,
+    ///     <see cref="uint" />?, <see cref="long" />?, <see cref="ulong" />?, and <see cref="float" />?.
+    ///     Passing a non-nullable type (such as <see cref="int" />) throws <see cref="NotSupportedException" />.
+    /// </typeparam>
     /// <param name="index">Argument index, starts from <b>1</b></param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range</exception>
-    /// <exception cref="NotSupportedException">Generic type T is not supported</exception>
+    /// <exception cref="NotSupportedException">Generic type <typeparamref name="T" /> is not one of the supported nullable types</exception>
     public T? TryGet<T>(int index)
     {
         var readIndex = index - 1;
@@ -189,11 +193,12 @@ public readonly record struct StringCommand
     }
 
     /// <summary>
-    ///     Get command argument and parse as enum value
+    ///     Get command argument and convert a numeric integer string to an enum value (enum member names are not supported).
     /// </summary>
     /// <param name="index">Argument index, starts from <b>1</b></param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range</exception>
-    /// <exception cref="NotSupportedException">Generic type T is not supported</exception>
+    /// <exception cref="FormatException">The argument is not a valid 32-bit integer string</exception>
+    /// <exception cref="OverflowException">The argument is outside the range of <see cref="int" /></exception>
     public T GetEnum<T>(int index) where T : Enum
     {
         var readIndex = index - 1;

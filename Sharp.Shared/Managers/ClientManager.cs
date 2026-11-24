@@ -34,6 +34,7 @@ public interface IClientManager
     /// <summary>
     ///     Add <see cref="IClientListener" /> to listen for events
     /// </summary>
+    /// <exception cref="InvalidOperationException"><see cref="IClientListener.ListenerVersion" /> does not match <see cref="IClientListener.ApiVersion" />.</exception>
     void InstallClientListener(IClientListener listener);
 
     /// <summary>
@@ -142,7 +143,7 @@ public interface IClientManager
     void PrintCenterHtmlToClients(IEnumerable<IGameClient> clients, string message, int duration = 1);
 
     /// <summary>
-    ///     Clear Admins and re-trigger OnAdminReload
+    ///     Clear Admins and schedule <see cref="IClientListener.OnAdminCacheReload" /> at the end of the game frame
     /// </summary>
     [Obsolete("Migrated to AdminManager. Will be removed at 2.2")]
     void ReloadAdmins();

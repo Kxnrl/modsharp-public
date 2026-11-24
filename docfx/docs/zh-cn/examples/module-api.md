@@ -1,33 +1,33 @@
-# Module Shared API
+# 模块共享 API
 
-本教程将会教你怎么编写可以导出供其他模块使用的API。
+共享 API 需要三个项目，而不是在同一个程序集中放三个模块入口：
 
-> [!NOTE]
-> 本项目示例名为`SharedInterface`。
+| 项目 / AssemblyName | 源文件 | 引用 |
+|---|---|---|
+| `SharedInterface.Shared` | `module-api.cs` | 无 |
+| `SharedInterface` | `module-impl.cs` | `SharedInterface.Shared`、ModSharp SDK |
+| `UseSharedModule` | `module-use-api.cs` | `SharedInterface.Shared`、ModSharp SDK |
 
-首先，你需要至少2个项目来处理这个事情，本教程为演示，分别叫做`SharedInterface.Shared`、`SharedInterface`。
+提供方和调用方都按 [Hello World 项目设置](hello-world.md)配置；共享接口项目则是普通的 `net10.0` 类库。把**一份** `SharedInterface.Shared.dll` 放到 `{CS2}/game/sharp/shared/`，不要在模块目录里再拷副本。项目引用时加上 `Private="false" ExcludeAssets="runtime"`，NuGet 包引用时加上 `ExcludeAssets="runtime"`。
 
-在编写API之前，先思考几个问题：
+提供方的 `AssemblyName` 保持为 `SharedInterface`：生命周期回调传的是不带 `.dll` 的程序集名，不是类名 `MySharedModule`。
 
-1. 你的东西是否有共享代码的需求？
-   - ✔️：Extension / Module Shared API
-   - ❌：直接不管
+## 共享接口
 
-2. 你的东西是否有数据交互？
-   - ✔️：Module Shared API
-   - ❌：Extension
+接口标识是全局字符串键，建议带命名空间前缀防重名。
 
-本文仅教学如何编写Module API。
+[!code-csharp[SharedInterface.Shared](../../codes/module-api.cs)]
 
-在`SharedInterface.Shared`中，做如下定义
+## 提供方
 
-> [!WARNING]
-> `Identity` 常量用作注册和查找模块接口的全局键。使用 `nameof(IMyInterface)` 只会生成短类型名（如 `"IMySharedModule"`），如果另一个模块在不同命名空间下定义了同名接口，就会发生冲突。对于需要公开发布的模块，建议使用唯一 identity，例如 `"SharedInterface.Shared.IMySharedModule"` 或 `typeof(IMySharedModule).FullName!`，以确保唯一性。
+在 `PostInit` 里注册接口（此时 ModSharp 已经把入口实例和所属模块绑好了）。模块卸载时框架会自动注销。
 
-[!code-csharp[SharedInterface.Shared.cs](../../codes/module-api.cs)]
+[!code-csharp[SharedInterface](../../codes/module-impl.cs)]
 
-然后，你在`SharedInterface`中编写如下实现
-[!code-csharp[SharedInterface.cs](../../codes/module-impl.cs)]
+## 调用方
 
-最后，在其他插件调用你所写好的API
-[!code-csharp[UseSharedModule.cs](../../codes/module-use-api.cs)]
+在 `OnAllModulesLoaded` 里获取已加载的提供方（调用方自身热重载时也会走这里），在 `OnLibraryConnected` 里接住后加载的提供方，在 `OnLibraryDisconnect` 里清掉引用。缓存 `IModSharpModuleInterface<T>` 包装对象本身，不要直接缓存 `.Instance`：提供方卸载后 `.Instance` 会变 `null`，每次调用时再读 `.Instance`。
+
+[!code-csharp[UseSharedModule](../../codes/module-use-api.cs)]
+
+只放接口库不会加载提供方，提供方模块需要单独部署到 `sharp/modules`。如果只是想在模块内部复用代码，而不是跨模块共享运行时服务，直接写成[扩展](writing-sharp-extensions.md)就行。

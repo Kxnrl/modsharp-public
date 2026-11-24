@@ -55,15 +55,18 @@ public interface IPlayerController : IBaseEntity
     IObserverPawn? GetObserverPawn();
 
     /// <summary>
-    ///     Sets the PlayerPawn <br />
-    ///     <remarks>You should know what you're doing before calling this</remarks>
+    ///     Sets the PlayerPawn.
     /// </summary>
+    /// <remarks>You should know what you're doing before calling this.</remarks>
     void SetPlayerPawn(IPlayerPawn pawn);
 
     /// <summary>
-    ///     Gets the <see cref="IGameClient" /> <br />
-    ///     <remarks>Returns <c>null</c> if the player is not in-game, even if the entity exists</remarks>
+    ///     Gets the <see cref="IGameClient" /> for this controller.
     /// </summary>
+    /// <remarks>
+    ///     Returns <see langword="null" /> if <see cref="ConnectedState" /> is not <see cref="PlayerConnectedState.PlayerConnected" />
+    ///     or if no client occupies <see cref="PlayerSlot" />.
+    /// </remarks>
     IGameClient? GetGameClient();
 
     /// <summary>
@@ -109,7 +112,7 @@ public interface IPlayerController : IBaseEntity
     void ResetClanTag();
 
     /// <summary>
-    ///     Check awn
+    ///     Check pawn
     /// </summary>
     void CheckPawn();
 
@@ -146,21 +149,21 @@ public interface IPlayerController : IBaseEntity
     string ClanTag { get; }
 
     /// <summary>
-    ///     PlayerName, setting the value does not call StateChanged
+    ///     Player name (<c>CBasePlayerController::m_iszPlayerName</c>). Setting writes up to 127 UTF-8 bytes and calls <c>NetVarStateChanged</c> if the value changed.
     /// </summary>
     string PlayerName { get; set; }
 
     /// <summary>
-    ///     Pawn存活状态 <br />
-    ///     <remarks>该功能是给计分板用的</remarks>
+    ///     Scoreboard pawn alive state.
     /// </summary>
+    /// <remarks>Used by the scoreboard; prefer <see cref="GetPawn" /> and <see cref="IBaseEntity.IsAlive" />.</remarks>
     [Obsolete("Use GetPawn().IsAlive, will be removed in 2.2")]
     bool IsPawnAlive { get; }
 
     /// <summary>
-    ///     Pawn血量 <br />
-    ///     <remarks>该功能是给计分板用的</remarks>
+    ///     Scoreboard pawn health.
     /// </summary>
+    /// <remarks>Used by the scoreboard; prefer <see cref="GetPawn" /> and <see cref="IBaseEntity.Health" />.</remarks>
     [Obsolete("Use GetPawn().Health, will be removed in 2.2")]
     uint PawnHealth { get; }
 

@@ -6,11 +6,11 @@ description: Modern Source 2 Modding Solution.
 ---
 
 <div class="center-fixed text-center">
-  <img src="images/modsharp.svg" height="300" width="300" />
+  <img src="images/modsharp.svg" height="300" width="300" alt="ModSharp" />
   <h1 class="my-4">ModSharp</h1>
   <div>
-    <div>Modern Source 2 Modding solution, has served over 4 million players since Sep 2023.</div>
-    <div>现代Source 2 Modding解决方案, 2023年9月起已服务超过400万玩家.</div>
+    <div>Source 2 modding for Counter-Strike 2, powered by .NET 10.</div>
+    <div>基于 .NET 10 的 Counter-Strike 2 / Source 2 模组框架。</div>
   </div>
   <div class="my-4">
     <a
@@ -29,9 +29,7 @@ description: Modern Source 2 Modding Solution.
     /></a>
   </div>
   <div class="my-4 btn-group">
-    <a href="docs/en-us/guides/getting-started.md" class="btn btn-outline-success" style="width: 168px"
-      >Getting Started</a>
-      <a href="docs/zh-cn/guides/getting-started.md" class="btn btn-outline-success" style="width: 168px"
-      >快速上手</a>
+    <a href="docs/en-us/guides/getting-started.md" class="btn btn-outline-success" style="width: 168px">Getting Started</a>
+    <a href="docs/zh-cn/guides/getting-started.md" class="btn btn-outline-success" style="width: 168px">快速上手</a>
   </div>
 </div>

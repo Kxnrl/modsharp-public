@@ -1,14 +1,9 @@
 # Physics Query (Wrapper)
 
-This tutorial will demonstrate how to use `PhysicsQueryManager` to perform Trace operations.
+Use the [Hello World project settings](hello-world.md). The managed wrapper provides line/hull helpers, ignored-entity arguments, and managed filter delegates. For raw engine attributes and unmanaged filters, see [Physics Query (Native)](trace-native.md).
 
-> [!TIP]
->
-> To simplify the development process and reduce developer cognitive load, we provide a **Wrapper** version.  
-> **Wrapper** has slightly lower performance than the **Native** version, and the encapsulation limits flexibility.  
-> If you need high customization or ultimate performance, please use the **Native** version: [Documentation](./trace-native.md).
-> [!Warning]
->
-> The **Wrapper** version is based on reverse engineering results from November 2023, and some `Layers` may be outdated.  
+This example runs every 0.1 seconds. Set `ms_show_aim_target_type` to `0` (all), `1` (teammates) or `2` (enemies). The filter excludes the caller while retaining solid geometry, so it does not deliberately trace through walls. The display uses the **target's** health. It also shows an aim position from a query that ignores all players, and reports when the player's hull intersects solid geometry without killing the player.
 
-[!code-csharp[TraceWrapperExample.cs](../../codes/trace-wrapper.cs)]
+Use current `InteractionLayers` and `UsefulInteractionLayers` constants rather than old numeric masks. Timers created through `PushTimer` are removed on owner unload according to the callback's assembly load context; callbacks must belong to your module, not a shared assembly with a longer lifetime.
+
+[!code-csharp[TraceWrapper.cs](../../codes/trace-wrapper.cs)]

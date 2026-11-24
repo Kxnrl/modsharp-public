@@ -23,7 +23,7 @@ using System.Globalization;
 namespace Sharp.Modules.LocalizerManager.Shared;
 
 /// <summary>
-///     Client/culture-scoped locale view (new ergonomic API).
+///     Client/culture-scoped locale view.
 /// </summary>
 public interface ILocale
 {
@@ -35,45 +35,59 @@ public interface ILocale
     /// <summary>
     ///     Localize a key using the locale's culture.
     /// </summary>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not exist in the loaded locales.</exception>
+    /// <exception cref="FormatException">The localized format template is invalid for <paramref name="args" />.</exception>
     string Text(string key, params ReadOnlySpan<object?> args);
 
     /// <summary>
     ///     Localize a key using the locale's culture.
     /// </summary>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not exist in the loaded locales.</exception>
+    /// <exception cref="FormatException">The localized format template is invalid for the argument.</exception>
     string Text(string key, object? arg0);
 
     /// <summary>
     ///     Localize a key using the locale's culture.
     /// </summary>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not exist in the loaded locales.</exception>
+    /// <exception cref="FormatException">The localized format template is invalid for the arguments.</exception>
     string Text(string key, object? arg0, object? arg1);
 
     /// <summary>
     ///     Localize a key using the locale's culture.
     /// </summary>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not exist in the loaded locales.</exception>
+    /// <exception cref="FormatException">The localized format template is invalid for the arguments.</exception>
     string Text(string key, object? arg0, object? arg1, object? arg2);
 
     /// <summary>
-    ///     Localize a key ignoring culture (raw string.Format).
+    ///     Localize a key ignoring culture (raw <c>string.Format</c>).
     /// </summary>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="key" /> does not exist in the loaded locales.</exception>
+    /// <exception cref="FormatException">The localized format template is invalid for <paramref name="args" />.</exception>
     string Raw(string key, params ReadOnlySpan<object?> args);
 
     /// <summary>
-    ///     Try to localize a key; returns false and key if missing or format fails.
+    ///     Try to localize a key; returns <see langword="false" /> with <paramref name="key" /> if missing,
+    ///     or <see langword="false" /> with the raw unformatted template string if formatting fails.
     /// </summary>
     bool TryText(string key, out string value, params ReadOnlySpan<object?> args);
 
     /// <summary>
-    ///     Try to localize a key; returns false and key if missing or format fails.
+    ///     Try to localize a key; returns <see langword="false" /> with <paramref name="key" /> if missing,
+    ///     or <see langword="false" /> with the raw unformatted template string if formatting fails.
     /// </summary>
     bool TryText(string key, out string value, object? arg0);
 
     /// <summary>
-    ///     Try to localize a key; returns false and key if missing or format fails.
+    ///     Try to localize a key; returns <see langword="false" /> with <paramref name="key" /> if missing,
+    ///     or <see langword="false" /> with the raw unformatted template string if formatting fails.
     /// </summary>
     bool TryText(string key, out string value, object? arg0, object? arg1);
 
     /// <summary>
-    ///     Try to localize a key; returns false and key if missing or format fails.
+    ///     Try to localize a key; returns <see langword="false" /> with <paramref name="key" /> if missing,
+    ///     or <see langword="false" /> with the raw unformatted template string if formatting fails.
     /// </summary>
     bool TryText(string key, out string value, object? arg0, object? arg1, object? arg2);
 

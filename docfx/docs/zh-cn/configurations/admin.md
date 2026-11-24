@@ -1,207 +1,98 @@
-# 管理员配置文件 (Admin FlatFile)
+# 管理员配置（AdminManager）
 
-ModSharp 将管理员配置分为两个文件，以便于实现"快速分配"和"复杂权限管理"两种需求。
+管理员权限由 **AdminManager** 负责，读取两个配置文件：
 
-1.  **简易分配:** `{CS2}/sharp/configs/admins_simple.jsonc`
-2.  **高级配置:** `{CS2}/sharp/configs/admins.jsonc`
+- `sharp/configs/admins.jsonc`：定义权限集合、身份组和详细的管理员配置。
+- `sharp/configs/admins_simple.jsonc`：可选的快捷配置，把已有身份组直接绑给指定 SteamID64。
 
-## 5 分钟快速上手 — 添加一个 Root 管理员
+两个文件都支持注释、尾随逗号，属性名不区分大小写。完整的内置身份组和权限见[默认 `admins.jsonc`](https://github.com/Kxnrl/modsharp-public/blob/master/.asset/configs/admins.jsonc)、[完整注释示例](https://github.com/Kxnrl/modsharp-public/blob/master/.asset/configs/admins.jsonc.example)和[简易示例](https://github.com/Kxnrl/modsharp-public/blob/master/.asset/configs/admins_simple.jsonc.example)。
 
-如果你只是想尽快给自己加上最高权限，只需 3 步：
+> [!WARNING]
+> 旧版 **AdminFlatFile** 读的是 `admins.json`，基于已废弃的核心管理员 API，计划在 2.2 移除。它不认 `.jsonc` 文件，升级时请按新格式迁移，别直接把旧文件改后缀。
 
-**第 1 步：复制配置文件**
+## 添加 Root 管理员
 
-将 `admins_simple.jsonc.example` 复制并重命名为 `admins_simple.jsonc`（位于 `{CS2}/sharp/configs/` 目录下）。
+1. 保留发行包自带的 `admins.jsonc`（丢了就从 `admins.jsonc.example` 拷一份），确保 `Roles` 里有一个带 `"*"` 权限的 `root` 身份组，并把 `Admins` 里的示例 SteamID 清掉或改掉。
+2. 把 `admins_simple.jsonc.example` 复制为 `admins_simple.jsonc`，填上你自己的 SteamID64：
 
-**第 2 步：填入你的 SteamID64**
+   ```json
+   {
+     "76561198000000001": "root"
+   }
+   ```
 
-打开 `admins_simple.jsonc`，将示例中的 SteamID 替换为你自己的：
+   这里必须填 64 位数字 SteamID，不能填自定义个人资料 URL，也不能填 `STEAM_0:...` 或 `[U:1:...]` 格式。
+3. 在服务端控制台跑 `ms_reload_admins`（或重启），再跑 `ms_admins <steamid64>` 确认权限已经生效。
 
-```json
-{
-    "你的SteamID64": "root"
-}
-```
+配合 **CommandCenter** 加载时，**服务端控制台**可用以下三条指令：
 
-> [!TIP]
-> **如何获取 SteamID64？**
-> - 打开 Steam 客户端 → 个人资料 → 右键复制页面 URL，其中的数字即为 SteamID64。
-> - 或者访问 [steamid.io](https://steamid.io) 或 [steamid.xyz](https://steamid.xyz)，输入你的 Steam 个人资料链接即可查询。
-> - SteamID64 是一串 17 位数字，形如 `76561198000000001`。请勿使用 `STEAM_0:X:Y` 或 `[U:1:...]` 格式。
+| 指令 | 用途 |
+| --- | --- |
+| `ms_perms` | 按模块和集合列出所有已注册权限 |
+| `ms_admins [steamid64]` | 列出所有管理员，或查某个管理员的权限及来源 |
+| `ms_reload_admins` | 重新读取 `admins.jsonc` 和 `admins_simple.jsonc` |
 
-**第 3 步：让服务器加载配置**
+改完配置文件不会自动生效，需要手动 `ms_reload_admins`，重载后记得查看日志。只有当 `admins.jsonc` 和 `admins_simple.jsonc` 合并后的结果完全为空（没有任何权限集合、身份组和管理员）时，内存里原来生效的清单才会保持不动；如果 `admins.jsonc` 解析失败而 `admins_simple.jsonc` 仍有有效条目，重载仍会挂载这份缺少身份组定义的清单，导致这些管理员暂时失去权限。
 
-在服务器控制台执行：
+## 简易分配（`admins_simple.jsonc`）
 
-```
-ms_reload_admins
-```
-
-或者直接重启服务器。完成后你就拥有 root 权限了。
-
-> [!NOTE]
-> `admins_simple.jsonc` 中使用的身份组名称（如 `root`、`admin`）必须在 `admins.jsonc` 中定义。默认的 `admins.jsonc.example` 已经预定义了 `root`、`senior_admin`、`admin`、`moderator`、`helper` 五个身份组。如果你需要使用这些身份组，请同时将 `admins.jsonc.example` 复制为 `admins.jsonc`。
-
----
-
-## 服务器控制台命令速查
-
-| 命令 | 说明 |
-|------|------|
-| `ms_perms` | 列出所有已注册的权限字符串 |
-| `ms_admins` | 查看当前已加载的管理员及其权限 |
-| `ms_reload_admins` | 热重载管理员配置（无需重启服务器） |
-
----
-
-## 编程接入提示
-
-如果你的模块还会调用 `IAdminManager.MountAdminManifest(...)` 和 `GetCommandRegistry(...)`，请在两处使用同一个、稳定的 `moduleIdentity`，并在多次调用中保持不变。
-
-> [!IMPORTANT]
-> `MountAdminManifest` 和 `GetCommandRegistry` 必须在游戏线程内调用。如果你在异步上下文或后台线程中（例如数据库查询回调后），请先通过 `IModSharp.InvokeFrameAction` 或 `IModSharp.InvokeFrameActionAsync` 回到游戏线程再调用。
-
-推荐使用模块的 `AssemblyName`，例如：
-
-```csharp
-private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";
-```
-
-## 简易配置 (`admins_simple.jsonc`)
-
-使用此文件可通过简单的 **键值对 (Key-Value)** 格式快速将现有的 **身份组 (Roles)** 分配给用户。
-
-*   **键 (Key):** 玩家的 SteamID64，以**字符串**形式书写（JSON 键必须是字符串）。
-*   **值 (Value):** 身份组名称（字符串），或身份组名称数组。
-
-**注意:**
-1.  身份组名称（例如 "root", "admin"）**必须**在主文件 `admins.jsonc` 中定义。如果身份组名称不存在，该管理员将不会获得该身份组的任何权限，仅在服务器日志中输出警告。
-2.  如果某个用户同时出现在此文件和主文件 `admins.jsonc` 中，此文件中的条目将被**跳过**（`admins.jsonc` 优先）。系统会输出日志提示以帮助你注意到这一点。
-
-**示例:**
-```json
-{
-    // 服主 / Root
-    "76561198000000001": "root",
-
-    // 普通管理员
-    "76561198000000002": "admin",
-    "76561198000000003": "admin",
-
-    // 多角色: 管理员 + VIP
-    "76561198000000004": ["admin", "vip"]
-}
-```
-
----
-
-## 高级配置 (`admins.jsonc`)
-
-此文件包含权限定义、身份组定义以及详细的管理员配置。它分为三个部分：
-
-1.  **PermissionCollection:** 权限字符串的注册表，按键名（如 `"admin"`）分组。每个字符串（如 `"admin:kick"`）代表一个可授予/拒绝的操作。注册后的权限用于通配符展开（`admin:*`）、加载时验证以及 `ms_perms` 控制台命令列出。服务器运营者通常不需要修改此节 — 默认值已覆盖所有内置管理命令。
-2.  **Roles:** 定义一组权限和免疫等级（即 **身份组**），可直接分配给管理员。
-3.  **Admins:** 为特定的 SteamID 分配身份组和特定权限。
-
-### 1. 结构
-
-#### Roles (身份组对象)
-*   `Name` (必填): 身份组名称（可通过 `@Name` 进行引用/继承）。
-*   `Immunity` (选填): 免疫等级 (0-255)。
-*   `Permissions` (必填): 权限字符串或继承身份组的列表。
-
-#### Admins (管理员对象)
-*   `Identity` (必填): 玩家的 SteamID64（如 `76561198000000001`）。JSON 中同时支持整数和 `"字符串"` 格式。
-*   `Immunity` (选填): 覆盖身份组的免疫等级。系统取所有条目中发现的最高值。免疫等级高的管理员不会被免疫等级低的管理员执行操作（如踢出、封禁、处死等）。
-*   `Permissions` (必填): 要继承的身份组列表，或要授予/拒绝的特定权限。
-
-### 2. 权限语法规则
-
-您可以在 **Roles** 和 **Admins** 的 `Permissions` 数组中使用以下语法：
-
-*   **`@身份组名称`**: 继承某个身份组的所有权限和免疫等级（支持递归）。
-*   **`!permission`**: 拒绝某项权限。这是全局性的，会覆盖其他任何授权。
-*   **`*`**: 授予所有权限。
-*   **`module:*`**: 授予特定模块内的所有权限（支持递归，例如同时匹配 `module:a` 和 `module:a:b`）。
-
-#### 通配符匹配细节
-
-`:` 是段分隔符，通配符的行为取决于其位置：
-
-*   **尾部通配符**（位于模式末尾）：匹配所有剩余段。
-    *   `admin:*` 匹配 `admin:ban`、`admin:ban:extended` 等。
-    *   单独的 `*` 匹配所有已注册的权限。
-*   **中间通配符**：仅匹配恰好一个段。
-    *   `admin:*:give` 匹配 `admin:items:give`，但不匹配 `admin:items:sub:give`。
-
-### 3. 通用规则
-*   **不区分大小写:** `Admin:Kick` 与 `admin:kick` 视为相同。
-*   **身份格式:** 必须使用 SteamID64。同时支持整数格式（`76561198000000001`）和字符串格式（`"76561198000000001"`）。请勿使用旧版格式 (STEAM_0:...) 或 SteamID3 格式 ([U:1:...])。
-
-### 4. 多模块合并
-
-当同一个 SteamID 出现在多个模块配置中时：
-1.  **合并:** 用户获得所有条目的权限并集。
-2.  **免疫等级:** 取所有条目中的最高值。
-3.  **拒绝:** `!permission` 会覆盖来自任何模块的授权。
-4.  **角色作用域:** `@RoleName` 仅在定义该管理员条目的模块自身的 Roles 中解析，不会查找其他模块的角色。
-
-**示例:** 模块 A 定义了角色 `admin`，并将用户 `76561198000000001` 分配为 `@admin`。模块 B 定义了角色 `vip`，并将同一用户分配为 `@vip`。结果：
-*   `@admin` 在模块 A 的 Roles 中解析 → 授予模块 A 的 admin 权限。
-*   `@vip` 在模块 B 的 Roles 中解析 → 授予模块 B 的 vip 权限。
-*   用户获得两者的并集。
-*   如果模块 B 的管理员条目引用了 `@admin`，它**不会**找到模块 A 的角色 — 只会在模块 B 自己的 Roles 中查找。
-
-### 完整示例 (`admins.jsonc`)
+键是 SteamID64 字符串，值是单个身份组名或身份组名数组：
 
 ```json
 {
-    "PermissionCollection": {
-        "admin": [
-            "admin:kick", "admin:ban", "admin:mute", "admin:slay",
-            "admin:freeze", "admin:tp", "admin:map", "admin:noclip",
-            "admin:rcon", "admin:cvar"
-        ]
-    },
-
-    "Roles": [
-        {
-            "Name": "root",
-            "Immunity": 255,
-            "Permissions": ["*"]
-        },
-        {
-            "Name": "senior_admin",
-            "Immunity": 80,
-            "Permissions": ["@admin", "admin:rcon", "admin:cvar"]
-        },
-        {
-            "Name": "admin",
-            "Immunity": 60,
-            "Permissions": ["@moderator", "admin:map", "admin:slay", "admin:noclip"]
-        },
-        {
-            "Name": "moderator",
-            "Immunity": 40,
-            "Permissions": ["@helper", "admin:ban", "admin:freeze", "admin:tp"]
-        },
-        {
-            "Name": "helper",
-            "Immunity": 20,
-            "Permissions": ["admin:kick", "admin:mute"]
-        }
-    ],
-
-    "Admins": [
-        {
-            "Identity": 76561198000000001,
-            "Permissions": ["@root"]
-        },
-        {
-            // 管理员，但不能封禁
-            "Identity": 76561198000000002,
-            "Permissions": ["@admin", "!admin:ban"]
-        }
-    ]
+  "76561198000000001": "root",
+  "76561198000000002": ["moderator", "helper"]
 }
 ```
+
+这里填的身份组都必须在 `admins.jsonc` 里定义过，填了不存在的身份组会打警告且不给任何权限。如果同一个 SteamID 已经在 `admins.jsonc` 里配置过了，`admins_simple.jsonc` 里对应的那条会被直接跳过，不会合并。
+
+## 完整清单（`admins.jsonc`）
+
+顶层分三块：
+
+- `PermissionCollection`：给一组权限字符串起个集合名。权限可以在这里登记，也可以由模块代码注册；后面的通配符规则就是基于已注册的权限表展开的。
+- `Roles`：身份组列表，每项含 `Name`、`Immunity`（0–255，不填默认 0）和 `Permissions`。
+- `Admins`：管理员列表，每项含 `Identity`（SteamID64，写 JSON 数字或字符串都行）、`Immunity`（0–255，不填默认 0）和 `Permissions`。
+
+管理员最终生效的免疫等级，取他自身填的数值和所有继承身份组数值里的**最大值**（自身填低了不会压掉身份组的高免疫）。如果 `admins.jsonc` 里对同一个 SteamID 写了多条记录，权限会合并，免疫等级取最高值。免疫检查由具体执行踢人/封禁等目标操作的指令或模块负责。
+
+下面是一个精简示例（展示结构用，完整默认权限以自带文件为准）：
+
+```json
+{
+  "PermissionCollection": {
+    "admin": ["admin:kick", "admin:ban"]
+  },
+  "Roles": [
+    { "Name": "root", "Immunity": 255, "Permissions": ["*"] },
+    { "Name": "moderator", "Immunity": 40, "Permissions": ["admin:kick", "admin:ban"] }
+  ],
+  "Admins": [
+    { "Identity": "76561198000000001", "Permissions": ["@root"] },
+    { "Identity": "76561198000000002", "Permissions": ["@moderator", "!admin:ban"] }
+  ]
+}
+```
+
+### 权限规则
+
+权限名和身份组名都不区分大小写：
+
+| 写法 | 效果 |
+| --- | --- |
+| `@RoleName` | 递归继承该身份组的权限和免疫等级 |
+| `!admin:ban` | 拒绝该权限，优先级高于任何来源的授权 |
+| `*` | 授予全部已注册权限 |
+| `admin:*` | 授予 `admin:` 下所有已注册权限（含更深子级） |
+| `admin:*:give` | 只匹配中间一段，如匹配 `admin:items:give`，不匹配 `admin:items:sub:give` |
+
+`*` 是按冒号分段匹配的，不是子串通配，拒绝规则 `!` 同样支持通配写法。注意 `@RoleName` 只在当前模块自己的清单里找身份组，不会跨模块借用别的模块定义的身份组。
+
+当多个模块同时给同一个 SteamID 分配了权限时，最终结果是“合并所有授权 -> 减掉所有拒绝项”，免疫等级取最大值。之后新注册进来的权限会自动补进直接写在管理员上的通配规则里；只通过 `@RoleName` 继承来的通配规则会在重新挂载清单或执行 `ms_reload_admins` 时重新展开。随时可以用 `ms_perms` 和 `ms_admins` 查看实际生效结果。
+
+## 在模块里接入
+
+请使用 `Sharp.Modules.AdminManager.Shared` 的 `IAdminManager`（不要用已废弃的 `IClientManager` 管理员方法）。调用 `MountAdminManifest(moduleIdentity, ...)` 和 `GetCommandRegistry(moduleIdentity)` 时请传同一个稳定的模块标识（通常用程序集名）。如果模块要提供自己的权限集合、身份组或管理员清单，先调 `MountAdminManifest`；只注册指令的模块可以直接调 `GetCommandRegistry`，再通过 `RegisterPermissions` 登记权限后注册指令（指令注册表需要同时加载 CommandCenter）。
+
+这两个方法都要在游戏主线程调用；如果从数据库或后台任务拉完数据，先用 `IModSharp.InvokeFrameAction` 或 `InvokeFrameActionAsync` 切回主线程。完整代码见[管理员示例](../examples/admin-example.md)和 [IAdminManager](https://github.com/Kxnrl/modsharp-public/blob/master/Sharp.Modules/AdminManager/Shared/IAdminManager.cs)。

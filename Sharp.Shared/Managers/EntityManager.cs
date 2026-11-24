@@ -32,6 +32,7 @@ public interface IEntityManager
     /// <summary>
     ///     Add <see cref="IEntityListener" /> to listen for events
     /// </summary>
+    /// <exception cref="System.InvalidOperationException"><see cref="IEntityListener.ListenerVersion" /> does not match <see cref="IEntityListener.ApiVersion" />.</exception>
     void InstallEntityListener(IEntityListener listener);
 
     /// <summary>
@@ -93,14 +94,13 @@ public interface IEntityManager
     IBaseEntity? FindEntityByIndex(EntityIndex index);
 
     /// <summary>
-    ///     Build entity from pointer <br />
-    ///     <remarks>
-    ///         Does not guarantee correct type, type is based on input parameter <br />
-    ///         If you need to check <c>Pawn</c> please call <see cref="IBaseEntity.AsPlayerPawn" /> yourself <br />
-    ///         If you need to check <c>Controller</c> please call <see cref="IBaseEntity.AsPlayerController" /> yourself
-    ///         <br />
-    ///     </remarks>
+    ///     Build entity from pointer
     /// </summary>
+    /// <remarks>
+    ///     Does not guarantee correct type, type is based on input parameter. <br />
+    ///     If you need to check <c>Pawn</c> please call <see cref="IBaseEntity.AsPlayerPawn" /> yourself. <br />
+    ///     If you need to check <c>Controller</c> please call <see cref="IBaseEntity.AsPlayerController" /> yourself.
+    /// </remarks>
     T MakeEntityFromPointer<T>(nint entity) where T : class, IBaseEntity;
 
     /// <summary>
@@ -114,7 +114,7 @@ public interface IEntityManager
     /// <remarks>
     ///     <para>
     ///         <b>PERFORMANCE WARNING:</b><br />
-    ///         JThis method performs an <b>O(N) linear scan</b> over the global
+    ///         This method performs an <b>O(N) linear scan</b> over the global
     ///         entity list
     ///         and uses a wildcard string comparison (same rules as <c>V_CompareNameWithWildcards</c>), which is way heavier
     ///         than a normal <c>strcmp</c>, for every entity.
@@ -232,23 +232,25 @@ public interface IEntityManager
     CUtlSymbolLarge AllocPooledString(string content);
 
     /// <summary>
-    ///     Listen for entity Output<br />
-    ///     <remarks>
-    ///         Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
-    ///         class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
-    ///         after their Classname is changed
-    ///     </remarks>
+    ///     Register an entity output hook so matching firings are dispatched to <see cref="IEntityListener.OnEntityFireOutput" />.
     /// </summary>
+    /// <remarks>
+    ///     Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
+    ///     class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
+    ///     after their Classname is changed. Registrations are global and permanent (there is no unhook API) and
+    ///     dispatch to all installed <see cref="IEntityListener" /> instances.
+    /// </remarks>
     void HookEntityOutput(string classname, string output);
 
     /// <summary>
-    ///     Listen for entity Input<br />
-    ///     <remarks>
-    ///         Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
-    ///         class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
-    ///         after their Classname is changed
-    ///     </remarks>
+    ///     Register an entity input hook so matching inputs are dispatched to <see cref="IEntityListener.OnEntityAcceptInput" />.
     /// </summary>
+    /// <remarks>
+    ///     Matches by Classname and by the entity class the classname resolves to (an alias resolves to its target
+    ///     class, and a C++ class name is accepted too), both case-insensitively; entities of that class still match
+    ///     after their Classname is changed. Registrations are global and permanent (there is no unhook API) and
+    ///     dispatch to all installed <see cref="IEntityListener" /> instances.
+    /// </remarks>
     void HookEntityInput(string classname, string input);
 
     /*  Player  */

@@ -35,7 +35,6 @@ public interface IPlayerPawn : IBasePlayerPawn
     /// <summary>
     ///     Automatically gets Controller if alive, otherwise OriginalController
     /// </summary>
-    /// <returns></returns>
     IPlayerController? GetControllerAuto();
 
     /// <summary>
@@ -44,14 +43,14 @@ public interface IPlayerPawn : IBasePlayerPawn
     IBaseWeapon? GiveNamedItem(string weapon);
 
     /// <summary>
-    ///     Give weapon to player
+    ///     Give weapon to player by <see cref="EconItemId" />.
     /// </summary>
+    /// <exception cref="System.InvalidOperationException"><paramref name="item" /> is not defined or not found in the econ item definitions.</exception>
     IBaseWeapon? GiveNamedItem(EconItemId item);
 
     /// <summary>
     ///     Gets the currently held weapon
     /// </summary>
-    /// <returns></returns>
     IBaseWeapon? GetActiveWeapon();
 
     /// <summary>
@@ -95,9 +94,13 @@ public interface IPlayerPawn : IBasePlayerPawn
     void SwitchWeapon(IBaseWeapon? weapon);
 
     /// <summary>
-    ///     Set player gloves's visibility
+    ///     Set default player gloves' visibility.
     /// </summary>
-    /// <param name="hide"></param>
+    /// <remarks>
+    ///     Despite the parameter name <paramref name="hide" />, the underlying native function takes a <c>draw</c> flag:
+    ///     pass <see langword="false" /> to hide the default gloves and <see langword="true" /> to draw/restore them.
+    /// </remarks>
+    /// <param name="hide"><see langword="false" /> to hide default gloves; <see langword="true" /> to draw default gloves.</param>
     void SetDefaultGloves(bool hide);
 
     /// <summary>

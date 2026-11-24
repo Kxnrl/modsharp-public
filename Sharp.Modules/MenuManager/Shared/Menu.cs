@@ -68,23 +68,27 @@ public class Menu
     /// <summary>
     ///     Gets whether the player is allowed to move while the menu is open.
     /// </summary>
+    /// <remarks>Movement is suppressed when <see langword="false" /> only if at least one configured menu keybinding uses WASD movement keys.</remarks>
     public bool IsPlayerMovementEnabled { get; private set; } = true;
 
     /// <summary>
     ///     Sets whether the player is allowed to move while the menu is open.
     /// </summary>
+    /// <remarks>Movement is suppressed when <see langword="false" /> only if at least one configured menu keybinding uses WASD movement keys.</remarks>
     public void SetPlayerMovement(bool enabled)
         => IsPlayerMovementEnabled = enabled;
 
     private Func<IGameClient, string> _titleFactory = _ => string.Empty;
 
     /// <summary>
-    ///     Invoked when the menu is closed or navigated away from.
+    ///     Invoked when this menu is popped via <see cref="IMenuController.GoBack" /> or when the menu session is disposed/closed.
+    ///     Not invoked when navigating forward to a submenu via <see cref="IMenuController.Next(Menu)" />.
     /// </summary>
     public Action<IGameClient>? OnExit;
 
     /// <summary>
-    ///     Invoked when the menu is first displayed or navigated into.
+    ///     Invoked when the menu is first displayed or pushed as a submenu via <see cref="IMenuController.Next(Menu)" />.
+    ///     Not re-invoked when returning to this menu from a child menu via <see cref="IMenuController.GoBack" />.
     /// </summary>
     public Action<IGameClient>? OnEnter;
 
@@ -538,7 +542,8 @@ public class Menu
         }
 
         /// <summary>
-        ///     Sets a callback invoked when the menu is closed or navigated away from.
+        ///     Sets a callback invoked when this menu is popped via <see cref="IMenuController.GoBack" /> or when the session closes
+        ///     (not invoked when navigating forward into a submenu).
         /// </summary>
         /// <param name="fn">The callback receiving the client.</param>
         public Builder OnExit(Action<IGameClient> fn)
@@ -549,7 +554,8 @@ public class Menu
         }
 
         /// <summary>
-        ///     Sets a callback invoked when the menu is first displayed or navigated into.
+        ///     Sets a callback invoked when the menu is first displayed or pushed as a submenu
+        ///     (not re-invoked when returning via <see cref="IMenuController.GoBack" />).
         /// </summary>
         /// <param name="fn">The callback receiving the client.</param>
         public Builder OnEnter(Action<IGameClient> fn)

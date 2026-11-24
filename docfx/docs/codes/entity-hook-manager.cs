@@ -12,7 +12,7 @@ namespace EntityHookManager;
 
 public sealed class EntityHookManager : IModSharpModule
 {
-    private readonly IServiceProvider   _provider;
+    private readonly ServiceProvider    _provider;
     private readonly IEntityHookManager _entityHookManager;
 
     public EntityHookManager(ISharedSystem sharedSystem,
@@ -51,8 +51,9 @@ public sealed class EntityHookManager : IModSharpModule
 
     public void Shutdown()
     {
-        // unload the extension, otherwise you will get fucked after reloaded.
+        // Shutdown unregisters the extension's hooks and listeners before disposing its services.
         _provider.ShutdownAllSharpExtensions();
+        _provider.Dispose();
     }
 
     private void OnWeaponSpawned(string classname, IBaseWeapon weapon)

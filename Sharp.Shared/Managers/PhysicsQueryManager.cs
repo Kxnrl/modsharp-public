@@ -32,8 +32,8 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group (e.g. <see cref="CollisionGroupType.Always" /> or <see cref="CollisionGroupType.Projectile" />)</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="ignore1">Entity 1 to ignore</param>
     /// <param name="ignore2">Entity 2 to ignore</param>
@@ -52,8 +52,8 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="ignore1">Entity 1 to ignore</param>
     /// <param name="ignore2">Entity 2 to ignore</param>
@@ -67,18 +67,19 @@ public interface IPhysicsQueryManager
         IBaseEntity?                      ignore2       = null);
 
     /// <summary>
-    ///     TraceLine with custom filter
+    ///     TraceLine with custom managed filter
     /// </summary>
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
-    /// <param name="filter">Filter Callback</param>
+    /// <param name="filter">Filter callback; return <see langword="true" /> to hit the entity or <see langword="false" /> to ignore it.</param>
     /// <remarks>
+    ///     Not thread-safe and not reentrant: do not invoke another filtered trace from inside <paramref name="filter" />.
     ///     An exception thrown by <paramref name="filter" /> is rethrown as-is after the trace ends;
-    ///     once it throws, the filter is not called again for the rest of this trace
+    ///     once it throws, the filter is not called again for the rest of this trace.
     /// </remarks>
     TraceResult TraceLineFilter(Vector start,
         Vector                         end,
@@ -95,8 +96,8 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="ignore1">Entity 1 to ignore</param>
     /// <param name="ignore2">Entity 2 to ignore</param>
@@ -117,8 +118,8 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
     /// <param name="ignore1">Entity 1 to ignore</param>
     /// <param name="ignore2">Entity 2 to ignore</param>
@@ -133,19 +134,20 @@ public interface IPhysicsQueryManager
         IBaseEntity?                              ignore2       = null);
 
     /// <summary>
-    ///     TraceShape with custom filter
+    ///     TraceShape with custom managed filter
     /// </summary>
     /// <param name="ray">Ray shape</param>
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="mask">See <seealso cref="Sharp.Shared.Definition.UsefulInteractionLayers" /></param>
-    /// <param name="group"><br />4 = SwingOrStab<br />3 = FireBullets<br />4 = OpenSource2</param>
-    /// <param name="flags">Typically use 7 (1+2+4)</param>
+    /// <param name="group">Collision group</param>
+    /// <param name="flags">Query flags (commonly <see cref="TraceQueryFlag.All" /> or <see cref="TraceQueryFlag.Static" /> | <see cref="TraceQueryFlag.KeyFramed" /> | <see cref="TraceQueryFlag.Dynamic" />)</param>
     /// <param name="excludeLayers">Layers to exclude</param>
-    /// <param name="filter">Filter Callback</param>
+    /// <param name="filter">Filter callback; return <see langword="true" /> to hit the entity or <see langword="false" /> to ignore it.</param>
     /// <remarks>
+    ///     Not thread-safe and not reentrant: do not invoke another filtered trace from inside <paramref name="filter" />.
     ///     An exception thrown by <paramref name="filter" /> is rethrown as-is after the trace ends;
-    ///     once it throws, the filter is not called again for the rest of this trace
+    ///     once it throws, the filter is not called again for the rest of this trace.
     /// </remarks>
     TraceResult TraceShapeFilter(TraceShapeRay ray,
         Vector                                 start,
@@ -178,7 +180,7 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="query">Trace parameters</param>
-    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
+    /// <param name="filterCallback">Optional unmanaged function pointer with signature <c>delegate* unmanaged&lt;CTraceFilter*, nint, bool&gt;</c> cast to <see cref="nint" />.</param>
     GameTrace TraceShape(TraceShapeRay ray, Vector start, Vector end, in RnQueryShapeAttr query, nint? filterCallback = null);
 
     /// <summary>
@@ -187,7 +189,7 @@ public interface IPhysicsQueryManager
     /// <param name="start">Start position</param>
     /// <param name="end">End position</param>
     /// <param name="query">Trace parameters</param>
-    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
+    /// <param name="filterCallback">Optional unmanaged function pointer with signature <c>delegate* unmanaged&lt;CTraceFilter*, nint, bool&gt;</c> cast to <see cref="nint" />.</param>
     GameTrace TraceLine(Vector start, Vector end, in RnQueryShapeAttr query, nint? filterCallback = null);
 
     /// <summary>
@@ -228,7 +230,7 @@ public interface IPhysicsQueryManager
     /// <param name="unique">Unique entities only</param>
     /// <param name="entities">Buffer for entities</param>
     /// <param name="test">Unknown purpose, game always uses <b>1</b></param>
-    /// <param name="filterCallback">Filter callback, requires manual conversion from <b>unmanaged</b> to <b>nint</b></param>
+    /// <param name="filterCallback">Optional unmanaged function pointer with signature <c>delegate* unmanaged&lt;CTraceFilter*, nint, bool&gt;</c> cast to <see cref="nint" />.</param>
     /// <returns>Number of entities found</returns>
     int EntitiesAlongRay(TraceShapeRay ray,
         Vector                         origin,

@@ -120,17 +120,13 @@ public sealed class TraceWrapperExample : IModSharpModule
                                                 // use custom filter here
                                                 entity =>
                                                 {
-                                                    if (entity.Team != team)
-                                                    {
-                                                        return false;
-                                                    }
-
+                                                    // Keep solid geometry in the trace; only filter player pawns.
                                                     if (!entity.IsPlayerPawn)
                                                     {
-                                                        return false;
+                                                        return true;
                                                     }
 
-                                                    return entity.IsAlive;
+                                                    return !entity.Equals(pawn) && entity.Team == team && entity.IsAlive;
                                                 });
 
                 break;
@@ -146,7 +142,7 @@ public sealed class TraceWrapperExample : IModSharpModule
             return;
         }
 
-        var message = $"{targetController.PlayerName}\n Health: {pawn.Health}/{pawn.MaxHealth}";
+        var message = $"{targetController.PlayerName}\n Health: {targetPawn.Health}/{targetPawn.MaxHealth}";
 
         controller.Print(HudPrintChannel.Center, message);
     }
@@ -222,8 +218,6 @@ public sealed class TraceWrapperExample : IModSharpModule
             return;
         }
 
-        controller.Print(HudPrintChannel.Chat, "You are stuck, femboy @Nuko will kill you.");
-
-        pawn.Slay(true);
+        controller.Print(HudPrintChannel.Center, "Your player hull is intersecting solid geometry.");
     }
 }

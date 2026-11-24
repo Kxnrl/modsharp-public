@@ -24,8 +24,9 @@ namespace Sharp.Modules.AdminCommands.Shared;
 
 /// <summary>
 ///     Silence/unsilence operations (mute+gag). Provided for callers; not intended for external implementations.
-///     Side effects: updates cache, may notify players. Duplicate checks are the caller's responsibility (command handlers
-///     already do this).
+///     Side effects: updates cache, may notify players. Storage skips writing duplicate active records,
+///     but callers should still perform duplicate checks before invoking to avoid redundant notifications
+///     (built-in command handlers already do this).
 /// </summary>
 public interface ISilenceService
 {

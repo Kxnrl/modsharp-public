@@ -46,59 +46,70 @@ public interface IGameData
     bool GetVFuncIndex(string name, out int index);
 
     /// <summary>
-    ///     Get offset by key, throws exception if not found
+    ///     Get offset by key.
     /// </summary>
     /// <param name="name">Key name</param>
     /// <returns>Offset value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="name" /> is not found.</exception>
     int GetOffset(string name);
 
     /// <summary>
-    ///     Get offset using class::member format
+    ///     Get offset using <c>classname::name</c> format, walking schema base classes if needed.
     /// </summary>
-    /// <param name="classname">Class name</param>
+    /// <param name="classname">Schema class name</param>
     /// <param name="name">Member name</param>
     /// <returns>Offset value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key not found in <paramref name="classname" /> or its schema base classes.</exception>
     int GetOffset(string classname, string name);
 
     /// <summary>
-    ///     Get address by key, throws exception if not found
+    ///     Get address by key.
     /// </summary>
     /// <param name="name">Key name</param>
     /// <returns>Address value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="name" /> is not found.</exception>
     nint GetAddress(string name);
 
     /// <summary>
-    ///     Get address using class::member format
+    ///     Get address using <c>classname::name</c> format, walking schema base classes if needed.
     /// </summary>
-    /// <param name="classname">Class name</param>
+    /// <param name="classname">Schema class name</param>
     /// <param name="name">Member name</param>
     /// <returns>Address value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key not found in <paramref name="classname" /> or its schema base classes.</exception>
     nint GetAddress(string classname, string name);
 
     /// <summary>
-    ///     Get virtual function index by key
+    ///     Get virtual function index by key.
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">Key name</param>
     /// <returns>Index value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException"><paramref name="name" /> is not found.</exception>
     int GetVFuncIndex(string name);
 
     /// <summary>
-    ///     Get virtual function index using class::member format
+    ///     Get virtual function index using <c>classname::name</c> format, walking schema base classes if needed.
     /// </summary>
-    /// <param name="classname">Class name</param>
+    /// <param name="classname">Schema class name</param>
     /// <param name="name">Member name</param>
     /// <returns>Index value</returns>
+    /// <exception cref="System.Collections.Generic.KeyNotFoundException">Key not found in <paramref name="classname" /> or its schema base classes.</exception>
     int GetVFuncIndex(string classname, string name);
 
     /// <summary>
-    ///     Register GameData file
+    ///     Register and eagerly resolve a GameData file (and apply any declared <c>Patches</c>).
     /// </summary>
-    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
+    /// <remarks>
+    ///     Appends <c>.jsonc</c> automatically if missing. Registration is tracked globally (case-insensitive, not reference-counted).
+    /// </remarks>
+    /// <param name="path">File path relative to <c>sharp/gamedata</c> (without needing the <c>.jsonc</c> suffix).</param>
+    /// <exception cref="System.InvalidOperationException">The file is already registered or native loading failed.</exception>
     void Register(string path);
 
     /// <summary>
-    ///     Unregister GameData file
+    ///     Unregister a GameData file and restore any <c>Patches</c> it applied.
     /// </summary>
-    /// <param name="path">File path (automatically searches files in sharp/gamedata directory)</param>
+    /// <remarks>Appends <c>.jsonc</c> automatically if missing. Registration is not reference-counted.</remarks>
+    /// <param name="path">File path relative to <c>sharp/gamedata</c>.</param>
     void Unregister(string path);
 }

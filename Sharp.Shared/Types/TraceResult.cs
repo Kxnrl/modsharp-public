@@ -87,19 +87,22 @@ public readonly unsafe struct TraceResult
     /// <summary>
     ///     The HitGroup of the entity (e.g., Head, Chest).
     /// </summary>
-    /// <returns>Returns <see cref="HitGroupType.Invalid" /> if no entity was hit.</returns>
+    /// <value><see cref="HitGroupType.Invalid" /> if <see cref="HitEntity" /> is <see langword="null" />.</value>
+    /// <remarks>Check <see cref="HitBoxData" /> != <see langword="null" /> before reading; hitting world geometry or entities without hitbox data will dereference a null pointer.</remarks>
     public HitGroupType HitGroup => HitEntity is not null ? HitBoxData->HitGroup : HitGroupType.Invalid;
 
     /// <summary>
     ///     The HitBox ID of the entity.
     /// </summary>
-    /// <returns>Returns -1 if no entity was hit.</returns>
+    /// <value><c>-1</c> if <see cref="HitEntity" /> is <see langword="null" />.</value>
+    /// <remarks>Check <see cref="HitBoxData" /> != <see langword="null" /> before reading; hitting world geometry or entities without hitbox data will dereference a null pointer.</remarks>
     public int HitBoxId => HitEntity is not null ? HitBoxData->HitBoxId : -1;
 
     /// <summary>
     ///     The HitBox name of the entity.
     /// </summary>
-    /// <returns>Returns an empty string if no entity was hit.</returns>
+    /// <value>An empty string if <see cref="HitEntity" /> is <see langword="null" />.</value>
+    /// <remarks>Check <see cref="HitBoxData" /> != <see langword="null" /> before reading; hitting world geometry or entities without hitbox data will dereference a null pointer.</remarks>
     public string HitBoxName => HitEntity is not null ? Utils.ReadString(HitBoxData->pName) : string.Empty;
 
     /// <summary>

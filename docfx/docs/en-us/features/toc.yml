@@ -1,14 +1,18 @@
 - name: ConVar
   href: convar.md
-
-- name: Command
+- name: Commands
   href: command.md
-
 - name: Listeners
   href: listeners.md
-
 - name: Game Events
   href: game-events.md
-
 - name: Game Entities
   href: game-entities.md
+- name: GameData
+  href: gamedata.md
+- name: Native Libraries (ILibraryModule)
+  href: library-modules.md
+- name: Panorama Custom HUD
+  href: panorama.md
+- name: cs_script JavaScript
+  href: cs-script.md

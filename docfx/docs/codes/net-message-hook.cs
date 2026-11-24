@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
-using Sharp.Shared.GameEntities;
 using Sharp.Shared.HookParams;
 using Sharp.Shared.Managers;
 using Sharp.Shared.Types;
@@ -47,14 +44,18 @@ public sealed class NetMessageHook : IModSharpModule
 
     public void Shutdown()
     {
-        // must remove the hooks in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove the callback to release this module's delegate on unload.
         _hooks.PostEventAbstract.RemoveHookPre(OnSendNetMessage);
     }
 
     private HookReturnValue<NetworkReceiver> OnSendNetMessage(IPostEventAbstractHookParams param,
         HookReturnValue<NetworkReceiver>                                                   previousResult)
     {
+        if (previousResult.Action is EHookAction.SkipCallReturnOverride)
+        {
+            return default;
+        }
+
         switch (param.MsgId)
         {
             case ProtobufNetMessageType.UM_Fade:
@@ -78,19 +79,26 @@ public sealed class NetMessageHook : IModSharpModule
             {
                 // example to use protobuf reflection
 
-                var amplitude = param.Data.ReadFloat("Amplitude"); // returns null means the optional value is null
+                var amplitude = param.Data.ReadFloat("amplitude"); // Reflection uses the .proto field name.
                 _logger.LogInformation("Prepare NetMessage<{r}>: Amplitude = {a}", param.Data.MessageId, amplitude);
 
-                param.Data.SetFloat("Amplitude", 100); // override Amplitude field
+                param.Data.SetFloat("amplitude", 100);
 
-                // make it to alive CTs
-                var cts = GetControllers()
-                          .Where(x => x.Team is CStrikeTeam.CT)
-                          .Where(x => x.GetPlayerPawn() is { IsAlive: true })
-                          .Select(x => x.PlayerSlot)
-                          .ToArray();
-
-                var receivers = new NetworkReceiver(cts);
+                // Filter recipients from param.Receivers (note: if an earlier higher-priority hook already returned
+                // ChangeParamReturnDefault, the core keeps the earlier hook's result on equal EHookAction).
+                var originalReceivers = previousResult.Action is EHookAction.ChangeParamReturnDefault
+                    ? previousResult.ReturnValue
+                    : param.Receivers;
+                NetworkReceiver receivers = 0UL;
+                foreach (var controller in _entities.GetPlayerControllers())
+                {
+                    if (controller.Team is CStrikeTeam.CT
+                        && controller.GetPlayerPawn() is { IsAlive: true }
+                        && originalReceivers.HasClient(controller.PlayerSlot))
+                    {
+                        receivers = receivers.Append(controller.PlayerSlot);
+                    }
+                }
 
                 return new HookReturnValue<NetworkReceiver>(EHookAction.ChangeParamReturnDefault, receivers);
             }
@@ -99,18 +107,6 @@ public sealed class NetMessageHook : IModSharpModule
         return default;
     }
 
-    private IEnumerable<IPlayerController> GetControllers()
-    {
-        var max = new PlayerSlot((byte) _modSharp.GetGlobals().MaxClients);
-
-        for (PlayerSlot slot = 0; slot <= max; slot++)
-        {
-            if (_entities.FindPlayerControllerBySlot(slot) is { ConnectedState: PlayerConnectedState.PlayerConnected } c)
-            {
-                yield return c;
-            }
-        }
-    }
 
     public string DisplayName   => "NetMessage Hook Example";
     public string DisplayAuthor => "ModSharp dev team";

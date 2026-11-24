@@ -178,7 +178,7 @@ public unsafe struct CUtlVector<T> : IDisposable, IEnumerable<T> where T : unman
     ///         this includes:
     ///         <list type="bullet">
     ///             <item>
-    ///                 <description>Native pointer types (e.g., <see cref="IntPtr" />, <see cref="void" />*).</description>
+    ///                 <description>Native pointer types (e.g., <see cref="IntPtr" />, <c>void*</c>).</description>
     ///             </item>
     ///             <item>
     ///                 <description>The <see cref="Pointer{T}" />  struct, as its only field is a pointer.</description>

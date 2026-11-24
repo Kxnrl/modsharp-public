@@ -24,10 +24,12 @@ public sealed class MultiListener : IModSharpModule,
 
     public bool Init()
     {
-        // install listener
+        // install listeners
         _sharedSystem.GetClientManager().InstallClientListener(this);
         _sharedSystem.GetEntityManager().InstallEntityListener(this);
-        _sharedSystem.GetEventManager().InstallEventListener(this);
+        var events = _sharedSystem.GetEventManager();
+        events.InstallEventListener(this);
+        events.HookEvent("player_spawn");
         _sharedSystem.GetModSharp().InstallGameListener(this);
 
         return true;
@@ -35,8 +37,7 @@ public sealed class MultiListener : IModSharpModule,
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove all four registrations before this module is unloaded.
         _sharedSystem.GetClientManager().RemoveClientListener(this);
         _sharedSystem.GetEntityManager().RemoveEntityListener(this);
         _sharedSystem.GetEventManager().RemoveEventListener(this);
@@ -50,6 +51,7 @@ public sealed class MultiListener : IModSharpModule,
 
     public void FireGameEvent(IGameEvent @event)
     {
+        Console.WriteLine($"Game event: {@event.Name}");
     }
 
     // just write the ListenerVersion according to the example.

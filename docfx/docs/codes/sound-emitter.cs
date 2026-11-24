@@ -29,8 +29,7 @@ public sealed class SoundEmitter : IModSharpModule
 
     public void Shutdown()
     {
-        // must release the command in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Release the callback before unloading this module.
         _shared.GetClientManager().RemoveCommandCallback("hello", OnClientCommand);
     }
 
@@ -46,7 +45,7 @@ public sealed class SoundEmitter : IModSharpModule
         var sm = _shared.GetSoundManager();
         var ms = _shared.GetModSharp();
 
-        var soundEvent = command.ArgCount > 0 ? command.GetArg(1) : "MySoundEventName";
+        var soundEvent = command.ArgCount > 0 ? command.GetArg(1) : "Player.DeathHeadShot";
 
         if (!sm.IsSoundEventValid(soundEvent))
         {
@@ -69,14 +68,14 @@ public sealed class SoundEmitter : IModSharpModule
                          // modify sound event parameter 'pitch' to 1.1
                          sm.SetSoundEventParam(guid, "pitch", 1.1f);
                      },
-                     Math.Clamp(0.2, (duration / 2) - (duration / 4), duration));
+                     Math.Max(0.0, duration / 4));
 
         ms.PushTimer(() =>
                      {
                          // force stop sound event
                          sm.StopSoundEvent(guid);
                      },
-                     duration / 2);
+                     Math.Max(0.0, duration / 2));
 
         return ECommandAction.Stopped;
     }

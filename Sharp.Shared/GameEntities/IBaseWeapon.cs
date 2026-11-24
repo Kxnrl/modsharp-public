@@ -34,9 +34,8 @@ public interface IBaseWeapon : IEconEntity
     bool IsKnife { get; }
 
     /// <summary>
-    ///     m_iItemDefinitionIndex
+    ///     <c>m_iItemDefinitionIndex</c>, or <see cref="ushort.MaxValue" /> if the entity's schema class lacks <c>m_AttributeManager</c>.
     /// </summary>
-
     ushort ItemDefinitionIndex { get; }
 
     /// <summary>
@@ -65,12 +64,12 @@ public interface IBaseWeapon : IEconEntity
     string GetItemDefinitionName();
 
     /// <summary>
-    ///     ItemDefinition<br />
-    ///     <remarks>
-    ///         Items are looked up by the result of <see cref="GetWeaponClassname" />, so a defuse kit resolves to
-    ///         item_defuser or item_cutters depending on the map
-    ///     </remarks>
+    ///     ItemDefinition.
     /// </summary>
+    /// <remarks>
+    ///     Items are looked up by the result of <see cref="GetWeaponClassname" />, so a defuse kit resolves to
+    ///     <c>item_defuser</c> or <c>item_cutters</c> depending on the map.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown if the entity is not a valid weapon/item</exception>
     /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
     /// <exception cref="System.Collections.Generic.KeyNotFoundException">
@@ -79,8 +78,9 @@ public interface IBaseWeapon : IEconEntity
     IEconItemDefinition GetItemDefinition();
 
     /// <summary>
-    ///     WeaponVData
+    ///     WeaponVData.
     /// </summary>
+    /// <exception cref="EntryPointNotFoundException"><c>m_pSubclassVData</c> is null.</exception>
     IWeaponData GetWeaponData();
 
     /// <summary>
@@ -94,15 +94,15 @@ public interface IBaseWeapon : IEconEntity
     int NextSecondaryAttackTick { get; set; }
 
     /// <summary>
-    ///     Weapon clip, -1 means it does not use Clip1, -2 when it is not a weapon <br />
-    ///     <remarks>If exceeds <see cref="MaxClip" /> limit, will be reset to <see cref="MaxClip" /> when firing</remarks>
+    ///     Weapon clip (<c>CBasePlayerWeapon::m_iClip1</c>); <c>-1</c> when Clip1 is not used.
     /// </summary>
+    /// <remarks>Directly accesses the <c>CBasePlayerWeapon</c> schema field. If it exceeds <see cref="MaxClip" />, it is reset to <see cref="MaxClip" /> when firing.</remarks>
     int Clip { get; set; }
 
     /// <summary>
-    ///     Weapon reserve ammunition. Returns -1 if ReserveAmmo1 is not used, -2 if not a gun <br />
-    ///     <remarks>If exceeds ReserveAmmo limit, will be reset to <see cref="PrimaryReserveAmmoMax" /> when firing</remarks>
+    ///     Weapon primary reserve ammunition (<c>CBasePlayerWeapon::m_pReserveAmmo[0]</c>); <c>-1</c> when unused.
     /// </summary>
+    /// <remarks>Directly accesses the <c>CBasePlayerWeapon</c> schema field. If it exceeds <see cref="PrimaryReserveAmmoMax" />, it is reset to <see cref="PrimaryReserveAmmoMax" /> when firing.</remarks>
     int ReserveAmmo { get; set; }
 
     /// <summary>

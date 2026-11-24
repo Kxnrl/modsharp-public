@@ -103,31 +103,40 @@ public struct MidHookContext
     public nint rip;
 }
 
+/// <summary>
+///     Mid-function native hook.
+/// </summary>
+/// <remarks>
+///     Accessing the inherited <see cref="IRuntimeNativeHook.Trampoline" /> property is not supported for mid-function hooks
+///     and always throws <see cref="NotSupportedException" />.
+/// </remarks>
 public interface IMidFuncHook : IRuntimeNativeHook, IDisposable
 {
     /// <summary>
-    ///     Prepare hook
+    ///     Prepare hook.
     /// </summary>
     /// <param name="gamedata">gamedata key</param>
-    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <param name="hookFn">UnmanagedCallersOnly static function taking <c>MidHookContext*</c></param>
     /// <exception cref="EntryPointNotFoundException">Thrown when GameData is not found / null pointer / invalid field</exception>
-    /// <exception cref="KeyNotFoundException">Thrown when faiils to find gamedata</exception>
+    /// <exception cref="KeyNotFoundException">Thrown when failing to find gamedata</exception>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    /// <exception cref="ObjectDisposedException">The hook has been disposed</exception>
     void Prepare(string gamedata, nint hookFn);
 
     /// <summary>
-    ///     Prepare Hook <br />
-    ///     <remarks>
-    ///         Need to manually convert to nint <br />
-    ///     </remarks>
+    ///     Prepare hook.
     /// </summary>
+    /// <remarks>
+    ///     Convert the unmanaged function pointer manually to <see cref="nint" />.
+    /// </remarks>
     /// <example>
     ///     <code>
-    ///         (nint) (delegate* unmanaged&lt;void&gt;) &amp;Test
+    ///         (nint) (delegate* unmanaged&lt;MidHookContext*, void&gt;) &amp;Test
     ///  </code>
     /// </example>
     /// <param name="pTargetFn">Native function address</param>
-    /// <param name="hookFn">UnmanagedCallersOnly static function</param>
+    /// <param name="hookFn">UnmanagedCallersOnly static function taking <c>MidHookContext*</c></param>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    /// <exception cref="ObjectDisposedException">The hook has been disposed</exception>
     void Prepare(nint pTargetFn, nint hookFn);
 }
