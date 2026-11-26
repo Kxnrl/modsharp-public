@@ -77,7 +77,7 @@ BeginMemberHookScope(CSource2Server)
 #endif
     }
 
-    DeclareVirtualHook(GameServerSteamAPIActivated, void, (CSource2Server * pServer))
+    DeclareMemberDetourHook(GameServerSteamAPIActivated, void, (CSource2Server * pServer))
     {
 #ifdef SERVER_HOOK_ASSERT
         LOG("%10s: 0x%p\n", "this", pServer);
@@ -87,7 +87,7 @@ BeginMemberHookScope(CSource2Server)
         InitApiContext();
     }
 
-    DeclareVirtualHook(GameServerSteamAPIDeactivated, void, (CSource2Server * pServer))
+    DeclareMemberDetourHook(GameServerSteamAPIDeactivated, void, (CSource2Server * pServer))
     {
 #ifdef SERVER_HOOK_ASSERT
         LOG("%10s: 0x%p\n", "this", pServer);
@@ -309,8 +309,8 @@ static void PatchEnableVScript()
 void InstallServerHooks()
 {
     HOOK(CSource2Server, GameFrame);
-    VHOOK(CSource2Server, GameServerSteamAPIActivated, server);
-    VHOOK(CSource2Server, GameServerSteamAPIDeactivated, server);
+    HOOK(CSource2Server, GameServerSteamAPIActivated);
+    HOOK(CSource2Server, GameServerSteamAPIDeactivated);
 
     VHOOK(CGameRulesGameSystem, GameInit, server);
     VHOOK(CGameRulesGameSystem, GameShutdown, server);

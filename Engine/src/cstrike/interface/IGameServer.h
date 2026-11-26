@@ -32,19 +32,20 @@ public:
     virtual void SetGlobals(class CGlobalVars* pGlobals) = 0; // 12
 
 private:
-    virtual void Unknown13() = 0;
-    virtual void Unknown14() = 0;
+    virtual void Unknown13()  = 0;
+    virtual void Method_014() = 0;
+    virtual void Unknown14()  = 0;
 
 public:
-    virtual void WorldUpdate(bool simulating) = 0; // 15
+    virtual void WorldUpdate(bool simulating) = 0; // 16
 
 private:
     virtual void Unknown16() = 0;
     virtual void Unknown17() = 0;
 
 public:
-    virtual void ApplyGameSettings(class KeyValues* pKV)                   = 0; // 18
-    virtual void GameFrame(bool simulating, bool firstTick, bool lastTick) = 0; // 19
+    virtual void ApplyGameSettings(class KeyValues* pKV)                   = 0; // 19
+    virtual void GameFrame(bool simulating, bool firstTick, bool lastTick) = 0; // 20
 
 private:
     virtual void Unknown20() = 0;
@@ -60,7 +61,7 @@ private:
     virtual void Unknown30() = 0;
 
 public:
-    virtual bool IsPaused() = 0; // 31
+    virtual bool IsPaused() = 0; // 32
 
 private:
     virtual void Unknown32() = 0;
@@ -74,16 +75,16 @@ private:
     virtual void Unknown40() = 0;
 
 public:
-    virtual void GameServerSteamAPIActivated()         = 0; // 41
-    virtual void GameServerSteamAPIDeactivated()       = 0; // 42
-    virtual void HostNameChanged(const char* hostname) = 0; // 43
-    virtual void FatalShutdown() const                 = 0; // 44
-    virtual void UpdateWhenNotInGame(float frameTime)  = 0; // 45
+    virtual void GameServerSteamAPIActivated()         = 0; // 42
+    virtual void GameServerSteamAPIDeactivated()       = 0; // 43
+    virtual void HostNameChanged(const char* hostname) = 0; // 44
+    virtual void FatalShutdown() const                 = 0; // 45
+    virtual void UpdateWhenNotInGame(float frameTime)  = 0; // 46
 
 private:
     virtual void Unknown46() = 0;
 
-    virtual void ConVarChanged(const char* name, const char* value) = 0; // 47
+    virtual void ConVarChanged(const char* name, const char* value) = 0; // 48
 };
 
 using IServerGameDLL = CSource2Server;

@@ -782,6 +782,24 @@
         "vtable": "CSource2Server"
       }
     },
+    "CSource2Server::GameServerSteamAPIActivated": {
+      "library": "server",
+      "refs": {
+        "strings": [
+          "CSource2Server::GameServerSteamAPIActivated()\n"
+        ],
+        "vtable": "CSource2Server"
+      }
+    },
+    "CSource2Server::GameServerSteamAPIDeactivated": {
+      "library": "server",
+      "refs": {
+        "strings": [
+          "CSource2Server::GameServerSteamAPIDeactivated()\n"
+        ],
+        "vtable": "CSource2Server"
+      }
+    },
     "CTriggerGravity::GravityTouch": {
       "library": "server",
       "linux": "48 8B 06 55 48 89 E5 41 54 49 89 FC 48 89 F7 53 48 89 F3 FF 90",
@@ -1278,14 +1296,6 @@
     "CSource2GameClients::SettingsChanged": {
       "linux": 19,
       "windows": 19
-    },
-    "CSource2Server::GameServerSteamAPIActivated": {
-      "linux": 41,
-      "windows": 41
-    },
-    "CSource2Server::GameServerSteamAPIDeactivated": {
-      "linux": 42,
-      "windows": 42
     },
     "IGameSystemFactory::IsReallocating": {
       "linux": 8,
