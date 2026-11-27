@@ -7,11 +7,12 @@ internal sealed class ExampleSharpExtension : ISharpExtension, IExampleSharpExte
 {
     public void Load()
     {
-        Console.WriteLine("[]");
+        Console.WriteLine("Example extension loaded.");
     }
 
     public void Shutdown()
     {
+        Console.WriteLine("Example extension shut down.");
     }
 
     public void CallMe()

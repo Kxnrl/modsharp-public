@@ -68,13 +68,15 @@ public interface IModSharp
     IGameData GetGameData();
 
     /// <summary>
-    ///     Get gpGlobals
+    ///     Get <see cref="IGlobalVars" /> (<c>gpGlobals</c>). Valid between <see cref="IGameListener.OnServerInit" /> and <see cref="IGameListener.OnGameShutdown" />.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called outside the active map lifecycle.</exception>
     IGlobalVars GetGlobals();
 
     /// <summary>
-    ///     Get NetworkGameServer (sv)
+    ///     Get <see cref="INetworkServer" /> (<c>sv</c>). Valid between <see cref="IGameListener.OnServerInit" /> and <see cref="IGameListener.OnGameShutdown" />.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called outside the active map lifecycle.</exception>
     INetworkServer GetIServer();
 
     /// <summary>
@@ -83,8 +85,9 @@ public interface IModSharp
     nint GetIEngine();
 
     /// <summary>
-    ///     Get GameRules (not available in <see cref="IGameListener.OnGameShutdown" />)
+    ///     Get <see cref="IGameRules" />. Valid between <see cref="IGameListener.OnGameInit" /> and before <see cref="IGameListener.OnGameShutdown" />.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called before <see cref="IGameListener.OnGameInit" /> or during/after <see cref="IGameListener.OnGameShutdown" />.</exception>
     IGameRules GetGameRules();
 
     /// <summary>
@@ -104,9 +107,9 @@ public interface IModSharp
     double EngineTime();
 
     /// <summary>
-    ///     Invoke action on main thread <br />
-    ///     <remarks>If currently on main thread, calls immediately, otherwise calls at end of current frame</remarks>
+    ///     Invoke action on main thread.
     /// </summary>
+    /// <remarks>If currently on main thread, calls immediately; otherwise calls at end of current frame.</remarks>
     void InvokeAction(Action action);
 
     /// <summary>
@@ -115,47 +118,55 @@ public interface IModSharp
     void InvokeFrameAction(Action action);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait <br />
-    ///     <remarks>
-    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
-    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
-    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
-    ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
-    ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
-    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
-    ///         and always be ready to handle OperationCanceledException.
-    ///     </remarks>
+    ///     Invoke action at the end of current frame and wait for the result.
     /// </summary>
+    /// <remarks>
+    ///     The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///     If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///     Never synchronously block on the returned Task (<c>.Wait()</c> / <c>.Result</c>) from the game main thread, or it will deadlock. <br />
+    ///     After the owning module is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled
+    ///     (ownership is judged by the module's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates);
+    ///     the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access module resources in it,
+    ///     and always be ready to handle <see cref="OperationCanceledException" />.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="action" /> is a multicast delegate.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> is already cancelled.</exception>
     Task<T> InvokeFrameActionAsync<T>(Func<T> action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Invoke action at the end of current frame and wait <br />
-    ///     <remarks>
-    ///         The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
-    ///         If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
-    ///         Never synchronously block on the returned Task (.Wait() / .Result) from the game main thread, or it will deadlock. <br />
-    ///         After the owning plugin is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled <br />
-    ///         (ownership is judged by the plugin's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates); <br />
-    ///         the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access plugin resources in it, <br />
-    ///         and always be ready to handle OperationCanceledException.
-    ///     </remarks>
+    ///     Invoke action at the end of current frame and wait.
     /// </summary>
+    /// <remarks>
+    ///     The action is guaranteed to run on the game main thread; the continuation after await runs on a thread-pool thread. <br />
+    ///     If you need to keep operating on game objects, call this method or <see cref="InvokeAction" /> again to return to the main thread. <br />
+    ///     Never synchronously block on the returned Task (<c>.Wait()</c> / <c>.Result</c>) from the game main thread, or it will deadlock. <br />
+    ///     After the owning module is unloaded, pending and newly-enqueued actions are no longer run and the Task transitions to Canceled
+    ///     (ownership is judged by the module's AssemblyLoadContext, excluding shared libraries / dynamically-generated delegates);
+    ///     the cancellation continuation also runs on the thread pool and may complete after the unload, so do not access module resources in it,
+    ///     and always be ready to handle <see cref="OperationCanceledException" />.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="action" /> is a multicast delegate.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> is already cancelled.</exception>
     Task InvokeFrameActionAsync(Action action, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Add timer to queue<br />
-    ///     <remarks>
-    ///         After the owning plugin is unloaded, the timer is removed and no longer runs (ownership is judged by the plugin's AssemblyLoadContext).
-    ///     </remarks>
+    ///     Add timer to queue.
     /// </summary>
+    /// <remarks>
+    ///     After the owning module is unloaded, the timer is removed and no longer runs (ownership is judged by the module's AssemblyLoadContext).
+    ///     Returns <see cref="Guid.Empty" /> if the owning module is already unloaded. An unhandled exception thrown by <paramref name="action" /> removes the timer even if <see cref="GameTimerFlags.Repeatable" /> is set.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="action" /> is a multicast delegate.</exception>
     Guid PushTimer(Action action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
     /// <summary>
-    ///     Add timer to queue<br />
-    ///     <remarks>
-    ///         After the owning plugin is unloaded, the timer is removed and no longer runs (ownership is judged by the plugin's AssemblyLoadContext).
-    ///     </remarks>
+    ///     Add timer to queue.
     /// </summary>
+    /// <remarks>
+    ///     After the owning module is unloaded, the timer is removed and no longer runs (ownership is judged by the module's AssemblyLoadContext).
+    ///     Returns <see cref="Guid.Empty" /> if the owning module is already unloaded. An unhandled exception thrown by <paramref name="action" /> removes the timer even if <see cref="GameTimerFlags.Repeatable" /> is set.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="action" /> is a multicast delegate.</exception>
     Guid PushTimer(Func<TimerAction> action, double interval, GameTimerFlags flags = GameTimerFlags.None);
 
     /// <summary>
@@ -169,29 +180,29 @@ public interface IModSharp
     bool IsValidTimer(Guid uniqueId);
 
     /// <summary>
-    ///     Get game absolute path
+    ///     Get the absolute <c>csgo</c> game directory path (<c>&lt;game_dir&gt;/csgo</c>).
     /// </summary>
     string GetGamePath();
 
     /// <summary>
-    ///     Install GameFrame Hook <br />
-    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    ///     Install GameFrame Hook.
     /// </summary>
+    /// <remarks>After the owning module is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     void InstallGameFrameHook(Action<bool, bool, bool>? pre,
         Action<bool, bool, bool>?                       post,
         int                                             prePriority  = 0,
         int                                             postPriority = 0);
 
     /// <summary>
-    ///     Install EntityThink Hook <br />
-    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    ///     Install EntityThink Hook.
     /// </summary>
+    /// <remarks>After the owning module is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     void InstallEntityThinkHook(Action? pre, Action? post, int prePriority = 0, int postPriority = 0);
 
     /// <summary>
-    ///     Install ServerGameSimulate Hook <br />
-    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    ///     Install ServerGameSimulate Hook.
     /// </summary>
+    /// <remarks>After the owning module is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
     void InstallServerGameSimulateHook(Action callback, int priority = 0);
 
     /// <summary>
@@ -260,19 +271,24 @@ public interface IModSharp
     void RadioTextAll(PlayerSlot slot, string name, string? params1, string? params2, string? params3, string? params4);
 
     /// <summary>
-    ///     Send NetMessage
+    ///     Send a protobuf NetMessage to the specified recipients.
     /// </summary>
+    /// <remarks>
+    ///     Resolves the native network message type from the compile-time type <typeparamref name="T" /> (do not pass <see cref="IMessage" /> as <typeparamref name="T" />).
+    ///     Messages sent through this method set the native hook bypass flag and will not trigger <see cref="Managers.IHookManager.PostEventAbstract" /> or <see cref="Managers.IHookManager.TextMsg" />.
+    /// </remarks>
+    /// <exception cref="ArgumentException"><typeparamref name="T" /> is not a registered protobuf network message type.</exception>
     bool SendNetMessage<T>(RecipientFilter filter, T data) where T : class, IMessage;
 
     /// <summary>
-    ///     Install HookNetMessage
+    ///     Register a network message ID to be dispatched to <see cref="Managers.IHookManager.PostEventAbstract" />.
     /// </summary>
     void HookNetMessage(ProtobufNetMessageType msgId);
 
     /// <summary>
     ///     Remove HookNetMessage
     /// </summary>
-    [Obsolete("This is deprecated and do nothing, will be removed in 2.2", true)]
+    [Obsolete("This is deprecated and does nothing, will be removed in 2.2", true)]
     void UnhookNetMessage(ProtobufNetMessageType msgId);
 
 #endregion
@@ -295,8 +311,9 @@ public interface IModSharp
     string? GetCommandLine(string key);
 
     /// <summary>
-    ///     Precache resource
+    ///     Precache resource. Must only be called inside <see cref="IGameListener.OnResourcePrecache" />.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called outside <see cref="IGameListener.OnResourcePrecache" />.</exception>
     void PrecacheResource(string resource);
 
     /// <summary>
@@ -310,43 +327,43 @@ public interface IModSharp
     bool IsMapValid(string map);
 
     /// <summary>
-    ///     Get map list for given map group
-    ///     <remarks>Returns null if map group is invalid</remarks>
+    ///     Get map list for given map group.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if map group is invalid.</remarks>
     /// <param name="mapGroup">e.g. 'workshop'</param>
     List<string>? GetMapGroupMapList(string mapGroup);
 
     /// <summary>
-    ///     Read game resource data buffer
-    ///     <remarks>Returns null if file is invalid or fails to load</remarks>
+    ///     Read game resource data buffer.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if file is invalid or fails to load.</remarks>
     /// <param name="filePath">File name, e.g. 'scripts/weapons.vdata_c'. '_c' will be added automatically if missing</param>
     /// <param name="pathId">Path ID, e.g. 'GAME'</param>
     byte[]? FindResourceDataBlockInfo(string filePath, string pathId);
 
     /// <summary>
-    ///     Get resource status
-    ///     <remarks>Returns Resident if resource is loaded</remarks>
+    ///     Get resource status.
     /// </summary>
+    /// <remarks>Returns <see cref="ResourceStatus.Resident" /> if resource is loaded.</remarks>
     /// <param name="filePath">File name, e.g. 'scripts/weapons.vdata'. Must not end with '_c'</param>
     ResourceStatus GetResourceStatus(string filePath);
 
     /// <summary>
-    ///     Execute server command
-    ///     <remarks>Commands are buffered and not executed immediately. Too many commands can stop the execution</remarks>
+    ///     Execute server command.
     /// </summary>
+    /// <remarks>Commands are buffered and not executed immediately. Commands longer than 1022 bytes are truncated.</remarks>
     void ServerCommand(string command);
 
     /// <summary>
-    ///     Get currently loaded addon IDs
-    ///     <remarks>Returns null if failed or no addons loaded, otherwise returns format: addonId1,addonId2</remarks>
+    ///     Get currently loaded addon IDs.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if failed or no addons loaded, otherwise returns format: <c>addonId1,addonId2</c>.</remarks>
     string? GetAddonName();
 
     /// <summary>
-    ///     Get map BSP name, e.g. de_mirage, surf_beginner
-    ///     <remarks>Returns null if failed or no map loaded</remarks>
+    ///     Get map BSP name, e.g. <c>de_mirage</c>, <c>surf_beginner</c>.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if failed or no map loaded.</remarks>
     string? GetMapName();
 
 #endregion
@@ -354,12 +371,12 @@ public interface IModSharp
 #region Effects
 
     /// <summary>
-    ///     Dispatches a particle effect at a specific world location
+    ///     Dispatches a particle effect at a specific world location. Always returns <c>0</c>.
     /// </summary>
     int DispatchParticleEffect(string particle, Vector origin, Vector angles, RecipientFilter filter = default);
 
     /// <summary>
-    ///     Dispatches a particle effect relative to an entity
+    ///     Dispatches a particle effect relative to an entity. Always returns <c>0</c>.
     /// </summary>
     int DispatchParticleEffect(string particle,
         IBaseEntity                   entity,
@@ -369,7 +386,7 @@ public interface IModSharp
         RecipientFilter               filter      = default);
 
     /// <summary>
-    ///     Dispatches a particle effect attached to a specific point on an entity
+    ///     Dispatches a particle effect attached to a specific point on an entity. Always returns <c>0</c>.
     /// </summary>
     int DispatchParticleEffect(string particle,
         ParticleAttachmentType        attachType,
@@ -383,9 +400,10 @@ public interface IModSharp
 #region Listener
 
     /// <summary>
-    ///     Install <see cref="IGameListener" /> to listen for game events <br />
-    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    ///     Install <see cref="IGameListener" /> to listen for game events.
     /// </summary>
+    /// <remarks>After the owning module is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    /// <exception cref="InvalidOperationException"><see cref="IGameListener.ListenerVersion" /> does not match <see cref="IGameListener.ApiVersion" />.</exception>
     void InstallGameListener(IGameListener listener);
 
     /// <summary>
@@ -394,9 +412,10 @@ public interface IModSharp
     void RemoveGameListener(IGameListener listener);
 
     /// <summary>
-    ///     Install <see cref="ISteamListener" /> to listen for Steam events <br />
-    ///     <remarks>After the owning plugin is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    ///     Install <see cref="ISteamListener" /> to listen for Steam events.
     /// </summary>
+    /// <remarks>After the owning module is unloaded, any registration not removed manually is auto-removed with a warning.</remarks>
+    /// <exception cref="InvalidOperationException"><see cref="ISteamListener.ListenerVersion" /> does not match <see cref="ISteamListener.ApiVersion" />.</exception>
     void InstallSteamListener(ISteamListener listener);
 
     /// <summary>
@@ -416,9 +435,14 @@ public interface IModSharp
     T? CreateNativeObject<T>(nint ptr) where T : class, INativeObject;
 
     /// <summary>
-    ///     Find pattern in module, invalid module will cause FatalError
+    ///     Find pattern in a registered engine module. Passing an unknown module alias triggers a native <c>FatalError</c>.
     /// </summary>
-    /// <param name="module">DLL/SO name</param>
+    /// <param name="module">
+    ///     Case-insensitive engine module short alias (not a DLL/SO filename):
+    ///     <c>engine</c>, <c>server</c>, <c>tier0</c>, <c>schemas</c>, <c>resource</c>, <c>vscript</c>, <c>vphysics2</c>,
+    ///     <c>sound</c>, <c>network</c>, <c>worldrenderer</c>, <c>matchmaking</c>, <c>filesystem</c>, <c>steamsockets</c>,
+    ///     <c>materialsystem2</c>, or <c>animationsystem</c>.
+    /// </param>
     /// <param name="pattern">IDA pattern</param>
     nint FindPattern(string module, string pattern);
 
@@ -435,9 +459,9 @@ public interface IModSharp
     /// <summary>
     ///     Get virtual table for specified C++ class
     /// </summary>
-    /// <param name="module">DLL/SO name</param>
+    /// <param name="module">Engine module short alias (see <see cref="FindPattern" />)</param>
     /// <param name="className">C++ class name</param>
-    /// <returns></returns>
+    /// <returns>Virtual table address</returns>
     [Obsolete("Renamed to GetVirtualTableByClass, will be removed in the future", true)]
     nint GetVTableByClass(string module, string className);
 
@@ -447,11 +471,11 @@ public interface IModSharp
     INetworkingStringTable? FindStringTable(string name);
 
     /// <summary>
-    ///     Get virtual table for specified C++ class
+    ///     Get virtual table for specified C++ class. Triggers a native <c>FatalError</c> if <paramref name="module" /> is unknown or the vtable is not found.
     /// </summary>
-    /// <param name="module">DLL/SO name</param>
+    /// <param name="module">Engine module short alias (see <see cref="FindPattern" />)</param>
     /// <param name="className">C++ class name</param>
-    /// <returns></returns>
+    /// <returns>Virtual table address</returns>
     nint GetVirtualTableByClass(string module, string className);
 
     /// <summary>
@@ -465,8 +489,9 @@ public interface IModSharp
     IKeyValues3 CreateKeyValues3(KeyValues3Type type, KeyValues3SubType subType);
 
     /// <summary>
-    ///     Get DLL/SO library module
+    ///     Get a registered native library module wrapper. Passing an unknown module alias triggers a native <c>FatalError</c>.
     /// </summary>
+    /// <param name="module">Engine module short alias (see <see cref="FindPattern" />)</param>
     ILibraryModule GetLibraryModule(string module);
 
     /// <summary>
@@ -475,8 +500,10 @@ public interface IModSharp
     IGameSystem? FindGameSystemByName(string name);
 
     /// <summary>
-    ///     Find Valve interface
+    ///     Find Valve interface via <c>CreateInterface</c>. Passing an unknown module alias triggers a native <c>FatalError</c>.
     /// </summary>
+    /// <param name="module">Engine module short alias (see <see cref="FindPattern" />)</param>
+    /// <param name="name">Versioned interface name (e.g. <c>"Source2Server001"</c>)</param>
     nint FindValveInterface(string module, string name);
 
     /// <summary>
@@ -492,16 +519,16 @@ public interface IModSharp
     /// <summary>
     ///     Get memory allocator
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Native memory allocator interface.</returns>
     IMemAlloc GetMemAlloc();
 
     /// <summary>
-    ///     Find weapon VData by name
-    ///     <remarks>
-    ///         The VData found here is read-only and cannot be modified.
-    ///     </remarks>
+    ///     Find weapon VData by name.
     /// </summary>
-    /// <returns>IWeaponData, returns null if not loaded or not found</returns>
+    /// <remarks>
+    ///     The VData found here is read-only and cannot be modified.
+    /// </remarks>
+    /// <returns><see cref="IWeaponData" />, or <see langword="null" /> if not loaded or not found.</returns>
     IWeaponData? FindWeaponVDataByName(string name);
 
 #endregion
@@ -541,19 +568,20 @@ public interface IModSharp
     bool AddWorkshopMap(ulong sharedFileId, string mapName, string path);
 
     /// <summary>
-    ///     Is map loaded by dedicate server workshop manager
+    ///     Is map loaded by dedicated server workshop manager
     /// </summary>
     bool WorkshopMapExists(ulong sharedFileId);
 
     /// <summary>
-    ///     Remove map from dedicate server workshop manager
+    ///     Remove map from dedicated server workshop manager
     /// </summary>
     /// <param name="sharedFileId">Workshop FileId</param>
     bool RemoveWorkshopMap(ulong sharedFileId);
 
     /// <summary>
-    ///     List all workshop maps added to the server's map list
+    ///     List all workshop maps added to the server's map list.
     /// </summary>
+    /// <remarks>Must be called on the game main thread (backed by a non-thread-safe native buffer).</remarks>
     List<(ulong PublishFileId, string Name)> ListWorkshopMaps();
 
 #endregion

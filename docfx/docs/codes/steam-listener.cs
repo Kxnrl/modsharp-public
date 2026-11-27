@@ -29,8 +29,7 @@ public sealed class SteamListener : IModSharpModule, ISteamListener
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove this module's listener before unloading or reloading it.
         _sharedSystem.GetModSharp().RemoveSteamListener(this);
     }
 
@@ -46,19 +45,19 @@ public sealed class SteamListener : IModSharpModule, ISteamListener
             $"[OnGroupStatusResult] SteamId={steamId} GroupId={groupId} IsMember={isMember} IsOfficer={isOfficer}");
     }
 
-    // on GC connected
+    // Steam server connection (not the game coordinator / GC).
     public void OnSteamServersConnected()
     {
         Console.WriteLine("[OnSteamServersConnected]");
     }
 
-    // on GC disconnected
+    // Steam server disconnection.
     public void OnSteamServersDisconnected(SteamApiResult reason)
     {
         Console.WriteLine($"[OnSteamServersDisconnected] reason={reason}");
     }
 
-    // on GC connect failure
+    // Steam server connection failure.
     public void OnSteamServersConnectFailure(SteamApiResult reason, bool stillRetrying)
     {
         Console.WriteLine($"[OnSteamServersConnectFailure] reason={reason} stillRetrying={stillRetrying}");

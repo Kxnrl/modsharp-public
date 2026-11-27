@@ -14,8 +14,6 @@
   items:
     - name: Shared API
       href: module-api.md
-    # - name: Dynamic API
-    #   href: dynamic-api.md
 
 - name: Listeners
   items:
@@ -34,9 +32,9 @@
 
 - name: Net Messages
   items:
-    - name: Send net message
+    - name: Send NetMessages
       href: net-message-send.md
-    - name: Hook net message
+    - name: Hook NetMessages
       href: net-message-hook.md
 
 - name: Sound System
@@ -63,7 +61,7 @@
 
 - name: Physics Query and Traces
   items:
-    - name: Traces (Warpper)
+    - name: Traces (Wrapper)
       href: trace-wrapper.md
     - name: Traces (Native)
       href: trace-native.md
@@ -81,7 +79,7 @@
     - name: ICommandManager
       href: command-manager.md
 
-- name: FirstParty Modules
+- name: First-Party Modules
   items:
     - name: Client Preferences
       href: client-preferences.md

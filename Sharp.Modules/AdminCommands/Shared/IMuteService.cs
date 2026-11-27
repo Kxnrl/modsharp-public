@@ -25,8 +25,9 @@ namespace Sharp.Modules.AdminCommands.Shared;
 
 /// <summary>
 ///     Mute/unmute operations. Provided for callers; not intended for external implementations.
-///     Side effects: updates cache, may notify players. Duplicate checks are the caller's responsibility (command handlers
-///     already do this).
+///     Side effects: updates cache, may notify players. Storage skips writing duplicate active records,
+///     but callers should still perform duplicate checks before invoking to avoid redundant notifications
+///     (built-in command handlers already do this).
 /// </summary>
 public interface IMuteService
 {
@@ -36,7 +37,7 @@ public interface IMuteService
     void Mute(IGameClient? admin, IGameClient target, TimeSpan? duration, string reason);
 
     /// <summary>
-    ///     Mute by SteamID (offline path; updates cache/storage when player joins).
+    ///     Mute by SteamID (offline path; updates in-memory cache and persists to storage immediately on the next game frame, without broadcasting chat notifications).
     /// </summary>
     void Mute(IGameClient? admin, SteamID steamId, TimeSpan? duration, string reason);
 

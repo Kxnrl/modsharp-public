@@ -1,179 +1,48 @@
 # 管理员权限与指令
 
-本文介绍了如何使用 `Sharp.Modules.AdminManager` 以编程方式管理指令和权限。
+将 `ModSharp.Sharp.Modules.AdminManager.Shared` 作为宿主提供的契约引用（`ExcludeAssets="runtime"`）。服务器上必须安装 `Sharp.Modules.AdminManager` 和 **`Sharp.Modules.CommandCenter`**，仅引用 Shared 包并不会提供命令服务。项目设置请参照 [Hello World 的项目设置](hello-world.md)。
 
-虽然该模块名为 `AdminManager`，但这套系统是处理**任何受限访问**的标准方式，包括但不限于：
-*   服务器管理 (踢出/封禁)
-*   VIP / 捐助者特权 (自定义皮肤、弹道轨迹)
+完整示例注册了三条受权限保护的指令：`example_slay` 杀死所有存活玩家，`example_kill` 杀死执行指令的玩家，`example_heal` 将所有存活玩家的生命值和生命上限设为 1337。在聊天中使用 `.example_kill`，在控制台中使用 `ms_example_kill`。由服务端控制台执行指令时，issuer 为 null，因此会绕过玩家权限检查。示例指令带有 `example` 前缀，以免与第一方管理指令重名。部署前请替换示例中的 SteamID64。
 
-这种方法允许你绕过静态的 JSON 文件，转而从数据库、外部 API 或复杂的内部逻辑中加载权限。
+## 所有权与生命周期
 
-## 前置条件
+请使用真实的程序集名称作为稳定的 `moduleIdentity`，同时传给 `MountAdminManifest` 和 `GetCommandRegistry`。使用方模块断开连接后，AdminManager 和 CommandCenter 会据此移除它注册的权限、管理员来源和指令。
 
-模块必须引用并解析 `Sharp.Modules.AdminManager`。
+在 `OnAllModulesLoaded` 中，以及 `Sharp.Modules.AdminManager` 或 `Sharp.Modules.CommandCenter` 连接时，解析提供方的包装对象。示例能够处理 CommandCenter 暂时不可用的情况，同时不会吞掉清单挂载或指令注册中的真实错误。使用方模块被重载时，同样会触发 `OnAllModulesLoaded`。
 
 > [!WARNING]
-> 请确保你安全地处理依赖注入。参考完整源代码中的 `TryResolveAdminManager` 方法，了解如何优雅地处理模块的加载/卸载。
+> 热重载提供方后，原有的指令注册表会失效：当前 AdminManager 会缓存注册表，已注册的指令委托也会捕获旧的 AdminManager 实例。重载 CommandCenter 或 AdminManager 时，需要同时重载依赖它们的模块，或者直接重启服务器。光清掉接口包装对象没法修复已经绑在旧提供方上的指令。
 
-> [!TIP]
-> `MountAdminManifest` 和 `GetCommandRegistry` 请使用同一个、稳定的 `moduleIdentity`，并在多次调用中保持不变。
-> 推荐使用模块的 `AssemblyName`：
-> `private static readonly string ModuleIdentity = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";`
+`MountAdminManifest` 和 `GetCommandRegistry` 必须在游戏线程上调用。数据库或 HTTP 等异步操作完成后，请通过 `IModSharp.InvokeFrameAction` 或 `InvokeFrameActionAsync` 切回游戏线程执行安装，并在该 action 内重新获取当前的提供方。
 
-> [!IMPORTANT]
-> `MountAdminManifest` 和 `GetCommandRegistry` 必须在游戏线程内调用。如果你在异步上下文或后台线程中（例如数据库查询回调后），请先通过 `IModSharp.InvokeFrameAction` 或 `IModSharp.InvokeFrameActionAsync` 回到游戏线程再调用。
+## 权限与指令
 
-## 快速开始 — 最简示例
+权限是形如 `组:动作` 的具体键，例如 `admin_offensive:slay`、`admin_offensive:kill` 和 `admin_medic:heal`。指令的权限列表采用 **OR（或）** 逻辑，满足其中任意一项即可。如需 AND（与）逻辑，请获取调用者的 `IAdmin`，在处理函数中逐项检查所需权限。拒绝规则的优先级高于授权规则。
 
-如果你只想注册一个受权限保护的指令，而不需要自己管理管理员或身份组，只需使用 `GetCommandRegistry`：
+`RegisterAdminCommand` **不会**为传入的权限字符串建立索引，可根据需要选择以下方式之一：
 
-```csharp
-private IModSharpModuleInterface<IAdminManager>? _adminManager;
+| 方式 | 行为 |
+|---|---|
+| `MountAdminManifest` → `PermissionCollection` | 随完整清单发布具体权限键；清单还可以包含身份组和管理员分配。重新挂载会替换该模块原有的清单。 |
+| `registry.RegisterPermissions([...])` | 只发布具体权限键，不提供身份组或管理员。多次调用的结果会在使用方的作用域内累积，使用方断开连接时一并移除。 |
 
-private static readonly string ModuleIdentity
-    = typeof(MyModule).Assembly.GetName().Name ?? "MyModule";
+完整示例使用的是 `PermissionCollection`，因此没有再重复调用 `RegisterPermissions`。如果使用方只注册指令，可以先用 `RegisterPermissions` 发布具体权限键，再注册指令。直接权限规则和通配符都是基于已知的具体权限索引来解析的；在所属使用方发布权限键之前，运维人员可能会看到 unresolved-permission 诊断信息。
 
-private void InitializeCommands()
-{
-    if (_adminManager?.Instance is not { } adminManager)
-        return;
+## 清单作用域
 
-    var registry = adminManager.GetCommandRegistry(ModuleIdentity);
+清单包含权限集合、身份组和管理员分配。示例定义了 `GeneralAdmin` 身份组，并演示以下规则：
 
-    registry.RegisterAdminCommand("mycommand", OnMyCommand, ["myplugin:mycommand"]);
-    registry.RegisterPermissions(["myplugin:mycommand"]);
-}
+| 分配规则 | 结果 |
+|---|---|
+| `@GeneralAdmin` | 继承该身份组的 slay、kill 和 heal 权限。 |
+| `admin_medic:heal` | 仅拥有 heal 权限。 |
+| `@GeneralAdmin`、`!admin_medic:heal` | 拥有 slay/kill，但 heal 被拒绝。 |
+| `admin_offensive:*` | 匹配 slay/kill，不匹配 heal。 |
 
-private void OnMyCommand(IGameClient? issuer, StringCommand cmd)
-{
-    // 你的逻辑
-}
-```
+**身份组名称按模块隔离**，并非全局名称。清单中的 `@RoleName` 必须引用**同一清单所属模块的作用域**内定义的身份组；`admins.jsonc` 或其他模块中的同名身份组无法满足该引用。相比之下，权限键使用全局索引。同一 SteamID 在多个模块中的管理员来源会合并：授权取并集，免疫等级取最大值，拒绝规则在全局范围内优先生效。
 
-服务器管理员通过 `admins.jsonc` 中的 Roles 或 Admins 部分将 `myplugin:mycommand` 分配给对应的管理员。该权限会在你的模块加载并调用 `RegisterPermissions` 后生效——在此之前，服务器日志中会显示为 "unresolved"，这是正常现象。
+## 外部数据
 
-如果你需要从代码中分配管理员或管理权限，请参阅下方的[注册权限](#注册权限)和[构建清单 (Manifest)](#3-构建清单-manifest)。
+请先基于自己的数据库或 API 数据准备好 `AdminTableManifest`，再回到游戏线程挂载这份完整快照。传给 `MountAdminManifest` 的工厂回调（示例中的 `BuildAdminManifest`）是同步执行的，不要在其中阻塞等待数据库或网络请求。如果只需分配其他位置已经注册的具体权限，可以传入空的权限集合和空的身份组集合；如果要分配身份组，则必须在自己的清单中定义该身份组。重新挂载新的完整快照即可替换本模块之前的所有分配，包括删除已被移除的分配。
 
-如需完整控制身份组、权限集合以及从代码中分配管理员，请继续阅读。
-
-## 1. 定义权限
-
-ModSharp 对权限使用 `组:动作` (group:action) 的字符串格式。这种结构对于支持 **通配符** 至关重要。
-
-在本例中，我们定义两个不同的类别：
-
-*   **Offensive:** 伤害玩家的行为 (`slay`, `kill`)。
-*   **Medic:** 帮助玩家的行为 (`heal`)。
-
-```csharp
-// 类别 1: Offensive
-private const string SlayPermission = "admin_offensive:slay";
-private const string KillPermission = "admin_offensive:kill";
-
-// 类别 2: Medic
-// 我们使用不同的前缀 ('admin_medic') 将其与Offensive的通配符区分开。
-private const string HealPermission = "admin_medic:heal";
-```
-
-## 2. 注册指令
-
-使用 `CommandRegistry` 将你的权限字符串连接到聊天指令。
-
-```csharp
-var registry = _adminManager.GetCommandRegistry(ModuleIdentity);
-
-// 指令字符串, 处理函数, 所需权限列表
-registry.RegisterAdminCommand("slay", OnCommandSlay,   [SlayPermission]);
-registry.RegisterAdminCommand("kill", OnCommandKill,   [KillPermission]);
-registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);
-// 示例: registry.RegisterAdminCommand("vip_gold", OnGoldGun, ["vip:gold_gun"]);
-```
-
-> [!IMPORTANT]
-> `permissions` 参数使用的是 **OR（或）** 逻辑：玩家只需拥有列表中的**任意一个**权限即可执行该指令，而非全部。
-> 例如，`["admin:mute", "admin:silence"]` 表示拥有 `admin:mute` *或* `admin:silence` 的玩家都可以执行该指令。
-> 如果你需要 AND（与）逻辑（要求玩家拥有指定权限），请在指令处理函数内通过 `IAdmin.HasPermission` 进行额外检查。
-
-### 注册权限
-
-`RegisterAdminCommand` **不会**自动将权限注册到全局索引中。如果你希望拥有通配符规则（如 `admin_offensive:*`）的管理员能正确获得你的指令权限，需要自己维护一个权限列表并调用 `RegisterPermissions`：
-
-```csharp
-registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
-```
-
-> [!NOTE]
-> 这是可选的。如果你的权限已经通过 `MountAdminManifest` 的 `PermissionCollection` 注册过了，就不需要再调用 `RegisterPermissions`。当你想用轻量的方式将权限加入索引、而不需要构建完整的 manifest 时，可以使用它。
-
-## 3. 构建清单 (Manifest)
-
-`BuildAdminManifest` 函数用于定义服务器的层级结构。它依赖于 `AdminTableManifest`，主要包含三个部分：
-
-### A. 权限集合 (Permission Collections)
-集合允许你将多个权限字符串归为一个名称（快捷方式）。
-
-```csharp
-var permissionCollection = new Dictionary<string, HashSet<string>>
-{
-    // 将 Slay 和 Kill 逻辑分组到一起
-    ["admin_group_offensive"] = [SlayPermission, KillPermission],
-
-    // 医疗逻辑分组
-    ["admin_group_medic"] = [HealPermission],
-};
-```
-
-### B. 身份组 (Roles)
-身份组是命名实体（如 "VIP", "Moderator", "Admin"），包含一组权限和一个免疫等级。
-
-```csharp
-// 创建一个拥有所有权限的 "GeneralAdmin" 身份组
-HashSet<string> allPermissions = [SlayPermission, KillPermission, HealPermission];
-
-var roles = new List<RoleManifest> 
-{
-    new RoleManifest("GeneralAdmin", immunity: 1, allPermissions) 
-};
-```
-
-### C. 管理员分配策略
-有四种主要方式将权限分配给特定的 SteamID。
-
-| ID 示例 | 策略 | 语法 | 结果 | 逻辑 |
-| :--- | :--- | :--- | :--- | :--- |
-| **User 1** | **身份组 (Role)** | `["@GeneralAdmin"]` | **完全访问** | 从身份组定义继承 Slay, Kill, 和 Heal。 |
-| **User 2** | **原始 (Raw)** | `["admin_medic:heal"]` | **仅治疗** | 直接授予特定的权限字符串。无法使用 Slay。 |
-| **User 3** | **否定 (Negation)** | `["@GeneralAdmin", "!admin_medic:heal"]` | **仅 Slay/Kill** | 继承身份组，但 `!` 显式**移除**了医疗权限。 |
-| **User 4** | **通配符 (Wildcard)** | `["admin_offensive:*"]` | **仅 Slay/Kill** | 匹配 `admin_offensive:slay` 和 `:kill`。**不**匹配 `admin_medic:heal`。 |
-
-## 4. 使用外部数据源 (数据库 / API)
-
-虽然上面的示例为了简单起见将用户硬编码到列表中，但此模块的主要用例是动态加载数据。
-
-你可以将 `BuildAdminManifest` 中的硬编码列表/字典替换为从你自己的服务（如 MySQL, HTTP 请求）获取的数据。
-
-### 使用现有身份组
-如果你只想将管理员分配给已经定义好（例如在 `admins.jsonc` 或其他模块中）的身份组，你**不需要**重新填充权限或身份组列表，只需传递空集合即可。
-
-```csharp
-private AdminTableManifest BuildAdminManifest()
-{
-    // 1. 权限与身份组：
-    // 如果使用的是在别处定义的身份组/权限，将这些留空。
-    Dictionary<string, HashSet<string>> myPermissions = _requestManager.GetPermissions();
-    List<RoleManifest> myRoles = _requestManager.GetRoles();
-
-    // 2. 管理员：
-    // 从数据库获取管理员列表
-    List<AdminManifest> myAdmins = _requestManager.GetAdmins(); 
-
-    return new AdminTableManifest(myPermissions, myRoles, myAdmins);
-}
-```
-
-> [!CAUTION]
-> 如果 `myRoles` 留空，但 `myAdmins` 为用户分配了 `["@SuperAdmin"]` 身份组，必须确保 `@SuperAdmin` 已由其他来源**全局**定义。如果该身份组不存在，用户将不会获得对应的权限。
-
-## 完整源代码
-
-[!code-csharp[Main](../../codes/admin-example.cs)]
+[!code-csharp[AdminExample.cs](../../codes/admin-example.cs)]

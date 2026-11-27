@@ -24,8 +24,11 @@ public interface ICommandCenter
     const string Identity = nameof(ICommandCenter);
 
     /// <summary>
-    ///     Gets the command registry for the specified module identity.
+    ///     Gets or creates the command registry for the specified module identity.
     /// </summary>
-    /// <param name="moduleIdentity">The unique identity of the module.</param>
+    /// <param name="moduleIdentity">
+    ///     The unique identity of the module. Pass the module's assembly name so registrations are cleaned up automatically on <c>OnLibraryDisconnect</c>.
+    /// </param>
+    /// <returns>The module-scoped <see cref="ICommandRegistry" />.</returns>
     public ICommandRegistry GetRegistry(string moduleIdentity);
 }

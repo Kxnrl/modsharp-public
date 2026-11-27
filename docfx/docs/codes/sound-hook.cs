@@ -37,8 +37,7 @@ public sealed class SoundHook : IModSharpModule
 
     public void Shutdown()
     {
-        // must remove the hooks in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove every pre/post callback before this module is unloaded.
         _hooks.EmitSound.RemoveHookPre(OnEmitSound);
         _hooks.SoundEvent.RemoveHookPre(OnSoundEvent);
 
@@ -86,10 +85,10 @@ public sealed class SoundHook : IModSharpModule
             return;
         }
 
-        if (param.SoundName.Equals("Player.DeathHeadShot.Victim"))
+        if (param.SoundName.Equals("Player.DeathHeadShot"))
         {
             // we can modify the sound parameters here.
-            _sounds.SetSoundEventParam(result.ReturnValue, "volume", 100f, new RecipientFilter(param.Receivers));
+            _sounds.SetSoundEventParam(result.ReturnValue, "volume", 1.0f, new RecipientFilter(param.Receivers));
         }
     }
 
@@ -98,7 +97,7 @@ public sealed class SoundHook : IModSharpModule
     {
         // some sounds don't go through EmitSound, so we hook SoundEvent too.
 
-        if (param.SoundName.Equals("why.some.*******s2.devs.copy.my.code.and.refactor.it.using.ai"))
+        if (param.SoundName.Equals("Player.DeathHeadShot.Victim"))
         {
             // block sound
             return new HookReturnValue<SoundOpEventGuid>(EHookAction.SkipCallReturnOverride);
@@ -109,8 +108,10 @@ public sealed class SoundHook : IModSharpModule
 
     private void OnSoundEventPost(ISoundEventHookParams param, HookReturnValue<SoundOpEventGuid> result)
     {
-        // you can do something after sound event emitted.
-        // like in the EmitSound post hook.
+        if (result.Action is not EHookAction.SkipCallReturnOverride)
+        {
+            Console.WriteLine($"[SoundEvent] {param.SoundName}: {result.ReturnValue}");
+        }
     }
 
     public string DisplayName   => "Sound Hook Example";

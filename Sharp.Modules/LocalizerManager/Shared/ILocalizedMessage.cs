@@ -23,13 +23,13 @@ using Sharp.Shared.Enums;
 namespace Sharp.Modules.LocalizerManager.Shared;
 
 /// <summary>
-///     Fluent localized message builder (new ergonomic API).
+///     Fluent localized message builder.
 /// </summary>
 public interface ILocalizedMessage
 {
     /// <summary>
-    ///     Sets the prefix.
-    ///     Pass <c>null</c> to disable the prefix entirely.
+    ///     Sets the prefix (defaults to <c>"[MS]"</c>).
+    ///     A leading and trailing space are added around the prefix automatically; pass <see langword="null" /> or an empty string to disable the prefix.
     /// </summary>
     ILocalizedMessage Prefix(string? prefix);
 
@@ -57,10 +57,11 @@ public interface ILocalizedMessage
     ///     Register a post-processor for the rendered string (applied before Build/Print return/send).
     ///     Multiple calls compose in order of invocation.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="processor" /> is <see langword="null" />.</exception>
     ILocalizedMessage Transform(Func<string, string> processor);
 
     /// <summary>
-    ///     Build the final string (applies prefix/colors and any processors).
+    ///     Build the final string (applies the prefix, if enabled, and any registered <see cref="Transform" /> processors).
     /// </summary>
     string Build();
 

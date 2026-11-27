@@ -7,7 +7,7 @@ namespace DependencyInjection;
 
 public sealed class DependencyInjection : IModSharpModule
 {
-    private readonly IServiceProvider _provider;
+    private readonly ServiceProvider _provider;
 
     public DependencyInjection(ISharedSystem sharedSystem,
         string                               dllPath,
@@ -37,6 +37,8 @@ public sealed class DependencyInjection : IModSharpModule
 
     public void Shutdown()
     {
+        // Dispose services owned by this module's container, not framework-owned instances.
+        _provider.Dispose();
     }
 
     public string DisplayName   => "Dependency Injection Example";

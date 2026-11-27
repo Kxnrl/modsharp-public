@@ -43,9 +43,9 @@ public enum EntityFlags : uint
     WaterJump = 1 << 2,
 
     /// <summary>
-    ///     Is FakeClient <br />
-    ///     <remarks>Only PlayerPawn has this flag</remarks>
+    ///     Is FakeClient.
     /// </summary>
+    /// <remarks>Only PlayerPawn has this flag.</remarks>
     Bot = 1 << 4,
 
     /// <summary>
@@ -59,15 +59,15 @@ public enum EntityFlags : uint
     AtControls = 1 << 6,
 
     /// <summary>
-    ///     Is a player. <br />
-    ///     <remarks>Only PlayerPawn has this flag</remarks>
+    ///     Is a player.
     /// </summary>
+    /// <remarks>Only PlayerPawn has this flag.</remarks>
     Client = 1 << 7,
 
     /// <summary>
-    ///     Fake client.<br />
-    ///     <remarks>Only PlayerController has this flag</remarks>
+    ///     Fake client.
     /// </summary>
+    /// <remarks>Only PlayerController has this flag.</remarks>
     FakeClient = 1 << 8,
 
     /// <summary>
@@ -76,10 +76,12 @@ public enum EntityFlags : uint
     Fly = 1 << 10,
 
     /// <summary>
+    ///     Entity should not be saved.
     /// </summary>
     SuppressSave = 1 << 11,
 
     /// <summary>
+    ///     Entity is currently in a vehicle.
     /// </summary>
     InVehicle = 1 << 12,
 

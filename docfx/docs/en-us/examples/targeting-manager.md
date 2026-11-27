@@ -1,22 +1,11 @@
 # Custom Target Resolver
 
-This example demonstrates how to implement a custom target resolver (specifically `@aim`) for the Targeting Manager.
+Reference `ModSharp.Sharp.Modules.TargetingManager.Shared` as a host-provided contract (`ExcludeAssets="runtime"`) and install `Sharp.Modules.TargetingManager`. Use the [Hello World project settings](hello-world.md).
 
-It covers two advanced concepts:
-1.  **Raycasting:** How to trace a line from a player's eyes to find an entity.
-2.  **Soft Dependencies:** How to interact with the Targeting Manager only if it is installed, without crashing if it is missing.
+This example registers **`@example_aim`**, which selects the living player under the caller's crosshair. `@aim` is already built into TargetingManager; attempting to register that name again fails. Console callers and traces without a living player target return an empty result.
 
-## Key Concepts
+`RnQueryShapeAttr.Bullets()` supplies the native trace attributes. `SetEntityToIgnore(pawn, 0)` prevents hitting the caller's own hitbox. The resolver checks that the hit entity is a pawn before converting it.
 
-### 1. Raycasting Logic
-To determine who a player is looking at, we perform a raycast.
-
-> [!NOTE]
-> It is crucial to set `attr.SetEntityToIgnore(pawn, 0)` so the raycast ignores the shooter themselves.
-
-### 2. Module Interop
-We do not hard-reference the Targeting Manager. Instead, we look for its interface via `ITargetingManager.Identity`. We use `OnLibraryConnected` to handle cases where the Targeting Manager is loaded after our module.
-
-## Full Source Code
+The Shared contract is a compile-time dependency; the provider is optional at runtime. Resolve its wrapper in `OnAllModulesLoaded` and `OnLibraryConnected`, and clear it on disconnect. Register with your actual assembly name as the owner: TargetingManager removes that owner's resolvers when the module disconnects. When the provider is replaced, the wrapper is resolved again and the resolver is re-registered.
 
 [!code-csharp[TargetingManager.cs](../../codes/targeting-manager.cs)]

@@ -37,9 +37,9 @@ public static class DependencyInjection
                    .AddSingleton<ISharpExtension, GameEventManager>(x => x.GetRequiredService<GameEventManager>());
 
     /// <summary>
-    ///     Add GameEventManager to the service collection. <br />
-    ///     <remark>requires register <see cref="ISharedSystem" /> before add this</remark>
+    ///     Add GameEventManager to the service collection.
     /// </summary>
+    /// <remarks>Requires registering <see cref="ISharedSystem" /> before calling this method.</remarks>
     /// <exception cref="InvalidOperationException">
     ///     If <see cref="ISharedSystem" /> is not registered in the service
     ///     collection.

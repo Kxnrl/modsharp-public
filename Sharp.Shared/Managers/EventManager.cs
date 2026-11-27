@@ -28,6 +28,7 @@ public interface IEventManager
     /// <summary>
     ///     Add <see cref="IEventListener" /> to listen for events
     /// </summary>
+    /// <exception cref="System.InvalidOperationException"><see cref="IEventListener.ListenerVersion" /> does not match <see cref="IEventListener.ApiVersion" />.</exception>
     void InstallEventListener(IEventListener listener);
 
     /// <summary>
@@ -46,15 +47,19 @@ public interface IEventManager
     T? CreateEvent<T>(bool force) where T : class, IGameEvent;
 
     /// <summary>
-    ///     Clone event (editable)  <br />
-    ///     <remarks>Clone a new event, requires manual release or firing later</remarks>
+    ///     Clone event (editable)
     /// </summary>
+    /// <remarks>Clones a new custom-owned event; callers must either fire or dispose it.</remarks>
     /// <exception cref="System.ObjectDisposedException"><paramref name="event" /> has been disposed</exception>
     T? CloneEvent<T>(T @event) where T : class, IGameEvent;
 
     /// <summary>
-    ///     Add an event name to the Hook queue
+    ///     Register a game event name with the engine so <see cref="IEventListener.HookFireEvent" /> and
+    ///     <see cref="IEventListener.FireGameEvent" /> are dispatched when it fires.
     /// </summary>
+    /// <remarks>
+    ///     No events are hooked by default. Registrations are idempotent, global across modules, and permanent (there is no unhook API).
+    /// </remarks>
     void HookEvent(string name);
 
     /// <summary>

@@ -12,8 +12,8 @@
       ],
       "filter": "filterShared.yml",
       "output": "api",
-      "namespaceLayout": "nested",
-      //"memberLayout": "separatePages"
+      "outputFormat": "apiPage",
+      "namespaceLayout": "nested"
     },
     {
       "src": [
@@ -26,22 +26,22 @@
       ],
       "filter": "filterExtensions.yml",
       "output": "api-extensions",
-      "namespaceLayout": "nested",
-      //"memberLayout": "separatePages"
+      "outputFormat": "apiPage",
+      "namespaceLayout": "nested"
     },
     {
       "src": [
         {
           "src": "../Sharp.Modules",
           "files": [
-            "**/*.csproj"
+            "**/Shared/*.csproj"
           ]
         }
       ],
       "filter": "filterModules.yml",
       "output": "api-modules",
-      "namespaceLayout": "nested",
-      //"memberLayout": "separatePages"
+      "outputFormat": "apiPage",
+      "namespaceLayout": "nested"
     }
   ],
   "build": {
@@ -51,14 +51,16 @@
           "**/*.{md,yml}"
         ],
         "exclude": [
-          "_site/**"
+          "_site/**",
+          "filter*.yml"
         ]
       }
     ],
     "resource": [
       {
         "files": [
-          "images/**"
+          "images/**",
+          "docs/codes/**"
         ]
       }
     ],
@@ -80,7 +82,7 @@
       "_lang": "zh-cn",
       "_appLogoPath": "images/icon.svg",
       "_appFaviconPath": "images/icon.svg",
-      "_appFooter": "<span>ModSharp by <a href=\"https://github.com/SourceSharp\">ModSharp dev Team</a>. Doc made with <a href=\"https://dotnet.github.io/docfx\">docfx</a></span>",
+      "_appFooter": "<span>ModSharp by <a href=\"https://github.com/Kxnrl/modsharp-public\">ModSharp dev team</a>. Doc made with <a href=\"https://dotnet.github.io/docfx\">docfx</a></span>",
       "pdf": false
     },
     "fileMetadata": {

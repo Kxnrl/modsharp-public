@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sharp.Modules.AdminManager.Shared;
@@ -11,6 +13,7 @@ namespace AdminExample;
 internal class AdminExample : IModSharpModule
 {
     private const string AdminManagerAssemblyName = "Sharp.Modules.AdminManager";
+    private const string CommandCenterAssemblyName = "Sharp.Modules.CommandCenter";
 
     private readonly ISharedSystem         _sharedSystem;
     private readonly ILogger<AdminExample> _logger;
@@ -41,9 +44,19 @@ internal class AdminExample : IModSharpModule
 
     public void OnLibraryConnected(string name)
     {
-        if (name.Equals(AdminManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        if (name.Equals(AdminManagerAssemblyName, StringComparison.OrdinalIgnoreCase)
+            || name.Equals(CommandCenterAssemblyName, StringComparison.OrdinalIgnoreCase))
         {
             TryResolveAdminManager();
+        }
+    }
+
+    public void OnLibraryDisconnect(string name)
+    {
+        if (name.Equals(AdminManagerAssemblyName, StringComparison.OrdinalIgnoreCase))
+        {
+            _adminManager = null;
+            _initialized = false;
         }
     }
 
@@ -61,13 +74,11 @@ internal class AdminExample : IModSharpModule
 
     private void TryResolveAdminManager(bool logFailure = false)
     {
-        if (_adminManager?.Instance is not null)
+        if (_adminManager?.Instance is null)
         {
-            return;
+            _adminManager = _sharedSystem.GetSharpModuleManager()
+                                         .GetOptionalSharpModuleInterface<IAdminManager>(IAdminManager.Identity);
         }
-
-        _adminManager = _sharedSystem.GetSharpModuleManager()
-                                     .GetOptionalSharpModuleInterface<IAdminManager>(IAdminManager.Identity);
 
         if (_adminManager?.Instance is null)
         {
@@ -97,31 +108,24 @@ internal class AdminExample : IModSharpModule
             return;
         }
 
+        IAdminCommandRegistry registry;
         try
         {
-            adminManager.MountAdminManifest(ModuleIdentity, BuildAdminManifest);
-
-            var registry = adminManager.GetCommandRegistry(ModuleIdentity);
-
-            // RegisterAdminCommand does NOT auto-register permissions into the global index.
-            // Call RegisterPermissions so wildcard rules (e.g. "admin_offensive:*") work.
-            // If MountAdminManifest already covers them via PermissionCollection, this is optional.
-            registry.RegisterPermissions([SlayPermission, KillPermission, HealPermission]);
-
-            registry.RegisterAdminCommand("slay", OnCommandSlay,   [SlayPermission]);
-            registry.RegisterAdminCommand("kill", OnCommandKill,   [KillPermission]);
-            registry.RegisterAdminCommand("heal", OnCommandHealth, [HealPermission]);
-
-            _initialized = true;
+            registry = adminManager.GetCommandRegistry(ModuleIdentity);
         }
         catch (InvalidOperationException)
         {
-            // CommandCenter isn't loaded yet — will retry when it connects.
+            // Only this lookup reports an unavailable CommandCenter. Retry when it connects.
+            return;
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Failed to initialize admin permissions.");
-        }
+
+        // Publish permissions before registering commands; let actual manifest/registration errors surface.
+        adminManager.MountAdminManifest(ModuleIdentity, BuildAdminManifest);
+        // PermissionCollection already indexes these permissions. Without a manifest, use RegisterPermissions.
+        registry.RegisterAdminCommand("example_slay", OnCommandSlay,   [SlayPermission]);
+        registry.RegisterAdminCommand("example_kill", OnCommandKill,   [KillPermission]);
+        registry.RegisterAdminCommand("example_heal", OnCommandHealth, [HealPermission]);
+        _initialized = true;
     }
 
     private void OnCommandSlay(IGameClient? issuer, StringCommand cmd)

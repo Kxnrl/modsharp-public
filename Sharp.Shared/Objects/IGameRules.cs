@@ -130,7 +130,7 @@ public interface IGameRules : ISchemaObject
     bool IsMatchStarted { get; }
 
     /// <summary>
-    ///     Hide team selection messages
+    ///     Read-only alias of <see cref="ForceTeamChangeSilent" /> (<c>m_bForceTeamChangeSilent</c>).
     /// </summary>
     bool IsForceTeamChangeSilent { get; }
 
@@ -145,9 +145,9 @@ public interface IGameRules : ISchemaObject
     bool IsGameRestart { get; set; }
 
     /// <summary>
-    ///     The map has a hostage rescue zone (m_bMapHasRescueZone)<br />
-    ///     <remarks>When true, defuse kits are sold and dropped as item_cutters, otherwise as item_defuser</remarks>
+    ///     The map has a hostage rescue zone (<c>m_bMapHasRescueZone</c>).
     /// </summary>
+    /// <remarks>When <see langword="true" />, defuse kits are sold and dropped as <c>item_cutters</c>, otherwise as <c>item_defuser</c>.</remarks>
     bool MapHasRescueZone { get; }
 
     /// <summary>
@@ -171,8 +171,13 @@ public interface IGameRules : ISchemaObject
     RoundEndReason RoundWinReason { get; }
 
     /// <summary>
-    ///     Team that won the round
+    ///     Raw round win status (<c>CCSGameRules::m_iRoundWinStatus</c>).
     /// </summary>
+    /// <remarks>
+    ///     <b>Warning:</b> CS2's <c>m_iRoundWinStatus</c> integer values do <b>not</b> match <see cref="CStrikeTeam" />:
+    ///     <c>0</c> = None, <c>1</c> = Draw (not Spectator), <c>2</c> = CT won (not TE), <c>3</c> = T won (not CT).
+    ///     Cast to <see cref="int" /> when interpreting this property.
+    /// </remarks>
     CStrikeTeam RoundWinStatus { get; }
 
     /// <summary>
@@ -191,24 +196,22 @@ public interface IGameRules : ISchemaObject
     float GetRoundElapsedTime();
 
     /// <summary>
-    ///     Get remaining time on map<br />
-    ///     <remarks>
-    ///         &lt; 0 = No Time Limit<br />
-    ///         = 0 = Last Round<br />
-    ///         &gt; 0 = Time Remaining
-    ///     </remarks>
+    ///     Get remaining time on map.
     /// </summary>
+    /// <remarks>
+    ///     &lt; 0 = No Time Limit<br />
+    ///     = 0 = Last Round<br />
+    ///     &gt; 0 = Time Remaining
+    /// </remarks>
     float GetMapRemainingTime();
 
     /// <summary>
     ///     End match map group vote types (m_nEndMatchMapGroupVoteTypes)
     /// </summary>
-    /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteTypes();
 
     /// <summary>
     ///     End match map group vote options (m_nEndMatchMapGroupVoteOptions)
     /// </summary>
-    /// <returns></returns>
     ISchemaArray<int> GetEndMatchMapGroupVoteOptions();
 }

@@ -32,20 +32,23 @@ public interface ILibraryModule
     string ModuleName { get; }
 
     /// <summary>
-    ///     Find function address by IDA pattern (non-unique) <br />
-    ///     <remarks>This method is typically used for iterating through addresses</remarks>
+    ///     Find function address by IDA pattern (non-unique).
     /// </summary>
+    /// <remarks>This method is typically used for iterating through addresses.</remarks>
     /// <param name="pattern">The IDA-style signature string (e.g. "48 89 ? 24 ??")</param>
+    /// <param name="startAddress">Optional address to resume searching from (<c>0</c> starts at the beginning of the module).</param>
     nint FindPattern(string pattern, nint startAddress = 0);
 
     /// <summary>
-    ///     Find virtual table by name
+    ///     Find virtual table by name. Triggers a native <c>FatalError</c> if the vtable is not found.
     /// </summary>
+    /// <remarks>Use <see cref="TryGetVirtualTableByName" /> if the vtable may not exist.</remarks>
     /// <param name="tableName">The name of the vtable</param>
     /// <param name="decorated">If true, will treat <paramref name="tableName" /> as the mangled (symbol) name</param>
     nint GetVirtualTableByName(string tableName, bool decorated = false);
 
     /// <summary>
+    ///     Try to find a virtual table by name without failing fatally on miss.
     /// </summary>
     /// <param name="tableName">The name of the vtable, for example: "CCSPlayerPawn"</param>
     /// <param name="address">The address of given vtable, would be 0 if it doesn't exist</param>
@@ -71,12 +74,14 @@ public interface ILibraryModule
     ///     Find function address by IDA pattern (expecting a unique match).
     /// </summary>
     /// <param name="pattern">The IDA-style signature string (e.g. "48 89 ? 24 ??")</param>
-    /// <returns>The address of the match, or 0 if not found/ambiguous</returns>
+    /// <returns>The address of the unique match, or <c>0</c> if no match is found.</returns>
+    /// <exception cref="InvalidOperationException">More than one match was found for <paramref name="pattern" />.</exception>
     nint FindPatternExactly(string pattern);
 
     /// <summary>
-    ///     Find a game VInterface pointer exposed by this module (via CreateInterface).
+    ///     Find a game VInterface pointer exposed by this module (via <c>CreateInterface</c>).
     /// </summary>
+    /// <remarks>The module must export <c>CreateInterface</c>; otherwise native assertion fails.</remarks>
     /// <param name="interfaceName">The versioned interface name (e.g., "Source2Server001")</param>
     nint FindInterface(string interfaceName);
 
@@ -139,10 +144,10 @@ public interface ILibraryModule
     VirtualTableInfo[] FindVirtualTablesPartial(string str);
 
     /// <summary>
-    ///     Checks if the object instance at the specified pointer inherits from a class matching the given name.
+    ///     Checks if the object instance at the specified pointer inherits from a class matching the exact given name.
     /// </summary>
     /// <param name="ptr">The pointer to the object instance (e.g. <c>this</c> pointer).</param>
-    /// <param name="name">The partial or full name of the class/interface to check for in the inheritance tree.</param>
+    /// <param name="name">The exact name of the class/interface to check for in the inheritance tree (an optional leading <c>"class "</c> or <c>"struct "</c> prefix is stripped; partial names are not supported).</param>
     /// <returns><c>true</c> if the object is derived from the specified class name; otherwise, <c>false</c>.</returns>
     bool IsPointerDerivedFrom(nint ptr, string name);
 
@@ -154,61 +159,71 @@ public interface ILibraryModule
     nint[] GetReferencesFromPointer(nint ptr);
 
     /// <summary>
-    ///     Finds the start address of a function that references the specific string literal.
+    ///     Finds the unique function start address that references the specified string literal.
     /// </summary>
     /// <param name="str">The string literal to look for references to.</param>
-    /// <returns>The function address, or throws/returns 0 if not found.</returns>
+    /// <returns>The unique function start address.</returns>
+    /// <exception cref="InvalidOperationException">No matching function or more than one matching function was found.</exception>
     nint FindFunction(string str);
 
     /// <summary>
-    ///     Finds the start address of a function that references the specific string literal.
+    ///     Finds the unique function start address that references all of the specified string literals.
     /// </summary>
-    /// <param name="strs">The string literals to look for references to.</param>
-    /// <returns>The function address, or throws/returns 0 if not found.</returns>
+    /// <param name="strs">The string literals that must all be referenced by the function.</param>
+    /// <returns>The unique function start address.</returns>
+    /// <exception cref="InvalidOperationException"><paramref name="strs" /> is empty, no matching function was found, or more than one matching function was found.</exception>
     nint FindFunction(ReadOnlySpan<string> strs);
 
     /// <summary>
-    ///     Finds all functions that reference the specific string literal.
+    ///     Finds all functions that reference the specified string literal.
     /// </summary>
     /// <param name="str">The string literal to look for references to.</param>
+    /// <exception cref="Exception">No matching functions were found.</exception>
     nint[] FindFunctions(string str);
 
     /// <summary>
-    ///     Finds all functions that reference the provided string literals.
+    ///     Finds all functions that reference all of the provided string literals.
     /// </summary>
-    /// <param name="strs">A span of string literals.</param>
+    /// <param name="strs">A span of string literals that must all be referenced.</param>
+    /// <exception cref="InvalidOperationException"><paramref name="strs" /> is empty.</exception>
+    /// <exception cref="Exception">No matching functions were found.</exception>
     nint[] FindFunctions(ReadOnlySpan<string> strs);
 
     /// <summary>
-    ///     Finds the start address of a function that references the specific pointer (xref).
+    ///     Finds the unique function start address that references the specified pointer (xref).
     /// </summary>
     /// <param name="ptr">The pointer to find references to.</param>
+    /// <exception cref="InvalidOperationException">No matching function or more than one matching function was found.</exception>
     nint FindFunction(nint ptr);
 
     /// <summary>
-    ///     Finds the start address of a function that references any of the specific pointers (xref).
+    ///     Finds the unique function start address that references all of the specified pointers (xref intersection).
     /// </summary>
-    /// <param name="ptrs">A span of pointers to find references to.</param>
+    /// <param name="ptrs">A span of pointers that must all be referenced by the function.</param>
+    /// <exception cref="InvalidOperationException"><paramref name="ptrs" /> is empty, no matching function was found, or more than one matching function was found.</exception>
     nint FindFunction(ReadOnlySpan<nint> ptrs);
 
     /// <summary>
-    ///     Finds all functions that reference the specific pointer.
+    ///     Finds all functions that reference the specified pointer.
     /// </summary>
     /// <param name="ptr">The pointer to find references to.</param>
+    /// <exception cref="Exception">No matching functions were found.</exception>
     nint[] FindFunctions(nint ptr);
 
     /// <summary>
-    ///     Finds all functions that reference the provided pointers.
+    ///     Finds all functions that reference all of the provided pointers (xref intersection).
     /// </summary>
-    /// <param name="ptrs">A span of pointers to find references to.</param>
+    /// <param name="ptrs">A span of pointers that must all be referenced.</param>
+    /// <exception cref="InvalidOperationException"><paramref name="ptrs" /> is empty.</exception>
+    /// <exception cref="Exception">No matching functions were found.</exception>
     nint[] FindFunctions(ReadOnlySpan<nint> ptrs);
 
     /// <summary>
     ///     Scans the module's known data sections for a specific byte sequence.
-    ///     <remarks>
-    ///         This method skips executable (code) segments.
-    ///     </remarks>
     /// </summary>
+    /// <remarks>
+    ///     This method skips executable (code) segments.
+    /// </remarks>
     /// <param name="data">The byte sequence to search for.</param>
     /// <param name="readOnly">
     ///     If <c>true</c>, restricts the search to read-only memory segments (e.g. <c>.rdata</c>).

@@ -23,9 +23,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Sharp.Shared.Abstractions;
 
 /// <summary>
-///     This interface use only for Extensions package. <br />
-///     <remark>if you want to inherit this, you need to know what you are doing.</remark>
+///     Lifecycle interface for Sharp extension packages.
 /// </summary>
+/// <remarks>Implement this only if you are authoring a Sharp extension and understand its lifecycle.</remarks>
 public interface ISharpExtension
 {
     void Load();

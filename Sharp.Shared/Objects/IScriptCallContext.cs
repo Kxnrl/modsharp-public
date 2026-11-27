@@ -47,20 +47,58 @@ public interface IScriptCallContext : IContextObject, IDisposable
     /// </summary>
     IBaseEntity? Caller { get; }
 
+    /// <summary>
+    ///     Number of arguments passed by the JS caller.
+    /// </summary>
     int ArgCount { get; }
 
+    /// <summary>
+    ///     Gets the <see cref="ScriptValueType" /> of the argument at <paramref name="index" />.
+    /// </summary>
+    /// <remarks>JS functions are reported as <see cref="ScriptValueType.Object" /> (use <see cref="GetFunction" /> to capture them).</remarks>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     ScriptValueType GetArgType(int index);
 
+    /// <summary>
+    ///     Reads a boolean argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     bool? GetBool(int index);
 
+    /// <summary>
+    ///     Reads a number argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     double? GetNumber(int index);
 
+    /// <summary>
+    ///     Reads a string argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     string? GetString(int index);
 
+    /// <summary>
+    ///     Reads a vector argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     Vector? GetVector(int index);
 
+    /// <summary>
+    ///     Reads an entity argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c> or the entity no longer exists.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     IBaseEntity? GetEntity(int index);
 
+    /// <summary>
+    ///     Captures a JS function argument as a persistent <see cref="IScriptCallback" />, or returns <see langword="null" /> if the argument is not a JS function (does not raise a JS <c>Error</c>).
+    /// </summary>
+    /// <remarks>The returned callback owns a <c>v8::Global</c> handle and must be disposed on the game main thread.</remarks>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     IScriptCallback? GetFunction(int index);
 
     // ---------------------------------------------------------------------------------------------
@@ -69,8 +107,18 @@ public interface IScriptCallContext : IContextObject, IDisposable
     //  Ret: NewObject / NewArray / JS null/undefined → null
     // ---------------------------------------------------------------------------------------------
 
+    /// <summary>
+    ///     Reads a JS object argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     ScriptObject? GetObject(int index);
 
+    /// <summary>
+    ///     Reads a JS array argument, or <see langword="null" /> if the JS value is <c>null</c>/<c>undefined</c>.
+    ///     Raises a JS <c>Error</c> if the argument has a different type.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is out of range.</exception>
     ScriptArray? GetArray(int index);
 
     ScriptObject NewObject();

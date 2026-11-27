@@ -43,6 +43,8 @@ public interface IAdminOperationHandler
     ///     Caller must guarantee that when <paramref name="targetClient" /> is not null, it matches
     ///     <see cref="AdminOperationRecord.SteamId" />.
     /// </summary>
+    /// <param name="record">The punishment record being applied.</param>
+    /// <param name="targetClient">The online client, or <see langword="null" /> for offline operations.</param>
     void OnApplied(AdminOperationRecord record, IGameClient? targetClient);
 
     /// <summary>
@@ -50,6 +52,8 @@ public interface IAdminOperationHandler
     ///     Caller must guarantee that when <paramref name="targetClient" /> is not null, it matches
     ///     <paramref name="steamId" />.
     /// </summary>
+    /// <param name="steamId">The SteamID of the target whose punishment was removed.</param>
+    /// <param name="targetClient">The online client, or <see langword="null" /> for offline operations.</param>
     void OnRemoved(SteamID steamId, IGameClient? targetClient);
 
     /// <summary>
@@ -70,6 +74,7 @@ public interface IAdminOperationHandler
     ///     punishment is not evicted before its storage write has propagated. <br />
     ///     Handlers that do not cache state can rely on the default empty implementation.
     /// </summary>
+    /// <param name="grace">Minimum age window for cached entries to be included in validation.</param>
     IReadOnlySet<SteamID> GetCachedIdentities(TimeSpan grace)
         => FrozenSet<SteamID>.Empty;
 }

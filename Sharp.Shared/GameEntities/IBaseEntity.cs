@@ -36,7 +36,7 @@ namespace Sharp.Shared.GameEntities;
 public interface IBaseEntity : ISchemaObject
 {
     /// <summary>
-    ///     Gets the raw handle stored on the entity
+    ///     Gets the handle cached when this managed entity wrapper was constructed (does not re-read live entity identity).
     /// </summary>
     CEntityHandle<IBaseEntity> Handle { get; }
 
@@ -95,42 +95,44 @@ public interface IBaseEntity : ISchemaObject
     uint SpawnFlags { get; set; }
 
     /// <summary>
-    ///     Return the index of this entity <br />
-    ///     <remarks>
-    ///         Cannot guarantee it is valid. Please call <see cref="IsValid" />, or this entity is valid in current context,
-    ///         before using this field.
-    ///     </remarks>
+    ///     Return the index of this entity.
     /// </summary>
+    /// <remarks>
+    ///     Cannot guarantee it is valid. Please call <see cref="IsValid" />, or ensure this entity is valid in the current context,
+    ///     before using this field.
+    /// </remarks>
     EntityIndex Index { get; }
 
     /// <summary>
-    ///     读取Classname<br />
-    ///     Make sure you call <see cref="IsValid" />, or this entity is valid in current context, before using this field,
-    ///     otherwise it will crash the server
+    ///     Get the entity's classname.
     /// </summary>
+    /// <remarks>
+    ///     Make sure you call <see cref="IsValid" />, or ensure this entity is valid in the current context, before using this field,
+    ///     otherwise it will crash the server.
+    /// </remarks>
     string Classname { get; }
 
     /// <summary>
-    ///     Get the designer name of this entity's entity class<br />
-    ///     <remarks>
-    ///         Not affected by <see cref="SetClassname" />; an entity created through an alias returns the designer name
-    ///         of the target class. Make sure this entity is valid before calling it, otherwise it will crash the server
-    ///     </remarks>
+    ///     Get the designer name of this entity's entity class.
     /// </summary>
+    /// <remarks>
+    ///     Not affected by <see cref="SetClassname" />; an entity created through an alias returns the designer name
+    ///     of the target class. Make sure this entity is valid before calling it, otherwise it will crash the server.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">The entity class has no designer name</exception>
     string GetDesignerName();
 
     /// <summary>
-    ///     Get the targetname of this entity<br />
-    ///     <remarks>
-    ///         Make sure you call <see cref="IsValid" />, or this entity is valid in current context, before using this field,
-    ///         otherwise it will crash the server
-    ///     </remarks>
+    ///     Get the targetname of this entity.
     /// </summary>
+    /// <remarks>
+    ///     Make sure you call <see cref="IsValid" />, or ensure this entity is valid in the current context, before using this field,
+    ///     otherwise it will crash the server.
+    /// </remarks>
     string Name { get; }
 
     /// <summary>
-    ///     Get the HammerId of this entity<br />
+    ///     Get the HammerId of this entity
     /// </summary>
     string HammerId { get; }
 
@@ -140,12 +142,12 @@ public interface IBaseEntity : ISchemaObject
     string GlobalName { get; set; }
 
     /// <summary>
-    ///     Is this entity allowed to take damage <br />
-    ///     <remarks>
-    ///         Make sure you call <see cref="IsValid" />, or this entity is valid in current context, before using this field,
-    ///         otherwise it will crash the server
-    ///     </remarks>
+    ///     Is this entity allowed to take damage.
     /// </summary>
+    /// <remarks>
+    ///     Make sure you call <see cref="IsValid" />, or ensure this entity is valid in the current context, before using this field,
+    ///     otherwise it will crash the server.
+    /// </remarks>
     bool AllowTakesDamage { get; set; }
 
     /// <summary>
@@ -209,25 +211,25 @@ public interface IBaseEntity : ISchemaObject
     ICollisionProperty? GetCollisionProperty();
 
     /// <summary>
-    ///     Velocity vector <br />
-    ///     <remarks>
-    ///         If there is a MoveParent, this velocity is relative to the parent; when MoveType is
-    ///         <see cref="Enums.MoveType.VPhysics" />, it reads and writes the physics object's velocity
-    ///     </remarks>
+    ///     Velocity vector.
     /// </summary>
+    /// <remarks>
+    ///     If there is a MoveParent, this velocity is relative to the parent; when MoveType is
+    ///     <see cref="Enums.MoveType.VPhysics" />, it reads and writes the physics object's velocity.
+    /// </remarks>
     Vector Velocity { get; set; }
 
     /// <summary>
-    ///     绝对的速度矢量 <br />
-    ///     <remarks>该矢量不会计算MoveParent</remarks>
+    ///     Absolute velocity vector.
     /// </summary>
+    /// <remarks>Does not take MoveParent into account.</remarks>
     [Obsolete("Use GetAbsVelocity/SetAbsVelocity, will be removed in 2.2", true)]
     Vector AbsVelocity { get; set; }
 
     /// <summary>
-    ///     Base velocity <br />
-    ///     <remarks>Setting this will apply extra velocity to the final speed</remarks>
+    ///     Base velocity.
     /// </summary>
+    /// <remarks>Setting this will apply extra velocity to the final speed.</remarks>
     Vector BaseVelocity { get; set; }
 
     /// <summary>
@@ -263,9 +265,8 @@ public interface IBaseEntity : ISchemaObject
     bool IsValid();
 
     /// <summary>
-    ///     Check if this entity is maked for deletion
+    ///     Check if this entity is marked for deletion
     /// </summary>
-    /// <returns></returns>
     bool IsMarkedForDeletion();
 
     /// <summary>
@@ -274,15 +275,15 @@ public interface IBaseEntity : ISchemaObject
     void Kill();
 
     /// <summary>
-    ///     Update Classname<br />
-    ///     <remarks>Doing this will impact entity clean up on round end</remarks>
+    ///     Update Classname.
     /// </summary>
+    /// <remarks>Doing this will impact entity clean up on round end.</remarks>
     void SetClassname(string classname);
 
     /// <summary>
-    ///     Change entity's team
+    ///     Change entity's team. On an <see cref="IPlayerController" />, calls <c>ForceChangeTeam</c> (which slays the player; use <see cref="IPlayerController.SwitchTeam" /> to switch without slaying).
     /// </summary>
-    /// <param name="team">队伍</param>
+    /// <param name="team">Target team</param>
     void ChangeTeam(CStrikeTeam team);
 
     /// <summary>
@@ -292,7 +293,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">The string value (can be null).</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator = null,
         IBaseEntity?        caller    = null,
@@ -306,7 +307,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">The integer parameter value</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator,
         IBaseEntity?        caller,
@@ -320,7 +321,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">The float parameter value</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     bool AcceptInput(string input,
         IBaseEntity?        activator,
         IBaseEntity?        caller,
@@ -335,7 +336,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator = null,
@@ -351,7 +352,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator,
@@ -367,7 +368,7 @@ public interface IBaseEntity : ISchemaObject
     /// <param name="activator">The entity that activates this IO Event</param>
     /// <param name="caller">The entity that calls this IO Event</param>
     /// <param name="value">Value</param>
-    /// <param name="outputId">The unique ID of the output that was fired</param>
+    /// <param name="outputId">Reserved output ID (currently ignored by the native implementation).</param>
     void AddIOEvent(float delay,
         string            input,
         IBaseEntity?      activator,
@@ -389,7 +390,7 @@ public interface IBaseEntity : ISchemaObject
     /// </remarks>
     /// <param name="info">The damage information to apply.</param>
     /// <param name="bypassHook">If <see langword="true" />, the damage is applied directly without being intercepted by hooks.</param>
-    /// <returns>The result returned by the engine (or the hook), typically representing the damage applied.</returns>
+    /// <returns>The health lost (<c>CTakeDamageResult.m_nHealthLost</c>), or <c>0</c> if damage was suppressed or skipped.</returns>
     long DispatchTraceAttack(in TakeDamageInfo info, bool bypassHook = false);
 
     /// <summary>
@@ -406,7 +407,7 @@ public interface IBaseEntity : ISchemaObject
     /// </remarks>
     /// <param name="info">A pointer to the damage information struct. Must not be null.</param>
     /// <param name="bypassHook">If <see langword="true" />, the damage is applied directly without being intercepted by hooks.</param>
-    /// <returns>The result returned by the engine (or the hook), typically representing the damage applied.</returns>
+    /// <returns>The health lost (<c>CTakeDamageResult.m_nHealthLost</c>), or <c>0</c> if damage was suppressed or skipped.</returns>
     unsafe long DispatchTraceAttack(TakeDamageInfo* info, bool bypassHook = false);
 
     /// <summary>
@@ -461,9 +462,8 @@ public interface IBaseEntity : ISchemaObject
     void ApplyAbsVelocityImpulse(Vector velocity);
 
     /// <summary>
-    ///     SGet the absolute velocity in world space, EFL_DIRTY_ABSVELOCITY
+    ///     Get the absolute velocity in world space, EFL_DIRTY_ABSVELOCITY
     /// </summary>
-    /// <returns></returns>
     Vector GetAbsVelocity();
 
     /// <summary>
@@ -472,16 +472,15 @@ public interface IBaseEntity : ISchemaObject
     void SetAbsVelocity(Vector velocity);
 
     /// <summary>
-    ///     Get the relative velocity in world space, networked
+    ///     Get the local velocity (relative to MoveParent if parented, otherwise world space), networked
     /// </summary>
-    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, reads the physics object's velocity</remarks>
-    /// <returns></returns>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, reads the physics object's velocity.</remarks>
     Vector GetLocalVelocity();
 
     /// <summary>
-    ///     Set the relative velocity in world space, networked
+    ///     Set the local velocity (relative to MoveParent if parented, otherwise world space), networked
     /// </summary>
-    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, writes the physics object's velocity</remarks>
+    /// <remarks>When MoveType is <see cref="Enums.MoveType.VPhysics" />, writes the physics object's velocity.</remarks>
     void SetLocalVelocity(Vector velocity);
 
     /// <summary>
@@ -528,40 +527,38 @@ public interface IBaseEntity : ISchemaObject
     void StopSound(string sound);
 
     /// <summary>
-    ///     Set an entitiy's collision group
+    ///     Set an entity's collision group
     /// </summary>
     void SetCollisionGroup(CollisionGroupType type);
 
     /// <summary>
-    ///     Cast to <see cref="IBasePlayerPawn" /> <br />
-    ///     <remarks>
-    ///         It will return null if the entity is not CBasePlayerPawn
-    ///     </remarks>
+    ///     Cast to <see cref="IBasePlayerPawn" />.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if the entity is not a <c>CBasePlayerPawn</c>.</remarks>
     /// <param name="safeCheck">When false, it creates instance without checks</param>
     IBasePlayerPawn? AsBasePlayerPawn(bool safeCheck = true);
 
     /// <summary>
-    ///     Cast to <see cref="IPlayerPawn" /> <br />
-    ///     <remarks>
-    ///         It will return null if the entity is not CCSPlayerPawn <br />
-    ///         If you want to cast to <see cref="IBasePlayerPawn" />, please see <seealso cref="AsBasePlayerPawn" />
-    ///     </remarks>
+    ///     Cast to <see cref="IPlayerPawn" />.
     /// </summary>
+    /// <remarks>
+    ///     Returns <see langword="null" /> if the entity is not a <c>CCSPlayerPawn</c>.
+    ///     To cast to <see cref="IBasePlayerPawn" />, see <seealso cref="AsBasePlayerPawn" />.
+    /// </remarks>
     /// <param name="safeCheck">When false, it creates instance without checks</param>
     IPlayerPawn? AsPlayerPawn(bool safeCheck = true);
 
     /// <summary>
-    ///     Cast to PlayerController <br />
-    ///     <remarks>It will return null if the entity is not PlayerController</remarks>
+    ///     Cast to PlayerController.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if the entity is not a PlayerController.</remarks>
     /// <param name="safeCheck">When false, it creates instance without checks</param>
     IPlayerController? AsPlayerController(bool safeCheck = true);
 
     /// <summary>
-    ///     Cast to BaseWeapon <br />
-    ///     <remarks>It will return null if the entity is not Weapon</remarks>
+    ///     Cast to BaseWeapon.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if the entity is not a Weapon.</remarks>
     /// <param name="safeCheck">When false, it creates instance without checks</param>
     IBaseWeapon? AsBaseWeapon(bool safeCheck = true);
 
@@ -581,9 +578,9 @@ public interface IBaseEntity : ISchemaObject
     bool IsPlayerPawn { get; }
 
     /// <summary>
-    ///     Cast to BaseGrenade <br />
-    ///     <remarks>It will return null if the entity is not a grenade</remarks>
+    ///     Cast to BaseGrenade.
     /// </summary>
+    /// <remarks>Returns <see langword="null" /> if the entity is not a grenade.</remarks>
     /// <exception cref="System.Reflection.CustomAttributeFormatException">The entity has no schema binding</exception>
     /// <exception cref="KeyNotFoundException">The entity's schema class is not in the schema table</exception>
     IBaseGrenadeProjectile? AsBaseGrenadeProjectile();
@@ -594,11 +591,10 @@ public interface IBaseEntity : ISchemaObject
     T As<T>() where T : class, IBaseEntity;
 
     /// <summary>
-    ///     Spawn entity with entity field values
-    ///     <remarks>
-    ///         They keys must be in lowercase, otherwise the game will not recognize
-    ///     </remarks>
+    ///     Spawn entity with entity field values.
     /// </summary>
+    /// <remarks>The keys must be in lowercase, otherwise the game will not recognize them.</remarks>
+    /// <exception cref="ArgumentException"><paramref name="keyValues" /> contains more than 128 entries.</exception>
     void DispatchSpawn(IReadOnlyDictionary<string, KeyValuesVariantValueItem>? keyValues = null);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

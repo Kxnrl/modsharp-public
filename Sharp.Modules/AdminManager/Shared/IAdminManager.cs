@@ -43,6 +43,7 @@ public interface IAdminManager
     /// <remarks>
     ///     Returned data is the latest cached result after manifest refresh logic,
     ///     including cross-module merges and global deny precedence.
+    ///     <para><b>Threading:</b> Must be called on the game thread.</para>
     /// </remarks>
     public IAdmin? GetAdmin(SteamID identity);
 
@@ -55,8 +56,8 @@ public interface IAdminManager
     ///     <c>typeof(MyModule).Assembly.GetName().Name</c>) and keep it unchanged across calls.
     /// </param>
     /// <param name="call">
-    ///     Factory callback that returns the full <see cref="AdminTableManifest" /> for this module at call time.
-    ///     If the callback returns <see langword="null" />, the call is silently ignored and a warning is logged.
+    ///     Factory callback that returns a non-null <see cref="AdminTableManifest" /> for this module at call time.
+    ///     Must not be <see langword="null" /> or return <see langword="null" /> (doing so throws <see cref="NullReferenceException" />).
     /// </param>
     /// <remarks>
     ///     Behavior summary:
@@ -84,20 +85,22 @@ public interface IAdminManager
     ///         <item>
     ///             <description>
     ///                 Wildcard/direct rules resolve only against known concrete permissions registered in
-    ///                 PermissionCollection (for example, <c>module:*</c> or <c>*</c> expands from this index).
+    ///                 <c>PermissionCollection</c> or via <see cref="IAdminCommandRegistry.RegisterPermissions" />
+    ///                 (for example, <c>module:*</c> or <c>*</c> expands from this index).
     ///             </description>
     ///         </item>
     ///         <item>
     ///             <description>
     ///                 The refresh is immediate: users removed from this module are detached, users still present
-    ///                 are recalculated, and users with wildcard rules in other modules are also refreshed if new
-    ///                 concrete permissions are introduced.
+    ///                 are recalculated, and users with direct wildcard rules in other modules are also refreshed if new
+    ///                 concrete permissions are introduced (wildcards inherited solely through <c>@RoleName</c> are
+    ///                 recalculated on remount or <c>ms_reload_admins</c>).
     ///             </description>
     ///         </item>
     ///     </list>
-    ///     Recommended startup order (see <c>docfx/docs/codes/admin-example.cs</c>):
-    ///     call <see cref="MountAdminManifest" /> first, then register admin commands via
-    ///     <see cref="GetCommandRegistry" />.
+    ///     Register permissions via <see cref="MountAdminManifest" /> or
+    ///     <see cref="IAdminCommandRegistry.RegisterPermissions" /> before calling
+    ///     <see cref="IAdminCommandRegistry.RegisterAdminCommand" />.
     ///     <para>
     ///         <b>Threading:</b> Must be called on the game thread. From an async or background
     ///         context, use <see cref="IModSharp.InvokeFrameAction" /> or

@@ -1,71 +1,74 @@
-# Migrating from CSSharp/Metamod
+# Migrating from CounterStrikeSharp / Metamod
 
-If you are a CS#/Metamod user and want to migrate to ModSharp, there are some things you need to know in advance.
+ModSharp has its own loader, module API, and lifecycle. CounterStrikeSharp plugins, SourceMod plugins, and Metamod binaries cannot run directly under ModSharp; port the code to `IModSharpModule` and deploy as shown in [Writing a Module](writing-a-module.md).
 
-## OnMapStart/OnMapEnd
+## Module lifetime vs. map lifetime
 
-In a nutshell:
+`IModSharpModule.Init()` / `PostInit()` and `Shutdown()` track module load and unload, **not** map start and end. A module stays loaded across many maps, and hot reloads happen right before the next map starts. Do not assume map-scoped objects or `GameRules` are ready in the module constructor, `Init()`, or `PostInit()`, since no map is loaded yet on initial startup.
 
-- `OnLevelInit` → ``OnGameInit``
-- `OnMapInit` → ``OnGamePostInit``
-- `OnMapStart` → ``OnGameActivate``
-- `OnConfigsExecuted` → ``OnServerActivate``
-- `OnMapEnd` → ``OnGameDeactivate``
+For map callbacks, implement **`Sharp.Shared.Listeners.IGameListener`** (returning `IGameListener.ApiVersion` from `ListenerVersion` and setting `ListenerPriority`), install it via `sharedSystem.GetModSharp().InstallGameListener(listener)`, and remove it in `Shutdown()` with `RemoveGameListener(listener)`.
 
-Execution order:
+## Mapping lifecycle stages
 
-- ``OnServerInit``: You can safely access ``sv``/``globals``
-- ``OnGameInit``: You can safely access ``GameRules``
-- ``OnGamePostInit``
-- ``OnResourcePrecache``: You can only ``PrecacheResource`` here
-- ``OnServerSpawn``: From here you can load *.cfg*
-- ``OnGameActivate``
-- ``OnServerActivate``
-- ...
-- ``OnGameDeactivate``
-- ``OnGamePreShutdown``
-- ``OnGameShutdown``: ``sv``/``globals``/``GameRules`` are no longer available from this point on
+Use this table as a rough guide; exact engine timing may differ slightly from other frameworks:
 
-All of the above are included in `IGameListner`.
+| Familiar hook | ModSharp equivalent |
+| --- | --- |
+| Early level init (`OnLevelInit`) | `OnGameInit` |
+| Post-init (`OnMapInit`) | `OnGamePostInit` |
+| Map active (`OnMapStart`) | `OnGameActivate` |
+| Server activated | `OnServerActivate` |
+| Map end (`OnMapEnd`) | `OnGameDeactivate` |
 
-> [!TIP]
->
-> ``OnGameShutdown`` serves as the end event for the current map  
-> ``OnServerInit`` serves as the first event when the map starts  
-> This cycles repeatedly  
->
-> If you want to learn how to use it, please check the [Game Listener Example](../examples/game-listener.md) for a complete implementation.
+One important difference: `OnServerActivate` fires after the engine's server activation function and is **not an `OnConfigsExecuted` event**. If your module needs logic to run after specific `.cfg` files finish, schedule or trigger it explicitly rather than assuming `OnServerActivate` covers it.
 
----
+Full map cycle order:
 
-## Entity
+```text
+OnServerInit
+OnGameInit
+OnGamePostInit
+OnResourcePrecache
+OnServerSpawn
+OnGameActivate
+OnServerActivate
+... map runs ...
+OnGameDeactivate
+OnGamePreShutdown
+OnGameShutdown
+```
 
-Entity storage, usage, and variable access are very different from CS# and SourceMod.
+- `OnServerInit`: fires for every map (not once per process), right after network server and global variable wrappers are created.
+- `OnGameInit`: `GameRules` is ready before listeners run.
+- `OnResourcePrecache`: call `PrecacheResource` directly here; the precache context is cleared as soon as dispatch finishes, so deferring it to a timer is too late.
+- `OnServerSpawn`: server `.cfg` execution can start from here onward, though configs may not all have finished yet.
+- `OnGameDeactivate` / `OnGamePreShutdown`: clean up map-scoped state and entity references before shutdown finishes.
+- `OnGameShutdown`: **`GameRules` is already invalid before listeners run**, and server/globals wrappers are cleared right afterwards. Reacquire map-scoped objects on the next map instead of carrying them across.
 
-Please see [Game Entities](../features/game-entities.md)
+The next map starts over at `OnServerInit`. Late-registered listeners do not receive earlier events. See the [Game Listener example](../examples/game-listener.md) for full code.
 
----
+## Entities
 
-## Events
+Entity wrappers, validity checks, and schema field access differ from CounterStrikeSharp and SourceMod. Do not keep entity wrappers across deletion or map changes, and check [Game Entities](../features/game-entities.md) when porting property reads and writes.
 
-Event creation and access are similar to CS# and SourceMod,
-but game event listening differs from the CS# and SourceMod listening methods.  
-In **ModSharp**, the game event listening approach is the same as SourceEngine.
+## Game events
 
-Please see [Game Events](../features/game-events.md)
+Event names and fields will look familiar, though ModSharp uses explicit listeners and `HookEvent` calls instead of attribute-based hooks. See [Game Events](../features/game-events.md) for registration, callbacks, and disposal rules.
 
----
+## Shared APIs and dependencies
+
+Shared interface assemblies go in `sharp/shared` and provider modules go in `sharp/modules`, with versions aligned to the host. Export interfaces in `PostInit()`, resolve dependencies in `OnAllModulesLoaded()`, and handle disconnect/reconnect when providers reload. See [Installing a Shared API](integrating-api.md) and [Reloading a Module](reload-module.md).
 
 ## Stripper
 
-Use this module: [Jump Link](https://github.com/Kxnrl/StripperSharp)
+If you need to modify map entity lumps, install the separate [StripperSharp module](https://github.com/Kxnrl/StripperSharp) and follow its setup guide.
 
----
+## Workshop addon
 
-## Workshop Addon
+To mount one extra workshop addon alongside the current map, pass this **launch option** (not a console command):
 
-Add launch option `-dual_addon {Your workshop subscription ID}`.
+```text
+-dual_addon 1234567890
+```
 
-> [!NOTE]
-> 1. Assume your subscription ID is 1234567890，then here it is`-dual_addon 1234567890`
-> 2. Currently we don't support multiple workshop subscription IDs. Optimize your resources.
+Replace `1234567890` with the addon's Workshop ID. It accepts a single item ID (not a comma-separated list or collection ID) and does not replace selecting the map itself. Changing launch options requires a server restart; once enabled, modules can also query or switch the active addon ID at runtime via `IModSharp.GetDualAddonId()` and `IModSharp.SetDualAddonId(ulong)`.

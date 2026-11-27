@@ -24,12 +24,12 @@ public interface IGlobalVars : INativeObject
     float AbsoluteFrameTime { get; }
 
     /// <summary>
-    ///     Frame start time standard deviation based on engine time <br />
-    ///     <remarks>
-    ///         Not a standard deviation: it is the unclamped duration of the previous frame in seconds, which the engine
-    ///         sends as CNETMsg_Tick.host_unfiltered_frametime; AbsoluteFrameTime is this value clamped to [0.0001, 0.1]
-    ///     </remarks>
+    ///     Unclamped duration of the previous frame in seconds.
     /// </summary>
+    /// <remarks>
+    ///     Despite its Source engine field name, this is not a standard deviation: it is the unclamped duration of the previous frame in seconds,
+    ///     sent as <c>CNETMsg_Tick.host_unfiltered_frametime</c>; <see cref="AbsoluteFrameTime" /> is this value clamped to <c>[0.0001, 0.1]</c>.
+    /// </remarks>
     float AbsoluteFrameStartTimeStdDev { get; }
 
     /// <summary>
@@ -48,12 +48,12 @@ public interface IGlobalVars : INativeObject
     float CurTime { get; }
 
     /// <summary>
-    ///     Render time <br />
-    ///     <remarks>
-    ///         Not a render time: it is the client's interpolation fraction. On a dedicated server the engine only zeroes it
-    ///         at construction, so it always reads 0
-    ///     </remarks>
+    ///     Client interpolation fraction (always <c>0</c> on a dedicated server).
     /// </summary>
+    /// <remarks>
+    ///     Not a render time: it is the client's interpolation fraction. On a dedicated server the engine only zeroes it
+    ///     at construction, so it always reads <c>0</c>.
+    /// </remarks>
     float RenderTime { get; }
 
     /// <summary>
@@ -77,8 +77,8 @@ public interface IGlobalVars : INativeObject
     string MapName { get; }
 
     /// <summary>
-    ///     Maximum number of entities <br />
-    ///     <remarks>Refers to maximum Edict count</remarks>
+    ///     Maximum number of entities.
     /// </summary>
+    /// <remarks>Refers to maximum Edict count.</remarks>
     int MaxEntities { get; }
 }

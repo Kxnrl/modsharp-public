@@ -26,28 +26,37 @@ public interface IEventListener
     const int ApiVersion = 1;
 
     /// <summary>
-    ///     Listenver version
+    ///     Listener version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     Priority
+    ///     Priority (higher values run first)
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     Hook and modify event, if you only need to listen, do not implement this function <br />
-    ///     The event is blocked if any listener returns false; the default implementation returns true,
-    ///     which does not override another listener's block <br />
-    ///     The event is owned by the engine and only valid during this callback; do not Fire or Dispose it here
+    ///     Pre-hook called before a hooked game event is fired (<c>CGameEventManager::FireEvent</c> pre-hook).
+    ///     If you only need to observe the event, implement <see cref="FireGameEvent" /> instead.
     /// </summary>
-    /// <returns>False = Block event from firing</returns>
+    /// <param name="event">The editable, engine-owned game event. Valid only for the duration of this callback; do not call <see cref="IGameEvent.Fire" /> or <see cref="IGameEvent.Dispose" />.</param>
+    /// <param name="serverOnly">Controls whether the event is broadcast only on the server; modifications propagate to subsequent listeners.</param>
+    /// <returns><see langword="false" /> to block the event from firing (and prevent <see cref="FireGameEvent" />); <see langword="true" /> to allow it.</returns>
+    /// <remarks>
+    ///     Only fires for event names registered via <see cref="Managers.IEventManager.HookEvent" />.
+    ///     All installed listeners execute in descending priority order without short-circuiting; the event is blocked if any listener returns <see langword="false" />.
+    ///     The default implementation returns <see langword="true" /> and does not override another listener's block.
+    /// </remarks>
     bool HookFireEvent(IGameEvent @event, ref bool serverOnly)
         => true;
 
     /// <summary>
-    ///     Event listener, do not modify event here
+    ///     Called when a hooked game event fires (<c>IGameEventListener2::FireGameEvent</c>).
     /// </summary>
-    /// <param name="event"></param>
+    /// <param name="event">The read-only game event. Valid only for the duration of this callback; mutating, firing, or disposing it throws <see cref="System.InvalidOperationException" />.</param>
+    /// <remarks>
+    ///     Only fires for event names registered via <see cref="Managers.IEventManager.HookEvent" /> and not blocked by <see cref="HookFireEvent" />.
+    ///     The event wrapper is disposed immediately after all listeners return.
+    /// </remarks>
     void FireGameEvent(IGameEvent @event);
 }

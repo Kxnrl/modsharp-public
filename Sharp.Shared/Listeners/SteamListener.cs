@@ -27,54 +27,63 @@ public interface ISteamListener
     const int ApiVersion = 2;
 
     /// <summary>
-    ///     Listenver version
+    ///     Listener version
     /// </summary>
     int ListenerVersion { get; }
 
     /// <summary>
-    ///     Priority
+    ///     Priority (higher values run first)
     /// </summary>
     int ListenerPriority { get; }
 
     /// <summary>
-    ///     Triggered after calling RequestUserGroupStatus
+    ///     Triggered after calling <see cref="Objects.ISteamApi.RequestUserGroupStatus" /> (<c>GSClientGroupStatus_t</c>).
     /// </summary>
+    /// <param name="steamId">The user's SteamID.</param>
+    /// <param name="groupId">The Steam group's SteamID.</param>
+    /// <param name="isMember"><see langword="true" /> if the user is a member of the group.</param>
+    /// <param name="isOfficer"><see langword="true" /> if the user is an officer of the group.</param>
     void OnGroupStatusResult(SteamID steamId, SteamID groupId, bool isMember, bool isOfficer)
     {
     }
 
     /// <summary>
-    ///     Server connected to Steam
+    ///     Called when the game server connects to Steam (<c>SteamServersConnected_t</c>).
     /// </summary>
     void OnSteamServersConnected()
     {
     }
 
     /// <summary>
-    ///     Server disconnected from Steam
+    ///     Called when the game server disconnects from Steam (<c>SteamServersDisconnected_t</c>).
     /// </summary>
+    /// <param name="reason">The Steamworks disconnection result code.</param>
     void OnSteamServersDisconnected(SteamApiResult reason)
     {
     }
 
     /// <summary>
-    ///     Server failed to connect to Steam
+    ///     Called when the game server fails to connect to Steam (<c>SteamServerConnectFailure_t</c>).
     /// </summary>
+    /// <param name="reason">The Steamworks failure result code.</param>
+    /// <param name="stillRetrying"><see langword="true" /> if Steam is still retrying the connection.</param>
     void OnSteamServersConnectFailure(SteamApiResult reason, bool stillRetrying)
     {
     }
 
     /// <summary>
-    ///     UGC download
+    ///     Called when a Steam Workshop UGC item download completes (<c>DownloadItemResult_t</c>).
     /// </summary>
+    /// <param name="sharedFileId">The Workshop item's published file ID.</param>
+    /// <param name="result">The download result code.</param>
     void OnDownloadItemResult(ulong sharedFileId, SteamApiResult result)
     {
     }
 
     /// <summary>
-    ///     UGC installation
+    ///     Called when a Steam Workshop UGC item finishes installing (<c>ItemInstalled_t</c>).
     /// </summary>
-    /// <param name="publishedFileId">Workshop ID</param>
+    /// <param name="publishedFileId">The Workshop item's published file ID.</param>
     void OnItemInstalled(ulong publishedFileId)
     {
     }

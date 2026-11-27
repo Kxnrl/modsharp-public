@@ -1,85 +1,51 @@
 # Writing a Module
 
-## Project References
+A ModSharp module is a .NET class library loaded by the server. This guide walks through creating a minimal module from the command line; any IDE with the .NET 10 SDK works just as well.
 
-If you already have some development experience, you can directly:
+## Create the project and pin the SDK
 
-- Create from template: [Template](https://github.com/new?template_name=ModSharp-Module-Template&template_owner=SourceSharp)
-- Clone example: [Example](https://github.com/SourceSharp/ModSharp-Module-Example)
+With the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) installed on your dev machine, run:
 
-Below we will introduce step by step how to write a module.
+```shell
+dotnet new classlib --name Example --framework net10.0
+```
 
----
-
-## Environment Setup
-
-The current version of **ModSharp** uses .NET version `10.x`,  
-Please ensure your .NET SDK version is at least this version or higher, otherwise you cannot proceed with the following steps.
-
-We recommend using the following development environments:
-
-- Visual Studio 2022/2026
-- JetBrains Rider
-
-> [!NOTE]
-> We don't recommend using VS Code, because maintaining large projects becomes very painful.
-> This guide primarily uses Visual Studio as the IDE.
-
-We will use "Example" as the sample project name.  
-If you want to learn how to create a Solution and Class Library, please refer directly to this tutorial: [Jump Link](https://learn.microsoft.com/en-us/dotnet/core/tutorials/library-with-visual-studio)  
-After creating the project, you should be able to find **Example.csproj**, which should look like this:
+Replace `Example/Example.csproj` with:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>13</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <AssemblyName>Example</AssemblyName>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModSharp.Sharp.Shared" Version="[2.1.227]"
+                      PrivateAssets="all" ExcludeAssets="runtime" />
+  </ItemGroup>
 </Project>
 ```
 
-Add the following content to this file:
+`2.1.227` is the published SDK matching this docs revision. **Pin `ModSharp.Sharp.Shared` to the exact build installed on your server** using brackets (avoid `Version="*"` so you do not pull in APIs your server does not have yet; note that the source tree's default `2.1.1` gets replaced by the build number during releases).
 
-```diff
-<Project Sdk="Microsoft.NET.Sdk">
+Why these settings matter:
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-+    <AssemblyName>Example</AssemblyName>
-  </PropertyGroup>
+- `net10.0`, C# 13, and x64 match the host runtime.
+- `AssemblyName` sets the DLL and `.deps.json` filenames explicitly so deployment stays predictable.
+- `EnableDynamicLoading` emits plugin-ready dependency metadata (deploy the full publish output, not just the main DLL).
+- `ExcludeAssets="runtime"` keeps `Sharp.Shared.dll` and host dependencies out of your module folder.
+- `PrivateAssets="all"` only stops transitive flow to downstream projects; **by itself it will not prevent `dotnet publish` from copying the DLLs**, so pair it with `ExcludeAssets="runtime"`. See [NuGet asset metadata](https://learn.microsoft.com/nuget/consume-packages/package-references-in-project-files#controlling-dependency-assets) and [.NET's plugin guide](https://learn.microsoft.com/dotnet/core/tutorials/creating-app-with-plugin-support#reference-a-plugin-interface-from-a-nuget-package).
 
-+  <ItemGroup>
-+    <PackageReference Include="ModSharp.Sharp.Shared" Version="*" PrivateAssets="all" />
-+  </ItemGroup>
+## Implement the entry point
 
-</Project>
+Rename `Class1.cs` to `Example.cs` and replace its contents:
 
-```
-
-> [!TIP]
->
-> Using `*` in the `Version` field always resolves to the latest version  
-> If you need to explicitly specify a version number, use a specific version, for example `Version="2.0.20"`
-
-At this point, you are ready to write modules for ModSharp.
-
-> [!IMPORTANT]
->
-> 1. `ModSharp.Sharp.Shared` must have the `PrivateAssets="all"` tag because we need to prevent automatic copying of `Sharp.Shared.dll` and all its related dlls during Publish.  
-> 2. `AssemblyName` is a required field, otherwise dependency loading issues may occur. This field should be the same as the project name. Our project name is **Example**, so we enter `Example`. Adjust accordingly during actual development.
-
----
-
-## Hello, World
-
-All code needs an entry point before execution, and this is no exception.  
-When creating a new Class library, .NET automatically generates a `Class1.cs` file. Let's work with what we have and rename this file to `Example.cs`. This file will be our module entry file.  
-Then write the following content:
-
-```cs
+```csharp
+using System;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 
@@ -87,10 +53,17 @@ namespace Example;
 
 public sealed class Example : IModSharpModule
 {
-    public Example(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool hotReload)
+    public Example(ISharedSystem sharedSystem,
+        string dllPath,
+        string sharpPath,
+        Version version,
+        IConfiguration configuration,
+        bool hotReload)
     {
-
     }
+
+    public string DisplayName => "Example";
+    public string DisplayAuthor => "YourName";
 
     public bool Init()
     {
@@ -102,97 +75,87 @@ public sealed class Example : IModSharpModule
     {
         Console.WriteLine("Byebye, World!");
     }
-
-    public string DisplayName   => "Example";
-    public string DisplayAuthor => "YourName";
 }
 ```
 
-Where:
+Put only one non-abstract `IModSharpModule` in the entry assembly, with a **public** six-parameter constructor (`public` class recommended, though `internal` is also picked up). The loader only instantiates the first match; put separate modules in separate folders.
 
-```cs
-public class Example : IModSharpModule
+Constructor arguments arrive in this exact order:
+
+| Argument | Description |
+| --- | --- |
+| `ISharedSystem sharedSystem` | Root entry point for framework services (`GetModSharp()`, `GetSharpModuleManager()`, etc.). |
+| `string dllPath` | This module's deployment **directory** (not the DLL path). |
+| `string sharpPath` | The server's `game/sharp` root directory. |
+| `Version version` | Your module assembly's version. |
+| `IConfiguration configuration` | Core configuration loaded from `sharp/configs/core.json`. |
+| `bool hotReload` | `false` on initial startup; `true` when replaced during a map-change reload. |
+
+The host watches `configs/core.json`, though modules still need to load and manage any module-specific config files themselves using `dllPath` or `sharpPath`.
+
+## Module lifecycle
+
+On initial startup, each module runs through:
+
+1. Constructor (if it throws, no instance exists so `Shutdown()` is skipped, though leaked registrations are still cleaned up).
+2. `Init()`, which must return `true`. Returning `false` or throwing marks the load failed and calls `Shutdown()` on the instance to clean up.
+3. State transitions to `Running`, then `PostInit()` runs. Export shared interfaces and dynamic natives here rather than in the constructor or `Init()`.
+4. Already-running modules receive `OnLibraryConnected(assemblyName)`.
+5. Once the initial module scan finishes, running modules receive `OnAllModulesLoaded()`. Resolve cross-module dependencies here instead of assuming a load order.
+
+`PostInit()`, `OnLibraryConnected()`, `OnLibraryDisconnect()`, and `OnAllModulesLoaded()` have default empty implementations; `Init()`, `Shutdown()`, `DisplayName`, and `DisplayAuthor` are required.
+
+`OnLibraryConnected` does not replay modules loaded earlier, and passes the loaded assembly name without `.dll`. If a provider module reloads, consumers must handle `OnLibraryDisconnect` and reconnecting; see [Module Shared APIs](../examples/module-api.md).
+
+On unload, the core marks the module's load context unloaded (clearing timers and `cs_script` delegates and blocking new listener/hook/timer registrations during `Shutdown()`), sends `OnLibraryDisconnect` to other modules, unregisters its exported interfaces and natives, and calls `Shutdown()`. Release your listeners, hooks, timers, and external resources inside `Shutdown()`. Map callbacks run on a separate lifecycle, so a loaded module does not mean a map or `GameRules` is ready yet; see the [Migration Guide](migration-guide.md).
+
+## Publish and deploy
+
+From the parent folder containing `Example`, run the command matching your **server OS**:
+
+```shell
+# Windows x64 server
+dotnet publish Example/Example.csproj --configuration Release --framework net10.0 --runtime win-x64 --no-self-contained --output ./publish/Example
 ```
 
-The module entry must inherit from `IModSharpModule`, and only one class in a module can inherit this interface, otherwise various unexpected behaviors may occur.
-
-> [!CAUTION]
-> If you have multiple modules in one solution, please place them in different module packages, otherwise unexpected issues may arise.
-
-```cs
-    public Example(ISharedSystem sharedSystem, string dllPath, string sharpPath, Version version, IConfiguration configuration, bool hotReload)
-    {
-
-    }
+```shell
+# Linux x64 server
+dotnet publish Example/Example.csproj --configuration Release --framework net10.0 --runtime linux-x64 --no-self-contained --output ./publish/Example
 ```
 
-This is the class constructor. You must define these parameters, otherwise the module will fail to initialize directly.
+Always publish framework-dependent (`--no-self-contained`); do not use self-contained, single-file, trimming, or Native AOT. Keep any module-specific dependencies and assets from the publish output.
 
-```cs
-    public bool Init()
-        => true;
+For an initial install, stop the server and copy the publish folder into `game/sharp/modules/Example/`:
 
-    public void Shutdown()
-    {
-    }
+# [Windows](#tab/windows)
+
+```powershell
+$CS2 = 'C:\CS2'
+New-Item -ItemType Directory -Force "$CS2/game/sharp/modules/Example" | Out-Null
+Copy-Item ./publish/Example/* "$CS2/game/sharp/modules/Example/" -Recurse -Force
 ```
 
-- `Init()` is called when the module is initialized. Must be implemented. If you don't want to write much, you can simply use `=> true;`
-- `Shutdown()` is called when the module is unloaded. Must be implemented. If you don't want to write anything, you can leave it empty, i.e., an empty function with nothing inside.
+# [Linux](#tab/linux)
 
-```cs
-    public string DisplayName   => "Example";
-    public string DisplayAuthor => "YourName";
+```bash
+CS2=/srv/cs2
+mkdir -p "$CS2/game/sharp/modules/Example"
+cp -a ./publish/Example/. "$CS2/game/sharp/modules/Example/"
 ```
-
-- DisplayName is your module's display name
-- DisplayAuthor is the module author's name
-
-> [!NOTE]
-> These two items will appear in `ms modules` to identify the module.
 
 ---
 
-## Compile and Install
+Minimum deployed layout:
 
-You can refer to [Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/core/tutorials/publishing-with-visual-studio)  
-Although it's for console applications, the steps are exactly the same.  
-We recommend using `dotnet publish`.  
+```text
+{CS2}/game/sharp/modules/Example/
+├── Example.dll
+├── Example.deps.json
+└── ...                    # Module-specific dependencies/assets, if any
+```
 
-Please note that the `dotnet publish` path must be placed in `{CS2}/game/sharp/modules/{your module name, i.e., AssemblyName}`
-> In this tutorial: `{CS2}/game/sharp/modules/Example`
+The loader scans immediate subdirectories of `sharp/modules`, grabs the first top-level `*.deps.json`, and loads the matching DLL. Keep one module per directory. The folder name does not have to match `AssemblyName` (several bundled modules differ), though matching names keep things tidy. Preserve exact filename casing on Linux.
 
-After packaging is complete:
+At startup, any directory whose name ends with `.disabled` or that contains a `.disabled` file is skipped (dropping a `.disabled` file at runtime will not unload an already-running module).
 
-- File path should be `{CS2}/game/sharp/modules/Example/Example.dll`
-- Dependency path should be `{CS2}/game/sharp/modules/Example/Example.deps.json`
-
-> [!NOTE]
-> Please note the following points about module paths:
->
-> 1. Cannot contain spaces
-> 2. Use PascalCase
-> 3. Module path loading rule is `{CS2}/game/sharp/modules/{AssemblyName}/{AssemblyName}.deps.json`, make sure the paths match!
-> 4. If a `.disabled` file exists in the module directory, it will be skipped even if the folder is in `sharp/modules`.
-> 5. A module directory ending with `.disabled` is also skipped.
-
-If you still can't understand the above content well, let's look at pictures:
-
-![See Image](../../../images/module-deploy-to.png)
-
-Inside it looks like this:
-
-![See Image](../../../images/module-inner.png)
-
----
-
-## Start the Server
-
-There's nothing more to say here. After starting, you should see `Hello World!` in the server console.  
-At this point, our introductory module is complete.
-
-![See Image](../../../images/hello-world.png)
-
-You can enter `ms modules` after starting to query the module list.
-
-![See Image](../../../images/ms-modules.png)
+Start the server and check the startup logs for `Hello, World!`, then run `ms modules` in the server console to confirm the module's state is `Running`. For future updates, use the [reload flow](reload-module.md) instead of overwriting live files.

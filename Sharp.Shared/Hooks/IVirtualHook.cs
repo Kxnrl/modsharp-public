@@ -25,37 +25,38 @@ namespace Sharp.Shared.Hooks;
 public interface IVirtualHook : IRuntimeNativeHook
 {
     /// <summary>
-    ///     Prepare Hook
+    ///     Prepare virtual hook using a GameData vfunc index.
     /// </summary>
-    /// <param name="module">dll</param>
-    /// <param name="class">class</param>
-    /// <param name="function">function</param>
+    /// <remarks>
+    ///     An invalid <paramref name="module" /> alias or missing vtable for <paramref name="class" /> triggers a native <c>FatalError</c>.
+    /// </remarks>
+    /// <param name="module">Engine module short alias (see <see cref="IModSharp.FindPattern" />)</param>
+    /// <param name="class">C++ class name</param>
+    /// <param name="function">GameData virtual function name</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
-    /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
-    /// <exception cref="KeyNotFoundException">GameData not found</exception>
+    /// <exception cref="KeyNotFoundException">GameData virtual function index not found</exception>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(string module, string @class, string function, nint hookFn);
 
     /// <summary>
-    ///     Prepare Hook
+    ///     Prepare virtual hook using a 0-based vtable slot index.
     /// </summary>
-    /// <param name="module">dll</param>
-    /// <param name="class">class</param>
-    /// <param name="offset">offset</param>
+    /// <remarks>
+    ///     An invalid <paramref name="module" /> alias or missing vtable for <paramref name="class" /> triggers a native <c>FatalError</c>.
+    /// </remarks>
+    /// <param name="module">Engine module short alias (see <see cref="IModSharp.FindPattern" />)</param>
+    /// <param name="class">C++ class name</param>
+    /// <param name="offset">0-based virtual function slot index (not byte offset)</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
-    /// <exception cref="EntryPointNotFoundException">VTable not found</exception>
-    /// <exception cref="KeyNotFoundException">GameData not found</exception>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(string module, string @class, int offset, nint hookFn);
 
     /// <summary>
-    ///     Prepare Hook
+    ///     Prepare virtual hook from an existing vtable pointer and 0-based vtable slot index.
     /// </summary>
-    /// <param name="vTable">vtable address</param>
-    /// <param name="offset">offset</param>
+    /// <param name="vTable">Virtual table address</param>
+    /// <param name="offset">0-based virtual function slot index (not byte offset)</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
-    /// <exception cref="EntryPointNotFoundException">VTable invalid</exception>
-    /// <exception cref="KeyNotFoundException">GameData not found</exception>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
     void Prepare(nint vTable, int offset, nint hookFn);
 }

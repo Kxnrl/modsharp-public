@@ -43,7 +43,7 @@ public interface IBaseModelEntity : IBaseEntity
     RenderFx RenderFx { get; set; }
 
     /// <summary>
-    ///     m_clrColor
+    ///     m_clrRender
     /// </summary>
     Color32 RenderColor { get; set; }
 
@@ -94,8 +94,9 @@ public interface IBaseModelEntity : IBaseEntity
     int LookupAttachment(string attachment);
 
     /// <summary>
-    ///     Get the given attachment's origin and angles
+    ///     Get the given attachment's origin and angles.
     /// </summary>
+    /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="attachment" /> is &lt;= 0 or &gt; 255.</exception>
     void GetAttachment(int attachment, out Vector origin, out Vector angles);
 
     /// <summary>
@@ -105,6 +106,7 @@ public interface IBaseModelEntity : IBaseEntity
     int LookupBone(string bone);
 
     /// <summary>
+    ///     Get the world transform matrix for the specified bone index.
     /// </summary>
     void GetBoneTransform(int bone, out Matrix3x4 matrix);
 

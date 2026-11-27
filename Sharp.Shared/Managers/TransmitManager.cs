@@ -26,16 +26,16 @@ namespace Sharp.Shared.Managers;
 public interface ITransmitManager
 {
     /// <summary>
-    ///     Hook an entity
+    ///     Hook an entity for transmit control.
     /// </summary>
-    /// <param name="entity">Entity instance</param>
-    /// <param name="defaultTransmit">Default state for all channels</param>
+    /// <param name="entity">Entity instance. Passing a <see cref="IPlayerPawn" /> is rejected (returns <see langword="false" />); hook its <see cref="IPlayerController" /> instead.</param>
+    /// <param name="defaultTransmit">Default state for all channels (0..5).</param>
     bool AddEntityHooks(IBaseEntity entity, bool defaultTransmit);
 
     /// <summary>
-    ///     Manually remove hooks
-    ///     <remarks>Hooks are automatically destroyed when the entity is deleted</remarks>
+    ///     Manually remove hooks.
     /// </summary>
+    /// <remarks>Hooks are automatically destroyed when the entity is deleted.</remarks>
     bool RemoveEntityHooks(IBaseEntity entity);
 
     /// <summary>
@@ -45,20 +45,20 @@ public interface ITransmitManager
     bool IsEntityHooked(IBaseEntity entity);
 
     /// <summary>
-    ///     Get entity visibility state for a controller
+    ///     Get entity visibility state for a controller.
     /// </summary>
     /// <param name="entity">Entity index</param>
     /// <param name="controllerIndex">Controller index</param>
-    /// <param name="channel">Channel, -1 to read global state</param>
+    /// <param name="channel">Channel index (0..5; other non-negative or &lt; -1 values are clamped to 0..5), or -1 to read combined visibility (logical AND across all 6 channels).</param>
     bool GetEntityState(EntityIndex entity, EntityIndex controllerIndex, int channel = -1);
 
     /// <summary>
-    ///     Set entity visibility state for a controller
+    ///     Set entity visibility state for a controller.
     /// </summary>
     /// <param name="entity">Entity index</param>
     /// <param name="controllerIndex">Controller index</param>
-    /// <param name="transmit">Whether visible</param>
-    /// <param name="channel">Channel</param>
+    /// <param name="transmit">Whether visible on the specified channel(s). An entity is transmitted only when every channel 0..5 is <see langword="true" />.</param>
+    /// <param name="channel">Channel index (0..5; other non-negative or &lt; -1 values are clamped to 0..5), or -1 to update all 6 channels.</param>
     bool SetEntityState(EntityIndex entity, EntityIndex controllerIndex, bool transmit, int channel);
 
     /// <summary>
@@ -85,15 +85,15 @@ public interface ITransmitManager
     bool SetEntityOwner(EntityIndex entity, EntityIndex owner);
 
     /// <summary>
-    ///     Get the set of players that TransmitManager lets the entity transmit to
-    ///     <remarks>
-    ///         Reflects only TransmitManager's own blocking: the engine PVS is not included, and unconnected slots are not filtered out <br />
-    ///         An entity that is neither a controller nor a pawn returns all 64 bits if it is not hooked <br />
-    ///         Passing a controller or a PlayerPawn returns the receivers of that player's PlayerPawn; an ObserverPawn is not governed by hook state, only by ConVars <br />
-    ///         Pawn blocking is skipped for a receiver on its full update tick, so a pawn's actual receivers on that tick are wider than the returned value <br />
-    ///         Must be called on the main thread
-    ///     </remarks>
+    ///     Get the set of players that TransmitManager lets the entity transmit to.
     /// </summary>
+    /// <remarks>
+    ///     Reflects only TransmitManager's own blocking: the engine PVS is not included, and unconnected slots are not filtered out. <br />
+    ///     An entity that is neither a controller nor a pawn returns all 64 bits if it is not hooked. <br />
+    ///     Passing a controller or a PlayerPawn returns the receivers of that player's PlayerPawn; an ObserverPawn is not governed by hook state, only by ConVars. <br />
+    ///     Pawn blocking is skipped for a receiver on its full update tick, so a pawn's actual receivers on that tick are wider than the returned value. <br />
+    ///     Must be called on the main thread.
+    /// </remarks>
     NetworkReceiver GetEntityReceiver(EntityIndex entity);
 
     /// <summary>
@@ -107,7 +107,7 @@ public interface ITransmitManager
     /// <summary>
     ///     Configures whether a specific temporary entity type is blocked for a player.
     /// </summary>
-    /// <param name="type">Temporary entity type</param>
+    /// <param name="type">Temporary entity type. Note that <see cref="BlockTempEntType.MapMusic" /> only takes effect when <c>ms_hook_map_music</c> is enabled.</param>
     /// <param name="slot">IGameClient slot</param>
     /// <param name="state">
     ///     If <see langword="true" />, the entity type will be blocked (not sent to the client). If

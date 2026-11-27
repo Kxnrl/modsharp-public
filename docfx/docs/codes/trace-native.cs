@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
@@ -7,6 +8,8 @@ using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
+
+[assembly: DisableRuntimeMarshalling]
 
 namespace TraceNativeExample;
 
@@ -44,6 +47,7 @@ public sealed class TraceNativeExample : IModSharpModule
         // must uninstall the callbacks on shutdown
         _sharedSystem.GetClientManager().RemoveCommandCallback("trace_line",   OnCommandTraceLine);
         _sharedSystem.GetClientManager().RemoveCommandCallback("trace_custom", OnCommandTraceCustom);
+        _instance = null!;
     }
 
     private unsafe ECommandAction OnCommandTraceLine(IGameClient client, StringCommand command)
@@ -51,7 +55,7 @@ public sealed class TraceNativeExample : IModSharpModule
         if (client.GetPlayerController() is not { } controller
             || controller.GetPlayerPawn() is not { IsValidEntity: true, IsAlive: true } pawn)
         {
-            return ECommandAction.Handled;
+            return ECommandAction.Stopped;
         }
 
         var eyeAngles = pawn.GetEyeAngles();
@@ -90,11 +94,13 @@ public sealed class TraceNativeExample : IModSharpModule
 
         if (traceResult.DidHit())
         {
-            var hitEntity = _sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(traceResult.Entity);
+            var hitName = traceResult.Entity == 0
+                ? "world geometry"
+                : _sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(traceResult.Entity).Classname;
 
             controller.Print(HudPrintChannel.Chat,
                              $" Hit entity!!! {ChatColor.NewLine}"
-                             + $" entity classname: {hitEntity.Classname} {ChatColor.NewLine}"
+                             + $" entity classname: {hitName} {ChatColor.NewLine}"
                              + $" hit position: {traceResult.EndPosition} {ChatColor.NewLine}"
                              + $" fraction: {traceResult.Fraction}");
         }
@@ -103,7 +109,7 @@ public sealed class TraceNativeExample : IModSharpModule
             controller.Print(HudPrintChannel.Chat, "Failed to hit any entity.");
         }
 
-        return ECommandAction.Handled;
+        return ECommandAction.Stopped;
     }
 
     private unsafe ECommandAction OnCommandTraceCustom(IGameClient client, StringCommand command)
@@ -111,7 +117,7 @@ public sealed class TraceNativeExample : IModSharpModule
         if (client.GetPlayerController() is not { } controller
             || controller.GetPlayerPawn() is not { IsValidEntity: true, IsAlive: true } pawn)
         {
-            return ECommandAction.Handled;
+            return ECommandAction.Stopped;
         }
 
         var eyeAngles = pawn.GetEyeAngles();
@@ -184,20 +190,6 @@ public sealed class TraceNativeExample : IModSharpModule
         // if mins and maxs are identical the game will treat it as ShapeLine
         var hull = new TraceShapeHull { Mins = new Vector(-32, -32, -32), Maxs = new Vector(32, 32, 32) };
 
-        // or you can create the following shapes
-        /*
-        var line = new TraceShapeLine
-        {
-        };
-
-        var sphere = new TraceShapeSphere
-        {
-        };
-
-        var capsule = new TraceShapeCapsule
-        {
-        };
-        */
 
         nint? filter = command.ArgCount > 0
             ? (nint) (delegate* unmanaged<CTraceFilter*, nint, bool>) (&CTraceFilter_ShouldHitPlayerOnCT)
@@ -210,11 +202,13 @@ public sealed class TraceNativeExample : IModSharpModule
 
         if (traceResult.DidHit())
         {
-            var hitEntity = _sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(traceResult.Entity);
+            var hitName = traceResult.Entity == 0
+                ? "world geometry"
+                : _sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(traceResult.Entity).Classname;
 
             controller.Print(HudPrintChannel.Chat,
                              $" Hit entity!!! {ChatColor.NewLine}"
-                             + $" entity classname: {hitEntity.Classname} {ChatColor.NewLine}"
+                             + $" entity classname: {hitName} {ChatColor.NewLine}"
                              + $" hit position: {traceResult.EndPosition} {ChatColor.NewLine}"
                              + $" fraction: {traceResult.Fraction}");
         }
@@ -223,31 +217,28 @@ public sealed class TraceNativeExample : IModSharpModule
             controller.Print(HudPrintChannel.Chat, "Failed to hit any entity.");
         }
 
-        return ECommandAction.Handled;
+        return ECommandAction.Stopped;
     }
 
     [UnmanagedCallersOnly]
     private static unsafe bool CTraceFilter_ShouldHitPlayerOnCT(CTraceFilter* filter, nint entityPtr)
     {
-        // not a valid entity, don't hit, although this should never happen, just a safeguard
-        if (_instance._sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(entityPtr) is not
+        // Unmanaged callbacks must not let managed exceptions cross the native boundary.
+        try
         {
-            IsValidEntity: true,
-        } entity)
+            if (entityPtr == 0
+                || _instance._sharedSystem.GetEntityManager().MakeEntityFromPointer<IBaseEntity>(entityPtr)
+                    is not { IsValidEntity: true } entity)
+            {
+                return false;
+            }
+
+            return !entity.IsPlayerPawn || (entity.IsAlive && entity.Team == CStrikeTeam.CT);
+        }
+        catch (Exception exception)
         {
+            Console.Error.WriteLine(exception);
             return false;
         }
-
-        // custom logic here
-        // if we hit a player pawn
-        if (entity is { IsPlayerPawn: true, IsAlive: true })
-        {
-            // we only want to accept the hit if they are on the CT team.
-            // if they are on the T team, this function returns false, and the trace will continue
-            // through them until it hits a CT player or a wall.
-            return entity.Team == CStrikeTeam.CT;
-        }
-
-        return true;
     }
 }

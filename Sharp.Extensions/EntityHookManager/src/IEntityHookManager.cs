@@ -45,32 +45,53 @@ public interface IEntityHookManager
         ref EHookAction                result);
 
     /// <summary>
-    ///     监听实体创建事件
+    ///     Listen for entity creation events matching <paramref name="classname" /> (case-insensitive).
     /// </summary>
+    /// <param name="classname">Target entity classname.</param>
+    /// <param name="callback">Callback invoked when a matching entity is created.</param>
     void ListenEntityCreate(string classname, EventDelegate callback);
 
     /// <summary>
-    ///     监听实体删除事件
+    ///     Listen for entity deletion events matching <paramref name="classname" /> (case-insensitive).
     /// </summary>
+    /// <param name="classname">Target entity classname.</param>
+    /// <param name="callback">Callback invoked when a matching entity is deleted.</param>
     void ListenEntityDelete(string classname, EventDelegate callback);
 
     /// <summary>
-    ///     监听实体生成事件
+    ///     Listen for entity spawn events matching <paramref name="classname" /> (case-insensitive).
     /// </summary>
+    /// <param name="classname">Target entity classname.</param>
+    /// <param name="callback">Callback invoked when a matching entity is spawned.</param>
     void ListenEntitySpawn(string classname, EventDelegate callback);
 
     /// <summary>
-    ///     监听武器生成事件
+    ///     Listen for weapon spawn events.
     /// </summary>
+    /// <param name="callback">Callback invoked when any weapon entity spawns.</param>
     void ListenWeaponSpawn(WeaponEventDelegate callback);
 
     /// <summary>
-    ///     Hook 实体IO中的 Input
+    ///     Hook an entity IO input (case-insensitive matching).
     /// </summary>
+    /// <remarks>
+    ///     Multiple callbacks for the same pair compose in registration order; <c>result</c> starts as <see cref="EHookAction.Ignored" />.
+    ///     Set <c>result = EHookAction.SkipCallReturnOverride</c> to block the input.
+    /// </remarks>
+    /// <param name="classname">Target entity classname.</param>
+    /// <param name="input">Target input name.</param>
+    /// <param name="callback">Hook callback.</param>
     void HookEntityInput(string classname, string input, InputDelegate callback);
 
     /// <summary>
-    ///     Hook 实体IO中的 Output
+    ///     Hook an entity IO output (case-insensitive matching).
     /// </summary>
+    /// <remarks>
+    ///     Multiple callbacks for the same pair compose in registration order; <c>result</c> starts as <see cref="EHookAction.Ignored" />.
+    ///     Set <c>result = EHookAction.SkipCallReturnOverride</c> to block the output.
+    /// </remarks>
+    /// <param name="classname">Target entity classname.</param>
+    /// <param name="output">Target output name.</param>
+    /// <param name="callback">Hook callback.</param>
     void HookEntityOutput(string classname, string output, OutputDelegate callback);
 }

@@ -47,28 +47,29 @@ public interface IGameClient : INativeObject
     void SayChatMessage(bool teamOnly, string message);
 
     /// <summary>
-    ///     Get client IP address
+    ///     Get client IP address.
     /// </summary>
-    /// <returns></returns>
+    /// <param name="withPort"><see langword="true" /> to include the port; <see langword="false" /> for IP address only.</param>
+    /// <returns>The IP address string, or <see langword="null" /> for bots/HLTV.</returns>
     string? GetAddress(bool withPort);
 
     /// <summary>
-    ///     Get time since client connected
+    ///     Get time since client connected (persists across map changes for human players; returns server uptime for bots/HLTV).
     /// </summary>
     float GetTimeConnected();
 
     /// <summary>
-    ///     Execute command (via Client/NetChannel)
+    ///     Send a console command to the client via <c>IVEngineServer2::ClientCommand</c> (subject to <c>FCVAR_SERVER_CAN_EXECUTE</c>).
     /// </summary>
     void Command(string command);
 
     /// <summary>
-    ///     Execute command (via GameClients)
+    ///     Execute a command on the server directly via <c>IServerGameClients::ClientCommand</c> (bypasses <c>ExecuteStringCommand</c>).
     /// </summary>
     void FakeCommand(string command);
 
     /// <summary>
-    ///     Execute command (via Engine)
+    ///     Synthesize a <c>CNETMsg_StringCmd</c> and invoke <c>CServerSideClient::ExecuteStringCommand</c> (triggers ModSharp <c>ms_</c> commands and listeners).
     /// </summary>
     void ExecuteStringCommand(string command);
 
@@ -83,16 +84,17 @@ public interface IGameClient : INativeObject
     string? GetConVarValue(string cvarName);
 
     /// <summary>
-    ///     Get client ConVars as KeyValues object
+    ///     Get client ConVars as a cached <see cref="IKeyValues" /> wrapper tied to this client's lifetime (cannot be deleted manually).
     /// </summary>
     IKeyValues? GetConVars();
 
     /// <summary>
-    ///     Get <see cref="IPlayerController" /> <br />
-    ///     <remarks>
-    ///         Returns <c>null</c> if the player is not on the server, even if the controller entity exists
-    ///     </remarks>
+    ///     Get <see cref="IPlayerController" />.
     /// </summary>
+    /// <remarks>
+    ///     Returns <see langword="null" /> if <see cref="IsInGame" /> is <see langword="false" /> or the controller's
+    ///     <see cref="IPlayerController.ConnectedState" /> is not <see cref="PlayerConnectedState.PlayerConnected" />.
+    /// </remarks>
     IPlayerController? GetPlayerController();
 
     /// <summary>
@@ -106,11 +108,11 @@ public interface IGameClient : INativeObject
         string?                param4 = null);
 
     /// <summary>
-    ///     Print a hud message with limited html format support to this player.
-    ///     This includes the workaround for fixing the flashing issue.
+    ///     Print a HUD message with limited HTML format support to this player.
+    ///     Includes a flashing-fix workaround (skipped during warmup and Deathmatch). No-op for fake clients or disconnected clients.
     /// </summary>
     /// <param name="message">Message to print</param>
-    /// <param name="duration">How long will the message last</param>
+    /// <param name="duration">Display duration in seconds</param>
     void PrintCenterHtml(string message, int duration = 1);
 
     /// <summary>
@@ -119,7 +121,7 @@ public interface IGameClient : INativeObject
     SignOnState SignOnState { get; }
 
     /// <summary>
-    ///     Whether this is a fake client <br />
+    ///     Whether this is a fake client
     /// </summary>
     bool IsFakeClient { get; }
 
@@ -134,7 +136,7 @@ public interface IGameClient : INativeObject
     UserID UserId { get; }
 
     /// <summary>
-    ///     Steam ID (64-bit)
+    ///     Steam ID (64-bit); returns <c>0</c> for fake clients.
     /// </summary>
     SteamID SteamId { get; }
 
@@ -149,7 +151,7 @@ public interface IGameClient : INativeObject
     EntityIndex ControllerIndex { get; }
 
     /// <summary>
-    ///     Player name <br />
+    ///     Player name
     /// </summary>
     string Name { get; }
 
@@ -159,36 +161,38 @@ public interface IGameClient : INativeObject
     bool PerfectWorld { get; }
 
     /// <summary>
-    ///     Whether Steam ID has been authenticated by Steam servers
+    ///     Whether Steam ID has been authenticated by Steam servers (reads native <c>m_FullyAuthenticated</c> directly; <see langword="false" /> for fake clients).
     /// </summary>
     bool IsAuthenticated { get; }
 
     /// <summary>
-    ///     Whether this client pointer is valid
+    ///     Whether this client wrapper still references the same active client slot and has <see cref="SignOnState" /> &gt;= <see cref="SignOnState.Connected" />.
     /// </summary>
     bool IsValid { get; }
 
     /// <summary>
-    ///     Whether this client is connected
+    ///     Whether <see cref="IsValid" /> is <see langword="true" /> and <see cref="SignOnState" /> is less than <see cref="SignOnState.ChangeLevel" />.
     /// </summary>
     bool IsConnected { get; }
 
     /// <summary>
-    ///     Whether this client is in-game
+    ///     Whether <see cref="IsValid" /> is <see langword="true" /> and <see cref="SignOnState" /> is <see cref="SignOnState.Full" />.
     /// </summary>
     bool IsInGame { get; }
 
     /// <summary>
-    ///     <remarks>For players: time since joining server (persists across map changes)</remarks>
-    ///     <br />
-    ///     <remarks>For bots/HLTV: always returns server uptime</remarks>
+    ///     Time since client connected (in seconds).
     /// </summary>
+    /// <remarks>
+    ///     For human players: time since joining the server (persists across map changes).
+    ///     For bots/HLTV: returns server uptime.
+    /// </remarks>
     float TimeConnected { get; }
 
     /// <summary>
-    ///     Client IP address and port <br />
-    ///     <remarks>Always null for bots/HLTV</remarks>
+    ///     Client IP address without port (equivalent to <c>GetAddress(false)</c>).
     /// </summary>
+    /// <remarks>Always <see langword="null" /> for bots/HLTV. Use <see cref="GetAddress(bool)" /> with <see langword="true" /> to include the port.</remarks>
     string? Address { get; }
 
     new int GetHashCode();

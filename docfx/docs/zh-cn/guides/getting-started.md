@@ -1,134 +1,121 @@
 # 入门
 
-## 前言
+本文介绍怎么在已有的 CS2 专用服务器上部署 ModSharp。下文里的 `{CS2}` 指服务端安装根目录（也就是包含 `game` 的那一层）。
 
-本文将引导你完成 **ModSharp** 在全新安装的 CS2 服务器上的部署流程。
+## 下载服务端包
 
-## 名词定义
+去 [Releases](https://github.com/Kxnrl/modsharp-public/releases) 下载对应系统的服务端包：
 
-为简化后续操作描述，先明确核心路径定义：​
+- Windows x64：`ModSharp-git<build>-windows.zip`
+- Linux x64：`ModSharp-git<build>-linux.zip`
 
-- ``{CS2}``：*服务端目录*（后续所有步骤中，此符号均代表你的 CS2 服务器根目录）
+`*-extensions.zip` 是开发扩展包，不是完整的服务端安装文件。部署时请确保原生引擎、托管核心、模块、共享程序集、配置和 gamedata 都来自同一个版本。
 
-## 下载
+## 安装运行时
 
-请前往 [Release](https://github.com/Kxnrl/modsharp-public/releases) 页面，下载最新版本即可。
+ModSharp 的托管核心和模块基于 **.NET 10（`net10.0`）x64**，架构**必须是 x64**（x86 和 Arm64 无法使用）。
 
----
-
-## 检查环境
+服务端运行只需要安装 **.NET 10 Runtime（x64）**，不必为了开服单独去装 SDK 或 ASP.NET Core Runtime；如果机器上已经装过 x64 版的 **.NET 10 SDK**（自带对应的 .NET Runtime），也可以直接使用。平时在开发机[编写模块](writing-a-module.md)时，则需要安装 **.NET 10 SDK**。
 
 # [Windows](#tab/windows)
 
-- **Visual Studio Redistributable** [下载链接](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist?view=msvc-170)
-- **.NET 10** [下载链接](https://dotnet.microsoft.com/download/dotnet/10.0)
+先安装 [Visual C++ x64 Redistributable](https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist)，然后任选以下两种方式之一安装 .NET 10：
 
-> [!TIP]
->
-> 推荐使用Windows Server 2022 DataCenter或更新版本
+- **系统安装**：安装 [.NET 10 x64 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)（宿主会在 `C:\Program Files\dotnet\host\fxr` 里查找）。
+- **独立运行时**：下载 Windows x64 版 .NET 10 Runtime 压缩包，直接解压到 `{CS2}/game/sharp/runtime`。
 
 # [Linux](#tab/linux)
 
-- **.NET 10** [安装教程](https://learn.microsoft.com/dotnet/core/install/linux)
+请确保服务端跑在兼容 CS2 的 **Steam Runtime 3（sniper）** 环境里（包括 Docker 容器）。.NET 运行时和它的原生依赖必须能在启动 CS2 的实际环境里访问到，光装在宿主机上可能进不了容器。
 
-如你的运行Docker，请使用Steam RT3镜像（参阅：registry.gitlab.steamos.cloud/steamrt/sniper/sdk:latest）
-> [!TIP]
-> 如果你使用的是翼龙面板，你可以参阅：[1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)
+最省事的做法是从 [.NET 下载页](https://dotnet.microsoft.com/download/dotnet/10.0)下 **Linux x64 .NET 10 Runtime** 压缩包，直接解压到 `{CS2}/game/sharp/runtime`（把下面的路径和文件名换成你的实际值）：
 
-如果你没有使用Docker，请自行[安装SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD)，并下载Steam RT3。
-
-> [!NOTE]
-> 示例Steam RT3安装教程：当你启动SteamCMD以后，依次运行如下指令
->
-> - force_install_dir ~/steamrt
-> - login anonymous
-> - app_update 1628350 validate  
-
-> [!CAUTION]
-> 由于SteamRT3的限制，我们没办法使用系统的.NET。  
-> 请自行根据上文提供的[.NET下载页面](https://dotnet.microsoft.com/download/dotnet/10.0)下载.NET的发行包，并将其解压至`{CS2}/game/sharp/runtime`中。
-
----
-
----
-
-## 启动配置
-
-请前往`{CS2}/game/csgo/gameinfo.gi`，做出如下修改：
-
-```diff
-    // ...Ignore
-    FileSystem
-    {
-        SearchPaths
-        {
-            Game_LowViolence    csgo_lv // Perfect World content override
-
-+            Game    sharp
-
-            Game    csgo
-            Game    csgo_imported
-            Game    csgo_core
-            Game    core
-
-            Mod        csgo
-            Mod        csgo_imported
-            Mod        csgo_core
-
-            AddonRoot            csgo_addons
-            OfficialAddonRoot    csgo_community_addons
-
-            LayeredGameRoot        "../game_otherplatforms/etc" [$MOBILE || $ETC_TEXTURES] //Some platforms do not support DXT compression. ETC is a well-supported alternative.
-            LayeredGameRoot        "../game_otherplatforms/low_bitrate" [$MOBILE]
-        }
-
-        "UserSettingsPathID"    "USRLOCAL"
-        "UserSettingsFileEx"    "cs2_"
-    }
-
-    // ...Ignore
+```bash
+CS2=/srv/cs2
+mkdir -p "$CS2/game/sharp/runtime"
+tar -xzf ./dotnet-runtime-10.0.<patch>-linux-x64.tar.gz -C "$CS2/game/sharp/runtime"
 ```
 
-> [!TIP]
-> 此处操作和你安装Metamod是一样的，只不过这里的路径由 `csgo/addons/metamod` 换成 `sharp`
+宿主也会搜 `/usr/share/dotnet/host/fxr` 和 `/usr/lib/dotnet/host/fxr`，前提是服务端运行环境或容器里能看到这些目录和依赖；如果 Steam RT3 看不到宿主机的 .NET，直接用上面的独立运行时最稳。
+
+用面板开服的话可以参考 [1zc/CS2-Pterodactyl](https://github.com/1zc/CS2-Pterodactyl)。
 
 ---
 
-## 安装ModSharp
+独立运行时的目录结构必须长这样：
 
-将sharp包放置在`{CS2}/game`目录下
+```text
+{CS2}/game/sharp/runtime/
+├── dotnet                         # Windows 下为 dotnet.exe
+├── host/fxr/10.0.<patch>/
+│   └── libhostfxr.so               # Windows 下为 hostfxr.dll
+└── shared/Microsoft.NETCore.App/10.0.<patch>/
+    └── ...
+```
+
+> [!IMPORTANT]
+> 别在 `runtime` 和 `host` 之间多套一层 `dotnet` 目录。宿主不会读 `PATH` 或 `DOTNET_ROOT` 来找 `hostfxr`，而是在独立目录和系统目录里挑主版本 >= 10 的最高版本。另外 `sharp/core/Sharp.Core.runtimeconfig.json` 明确要求 .NET 10：如果系统目录里可见更高主版本（如 .NET 11），宿主会选中系统目录的 `hostfxr` 并只在该系统目录里找 .NET 10，此时光在 `sharp/runtime` 放 .NET 10 无法覆盖，需要也在同一系统目录安装 .NET 10。
+
+## 解压 ModSharp
+
+先停服，再把服务端包解压到 `{CS2}/game`。压缩包顶层自带 `sharp` 目录，别解压成 `game/sharp/sharp`：
+
+```text
+{CS2}/game/
+├── csgo/
+│   └── gameinfo.gi
+└── sharp/
+    ├── bin/
+    │   ├── modsharp.dll                   # Windows 原生引擎
+    │   ├── win64/server.dll               # Windows 加载器
+    │   ├── libmodsharp.so                 # Linux 原生引擎
+    │   └── linuxsteamrt64/libserver.so     # Linux 加载器
+    ├── core/
+    │   ├── Sharp.Core.dll
+    │   ├── Sharp.Core.deps.json
+    │   ├── Sharp.Core.runtimeconfig.json
+    │   ├── Sharp.Shared.dll
+    │   └── ...                            # 保留所有配套依赖
+    ├── configs/
+    │   └── core.json
+    ├── gamedata/
+    ├── locales/
+    ├── modules/
+    ├── shared/
+    └── runtime/                           # 自行解压的独立运行时（如有）
+```
+
+每个平台的安装包只带对应系统的原生文件，也不含 `runtime`，包里其他目录和依赖都原样保留即可。`sharp/bin/<平台>` 下的加载器会自动找 `sharp/bin` 里的原生引擎，别往 `csgo/bin` 里挪。
+
+## 修改 `gameinfo.gi`
+
+打开 `{CS2}/game/csgo/gameinfo.gi`，在 `FileSystem` -> `SearchPaths` 里把 `Game sharp` 加到 `Game csgo` **前面**：
+
+```diff
+ SearchPaths
+ {
+     Game_LowViolence    csgo_lv
++    Game                sharp
+     Game                csgo
+```
+
+其他行保持不动。原理和 Metamod 一样，都是靠搜索路径抢先加载。CS2 更新有时会覆盖 `gameinfo.gi`，更新完记得回来看一眼。
+
+## 启动与检查
+
+正常启动服务端并加载一张地图。日志里看到 `Sharp.Core initialization completed` 说明核心跑起来了，不过也顺手翻一下它前面有没有加载器、运行时、gamedata 或模块报错。
+
+在**服务端控制台**里敲下面几条命令检查状态：
+
+```text
+ms
+ms version
+ms modules
+```
+
+`modsharp` 是 `ms` 的别名。`ms version` 会打印框架构建号、当前使用的 hostfxr 版本（`DotNet Version`）和提交哈希；`ms modules` 会列出各模块的名称、版本、作者和状态（正常运行的模块显示为 `Running`）。
 
 > [!NOTE]
-> 示例结构
->
-> ```text
-> .
-> ├── bin
-> ├── core 
-> ├── cs2.sh
-> ├── csgo
-> ├── csgo_community_addons
-> ├── csgo_core 
-> ├── csgo_imported 
-> ├── csgo_lv
-> ├── sharp
-> │   ├── bin
-> │   ├── configs
-> │   ├── core
-> │   ├── gamedata
-> │   ├── modules
-> │   └── shared
-> └── thirdpartylegalnotices.txt
-> ```
+> 启动时必须至少有一个模块成功初始化。首次安装先留着自带模块，如果把所有模块都删了、禁用了或者全加载失败，托管核心会直接启动失败。发行包里 `AdminCommands.SQLStorage` 默认是禁用的，用到数据库存储时再配好启用。
 
----
-
-## 启动服务器
-
-当你看到形如下图所示的输出时，此时启动就完成了。
-
-![看图](../../../images/activate-server.png)
-
-此时你可以在服务端控制台内输入`ms`。当你看见类似于如图所示的输出时，就代表你已经完成了安装。
-
-![看图](../../../images/ms-output.png)
+接下来可以看：[编写模块](writing-a-module.md)、[安装共享 API](integrating-api.md) 或 [重新加载模块](reload-module.md)。

@@ -39,8 +39,7 @@ public sealed class EntityListener : IModSharpModule, IEntityListener
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove this module's listener before unloading or reloading it.
         _sharedSystem.GetEntityManager().RemoveEntityListener(this);
     }
 
@@ -80,7 +79,9 @@ public sealed class EntityListener : IModSharpModule, IEntityListener
 
     public EHookAction OnEntityFireOutput(IBaseEntity entity, string output, IBaseEntity? activator, float delay)
     {
-        if (!entity.Classname.Equals("func_door", StringComparison.OrdinalIgnoreCase))
+        // Entity IO hooks are global across modules, so filter by both entity and output name.
+        if (!entity.Classname.Equals("func_door", StringComparison.OrdinalIgnoreCase)
+            || !output.Equals("OnClose", StringComparison.OrdinalIgnoreCase))
         {
             return EHookAction.Ignored;
         }
@@ -99,13 +100,15 @@ public sealed class EntityListener : IModSharpModule, IEntityListener
         IBaseEntity?                                   activator,
         IBaseEntity?                                   caller)
     {
-        if (!entity.Classname.Equals("func_door", StringComparison.OrdinalIgnoreCase))
+        // Entity IO hooks are global across modules, so filter by both entity and input name.
+        if (!entity.Classname.Equals("func_door", StringComparison.OrdinalIgnoreCase)
+            || !input.Equals("Close", StringComparison.OrdinalIgnoreCase))
         {
             return EHookAction.Ignored;
         }
 
         Console.WriteLine(
-            $"[OnEntityAcceptInput] {entity.Classname}, value={value.AutoCastString()}, activator={activator?.Classname}, caller={activator?.Classname}");
+            $"[OnEntityAcceptInput] {entity.Classname}, input={input}, value={value.AutoCastString()}, activator={activator?.Classname}, caller={caller?.Classname}");
 
         // you can abort the input here by returning EHookAction.SkipCallReturnOverride
 

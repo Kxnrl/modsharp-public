@@ -28,14 +28,17 @@ namespace Sharp.Shared.Objects;
 public interface INetworkServer : INativeObject
 {
     /// <summary>
-    ///     Get total number of clients in pool
+    ///     Get raw size of the internal client pool (may include null/unoccupied entries).
     /// </summary>
     int GetClientCount();
 
     /// <summary>
-    ///     Get number of clients in pool with filters
-    ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
+    ///     Get number of clients in pool with filters.
     /// </summary>
+    /// <remarks>
+    ///     <paramref name="inGame" /> overrides <paramref name="connected" />.
+    ///     When both are <see langword="false" />, returns the raw client pool length (may include null entries).
+    /// </remarks>
     int GetClientCount(bool connected, bool inGame = false);
 
     /// <summary>
@@ -54,25 +57,24 @@ public interface INetworkServer : INativeObject
     IGameClient? GetGameClient(SteamID steamId);
 
     /// <summary>
-    ///     Get all clients from pool
+    ///     Get connected clients from pool (equivalent to <c>GetGameClients(true, false)</c>).
     /// </summary>
     [Obsolete("Use overload GetGameClients(bool, bool) instead, will be removed in 2.2")]
     IReadOnlyList<IGameClient> GetGameClients();
 
     /// <summary>
-    ///     Get filtered list of clients <br />
-    ///     <remarks><paramref name="inGame" /> will override <paramref name="connected" /></remarks>
+    ///     Get filtered list of clients.
     /// </summary>
+    /// <remarks><paramref name="inGame" /> overrides <paramref name="connected" />.</remarks>
     List<IGameClient> GetGameClients(bool connected, bool inGame = false);
 
     /// <summary>
     ///     Retrieves a pointer to the internal server client list container.
     /// </summary>
-    /// <returns></returns>
     unsafe CUtlVector<nint>* GetGameClientPointers();
 
     /// <summary>
-    ///     Get number of in-game clients
+    ///     Get number of connected clients (<paramref name="fullyInGame" /> = <see langword="false" />) or full/changelevel clients (<paramref name="fullyInGame" /> = <see langword="true" />).
     /// </summary>
     [Obsolete("Use GetClientCount(bool, bool) instead, will be removed in 2.2")]
     int GetGameClientCount(bool fullyInGame = false);

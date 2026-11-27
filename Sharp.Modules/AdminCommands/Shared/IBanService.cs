@@ -25,8 +25,9 @@ namespace Sharp.Modules.AdminCommands.Shared;
 
 /// <summary>
 ///     Ban/unban operations. Provided for callers; not intended for external implementations.
-///     Side effects: updates cache, may kick/notify. Duplicate checks are the caller's responsibility (command handlers
-///     already do this).
+///     Side effects: updates cache, may kick/notify. Storage skips writing duplicate active records,
+///     but callers should still perform duplicate checks before invoking to avoid redundant kicks or notifications
+///     (built-in command handlers already do this).
 /// </summary>
 public interface IBanService
 {

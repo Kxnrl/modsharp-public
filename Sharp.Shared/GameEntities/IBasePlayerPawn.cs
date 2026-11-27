@@ -28,8 +28,9 @@ namespace Sharp.Shared.GameEntities;
 public interface IBasePlayerPawn : IBaseCombatCharacter
 {
     /// <summary>
-    ///     Print message to this player
+    ///     Print message to this player.
     /// </summary>
+    /// <exception cref="System.EntryPointNotFoundException"><see cref="GetController" /> returns <see langword="null" />.</exception>
     void Print(HudPrintChannel channel,
         string                 message,
         string?                param1 = null,
@@ -42,18 +43,18 @@ public interface IBasePlayerPawn : IBaseCombatCharacter
     ///     This includes the workaround for fixing the flashing issue.
     /// </summary>
     /// <param name="message">Message to print</param>
-    /// <param name="duration">How long will the message last</param>
+    /// <param name="duration">Display duration in seconds</param>
+    /// <exception cref="System.EntryPointNotFoundException"><see cref="GetController" /> returns <see langword="null" />.</exception>
     void PrintCenterHtml(string message, int duration = 1);
 
     /// <summary>
-    ///     Check if entity is CCSPlayerPawn or CCSObserverPawn
+    ///     Returns <see langword="true" /> if this pawn is a <c>CCSPlayerPawn</c> (active player pawn), or <see langword="false" /> if it is a <c>CCSObserverPawn</c>.
     /// </summary>
     bool IsPlayer(bool nativeCall = false);
 
     /// <summary>
     ///     Cast to CCSPlayerPawn
     /// </summary>
-    /// <returns></returns>
     IPlayerPawn? AsPlayer();
 
     /// <summary>

@@ -15,7 +15,7 @@ public class MySharedModule : IModSharpModule, IMySharedModule
         string                          dllPath,
         string                          sharpPath,
         Version                         version,
-        IConfiguration?                 coreConfiguration,
+        IConfiguration                  coreConfiguration,
         bool                            hotReload)
     {
         _modules              = sharedSystem.GetSharpModuleManager();
@@ -27,7 +27,7 @@ public class MySharedModule : IModSharpModule, IMySharedModule
 
     public void PostInit()
     {
-        // Always register interfaces in (or after) PostInit, otherwise you may get fucked up.
+        // Register in PostInit: the framework has associated this instance with its module by then.
         _modules.RegisterSharpModuleInterface<IMySharedModule>(this, IMySharedModule.Identity, this);
 
         _modules.RegisterSharpModuleInterface<IMySecondSharedModule>(this,
@@ -53,6 +53,6 @@ internal sealed class MySecondSharedModule : IMySecondSharedModule
 {
     public void CallYou()
     {
-        // Do you want to do
+        Console.WriteLine("Hello from the second interface.");
     }
 }

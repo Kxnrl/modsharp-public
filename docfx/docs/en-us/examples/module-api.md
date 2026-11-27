@@ -1,33 +1,33 @@
 # Module Shared API
 
-This tutorial will teach you how to write an API that can be exported for use by other modules.
+A shared API needs three projects, not three module entry points in one assembly:
 
-> [!NOTE]
-> This project example is named `SharedInterface`.
+| Project / AssemblyName | Source | References |
+|---|---|---|
+| `SharedInterface.Shared` | `module-api.cs` | None |
+| `SharedInterface` | `module-impl.cs` | `SharedInterface.Shared`, the ModSharp SDK |
+| `UseSharedModule` | `module-use-api.cs` | `SharedInterface.Shared`, the ModSharp SDK |
 
-First, you need at least 2 projects to handle this task. For demonstration purposes in this tutorial, they are called `SharedInterface.Shared` and `SharedInterface` respectively.
+Use the [Hello World project settings](hello-world.md) for the provider and consumer. The contract project is an ordinary `net10.0` class library. Deploy **one** copy of `SharedInterface.Shared.dll` to `{CS2}/game/sharp/shared/`; do not place private copies beside the modules. For project references to this contract, use `Private="false" ExcludeAssets="runtime"` (for packaged contracts, `ExcludeAssets="runtime"`).
 
-Before writing the API, consider the following questions:
+Keep the provider's `AssemblyName` as `SharedInterface`: lifecycle callback names are assembly file names without `.dll`, **not** the class name `MySharedModule`.
 
-1. Do you need to share code?
-   - ✔️: Extension / Module Shared API
-   - ❌: No need to worry
+## Contract
 
-2. Do you need data interaction?
-   - ✔️: Module Shared API
-   - ❌: Extension
+Interface identities are global string keys. Use namespace-qualified constants to avoid collisions.
 
-This article only teaches how to write a Module API.
+[!code-csharp[SharedInterface.Shared](../../codes/module-api.cs)]
 
-In `SharedInterface.Shared`, make the following definitions:
+## Provider
 
-> [!WARNING]
-> The `Identity` constant is used as a global key to register and look up module interfaces. Using `nameof(IMyInterface)` only produces the short type name (e.g. `"IMySharedModule"`), which can collide if another module defines an interface with the same name in a different namespace. For modules intended for wide distribution, consider using a fully-qualified identity such as `"SharedInterface.Shared.IMySharedModule"` or `typeof(IMySharedModule).FullName!` to guarantee uniqueness.
+Register interfaces in `PostInit`, after ModSharp has associated the entry-point instance with its owning module. The framework unregisters these interfaces on unload.
 
-[!code-csharp[SharedInterface.Shared.cs](../../codes/module-api.cs)]
+[!code-csharp[SharedInterface](../../codes/module-impl.cs)]
 
-Then, write the following implementation in `SharedInterface`:
-[!code-csharp[SharedInterface.cs](../../codes/module-impl.cs)]
+## Consumer
 
-Finally, call the API you have written in other plugins:
-[!code-csharp[UseSharedModule.cs](../../codes/module-use-api.cs)]
+Resolve existing providers in `OnAllModulesLoaded`, which also runs for a reloaded consumer. Resolve later providers in `OnLibraryConnected`, and clear references in `OnLibraryDisconnect`. Cache `IModSharpModuleInterface<T>`, not its `Instance`; the wrapper's instance becomes null when its provider is unloaded. Read `.Instance` when calling and do not retain it across asynchronous work or reloads.
+
+[!code-csharp[UseSharedModule](../../codes/module-use-api.cs)]
+
+Shared contracts alone do not load a provider. Install the provider module separately. For code reused privately inside a module rather than a runtime service exported to other modules, use an [extension](writing-sharp-extensions.md).

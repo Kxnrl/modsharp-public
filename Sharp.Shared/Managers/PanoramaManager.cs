@@ -47,32 +47,43 @@ public interface IPanoramaManager
     ///     Mounted logical layout path, for example
     ///     <c>panorama/layout/custom_game/my_plugin/main.vxml</c>.
     /// </param>
-    /// <param name="targetName">Optional entity targetname.</param>
+    /// <param name="targetName">Optional entity targetname; defaults to <c>"ms_custom_hud_layout"</c> when null or whitespace.</param>
     /// <returns>The spawned layout, or <see langword="null" /> if entity creation failed.</returns>
     /// <remarks>
     ///     Spawning the entity does not verify client asset availability. Its compiled VXML,
     ///     referenced VCSS and local images must already be mounted by every client.
+    ///     Tracked layouts and their per-layout callbacks are cleared on map shutdown.
     /// </remarks>
+    /// <exception cref="System.ArgumentException"><paramref name="layoutResource" /> is null, empty, or whitespace.</exception>
     ICustomHudLayout? CreateLayout(string layoutResource, string? targetName = null);
 
     /// <summary>
-    ///     Installs a custom-HUD button-click listener as global.
+    ///     Installs a global custom-HUD button-click listener.
     /// </summary>
-    /// <remarks>Remove the listener during module shutdown.</remarks>
+    /// <remarks>
+    ///     Global listeners run before per-layout callbacks and persist across map changes until removed.
+    ///     Duplicate registrations and delegates from unloaded modules are logged and rejected.
+    ///     Remove the listener during module shutdown.
+    /// </remarks>
     void InstallClickListener(CustomHudClickedHandler listener);
 
     /// <summary>
-    ///     Removes a previously installed button-click listener as global.
+    ///     Removes a previously installed global button-click listener.
     /// </summary>
     void RemoveClickListener(CustomHudClickedHandler listener);
 
     /// <summary>
-    ///     Installs a custom-HUD button-click listener for single layout.
+    ///     Installs a custom-HUD button-click callback for a single managed layout.
     /// </summary>
+    /// <remarks>
+    ///     Per-layout callbacks run after global listeners and are cleared automatically when the layout is deleted or on map shutdown.
+    ///     Duplicate registrations and delegates from unloaded modules are logged and rejected.
+    /// </remarks>
+    /// <exception cref="System.InvalidOperationException"><paramref name="layout" /> is not a layout tracked by this manager.</exception>
     void InstallClickCallback(ICustomHudLayout layout, CustomHudClickedHandler callback);
 
     /// <summary>
-    ///     Removes a previously installed button-click listener for single layout.
+    ///     Removes a previously installed button-click callback for a single layout.
     /// </summary>
     void RemoveClickCallback(ICustomHudLayout layout, CustomHudClickedHandler callback);
 }

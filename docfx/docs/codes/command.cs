@@ -36,13 +36,12 @@ public sealed class Command : IModSharpModule
 
     public void Shutdown()
     {
-        // must release the command in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Release both callbacks before this module is unloaded.
         _sharedSystem.GetConVarManager().ReleaseServerCommandCallback("ms_echo", OnServerCommand);
         _sharedSystem.GetClientManager().RemoveCommandCallback("hello", OnClientCommand);
     }
 
-    // type 'ms_econ' on server console
+    // type 'ms_echo' on server console
     private ECommandAction OnServerCommand(StringCommand command)
     {
         Console.WriteLine("Hello");

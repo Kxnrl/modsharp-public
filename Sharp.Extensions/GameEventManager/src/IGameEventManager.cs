@@ -29,31 +29,49 @@ public interface IGameEventManager
     delegate HookReturnValue<bool> DelegateOnHookEvent(IGameEvent e, ref bool serverOnly);
 
     /// <summary>
-    ///     Hook 游戏事件发射 <br />
-    ///     <remarks>通常用于修改事件内容或阻止传播</remarks>
+    ///     Pre-hook a game event before it fires (typically to modify fields, change broadcast scope, or block it).
     /// </summary>
+    /// <remarks>
+    ///     Only <see cref="HookReturnValue{T}.Action" /> is evaluated (<see cref="HookReturnValue{T}.ReturnValue" /> is unused):
+    ///     return <see cref="Sharp.Shared.Enums.EHookAction.SkipCallReturnOverride" /> to block the event,
+    ///     <see cref="Sharp.Shared.Enums.EHookAction.ChangeParamReturnDefault" /> (or higher) to propagate modifications to <c>serverOnly</c>,
+    ///     or <see cref="Sharp.Shared.Enums.EHookAction.Ignored" /> to leave <c>serverOnly</c> unchanged.
+    /// </remarks>
+    /// <param name="eventName">Game event name to hook.</param>
+    /// <param name="callback">Pre-hook callback.</param>
     void HookEvent(string eventName, DelegateOnHookEvent callback);
 
     /// <summary>
-    ///     监听游戏事件
+    ///     Listen for a game event when it fires (read-only).
     /// </summary>
+    /// <param name="eventName">Game event name to listen for.</param>
+    /// <param name="callback">Read-only event listener callback.</param>
     void ListenEvent(string eventName, DelegateOnEventFired callback);
 
     /// <summary>
-    ///     创建游戏事件 <br />
-    ///     <remarks>通常需要手动销毁事件</remarks>
+    ///     Create a custom game event.
     /// </summary>
+    /// <remarks>Call <see cref="IGameEvent.Fire" /> (which transfers ownership to the engine) or <see cref="IGameEvent.Dispose" /> when finished.</remarks>
+    /// <param name="eventName">Game event name.</param>
+    /// <param name="force">Force creation even if there are no listeners.</param>
+    /// <returns>The created event, or <see langword="null" /> if creation failed.</returns>
     IGameEvent? CreateEvent(string eventName, bool force);
 
     /// <summary>
-    ///     创建游戏事件 <br />
-    ///     <remarks>通常需要手动销毁事件</remarks>
+    ///     Create a typed custom game event.
     /// </summary>
+    /// <remarks>Call <see cref="IGameEvent.Fire" /> (which transfers ownership to the engine) or <see cref="IGameEvent.Dispose" /> when finished.</remarks>
+    /// <typeparam name="T">Typed game event interface.</typeparam>
+    /// <param name="force">Force creation even if there are no listeners.</param>
+    /// <returns>The created event, or <see langword="null" /> if creation failed.</returns>
     T? CreateEvent<T>(bool force) where T : class, IGameEvent;
 
     /// <summary>
-    ///     克隆游戏事件 <br />
-    ///     <remarks>通常需要手动销毁事件</remarks>
+    ///     Clone an existing game event into a new custom-owned editable event.
     /// </summary>
+    /// <remarks>Call <see cref="IGameEvent.Fire" /> (which transfers ownership to the engine) or <see cref="IGameEvent.Dispose" /> when finished.</remarks>
+    /// <typeparam name="T">Game event interface type.</typeparam>
+    /// <param name="e">Source event to clone.</param>
+    /// <returns>The cloned event, or <see langword="null" /> if cloning failed.</returns>
     T? CloneEvent<T>(T e) where T : class, IGameEvent;
 }

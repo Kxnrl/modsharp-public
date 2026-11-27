@@ -1,25 +1,16 @@
 # Native Hooks
 
-本教程将演示如何使用 Hookmanager 来进行 VMT hook 以及 Detour hook。
+本例使用内置 GameData 键 `CBaseEntity::CollisionRulesChanged` 为 `CCSPlayerPawn` 的虚表安装 VMT hook，并使用内置键 `CreateEntityByName` 安装 detour，记录每次调用并保留原函数和 hook 调用链。
+
+请参照 [Hello World 的项目设置](hello-world.md)，并启用 `<AllowUnsafeBlocks>true</AllowUnsafeBlocks>`。原始 hook 不需要源生成器包。示例引入 `System.Runtime.CompilerServices` 以使用 `[assembly: DisableRuntimeMarshalling]`，引入 `System.Runtime.InteropServices` 以使用 `[UnmanagedCallersOnly]`。
 
 > [!CAUTION]
-> Hook为高危操作，在使用前请确保函数的参数**数量**以及**类型**与游戏内一致，一旦出现任意形式的问题都可能会导致服务器崩溃！
->
-> [!WARNING]
-> 出于性能最大化和代码一致性考虑，我们建议禁用 ``RuntimeMarshalling`` 。如需了解更多请参阅 [文档](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)
->
-> - 禁用此功能后，使用 `DllImport` 与 **unmanaged** 代码交互时，像 ``string`` 这样的 **managed** 类型将不再被自动转换，需要手动将其处理为 ``byte*`` 等 **unmanaged** 类型。
->
-> - 不禁用此功能，则必须确保Hook方法的签名（包括返回值和参数类型）与目标函数的定义完全匹配，并使用 ``[MarshalAs(UnmanagedType.Type)]`` 来指定对应的 **unmanaged** 类型，如下方代码所示：
->
-> ```cs
-> [return: MarshalAs(UnmanagedType.I1)]
-> private static unsafe bool Method([MarshalAs(UnmanagedType.I1)] bool argBool, byte* argPointer, int argInt32, long argInt64)
-> {
-> 
-> }
-> ```
+> 原生调用的参数数量、类型、返回值和调用约定必须和目标平台 ABI 完全一致，否则会直接崩服。关闭运行时封送不会修正错误签名，托管异常也绝对不能穿出非托管回调。参见 [.NET 禁用运行时封送](https://learn.microsoft.com/dotnet/standard/native-interop/disabled-marshalling)。
 
-## 完整例子
+`Prepare` 选定目标，`Install` 启用 hook，`Trampoline` 则提供调用链中的下一个函数。使用 `UnmanagedCallersOnly` 时，回调必须是静态方法。除非有意同时阻止原生行为**以及所有后续 hook**，否则每条执行路径上都应调用 trampoline。
 
-[!code-csharp[NativeHookExample.cs](../../codes/native-hook.cs)]
+请按安装顺序的逆序卸载 hook。detour 还需要额外调用 `Dispose`，而 `IVirtualHook` 没有实现 `IDisposable`。`Init` 失败后，ModSharp 同样会调用 `Shutdown`，因此清理逻辑必须能处理只安装了一部分 hook 的情况。多个模块 hook 同一个目标时，需要协调各自的卸载顺序。
+
+[!code-csharp[NativeHook.cs](../../codes/native-hook.cs)]
+
+地址配置见 [GameData](../features/gamedata.md)；`ILibraryModule` 的查找方式和内存所有权规则见[原生库访问](../features/library-modules.md)。

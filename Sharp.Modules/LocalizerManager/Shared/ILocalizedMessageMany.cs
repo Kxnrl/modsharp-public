@@ -28,8 +28,8 @@ namespace Sharp.Modules.LocalizerManager.Shared;
 public interface ILocalizedMessageMany
 {
     /// <summary>
-    ///     Sets the prefix.
-    ///     Pass <c>null</c> to disable the prefix entirely.
+    ///     Sets the prefix (defaults to <c>"[MS]"</c>).
+    ///     A leading and trailing space are added around the prefix automatically; pass <see langword="null" /> or an empty string to disable the prefix.
     /// </summary>
     ILocalizedMessageMany Prefix(string? prefix);
 
@@ -56,6 +56,7 @@ public interface ILocalizedMessageMany
     /// <summary>
     ///     Register a post-processor for each rendered string (applied before print). Multiple calls compose in order.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="processor" /> is <see langword="null" />.</exception>
     ILocalizedMessageMany Transform(Func<string, string> processor);
 
     /// <summary>

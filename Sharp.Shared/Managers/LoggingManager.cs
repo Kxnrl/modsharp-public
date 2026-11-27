@@ -24,6 +24,13 @@ namespace Sharp.Shared.Managers;
 
 public interface ILoggingManager
 {
+    /// <summary>
+    ///     Install an <see cref="ILoggingListener" /> to receive batched runtime log entries.
+    /// </summary>
+    /// <remarks>
+    ///     Duplicate detection uses reference equality (<see cref="object.ReferenceEquals" />).
+    ///     Leaked listeners are automatically removed on module unload with the same at-most-one-more-callback caveat as <see cref="RemoveLoggingListener" />.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///     Not called on the main thread, or ListenerVersion does not match
     /// </exception>
@@ -31,8 +38,9 @@ public interface ILoggingManager
     void InstallLoggingListener(ILoggingListener listener);
 
     /// <summary>
+    ///     Remove a previously installed <see cref="ILoggingListener" /> (matched by reference equality).
     ///     Does not wait for the dispatch thread: after it returns, the listener may still receive at most one more
-    ///     callback (which may start after the return), and none after that
+    ///     callback (which may start after the return), and none after that.
     /// </summary>
     /// <exception cref="InvalidOperationException">Not called on the main thread</exception>
     void RemoveLoggingListener(ILoggingListener listener);

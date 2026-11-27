@@ -29,8 +29,7 @@ public sealed class ClientListener : IModSharpModule, IClientListener
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove this module's listener before unloading or reloading it.
         _sharedSystem.GetClientManager().RemoveClientListener(this);
     }
 

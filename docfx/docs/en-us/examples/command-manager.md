@@ -1,25 +1,16 @@
 # Command Manager
 
-This tutorial demonstrates how to use the CommandManager extension.
-
-## Extension vs Module
-
-ModSharp provides two ways to register commands, and it is important to understand the difference:
+Install `ModSharp.Sharp.Extensions.CommandManager` alongside the [Hello World SDK reference](hello-world.md). Extensions are private library dependencies: keep their runtime assets and deploy them with your module.
 
 | | Extension (`Sharp.Extensions.CommandManager`) | Module (`Sharp.Modules.CommandCenter`) |
 |---|---|---|
-| | Extension (`Sharp.Extensions.CommandManager`) | Module (`Sharp.Modules.CommandCenter`) |
-|---|---|---|
-| **Use case** | Monorepo — all features in a single module | Multi-module — multiple modules share the command system |
-| **Installation** | Via NuGet package | Loaded by the ModSharp module system |
-| **Integration** | DI-based (`IServiceCollection.AddCommandManager()`) | Obtained via `ISharedSystem.GetSharpModuleManager()` |
-| **Admin commands** | Built-in `RegisterAdminCommand` (deprecated, use AdminManager instead) | Use `AdminManager.GetCommandRegistry()` for permission-checked commands |
-| **Lifecycle** | Managed by the plugin's own `IServiceProvider` | Managed by ModSharp's module lifecycle |
+| Integration | `services.AddCommandManager(sharedSystem)` | Resolve `ICommandCenter` through the module manager |
+| Scope | One module's own DI container | A shared provider with registries owned by module identity |
+| Lifecycle | `LoadAllSharpExtensions`, then `ShutdownAllSharpExtensions` and container disposal | ModSharp's module lifecycle |
+| Restricted commands | Use [AdminManager](admin-example.md) | Use `IAdminManager.GetCommandRegistry` |
 
-> [!TIP]
-> If your project is a **monorepo** (single module handles everything), use the **Extension** (`Sharp.Extensions.CommandManager`).
-> If your project consists of **multiple modules** that need to share the command system, use the **Module** (`Sharp.Modules.CommandCenter`).
+The extension's legacy `RegisterAdminCommand` is obsolete and scheduled for removal in 2.2. The example below deliberately avoids it. For permissions, use AdminManager rather than the old SDK admin flag system.
 
-## Example
+The example registers client command `.kill` / `ms_kill` and server command `ms_echo`. `ShutdownAllSharpExtensions` unregisters these callbacks; disposing `ServiceProvider` alone does not.
 
-[!code-csharp[CommandManagerExample.cs](../../codes/command-manager.cs)]
+[!code-csharp[CommandManager.cs](../../codes/command-manager.cs)]

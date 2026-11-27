@@ -30,16 +30,17 @@ public interface IDetourHook : IRuntimeNativeHook, IDisposable
     /// <param name="gamedata">gamedata key</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="EntryPointNotFoundException">Thrown when GameData is not found / null pointer / invalid field</exception>
-    /// <exception cref="KeyNotFoundException">Thrown when faiils to find gamedata</exception>
+    /// <exception cref="KeyNotFoundException">Thrown when failing to find gamedata</exception>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    /// <exception cref="ObjectDisposedException">The hook has been disposed</exception>
     void Prepare(string gamedata, nint hookFn);
 
     /// <summary>
-    ///     Prepare Hook <br />
-    ///     <remarks>
-    ///         Need to manually convert to nint <br />
-    ///     </remarks>
+    ///     Prepare Hook.
     /// </summary>
+    /// <remarks>
+    ///     Convert the unmanaged function pointer manually to <see cref="nint" />.
+    /// </remarks>
     /// <example>
     ///     <code>
     ///         (nint) (delegate* unmanaged&lt;void&gt;) &amp;Test
@@ -48,5 +49,6 @@ public interface IDetourHook : IRuntimeNativeHook, IDisposable
     /// <param name="pTargetFn">Native function address</param>
     /// <param name="hookFn">UnmanagedCallersOnly static function</param>
     /// <exception cref="InvalidOperationException">The hook is already installed</exception>
+    /// <exception cref="ObjectDisposedException">The hook has been disposed</exception>
     void Prepare(nint pTargetFn, nint hookFn);
 }

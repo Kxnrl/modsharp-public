@@ -21,16 +21,21 @@ public sealed class EventListener : IModSharpModule, IEventListener
 
     public bool Init()
     {
-        // install listener, any class what inherits IEventListener can be a listener.
-        _sharedSystem.GetEventManager().InstallEventListener(this);
+        var events = _sharedSystem.GetEventManager();
+
+        // Install the listener, then register each event name you want dispatched.
+        events.InstallEventListener(this);
+        events.HookEvent("player_death");
+        events.HookEvent("player_spawn");
+        events.HookEvent("player_say");
+        events.HookEvent("player_changename");
 
         return true;
     }
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
+        // Remove this module's listener before unloading or reloading it.
         _sharedSystem.GetEventManager().RemoveEventListener(this);
     }
 
@@ -39,6 +44,7 @@ public sealed class EventListener : IModSharpModule, IEventListener
 
     public void FireGameEvent(IGameEvent e)
     {
+        // This engine-owned event is only valid during the callback. Do not Fire or Dispose it.
         // use built-in event types for common events
         if (e is IEventPlayerDeath death)
         {
@@ -66,7 +72,7 @@ public sealed class EventListener : IModSharpModule, IEventListener
         {
             Console.WriteLine($"Blocked GameEvent fire: {e.Name}");
 
-            // 阻止事件发射
+            // Block the event from firing.
             return false;
         }
 
@@ -74,7 +80,7 @@ public sealed class EventListener : IModSharpModule, IEventListener
         {
             Console.WriteLine($"Silence GameEvent: {e.Name}");
 
-            // 将事件设置为仅限服务器而不下发至客户端
+            // Keep the event server-only instead of broadcasting it to clients.
             serverOnly = true;
         }
 

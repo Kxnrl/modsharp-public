@@ -1,0 +1,14 @@
+<root>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/modsharp_docs/panorama-style.css" />
+    </styles>
+
+    <Panel class="DocsRoot">
+        <Panel id="DocsDialog" class="Dismissed">
+            <Label class="DocsBody" text="Welcome to the ModSharp custom HUD example." />
+            <Button id="DocsAcknowledge">
+                <Label text="Acknowledge" />
+            </Button>
+        </Panel>
+    </Panel>
+</root>

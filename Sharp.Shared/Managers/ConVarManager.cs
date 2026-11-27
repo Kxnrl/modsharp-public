@@ -27,9 +27,9 @@ namespace Sharp.Shared.Managers;
 public interface IConVarManager
 {
     /// <summary>
-    ///     Callback called when ConVar value changes <br />
-    ///     <remarks>Modifying values within the Callback will cause StackOverflow</remarks>
+    ///     Callback called when ConVar value changes.
     /// </summary>
+    /// <remarks>Modifying values within the callback will cause a <see cref="StackOverflowException" />.</remarks>
     public delegate void DelegateConVarChange(IConVar conVar);
 
     /// <summary>
@@ -40,16 +40,24 @@ public interface IConVarManager
     IConVar? FindConVar(string name, bool useIterator = false);
 
     /// <summary>
-    ///     Listen for changes to a ConVar value <br />
-    ///     <remarks>Modifying values within the Callback will immediately cause StackOverflow</remarks>
+    ///     Listen for changes to a ConVar value.
     /// </summary>
+    /// <remarks>Modifying values within the callback will immediately cause a <see cref="StackOverflowException" />.</remarks>
     void InstallChangeHook(IConVar conVar, DelegateConVarChange callback);
 
     /// <summary>
-    ///     Remove ConVar listener
+    ///     Remove ConVar listener.
     /// </summary>
+    /// <exception cref="InvalidOperationException">No change hook is currently registered for <paramref name="conVar" />.</exception>
     void RemoveChangeHook(IConVar conVar, DelegateConVarChange callback);
 
+    /// <summary>
+    ///     Create a boolean ConVar, or return the existing ConVar unchanged if one with <paramref name="name" /> already exists.
+    /// </summary>
+    /// <remarks>
+    ///     When <paramref name="flags" /> is <see langword="null" />, <see cref="ConVarFlags.Release" /> is used.
+    ///     If a ConVar with the same name already exists, its existing value, bounds, help string, and flags are preserved.
+    /// </remarks>
     IConVar? CreateConVar(string name,
         bool                     defaultValue,
         string?                  helpString = null,
@@ -139,38 +147,50 @@ public interface IConVarManager
         string?                  helpString = null,
         ConVarFlags?             flags      = null);
 
+    /// <summary>
+    ///     Create a string ConVar, or return the existing ConVar unchanged if one with <paramref name="name" /> already exists.
+    /// </summary>
+    /// <remarks>
+    ///     <paramref name="defaultValue" /> is truncated to 255 UTF-8 bytes when creating the ConVar.
+    ///     When <paramref name="flags" /> is <see langword="null" />, <see cref="ConVarFlags.Release" /> is used.
+    /// </remarks>
     IConVar? CreateConVar(string name,
         string                   defaultValue,
         string?                  helpString = null,
         ConVarFlags?             flags      = null);
 
     /// <summary>
-    ///     Create a console command that can be used by both client and server. If you want to create <br />
-    ///     <remarks>
-    ///         High performance, <br />
-    ///         Client-only, <br />
-    ///         Support both console and chat<br />
-    ///         please use <see cref="IClientManager.InstallCommandCallback" />
-    ///     </remarks>
+    ///     Create a console command that can be used by both client and server.
     /// </summary>
     /// <remarks>
-    ///     The callback's return value does not affect command execution.
-    ///     Commands with the same name share one engine command: its flags are the union of all registrations,
-    ///     and its help text comes from the first one
+    ///     <para>
+    ///         For high-performance client-only commands that support both console and chat triggers,
+    ///         use <see cref="IClientManager.InstallCommandCallback" /> instead.
+    ///     </para>
+    ///     <para>
+    ///         The callback's return value does not affect command execution.
+    ///         When <paramref name="flags" /> is <see langword="null" />, defaults to
+    ///         <see cref="ConVarFlags.ClientCanExecute" /> | <see cref="ConVarFlags.LinkedConCommand" /> | <see cref="ConVarFlags.GameDll" />.
+    ///         Commands with the same name share one engine command: its flags are the union of all registrations,
+    ///         and its help text comes from the first one.
+    ///     </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Native command creation returned an invalid handle.</exception>
     void CreateConsoleCommand(string                      name,
         Func<IGameClient?, StringCommand, ECommandAction> fn,
         string?                                           description = null,
         ConVarFlags?                                      flags       = null);
 
     /// <summary>
-    ///     Create a server only command, which only responds to non-client callers such as the server console
+    ///     Create a server-only command, which only responds to non-client callers such as the server console.
     /// </summary>
     /// <remarks>
     ///     The callback's return value does not affect command execution.
+    ///     When <paramref name="flags" /> is <see langword="null" />, defaults to <see cref="ConVarFlags.GameDll" />.
     ///     Commands with the same name share one engine command: its flags are the union of all registrations,
-    ///     and its help text comes from the first one
+    ///     and its help text comes from the first one.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">Native command creation returned an invalid handle.</exception>
     void CreateServerCommand(string         name,
         Func<StringCommand, ECommandAction> fn,
         string?                             description = null,

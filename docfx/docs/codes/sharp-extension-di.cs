@@ -8,29 +8,24 @@ namespace ExampleSharpExtension;
 
 public static class DependencyInjection
 {
-    // Must provide both of them!
-
-    extension(IServiceCollection services)
+    public static IServiceCollection AddExampleSharpExtension(this IServiceCollection services, ISharedSystem shared)
     {
-        public IServiceCollection AddExampleSharpExtension(ISharedSystem shared)
-            => services
-               .AddSingleton(shared)
-               .AddSingleton<ExampleSharpExtension>()
-               .AddSingleton<ISharpExtension, ExampleSharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>())
-               .AddSingleton<IExampleSharpExtension, ExampleSharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>());
+        services.AddSingleton(shared);
+        return services.AddExampleSharpExtension();
+    }
 
-        public IServiceCollection AddExampleSharpExtension()
+    public static IServiceCollection AddExampleSharpExtension(this IServiceCollection services)
+    {
+        if (services.All(s => s.ServiceType != typeof(ISharedSystem)))
         {
-            if (services.All(s => s.ServiceType != typeof(ISharedSystem)))
-            {
-                throw new InvalidOperationException(
-                    $"{typeof(ISharedSystem).FullName} is not registered in the service collection. Please register it before adding ExampleSharpExtension.");
-            }
-
-            return services
-                   .AddSingleton<ExampleSharpExtension>()
-                   .AddSingleton<ISharpExtension, ExampleSharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>())
-                   .AddSingleton<IExampleSharpExtension, ExampleSharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>());
+            throw new InvalidOperationException(
+                "Register ISharedSystem before adding ExampleSharpExtension.");
         }
+
+        // Both interfaces must resolve the SAME instance so Load/Shutdown manage the service being used.
+        return services
+               .AddSingleton<ExampleSharpExtension>()
+               .AddSingleton<ISharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>())
+               .AddSingleton<IExampleSharpExtension>(x => x.GetRequiredService<ExampleSharpExtension>());
     }
 }

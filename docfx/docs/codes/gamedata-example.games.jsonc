@@ -1,0 +1,12 @@
+{
+  // Copied from .asset/gamedata/log.games.jsonc at source baseline 2f33565.
+  // Only the key is renamed, so it does not collide with the host's built-in key.
+  // Recheck this export against the matching ModSharp/CS2 release after updates.
+  "Addresses": {
+    "GameDataExample::LoggingSystem_IsChannelEnabled": {
+      "library": "tier0",
+      "linux": "@LoggingSystem_IsChannelEnabled",
+      "windows": "@LoggingSystem_IsChannelEnabled"
+    }
+  }
+}

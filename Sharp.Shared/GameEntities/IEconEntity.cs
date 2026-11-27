@@ -26,8 +26,8 @@ namespace Sharp.Shared.GameEntities;
 public interface IEconEntity : IBaseAnimGraph
 {
     /// <summary>
-    ///     Econ property <br />
-    ///     <remarks>You should retrieve this each time you use it rather than cached or stored for reuse</remarks>
+    ///     Econ property.
     /// </summary>
+    /// <remarks>Retrieve this each time you use it rather than caching or storing it for reuse.</remarks>
     IAttributeContainer AttributeContainer { get; }
 }

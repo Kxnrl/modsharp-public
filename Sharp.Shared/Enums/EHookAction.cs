@@ -19,6 +19,14 @@
 
 namespace Sharp.Shared.Enums;
 
+/// <summary>
+///     Action returned by pre-hooks to control native call execution and return value handling.
+/// </summary>
+/// <remarks>
+///     Each hook in <see cref="Managers.IHookManager" /> supports only a specific subset of actions (often only
+///     <see cref="Ignored" /> and <see cref="SkipCallReturnOverride" />). Returning an unsupported action triggers a native
+///     <c>FatalError</c> and terminates the server.
+/// </remarks>
 public enum EHookAction : byte
 {
     /// <summary>

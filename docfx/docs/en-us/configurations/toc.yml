@@ -1,6 +1,6 @@
-- name: Core
+- name: Core Configuration
   href: core.md
-- name: Admin
+- name: Administrator Configuration
   href: admin.md
 - name: Admin Commands SQL Storage
   href: admin-commands-sqlstorage.md

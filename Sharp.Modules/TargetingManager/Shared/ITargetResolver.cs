@@ -22,9 +22,20 @@ using Sharp.Shared.Objects;
 
 namespace Sharp.Modules.TargetingManager.Shared;
 
+/// <summary>
+///     Custom target resolver registered with <see cref="ITargetingManager.RegisterResolver" />.
+/// </summary>
 public interface ITargetResolver
 {
+    /// <summary>
+    ///     Returns the target token handled by this resolver (must be non-empty and start with <c>'@'</c>, e.g. <c>"@vip"</c>).
+    /// </summary>
     string GetTarget();
 
+    /// <summary>
+    ///     Resolves matching clients for this target token.
+    /// </summary>
+    /// <param name="activator">The client who initiated targeting, or <see langword="null" /> for server console.</param>
+    /// <returns>Matching game clients.</returns>
     IEnumerable<IGameClient> Resolve(IGameClient? activator);
 }

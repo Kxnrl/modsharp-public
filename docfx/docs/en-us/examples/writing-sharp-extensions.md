@@ -1,27 +1,25 @@
 # Writing ModSharp Extensions
 
-> [!WARNING]
-> This is a high-risk operation. You need to have sufficient understanding of what you are writing!
+An extension is a library instantiated inside each consumer's DI container, not a globally loaded provider module. Use a [Module Shared API](module-api.md) when consumers must talk to one shared runtime instance.
 
-The questions are the same as those in [Module API](./module-api.md):
+Compile the following **three files together** in one `net10.0`, C# 13 class library. Reference `ModSharp.Sharp.Shared` pinned to your server's SDK version with `PrivateAssets="all" ExcludeAssets="runtime"` (as in [Hello World](hello-world.md)) so the host-provided SDK is neither copied into the output nor flowed transitively to consumers; the SDK supplies the Microsoft DI APIs. The ordinary `this IServiceCollection` methods below do not require C# 14 extension blocks.
 
-1. Do you need to share code?
-   - ✔️: Extension / Module Shared API
-   - ❌: No need to worry
+## Contract
 
-2. Do you need data interaction?
-   - ✔️: Module Shared API
-   - ❌: Extension
-
-If you are absolutely sure there will be no issues, then you can write the extension package.
-
-This tutorial will teach you how to write an extension package.
-
-First, define the API:
 [!code-csharp[SharpExtensionApi.cs](../../codes/sharp-extension-interface.cs)]
 
-Then you just need to write it like this:
+## Implementation
+
+`Load` and `Shutdown` define the extension lifecycle. Real extensions install listeners/hooks in `Load` and release those exact registrations in `Shutdown`; this minimal extension logs its lifecycle and its API call.
+
 [!code-csharp[SharpExtension.cs](../../codes/sharp-extension-example.cs)]
 
-Finally, you need to write the DI:
+## DI Registration
+
+Both `ISharpExtension` and the public API must resolve the **same** singleton instance. Registering separate implementations would load one object and call another. One overload accepts `ISharedSystem`; the parameterless overload requires it to have already been registered.
+
 [!code-csharp[SharpExtensionDi.cs](../../codes/sharp-extension-di.cs)]
+
+## Consumption
+
+Use the module pattern in [Using Sharp Extensions](sharp-extensions.md): reference your extension library, replace the example registrations with `services.AddExampleSharpExtension(sharedSystem)`, call `LoadAllSharpExtensions`, and then use `_provider.GetRequiredService<IExampleSharpExtension>().CallMe()`. On shutdown call `ShutdownAllSharpExtensions` before `_provider.Dispose()`. Add `using ExampleSharpExtension;` to import its contract and DI methods. Deploy the extension DLL and its private dependencies beside the consumer, not as another module entry point.

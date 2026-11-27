@@ -33,12 +33,11 @@ namespace Sharp.Shared.Managers;
 public interface ISchemaManager
 {
     /// <summary>
-    ///     Gets a Schema field
-    ///     <exception cref="ArgumentException">
-    ///         Thrown if <paramref name="classname" /> or <paramref name="field" /> does not
-    ///         exist
-    ///     </exception>
+    ///     Gets a Schema field.
     /// </summary>
+    /// <exception cref="ArgumentException">
+    ///     Thrown if <paramref name="classname" /> or <paramref name="field" /> does not exist.
+    /// </exception>
     SchemaField GetSchemaField(string classname, string field);
 
     /// <summary>
@@ -223,56 +222,60 @@ public interface ISchemaManager
     ref CUtlString GetNetVarUtlStringRef(INativeObject nativeObject, string classname, string field, ushort extraOffset = 0);
 
     /// <summary>
-    ///     Gets the value of a Schema member variable <br />
-    ///     <remarks>
-    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Gets a fixed-size Schema array wrapper.
     /// </summary>
+    /// <remarks>
+    ///     This method does not validate whether <paramref name="pointer" /> is a valid Schema instance;
+    ///     passing an invalid pointer may cause crashes.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="pointer" /> is zero.</exception>
+    /// <exception cref="ArgumentException"><paramref name="classname" /> or <paramref name="field" /> does not exist.</exception>
     ISchemaArray<T> GetSchemaFixedArray<T>(nint pointer, string classname, string field, ISchemaObject chain)
         where T : unmanaged;
 
     /// <summary>
-    ///     Gets the value of a Schema member variable <br />
-    ///     <remarks>
-    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Gets a fixed-size Schema array wrapper.
     /// </summary>
+    /// <remarks>
+    ///     This method does not validate whether <paramref name="pointer" /> is a valid Schema instance;
+    ///     passing an invalid pointer may cause crashes.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="pointer" /> is zero.</exception>
     ISchemaArray<T> GetSchemaFixedArray<T>(nint pointer, SchemaField field, ISchemaObject chain)
         where T : unmanaged;
 
     /// <summary>
-    ///     Gets the value of a Schema member variable <br />
-    ///     <remarks>
-    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Gets a Schema list wrapper.
     /// </summary>
+    /// <remarks>
+    ///     This method does not validate whether <paramref name="pointer" /> is a valid Schema instance;
+    ///     passing an invalid pointer may cause crashes.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="pointer" /> is zero.</exception>
+    /// <exception cref="ArgumentException"><paramref name="classname" /> or <paramref name="field" /> does not exist.</exception>
     ISchemaList<T> GetSchemaList<T>(nint pointer, string classname, string field, ISchemaObject chain, bool isStruct)
         where T : unmanaged;
 
     /// <summary>
-    ///     Gets the value of a Schema member variable <br />
-    ///     <remarks>
-    ///         This method does not validate whether the provided <paramref name="pointer" /> is a valid Schema instance<br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Gets a Schema list wrapper.
     /// </summary>
+    /// <remarks>
+    ///     This method does not validate whether <paramref name="pointer" /> is a valid Schema instance;
+    ///     passing an invalid pointer may cause crashes.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="pointer" /> is zero.</exception>
     ISchemaList<T> GetSchemaList<T>(nint pointer, SchemaField field, ISchemaObject chain, bool isStruct)
         where T : unmanaged;
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -281,16 +284,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -299,16 +300,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -317,16 +316,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -335,16 +332,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -353,16 +348,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -371,16 +364,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -389,16 +380,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -407,16 +396,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -425,16 +412,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -444,16 +429,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVar(INativeObject nativeObject,
         string                   classname,
         string                   field,
@@ -462,16 +445,14 @@ public interface ISchemaManager
         ushort                   extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVarUtlSymbolLarge(INativeObject nativeObject,
         string                                 classname,
         string                                 field,
@@ -480,15 +461,14 @@ public interface ISchemaManager
         ushort                                 extraOffset = 0);
 
     /// <summary>
-    ///     Sets the value of a Schema member <br />
-    ///     <remarks>
-    ///         No need to explicitly call <seealso cref="NetVarStateChanged" /><br />
-    ///         When <paramref name="isStruct" /> is <c>true</c>, <b>NetVarStateChanged</b> will not be called automatically
-    ///         <br /><br />
-    ///         This method does not validate whether the provided <paramref name="ptr" /> is a valid Schema instance<br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Sets the value of a Schema member.
     /// </summary>
+    /// <remarks>
+    ///     Calls <see cref="NetVarStateChanged" /> automatically. Passing <paramref name="isStruct" /> as <see langword="true" />
+    ///     only suppresses the final <c>Entity.SetStateChanged</c> fallback; classes with a chain offset or known networked
+    ///     struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="ptr" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void SetNetVarUtlString(INativeObject ptr,
         string                            classname,
         string                            field,
@@ -497,13 +477,13 @@ public interface ISchemaManager
         ushort                            extraOffset = 0);
 
     /// <summary>
-    ///     Automatically calls <b>NetworkStateChanged</b> or <b>StateChanged</b><br />
-    ///     <remarks>
-    ///         This method does not validate whether the provided <paramref name="nativeObject" /> is a valid Schema instance
-    ///         <br />
-    ///         Passing an invalid instance may cause crashes
-    ///     </remarks>
+    ///     Automatically calls <b>NetworkStateChanged</b> or <b>StateChanged</b>.
     /// </summary>
+    /// <remarks>
+    ///     When <paramref name="isStruct" /> is <see langword="true" />, only the final <c>Entity.SetStateChanged</c> fallback is skipped;
+    ///     classes with a chain offset or known networked struct classes still trigger network state change.
+    ///     This method does not validate whether <paramref name="nativeObject" /> is a valid Schema instance; passing an invalid instance may cause crashes.
+    /// </remarks>
     void NetVarStateChanged(
         INativeObject    nativeObject,
         SchemaClass      schemaClass,

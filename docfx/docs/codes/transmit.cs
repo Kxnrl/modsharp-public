@@ -5,19 +5,17 @@ using Microsoft.Extensions.Configuration;
 using Sharp.Shared;
 using Sharp.Shared.Enums;
 using Sharp.Shared.GameEntities;
-using Sharp.Shared.Listeners;
 using Sharp.Shared.Managers;
-using Sharp.Shared.Objects;
-using Sharp.Shared.Units;
 
 namespace TransmitHookExample;
 
-public sealed class TransmitHook : IModSharpModule, IClientListener
+public sealed class TransmitHook : IModSharpModule
 {
-    private readonly IModSharp        _modSharp;
-    private readonly IClientManager   _clients;
-    private readonly IEntityManager   _entities;
+    private readonly IModSharp _modSharp;
+    private readonly IEntityManager _entities;
     private readonly ITransmitManager _transmits;
+    private readonly HashSet<IPlayerController> _ownedHooks = [];
+    private Guid _timer;
 
     public TransmitHook(ISharedSystem sharedSystem,
         string                        dllPath,
@@ -26,100 +24,57 @@ public sealed class TransmitHook : IModSharpModule, IClientListener
         IConfiguration                coreConfiguration,
         bool                          hotReload)
     {
-        _modSharp  = sharedSystem.GetModSharp();
-        _clients   = sharedSystem.GetClientManager();
-        _entities  = sharedSystem.GetEntityManager();
+        _modSharp = sharedSystem.GetModSharp();
+        _entities = sharedSystem.GetEntityManager();
         _transmits = sharedSystem.GetTransmitManager();
     }
 
     public bool Init()
-    {
-        // install listener, any class what inherits IClientListener can be a listener.
-        _clients.InstallClientListener(this);
-
-        return true;
-    }
+        => true;
 
     public void PostInit()
-        => _modSharp.PushTimer(Think, 0.1, GameTimerFlags.Repeatable);
+        => _timer = _modSharp.PushTimer(Think, 0.1, GameTimerFlags.Repeatable);
 
     public void Shutdown()
     {
-        // must uninstall the listener in Shutdown
-        // otherwise you will get fucked after reloaded.
-        _clients.RemoveClientListener(this);
+        _modSharp.StopTimer(_timer);
+        foreach (var controller in _ownedHooks)
+        {
+            if (controller.IsValidEntity && _transmits.IsEntityHooked(controller))
+            {
+                _transmits.RemoveEntityHooks(controller);
+            }
+        }
+
+        _ownedHooks.Clear();
     }
-
-    public void OnClientPutInServer(IGameClient client)
-        => _modSharp.PushTimer(() =>
-                               {
-                                   if (!client.IsValid)
-                                   {
-                                       return;
-                                   }
-
-                                   if (_entities.FindPlayerControllerBySlot(client.Slot) is not
-                                   {
-                                       ConnectedState: PlayerConnectedState.PlayerConnected,
-                                   } controller)
-                                   {
-                                       return;
-                                   }
-
-                                   _transmits.AddEntityHooks(controller, true);
-                               },
-                               5); 
-                               // hook player after 5 seconds to make sure all data is ready
-                               // the delay time can be adjusted according to your needs
-
-    // just write it according to the example.
-    int IClientListener.ListenerVersion => IClientListener.ApiVersion;
-
-    // the larger the number = the higher the priority; in most cases, 0 is used directly.
-    int IClientListener.ListenerPriority => 0;
 
     private void Think()
     {
-        // hide teammate logic here.
-        // why this use interval Think?
-        // because maybe some player change team / late join in game after game started,
-        // if your gamemode does not allow that, just call once on RoundRestarted is enough.
-
-        var controllers = GetControllers().ToArray();
+        // Re-evaluate late joins, team changes, map changes and consumer hot reloads.
+        _ownedHooks.RemoveWhere(controller => !controller.IsValidEntity);
+        var controllers = _entities.GetPlayerControllers().ToArray();
 
         foreach (var sender in controllers)
         {
-            if (!_transmits.IsEntityHooked(sender))
+            // Hooks are global per entity, not per module. Do not take over another module's hook.
+            if (!_ownedHooks.Contains(sender))
             {
-                continue;
-            }
-
-            var st = sender.Team;
-
-            foreach (var receiver in controllers)
-            {
-                // ignore self
-                if (sender.Equals(receiver))
+                if (_transmits.IsEntityHooked(sender) || !_transmits.AddEntityHooks(sender, true))
                 {
                     continue;
                 }
 
-                var state = st == receiver.Team;
-
-                _transmits.SetEntityState(sender.Index, receiver.Index, state, -1);
+                _ownedHooks.Add(sender);
             }
-        }
-    }
 
-    private IEnumerable<IPlayerController> GetControllers()
-    {
-        var max = new PlayerSlot((byte) _modSharp.GetGlobals().MaxClients);
-
-        for (PlayerSlot slot = 0; slot <= max; slot++)
-        {
-            if (_entities.FindPlayerControllerBySlot(slot) is { ConnectedState: PlayerConnectedState.PlayerConnected } c)
+            foreach (var receiver in controllers)
             {
-                yield return c;
+                var isTeammate = sender.Team is CStrikeTeam.TE or CStrikeTeam.CT
+                                 && sender.Team == receiver.Team;
+                var transmit = sender.Equals(receiver) || !isTeammate;
+                // true means visible; false blocks transmission. -1 updates all channels.
+                _transmits.SetEntityState(sender.Index, receiver.Index, transmit, -1);
             }
         }
     }
