@@ -58,6 +58,8 @@ public:
 
     CUtlVector<CServerSideClient*>* GetClients() const;
 
+    void KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason);
+
     void PrintChannelTeam(HudPrint_t dest, CStrikeTeam_t team, const char* message) const;
     void PrintChannelAll(HudPrint_t dest, const char* message) const;
 

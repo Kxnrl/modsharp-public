@@ -32,6 +32,15 @@
         ]
       }
     },
+    // what IEngineServer::KickClient forwards to: (this, slot, reason, disconnect reason)
+    "CNetworkGameServer::KickClient": {
+      "library": "engine",
+      "refs": {
+        "strings": [
+          "%s kicked by %s (%s)\n"
+        ]
+      }
+    },
     // str '---------players--------\n'
     "CNetworkGameServer::PrintStatus": {
       "library": "engine",

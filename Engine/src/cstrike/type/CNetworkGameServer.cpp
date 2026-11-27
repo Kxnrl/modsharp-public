@@ -45,6 +45,14 @@ CUtlVector<CServerSideClient*>* CNetworkGameServer::GetClients() const
     return GetFieldPointer<CUtlVector<CServerSideClient*>*>(offset);
 }
 
+void CNetworkGameServer::KickClient(PlayerSlot_t slot, const char* reason, int disconnectReason)
+{
+    using fn         = void (*)(CNetworkGameServer*, int32_t, const char*, int32_t);
+    static auto func = g_pGameData->GetAddress<fn>("CNetworkGameServer::KickClient");
+
+    func(this, slot, reason, disconnectReason);
+}
+
 void CNetworkGameServer::PrintChannelTeam(HudPrint_t dest, CStrikeTeam_t team, const char* message) const
 {
     const auto        clients    = GetClients();

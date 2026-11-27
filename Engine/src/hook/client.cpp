@@ -838,3 +838,20 @@ void ExecuteClientStringCommand(CServerSideClient* pClient, const char* pCommand
 
     delete msg;
 }
+
+// What IEngineServer::ClientCommand does: a StringCmd sent to the client, default buffer.
+void SendClientStringCommand(CServerSideClient* pClient, const char* pCommandString)
+{
+    AssertPtr(pClient);
+    AssertPtr(pCommandString);
+
+    const auto net = g_pNetworkMessages->FindNetworkMessagePartial("CNETMsg_StringCmd");
+    AssertPtr(net);
+    auto msg = net->AllocateMessage()->ToPB<CNETMsg_StringCmd>();
+
+    msg->set_command(pCommandString);
+
+    CServerSideClient_Hooks::Detour_SendNetMessage(pClient, msg, -1);
+
+    g_pMemAlloc->Free(msg);
+}
