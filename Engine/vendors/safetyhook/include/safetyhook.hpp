@@ -145,13 +145,15 @@
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
+
 #if __has_include("tl/expected.hpp")
-#    include "tl/expected.hpp"
+    #include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-#    include "expected.hpp"
+    #include "expected.hpp"
 #else
-#    error "No <expected> polyfill found"
+    #error "No <expected> polyfill found"
 #endif
+
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -177,13 +179,15 @@ import std.compat;
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
+
 #if __has_include("tl/expected.hpp")
-#    include "tl/expected.hpp"
+    #include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-#    include "expected.hpp"
+    #include "expected.hpp"
 #else
-#    error "No <expected> polyfill found"
+    #error "No <expected> polyfill found"
 #endif
+
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -711,28 +715,15 @@ public:
 private:
     friend class MidHook;
 
-    enum class Type {
-        Unset,
-        E9,
-        FF,
-    };
-
     uint8_t* m_target{};
     uint8_t* m_destination{};
     Allocation m_trampoline{};
     std::vector<uint8_t> m_original_bytes{};
-    uintptr_t m_trampoline_size{};
     std::recursive_mutex m_mutex{};
     bool m_enabled{};
-    Type m_type{Type::Unset};
 
     tl::expected<void, Error> setup(
         const std::shared_ptr<Allocator>& allocator, uint8_t* target, uint8_t* destination);
-    tl::expected<void, Error> e9_hook(const std::shared_ptr<Allocator>& allocator);
-
-#if SAFETYHOOK_ARCH_X86_64
-    tl::expected<void, Error> ff_hook(const std::shared_ptr<Allocator>& allocator);
-#endif
 
     void destroy();
 };
@@ -988,13 +979,15 @@ private:
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
+
 #if __has_include("tl/expected.hpp")
-#    include "tl/expected.hpp"
+    #include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-#    include "expected.hpp"
+    #include "expected.hpp"
 #else
-#    error "No <expected> polyfill found"
+    #error "No <expected> polyfill found"
 #endif
+
 #include <unordered_map>
 #else
 import std.compat;
@@ -1241,13 +1234,15 @@ template <typename T> [[nodiscard]] VmHook create_vm(VmtHook& vmt, size_t index,
 
 #ifndef SAFETYHOOK_USE_CXXMODULES
 #include <cstdint>
+
 #if __has_include("tl/expected.hpp")
-#    include "tl/expected.hpp"
+    #include "tl/expected.hpp"
 #elif __has_include("expected.hpp")
-#    include "expected.hpp"
+    #include "expected.hpp"
 #else
-#    error "No <expected> polyfill found"
+    #error "No <expected> polyfill found"
 #endif
+
 #include <functional>
 #else
 import std.compat;

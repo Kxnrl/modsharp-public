@@ -35,6 +35,14 @@ has served over 4 million players since Sep 2023.
 
 - [ModSharp](https://docs.modsharp.net/)
 
+## Dependency Test
+
+This branch vendors [SafetyHook PR #134](https://github.com/cursey/safetyhook/pull/134)
+from `Nukoooo/safetyhook`, branch `fix/out-of-order-inline-hook-removal`,
+at commit `04a47dc8ad25fd79429599fe3fa98c7dbc750254`.
+The vendored files are generated with `python amalgamate.py --polyfill`
+to retain C++20 support with the existing Zydis and expected dependencies.
+
 ## Community
 
 - [Discord](https://discord.gg/wKarAjHm2G)
